@@ -10,7 +10,6 @@ export default function AudioPlayer() {
       style={{
         width: '100%',
         background: '#ffffff',
-        borderBottom: '2px solid #000000',
       }}
     >
       <div
