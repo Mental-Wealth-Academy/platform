@@ -42,8 +42,8 @@ const navSections: NavSection[] = [
     label: 'Main',
     items: [
       { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/Graduate.svg' },
-      { id: 'tasks', label: 'Tasks', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'library', label: 'Chapters', href: '/library', icon: '/icons/Library Icon.svg' },
+      { id: 'tasks', label: 'Tasks', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
     ],
   },
@@ -64,6 +64,7 @@ const navSections: NavSection[] = [
       { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Coming Soon', badgeType: 'muted', disabled: true },
       { id: 'videos', label: 'Videos', href: '/videos', icon: '/icons/Eye.svg', badge: 'Coming Soon', badgeType: 'muted', disabled: true },
       { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg' },
+      { id: 'newsletter', label: 'Newsletter', href: 'https://mentalwealthacademy.net', icon: '/icons/newsletter.svg' },
     ],
   },
 ];
@@ -388,24 +389,6 @@ const SideNavigation: React.FC = () => {
           <div className={styles.musicPlayerWrapper}>
             <AudioPlayer />
           </div>
-
-          {/* Newsletter Link */}
-          <Link
-            href="https://mentalwealthacademy.net"
-            className={styles.navItem}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <Image
-              src="/icons/newsletter.svg"
-              alt=""
-              width={20}
-              height={20}
-              className={styles.navItemIcon}
-            />
-            <span className={styles.navItemLabel}>Newsletter</span>
-          </Link>
 
           {/* Connect Wallet Button (when not logged in) */}
           {(!username || username.startsWith('user_')) && (
