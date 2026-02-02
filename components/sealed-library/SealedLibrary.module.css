@@ -9,21 +9,56 @@
 
 /* Section Header */
 .sectionHeader {
+  position: relative;
   text-align: center;
-  margin-bottom: 8px;
+  padding: 40px 24px;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  overflow: hidden;
+}
+
+/* Hero Background Elements */
+.heroBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.heroGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.3) 100%);
+  z-index: 1;
 }
 
 .sectionTitle {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-primary);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #1A1D33;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
 }
 
 .sectionDescription {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-primary);
   font-size: 14px;
   color: #666666;
@@ -35,22 +70,26 @@
 
 /* Sign In Banner */
 .signInBanner {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.1) 0%, rgba(81, 104, 255, 0.05) 100%);
-  border: 3px solid var(--color-primary);
+  padding: 40px 24px;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
   border-radius: 4px;
   margin-bottom: 24px;
-  gap: 8px;
-  box-shadow: 4px 4px 0 var(--color-primary);
+  gap: 12px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  overflow: hidden;
 }
 
 .bannerTitle {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-primary);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #1A1D33;
   text-transform: uppercase;
@@ -59,12 +98,15 @@
 }
 
 .bannerDescription {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-primary);
   font-size: 15px;
   line-height: 1.6;
   color: #4a4a4a;
   margin: 0;
   max-width: 600px;
+  text-align: center;
 }
 
 /* Chapters Grid */
@@ -171,11 +213,22 @@
     gap: 16px;
   }
 
-  .sectionTitle {
-    font-size: 20px;
+  .sectionHeader,
+  .signInBanner {
+    padding: 32px 20px;
+    box-shadow: 4px 4px 0 #1A1D33;
+  }
+
+  .sectionTitle,
+  .bannerTitle {
+    font-size: 22px;
   }
 
   .sectionDescription {
     font-size: 13px;
+  }
+
+  .bannerDescription {
+    font-size: 14px;
   }
 }

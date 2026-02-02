@@ -45,9 +45,9 @@ const ChapterCard: React.FC<ChapterCardProps> = ({ chapter, onClick }) => {
       onClick={onClick}
       type="button"
     >
-      {/* Seal overlay for locked/in-progress states (not preview or unsealed) */}
-      {(isLocked || isInProgress) && (
-        <div className={`${styles.sealOverlay} ${isInProgress ? styles.sealCracking : ''}`}>
+      {/* Seal overlay for locked/in-progress/preview states (not unsealed) */}
+      {(isLocked || isInProgress || isPreview) && (
+        <div className={`${styles.sealOverlay} ${isInProgress ? styles.sealCracking : ''} ${isPreview ? styles.sealPreview : ''}`}>
           <Image
             src="/uploads/AzuraSeal.svg"
             alt="Azura's Seal"

@@ -83,6 +83,11 @@ const SealedLibrary: React.FC = () => {
     <div className={styles.container}>
       {isAuthenticated ? (
         <div className={styles.sectionHeader}>
+          <div
+            className={styles.heroBg}
+            style={{ backgroundImage: 'url(https://i.imgur.com/IXTQbdC.jpeg)' }}
+          />
+          <div className={styles.heroGradient} />
           <h2 className={styles.sectionTitle}>A New Horizon</h2>
           <p className={styles.sectionDescription}>
             Complete 7 days of writing to unseal each chapter. Your journey of self-discovery awaits.
@@ -90,6 +95,11 @@ const SealedLibrary: React.FC = () => {
         </div>
       ) : (
         <div className={styles.signInBanner}>
+          <div
+            className={styles.heroBg}
+            style={{ backgroundImage: 'url(https://i.imgur.com/IXTQbdC.jpeg)' }}
+          />
+          <div className={styles.heroGradient} />
           <h2 className={styles.bannerTitle}>A New Horizon</h2>
           <p className={styles.bannerDescription}>Azura finds herself in a new body, on a new planet. Old memories pull her towards a key piece to her past. Osirus research lab finds a clue, but doesn&apos;t like where it leads. Both want something out of reach, what will they do to get it?</p>
         </div>
