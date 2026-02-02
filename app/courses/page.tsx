@@ -435,15 +435,15 @@ export default function CoursesPage() {
             </p>
             <div className={styles.programHighlights}>
               <div className={styles.highlight}>
-                <span className={styles.highlightNumber}>12</span>
+                <span className={`${styles.highlightNumber} ${styles.highlightNumberBlue}`}>12</span>
                 <span className={styles.highlightLabel}>Weekly Sessions</span>
               </div>
               <div className={styles.highlight}>
-                <span className={styles.highlightNumber}>90</span>
+                <span className={`${styles.highlightNumber} ${styles.highlightNumberOrange}`}>90</span>
                 <span className={styles.highlightLabel}>Min Per Session</span>
               </div>
               <div className={styles.highlight}>
-                <span className={styles.highlightNumber}>6+</span>
+                <span className={`${styles.highlightNumber} ${styles.highlightNumberGreen}`}>6+</span>
                 <span className={styles.highlightLabel}>Expert Instructors</span>
               </div>
             </div>

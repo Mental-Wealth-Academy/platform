@@ -141,6 +141,18 @@
   line-height: 1;
 }
 
+.highlightNumberBlue {
+  color: #5168FF;
+}
+
+.highlightNumberOrange {
+  color: #FF7729;
+}
+
+.highlightNumberGreen {
+  color: #74C465;
+}
+
 .highlightLabel {
   font-family: var(--font-button);
   font-size: 10px;
