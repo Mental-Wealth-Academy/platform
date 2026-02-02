@@ -34,7 +34,6 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'newsletter', label: 'Newsletter', href: 'https://mentalwealthacademy.net', icon: '/icons/newsletter.svg' },
       { id: 'ai-coach', label: 'Azura AI', href: '/coach', icon: '/icons/ai-coach.png', badge: 'New', badgeType: 'green' },
     ],
   },
@@ -255,9 +254,9 @@ const SideNavigation: React.FC = () => {
           </button>
         </div>
 
-        {/* User Account Section or Connect Wallet Button - Top */}
-        <div className={styles.topAccountSection}>
-          {username && !username.startsWith('user_') ? (
+        {/* User Account Section - Top (only when logged in) */}
+        {username && !username.startsWith('user_') && (
+          <div className={styles.topAccountSection}>
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
                 className={styles.accountButton}
@@ -300,23 +299,8 @@ const SideNavigation: React.FC = () => {
                 </div>
               )}
             </div>
-          ) : (
-            <button
-              className={styles.connectWalletButton}
-              onClick={() => {
-                openConnectModal(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <rect x="13" y="9" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                <circle cx="15" cy="11" r="1" fill="currentColor"/>
-              </svg>
-              <span>Connect Wallet</span>
-            </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>
@@ -404,6 +388,42 @@ const SideNavigation: React.FC = () => {
           <div className={styles.musicPlayerWrapper}>
             <AudioPlayer />
           </div>
+
+          {/* Newsletter Link */}
+          <Link
+            href="https://mentalwealthacademy.net"
+            className={styles.navItem}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Image
+              src="/icons/newsletter.svg"
+              alt=""
+              width={20}
+              height={20}
+              className={styles.navItemIcon}
+            />
+            <span className={styles.navItemLabel}>Newsletter</span>
+          </Link>
+
+          {/* Connect Wallet Button (when not logged in) */}
+          {(!username || username.startsWith('user_')) && (
+            <button
+              className={styles.connectWalletButton}
+              onClick={() => {
+                openConnectModal(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <rect x="13" y="9" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                <circle cx="15" cy="11" r="1" fill="currentColor"/>
+              </svg>
+              <span>Connect Wallet</span>
+            </button>
+          )}
 
           {/* Daemon Shards Counter */}
           <div className={styles.shardsCounter}>
