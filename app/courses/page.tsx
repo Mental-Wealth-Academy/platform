@@ -422,6 +422,11 @@ export default function CoursesPage() {
         <div className={styles.content}>
           {/* Hero Section */}
           <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
+            <div
+              className={styles.heroBg}
+              style={{ backgroundImage: 'url(https://i.imgur.com/T1TYw3P.jpeg)' }}
+            />
+            <div className={styles.heroGradient} />
             <span className={styles.eyebrow}>MWA Academy</span>
             <h1 className={styles.title}>Mental Wealth Pathway</h1>
             <p className={styles.subtitle}>
