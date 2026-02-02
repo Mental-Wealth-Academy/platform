@@ -30,7 +30,7 @@ const data = [
     links: [
       { label: 'Features', link: '/home' },
       { label: 'Quests', link: '/quests' },
-      { label: 'Library', link: '/library' },
+      { label: 'Chapters', link: '/chapters' },
       { label: 'Support', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
   },

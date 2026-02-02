@@ -251,10 +251,10 @@ const Navbar: React.FC = () => {
               <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>Home</span>
             </Link>
 
-            {/* Library Button */}
-            <Link href="/library" className={`${styles.navButton} ${isActive('/library') ? styles.navButtonActive : ''}`}>
+            {/* Chapters Button */}
+            <Link href="/chapters" className={`${styles.navButton} ${isActive('/chapters') ? styles.navButtonActive : ''}`}>
               <LibraryIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/library') ? styles.buttonLabelActive : styles.buttonLabel}>Library</span>
+              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>Chapters</span>
             </Link>
 
             {/* Quests Button */}
@@ -452,11 +452,11 @@ const Navbar: React.FC = () => {
           <span className={styles.mobileBottomNavLabel}>Home</span>
         </Link>
         <Link
-          href="/library"
-          className={`${styles.mobileBottomNavButton} ${isActive('/library') ? styles.mobileBottomNavButtonActive : ''}`}
+          href="/chapters"
+          className={`${styles.mobileBottomNavButton} ${isActive('/chapters') ? styles.mobileBottomNavButtonActive : ''}`}
         >
           <LibraryIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Library</span>
+          <span className={styles.mobileBottomNavLabel}>Chapters</span>
         </Link>
         <Link
           href="/quests"

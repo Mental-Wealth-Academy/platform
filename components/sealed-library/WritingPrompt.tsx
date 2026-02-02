@@ -69,7 +69,7 @@ const WritingPrompt: React.FC<WritingPromptProps> = ({
     setError(null);
 
     try {
-      const response = await fetch('/api/library/writings', {
+      const response = await fetch('/api/chapters/writings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -63,7 +63,7 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
   const fetchChapterDetails = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/library/chapters/${chapterId}`, {
+      const response = await fetch(`/api/chapters/${chapterId}`, {
         credentials: 'include',
       });
 
