@@ -89,6 +89,46 @@
   background: var(--color-primary, #5168FF);
 }
 
+/* Journal Section */
+.journalSection {
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.journalSectionLoaded {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.journalHeader {
+  margin-bottom: 16px;
+}
+
+.sectionLabel {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary, #5168FF);
+  margin-bottom: 4px;
+}
+
+.sectionTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+}
+
+.journalCards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 /* Tasks Grid */
 .tasksGrid {
   display: grid;
@@ -204,5 +244,13 @@
 
   .filterTabs {
     margin-bottom: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .journalSection {
+    margin-bottom: 24px;
   }
 }
