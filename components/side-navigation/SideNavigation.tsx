@@ -254,21 +254,6 @@ const SideNavigation: React.FC = () => {
           </button>
         </div>
 
-        {/* Daemon Shards Counter - Top */}
-        <div className={styles.shardsCounterTop}>
-          <Image
-            src="/icons/shard.svg"
-            alt="Daemon"
-            width={20}
-            height={20}
-            className={styles.shardIcon}
-          />
-          <span className={styles.shardsLabel}>Daemon:</span>
-          <span className={styles.shardsValue}>
-            {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
-          </span>
-        </div>
-
         {/* User Account Section - Top (only when logged in) */}
         {username && !username.startsWith('user_') && (
           <div className={styles.topAccountSection}>
