@@ -11,6 +11,7 @@ import AudioPlayer from '../audio-player/AudioPlayer';
 import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '../username-change/UsernameChangeModal';
+import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
 
 interface NavItem {
   id: string;
@@ -18,14 +19,17 @@ interface NavItem {
   href: string;
   icon: string;
   badge?: string;
-  badgeType?: 'default' | 'highlight' | 'muted' | 'green';
+  badgeType?: 'default' | 'highlight' | 'muted' | 'green' | 'pro';
   disabled?: boolean;
+  requiresPro?: boolean;
 }
 
 interface NavSection {
   id: string;
   label: string;
   items: NavItem[];
+  badge?: string;
+  badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
 const navSections: NavSection[] = [
@@ -34,7 +38,6 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'ai-coach', label: 'Azura AI', href: '/coach', icon: '/icons/ai-coach.png', badge: 'New', badgeType: 'green' },
     ],
   },
   {
@@ -42,28 +45,31 @@ const navSections: NavSection[] = [
     label: 'Main',
     items: [
       { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/Graduate.svg' },
-      { id: 'library', label: 'Chapters', href: '/library', icon: '/icons/Library Icon.svg' },
       { id: 'tasks', label: 'Tasks', href: '/tasks', icon: '/icons/Survey.svg' },
-      { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
+      { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
     ],
   },
   {
     id: 'tools',
     label: 'Tools',
     items: [
+      { id: 'voting', label: 'Voting', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'podcasts', label: 'Podcasts', href: '/podcasts', icon: '/icons/Library Icon.svg' },
+      { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
       { id: 'agents', label: 'Agents', href: '/agents', icon: '/icons/daemon.svg' },
-      { id: 'voting', label: 'Voting', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
+      { id: 'ai-coach', label: 'Azura AI', href: '/coach', icon: '/icons/ai-coach.png', badge: 'New', badgeType: 'green' },
     ],
   },
   {
-    id: 'manage',
-    label: 'Manage',
+    id: 'admin',
+    label: 'ADMIN',
+    badge: 'Access With Pro',
+    badgeType: 'pro',
     items: [
-      { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Coming Soon', badgeType: 'muted', disabled: true },
-      { id: 'videos', label: 'Videos', href: '/videos', icon: '/icons/Eye.svg', badge: 'Coming Soon', badgeType: 'muted', disabled: true },
-      { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg' },
+      { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'videos', label: 'Videos', href: '/videos', icon: '/icons/Eye.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'newsletter', label: 'Newsletter', href: 'https://mentalwealthacademy.net', icon: '/icons/newsletter.svg' },
     ],
   },
@@ -83,6 +89,7 @@ const SideNavigation: React.FC = () => {
   const [isUsernameChangeModalOpen, setIsUsernameChangeModalOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -245,14 +252,19 @@ const SideNavigation: React.FC = () => {
         <div className={styles.header}>
           <span className={styles.logoText}>Mental Wealth Academy</span>
           <button
-            className={styles.menuButton}
+            className={styles.closeMenuButton}
             aria-label="Close menu"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </button>
+        </div>
+
+        {/* Music Player */}
+        <div className={styles.topMusicPlayer}>
+          <AudioPlayer />
         </div>
 
         {/* User Account Section - Top (only when logged in) */}
@@ -309,6 +321,11 @@ const SideNavigation: React.FC = () => {
             <div key={section.id} className={styles.section}>
               <div className={styles.sectionHeader}>
                 <span className={styles.sectionLabel}>{section.label}</span>
+                {section.badge && (
+                  <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
+                    {section.badge}
+                  </span>
+                )}
               </div>
               <div className={styles.sectionItems}>
                 {section.items.map((item) => (
@@ -331,6 +348,29 @@ const SideNavigation: React.FC = () => {
                       <span className={styles.navItemLabel}>{item.label}</span>
                       {item.badge && (
                         <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  ) : item.requiresPro ? (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setIsProModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`${styles.navItem} ${styles.navItemButton}`}
+                    >
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className={styles.navItemIcon}
+                      />
+                      <span className={styles.navItemLabel}>{item.label}</span>
+                      {item.badge && (
+                        <span className={`${styles.badge} ${styles.badgePro}`}>
                           {item.badge}
                         </span>
                       )}
@@ -385,11 +425,6 @@ const SideNavigation: React.FC = () => {
 
         {/* Bottom Section */}
         <div className={styles.bottomSection}>
-          {/* Music Player */}
-          <div className={styles.musicPlayerWrapper}>
-            <AudioPlayer />
-          </div>
-
           {/* Connect Wallet Button (when not logged in) */}
           {(!username || username.startsWith('user_')) && (
             <button
@@ -427,6 +462,7 @@ const SideNavigation: React.FC = () => {
 
       {/* Modals */}
       <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
       {isAvatarSelectorOpen && (
         <AvatarSelectorModal
           onClose={() => setIsAvatarSelectorOpen(false)}

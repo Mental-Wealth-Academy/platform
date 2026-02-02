@@ -63,6 +63,33 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
+.closeMenuButton {
+  display: none;
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.closeMenuButton:hover {
+  background: #1A1D33;
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+/* Top Music Player */
+.topMusicPlayer {
+  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
+}
+
 /* Top Account Section */
 .topAccountSection {
   padding: 12px 16px;
@@ -154,6 +181,9 @@
 
 .sectionHeader {
   padding: 12px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .sectionLabel {
@@ -163,6 +193,23 @@
   color: #999999;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.sectionBadge {
+  font-family: var(--font-primary);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(26, 29, 51, 0.08);
+  color: #999999;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+}
+
+.sectionBadgePro {
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  border-color: rgba(81, 104, 255, 0.3);
 }
 
 .sectionItems {
@@ -282,6 +329,13 @@
   background: rgba(26, 29, 51, 0.06);
   color: #999999;
   border-color: rgba(26, 29, 51, 0.12);
+  font-size: 9px;
+}
+
+.badgePro {
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(123, 140, 255, 0.15) 100%);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
   font-size: 9px;
 }
 
@@ -595,6 +649,10 @@
   }
 
   .menuButton {
+    display: none;
+  }
+
+  .closeMenuButton {
     display: flex;
   }
 
