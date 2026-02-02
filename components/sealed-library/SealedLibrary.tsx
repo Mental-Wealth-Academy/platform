@@ -20,7 +20,7 @@ const SealedLibrary: React.FC = () => {
   const fetchChapters = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/library/chapters', {
+      const response = await fetch('/api/chapters', {
         credentials: 'include',
       });
 
@@ -85,7 +85,7 @@ const SealedLibrary: React.FC = () => {
         <div className={styles.sectionHeader}>
           <div
             className={styles.heroBg}
-            style={{ backgroundImage: 'url(https://i.imgur.com/IXTQbdC.jpeg)' }}
+            style={{ backgroundImage: 'url(https://i.imgur.com/HwN5d9B.jpeg)' }}
           />
           <div className={styles.heroGradient} />
           <h2 className={styles.sectionTitle}>A New Horizon</h2>
@@ -97,7 +97,7 @@ const SealedLibrary: React.FC = () => {
         <div className={styles.signInBanner}>
           <div
             className={styles.heroBg}
-            style={{ backgroundImage: 'url(https://i.imgur.com/IXTQbdC.jpeg)' }}
+            style={{ backgroundImage: 'url(https://i.imgur.com/HwN5d9B.jpeg)' }}
           />
           <div className={styles.heroGradient} />
           <h2 className={styles.bannerTitle}>A New Horizon</h2>
