@@ -63,6 +63,20 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
+/* Top Shards Counter */
+.shardsCounterTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 16px;
+  padding: 10px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #1A1D33;
+  box-sizing: border-box;
+}
+
 /* Top Account Section */
 .topAccountSection {
   padding: 12px 16px;
