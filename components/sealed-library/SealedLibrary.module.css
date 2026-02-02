@@ -10,7 +10,7 @@
 /* Section Header */
 .sectionHeader {
   position: relative;
-  text-align: center;
+  text-align: left;
   padding: 40px 24px;
   background: #ffffff;
   border: 3px solid #1A1D33;
@@ -64,8 +64,6 @@
   color: #666666;
   margin: 0;
   max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* Sign In Banner */
@@ -73,7 +71,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 40px 24px;
   background: #ffffff;
@@ -106,7 +104,7 @@
   color: #4a4a4a;
   margin: 0;
   max-width: 600px;
-  text-align: center;
+  text-align: left;
 }
 
 /* Chapters Grid */
