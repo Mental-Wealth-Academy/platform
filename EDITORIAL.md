@@ -12,11 +12,9 @@
 
 **Mental Wealth Academy** is Next Gen Educational Tech. We offer an in-house 12-week micro-course on intellectual refreshment and ethereal awakening. Also open-source Web1/2 → Web3 platforming for social groups, workshops, cohorts, and brands seeking to structure their online community in a framework that pays them to be there. Co-piloted by self-executing NPC AI Agents.
 
-**The Product:** A platform where communities gain intellectual refreshment in the form of edutainment. And real-world communities gain access to institutional level DAO tools, quests, and agentic governance workflows — no more static digital paperwork, MWA creates living infrastructure. Delivered through a Mini-App on Farcaster and on-chain.
+**The Product:** communities gain intellectual refreshment in the form of edutainment. And real-world communities gain access to institutional level DAO tools, quests, and agentic governance workflows — no more static digital paperwork, MWA creates living infrastructure. Delivered through a Mini-App on Farcaster and on-chain.
 
-**The Innovation:** Autonomous AI agents (like Azura) — with their own blockchain wallets — review submissions and execute rewards on-chain. They're not chatbots. They're infrastructure with personality: AI Copilots capable of controlling and managing your DAO.
-
-**The Difference:** Communities are paid to participate. Real governance. Real progress. Onchain proof.
+Autonomous AI agents (like Azura) — with their own blockchain wallets — review submissions and execute rewards on-chain. They're not chatbots. They're infrastructure with personality: AI Copilots capable of controlling and managing your DAO.
 
 ---
 
