@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { providers } from 'ethers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import YourImpact from '@/components/your-impact/YourImpact';
@@ -280,12 +281,15 @@ export default function VotingPage() {
           <YourImpact />
 
           {/* Hero Banner Image - Click to open Guy Dialogue */}
-          <img
+          <Image
             src="https://i.imgur.com/9Wvq3Rm.png"
             alt="Guy - Click to learn about $MWG"
+            width={400}
+            height={400}
             className={styles.heroBannerImage}
             onClick={() => setShowGuyDialogue(true)}
             style={{ cursor: 'pointer' }}
+            unoptimized
           />
 
           {/* Proposals Section */}
