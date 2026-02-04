@@ -265,7 +265,7 @@ const QuestPage: React.FC = () => {
           <p className={styles.eyebrow}>MWA • Quest Room</p>
           <h1 className={styles.title}>Complete Quests & Earn Rewards</h1>
           <p className={styles.subtitle}>
-            Quests are singular or collaborative tasks for users to complete, and Daemon are the rewarded currency that unlocks what comes next.
+            Finish quests on your own or with others to earn Daemon points.<br />The more you earn, the more you unlock.
           </p>
           <div className={styles.heroActions}>
             <button className={styles.primaryCta} type="button" onClick={() => setIsCurrenciesModalOpen(true)}>
