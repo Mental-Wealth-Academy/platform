@@ -59,7 +59,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.gemIcon}>
-        <SoulGemIcon />
+        <Image src="/icons/shard.svg" alt="DAEMON Shard" width={24} height={24} unoptimized />
       </div>
       <span className={styles.amount}>{formatAmount(amount)}</span>
       {showLabel && <span className={styles.label}>{label || 'Soul Gems'}</span>}
@@ -89,7 +89,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
     <div className={styles.azuraPower}>
       <div>
         <Image
-          src="/uploads/HappyEmote.png"
+          src="https://i.imgur.com/AkflhaJ.png"
           alt="Azura"
           width={32}
           height={32}

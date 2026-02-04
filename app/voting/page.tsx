@@ -93,16 +93,16 @@ const getTutorialSteps = (): TutorialStep[] => [
 
 const getGuyTutorialSteps = (): GuyStep[] => [
   {
-    message: "Hey! I'm Guy, your friendly guide to $MWG tokens. These little gems are the heartbeat of our community rewards system. Pretty cool, right?",
+    message: "Hey! I'm Guy. I'm here to tell you about $MWG points. You earn them by doing good work in the academy, and they unlock real rewards.",
   },
   {
-    message: "Earning $MWG is so simple. Just complete your weekly mental wealth tasks and writings.",
+    message: "How do you earn them? Just finish your weekly tasks and journal entries. The more you do, the more you earn.",
   },
   {
-    message: "Here's the exciting part, the more you earn, the more of a say you'll have in where the prize pool money goes at the end of the 12-weeks.",
+    message: "Here's the best part. The more points you have, the more you get to decide how the prize pool money is spent at the end of the 12 weeks.",
   },
   {
-    message: "Instead of keeping all the profits like Zuck, we give to the dedicated members who've earned their spot at the finish line. We call it Decentralization.",
+    message: "We don't keep the money at the top. It goes back to the members who put in the work. That's how we do things here.",
   },
 ];
 
@@ -235,10 +235,10 @@ export default function VotingPage() {
             <header className={styles.header}>
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
-                  <p className={styles.eyebrow}>MWA • Academy Decisions</p>
-                  <h1 className={styles.title}>Decision Room</h1>
+                  <p className={styles.eyebrow}>MWA • Academic Governance</p>
+                  <h1 className={styles.title}>Treasury</h1>
                   <p className={styles.subtitle}>
-                    Micro-Decisions aided by agentic co-pilot DAEMON. Digital Autocrat Evaluation Model of Negotiation
+                    Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
                   </p>
                   <div className={styles.heroActions}>
                     <button

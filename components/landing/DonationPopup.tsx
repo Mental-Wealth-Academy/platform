@@ -5,9 +5,23 @@ import styles from './LandingPage.module.css';
 
 export const DonationPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setIsDismissed(true);
+    sessionStorage.setItem('donationPopupDismissed', 'true');
+  };
 
   useEffect(() => {
+    if (sessionStorage.getItem('donationPopupDismissed') === 'true') {
+      setIsDismissed(true);
+      return;
+    }
+
     const checkVisibility = () => {
+      if (isDismissed) return;
+
       if (window.innerWidth < 1024) {
         setIsVisible(false);
         return;
@@ -33,7 +47,7 @@ export const DonationPopup: React.FC = () => {
       window.removeEventListener('scroll', checkVisibility);
       window.removeEventListener('resize', checkVisibility);
     };
-  }, []);
+  }, [isDismissed]);
 
   if (!isVisible) return null;
 
@@ -61,11 +75,11 @@ export const DonationPopup: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Donate now
+            Become A Patron of Worldwide Mental Wealth
           </a>
           <button
             className={styles.donationPopupClose}
-            onClick={() => setIsVisible(false)}
+            onClick={handleClose}
             aria-label="Close donation popup"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

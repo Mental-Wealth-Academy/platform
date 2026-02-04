@@ -6,18 +6,18 @@
   overflow-y: auto;
 }
 
-/* Hero Section - Two column layout over 3D scene */
+/* Hero Section - Centered layout over 3D scene */
 .heroSection {
   position: absolute;
   top: 50vh;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  max-width: 1200px;
+  justify-content: center;
+  max-width: 900px;
   width: 100%;
   padding: 0 48px;
   pointer-events: auto;
@@ -27,31 +27,32 @@
 .heroContent {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
 }
 
 .heroHeadline {
   font-family: var(--font-primary);
-  font-size: 2.618rem;
+  font-size: 3.5rem;
   font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  margin: 0 0 20px 0;
-  text-transform: uppercase;
+  line-height: 1.15;
+  margin: 0 0 28px 0;
   letter-spacing: -0.02em;
   color: white;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+  animation: heroFadeUp 0.8s ease-out both;
 }
 
 .heroSubtext {
   font-family: var(--font-primary);
   font-size: 18px;
   font-weight: var(--font-weight-regular);
-  line-height: 1.6;
-  margin: 0 0 32px 0;
+  line-height: 1.7;
+  margin: 0 0 36px 0;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
-  max-width: 500px;
+  max-width: 680px;
+  animation: heroFadeUp 0.8s ease-out 0.25s both;
 }
 
 .heroButton {
@@ -68,6 +69,18 @@
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
+  animation: heroFadeUp 0.8s ease-out 0.5s both;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .heroButton:hover:not(:disabled) {
@@ -81,236 +94,68 @@
   cursor: not-allowed;
 }
 
-/* Hero Images Grid */
-.heroImages {
-  position: relative;
-  width: 100%;
-  height: 480px;
-  display: block;
-}
-
-.heroImageBlock {
-  position: absolute;
-  transition: transform 0.3s ease;
-}
-
-.heroImageBlock:hover {
-  transform: scale(1.02);
-}
-
-.heroImageShape {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.heroImagePhoto {
+.heroImage {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  max-width: 400px;
+  height: auto;
   object-fit: contain;
-  object-position: center;
-}
-
-/* Top image - Blue background (anime elf - Chat1) */
-.heroImageTop {
-  top: -20px;
-  right: -20px;
-  width: 320px;
-  height: 260px;
-  z-index: 3;
-}
-
-/* Left image - Green background (ant character - Chat3) */
-.heroImageLeft {
-  top: 120px;
-  left: -40px;
-  width: 300px;
-  height: 260px;
-  z-index: 2;
-}
-
-/* Right image - Orange background (woman - Chat2) */
-.heroImageRight {
-  bottom: -20px;
-  right: 40px;
-  width: 280px;
-  height: 240px;
-  z-index: 1;
-}
-
-/* Decorative arrows */
-.heroArrows {
-  position: absolute;
-  top: 45%;
-  left: 55%;
-  transform: translate(-50%, -50%);
-  width: 180px;
-  height: 180px;
   z-index: 10;
   pointer-events: none;
-  opacity: 0.7;
 }
+
 
 /* Hero responsive styles */
 @media (max-width: 1200px) {
   .heroSection {
-    gap: 32px;
     padding: 0 32px;
-  }
-
-  .heroImages {
-    height: 420px;
-  }
-
-  .heroImageTop {
-    width: 280px;
-    height: 230px;
-    top: -10px;
-    right: -10px;
-  }
-
-  .heroImageLeft {
-    width: 260px;
-    height: 230px;
-    top: 100px;
-    left: -30px;
-  }
-
-  .heroImageRight {
-    width: 240px;
-    height: 210px;
-    bottom: -10px;
-    right: 30px;
-  }
-
-  .heroArrows {
-    width: 150px;
-    height: 150px;
   }
 }
 
 @media (max-width: 1024px) {
   .heroSection {
-    gap: 24px;
     padding: 0 24px;
   }
 
-  .heroImages {
-    height: 380px;
-  }
-
-  .heroImageTop {
-    width: 240px;
-    height: 200px;
-    top: 0;
-    right: 0;
-  }
-
-  .heroImageLeft {
-    width: 220px;
-    height: 200px;
-    top: 90px;
-    left: -20px;
-  }
-
-  .heroImageRight {
-    width: 200px;
-    height: 180px;
-    bottom: 0;
-    right: 20px;
-  }
-
-  .heroArrows {
-    width: 120px;
-    height: 120px;
+  .heroHeadline {
+    font-size: 2.8rem;
   }
 }
 
 @media (max-width: 768px) {
   .heroSection {
-    grid-template-columns: 1fr;
-    gap: 32px;
     padding: 0 20px;
     top: 50vh;
   }
 
-  .heroContent {
-    align-items: center;
-    text-align: center;
-  }
-
   .heroHeadline {
-    font-size: 1.618rem;
-    margin-bottom: 16px;
+    font-size: 2rem;
+    margin-bottom: 20px;
   }
 
   .heroSubtext {
     font-size: 15px;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   .heroButton {
     padding: 12px 24px;
     font-size: 0.875rem;
   }
-
-  .heroImages {
-    height: 320px;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  .heroImageTop {
-    width: 180px;
-    height: 150px;
-    top: 0;
-    right: 0;
-  }
-
-  .heroImageLeft {
-    width: 170px;
-    height: 150px;
-    top: 80px;
-    left: 0;
-  }
-
-  .heroImageRight {
-    width: 160px;
-    height: 140px;
-    bottom: 0;
-    right: 20px;
-  }
-
-  .heroArrows {
-    display: none;
-  }
 }
 
 @media (max-width: 480px) {
   .heroSection {
-    gap: 24px;
     padding: 0 16px;
   }
 
-  .heroImages {
-    height: 260px;
-    max-width: 320px;
+  .heroHeadline {
+    font-size: 1.75rem;
   }
 
-  .heroImageTop {
-    width: 150px;
-    height: 125px;
-  }
-
-  .heroImageLeft {
-    width: 140px;
-    height: 125px;
-    top: 65px;
-  }
-
-  .heroImageRight {
-    width: 130px;
-    height: 115px;
-    right: 10px;
+  .heroSubtext {
+    font-size: 14px;
   }
 }
 

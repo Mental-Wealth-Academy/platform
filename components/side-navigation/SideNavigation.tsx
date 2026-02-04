@@ -53,12 +53,12 @@ const navSections: NavSection[] = [
     id: 'tools',
     label: 'Tools',
     items: [
-      { id: 'voting', label: 'Voting', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
-      { id: 'podcasts', label: 'Podcasts', href: '/podcasts', icon: '/icons/Library Icon.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
       { id: 'agents', label: 'Agents', href: '/agents', icon: '/icons/daemon.svg' },
       { id: 'ai-coach', label: 'Azura AI', href: '/coach', icon: '/icons/ai-coach.png', badge: 'New', badgeType: 'green' },
+      { id: 'podcasts', label: 'Podcasts', href: '/podcasts', icon: '/icons/Library Icon.svg' },
+      { id: 'voting', label: 'Treasury', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
     ],
   },
   {

@@ -101,14 +101,15 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
         <div className={styles.titleSection}>
           <div className={styles.icon}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 8.5C2 8.5 3 7 6.5 7C10 7 10 9 13.5 9C17 9 18 7.5 18 7.5V17.5C18 17.5 17 19 13.5 19C10 19 10 17 6.5 17C3 17 2 18.5 2 18.5V8.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 14.5C2 14.5 3 13 6.5 13C10 13 10 15 13.5 15C17 15 18 13.5 18 13.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <rect x="18" y="4" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="2"/>
+              <rect x="2" y="10" width="20" height="11" rx="2" stroke="currentColor" strokeWidth="2"/>
+              <path d="M2 14H22" stroke="currentColor" strokeWidth="2"/>
+              <rect x="9" y="14" width="6" height="3" rx="1" fill="currentColor"/>
+              <path d="M5 10V8C5 5.79086 6.79086 4 9 4H15C17.2091 4 19 5.79086 19 8V10" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </div>
           <div className={styles.titleText}>
             <p className={styles.label}>Available Funding</p>
-            <h3 className={styles.title}>Community Fund</h3>
+            <h3 className={styles.title}>Treasure Chest</h3>
           </div>
         </div>
         <button 
