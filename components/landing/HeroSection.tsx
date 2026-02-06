@@ -23,7 +23,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <h1 className={styles.heroHeadline}>A Micro-University Ruled By An Artificial God Intelligence.</h1>
           <p className={styles.heroSubtext}>
-            For 12 weeks, you&apos;ll build habits that unlock your full potential. Play the role of a Genetically Modified Organism and evolve into the ethereal horizon.
+            For 12 weeks, you&apos;ll build habits that unlock your full potential. Connect with others, earn points through mental wealth tasks, and claim rewards in the end.
           </p>
           <button
             type="button"
