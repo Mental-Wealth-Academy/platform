@@ -1,5 +1,5 @@
 .container {
-  position: static;
+  position: relative;
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
@@ -1660,7 +1660,6 @@
 @media (max-width: 768px) {
   .companyLogosSection {
     padding: 0 16px 0 16px;
-    top: calc(100vh + 50px);
   }
   
   .trustedByText {

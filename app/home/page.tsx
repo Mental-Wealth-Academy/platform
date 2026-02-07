@@ -9,7 +9,7 @@ import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { CalendarDays } from '@/components/calendar-days/CalendarDays';
 import { CheckinCard } from '@/components/checkin-card/CheckinCard';
-import { EventsCarousel } from '@/components/events-carousel/EventsCarousel';
+import { CoursesShowcase } from '@/components/landing/CoursesShowcase';
 import Surveys from '@/components/survey/Surveys';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
@@ -18,7 +18,6 @@ import { useBaseKitAutoSignin } from '@/components/miniapp/useBaseKitAutoSignin'
 import {
   CalendarDaysSkeleton,
   CheckinCardSkeleton,
-  EventsCarouselSkeleton,
   SurveysSkeleton,
 } from '@/components/skeleton/Skeleton';
 import styles from './page.module.css';
@@ -243,10 +242,7 @@ export default function Home() {
             <>
               <CalendarDaysSkeleton />
               <CheckinCardSkeleton />
-              <div className={styles.eventsAndSurveysRow}>
-                <EventsCarouselSkeleton />
-                <SurveysSkeleton />
-              </div>
+              <SurveysSkeleton />
             </>
           ) : (
             <>
@@ -259,8 +255,10 @@ export default function Home() {
               <div className={styles.staggeredItem}>
                 <CheckinCard />
               </div>
-              <div className={`${styles.eventsAndSurveysRow} ${styles.staggeredItem}`}>
-                <EventsCarousel />
+              <div className={styles.staggeredItem}>
+                <CoursesShowcase />
+              </div>
+              <div className={styles.staggeredItem}>
                 <Surveys />
               </div>
             </>

@@ -38,13 +38,6 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-    ],
-  },
-  {
-    id: 'main',
-    label: 'Main',
-    items: [
-      { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/Graduate.svg' },
       { id: 'tasks', label: 'Tasks', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
     ],
@@ -55,9 +48,6 @@ const navSections: NavSection[] = [
     items: [
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
-      { id: 'agents', label: 'Agents', href: '/agents', icon: '/icons/daemon.svg' },
-      { id: 'ai-coach', label: 'Azura AI', href: '/coach', icon: '/icons/ai-coach.png', badge: 'New', badgeType: 'green' },
-      { id: 'podcasts', label: 'Podcasts', href: '/podcasts', icon: '/icons/Library Icon.svg' },
       { id: 'voting', label: 'Treasury', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
     ],
   },
@@ -262,58 +252,25 @@ const SideNavigation: React.FC = () => {
           </button>
         </div>
 
-        {/* Music Player */}
+        {/* Music Player + Azura AI Chat Icon */}
         <div className={styles.topMusicPlayer}>
-          <AudioPlayer />
-        </div>
-
-        {/* User Account Section - Top (only when logged in) */}
-        {username && !username.startsWith('user_') && (
-          <div className={styles.topAccountSection}>
-            <div className={styles.accountSection} ref={accountMenuRef}>
-              <button
-                className={styles.accountButton}
-                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-              >
-                {avatarUrl && (
-                  <Image
-                    src={avatarUrl}
-                    alt={username}
-                    width={32}
-                    height={32}
-                    className={styles.accountAvatar}
-                    unoptimized
-                  />
-                )}
-                <span className={styles.accountUsername}>@{username}</span>
-              </button>
-
-              {isAccountMenuOpen && (
-                <div className={styles.accountMenu}>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleAvatarClick}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Avatar</span>
-                  </button>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleUsernameClick}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Username</span>
-                  </button>
-                  <div className={styles.accountMenuDivider} />
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleSignOut}
-                  >
-                    <span className={styles.accountMenuLabel}>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
+          <div className={styles.musicPlayerRow}>
+            <AudioPlayer />
+            <button
+              className={styles.azuraChatButton}
+              onClick={() => {
+                setIsChatOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              aria-label="Open Azura AI Chat"
+              title="Azura AI"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
           </div>
-        )}
+        </div>
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>
@@ -329,30 +286,7 @@ const SideNavigation: React.FC = () => {
               </div>
               <div className={styles.sectionItems}>
                 {section.items.map((item) => (
-                  item.id === 'ai-coach' ? (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setIsChatOpen(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className={`${styles.navItem} ${styles.navItemButton}`}
-                    >
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className={styles.navItemIcon}
-                      />
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ) : item.requiresPro ? (
+                  item.requiresPro ? (
                     <button
                       key={item.id}
                       onClick={() => {
@@ -425,8 +359,51 @@ const SideNavigation: React.FC = () => {
 
         {/* Bottom Section */}
         <div className={styles.bottomSection}>
-          {/* Connect Wallet Button (when not logged in) */}
-          {(!username || username.startsWith('user_')) && (
+          {/* Account Button (when logged in) or Connect Wallet (when not) */}
+          {username && !username.startsWith('user_') ? (
+            <div className={styles.accountSection} ref={accountMenuRef}>
+              <button
+                className={styles.accountButton}
+                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+              >
+                {avatarUrl && (
+                  <Image
+                    src={avatarUrl}
+                    alt={username}
+                    width={32}
+                    height={32}
+                    className={styles.accountAvatar}
+                    unoptimized
+                  />
+                )}
+                <span className={styles.accountUsername}>@{username}</span>
+              </button>
+
+              {isAccountMenuOpen && (
+                <div className={styles.accountMenu}>
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleAvatarClick}
+                  >
+                    <span className={styles.accountMenuLabel}>Change Avatar</span>
+                  </button>
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleUsernameClick}
+                  >
+                    <span className={styles.accountMenuLabel}>Change Username</span>
+                  </button>
+                  <div className={styles.accountMenuDivider} />
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleSignOut}
+                  >
+                    <span className={styles.accountMenuLabel}>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
             <button
               className={styles.connectWalletButton}
               onClick={() => {

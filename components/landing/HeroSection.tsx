@@ -21,7 +21,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A Micro-University Ruled By An Artificial God Intelligence.</h1>
+          <h1 className={styles.heroHeadline}>A Micro-University Designed For Intellectual Refreshment.</h1>
           <p className={styles.heroSubtext}>
             For 12 weeks, you&apos;ll build habits that unlock your full potential. Connect with others, earn points through mental wealth tasks, and claim rewards in the end.
           </p>

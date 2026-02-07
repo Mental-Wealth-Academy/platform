@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
-import styles from './page.module.css';
+import styles from './CoursesShowcase.module.css';
 
 interface CourseData {
   id: string;
@@ -280,7 +279,6 @@ const CourseModal: React.FC<CourseModalProps> = ({ course, isOpen, onClose, onRe
     };
   }, [isOpen]);
 
-  // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -382,7 +380,7 @@ const CourseModal: React.FC<CourseModalProps> = ({ course, isOpen, onClose, onRe
   );
 };
 
-export default function CoursesPage() {
+export const CoursesShowcase: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -416,107 +414,104 @@ export default function CoursesPage() {
   };
 
   return (
-    <main className={styles.main}>
-      <SideNavigation />
-      <div className={styles.pageLayout}>
-        <div className={styles.content}>
-          {/* Hero Section */}
-          <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-            <div
-              className={styles.heroBg}
-              style={{ backgroundImage: 'url(https://i.imgur.com/T1TYw3P.jpeg)' }}
-            />
-            <div className={styles.heroGradient} />
-            <span className={styles.eyebrow}>MWA Academy</span>
-            <h1 className={styles.title}>Mental Wealth Pathway</h1>
-            <p className={styles.subtitle}>
-              A transformative 12-week journey designed to build lasting mental wellness habits.
-              Join our expert-led sessions and unlock your full potential through evidence-based practices.
-            </p>
-            <div className={styles.programHighlights}>
-              <div className={styles.highlight}>
-                <span className={`${styles.highlightNumber} ${styles.highlightNumberBlue}`}>12</span>
-                <span className={styles.highlightLabel}>Weekly Sessions</span>
-              </div>
-              <div className={styles.highlight}>
-                <span className={`${styles.highlightNumber} ${styles.highlightNumberOrange}`}>90</span>
-                <span className={styles.highlightLabel}>Min Per Session</span>
-              </div>
-              <div className={styles.highlight}>
-                <span className={`${styles.highlightNumber} ${styles.highlightNumberGreen}`}>6+</span>
-                <span className={styles.highlightLabel}>Expert Instructors</span>
-              </div>
+    <>
+      <div className={styles.wrapper}>
+        {/* Hero Section */}
+        <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
+          <div
+            className={styles.heroBg}
+            style={{ backgroundImage: 'url(https://i.imgur.com/T1TYw3P.jpeg)' }}
+          />
+          <div className={styles.heroGradient} />
+          <span className={styles.eyebrow}>MWA Academy</span>
+          <h1 className={styles.title}>Mental Wealth Pathway</h1>
+          <p className={styles.subtitle}>
+            A transformative 12-week journey designed to build lasting mental wellness habits.
+            Join our expert-led sessions and unlock your full potential through evidence-based practices.
+          </p>
+          <div className={styles.programHighlights}>
+            <div className={styles.highlight}>
+              <span className={`${styles.highlightNumber} ${styles.highlightNumberBlue}`}>12</span>
+              <span className={styles.highlightLabel}>Weekly Sessions</span>
             </div>
-          </section>
-
-          {/* Courses Section */}
-          <section className={styles.coursesSection}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Course Schedule</h2>
-              <p className={styles.sectionSubtitle}>Click on any course to view detailed information and register</p>
+            <div className={styles.highlight}>
+              <span className={`${styles.highlightNumber} ${styles.highlightNumberOrange}`}>90</span>
+              <span className={styles.highlightLabel}>Min Per Session</span>
             </div>
+            <div className={styles.highlight}>
+              <span className={`${styles.highlightNumber} ${styles.highlightNumberGreen}`}>6+</span>
+              <span className={styles.highlightLabel}>Expert Instructors</span>
+            </div>
+          </div>
+        </section>
 
-            <div className={`${styles.coursesGrid} ${isLoaded ? styles.coursesGridLoaded : ''}`}>
-              {mentalWealthCourses.map((course, index) => (
-                <div
-                  key={course.id}
-                  className={styles.courseCardWrapper}
-                  style={{ animationDelay: `${index * 0.06}s` }}
+        {/* Courses Section */}
+        <section className={styles.coursesSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Course Schedule</h2>
+            <p className={styles.sectionSubtitle}>Click on any course to view detailed information and register</p>
+          </div>
+
+          <div className={`${styles.coursesGrid} ${isLoaded ? styles.coursesGridLoaded : ''}`}>
+            {mentalWealthCourses.map((course, index) => (
+              <div
+                key={course.id}
+                className={styles.courseCardWrapper}
+                style={{ animationDelay: `${index * 0.06}s` }}
+              >
+                <button
+                  className={styles.courseCard}
+                  onClick={() => handleCourseClick(course)}
+                  type="button"
                 >
-                  <button
-                    className={styles.courseCard}
-                    onClick={() => handleCourseClick(course)}
-                    type="button"
-                  >
-                    <div className={styles.cardHeader} style={{ background: course.color }}>
-                      <span className={styles.cardWeekBadge}>Week {course.weekNumber}</span>
-                      <span className={styles.cardCategoryBadge}>{course.category}</span>
+                  <div className={styles.cardHeader} style={{ background: course.color }}>
+                    <span className={styles.cardWeekBadge}>Week {course.weekNumber}</span>
+                    <span className={styles.cardCategoryBadge}>{course.category}</span>
+                  </div>
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.cardTitle}>{course.title}</h3>
+                    <div className={styles.cardMeta}>
+                      <p className={styles.cardDate}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                          <line x1="16" y1="2" x2="16" y2="6" />
+                          <line x1="8" y1="2" x2="8" y2="6" />
+                          <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        {course.date}
+                      </p>
+                      <p className={styles.cardTime}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        {course.time}
+                      </p>
                     </div>
-                    <div className={styles.cardContent}>
-                      <h3 className={styles.cardTitle}>{course.title}</h3>
-                      <div className={styles.cardMeta}>
-                        <p className={styles.cardDate}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
+                    <p className={styles.cardDescription}>{course.description}</p>
+                    <div className={styles.cardFooter}>
+                      {registeredCourses.has(course.id) ? (
+                        <span className={styles.registeredBadge}>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
                           </svg>
-                          {course.date}
-                        </p>
-                        <p className={styles.cardTime}>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
+                          Registered
+                        </span>
+                      ) : (
+                        <span className={styles.learnMore}>
+                          View Details
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="9 18 15 12 9 6" />
                           </svg>
-                          {course.time}
-                        </p>
-                      </div>
-                      <p className={styles.cardDescription}>{course.description}</p>
-                      <div className={styles.cardFooter}>
-                        {registeredCourses.has(course.id) ? (
-                          <span className={styles.registeredBadge}>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                            Registered
-                          </span>
-                        ) : (
-                          <span className={styles.learnMore}>
-                            View Details
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="9 18 15 12 9 6" />
-                            </svg>
-                          </span>
-                        )}
-                      </div>
+                        </span>
+                      )}
                     </div>
-                  </button>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
 
       <CourseModal
@@ -526,7 +521,6 @@ export default function CoursesPage() {
         onRegister={handleRegister}
       />
 
-      {/* Toast Notification */}
       {showToast && (
         <div className={styles.toast}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -536,6 +530,8 @@ export default function CoursesPage() {
           <span>{toastMessage}</span>
         </div>
       )}
-    </main>
+    </>
   );
-}
+};
+
+export default CoursesShowcase;

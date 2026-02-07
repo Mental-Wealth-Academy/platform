@@ -1,21 +1,6 @@
-/* Courses Page - Brutalist Design System */
+/* Courses Showcase - Brutalist Design System (adapted from courses page) */
 
-.main {
-  min-height: 100vh;
-  margin-left: 272px;
-}
-
-.pageLayout {
-  display: flex;
-  flex-direction: column;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 40px 24px;
-  gap: 32px;
-}
-
-.content {
+.wrapper {
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -195,7 +180,7 @@
 /* Course Grid */
 .coursesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
@@ -762,19 +747,9 @@
 }
 
 @media (max-width: 900px) {
-  .main {
-    margin-left: 0;
-    padding-top: 66px; /* Account for mobile top bar (60px + 6px shadow) */
-  }
-
-  .pageLayout {
-    padding: 24px 16px;
-    gap: 24px;
-  }
-
-  .content {
+  .wrapper {
+    padding: 0 16px;
     gap: 32px;
-    padding-bottom: max(16px, calc(16px + 40px + env(safe-area-inset-bottom)));
   }
 
   .hero {
@@ -863,7 +838,7 @@
     left: 16px;
     right: 16px;
     transform: none;
-    bottom: max(24px, calc(env(safe-area-inset-bottom) + 80px));
+    bottom: 24px;
     box-shadow: 3px 3px 0 #1A1D33;
   }
 
