@@ -4,7 +4,7 @@ import styles from './FeaturesSection.module.css';
 const features = [
   {
     icon: '/icons/4b31ae03-5c43-4b80-9526-730a6b5a6c09 1.png',
-    title: 'Characterized 12-Week Support Group',
+    title: 'Intellectual Refreshment',
     description: 'Weekly workshops, writing exercises, and guided tasks designed to help you process, reflect, and grow at your own pace.',
   },
   {
@@ -14,12 +14,12 @@ const features = [
   },
   {
     icon: '/icons/f36a4cca-81ba-4103-8cf1-114190d63f4c 1.png',
-    title: 'Real-time SMS Support',
+    title: 'Connect In New Ways',
     description: 'Reach out whenever you need it. Our team is just a text away to help you through the hard moments.',
   },
   {
     icon: '/icons/f619761a-7a68-4cc2-ab38-bbc05ba27486 1.png',
-    title: 'Community Decision-Making',
+    title: 'Collaborative Ecosystem',
     description: 'Participate in transparent decision-making to fund research and shape the future of mental health care.',
   },
 ];
@@ -30,10 +30,10 @@ export const FeaturesSection: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>
-            For students at every stage of their journey.
+            Connect with some of the brightest minds across the world
           </h2>
           <p className={styles.description}>
-            Feeling lost? Not sure what&apos;s next? You&apos;re not alone. We built this for the ones still figuring it out, because clarity comes from connection, not pressure.
+            Feeling lost? Not sure what&apos;s next? You&apos;re not alone. We built this for the ones still figuring it out, because clarity comes from connection.
           </p>
         </div>
 

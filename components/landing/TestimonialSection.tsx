@@ -10,10 +10,10 @@ export const TestimonialSection: React.FC = () => {
             <div className={styles.imageWrapper}>
               <div className={styles.imageMask}>
                 <Image
-                  src="/uploads/hero-avatar.webp"
-                  alt="Student testimonial"
-                  width={500}
-                  height={600}
+                  src="/uploads/student-group.jpg"
+                  alt="Students collaborating together"
+                  width={800}
+                  height={960}
                   className={styles.image}
                 />
               </div>
@@ -27,7 +27,7 @@ export const TestimonialSection: React.FC = () => {
           <div className={styles.contentColumn}>
             <div className={styles.eyebrow}>Hear what our students have to say</div>
             <blockquote className={styles.quote}>
-              I came in feeling completely lost after dropping out. The weekly sessions gave me structure, and for the first time I didn&apos;t feel judged for not having it all figured out. This community actually gets it.
+              Mental Wealth Academy helped me build connections and network at a time where I was uncertain, the passive weekly sessions were fun and low-stress to keep up with. I didn&apos;t feel judged or rushed, everything came naturally. This community actually gets it.
             </blockquote>
             <div className={styles.footer}>
               <Image
