@@ -23,7 +23,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <h1 className={styles.heroHeadline}>A Micro-University Designed For Intellectual Refreshment.</h1>
           <p className={styles.heroSubtext}>
-            For 12 weeks, you&apos;ll build habits that unlock your full potential. Connect with others, earn points through mental wealth tasks, and claim rewards in the end.
+            For 12 weeks, you&apos;ll build habits that unlock your full potential. Connect with others, build mental wealth habits through tasks and grow.
           </p>
           <button
             type="button"

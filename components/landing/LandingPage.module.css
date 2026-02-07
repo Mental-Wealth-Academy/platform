@@ -1821,7 +1821,7 @@
   font-family: var(--font-secondary);
   font-size: 1rem;
   line-height: 1.4;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-dark);
   margin: 0 0 16px 0;
 }
@@ -1839,7 +1839,7 @@
 
 .opportunityListItemText p {
   font-family: var(--font-primary);
-  font-weight: var(--font-weight-light);
+  font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
   line-height: 1.6;
   color: var(--color-text-dark);
@@ -1917,7 +1917,7 @@
 
 .opportunityTextTop p {
   font-family: var(--font-primary);
-  font-weight: var(--font-weight-light);
+  font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
   color: var(--color-text-dark);
   line-height: 1.6;
@@ -1981,7 +1981,7 @@
 
 .opportunityTextBottom p {
   font-family: var(--font-primary);
-  font-weight: var(--font-weight-light);
+  font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
   color: var(--color-text-dark);
   line-height: 1.6;
