@@ -14,6 +14,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
     }
 
+    // Fix user_id type mismatch if tables exist with INTEGER instead of CHAR(36)
+    try {
+      await sqlQuery(`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'user_chapter_progress' AND column_name = 'user_id' AND data_type = 'integer'
+          ) THEN
+            DROP TABLE IF EXISTS user_writings;
+            DROP TABLE IF EXISTS user_chapter_progress;
+          END IF;
+        END $$
+      `);
+    } catch {
+      // Tables may not exist yet, that's fine
+    }
+
     // Create tables
     await sqlQuery(`
       CREATE TABLE IF NOT EXISTS library_chapters (
@@ -43,7 +61,7 @@ export async function POST(request: Request) {
     await sqlQuery(`
       CREATE TABLE IF NOT EXISTS user_chapter_progress (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        user_id CHAR(36) REFERENCES users(id) ON DELETE CASCADE,
         chapter_id INTEGER REFERENCES library_chapters(id) ON DELETE CASCADE,
         status VARCHAR(20) DEFAULT 'locked',
         started_at TIMESTAMP,
@@ -56,7 +74,7 @@ export async function POST(request: Request) {
     await sqlQuery(`
       CREATE TABLE IF NOT EXISTS user_writings (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        user_id CHAR(36) REFERENCES users(id) ON DELETE CASCADE,
         chapter_id INTEGER REFERENCES library_chapters(id) ON DELETE CASCADE,
         prompt_id INTEGER REFERENCES library_prompts(id) ON DELETE CASCADE,
         content TEXT NOT NULL,
