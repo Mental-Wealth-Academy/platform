@@ -75,7 +75,7 @@ export const DonationPopup: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Become A Patron of Worldwide Mental Wealth
+            Support on Artizen
           </a>
           <button
             className={styles.donationPopupClose}

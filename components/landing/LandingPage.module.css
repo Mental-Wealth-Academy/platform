@@ -43,6 +43,10 @@
   animation: heroFadeUp 0.8s ease-out both;
 }
 
+.heroHighlight {
+  color: #a78bfa;
+}
+
 .heroSubtext {
   font-family: var(--font-primary);
   font-size: 18px;
@@ -56,20 +60,31 @@
 }
 
 .heroButton {
-  background-color: var(--color-primary);
-  border: none;
-  padding: 12px 24px;
+  background: linear-gradient(135deg, #7c3aed 0%, #5168ff 50%, #a78bfa 100%);
+  background-size: 200% 200%;
+  border: 1px solid rgba(167, 139, 250, 0.4);
+  padding: 14px 32px;
   border-radius: 4px;
   color: white;
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.12em;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
-  animation: heroFadeUp 0.8s ease-out 0.5s both;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35), 0 0 40px rgba(167, 139, 250, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: heroFadeUp 0.8s ease-out 0.5s both, btnShimmer 4s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes btnShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes heroFadeUp {
@@ -85,8 +100,8 @@
 
 .heroButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(81, 104, 255, 0.5);
-  background-color: var(--color-primary-hover);
+  box-shadow: 0 6px 30px rgba(124, 58, 237, 0.5), 0 0 60px rgba(167, 139, 250, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(167, 139, 250, 0.6);
 }
 
 .heroButton:disabled {

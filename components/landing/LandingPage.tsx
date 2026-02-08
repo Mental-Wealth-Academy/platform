@@ -59,8 +59,8 @@ const LandingPage = () => {
           </div>
           <div className={styles.logoItem}>
             <Image
-              src="/companylogos/foundation-dark.webp"
-              alt="Foundation logo"
+              src="/companylogos/chainlink.svg"
+              alt="Chainlink logo"
               width={120}
               height={80}
               className={styles.logoImage}
