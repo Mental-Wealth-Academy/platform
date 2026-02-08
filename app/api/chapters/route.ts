@@ -13,7 +13,7 @@ interface User {
 
 async function getUserFromSession(): Promise<User | null> {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('session_token')?.value;
+  const sessionToken = cookieStore.get('session_token')?.value || cookieStore.get('mwa_session')?.value;
 
   if (!sessionToken) return null;
 
