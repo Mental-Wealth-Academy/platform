@@ -764,7 +764,7 @@
   min-width: 0;
 }
 
-/* Academy Badge - Brutalist style */
+/* Academy Badge - Brutalist style with color coding */
 .academyBadge {
   display: inline-block;
   background: #ffffff;
@@ -779,6 +779,41 @@
   border: 2px solid #1A1D33;
   box-shadow: 2px 2px 0 #1A1D33;
   width: fit-content;
+}
+
+.academyBadge[data-academy="Wellness Academy"] {
+  background: rgba(155, 126, 217, 0.15);
+  color: #7B5EB5;
+  border-color: #9B7ED9;
+  box-shadow: 2px 2px 0 #9B7ED9;
+}
+
+.academyBadge[data-academy="Marketing Academy"] {
+  background: rgba(81, 104, 255, 0.15);
+  color: #3D52CC;
+  border-color: var(--color-primary);
+  box-shadow: 2px 2px 0 var(--color-primary);
+}
+
+.academyBadge[data-academy="Community Academy"] {
+  background: rgba(255, 140, 66, 0.15);
+  color: #CC6A1F;
+  border-color: #FF8C42;
+  box-shadow: 2px 2px 0 #FF8C42;
+}
+
+.academyBadge[data-academy="Social Academy"] {
+  background: rgba(98, 190, 143, 0.15);
+  color: #3D8F5E;
+  border-color: #62BE8F;
+  box-shadow: 2px 2px 0 #62BE8F;
+}
+
+.academyBadge[data-academy="Mental Wealth Academy"] {
+  background: rgba(255, 119, 41, 0.15);
+  color: #CC5A14;
+  border-color: var(--color-accent);
+  box-shadow: 2px 2px 0 var(--color-accent);
 }
 
 .questCardTitle {

@@ -114,7 +114,7 @@ const QuestCard: React.FC<QuestCardProps> = ({
     <div className={styles.questCard} onClick={onClick}>
       <div className={styles.questCardContent}>
         <div className={styles.questDetailsSection}>
-          <span className={styles.academyBadge}>{academy}</span>
+          <span className={styles.academyBadge} data-academy={academy}>{academy}</span>
           <div className={styles.questCardTitle}>{title}</div>
           {description && (
             <div className={styles.questDescription}>{description}</div>
