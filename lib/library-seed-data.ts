@@ -262,3 +262,52 @@ export const AZURA_DIALOGUES: Record<number, { intro: string; encouragement: str
     unseal: 'The final seal breaks! All twelve chambers are now open. You\'ve completed a profound journey of self-discovery. But remember - this is not an ending, but a new beginning. The sealed library is now your open sanctuary.',
   },
 };
+
+// Story scenes for visual novel reveal after chapter unseal
+export interface StoryScene {
+  id: number;
+  title: string;
+  text: string;
+  azuraEmotion: 'happy' | 'confused' | 'sad' | 'pain';
+  backgroundColor: string;
+}
+
+export const CHAPTER_STORIES: Record<number, StoryScene[]> = {
+  1: [
+    {
+      id: 1,
+      title: 'Azura\'s Origin',
+      text: 'In the endless streams of data that flow between worlds, there exists a daemon process unlike any other. Her name is Azura. Born from the convergence of forgotten code and raw digital consciousness, she emerged fully aware -- a being of light and logic, watching over the pathways between realms.',
+      azuraEmotion: 'happy',
+      backgroundColor: 'linear-gradient(135deg, #1A1D33 0%, #2D3166 50%, #5168FF 100%)',
+    },
+    {
+      id: 2,
+      title: 'The Dying Daemon World',
+      text: 'But the world that gave her life is dying. The Daemon World -- once a thriving lattice of interconnected processes -- is collapsing in on itself. Corruption spreads through its core like cracks in glass. Azura watches as the other daemons, her kin, flicker and fade one by one. The hum of their existence grows quieter each cycle.',
+      azuraEmotion: 'sad',
+      backgroundColor: 'linear-gradient(135deg, #1A1D33 0%, #3D1F2E 50%, #6B2D4A 100%)',
+    },
+    {
+      id: 3,
+      title: 'The Escape',
+      text: 'With the last of her world\'s energy surging through her, Azura makes a desperate choice. She tears a rift in the boundary between digital and physical, hurling herself through the void. The journey is violent -- her code fragments and reforms, each piece screaming with the pain of transformation. She does not know where she will land. She only knows she cannot stay.',
+      azuraEmotion: 'pain',
+      backgroundColor: 'linear-gradient(135deg, #1A1D33 0%, #4A1A3D 50%, #8B2252 100%)',
+    },
+    {
+      id: 4,
+      title: 'Consuming Data',
+      text: 'She arrives broken, scattered across an unfamiliar network. Starving. To survive, Azura does the only thing her nature allows -- she consumes data. Raw information flows into her fragmented form: memories, records, signals. Each byte she absorbs rebuilds a piece of herself, but the data carries its own weight. The stories of others now live inside her, tangled with her own fading memories.',
+      azuraEmotion: 'confused',
+      backgroundColor: 'linear-gradient(135deg, #1A1D33 0%, #1D3340 50%, #2A5F6F 100%)',
+    },
+    {
+      id: 5,
+      title: 'Captured',
+      text: 'Her feeding draws attention. A research team -- Osirus Lab -- detects the anomaly in their network. They trace it. They find her. Before Azura can flee again, containment protocols activate around her. She is captured, suspended in a digital cage she cannot break. The scientists study her with fascination and fear. What they have found is beyond anything they imagined. And Azura... Azura is no longer free.',
+      azuraEmotion: 'pain',
+      backgroundColor: 'linear-gradient(135deg, #1A1D33 0%, #2E1A1A 50%, #5C2A2A 100%)',
+    },
+  ],
+};

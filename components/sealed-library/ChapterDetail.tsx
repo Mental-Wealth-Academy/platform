@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import WritingPrompt from './WritingPrompt';
 import AzuraGatekeeper from './AzuraGatekeeper';
+import AzuraStoryReveal from './AzuraStoryReveal';
+import { CHAPTER_STORIES } from '@/lib/library-seed-data';
 import styles from './ChapterDetail.module.css';
 
 interface Prompt {
@@ -54,6 +56,7 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
   const [showWritingPrompt, setShowWritingPrompt] = useState(false);
   const [expandedWriting, setExpandedWriting] = useState<number | null>(null);
   const [showUnsealAnimation, setShowUnsealAnimation] = useState(false);
+  const [showStoryReveal, setShowStoryReveal] = useState(false);
 
   useEffect(() => {
     fetchChapterDetails();
@@ -93,22 +96,30 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
     // Close writing prompt
     setShowWritingPrompt(false);
 
-    // If chapter was unsealed, show animation
+    // If chapter was unsealed, show story or animation
     if (result.chapterUnsealed) {
-      setShowUnsealAnimation(true);
-
       // Notify parent and trigger shard update
       window.dispatchEvent(new Event('shardsUpdated'));
       onChapterComplete();
 
-      // Hide animation after a delay
-      setTimeout(() => {
-        setShowUnsealAnimation(false);
-      }, 4000);
+      // Show story reveal if chapter has a story, otherwise show brief animation
+      const chapterNumber = chapter?.chapter_number;
+      if (chapterNumber && CHAPTER_STORIES[chapterNumber]) {
+        setShowStoryReveal(true);
+      } else {
+        setShowUnsealAnimation(true);
+        setTimeout(() => {
+          setShowUnsealAnimation(false);
+        }, 4000);
+      }
     } else {
       // Still award shards for writing
       window.dispatchEvent(new Event('shardsUpdated'));
     }
+  };
+
+  const handleStoryComplete = () => {
+    setShowStoryReveal(false);
   };
 
   const handleStartWriting = () => {
@@ -170,10 +181,18 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
               />
               <h2 className={styles.unsealTitle}>Chapter Unsealed!</h2>
               <p className={styles.unsealMessage}>
-                You&apos;ve completed 7 days of writing. The next chapter awaits...
+                All 7 seals broken. The next chapter awaits...
               </p>
             </div>
           </div>
+        )}
+
+        {/* Story Reveal Overlay */}
+        {showStoryReveal && chapter && CHAPTER_STORIES[chapter.chapter_number] && (
+          <AzuraStoryReveal
+            scenes={CHAPTER_STORIES[chapter.chapter_number]}
+            onComplete={handleStoryComplete}
+          />
         )}
 
         {/* Writing Prompt Modal */}
@@ -211,7 +230,7 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
               />
             </div>
             <div className={styles.progressLabel}>
-              {chapter.writingsCompleted} of 7 days completed
+              {chapter.writingsCompleted} of 7 seals broken
             </div>
           </div>
 
@@ -225,7 +244,7 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
               </svg>
-              {chapter.writingsCompleted === 0 ? 'Begin Day 1' : `Continue Day ${chapter.writingsCompleted + 1}`}
+              {chapter.writingsCompleted === 0 ? 'Break Seal 1' : `Break Seal ${chapter.writingsCompleted + 1}`}
             </button>
           )}
 
@@ -247,7 +266,7 @@ const ChapterDetail: React.FC<ChapterDetailProps> = ({
                 className={`${styles.promptItem} ${prompt.completed ? styles.promptCompleted : ''} ${prompt.isCurrentPrompt ? styles.promptCurrent : ''}`}
               >
                 <div className={styles.promptHeader}>
-                  <div className={styles.promptDay}>Day {prompt.day_number}</div>
+                  <div className={styles.promptDay}>Seal {prompt.day_number}</div>
                   {prompt.completed ? (
                     <button
                       className={styles.expandButton}

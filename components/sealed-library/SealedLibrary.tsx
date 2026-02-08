@@ -90,7 +90,7 @@ const SealedLibrary: React.FC = () => {
           <div className={styles.heroGradient} />
           <h2 className={styles.sectionTitle}>A New Horizon</h2>
           <p className={styles.sectionDescription}>
-            Complete 7 days of writing to unseal each chapter. Your journey of self-discovery awaits.
+            Break 7 seals to unseal each chapter. Your journey of self-discovery awaits.
           </p>
         </div>
       ) : (

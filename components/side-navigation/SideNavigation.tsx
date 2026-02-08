@@ -82,6 +82,7 @@ const SideNavigation: React.FC = () => {
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   // Fetch user data
   useEffect(() => {
@@ -137,10 +138,13 @@ const SideNavigation: React.FC = () => {
     }
   }, [isAccountMenuOpen]);
 
-  // Close mobile menu when clicking outside
+  // Close mobile menu when clicking outside (but not on the hamburger button)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+      if (
+        mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node) &&
+        hamburgerRef.current && !hamburgerRef.current.contains(event.target as Node)
+      ) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -217,6 +221,7 @@ const SideNavigation: React.FC = () => {
           <span className={styles.mobileLogo}>MWA</span>
         </Link>
         <button
+          ref={hamburgerRef}
           className={`${styles.hamburgerButton} ${isMobileMenuOpen ? styles.hamburgerOpen : ''}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}

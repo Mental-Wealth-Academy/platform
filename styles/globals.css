@@ -211,6 +211,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent auto-zoom on input focus in mobile WebViews */
+@media (max-width: 900px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
 /* Add padding for mobile bottom navigation */
 @media (max-width: 768px) {
   body {

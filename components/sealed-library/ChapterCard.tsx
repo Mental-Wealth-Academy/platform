@@ -84,7 +84,7 @@ const ChapterCard: React.FC<ChapterCardProps> = ({ chapter, onClick }) => {
           <div className={styles.progressSection}>
             <div className={styles.progressDots}>{progressDots}</div>
             <div className={styles.progressText}>
-              {chapter.writingsCompleted}/{chapter.totalWritings} days
+              {chapter.writingsCompleted}/{chapter.totalWritings} seals
             </div>
           </div>
         )}

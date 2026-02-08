@@ -155,7 +155,7 @@ const WritingPrompt: React.FC<WritingPromptProps> = ({
 
         <div className={styles.content}>
           <div className={styles.header}>
-            <div className={styles.dayBadge}>Day {prompt.day_number}</div>
+            <div className={styles.dayBadge}>Seal {prompt.day_number}</div>
             <div className={styles.chapterTitle}>{chapterTitle}</div>
           </div>
 
@@ -204,7 +204,7 @@ const WritingPrompt: React.FC<WritingPromptProps> = ({
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
-                Complete Day {prompt.day_number}
+                Break Seal {prompt.day_number}
               </>
             )}
           </button>

@@ -554,9 +554,9 @@
     right: 0;
     height: 60px;
     padding: 0 16px;
-    background: linear-gradient(180deg, #ffffff 0%, #F4F5FE 100%);
-    border-bottom: 1px solid rgba(120, 138, 255, 0.15);
-    box-shadow: 0 2px 12px rgba(120, 138, 255, 0.1);
+    background: linear-gradient(135deg, #1A1D33 0%, #2A2E4A 60%, #3B4070 100%);
+    border-bottom: 2px solid var(--color-primary);
+    box-shadow: 0 2px 16px rgba(81, 104, 255, 0.25);
     z-index: 1000;
   }
 
@@ -568,8 +568,8 @@
     font-family: var(--font-primary);
     font-size: 18px;
     font-weight: 800;
-    color: #1A1D33;
-    letter-spacing: 0.02em;
+    color: #ffffff;
+    letter-spacing: 0.04em;
   }
 
   /* Hamburger Button */
@@ -581,19 +581,18 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    background: #ffffff;
-    border: 2px solid #1A1D33;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
     cursor: pointer;
-    box-shadow: 2px 2px 0 #1A1D33;
+    box-shadow: none;
     transition: all 0.15s ease;
     padding: 8px;
   }
 
   .hamburgerButton:hover {
-    background: var(--color-primary);
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0 #1A1D33;
+    background: rgba(81, 104, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
   }
 
   .hamburgerButton:hover .hamburgerLine {
@@ -603,7 +602,7 @@
   .hamburgerLine {
     width: 20px;
     height: 2px;
-    background: #1A1D33;
+    background: #ffffff;
     border-radius: 1px;
     transition: all 0.25s ease;
   }
@@ -611,7 +610,7 @@
   /* Hamburger Animation - Open State */
   .hamburgerOpen {
     background: var(--color-primary);
-    box-shadow: 2px 2px 0 #1A1D33;
+    border-color: var(--color-primary);
   }
 
   .hamburgerOpen .hamburgerLine {
@@ -727,10 +726,6 @@
     height: 36px;
     gap: 4px;
     padding: 6px;
-  }
-
-  .hamburgerLine {
-    width: 18px;
   }
 
   .sideNav {
