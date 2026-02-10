@@ -4,8 +4,8 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { elizaAPI } from '@/lib/eliza-api';
 import azuraPersonality from '@/lib/Azurapersonality.json';
-import { providers, Wallet as EthersWallet } from 'ethers';
-import { azuraReviewProposal } from '@/lib/azura-contract';
+import { providers, Wallet as EthersWallet, Contract } from 'ethers';
+import { azuraReviewProposal, AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
 
 interface AzuraScores {
   clarity: number;
@@ -98,7 +98,63 @@ export async function POST(request: Request) {
     apiKeyPrefix: elizaApiKey ? elizaApiKey.substring(0, 8) + '...' : 'N/A',
   });
 
-  // Call Azura (via Eliza API) for analysis
+  // Check if CRE workflow already submitted an on-chain review (avoid double-review)
+  if (proposal.on_chain_proposal_id) {
+    try {
+      const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+      const contractAddress = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+      const provider = new providers.JsonRpcProvider(rpcUrl);
+      const contract = new Contract(contractAddress, AZURA_KILLSTREAK_ABI, provider);
+
+      const onChainProposal = await contract.getProposal(parseInt(proposal.on_chain_proposal_id));
+      // If status is no longer Pending (0), CRE already reviewed it
+      if (Number(onChainProposal.status) !== 0) {
+        console.log(`CRE already reviewed proposal ${proposal.on_chain_proposal_id} on-chain (status=${onChainProposal.status}), syncing to DB.`);
+
+        const azuraLevel = Number(onChainProposal.azuraLevel);
+        const azuraApproved = onChainProposal.azuraApproved;
+        const decision = azuraApproved ? 'approved' : 'rejected';
+        const tokenAllocation = azuraApproved ? azuraLevel * 10 : null;
+
+        // Sync review to database
+        const reviewId = (await import('uuid')).v4();
+        await sqlQuery(
+          `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
+           VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
+           ON CONFLICT (proposal_id) DO NOTHING`,
+          {
+            id: reviewId,
+            proposalId: proposal.id,
+            decision,
+            reasoning: 'Reviewed by Chainlink CRE decentralized workflow.',
+            tokenAllocation,
+            scores: JSON.stringify({ clarity: 0, impact: 0, feasibility: 0, budget: 0, ingenuity: 0, chaos: 0 }),
+          }
+        );
+
+        const newStatus = azuraApproved ? 'active' : 'rejected';
+        await sqlQuery(
+          `UPDATE proposals SET status = :status WHERE id = :proposalId`,
+          { status: newStatus, proposalId: proposal.id }
+        );
+
+        return NextResponse.json({
+          ok: true,
+          decision,
+          reasoning: 'Reviewed by Chainlink CRE decentralized workflow.',
+          tokenAllocation,
+          scores: null,
+          azuraLevel,
+          source: 'cre',
+        });
+      }
+    } catch (creCheckError) {
+      console.warn('CRE on-chain check failed, falling back to server-side review:', creCheckError);
+      // Continue with normal server-side review
+    }
+  }
+
+  // Call Azura (via Eliza API) for analysis (server-side fallback)
   try {
     // Build system prompt from Azura's personality
     const azuraSystemPrompt = `${azuraPersonality.system}

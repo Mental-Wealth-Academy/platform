@@ -43,6 +43,9 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     
     /// @notice Proposal counter
     uint256 public proposalCount;
+
+    /// @notice Chainlink CRE KeystoneForwarder address (delivers DON-signed reports)
+    address public keystoneForwarder;
     
     // ============================================================================
     // STRUCTS
@@ -197,6 +200,11 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     
     modifier onlyAzura() {
         if (msg.sender != azuraAgent) revert Unauthorized();
+        _;
+    }
+
+    modifier onlyForwarder() {
+        if (msg.sender != keystoneForwarder) revert Unauthorized();
         _;
     }
     
@@ -379,9 +387,83 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     }
     
     // ============================================================================
+    // CRE (CHAINLINK RUNTIME ENVIRONMENT) INTEGRATION
+    // ============================================================================
+
+    /**
+     * @notice Receive DON-signed reports from Chainlink CRE via KeystoneForwarder
+     * @param metadata CRE metadata (unused, required by interface)
+     * @param report ABI-encoded payload: (uint8 actionType, bytes payload)
+     *        actionType 1 = Auto-execute proposal
+     *        actionType 2 = Azura review from DON
+     */
+    function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder {
+        (uint8 actionType, bytes memory payload) = abi.decode(report, (uint8, bytes));
+
+        if (actionType == 1) {
+            uint256 proposalId = abi.decode(payload, (uint256));
+            Proposal storage proposal = proposals[proposalId];
+            if (proposal.status != ProposalStatus.Active) revert ProposalNotActive();
+            if (proposal.forVotes < approvalThreshold) revert ThresholdNotReached();
+            if (proposal.executed) revert AlreadyExecuted();
+            _executeProposal(proposalId);
+        } else if (actionType == 2) {
+            (uint256 proposalId, uint256 level) = abi.decode(payload, (uint256, uint256));
+            _azuraReviewInternal(proposalId, level);
+        } else {
+            revert InvalidProposal();
+        }
+    }
+
+    /**
+     * @notice Internal Azura review callable by CRE onReport (bypasses onlyAzura)
+     * @param _proposalId ID of proposal to review
+     * @param _level Confidence level (0-4)
+     */
+    function _azuraReviewInternal(uint256 _proposalId, uint256 _level) internal {
+        Proposal storage proposal = proposals[_proposalId];
+
+        if (proposal.status != ProposalStatus.Pending) revert ProposalNotActive();
+        if (_level > 4) revert InvalidProposal();
+
+        proposal.azuraLevel = _level;
+
+        if (_level == 0) {
+            proposal.status = ProposalStatus.Rejected;
+            proposal.azuraApproved = false;
+            emit AzuraReview(_proposalId, _level, false, 0);
+            emit ProposalRejected(_proposalId, "Azura killed proposal (Level 0)");
+            return;
+        }
+
+        proposal.azuraApproved = true;
+        proposal.status = ProposalStatus.Active;
+
+        uint256 azuraVoteWeight = (totalGovernanceTokens * _level * 10) / 100;
+        proposal.forVotes = azuraVoteWeight;
+
+        votes[_proposalId][azuraAgent] = Vote({
+            hasVoted: true,
+            support: true,
+            weight: azuraVoteWeight
+        });
+
+        emit AzuraReview(_proposalId, _level, true, azuraVoteWeight);
+        emit VoteCast(_proposalId, azuraAgent, true, azuraVoteWeight);
+    }
+
+    // ============================================================================
     // ADMIN FUNCTIONS
     // ============================================================================
-    
+
+    /**
+     * @notice Set the Chainlink CRE KeystoneForwarder address
+     * @param _forwarder Address of the KeystoneForwarder on this chain
+     */
+    function setKeystoneForwarder(address _forwarder) external onlyOwner {
+        keystoneForwarder = _forwarder;
+    }
+
     /**
      * @notice Cancel a proposal (admin only)
      * @param _proposalId ID of proposal to cancel

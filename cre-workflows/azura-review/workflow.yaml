@@ -1,0 +1,12 @@
+name: azura-review-proposals
+description: >
+  Event-triggered workflow that listens for ProposalCreated events on
+  AzuraKillStreak.  When a new proposal appears, it calls the Eliza AI API
+  for scoring, computes the azuraLevel (0-4), and submits a DON-signed review
+  on-chain via onReport().
+
+trigger:
+  type: evm_log
+  event: "ProposalCreated(uint256,address,address,uint256,string,uint256)"
+
+entry: main.ts

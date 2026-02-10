@@ -20,6 +20,9 @@ export const AZURA_KILLSTREAK_ABI = [
   'function azuraReview(uint256 _proposalId, uint256 _level) external',
   'function vote(uint256 _proposalId, bool _support) external',
   'function executeProposal(uint256 _proposalId) external',
+  'function onReport(bytes calldata metadata, bytes calldata report) external',
+  'function setKeystoneForwarder(address _forwarder) external',
+  'function keystoneForwarder() external view returns (address)',
   
   // Events
   'event ProposalCreated(uint256 indexed proposalId, address indexed proposer, address indexed recipient, uint256 usdcAmount, string title, uint256 votingDeadline)',

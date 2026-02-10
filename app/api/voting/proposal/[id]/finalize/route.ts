@@ -4,6 +4,8 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { getUserFromRequest } from '@/lib/auth';
 import { azuraWallet } from '@/lib/azura-wallet';
+import { providers, Contract } from 'ethers';
+import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
 
 interface ProposalData {
   id: string;
@@ -233,6 +235,37 @@ export async function GET(
   await ensureProposalSchema();
 
   const proposalId = params.id;
+
+  // Sync on-chain state: if CRE auto-executed the proposal, update DB
+  try {
+    const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+    const contractAddress = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+    const provider = new providers.JsonRpcProvider(rpcUrl);
+    const contract = new Contract(contractAddress, AZURA_KILLSTREAK_ABI, provider);
+
+    // Look up the on-chain proposal ID for this DB proposal
+    const proposalRows = await sqlQuery<Array<{ on_chain_proposal_id: string | null; status: string }>>(
+      `SELECT on_chain_proposal_id, status FROM proposals WHERE id = :proposalId LIMIT 1`,
+      { proposalId }
+    );
+
+    if (proposalRows.length > 0 && proposalRows[0].on_chain_proposal_id) {
+      const onChainId = parseInt(proposalRows[0].on_chain_proposal_id);
+      const onChainProposal = await contract.getProposal(onChainId);
+
+      // Status 2 = Executed on-chain
+      if (Number(onChainProposal.status) === 2 && proposalRows[0].status !== 'completed') {
+        console.log(`CRE auto-executed proposal ${onChainId} on-chain, syncing DB status.`);
+        await sqlQuery(
+          `UPDATE proposals SET status = 'completed', updated_at = CURRENT_TIMESTAMP WHERE id = :proposalId`,
+          { proposalId }
+        );
+      }
+    }
+  } catch (syncError) {
+    console.warn('CRE on-chain sync check failed:', syncError);
+    // Non-fatal — continue with normal flow
+  }
 
   try {
     const transactions = await sqlQuery<Array<{
