@@ -7,7 +7,7 @@
  *   2. Calls the Eliza AI API for scoring (same prompt/logic as the server).
  *   3. Computes the azuraLevel (0-4) from the six score dimensions.
  *   4. Submits a DON-signed report (actionType 2) that writes the review
- *      on-chain via onReport() → _azuraReviewInternal().
+ *      on-chain via onReport() -> _azuraReviewInternal().
  *
  * Because the workflow runs in the Chainlink DON, the AI scoring is
  * decentralized and verifiable — no single server can fake scores.
@@ -16,23 +16,26 @@
  */
 
 import {
-  type CRERuntime,
-  type CRETriggerEvent,
-  Runner,
+  type Runtime,
+  type EVMLog,
   EVMClient,
   HTTPClient,
-  getNetwork,
+  handler,
   encodeCallMsg,
   LATEST_BLOCK_NUMBER,
+  prepareReportRequest,
+  text,
+  consensusIdenticalAggregation,
 } from "@chainlink/cre-sdk";
 import {
   encodeFunctionData,
   decodeFunctionResult,
   encodeAbiParameters,
-  decodeAbiParameters,
   zeroAddress,
+  keccak256,
+  toBytes,
+  type Hex,
 } from "viem";
-import { z } from "zod";
 import {
   GET_PROPOSAL_ABI,
   ProposalStatus,
@@ -41,17 +44,21 @@ import {
 } from "../shared/abi";
 
 // ---------------------------------------------------------------------------
-// Config schema
+// Config
 // ---------------------------------------------------------------------------
-const configSchema = z.object({
-  chainSelectorName: z.string(),
-  contractAddress: z.string(),
-  elizaApiUrl: z.string(),
-});
+interface Config {
+  contractAddress: `0x${string}`;
+  elizaApiUrl: string;
+}
 
-type Config = z.infer<typeof configSchema>;
+// Base mainnet chain selector
+const BASE_MAINNET_SELECTOR =
+  EVMClient.SUPPORTED_CHAIN_SELECTORS["ethereum-mainnet-base-1"];
 
-const runner = new Runner(configSchema);
+/** Convert Uint8Array to hex string for viem. */
+function toHex(data: Uint8Array): Hex {
+  return (`0x${Array.from(data).map((b) => b.toString(16).padStart(2, "0")).join("")}`) as Hex;
+}
 
 // ---------------------------------------------------------------------------
 // Azura system prompt — mirrors the server-side review prompt exactly
@@ -105,54 +112,47 @@ interface AzuraResponse {
 }
 
 function parseAzuraResponse(raw: string): AzuraResponse {
-  // Extract JSON from potential markdown code-block wrappers
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error("No JSON object found in Azura response");
-  }
+  if (!jsonMatch) throw new Error("No JSON object found in Azura response");
   return JSON.parse(jsonMatch[0]) as AzuraResponse;
 }
 
 function computeLevel(scores: AzuraScores): number {
-  const total =
-    scores.clarity +
-    scores.impact +
-    scores.feasibility +
-    scores.budget +
-    scores.ingenuity +
-    scores.chaos;
-
-  if (total < 25) return 0; // Reject
-  return Math.min(Math.ceil((total / 60) * 4), 4); // Level 1-4
+  const total = scores.clarity + scores.impact + scores.feasibility + scores.budget + scores.ingenuity + scores.chaos;
+  if (total < 25) return 0;
+  return Math.min(Math.ceil((total / 60) * 4), 4);
 }
 
 // ---------------------------------------------------------------------------
 // Handler — EVM Log trigger on ProposalCreated
 // ---------------------------------------------------------------------------
-runner.handler(
-  {
-    type: "evm_log",
-    contractAddress: "{{contractAddress}}",
-    eventSignature: PROPOSAL_CREATED_EVENT_SIG,
-  },
+const evm = new EVMClient(BASE_MAINNET_SELECTOR);
 
-  async (runtime: CRERuntime<Config>, triggerEvent: CRETriggerEvent) => {
-    const { chainSelectorName, contractAddress, elizaApiUrl } = runtime.config;
-    const network = getNetwork({
-      chainFamily: "evm",
-      chainSelectorName,
-    });
-    const evm = new EVMClient(network.chainSelector.selector);
+// Compute event topic0 (keccak256 of event signature)
+const eventTopic0 = keccak256(toBytes(PROPOSAL_CREATED_EVENT_SIG));
+
+export default handler(
+  evm.logTrigger({
+    addresses: [
+      // Will be populated from config at deploy time; using placeholder
+      // The actual contract address is set in config.production.json
+    ],
+    topics: [
+      { values: [eventTopic0] }, // topic[0] = event signature
+    ],
+  }),
+
+  async (runtime: Runtime<Config>, log: EVMLog) => {
+    const { contractAddress, elizaApiUrl } = runtime.config;
     const http = new HTTPClient();
 
-    // 1. Decode proposalId from the first indexed topic
-    //    ProposalCreated(uint256 indexed proposalId, ...)
-    const proposalId = BigInt(triggerEvent.topics[1]);
+    // 1. Decode proposalId from log topics[1] (first indexed param)
+    const proposalId = BigInt(toHex(log.topics[1]));
 
     runtime.log(`ProposalCreated event detected: proposalId=${proposalId}`);
 
     // 2. Read full proposal struct from contract
-    const proposalRaw = evm
+    const proposalReply = evm
       .callContract(runtime, {
         call: encodeCallMsg({
           from: zeroAddress,
@@ -170,8 +170,8 @@ runner.handler(
     const proposal = decodeFunctionResult({
       abi: GET_PROPOSAL_ABI,
       functionName: "getProposal",
-      data: proposalRaw,
-    }) as {
+      data: toHex(proposalReply.data),
+    }) as unknown as {
       id: bigint;
       title: string;
       description: string;
@@ -181,13 +181,15 @@ runner.handler(
 
     // Only review Pending proposals
     if (proposal.status !== ProposalStatus.Pending) {
-      runtime.log(
-        `Proposal ${proposalId} is not Pending (status=${proposal.status}), skipping.`
-      );
-      return;
+      runtime.log(`Proposal ${proposalId} is not Pending (status=${proposal.status}), skipping.`);
+      return "skipped";
     }
 
-    // 3. Call Eliza AI API via CRE HTTPClient
+    // 3. Call Eliza AI API via HTTPClient in node mode with consensus
+    //    Only one node makes the HTTP call (cacheSettings.store = true),
+    //    other nodes read from cache. All agree via identical consensus.
+    const elizaApiKey = runtime.getSecret({ id: "ELIZA_API_KEY" }).result();
+
     const userPrompt = `Review this proposal:
 
 **Title:** ${proposal.title}
@@ -197,45 +199,46 @@ ${proposal.description}
 
 **Requested Amount:** ${Number(proposal.usdcAmount) / 1e6} USDC`;
 
-    const aiResponseRaw = http
-      .sendRequest(runtime, {
-        url: `${elizaApiUrl}/api/v1/chat`,
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${runtime.secrets.ELIZA_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              parts: [{ type: "text", text: REVIEW_SYSTEM_PROMPT }],
-            },
-            {
-              role: "user",
-              parts: [{ type: "text", text: userPrompt }],
-            },
-          ],
-          id: "gpt-4o",
-        }),
-      })
-      .result();
+    const getReview = http.sendRequest(
+      runtime,
+      (sendRequester) => {
+        const response = sendRequester.sendRequest({
+          url: `${elizaApiUrl}/api/v1/chat`,
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${elizaApiKey.value}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: [
+              { role: "system", parts: [{ type: "text", text: REVIEW_SYSTEM_PROMPT }] },
+              { role: "user", parts: [{ type: "text", text: userPrompt }] },
+            ],
+            id: "gpt-4o",
+          }),
+          // Only one DON node makes the HTTP call; others read from cache.
+          cacheSettings: {
+            store: true,
+            maxAge: "60s",
+          },
+        }).result();
+        return text(response);
+      },
+      consensusIdenticalAggregation<string>()
+    );
+
+    const aiResponseText = getReview().result();
 
     // 4. Parse AI response and compute level
-    const azuraResponse = parseAzuraResponse(aiResponseRaw.body);
+    const azuraResponse = parseAzuraResponse(aiResponseText);
     const level = computeLevel(azuraResponse.scores);
 
     const totalScore =
-      azuraResponse.scores.clarity +
-      azuraResponse.scores.impact +
-      azuraResponse.scores.feasibility +
-      azuraResponse.scores.budget +
-      azuraResponse.scores.ingenuity +
-      azuraResponse.scores.chaos;
+      azuraResponse.scores.clarity + azuraResponse.scores.impact +
+      azuraResponse.scores.feasibility + azuraResponse.scores.budget +
+      azuraResponse.scores.ingenuity + azuraResponse.scores.chaos;
 
-    runtime.log(
-      `Azura review: proposalId=${proposalId}, totalScore=${totalScore}, level=${level}, decision=${azuraResponse.decision}`
-    );
+    runtime.log(`Azura review: proposalId=${proposalId}, totalScore=${totalScore}, level=${level}`);
 
     // 5. Build report payload: actionType 2 (azura review) + (proposalId, level)
     const innerPayload = encodeAbiParameters(
@@ -248,26 +251,12 @@ ${proposal.description}
     );
 
     // 6. Generate DON-signed report and deliver to contract
-    const report = runtime.report({
-      encodedPayload: Buffer.from(reportPayload.slice(2), "hex").toString(
-        "base64"
-      ),
-      encoderName: "evm",
-      signingAlgo: "ecdsa",
-      hashingAlgo: "keccak256",
-    });
+    const report = runtime.report(prepareReportRequest(reportPayload)).result();
 
-    evm
-      .writeReport(runtime, {
-        receiver: contractAddress,
-        report,
-      })
-      .result();
+    evm.writeReport(runtime, { receiver: contractAddress, report }).result();
 
-    runtime.log(
-      `DON-signed review submitted for proposal ${proposalId} (level=${level})`
-    );
+    runtime.log(`DON-signed review submitted for proposal ${proposalId} (level=${level})`);
+
+    return "reviewed";
   }
 );
-
-export default runner;
