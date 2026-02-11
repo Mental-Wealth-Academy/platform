@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
+import { getUserFromRequest } from '@/lib/auth';
 import { elizaAPI } from '@/lib/eliza-api';
 import azuraPersonality from '@/lib/Azurapersonality.json';
 import { providers, Wallet as EthersWallet, Contract } from 'ethers';
@@ -18,6 +19,7 @@ interface AzuraScores {
 
 interface ProposalData {
   id: string;
+  user_id: string;
   title: string;
   proposal_markdown: string;
   wallet_address: string;
@@ -52,11 +54,20 @@ export async function POST(request: Request) {
     );
   }
 
-  // Fetch proposal
+  // SECURITY: Require authenticated user and verify they own this proposal
+  const user = await getUserFromRequest(request);
+  if (!user) {
+    return NextResponse.json(
+      { error: 'You must be signed in to trigger a proposal review.' },
+      { status: 401 }
+    );
+  }
+
+  // Fetch proposal (include user_id for ownership check)
   let proposal: ProposalData;
   try {
     const proposals = await sqlQuery<ProposalData[]>(
-      `SELECT id, title, proposal_markdown, wallet_address, on_chain_proposal_id, recipient_address, token_amount 
+      `SELECT id, user_id, title, proposal_markdown, wallet_address, on_chain_proposal_id, recipient_address, token_amount 
        FROM proposals 
        WHERE id = :proposalId AND status = 'pending_review' 
        LIMIT 1`,
@@ -67,6 +78,13 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Proposal not found or already reviewed.' },
         { status: 404 }
+      );
+    }
+
+    if (proposals[0].user_id !== user.id) {
+      return NextResponse.json(
+        { error: 'You can only trigger review for your own proposal.' },
+        { status: 403 }
       );
     }
 

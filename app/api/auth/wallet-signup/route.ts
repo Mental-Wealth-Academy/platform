@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { createSessionForUser, setSessionCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,6 +15,35 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Database is not configured on the server.' },
         { status: 503 }
+      );
+    }
+
+    // Rate limit wallet signup to prevent abuse
+    const rateLimitResult = checkRateLimit({
+      max: 10,
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      identifier: getClientIdentifier(request),
+    });
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many signup attempts. Please try again later.' },
+        { status: 429, headers: getRateLimitHeaders(rateLimitResult) }
+      );
+    }
+
+    // SECURITY: Require wallet from Authorization header with valid signature only.
+    // Do not trust wallet from request body — it would allow anyone to claim any address.
+    const walletAddress = await getWalletAddressFromRequest();
+    if (!walletAddress) {
+      return NextResponse.json(
+        { error: 'Wallet signature required. Send Authorization: Bearer <address>:<signature>:<timestamp> with a recent signed message.' },
+        { status: 401 }
+      );
+    }
+    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+      return NextResponse.json(
+        { error: 'Invalid wallet address format.' },
+        { status: 400 }
       );
     }
 
@@ -52,62 +81,14 @@ export async function POST(request: Request) {
       // Continue anyway - if migration fails, we'll get a clear error on INSERT
     }
 
-    // Get wallet address from request body first, then fallback to Authorization header
-    let walletAddress: string | null = null;
-    
-    try {
-      const body = await request.json();
-      if (body?.walletAddress && typeof body.walletAddress === 'string') {
-        walletAddress = body.walletAddress;
-        if (walletAddress) {
-          console.log('Wallet signup - Got wallet address from request body:', walletAddress.substring(0, 10) + '...');
-        }
-      }
-    } catch (parseError) {
-      // Request body might be empty or not JSON - fallback to header
-      console.log('Wallet signup - No wallet address in request body, will try Authorization header');
-    }
-    
-    // Fallback to Authorization header if not in body
-    if (!walletAddress) {
-      const headersList = await headers();
-      const authHeader = headersList.get('authorization');
-      console.log('Wallet signup request - Authorization header:', authHeader ? `${authHeader.substring(0, 20)}...` : 'missing');
-      
-      walletAddress = await getWalletAddressFromRequest();
-      console.log('Wallet signup - Extracted wallet address from header:', walletAddress ? `${walletAddress.substring(0, 10)}...` : 'null');
-    }
-    
-    if (!walletAddress) {
-      console.error('Wallet signup failed: No wallet address found in request body or Authorization header');
-      return NextResponse.json(
-        { error: 'Wallet address is required. Please ensure your wallet is connected.' },
-        { status: 400 }
-      );
-    }
-
-    // Validate wallet address format
-    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-      console.error('Wallet signup failed: Invalid wallet address format', walletAddress);
-      return NextResponse.json(
-        { error: `Invalid wallet address format: ${walletAddress.substring(0, 20)}...` },
-        { status: 400 }
-      );
-    }
-    
-    console.log('Wallet signup - Valid wallet address:', walletAddress);
-
     // Check if wallet address already exists
-    console.log('Wallet signup - Checking for existing user with wallet address:', walletAddress.toLowerCase());
     const existingUser = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM users WHERE LOWER(wallet_address) = LOWER(:walletAddress) LIMIT 1`,
       { walletAddress: walletAddress.toLowerCase() }
     );
 
     if (existingUser.length > 0) {
-      // User already exists with this wallet address - clear any old sessions and create new session
       const userId = existingUser[0].id;
-      console.log('Wallet signup - User already exists, creating session:', userId);
       
       // Clear any existing sessions for this user to prevent conflicts
       try {

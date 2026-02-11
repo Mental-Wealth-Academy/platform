@@ -8,11 +8,24 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const rateLimitResult = checkRateLimit({
+    max: 30,
+    windowMs: 60 * 1000, // 1 minute
+    identifier: getClientIdentifier(request),
+  });
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Try again shortly.' },
+      { status: 429, headers: getRateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
 

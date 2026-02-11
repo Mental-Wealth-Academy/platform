@@ -114,14 +114,29 @@ export function useBaseKitAutoSignin(): BaseKitAutoSigninState {
           }
 
           try {
-            // Call wallet-signup endpoint which will create account or sign in existing user
+            // Sign auth message (must match server: lib/wallet-auth.ts)
+            const timestamp = Date.now().toString();
+            const message = `Sign in to Mental Wealth Academy\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`;
+            let signature: string;
+            try {
+              signature = await provider.request({
+                method: 'personal_sign',
+                params: [message, walletAddress],
+              }) as string;
+            } catch (signErr) {
+              console.warn('[BaseKit] User rejected or signing failed:', signErr);
+              if (isMounted) setState(prev => ({ ...prev, isSigningIn: false, signInError: 'Signature required to sign in.' }));
+              return;
+            }
+            const authHeader = `Bearer ${walletAddress}:${signature}:${timestamp}`;
             const response = await fetch('/api/auth/wallet-signup', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
+                'Authorization': authHeader,
               },
-              credentials: 'include', // Important for session cookies
-              body: JSON.stringify({ walletAddress }),
+              credentials: 'include',
+              body: JSON.stringify({}),
             });
 
             const data = await response.json();

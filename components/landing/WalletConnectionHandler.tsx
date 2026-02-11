@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useAccount, useDisconnect, useConnect } from 'wagmi';
+import { useAccount, useDisconnect, useConnect, useSignMessage } from 'wagmi';
+import { getWalletAuthHeaders } from '@/lib/wallet-api';
 import styles from './WalletConnectionHandler.module.css';
 
 interface WalletConnectionHandlerProps {
@@ -17,6 +18,7 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
   const { address, isConnected, connector } = useAccount();
   const { disconnect } = useDisconnect();
   const { connect, connectors } = useConnect();
+  const { signMessageAsync } = useSignMessage();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedAddress, setProcessedAddress] = useState<string | null>(null);
@@ -193,17 +195,16 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
         // User exists - redirect to home page
         window.location.replace('/home');
       } else {
-        // User doesn't exist - create account with wallet address
-        
+        // User doesn't exist - create account; require signed message for auth
+        const authHeaders = await getWalletAuthHeaders(address ?? undefined, signMessageAsync);
         const signupResponse = await fetch('/api/auth/wallet-signup', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            ...authHeaders,
           },
           credentials: 'include',
-          body: JSON.stringify({
-            walletAddress: walletAddress,
-          }),
+          body: JSON.stringify({}),
         });
         
         if (signupResponse.ok) {

@@ -81,7 +81,10 @@ function createPool(): Pool {
     
     return new Pool({
       connectionString: cleanUrl,
-      ssl: (cleanUrl.includes('supabase.co') || cleanUrl.includes('supabase.com')) ? { rejectUnauthorized: false } : undefined,
+      // SECURITY: Verify TLS certificate in production; allow skip only when explicitly set for local/dev
+      ssl: (cleanUrl.includes('supabase.co') || cleanUrl.includes('supabase.com'))
+        ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false' }
+        : undefined,
       max: 10, // Connection pool size
       connectionTimeoutMillis: 10000, // 10 second timeout
       idleTimeoutMillis: 30000, // 30 seconds

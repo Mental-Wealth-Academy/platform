@@ -36,9 +36,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Call Neynar API to fetch user by custody address
-    const neynarUrl = `https://api.neynar.com/v2/farcaster/user/by_custody_address?custody_address=${address}`;
-    
+    // Call Neynar API to fetch user by custody address (encode param to avoid injection)
+    const neynarUrl = `https://api.neynar.com/v2/farcaster/user/by_custody_address?custody_address=${encodeURIComponent(address)}`;
     const response = await fetch(neynarUrl, {
       method: 'GET',
       headers: {
