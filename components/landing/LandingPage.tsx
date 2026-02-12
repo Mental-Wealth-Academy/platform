@@ -8,6 +8,7 @@ import { FeaturesSection } from './FeaturesSection';
 import { KeyFiguresSection } from './KeyFiguresSection';
 import { TestimonialSection } from './TestimonialSection';
 import { SwarmsSection } from './SwarmsSection';
+import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import styles from './LandingPage.module.css';
 
@@ -165,6 +166,9 @@ const LandingPage = () => {
 
       {/* Swarms Section - Server rendered */}
       <SwarmsSection />
+
+      {/* FAQ Section - Client component for accordion */}
+      <FAQSection />
 
       {/* Footer - Server rendered */}
       <LandingFooter />
