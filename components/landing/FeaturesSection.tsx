@@ -172,10 +172,10 @@ export const FeaturesSection: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>
-            Connect with some of the brightest minds across the world
+            Everything you need to grow, governed by the community
           </h2>
           <p className={styles.description}>
-            Feeling lost? Not sure what&apos;s next? You&apos;re not alone. We built this for the ones still figuring it out, because clarity comes from connection.
+            AI-guided learning, peer-driven governance, and structured weekly challenges — all in one platform designed to turn ambition into action.
           </p>
         </div>
 
