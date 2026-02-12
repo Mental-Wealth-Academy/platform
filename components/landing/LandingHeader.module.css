@@ -1,19 +1,62 @@
 .header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 48px);
   z-index: 100;
-  padding: 16px 24px;
+  padding: 10px 24px;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  background-size: 200% 100%;
+  animation: borderShift 6s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.headerScrolled {
+  width: min(680px, calc(100% - 48px));
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 100px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .headerContent {
-  max-width: 1280px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,23 +69,28 @@
 }
 
 .logo {
-  width: 140px;
+  width: 110px;
   height: auto;
   object-fit: contain;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.headerScrolled .logo {
+  width: 90px;
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .loginButton {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--color-primary);
+  padding: 0.6rem 1.4rem;
   border-radius: 0.25rem;
-  color: white;
+  color: var(--color-primary);
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
@@ -52,15 +100,22 @@
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.headerScrolled .loginButton {
+  border-radius: 100px;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+}
+
 .loginButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(81, 104, 255, 0.1);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-hover);
 }
 
 .joinButton {
   background-color: var(--color-primary);
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.4rem;
   border-radius: 0.25rem;
   color: white;
   font-size: 0.875rem;
@@ -73,29 +128,52 @@
   box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
 }
 
+.headerScrolled .joinButton {
+  border-radius: 100px;
+  padding: 0.4rem 1rem;
+  font-size: 0.75rem;
+}
+
 .joinButton:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(81, 104, 255, 0.4);
 }
 
-/* Mobile styles */
+/* Mobile */
 @media (max-width: 768px) {
   .header {
-    padding: 12px 16px;
+    top: 6px;
+    width: calc(100% - 24px);
+    padding: 8px 14px;
+  }
+
+  .headerScrolled {
+    width: min(480px, calc(100% - 24px));
+    padding: 6px 14px;
   }
 
   .logo {
-    width: 100px;
+    width: 90px;
+  }
+
+  .headerScrolled .logo {
+    width: 76px;
   }
 
   .nav {
-    gap: 8px;
+    gap: 6px;
   }
 
   .loginButton,
   .joinButton {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+  }
+
+  .headerScrolled .loginButton,
+  .headerScrolled .joinButton {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.65rem;
   }
 }

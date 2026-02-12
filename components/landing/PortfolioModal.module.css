@@ -1,0 +1,435 @@
+/* Portfolio Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 29, 51, 0.85);
+  z-index: var(--z-modal);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 2px;
+  cursor: pointer;
+  color: #1A1D33;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.15s ease;
+  z-index: 10;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.closeButton:hover {
+  background: var(--color-accent);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  background: #5168FF;
+  margin: -24px -24px 0 -24px;
+  padding: 20px 24px;
+  border-bottom: 3px solid #1A1D33;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 4px 0 0 0;
+  letter-spacing: 0.02em;
+}
+
+/* Balance Card */
+.balanceCard {
+  background: #282121;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.balanceLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  color: #62BE8F;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 8px 0;
+}
+
+.balanceAmount {
+  font-family: var(--font-primary);
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.balanceCurrency {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metricCard {
+  background: rgba(81, 104, 255, 0.06);
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  padding: 14px 16px;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.metricValue {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 2px 0;
+}
+
+.metricLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 600;
+  color: #7E8B96;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+/* Status Section */
+.statusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1D33;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.statusBar {
+  display: flex;
+  height: 10px;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 2px solid #1A1D33;
+  gap: 2px;
+  background: #f0f0f0;
+}
+
+.statusSegment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.statusLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* Proposals Section */
+.proposalsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proposalsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.proposalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  gap: 12px;
+}
+
+.proposalRow:last-child {
+  border-bottom: none;
+}
+
+.proposalRow:nth-child(even) {
+  background: #fafafa;
+}
+
+.proposalInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.proposalId {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  color: #5168FF;
+  flex-shrink: 0;
+}
+
+.proposalTitle {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1A1D33;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proposalMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.proposalStatus {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.proposalAmount {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1D33;
+  white-space: nowrap;
+}
+
+/* Contract Info */
+.contractInfo {
+  text-align: center;
+  padding-top: 4px;
+}
+
+.contractLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #5168FF;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 2px solid #5168FF;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #5168FF;
+}
+
+.contractLink:hover {
+  background: #5168FF;
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #5168FF;
+}
+
+/* Loading */
+.loadingContainer {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+.spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #1A1D33;
+  border-top-color: #5168FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  margin: 0;
+}
+
+.errorText {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: #C63C50;
+  background: rgba(198, 60, 80, 0.08);
+  border: 2px solid #C63C50;
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 479px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .modal {
+    box-shadow: 4px 4px 0 #1A1D33;
+  }
+
+  .content {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .header {
+    margin: -20px -16px 0 -16px;
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .balanceAmount {
+    font-size: 28px;
+  }
+
+  .metricsGrid {
+    gap: 8px;
+  }
+
+  .metricCard {
+    padding: 10px 12px;
+  }
+
+  .metricValue {
+    font-size: 15px;
+  }
+
+  .proposalMeta {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .proposalRow {
+    padding: 8px 10px;
+  }
+}

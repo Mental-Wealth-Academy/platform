@@ -44,7 +44,25 @@
 }
 
 .heroHighlight {
-  color: #a78bfa;
+  color: #FFE600;
+  position: relative;
+  padding: 0 6px;
+  margin: 0 -6px;
+  white-space: nowrap;
+  font-size: 1.25em;
+}
+
+.heroHighlight::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12%;
+  bottom: 8%;
+  background: rgba(81, 104, 255, 0.55);
+  border-radius: 3px;
+  z-index: -1;
+  transform: skewX(-4deg) rotate(-1deg);
 }
 
 .heroSubtext {
@@ -60,12 +78,11 @@
 }
 
 .heroButton {
-  background: linear-gradient(135deg, #7c3aed 0%, #5168ff 50%, #a78bfa 100%);
-  background-size: 200% 200%;
-  border: 1px solid rgba(167, 139, 250, 0.4);
-  padding: 14px 32px;
-  border-radius: 4px;
-  color: white;
+  background: radial-gradient(ellipse at 49% 76%, #7586FF 0%, #5168FF 32%, #324BE4 74%, #5168FF 100%);
+  border: 1px solid #324BE4;
+  border-radius: 6px;
+  padding: 16px 40px;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
@@ -73,18 +90,9 @@
   letter-spacing: 0.12em;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35), 0 0 40px rgba(167, 139, 250, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  animation: heroFadeUp 0.8s ease-out 0.5s both, btnShimmer 4s ease-in-out infinite;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: heroFadeUp 0.8s ease-out 0.5s both;
   position: relative;
-}
-
-@keyframes btnShimmer {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 @keyframes heroFadeUp {
@@ -100,8 +108,7 @@
 
 .heroButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(124, 58, 237, 0.5), 0 0 60px rgba(167, 139, 250, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border-color: rgba(167, 139, 250, 0.6);
+  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .heroButton:disabled {
@@ -1437,7 +1444,7 @@
   position: relative;
   width: 100%;
   max-width: 1280px;
-  margin: 100vh auto 0;
+  margin: calc(100vh - 180px) auto 0;
   padding: 40px 24px;
   animation: fadeInLogos 400ms ease-out forwards;
   animation-delay: 200ms;

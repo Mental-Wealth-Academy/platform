@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './LandingHeader.module.css';
 
 export const LandingHeader: React.FC = () => {
-  const [showAuthModal, setShowAuthModal] = useState<'login' | 'signup' | null>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleLogin = () => {
     window.location.href = '/home';
@@ -16,7 +23,7 @@ export const LandingHeader: React.FC = () => {
   };
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
       <div className={styles.headerContent}>
         <a href="/" className={styles.logoLink}>
           <Image
