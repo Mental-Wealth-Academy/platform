@@ -64,7 +64,7 @@ export const DonationPopup: React.FC = () => {
             </svg>
           </div>
           <div className={styles.donationPopupText}>
-            <h2 className={styles.donationPopupHeading}>Reshape the future of mental health.</h2>
+            <h2 className={styles.donationPopupHeading}>Reshape the future of education.</h2>
             <p className={styles.donationPopupDescription}>
               Long-term held cryptocurrency investments can unlock additional funds for charity
             </p>
