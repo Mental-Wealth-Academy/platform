@@ -5,6 +5,7 @@ uniform vec3 ucolor2;
 uniform vec3 ucolor3;
 uniform vec3 ucolor4;
 uniform vec3 ucolor5;
+uniform vec3 ucolor6;
 uniform float asciicode;
 uniform float texture;
 uniform float brightness;
@@ -54,11 +55,13 @@ void main() {
     vec3 color3 = ucolor3;
     vec3 color4 = ucolor4;
     vec3 color5 = ucolor5;
-    
+    vec3 color6 = ucolor6;
+
     // Mix colors based on position
     float mixFactor = (vNormal.x + vNormal.y + vNormal.z) * 0.33 + 0.5;
     vec3 baseColor = mix(color1, color2, mixFactor);
     baseColor = mix(baseColor, color3, vPosition.z * 0.5 + 0.5);
+    baseColor = mix(baseColor, color6, vPosition.y * 0.5 + 0.5);
     baseColor = mix(baseColor, color4, distortedUV.x);
     baseColor = mix(baseColor, color5, distortedUV.y);
     

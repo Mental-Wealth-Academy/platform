@@ -5,6 +5,7 @@ uniform vec3 ucolor2;
 uniform vec3 ucolor3;
 uniform vec3 ucolor4;
 uniform vec3 ucolor5;
+uniform vec3 ucolor6;
 uniform float asciicode;
 uniform sampler2D utexture;
 uniform sampler2D uAsciiImageTexture;
@@ -85,27 +86,28 @@ void main() {
     // Sample texture
     vec4 textureColor = texture2D(utexture, aPixelUV);
     
-    // Use only 5 colors - assign to 6 faces (color1 used twice for opposite faces)
+    // 6 colors for 6 faces
     vec3 color1 = ucolor1; // Primary: #5168FF
-    vec3 color2 = ucolor2; // Secondary: #62BE8F (rgb(98, 190, 143))
-    vec3 color3 = ucolor3; // Green variant:rgb(235, 193, 23)
-    vec3 color4 = ucolor4; // White: rgb(255, 255, 255)
+    vec3 color2 = ucolor2; // Secondary: #62BE8F
+    vec3 color3 = ucolor3; // Green variant
+    vec3 color4 = ucolor4; // White
     vec3 color5 = ucolor5; // Dark purple: #1E0C39
-    
+    vec3 color6 = ucolor6; // Yellowish green: #BDE22E
+
     // Determine which face we're on based on the dominant normal component
     vec3 absNormal = abs(vNormal);
     vec3 baseColor;
-    
-    // Find the dominant axis (x, y, or z) - use 5 colors for 6 faces
+
+    // Find the dominant axis (x, y, or z) - 6 colors for 6 faces
     if (absNormal.x > absNormal.y && absNormal.x > absNormal.z) {
         // X-axis faces
-        baseColor = vNormal.x > 0.0 ? color1 : color2; // +X = color1, -X = color2
+        baseColor = vNormal.x > 0.0 ? color1 : color2; // +X = blue, -X = green
     } else if (absNormal.y > absNormal.z) {
         // Y-axis faces
-        baseColor = vNormal.y > 0.0 ? color3 : color4; // +Y = color3, -Y = color4
+        baseColor = vNormal.y > 0.0 ? color3 : color4; // +Y = green variant, -Y = white
     } else {
         // Z-axis faces
-        baseColor = vNormal.z > 0.0 ? color5 : color1; // +Z = color5, -Z = color1 (reuse)
+        baseColor = vNormal.z > 0.0 ? color5 : color6; // +Z = dark purple, -Z = yellowish green
     }
     
     // Don't apply texture color overlay - use solid face colors only

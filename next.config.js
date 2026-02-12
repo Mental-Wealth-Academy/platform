@@ -93,7 +93,11 @@ const nextConfig = {
     ],
     unoptimized: false,
   },
-  webpack: (config, { isServer, webpack }) => {
+  webpack: (config, { isServer, webpack, dev }) => {
+    // Avoid PackFileCacheStrategy rename errors and 500s on chunks in dev (e.g. app-pages-internals.js)
+    if (dev) {
+      config.cache = false;
+    }
     // ConnectKit webpack config
     config.resolve.fallback = { 
       fs: false, 

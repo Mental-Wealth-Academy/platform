@@ -50,12 +50,13 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     time: { value: 0.0 },
     rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    // Brand colors - 5 colors used for 6 faces (color1 used twice)
+    // Brand colors - 6 colors for 6 faces
     ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) }, // Primary: #5168FF (rgb(81, 104, 255))
     ucolor2: { value: new THREE.Vector3(0.384, 0.745, 0.561) }, // Secondary: #62BE8F (rgb(98, 190, 143))
-    ucolor3: { value: new THREE.Vector3(0.396, 0.922, 0.090) }, // Green variant: rgb(101, 235, 23)
+    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) }, // Pinkish red: #E84057 (rgb(232, 64, 87))
     ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) }, // White: rgb(255, 255, 255)
     ucolor5: { value: new THREE.Vector3(0.118, 0.047, 0.224) }, // Dark purple: #1E0C39 (rgb(30, 12, 57))
+    ucolor6: { value: new THREE.Vector3(0.737, 0.886, 0.180) }, // Yellowish green: #BDE22E (rgb(188, 226, 46))
     asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
