@@ -47,7 +47,7 @@
 }
 
 .headerScrolled {
-  width: min(680px, calc(100% - 48px));
+  width: min(950px, calc(100% - 48px));
   padding: 8px 20px;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(16px);
@@ -149,7 +149,7 @@
   }
 
   .headerScrolled {
-    width: min(480px, calc(100% - 24px));
+    width: min(672px, calc(100% - 24px));
     padding: 6px 14px;
   }
 

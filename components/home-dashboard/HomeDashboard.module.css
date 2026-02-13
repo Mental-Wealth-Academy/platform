@@ -1,52 +1,150 @@
-/* ── Section & Layout ─────────────────────────────── */
-.featuresSection {
+/* ── Wrapper ─────────────────────────────────────── */
+.dashboardWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Academic Scanner CTA ────────────────────────── */
+.scannerCta {
+  background: #1A1D33;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 rgba(26, 29, 51, 0.3);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scannerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scannerBranding {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scannerAvatarWrap {
   position: relative;
-  width: 100%;
-  padding: 80px 24px;
-  background: var(--color-background);
-  z-index: 1;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
 }
 
-.container {
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
+.scannerAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  object-fit: cover;
 }
 
-.header {
-  text-align: left;
-  margin-bottom: 48px;
+.scannerLive {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-tertiary, #74C465);
+  border: 2px solid #1A1D33;
+  border-radius: 50%;
+  animation: livePulse 2s ease-in-out infinite;
 }
 
-/* ── Eyebrow ─────────────────────────────────────── */
-.eyebrow {
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.scannerTitle {
+  font-family: var(--font-secondary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.scannerPowered {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-primary);
-  margin: 0 0 12px 0;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
 }
 
-.title {
-  font-family: var(--font-secondary);
-  font-size: 2.618rem;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--color-text-dark);
-  margin: 0 0 24px 0;
-  max-width: 750px;
+.scannerBadge {
+  padding: 4px 10px;
+  background: var(--color-primary, #5168FF);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
-.description {
+.scannerDesc {
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 13px;
   line-height: 1.6;
-  color: rgba(26, 27, 36, 0.7);
+  color: rgba(255, 255, 255, 0.65);
   margin: 0;
-  max-width: 700px;
+}
+
+.scannerDimensions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dimensionChip {
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scannerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--color-primary, #5168FF);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.3);
+}
+
+.scannerButton:hover {
+  background: var(--color-primary-hover, #324BE4);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(81, 104, 255, 0.4);
 }
 
 /* ── Dashboard Frame ─────────────────────────────── */
@@ -56,6 +154,7 @@
   border-radius: 4px;
   box-shadow: 6px 6px 0 #1A1D33;
   overflow: hidden;
+  width: 100%;
 }
 
 /* ── Tab Bar ─────────────────────────────────────── */
@@ -108,20 +207,20 @@
 
 /* ── Panel ────────────────────────────────────────── */
 .panelWrap {
-  min-height: 480px;
-  padding: 32px;
+  min-height: 400px;
+  padding: 24px;
 }
 
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* ── Voting & Governance ─────────────────────────── */
 .statsRow {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 
 .statCard {
@@ -129,7 +228,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 16px;
+  padding: 14px;
   background: #f8f7ff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -147,13 +246,13 @@
 
 .statValue {
   font-family: var(--font-secondary);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #1A1D33;
 }
 
 .proposalCard {
-  padding: 20px;
+  padding: 16px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -164,7 +263,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .badgeActive {
@@ -203,10 +302,10 @@
 
 .proposalTitle {
   font-family: var(--font-primary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #1A1D33;
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
   line-height: 1.4;
 }
 
@@ -303,39 +402,39 @@
 .chatBody {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .bubbleAzura {
   align-self: flex-start;
-  max-width: 80%;
-  padding: 12px 16px;
+  max-width: 85%;
+  padding: 10px 14px;
   background: #f0f0ff;
   border: 2px solid #1A1D33;
   border-radius: 16px;
   box-shadow: 2px 2px 0 #1A1D33;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   color: #1A1D33;
 }
 
 .bubbleUser {
   align-self: flex-end;
-  max-width: 80%;
-  padding: 12px 16px;
+  max-width: 85%;
+  padding: 10px 14px;
   background: var(--color-primary, #5168FF);
   color: #fff;
   border: 2px solid #1A1D33;
   border-radius: 16px;
   box-shadow: 2px 2px 0 #1A1D33;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
 .chatInput {
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -344,7 +443,7 @@
 
 .chatInputText {
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   color: rgba(26, 27, 36, 0.4);
 }
 
@@ -353,7 +452,7 @@
   align-items: center;
   gap: 6px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--color-accent, #FF7729);
   text-transform: uppercase;
@@ -361,7 +460,7 @@
 }
 
 .gemIcon {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* ── Weekly Tasks ────────────────────────────────── */
@@ -371,7 +470,7 @@
 }
 
 .miniTab {
-  padding: 8px 14px;
+  padding: 7px 12px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -393,7 +492,7 @@
 }
 
 .taskCard {
-  padding: 20px;
+  padding: 16px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -409,7 +508,7 @@
 
 .taskTitle {
   font-family: var(--font-secondary);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #1A1D33;
 }
@@ -429,16 +528,16 @@
 
 .taskDesc {
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   color: rgba(26, 27, 36, 0.7);
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
 }
 
 .checklistProgress {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .checkItem {
@@ -446,27 +545,27 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font-primary);
-  font-size: 13px;
+  font-size: 12px;
   color: #1A1D33;
 }
 
 .checkDone {
   color: var(--color-tertiary, #74C465);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .checkPending {
   color: rgba(26, 27, 36, 0.3);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* ── Quests & Learning ───────────────────────────── */
 .questProgress {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 12px 14px;
   background: #f8f7ff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -487,7 +586,7 @@
   flex: 1;
   height: 10px;
   background: #e8e8f0;
-  border-radius: 2px;
+  border-radius: 20px;
   border: 1px solid #1A1D33;
   overflow: hidden;
 }
@@ -495,7 +594,7 @@
 .questProgressFill {
   height: 100%;
   background: var(--color-primary, #5168FF);
-  border-radius: 1px;
+  border-radius: 20px;
 }
 
 .questProgressText {
@@ -507,7 +606,7 @@
 }
 
 .questCard {
-  padding: 20px;
+  padding: 16px;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
@@ -523,14 +622,14 @@
 
 .questName {
   font-family: var(--font-secondary);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #1A1D33;
 }
 
 .questReward {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--color-primary, #5168FF);
   text-transform: uppercase;
@@ -538,15 +637,15 @@
 
 .questDesc {
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   color: rgba(26, 27, 36, 0.7);
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
 }
 
 .questMeta {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: rgba(26, 27, 36, 0.5);
   text-transform: uppercase;
@@ -556,14 +655,14 @@
 .rewardsBar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 12px 14px;
   background: #f8f7ff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
   box-shadow: 2px 2px 0 #1A1D33;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -577,16 +676,31 @@
 
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 768px) {
-  .featuresSection {
-    padding: 60px 20px;
+  .dashboardWrap {
+    gap: 16px;
   }
 
-  .title {
-    font-size: 1.618rem;
+  .scannerCta {
+    padding: 18px 16px;
+    gap: 12px;
   }
 
-  .description {
+  .scannerTitle {
     font-size: 16px;
+  }
+
+  .scannerDesc {
+    font-size: 12px;
+  }
+
+  .dimensionChip {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+
+  .scannerButton {
+    padding: 10px 16px;
+    font-size: 11px;
   }
 
   .tabBar {
@@ -595,13 +709,13 @@
 
   .tab {
     flex: 0 0 auto;
-    padding: 12px 16px;
+    padding: 10px 14px;
     font-size: 10px;
   }
 
   .panelWrap {
-    padding: 20px 16px;
-    min-height: 420px;
+    padding: 16px 12px;
+    min-height: 360px;
   }
 
   .statsRow {
@@ -609,17 +723,17 @@
   }
 
   .statValue {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .bubbleAzura,
   .bubbleUser {
-    max-width: 90%;
+    max-width: 92%;
   }
 
   .questProgress {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
 
   .questProgressBar {
@@ -628,7 +742,7 @@
   }
 
   .rewardsBar {
-    font-size: 10px;
-    gap: 6px;
+    font-size: 9px;
+    gap: 5px;
   }
 }

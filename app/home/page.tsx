@@ -9,7 +9,7 @@ import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { CalendarDays } from '@/components/calendar-days/CalendarDays';
 import { CheckinCard } from '@/components/checkin-card/CheckinCard';
-import { CoursesShowcase } from '@/components/landing/CoursesShowcase';
+import { HomeDashboard } from '@/components/home-dashboard/HomeDashboard';
 import Surveys from '@/components/survey/Surveys';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
@@ -253,10 +253,10 @@ export default function Home() {
                 <CalendarDays />
               </div>
               <div className={styles.staggeredItem}>
-                <CheckinCard />
+                <HomeDashboard />
               </div>
               <div className={styles.staggeredItem}>
-                <CoursesShowcase />
+                <CheckinCard />
               </div>
               <div className={styles.staggeredItem}>
                 <Surveys />

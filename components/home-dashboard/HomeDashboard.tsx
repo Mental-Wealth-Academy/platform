@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './FeaturesSection.module.css';
+import Image from 'next/image';
+import styles from './HomeDashboard.module.css';
 
 const tabs = [
   'Voting & Governance',
@@ -11,6 +12,59 @@ const tabs = [
 ] as const;
 
 type Tab = (typeof tabs)[number];
+
+const scoreDimensions = [
+  { label: 'Clarity', icon: '&#9678;' },
+  { label: 'Impact', icon: '&#9733;' },
+  { label: 'Feasibility', icon: '&#9881;' },
+  { label: 'Budget', icon: '&#9670;' },
+  { label: 'Ingenuity', icon: '&#9752;' },
+  { label: 'Chaos', icon: '&#10038;' },
+] as const;
+
+function ScannerCTA() {
+  return (
+    <div className={styles.scannerCta}>
+      <div className={styles.scannerHeader}>
+        <div className={styles.scannerBranding}>
+          <div className={styles.scannerAvatarWrap}>
+            <Image
+              src="https://i.imgur.com/AkflhaJ.png"
+              alt="Azura"
+              width={44}
+              height={44}
+              className={styles.scannerAvatar}
+            />
+            <div className={styles.scannerLive} />
+          </div>
+          <div>
+            <h3 className={styles.scannerTitle}>Academic Scanner</h3>
+            <span className={styles.scannerPowered}>Powered by Chainlink DON</span>
+          </div>
+        </div>
+        <span className={styles.scannerBadge}>CRE</span>
+      </div>
+      <p className={styles.scannerDesc}>
+        Submit a funding proposal and Azura will review it across 6 dimensions using decentralized AI consensus on the Chainlink oracle network.
+      </p>
+      <div className={styles.scannerDimensions}>
+        {scoreDimensions.map((d) => (
+          <span
+            key={d.label}
+            className={styles.dimensionChip}
+            dangerouslySetInnerHTML={{ __html: `${d.icon} ${d.label}` }}
+          />
+        ))}
+      </div>
+      <a href="/voting/create" className={styles.scannerButton}>
+        Submit Proposal for Review
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  );
+}
 
 function VotingPanel() {
   return (
@@ -164,43 +218,32 @@ function QuestsPanel() {
   );
 }
 
-export const FeaturesSection: React.FC = () => {
+export const HomeDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('Voting & Governance');
 
   return (
-    <section className={styles.featuresSection}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>Interactive Dashboard</p>
-          <h2 className={styles.title}>
-            Personalized agentic organization for community mental wealth
-          </h2>
-          <p className={styles.description}>
-            Agentic Co-pilot has its own wallet. No need to split the bill, Azura works tirelessly to bring the best peer-governed system for transparent wealth management, structured by weekly challenges and accountability, turn ambition into academia.
-          </p>
-        </div>
+    <div className={styles.dashboardWrap}>
+      <ScannerCTA />
+      <div className={styles.dashboard}>
+        <div className={styles.tabBar}>
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
-        <div className={styles.dashboard}>
-          <div className={styles.tabBar}>
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`${styles.tab} ${activeTab === tab ? styles.tabActive : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          <div className={styles.panelWrap}>
-            {activeTab === 'Voting & Governance' && <VotingPanel />}
-            {activeTab === 'AI Agent Azura' && <AzuraPanel />}
-            {activeTab === 'Weekly Tasks' && <TasksPanel />}
-            {activeTab === 'Quests & Learning' && <QuestsPanel />}
-          </div>
+      <div className={styles.panelWrap}>
+        {activeTab === 'Voting & Governance' && <VotingPanel />}
+        {activeTab === 'AI Agent Azura' && <AzuraPanel />}
+        {activeTab === 'Weekly Tasks' && <TasksPanel />}
+        {activeTab === 'Quests & Learning' && <QuestsPanel />}
         </div>
       </div>
-    </section>
+    </div>
   );
 };

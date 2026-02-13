@@ -152,6 +152,9 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* Swarms Section - Server rendered */}
+      <SwarmsSection />
+
       {/* Features Section - Server rendered */}
       <FeaturesSection />
 
@@ -163,9 +166,6 @@ const LandingPage = () => {
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
-
-      {/* Swarms Section - Server rendered */}
-      <SwarmsSection />
 
       {/* FAQ Section - Client component for accordion */}
       <FAQSection />
