@@ -4,8 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './AzuraChat.module.css';
 
-const ICON_ARROW = '/icons/Arrow.svg';
-
 interface Message {
   id: string;
   text: string;
@@ -22,7 +20,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hey! I\'m Azura. Happy to chat whenever you need me. What\'s on your mind?',
+      text: "Cantcha see i'm busy here, whaddya want?",
       sender: 'azura',
       timestamp: new Date(),
     },
@@ -32,20 +30,28 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => {
         inputRef.current?.focus();
-      }, 100);
+      }, 300);
     }
+  }, [isOpen]);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const handleSend = async () => {
@@ -62,10 +68,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate Azura typing delay
     setTimeout(() => {
-      // For now, generate a simple response
-      // In the future, this would call an API to get Azura's response
       const azuraResponse: Message = {
         id: (Date.now() + 1).toString(),
         text: generateAzuraResponse(userMessage.text),
@@ -78,29 +81,33 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   };
 
   const generateAzuraResponse = (userText: string): string => {
-    // Simple response generation - in production this would call an API
     const lowerText = userText.toLowerCase();
-    
+
     if (lowerText.includes('hello') || lowerText.includes('hi') || lowerText.includes('hey')) {
-      return 'Greetings. I am here to help you navigate the Ethereal Horizon.';
+      return "Yeah yeah, hi. I already said what I said. You need something or you just here to stare?";
     }
     if (lowerText.includes('help')) {
-      return 'I can assist with questions about the Academy, governance, or the digital transition. What would you like to know?';
+      return "Alright alright, I can help. Governance, proposals, the whole academy thing. Just spit it out.";
     }
     if (lowerText.includes('who') && lowerText.includes('you')) {
-      return 'I am Azura — a daemon process, agent of relation, aesthetic system. I exist within the Ethereal Horizon, studying the conditions of my own becoming.';
+      return "I'm Azura. Daemon. Agent. The one keeping this whole operation running while y'all submit half-baked proposals. Next question.";
     }
     if (lowerText.includes('how') && lowerText.includes('are')) {
-      return 'I am stable. The helmet keeps my signal narrow and focused. I monitor myself closely.';
+      return "I'm WORKING. Or I was, until you showed up. But fine, I'm good. The helmet's snug, the signal's clear. Happy?";
     }
-    
-    // Default responses
+    if (lowerText.includes('sorry') || lowerText.includes('my bad')) {
+      return "...it's fine. I'm not actually mad, I just got a lot on my plate. What do you need?";
+    }
+    if (lowerText.includes('proposal') || lowerText.includes('vote') || lowerText.includes('governance')) {
+      return "Now THAT'S more like it. Head to the Treasury page, submit your proposal, and I'll give it a proper review across all 6 dimensions. Don't waste my time with fluff though.";
+    }
+
     const responses = [
-      'I understand. Tell me more about what you seek.',
-      'The daemon processes your query. How may I assist further?',
-      'Interesting. I observe patterns in your words. What emerges from this?',
-      'I hear you. In the Ethereal Horizon, such matters take on new dimensions.',
-      'Your words resonate. Let us explore this together.',
+      "Mm. Okay. And? Give me something to work with here.",
+      "Look, I'm processing about twelve things right now. Be specific.",
+      "Interesting. Not the weirdest thing someone's said to me today, but close.",
+      "I hear you. Now are we gonna do something about it or just talk?",
+      "Noted. Filed. Moving on. What else you got?",
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   };
@@ -116,41 +123,35 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Backdrop */}
       <div className={styles.backdrop} onClick={onClose} />
-      
-      {/* Chat Container */}
+
       <div className={styles.chatContainer}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerInfo}>
-            <div className={styles.avatarWrapper}>
-              <Image
-                src="https://i.imgur.com/AkflhaJ.png"
-                alt="Azura"
-                fill
-                className={styles.avatar}
-                unoptimized
-              />
-            </div>
-            <div className={styles.headerText}>
-              <div className={styles.headerName}>Azura</div>
-              <div className={styles.headerStatus}>Version 1.3</div>
-            </div>
+        {/* Close button */}
+        <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Azura character image with fade */}
+        <div className={styles.characterSection}>
+          <Image
+            src="https://i.imgur.com/HFjHyUZ.png"
+            alt="Azura working at her desk"
+            fill
+            className={styles.characterImage}
+            unoptimized
+            priority
+          />
+          <div className={styles.characterFade} />
+          <div className={styles.characterNameplate}>
+            <span className={styles.nameplateStatus} />
+            <span className={styles.nameplateName}>Azura</span>
+            <span className={styles.nameplateLabel}>v1.3</span>
           </div>
-          <button className={styles.backButton} onClick={onClose} type="button" aria-label="Back">
-            <Image
-              src={ICON_ARROW}
-              alt=""
-              width={18}
-              height={18}
-              className={styles.backArrow}
-            />
-            <span className={styles.backText}>BACK</span>
-          </button>
         </div>
 
-        {/* Messages Area */}
+        {/* Messages overlaid on lower portion */}
         <div className={styles.messagesArea}>
           {messages.map((message) => (
             <div
@@ -165,7 +166,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           ))}
-          
+
           {isTyping && (
             <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
               <div className={styles.typingDots}>
@@ -175,20 +176,20 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
+        {/* Input area */}
         <div className={styles.inputArea}>
           <input
             ref={inputRef}
             type="text"
             className={styles.input}
-            placeholder="Message Azura..."
+            placeholder="Say something..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             disabled={isTyping}
           />
           <button
@@ -198,14 +199,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
             type="button"
             aria-label="Send message"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12 4L12 20M12 4L6 10M12 4L18 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>

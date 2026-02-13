@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useRef, useEffect, memo } from "react";
 import * as THREE from "three";
 
@@ -60,6 +60,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
+    uBackgroundColor: { value: new THREE.Vector3(0.957, 0.961, 0.996) }, // Background: #f4f5fe
     brightness: { value: 1.0 },
     asciiu: { value: 1.0 }, // Not used in current implementation
     resolution: {
@@ -202,17 +203,26 @@ const CubesScene = memo(() => {
 
 CubesScene.displayName = 'CubesScene';
 
+const SceneBackground = memo(() => {
+  const { scene } = useThree();
+  useEffect(() => {
+    scene.background = new THREE.Color('#f4f5fe');
+  }, [scene]);
+  return null;
+});
+
+SceneBackground.displayName = 'SceneBackground';
 
 const Scene = memo(() => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
   
   return (
-    <Canvas 
-      camera={{ position: [0, 0, 10], fov: 75 }} 
+    <Canvas
+      camera={{ position: [0, 0, 10], fov: 75 }}
       dpr={[dpr, dpr]}
-      style={{ width: '100%', height: '100%', background: '#000000' }}
-      gl={{ 
-        antialias: true, 
+      style={{ width: '100%', height: '100%', background: '#f4f5fe' }}
+      gl={{
+        antialias: true,
         powerPreference: 'high-performance',
         alpha: false,
         stencil: false,
@@ -221,6 +231,7 @@ const Scene = memo(() => {
       frameloop="always"
       performance={{ min: 0.5 }}
     >
+      <SceneBackground />
       <Suspense fallback={null}>
         <CubesScene />
       </Suspense>

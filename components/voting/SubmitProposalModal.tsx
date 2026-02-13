@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import Image from 'next/image';
@@ -305,7 +306,7 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
     }
   };
 
-  return (
+  const modalContent = (
     <>
       <ProposalSuccessModal
         isOpen={successModal.isOpen}
@@ -493,6 +494,9 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
       )}
     </>
   );
+
+  if (typeof document === 'undefined') return modalContent;
+  return createPortal(modalContent, document.body);
 };
 
 export default SubmitProposalModal;

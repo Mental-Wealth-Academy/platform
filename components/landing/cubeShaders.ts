@@ -9,6 +9,7 @@ uniform vec3 ucolor6;
 uniform float asciicode;
 uniform sampler2D utexture;
 uniform sampler2D uAsciiImageTexture;
+uniform vec3 uBackgroundColor;
 uniform float brightness;
 uniform float asciiu;
 uniform vec2 resolution;
@@ -138,10 +139,11 @@ void main() {
     float asciiMask;
     vec3 asciiColor = asciiPatternScreenSpace(screenUV, uAsciiImageTexture, asciicode, asciiMask);
     
-    // ASCII pattern is the primary visual - blend cube colors into ASCII colors
-    // Where stars exist, mix ASCII image colors with cube colors (use glowing colors)
-    vec3 finalColor = mix(asciiColor, glowingColor * 0.5 + asciiColor * 0.5, asciiMask * 0.5);
-    
+    // Use background color for non-star areas, blend cube colors into star areas
+    vec3 bgColor = uBackgroundColor;
+    vec3 starColor = glowingColor * 0.5 + asciiColor * 0.5;
+    vec3 finalColor = mix(bgColor, starColor, asciiMask);
+
     gl_FragColor = vec4(finalColor, 1.0);
 }`;
 
