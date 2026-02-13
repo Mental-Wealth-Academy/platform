@@ -84,14 +84,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--color-primary);
-  color: #ffffff;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
+  flex-shrink: 0;
   flex-shrink: 0;
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import styles from './TestimonialSection.module.css';
 
 const testimonials = [
@@ -6,16 +7,19 @@ const testimonials = [
     quote: 'The peer connections I made here changed my perspective entirely. I found a support system I didn\'t know I needed.',
     name: 'Jordan K.',
     title: 'Undergraduate, Howard University',
+    avatar: 'https://i.pravatar.cc/150?img=12',
   },
   {
     quote: 'Mental Wealth Academy helped me build connections and network at a time where I was uncertain, the passive weekly sessions were fun and low-stress to keep up with. This community actually gets it.',
     name: 'Maya T.',
     title: 'Graduate Student, Temple University',
+    avatar: 'https://i.pravatar.cc/150?img=47',
   },
   {
     quote: 'The gamified quests kept me engaged when traditional learning felt draining. I actually looked forward to every session.',
     name: 'Aisha R.',
     title: 'PhD Candidate, MIT',
+    avatar: 'https://i.pravatar.cc/150?img=45',
   },
 ];
 
@@ -31,7 +35,14 @@ export const TestimonialSection: React.FC = () => {
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
               <div className={styles.footer}>
-                <div className={styles.avatar}>{t.name.charAt(0)}</div>
+                <Image
+                  src={t.avatar}
+                  alt={t.name}
+                  width={36}
+                  height={36}
+                  className={styles.avatar}
+                  unoptimized
+                />
                 <div className={styles.attribution}>
                   <div className={styles.authorName}>{t.name}</div>
                   <div className={styles.authorTitle}>{t.title}</div>

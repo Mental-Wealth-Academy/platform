@@ -7,14 +7,6 @@ import { ChapterData } from '@/components/sealed-library/ChapterCard';
 import { CHAPTERS, PROMPTS } from '@/lib/library-seed-data';
 import styles from './page.module.css';
 
-const TAGLINES = [
-  'Helping people',
-  'gain agency in their lives',
-  'fund holistic decisions',
-  'control their own destiny',
-  'with other humans for a better world',
-];
-
 export default function Chapters() {
   const [chapters, setChapters] = useState<ChapterData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,31 +69,41 @@ export default function Chapters() {
             <div className={styles.editorial}>
               {/* Left Column - Sticky overview */}
               <div className={styles.leftColumn}>
-                <h1 className={styles.storyTitle}>A New Horizon</h1>
-                <p className={styles.storyDescription}>
-                  Azura finds herself in a new body, on a new planet. Old memories pull her towards
-                  a key piece to her past. Osirus research lab finds a clue, but doesn&apos;t like
-                  where it leads. Both want something out of reach, what will they do to get it?
-                </p>
-                <div className={styles.taglineBlock}>
-                  {TAGLINES.map((line, i) => (
-                    <span key={i} className={styles.taglineLine}>
-                      {line}
-                    </span>
-                  ))}
+                <div className={styles.leftContent}>
+                  <h1 className={styles.storyTitle}>A New Horizon</h1>
+                  <p className={styles.storyDescription}>
+                    Azura finds herself in a new body, on a new planet. Old memories pull her towards
+                    a key piece to her past. Osirus research lab finds a clue, but doesn&apos;t like
+                    where it leads. Both want something out of reach, what will they do to get it?
+                  </p>
                 </div>
+                <div
+                  className={styles.azuraImage}
+                  style={{ backgroundImage: 'url(https://i.imgur.com/HwN5d9B.jpeg)' }}
+                />
+                <div className={styles.azuraImageFade} />
+              </div>
+
+              {/* Spine divider */}
+              <div className={styles.spine}>
+                <div className={styles.spineChapter}>
+                  <span className={styles.spineChLabel}>Ch.</span>
+                  <span className={styles.spineChNumber}>1</span>
+                </div>
+                <span className={styles.spineTitle}>Self-Awareness</span>
               </div>
 
               {/* Right Column - Scrollable content */}
               <div className={styles.rightColumn}>
+                {/* Section heading with red accent */}
+                <p className={styles.sectionLabel}>Self-Awareness</p>
+
                 {/* Chapter 1 expanded section */}
                 <div className={styles.activeChapter}>
                   <div className={styles.chapterHeader}>
-                    <span className={styles.chapterNumberSideways}>01</span>
                     <div className={styles.chapterTitleBlock}>
                       <p className={styles.chapterLabel}>Chapter 1</p>
                       <h2 className={styles.chapterTitle}>The First Step</h2>
-                      <p className={styles.chapterTheme}>Self-Awareness</p>
                     </div>
                   </div>
 

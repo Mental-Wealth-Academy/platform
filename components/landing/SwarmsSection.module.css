@@ -275,11 +275,14 @@
   position: absolute;
   bottom: 24px;
   right: 24px;
-  opacity: 0.18;
+  opacity: 0.7;
 }
 
 .sectionLogoImg {
   display: block;
+  width: 140px;
+  height: auto;
+  object-fit: contain;
 }
 
 @media (min-width: 768px) {

@@ -155,14 +155,14 @@ const LandingPage = () => {
       {/* Swarms Section - Server rendered */}
       <SwarmsSection />
 
+      {/* Testimonial Section - Server rendered */}
+      <TestimonialSection />
+
       {/* Features Section - Server rendered */}
       <FeaturesSection />
 
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
-
-      {/* Testimonial Section - Server rendered */}
-      <TestimonialSection />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
