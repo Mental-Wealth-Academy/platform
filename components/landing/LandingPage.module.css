@@ -44,7 +44,7 @@
 }
 
 .heroHighlight {
-  color: #FFE600;
+  color: #5168FF;
   position: relative;
   padding: 0 6px;
   margin: 0 -6px;
@@ -59,7 +59,7 @@
   right: 0;
   top: 12%;
   bottom: 8%;
-  background: rgba(81, 104, 255, 0.55);
+  background: rgba(255, 230, 0, 1.0);
   border-radius: 3px;
   z-index: -1;
   transform: skewX(-4deg) rotate(-1deg);
@@ -1517,7 +1517,7 @@
   margin: 0;
   padding: 0 8px;
   font-family: var(--font-primary);
-  color: var(--color-text-dark);
+  color: #ffffff;
   font-size: 1.2rem;
   line-height: 1.5;
   text-align: center;
@@ -1529,7 +1529,7 @@
 .rotatingTextStaticLine {
   margin: 0;
   font-family: var(--font-primary);
-  color: var(--color-text-dark);
+  color: #ffffff;
   font-size: 1.2rem;
   line-height: 1.5;
   text-align: center;
@@ -1577,7 +1577,7 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  color: var(--color-text-dark);
+  color: #ffffff;
   font-size: inherit;
   font-family: inherit;
   padding: 0 2px;

@@ -123,12 +123,12 @@ void main() {
     float fresnel = 1.0 - abs(dot(viewDir, vNormal));
     
     // Emissive glow - boost the base color intensity
-    vec3 emissiveGlow = baseColor * 0.4; // Base emissive intensity
-    
+    vec3 emissiveGlow = baseColor * 0.7; // Boosted emissive intensity for legibility
+
     // Add edge glow for extra pop (stronger on edges)
-    float edgeGlow = pow(fresnel, 2.0) * 0.3;
+    float edgeGlow = pow(fresnel, 2.0) * 0.5;
     vec3 edgeGlowColor = baseColor * edgeGlow;
-    
+
     // Combine base color with glow effects
     vec3 glowingColor = baseColor + emissiveGlow + edgeGlowColor;
     
@@ -141,7 +141,7 @@ void main() {
     
     // Use background color for non-star areas, blend cube colors into star areas
     vec3 bgColor = uBackgroundColor;
-    vec3 starColor = glowingColor * 0.5 + asciiColor * 0.5;
+    vec3 starColor = glowingColor * 0.7 + asciiColor * 0.3;
     vec3 finalColor = mix(bgColor, starColor, asciiMask);
 
     gl_FragColor = vec4(finalColor, 1.0);

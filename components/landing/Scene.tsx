@@ -61,7 +61,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
     uBackgroundColor: { value: new THREE.Vector3(0.957, 0.961, 0.996) }, // Background: #f4f5fe
-    brightness: { value: 1.0 },
+    brightness: { value: 1.3 },
     asciiu: { value: 1.0 }, // Not used in current implementation
     resolution: {
       value: new THREE.Vector2(

@@ -43,7 +43,7 @@
   line-height: 1.2;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--color-text-dark);
   margin: 0 0 40px 0;
   max-width: 700px;
 }
@@ -91,7 +91,7 @@
   font-family: var(--font-primary);
   font-size: 1.0625rem;
   font-weight: var(--font-weight-semibold);
-  color: #ffffff;
+  color: var(--color-text-dark);
   line-height: 1.4;
 }
 
@@ -107,7 +107,7 @@
   width: 20px;
   height: 20px;
   transition: transform 0.3s ease;
-  color: #ffffff;
+  color: var(--color-text-dark);
 }
 
 .faqChevronOpen {
@@ -134,7 +134,7 @@
   font-size: 0.875rem;
   font-weight: var(--font-weight-regular);
   line-height: 1.7;
-  color: #ffffff;
+  color: rgba(26, 27, 36, 0.8);
   margin: 0;
   max-width: 720px;
 }
