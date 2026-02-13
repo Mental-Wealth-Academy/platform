@@ -38,16 +38,16 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
+      { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
       { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
       { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
-      { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
     ],
   },
   {
     id: 'tools',
     label: 'Tools',
     items: [
-      { id: 'voting', label: 'Treasury', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
+      { id: 'voting', label: 'Prizes', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
     ],
