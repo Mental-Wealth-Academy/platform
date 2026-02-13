@@ -108,6 +108,124 @@
   height: 20px;
 }
 
+/* Dashboard Skeleton */
+.dashboardSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.1s;
+}
+
+.dashboardScannerSkeleton {
+  background: #2a2d45;
+  border: 3px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dashboardScannerTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboardAvatarSkeleton {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardScannerTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dashboardScannerTitleSkeleton {
+  width: 140px;
+  height: 16px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardScannerSubSkeleton {
+  width: 180px;
+  height: 10px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardScannerDescSkeleton {
+  width: 100%;
+  height: 32px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardChipsSkeleton {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dashboardChipSkeleton {
+  width: 72px;
+  height: 26px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardScannerButtonSkeleton {
+  width: 100%;
+  height: 42px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3a3d55 25%, #4a4d65 50%, #3a3d55 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dashboardTabsSkeleton {
+  display: flex;
+  background: #ffffff;
+  border: 3px solid #e0e0e0;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+}
+
+.dashboardTabSkeleton {
+  flex: 1;
+  height: 44px;
+  border-right: 3px solid #e0e0e0;
+  border-radius: 0;
+}
+
+.dashboardTabSkeleton:last-child {
+  border-right: none;
+}
+
+.dashboardPanelSkeleton {
+  width: 100%;
+  height: 280px;
+  border: 3px solid #e0e0e0;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 4px 4px 0 #e0e0e0;
+}
+
 /* Events Carousel Skeleton */
 .eventsSkeleton {
   width: 100%;

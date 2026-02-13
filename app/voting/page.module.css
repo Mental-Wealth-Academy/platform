@@ -1,4 +1,4 @@
-/* Voting Page - Brutalist Flat Design */
+/* Voting Page - Data Storytelling Design */
 
 .pageLayout {
   margin-left: 265px; /* Account for fixed sidebar width */
@@ -46,7 +46,7 @@
   padding: 40px 48px;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 6px 6px 0 #1A1D33;
   overflow: hidden;
   opacity: 0;
@@ -146,7 +146,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   border: 3px solid #1A1D33;
   font-family: var(--font-primary);
   font-size: 12px;
@@ -159,7 +159,7 @@
 }
 
 .primaryCta {
-  background: #FF7729;
+  background: #50599B;
   color: #ffffff;
   box-shadow: 3px 3px 0 #1A1D33;
 }
@@ -213,10 +213,10 @@
 
 .badge {
   padding: 8px 12px;
-  background: rgba(255, 119, 41, 0.15);
-  color: #FF7729;
+  background: rgba(80, 89, 155, 0.15);
+  color: #50599B;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 700;
@@ -241,9 +241,9 @@
   margin: 20px 0;
 }
 
-/* Card Light - Brutalist Style */
+/* Card Light */
 .cardLight {
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   padding: 24px;
   border: 3px solid #1A1D33;
   position: relative;
@@ -303,7 +303,7 @@
 .avatar {
   width: 36px;
   height: 36px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -320,7 +320,7 @@
 .threadBox {
   margin-top: 12px;
   padding: 12px 16px;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   background: rgba(81, 104, 255, 0.08);
   border: 2px solid #1A1D33;
 }
@@ -328,7 +328,7 @@
 .threadPill {
   display: inline-block;
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   background: var(--color-primary);
   color: #ffffff;
   font-family: var(--font-primary);
@@ -357,7 +357,7 @@
 
 .primaryButton {
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   background: #1A1D33;
   color: #ffffff;
   border: 3px solid #1A1D33;
@@ -393,7 +393,7 @@
   font-family: var(--font-primary);
   font-weight: 700;
   padding: 10px 14px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   border: 2px solid #1A1D33;
   background: #ffffff;
   text-transform: uppercase;
@@ -411,7 +411,7 @@
 
 .secondaryButton {
   padding: 10px 14px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   background: #ffffff;
   color: #1A1D33;
   border: 2px solid #1A1D33;
@@ -432,7 +432,7 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-/* Submission Card - Brutalist Style */
+/* Submission Card */
 .submissionCard {
   margin-top: 24px;
   max-width: 1180px;
@@ -440,7 +440,7 @@
   margin-right: auto;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: 4px 4px 0 #1A1D33;
   display: flex;
@@ -499,9 +499,9 @@
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  border-radius: 4px;
-  background: rgba(255, 119, 41, 0.15);
-  color: #FF7729;
+  border-radius: var(--radius-md);
+  background: rgba(80, 89, 155, 0.15);
+  color: #50599B;
   border: 2px solid #1A1D33;
   font-family: var(--font-primary);
   font-size: 11px;
@@ -514,8 +514,8 @@
 .statusDot {
   width: 8px;
   height: 8px;
-  border-radius: 2px;
-  background: #FF7729;
+  border-radius: var(--radius-full);
+  background: #50599B;
   display: inline-block;
   animation: pulse 2s ease-in-out infinite;
 }
@@ -618,7 +618,7 @@
   padding: 16px;
   background: rgba(81, 104, 255, 0.08);
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
 }
 
 .quoteIcon {
@@ -689,7 +689,7 @@
 .avatarSmall {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -770,7 +770,7 @@
   width: 100%;
 }
 
-/* Loading State - Brutalist */
+/* Loading State */
 .loadingState {
   display: flex;
   flex-direction: column;
@@ -780,7 +780,7 @@
   gap: 16px;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
@@ -789,7 +789,7 @@
   height: 40px;
   border: 3px solid rgba(81, 104, 255, 0.2);
   border-top-color: var(--color-primary);
-  border-radius: 4px;
+  border-radius: var(--radius-full);
   animation: spin 1s linear infinite;
 }
 
@@ -803,7 +803,7 @@
   letter-spacing: 0.05em;
 }
 
-/* Empty State - Brutalist */
+/* Empty State */
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -814,7 +814,7 @@
   gap: 16px;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
@@ -853,7 +853,7 @@
   }
 }
 
-/* Error State - Brutalist */
+/* Error State */
 .errorState {
   display: flex;
   flex-direction: column;
@@ -864,7 +864,7 @@
   gap: 16px;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
@@ -896,9 +896,9 @@
 
 .retryButton {
   padding: 12px 20px;
-  background: var(--color-accent);
+  background: var(--color-secondary);
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 700;
   color: #ffffff;
@@ -924,7 +924,7 @@
 .votingSection {
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -935,7 +935,7 @@
 .proposalCardWrapper {
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   padding: 20px;
   transition: all 0.15s ease;
   box-shadow: 4px 4px 0 #1A1D33;
@@ -967,7 +967,7 @@
   color: var(--color-primary);
   background: rgba(81, 104, 255, 0.1);
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   border: 2px solid #1A1D33;
   font-family: var(--font-primary);
   text-transform: uppercase;
@@ -1009,7 +1009,7 @@
   height: 14px;
 }
 
-/* On-Chain Info Display - Brutalist */
+/* On-Chain Info Display */
 .onChainInfo {
   display: flex;
   align-items: center;
@@ -1017,7 +1017,7 @@
   padding: 12px 16px;
   background: rgba(81, 104, 255, 0.08);
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   gap: 12px;
   flex-wrap: wrap;
 }

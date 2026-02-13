@@ -19,6 +19,16 @@
   box-shadow: 6px 6px 0 #1A1D33;
 }
 
+.cardClickable {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: relative;
+}
+
 .bookImage {
   width: 100%;
   height: 180px;
@@ -28,10 +38,40 @@
   border-bottom: 3px solid #1A1D33;
 }
 
+.copyButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #1A1D33;
+  z-index: 2;
+}
+
+.copyButton:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.copyButton:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
+
 .content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   padding: 20px;
 }
 
@@ -66,12 +106,17 @@
   text-overflow: ellipsis;
 }
 
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 16px;
+}
+
 .category {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 0;
-  padding: 0 20px 20px;
 }
 
 .categoryDot {
@@ -89,6 +134,151 @@
   color: #1A1D33;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.readLink {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary, #5168FF);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Action Bar */
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-top: 3px solid #1A1D33;
+}
+
+.actionBarLeft {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.starRating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.starButton {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  border-radius: 2px;
+  outline: none;
+}
+
+.starButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.starButton:hover {
+  transform: scale(1.2);
+}
+
+.starButton:active {
+  transform: scale(0.9);
+}
+
+.starIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.actionBarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.commentButton {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  font-size: 12px;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.commentButton:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.actionIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.saveButtonWrapper {
+  position: relative;
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  outline: none;
+  box-shadow: 2px 2px 0 #1A1D33;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.saveButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.saveButton:hover {
+  background: var(--color-accent);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.saveText {
+  white-space: nowrap;
+}
+
+.chevronIcon {
+  width: 12px;
+  height: 12px;
 }
 
 /* Responsive */
@@ -113,7 +303,17 @@
     font-size: 12px;
   }
 
-  .category {
-    padding: 0 16px 16px;
+  .footer {
+    padding: 0 16px 14px;
+  }
+
+  .actionBar {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .saveText {
+    display: none;
   }
 }

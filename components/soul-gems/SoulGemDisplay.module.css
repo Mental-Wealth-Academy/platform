@@ -101,7 +101,7 @@
   font-size: 9px;
   padding: 2px 6px;
   background: rgba(81, 104, 255, 0.08);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
   font-weight: 600;
   font-family: var(--font-button);

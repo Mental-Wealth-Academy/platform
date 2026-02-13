@@ -1,0 +1,375 @@
+/* Daily Page Layout */
+
+.pageLayout {
+  margin-left: 265px;
+  min-height: 100vh;
+  background: #F4F5FE;
+}
+
+.content {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* Hero Section */
+.hero {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0;
+}
+
+/* Section Header */
+.readingsHeader {
+  margin-bottom: 16px;
+}
+
+.sectionLabel {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary, #5168FF);
+  margin-bottom: 4px;
+}
+
+.sectionTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+}
+
+/* Readings Grid */
+.readingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.cardWrapper {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.readingsGridLoaded .cardWrapper {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reading View Modal */
+.readingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.readingModal {
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  width: 100%;
+  max-width: 720px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.readingModalHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 3px solid #1A1D33;
+  background: #f8f7ff;
+  flex-shrink: 0;
+}
+
+.readingCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #1A1D33;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.readingCloseButton:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.readingModalMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.readingModalCategory {
+  padding: 3px 10px;
+  background: var(--color-primary, #5168FF);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+  border: 2px solid #1A1D33;
+}
+
+.readingModalAuthor {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: #666666;
+}
+
+.readingModalBody {
+  overflow-y: auto;
+  padding: 32px;
+  flex: 1;
+}
+
+.readingLoading {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* Markdown Content */
+.markdownContent {
+  font-family: var(--font-primary);
+  color: #1A1D33;
+  line-height: 1.75;
+}
+
+.markdownContent h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.markdownContent h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 32px 0 12px 0;
+  letter-spacing: -0.01em;
+  color: #1A1D33;
+}
+
+.markdownContent h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 24px 0 8px 0;
+  color: #1A1D33;
+}
+
+.markdownContent p {
+  font-size: 15px;
+  margin: 0 0 16px 0;
+  color: rgba(26, 29, 51, 0.8);
+}
+
+.markdownContent strong {
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.markdownContent em {
+  font-style: italic;
+  color: rgba(26, 29, 51, 0.7);
+}
+
+.markdownContent ul,
+.markdownContent ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+}
+
+.markdownContent li {
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: rgba(26, 29, 51, 0.8);
+}
+
+.markdownContent hr {
+  border: none;
+  border-top: 2px solid rgba(26, 29, 51, 0.1);
+  margin: 24px 0;
+}
+
+.markdownContent blockquote {
+  border-left: 3px solid var(--color-primary, #5168FF);
+  padding: 8px 16px;
+  margin: 16px 0;
+  background: #f8f7ff;
+  border-radius: 0 4px 4px 0;
+}
+
+.markdownContent blockquote p {
+  color: rgba(26, 29, 51, 0.7);
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .readingsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+    padding-top: 66px;
+  }
+
+  .content {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .readingsGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .readingOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .readingModal {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    border-bottom: none;
+  }
+
+  .readingModalBody {
+    padding: 24px 16px;
+  }
+
+  .readingModalHeader {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .markdownContent h1 {
+    font-size: 22px;
+  }
+
+  .markdownContent h2 {
+    font-size: 18px;
+  }
+
+  .markdownContent p,
+  .markdownContent li {
+    font-size: 14px;
+  }
+}

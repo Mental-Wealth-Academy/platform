@@ -1,10 +1,10 @@
-/* YourImpact - Brutalist Flat Design */
+/* YourImpact */
 
 .container {
   width: 100%;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 4px 4px 0 #1A1D33;
   overflow: hidden;
 }
@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: #FF7729;
+  background: #50599B;
   border-bottom: 3px solid #1A1D33;
 }
 

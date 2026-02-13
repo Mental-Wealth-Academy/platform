@@ -1,10 +1,10 @@
-/* ProposalCard - Brutalist Flat Design */
+/* ProposalCard */
 
 .card {
   width: 100%;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   box-shadow: 4px 4px 0 #1A1D33;
   overflow: hidden;
   transition: all 0.15s ease;
@@ -60,7 +60,7 @@
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -74,17 +74,17 @@
 .statusDot {
   width: 8px;
   height: 8px;
-  border-radius: 2px;
+  border-radius: var(--radius-full);
   flex-shrink: 0;
 }
 
 .statusBadge.pending {
-  background: rgba(255, 119, 41, 0.15);
-  color: #FF7729;
+  background: rgba(80, 89, 155, 0.15);
+  color: #50599B;
 }
 
 .statusBadge.pending .statusDot {
-  background: #FF7729;
+  background: #50599B;
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -139,7 +139,7 @@
 .avatar {
   width: 28px;
   height: 28px;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   background: var(--color-primary);
   border: 2px solid #1A1D33;
   display: flex;
@@ -152,7 +152,7 @@
 }
 
 .avatarImage {
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   object-fit: cover;
 }
 
@@ -219,7 +219,7 @@
   padding: 10px 20px;
   background: #ffffff;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 700;
   font-family: var(--font-primary);

@@ -38,7 +38,8 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'tasks', label: 'Tasks', href: '/tasks', icon: '/icons/Survey.svg' },
+      { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
+      { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
     ],
   },
@@ -46,9 +47,9 @@ const navSections: NavSection[] = [
     id: 'tools',
     label: 'Tools',
     items: [
+      { id: 'voting', label: 'Treasury', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
-      { id: 'voting', label: 'Treasury', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
     ],
   },
   {
@@ -58,7 +59,7 @@ const navSections: NavSection[] = [
     badgeType: 'pro',
     items: [
       { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'videos', label: 'Videos', href: '/videos', icon: '/icons/Eye.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'videos', label: 'Workflows', href: '/videos', icon: '/icons/Eye.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'newsletter', label: 'Newsletter', href: 'https://mentalwealthacademy.net', icon: '/icons/newsletter.svg' },
     ],

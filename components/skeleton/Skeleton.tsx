@@ -68,15 +68,42 @@ export function SurveysSkeleton() {
   );
 }
 
+export function DashboardSkeleton() {
+  return (
+    <div className={styles.dashboardSkeleton}>
+      <div className={styles.dashboardScannerSkeleton}>
+        <div className={styles.dashboardScannerTop}>
+          <div className={`${styles.skeleton} ${styles.dashboardAvatarSkeleton}`} />
+          <div className={styles.dashboardScannerTitles}>
+            <div className={`${styles.skeleton} ${styles.dashboardScannerTitleSkeleton}`} />
+            <div className={`${styles.skeleton} ${styles.dashboardScannerSubSkeleton}`} />
+          </div>
+        </div>
+        <div className={`${styles.skeleton} ${styles.dashboardScannerDescSkeleton}`} />
+        <div className={styles.dashboardChipsSkeleton}>
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className={`${styles.skeleton} ${styles.dashboardChipSkeleton}`} />
+          ))}
+        </div>
+        <div className={`${styles.skeleton} ${styles.dashboardScannerButtonSkeleton}`} />
+      </div>
+      <div className={styles.dashboardTabsSkeleton}>
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className={`${styles.skeleton} ${styles.dashboardTabSkeleton}`} />
+        ))}
+      </div>
+      <div className={`${styles.skeleton} ${styles.dashboardPanelSkeleton}`} />
+    </div>
+  );
+}
+
 export function HomePageSkeleton() {
   return (
     <>
       <CalendarDaysSkeleton />
+      <DashboardSkeleton />
       <CheckinCardSkeleton />
-      <div className={styles.eventsAndSurveysRowSkeleton}>
-        <EventsCarouselSkeleton />
-        <SurveysSkeleton />
-      </div>
+      <SurveysSkeleton />
     </>
   );
 }

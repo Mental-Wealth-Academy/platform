@@ -17,6 +17,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useBaseKitAutoSignin } from '@/components/miniapp/useBaseKitAutoSignin';
 import {
   CalendarDaysSkeleton,
+  DashboardSkeleton,
   CheckinCardSkeleton,
   SurveysSkeleton,
 } from '@/components/skeleton/Skeleton';
@@ -241,6 +242,7 @@ export default function Home() {
           {isContentLoading ? (
             <>
               <CalendarDaysSkeleton />
+              <DashboardSkeleton />
               <CheckinCardSkeleton />
               <SurveysSkeleton />
             </>
