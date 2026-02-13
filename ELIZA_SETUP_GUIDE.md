@@ -89,7 +89,7 @@ npm run check-azura-wallet
 ### 4. Test the Integration
 
 1. **Test Proposal Review**:
-   - Create a test proposal at `/voting/create`
+   - Create a test proposal via the "Submit Proposal" modal on `/voting` or `/home`
    - Check that Azura reviews it using Eliza API
    - Verify the review appears in the database
 

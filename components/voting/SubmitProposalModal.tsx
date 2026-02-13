@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { ConnectKitButton } from 'connectkit';
 import Image from 'next/image';
 import { providers } from 'ethers';
 import { createProposalOnChain } from '@/lib/azura-contract';
+import ProposalSuccessModal from './ProposalSuccessModal';
 import styles from './SubmitProposalModal.module.css';
 
 const ACTIVATION_TEMPLATE = `## Activation Proposal
@@ -93,7 +93,6 @@ interface SubmitProposalModalProps {
 }
 
 const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const router = useRouter();
   const { address, isConnected, connector } = useAccount();
   const [title, setTitle] = useState('');
   const [proposal, setProposal] = useState('');
@@ -105,6 +104,11 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStep, setSubmissionStep] = useState<'idle' | 'blockchain' | 'database'>('idle');
   const [charCount, setCharCount] = useState(0);
+  const [successModal, setSuccessModal] = useState<{ isOpen: boolean; txHash: string; proposalId: number }>({
+    isOpen: false,
+    txHash: '',
+    proposalId: 0,
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -217,13 +221,19 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
         ethersProvider
       );
 
+      // Validate the proposal ID before proceeding
+      if (!onChainProposalId || onChainProposalId <= 0 || isNaN(onChainProposalId)) {
+        throw new Error(`Invalid proposal ID received from blockchain: ${onChainProposalId}. Please contact support with transaction hash: ${txHash}`);
+      }
+      if (!txHash || !txHash.startsWith('0x')) {
+        throw new Error(`Invalid transaction hash received: ${txHash}`);
+      }
+
       console.log('✅ On-chain proposal created!', { onChainProposalId, txHash });
-      console.log(`View on BaseScan: https://basescan.org/tx/${txHash}`);
 
       // STEP 2: Save to database with on-chain ID
       setSubmissionStep('database');
-      console.log('Saving to database...');
-      
+
       const response = await fetch('/api/voting/proposal/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -238,27 +248,27 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save proposal to database');
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(`Server returned invalid response (status ${response.status}).`);
       }
 
-      // Success!
-      const message = `✅ Proposal submitted successfully!\n\nTransaction: ${txHash}\nOn-chain ID: ${onChainProposalId}\n\nView on BaseScan: https://basescan.org/tx/${txHash}\n\nAzura will review your proposal soon.`;
-      alert(message);
-      
+      if (!response.ok) {
+        throw new Error(data.error || `Failed to save proposal to database (HTTP ${response.status})`);
+      }
+
       // Reset form
       setTitle('');
       setProposal('');
       setRecipientAddress('');
       setTokenAmount('0.00');
       setAmountMessage('');
-      
-      if (onSuccess) {
-        onSuccess();
-      }
+
+      // Close form modal, show success modal
       onClose();
+      setSuccessModal({ isOpen: true, txHash, proposalId: onChainProposalId });
     } catch (error: any) {
       console.error('Error submitting proposal:', error);
       
@@ -288,10 +298,23 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
     }
   };
 
-  if (!isOpen) return null;
+  const handleSuccessClose = () => {
+    setSuccessModal({ isOpen: false, txHash: '', proposalId: 0 });
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
 
   return (
     <>
+      <ProposalSuccessModal
+        isOpen={successModal.isOpen}
+        onClose={handleSuccessClose}
+        txHash={successModal.txHash}
+        proposalId={successModal.proposalId}
+      />
+      {!isOpen ? null : (
+      <>
       <div className={styles.overlay} onClick={onClose} />
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
@@ -466,6 +489,8 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
           </div>
         </div>
       </div>
+      </>
+      )}
     </>
   );
 };

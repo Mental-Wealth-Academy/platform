@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
 import styles from './HomeDashboard.module.css';
 
 const tabs = [
@@ -22,7 +23,7 @@ const scoreDimensions = [
   { label: 'Chaos', icon: '&#10038;' },
 ] as const;
 
-function ScannerCTA() {
+function ScannerCTA({ onSubmit }: { onSubmit: () => void }) {
   return (
     <div className={styles.scannerCta}>
       <div className={styles.scannerHeader}>
@@ -56,12 +57,12 @@ function ScannerCTA() {
           />
         ))}
       </div>
-      <a href="/voting/create" className={styles.scannerButton}>
+      <button onClick={onSubmit} className={styles.scannerButton} type="button">
         Submit Proposal for Review
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
-      </a>
+      </button>
     </div>
   );
 }
@@ -220,10 +221,11 @@ function QuestsPanel() {
 
 export const HomeDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('Voting & Governance');
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   return (
     <div className={styles.dashboardWrap}>
-      <ScannerCTA />
+      <ScannerCTA onSubmit={() => setIsSubmitModalOpen(true)} />
       <div className={styles.dashboard}>
         <div className={styles.tabBar}>
         {tabs.map((tab) => (
@@ -244,6 +246,10 @@ export const HomeDashboard: React.FC = () => {
         {activeTab === 'Quests & Learning' && <QuestsPanel />}
         </div>
       </div>
+      <SubmitProposalModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+      />
     </div>
   );
 };
