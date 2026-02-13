@@ -31,29 +31,9 @@ const LandingPage = () => {
         <div className={styles.logosGrid}>
           <div className={styles.logoItem}>
             <Image
-              src="/companylogos/full-ethereum-logo.webp"
+              src="/companylogos/ethereum-logo-dark.svg"
               alt="Ethereum logo"
-              width={120}
-              height={80}
-              className={styles.logoImage}
-              loading="lazy"
-            />
-          </div>
-          <div className={styles.logoItem}>
-            <Image
-              src="/companylogos/OP_vertical_1200px.webp"
-              alt="Optimism logo"
-              width={120}
-              height={80}
-              className={`${styles.logoImage} ${styles.optimismLogo}`}
-              loading="lazy"
-            />
-          </div>
-          <div className={styles.logoItem}>
-            <Image
-              src="/companylogos/Base-Logo-New-1.png"
-              alt="Base logo"
-              width={120}
+              width={50}
               height={80}
               className={styles.logoImage}
               loading="lazy"
@@ -71,8 +51,8 @@ const LandingPage = () => {
           </div>
           <div className={styles.logoItem}>
             <Image
-              src="/companylogos/full-aragon-logo.webp"
-              alt="Aragon logo"
+              src="/companylogos/noggles.svg"
+              alt="Nouns logo"
               width={120}
               height={80}
               className={styles.logoImage}
@@ -81,8 +61,8 @@ const LandingPage = () => {
           </div>
           <div className={styles.logoItem}>
             <Image
-              src="/companylogos/gitcoin.webp"
-              alt="Gitcoin logo"
+              src="/companylogos/artizen.svg"
+              alt="Artizen logo"
               width={120}
               height={80}
               className={styles.logoImage}
@@ -149,6 +129,26 @@ const LandingPage = () => {
               loading="lazy"
             />
           </div>
+          <div className={styles.logoItem}>
+            <Image
+              src="/companylogos/Base-Logo-New-1.png"
+              alt="Base logo"
+              width={120}
+              height={80}
+              className={styles.logoImage}
+              loading="lazy"
+            />
+          </div>
+          <div className={styles.logoItem}>
+            <Image
+              src="/companylogos/OP_vertical_1200px.webp"
+              alt="Optimism logo"
+              width={120}
+              height={80}
+              className={`${styles.logoImage} ${styles.optimismLogo}`}
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
 
@@ -158,11 +158,11 @@ const LandingPage = () => {
       {/* Features Section - Server rendered */}
       <FeaturesSection />
 
-      {/* Testimonial Section - Server rendered */}
-      <TestimonialSection />
-
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
+
+      {/* Testimonial Section - Server rendered */}
+      <TestimonialSection />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />

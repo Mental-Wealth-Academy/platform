@@ -31,6 +31,7 @@ export const TestimonialSection: React.FC = () => {
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
               <div className={styles.footer}>
+                <div className={styles.avatar}>{t.name.charAt(0)}</div>
                 <div className={styles.attribution}>
                   <div className={styles.authorName}>{t.name}</div>
                   <div className={styles.authorTitle}>{t.title}</div>

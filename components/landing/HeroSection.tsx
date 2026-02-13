@@ -21,7 +21,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> For Building Real-World Skills</h1>
+          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> For<br /> Building Real-World Skills</h1>
           <p className={styles.heroSubtext}>
             A 12-week journey to unlock your potential. Join your cohort, learn psychology hacks, and forge lasting connections.
           </p>
@@ -35,7 +35,7 @@ export const HeroSection: React.FC = () => {
         </div>
       </div>
       <Image
-        src="https://i.imgur.com/a3NDLoN.png"
+        src="https://i.imgur.com/HFjHyUZ.png"
         alt="Hero illustration"
         width={400}
         height={400}

@@ -52,11 +52,11 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
     // Brand colors - 6 colors for 6 faces
     ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) }, // Primary: #5168FF (rgb(81, 104, 255))
-    ucolor2: { value: new THREE.Vector3(0.384, 0.745, 0.561) }, // Secondary: #62BE8F (rgb(98, 190, 143))
+    ucolor2: { value: new THREE.Vector3(1.0, 0.722, 0.0) }, // Warm amber: #FFB800 (rgb(255, 184, 0))
     ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) }, // Pinkish red: #E84057 (rgb(232, 64, 87))
     ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) }, // White: rgb(255, 255, 255)
     ucolor5: { value: new THREE.Vector3(0.118, 0.047, 0.224) }, // Dark purple: #1E0C39 (rgb(30, 12, 57))
-    ucolor6: { value: new THREE.Vector3(0.737, 0.886, 0.180) }, // Yellowish green: #BDE22E (rgb(188, 226, 46))
+    ucolor6: { value: new THREE.Vector3(0.180, 0.608, 0.478) }, // Bluish green: #2E9B7A (rgb(46, 155, 122))
     asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
@@ -167,8 +167,8 @@ const CubesScene = memo(() => {
     const rotY = (Math.random() - 0.5) * 0.5;
     const rotZ = (Math.random() - 0.5) * 0.5;
     
-    // Scale variation - only larger (1.0 to 2.5 range)
-    const scale = 1.0 + Math.random() * 1.5; // Range: 1.0 to 2.5
+    // Scale variation - larger cubes for more presence
+    const scale = 1.8 + Math.random() * 2.2; // Range: 1.8 to 4.0
     
     // Vertical movement speed - some move up, some move down (positive = up, negative = down)
     const verticalSpeed = (Math.random() - 0.5) * 1.0; // Range: -0.5 to 0.5 (doubled from 0.25)
