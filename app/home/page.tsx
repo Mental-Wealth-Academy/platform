@@ -255,6 +255,12 @@ export default function Home() {
                 <CalendarDays />
               </div>
               <div className={styles.staggeredItem}>
+                <blockquote className={styles.dailyQuote}>
+                  <p className={styles.dailyQuoteText}>&ldquo;The mind is not a vessel to be filled, but a fire to be kindled.&rdquo;</p>
+                  <cite className={styles.dailyQuoteAuthor}>&mdash; Plutarch</cite>
+                </blockquote>
+              </div>
+              <div className={styles.staggeredItem}>
                 <HomeDashboard />
               </div>
               <div className={styles.staggeredItem}>

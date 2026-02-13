@@ -32,6 +32,7 @@ export const HeroSection: React.FC = () => {
           >
             Enter Academy
           </button>
+          <p className={styles.heroQuote}>&ldquo;The mind is not a vessel to be filled, but a fire to be kindled.&rdquo; &mdash; Plutarch</p>
         </div>
       </div>
       <Image

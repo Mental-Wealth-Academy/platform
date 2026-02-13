@@ -134,6 +134,33 @@
   }
 }
 
+/* Daily Quote */
+.dailyQuote {
+  margin: 0;
+  padding: 20px 24px;
+  border-left: 3px solid var(--color-primary);
+  background: rgba(81, 104, 255, 0.04);
+  border-radius: 0 8px 8px 0;
+}
+
+.dailyQuoteText {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  font-style: italic;
+  line-height: 1.6;
+  color: #1A1B24;
+  margin: 0 0 8px 0;
+}
+
+.dailyQuoteAuthor {
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  font-style: normal;
+  font-weight: var(--font-weight-regular);
+  color: rgba(26, 27, 36, 0.6);
+}
+
 .eventsAndSurveysRow {
   display: flex;
   flex-direction: column;

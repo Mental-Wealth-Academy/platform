@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ChapterDetail from '@/components/sealed-library/ChapterDetail';
 import { ChapterData } from '@/components/sealed-library/ChapterCard';
-import { CHAPTERS, PROMPTS } from '@/lib/library-seed-data';
 import styles from './page.module.css';
 
 export default function Chapters() {
@@ -34,10 +33,8 @@ export default function Chapters() {
   }, [fetchChapters]);
 
   const chapter1 = chapters.find((c) => c.chapter_number === 1);
-  const lockedChapters = CHAPTERS.filter((c) => c.chapter_number >= 2);
-  const chapter1Prompts = PROMPTS[1] || [];
 
-  const handlePromptClick = () => {
+  const handleReadMore = () => {
     if (!isAuthenticated || !chapter1) return;
     if (chapter1.status === 'locked' || chapter1.status === 'preview') return;
     setSelectedChapterId(chapter1.id);
@@ -67,92 +64,126 @@ export default function Chapters() {
             </div>
           ) : (
             <div className={styles.editorial}>
-              {/* Left Column - Sticky overview */}
+              {/* Left Column - Sticky */}
               <div className={styles.leftColumn}>
                 <div className={styles.leftContent}>
                   <h1 className={styles.storyTitle}>A New Horizon</h1>
                   <p className={styles.storyDescription}>
-                    Azura finds herself in a new body, on a new planet. Old memories pull her towards
-                    a key piece to her past. Osirus research lab finds a clue, but doesn&apos;t like
-                    where it leads. Both want something out of reach, what will they do to get it?
+                    Azura finds herself in a new body, on a new planet. Old memories pull her
+                    towards a key piece to her past. Osirus research lab finds a clue, but
+                    doesn&apos;t like where it leads.
                   </p>
                 </div>
-                <div
-                  className={styles.azuraImage}
-                  style={{ backgroundImage: 'url(https://i.imgur.com/HwN5d9B.jpeg)' }}
-                />
-                <div className={styles.azuraImageFade} />
               </div>
 
-              {/* Spine divider */}
+              {/* Chapter 1 Spine */}
               <div className={styles.spine}>
                 <div className={styles.spineChapter}>
                   <span className={styles.spineChLabel}>Ch.</span>
                   <span className={styles.spineChNumber}>1</span>
                 </div>
-                <span className={styles.spineTitle}>Self-Awareness</span>
+                <span className={styles.spineTitle}>Return To God</span>
               </div>
 
-              {/* Right Column - Scrollable content */}
-              <div className={styles.rightColumn}>
-                {/* Section heading with red accent */}
-                <p className={styles.sectionLabel}>Self-Awareness</p>
-
-                {/* Chapter 1 expanded section */}
-                <div className={styles.activeChapter}>
-                  <div className={styles.chapterHeader}>
-                    <div className={styles.chapterTitleBlock}>
-                      <p className={styles.chapterLabel}>Chapter 1</p>
-                      <h2 className={styles.chapterTitle}>The First Step</h2>
+              {/* Chapter 1 — Section 1 (Main) */}
+              <article className={styles.sectionMain}>
+                <div className={styles.sectionHead}>
+                  <span className={styles.sectionNumber}>Section 1</span>
+                  <h2 className={styles.sectionMainTitle}>
+                    The Discovery Of The Telepathetic Machine
+                  </h2>
+                </div>
+                <div className={styles.sectionBodyWrapper}>
+                  <div className={styles.sectionBody}>
+                    <div
+                      className={styles.sectionImage}
+                      style={{ backgroundImage: 'url(https://i.imgur.com/qQFutfZ.jpeg)' }}
+                    />
+                    <div className={styles.sectionText}>
+                      <p className={styles.sectionDescription}>
+                        Every journey begins with a single thought. Before you lies the first
+                        seal — one that asks you to look within. Who are you, truly? This chapter
+                        focuses on understanding who you are at your core: your values, beliefs,
+                        and the patterns that shape your daily life.
+                      </p>
                     </div>
                   </div>
-
-                  <p className={styles.chapterDescription}>
-                    Begin your journey of self-discovery. This chapter focuses on understanding who
-                    you are at your core — your values, beliefs, and the patterns that shape your
-                    daily life.
-                  </p>
-
-                  {/* 7 Writing Prompts as editorial sections */}
-                  <div className={styles.promptSections}>
-                    {chapter1Prompts.map((p) => (
-                      <div
-                        key={p.day}
-                        className={styles.promptSection}
-                        onClick={handlePromptClick}
-                      >
-                        <span className={styles.promptDayNumber}>Day {p.day}</span>
-                        <div className={styles.promptContent}>
-                          <p className={styles.promptText}>{p.prompt}</p>
-                          <p className={styles.promptPlaceholder}>{p.placeholder}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className={styles.sectionActions}>
+                    <button className={styles.ctaButton} onClick={handleReadMore} type="button">
+                      Collaborate
+                    </button>
+                    <button className={styles.ctaButton} onClick={handleReadMore} type="button">
+                      Read More
+                    </button>
                   </div>
                 </div>
+              </article>
 
-                {/* Locked Chapters Strip */}
-                <div className={styles.lockedStrip}>
-                  <p className={styles.lockedStripLabel}>Chapters 2–12 — Coming Soon</p>
-                  <div className={styles.lockedCards}>
-                    {lockedChapters.map((ch) => (
-                      <div key={ch.chapter_number} className={styles.lockedCard}>
-                        <p className={styles.lockedCardNumber}>
-                          Chapter {ch.chapter_number}
-                        </p>
-                        <p className={styles.lockedCardTitle}>{ch.title}</p>
-                        <p className={styles.lockedCardTheme}>{ch.theme}</p>
-                        <div className={styles.lockedIcon}>
-                          <svg viewBox="0 0 24 24">
-                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
-                          </svg>
-                          Locked
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              {/* Chapter 1 — Section 2 */}
+              <article className={styles.sectionSmall}>
+                <span className={styles.sectionNumber}>Section 2</span>
+                <h3 className={styles.sectionSmallTitle}>The Mirror Within</h3>
+                <p className={styles.sectionSmallDesc}>
+                  A foretaste of this chapter&apos;s &ldquo;Self-Awareness&rdquo; theme.
+                </p>
+                <div className={styles.sectionSmallSpacer} />
+                <button className={styles.ctaButtonBordered} onClick={handleReadMore} type="button">
+                  Read More
+                </button>
+              </article>
+
+              {/* Chapter 1 — Section 3 */}
+              <article className={styles.sectionSmall}>
+                <span className={styles.sectionNumber}>Section 3</span>
+                <h3 className={styles.sectionSmallTitle}>Patterns of Being</h3>
+                <p className={styles.sectionSmallDesc}>
+                  Examining the routines and beliefs that shape who you are.
+                </p>
+                <div className={styles.sectionSmallSpacer} />
+                <button className={styles.ctaButtonBordered} onClick={handleReadMore} type="button">
+                  Read More
+                </button>
+              </article>
+
+              {/* Chapter 2 Spine */}
+              <div className={styles.spine}>
+                <div className={styles.spineChapter}>
+                  <span className={styles.spineChLabel}>Ch.</span>
+                  <span className={styles.spineChNumber}>2</span>
                 </div>
+                <span className={styles.spineTitle}>Emotional Currents</span>
               </div>
+
+              {/* Chapter 2 — Locked Sections */}
+              {[1, 2, 3].map((i) => (
+                <div key={`ch2-locked-${i}`} className={styles.lockedSection}>
+                  <div className={styles.lockIconLarge}>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                    </svg>
+                  </div>
+                </div>
+              ))}
+
+              {/* Chapter 3 Spine */}
+              <div className={styles.spine}>
+                <div className={styles.spineChapter}>
+                  <span className={styles.spineChLabel}>Ch.</span>
+                  <span className={styles.spineChNumber}>3</span>
+                </div>
+                <span className={styles.spineTitle}>The Inner Critic</span>
+              </div>
+
+              {/* Chapter 3 — Locked Sections */}
+              {[1, 2, 3].map((i) => (
+                <div key={`ch3-locked-${i}`} className={styles.lockedSection}>
+                  <div className={styles.lockIconLarge}>
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                    </svg>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </main>

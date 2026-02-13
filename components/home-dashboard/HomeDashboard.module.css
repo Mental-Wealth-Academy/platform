@@ -746,3 +746,36 @@
     gap: 5px;
   }
 }
+
+/* ── View Treasury CTA ───────────────────────────── */
+.viewTreasuryCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 #1A1D33;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viewTreasuryCta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.viewTreasuryCta:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
