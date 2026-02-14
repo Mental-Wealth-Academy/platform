@@ -9,7 +9,7 @@ export const HeroSection: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   const handleEnterAcademy = () => {
-    setShowOnboarding(true);
+    window.location.href = '/home';
   };
 
   const handleOnboardingComplete = () => {

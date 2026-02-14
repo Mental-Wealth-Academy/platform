@@ -4,10 +4,6 @@ import { createContext, useContext, useEffect, useRef, useState, ReactNode } fro
 
 const TRACKS = [
   { name: 'Neo Soul', url: '/Intimate-Neo-Soul.mp3' },
-  { name: 'Serenity', url: '/Serenity.mp3' },
-  { name: 'Ambient', url: '/Ambient.mp3' },
-  { name: 'Calm', url: '/Calm.mp3' },
-  { name: 'Tranquil', url: '/Tranquil.mp3' },
 ]
 
 const STORAGE_KEY_TRACK_INDEX = 'audioPlayer_trackIndex'
