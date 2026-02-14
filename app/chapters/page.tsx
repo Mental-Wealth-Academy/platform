@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ChapterDetail from '@/components/sealed-library/ChapterDetail';
 import { ChapterData } from '@/components/sealed-library/ChapterCard';
@@ -45,6 +45,20 @@ export default function Chapters() {
     fetchChapters();
   };
 
+  const editorialRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = editorialRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [loading]);
+
   return (
     <>
       <div className={styles.pageLayout}>
@@ -63,7 +77,7 @@ export default function Chapters() {
               </button>
             </div>
           ) : (
-            <div className={styles.editorial}>
+            <div className={styles.editorial} ref={editorialRef}>
               {/* Row 1: Header bars */}
               <div className={styles.bookBar}>
                 <div className={styles.bookBarText}>
