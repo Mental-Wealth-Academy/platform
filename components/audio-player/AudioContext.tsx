@@ -33,7 +33,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(STORAGE_KEY_TRACK_INDEX)
-      return saved !== null ? parseInt(saved, 10) : 0
+      if (saved !== null) {
+        const idx = parseInt(saved, 10)
+        return idx >= 0 && idx < TRACKS.length ? idx : 0
+      }
     }
     return 0
   })
@@ -54,7 +57,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
     // Load saved track
     const savedIndex = localStorage.getItem(STORAGE_KEY_TRACK_INDEX)
-    const trackIndex = savedIndex !== null ? parseInt(savedIndex, 10) : 0
+    const parsed = savedIndex !== null ? parseInt(savedIndex, 10) : 0
+    const trackIndex = parsed >= 0 && parsed < TRACKS.length ? parsed : 0
     audio.src = TRACKS[trackIndex].url
 
     // Handle track end
