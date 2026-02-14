@@ -258,23 +258,82 @@ const SideNavigation: React.FC = () => {
           </button>
         </div>
 
-        {/* Music Player + Azura AI Chat Icon */}
-        <div className={styles.topMusicPlayer}>
-          <div className={styles.musicPlayerRow}>
-            <AudioPlayer />
+        {/* Wallet + Daemon */}
+        <div className={styles.topSection}>
+          {/* Account Button or Connect Wallet */}
+          {username && !username.startsWith('user_') ? (
+            <div className={styles.accountSection} ref={accountMenuRef}>
+              <button
+                className={styles.accountButton}
+                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+              >
+                {avatarUrl && (
+                  <Image
+                    src={avatarUrl}
+                    alt={username}
+                    width={32}
+                    height={32}
+                    className={styles.accountAvatar}
+                    unoptimized
+                  />
+                )}
+                <span className={styles.accountUsername}>@{username}</span>
+              </button>
+
+              {isAccountMenuOpen && (
+                <div className={styles.accountMenu}>
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleAvatarClick}
+                  >
+                    <span className={styles.accountMenuLabel}>Change Avatar</span>
+                  </button>
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleUsernameClick}
+                  >
+                    <span className={styles.accountMenuLabel}>Change Username</span>
+                  </button>
+                  <div className={styles.accountMenuDivider} />
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={handleSignOut}
+                  >
+                    <span className={styles.accountMenuLabel}>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
             <button
-              className={styles.azuraChatButton}
+              className={styles.connectWalletButton}
               onClick={() => {
-                setIsChatOpen(true);
+                openConnectModal(true);
                 setIsMobileMenuOpen(false);
               }}
-              aria-label="Open Azura AI Chat"
-              title="Azura AI"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <rect x="13" y="9" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                <circle cx="15" cy="11" r="1" fill="currentColor"/>
               </svg>
+              <span>Connect Wallet</span>
             </button>
+          )}
+
+          {/* Daemon Shards Counter */}
+          <div className={styles.shardsCounter}>
+            <Image
+              src="/icons/shard.svg"
+              alt="Daemon"
+              width={20}
+              height={20}
+              className={styles.shardIcon}
+            />
+            <span className={styles.shardsLabel}>Daemon:</span>
+            <span className={styles.shardsValue}>
+              {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
+            </span>
           </div>
         </div>
 
@@ -363,83 +422,23 @@ const SideNavigation: React.FC = () => {
           ))}
         </div>
 
-        {/* Bottom Section */}
+        {/* Bottom Section - Audio Player + Ask Azura */}
         <div className={styles.bottomSection}>
-          {/* Account Button (when logged in) or Connect Wallet (when not) */}
-          {username && !username.startsWith('user_') ? (
-            <div className={styles.accountSection} ref={accountMenuRef}>
-              <button
-                className={styles.accountButton}
-                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-              >
-                {avatarUrl && (
-                  <Image
-                    src={avatarUrl}
-                    alt={username}
-                    width={32}
-                    height={32}
-                    className={styles.accountAvatar}
-                    unoptimized
-                  />
-                )}
-                <span className={styles.accountUsername}>@{username}</span>
-              </button>
-
-              {isAccountMenuOpen && (
-                <div className={styles.accountMenu}>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleAvatarClick}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Avatar</span>
-                  </button>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleUsernameClick}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Username</span>
-                  </button>
-                  <div className={styles.accountMenuDivider} />
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={handleSignOut}
-                  >
-                    <span className={styles.accountMenuLabel}>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              className={styles.connectWalletButton}
-              onClick={() => {
-                openConnectModal(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <rect x="13" y="9" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                <circle cx="15" cy="11" r="1" fill="currentColor"/>
-              </svg>
-              <span>Connect Wallet</span>
-            </button>
-          )}
-
-          {/* Daemon Shards Counter */}
-          <div className={styles.shardsCounter}>
-            <Image
-              src="/icons/shard.svg"
-              alt="Daemon"
-              width={20}
-              height={20}
-              className={styles.shardIcon}
-            />
-            <span className={styles.shardsLabel}>Daemon:</span>
-            <span className={styles.shardsValue}>
-              {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
-            </span>
-          </div>
+          <AudioPlayer />
+          <button
+            className={styles.azuraChatButton}
+            onClick={() => {
+              setIsChatOpen(true);
+              setIsMobileMenuOpen(false);
+            }}
+            aria-label="Open Azura AI Chat"
+            title="Azura AI"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span className={styles.azuraChatLabel}>Ask Azura Anything</span>
+          </button>
         </div>
       </nav>
 

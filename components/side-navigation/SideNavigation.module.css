@@ -85,50 +85,63 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-/* Top Music Player */
-.topMusicPlayer {
+/* Top Section - Chat, Wallet, Daemon */
+.topSection {
+  padding: 12px;
   border-bottom: 2px solid rgba(26, 29, 51, 0.1);
-}
-
-.musicPlayerRow {
   display: flex;
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.musicPlayerRow > :first-child {
-  flex: 1;
-  min-width: 0;
+@keyframes chatColorCycle {
+  0%   { background: #e74c3c; border-color: #c0392b; box-shadow: 2px 2px 0 #c0392b; }
+  16%  { background: #f39c12; border-color: #d68910; box-shadow: 2px 2px 0 #d68910; }
+  33%  { background: #2ecc71; border-color: #27ae60; box-shadow: 2px 2px 0 #27ae60; }
+  50%  { background: #3498db; border-color: #2980b9; box-shadow: 2px 2px 0 #2980b9; }
+  66%  { background: #9b59b6; border-color: #8e44ad; box-shadow: 2px 2px 0 #8e44ad; }
+  83%  { background: #e91e8b; border-color: #c2185b; box-shadow: 2px 2px 0 #c2185b; }
+  100% { background: #e74c3c; border-color: #c0392b; box-shadow: 2px 2px 0 #c0392b; }
 }
 
 .azuraChatButton {
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  min-height: 28px;
-  flex-shrink: 0;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
+  gap: 10px;
+  background: #e74c3c;
+  border: 2px solid #c0392b;
   border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 2px 2px 0 #c0392b;
   cursor: pointer;
-  color: #1A1D33;
-  padding: 0;
-  margin-right: 12px;
-  transition: all 0.15s ease;
+  color: #ffffff;
+  padding: 10px 12px;
+  transition: transform 0.15s ease;
+  animation: chatColorCycle 4s linear infinite;
+  box-sizing: border-box;
+}
+
+.azuraChatButton svg {
+  flex-shrink: 0;
+}
+
+.azuraChatLabel {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .azuraChatButton:hover {
-  background: var(--color-primary);
+  background: #1A1D33;
   color: #ffffff;
   transform: translate(-1px, -1px);
+  animation: none;
+  border-color: #1A1D33;
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-/* Account section in bottom - menu opens upward */
+/* Account section - menu opens downward from top */
 
 /* Music Player */
 .musicPlayerWrapper {
@@ -497,7 +510,7 @@
 
 .accountMenu {
   position: absolute;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
   background: #ffffff;
@@ -708,9 +721,9 @@
     padding: 2px 4px;
   }
 
-  /* Account Menu - positioned above on mobile */
+  /* Account Menu - positioned below on mobile */
   .accountMenu {
-    bottom: calc(100% + 8px);
+    top: calc(100% + 8px);
   }
 }
 
