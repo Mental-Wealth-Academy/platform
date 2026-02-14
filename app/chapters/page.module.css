@@ -18,7 +18,7 @@
 
 .editorial {
   display: grid;
-  grid-template-rows: 64px 1fr;
+  grid-template-rows: 64px auto 1fr;
   grid-template-columns: 320px 72px 660px 300px 300px 72px 240px 240px 240px 72px 240px 240px 240px;
   flex: 1;
   min-height: 0;
@@ -180,12 +180,53 @@
   z-index: 10;
 }
 
-/* ─── Row 2: Content ─── */
+/* ─── Row 2: Ethereal Bar ─── */
+
+.etherealBar {
+  --ch-color: var(--color-primary);
+  grid-row: 2;
+  grid-column: 3 / 6;
+  background: color-mix(in srgb, var(--ch-color) 35%, transparent);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 24px 10px 0;
+  box-sizing: border-box;
+}
+
+.etherealLine {
+  width: 48px;
+  height: 1.5px;
+  background: var(--ch-color, var(--color-primary));
+  flex-shrink: 0;
+}
+
+.etherealText {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ch-color, var(--color-primary));
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.etherealBarCh2 {
+  --ch-color: #c17e2f;
+  grid-column: 7 / 10;
+}
+
+.etherealBarCh3 {
+  --ch-color: #8b3a62;
+  grid-column: 11 / 14;
+}
+
+/* ─── Row 3: Content ─── */
 
 /* ─── Left Column ─── */
 
 .leftColumn {
-  grid-row: 2;
+  grid-row: 2 / -1;
   display: flex;
   flex-direction: column;
   background: #fafafa;
@@ -232,7 +273,7 @@
 /* ─── Spine Divider ─── */
 
 .spine {
-  grid-row: 2;
+  grid-row: 2 / -1;
   background: var(--color-primary);
   display: flex;
   flex-direction: column;
@@ -276,10 +317,18 @@
   margin-top: auto;
 }
 
+.spineCh2 {
+  background: #c17e2f;
+}
+
+.spineCh3 {
+  background: #8b3a62;
+}
+
 /* ─── Section Main (featured) ─── */
 
 .sectionMain {
-  grid-row: 2;
+  grid-row: 3;
   display: flex;
   flex-direction: column;
   border-top: 3px solid var(--color-primary);
@@ -380,7 +429,7 @@
 /* ─── Small Sections ─── */
 
 .sectionSmall {
-  grid-row: 2;
+  grid-row: 3;
   border-top: 3px solid var(--color-primary);
   border-left: 1px solid rgba(26, 29, 51, 0.08);
   display: flex;
@@ -428,13 +477,21 @@
 /* ─── Locked Sections ─── */
 
 .lockedSection {
-  grid-row: 2;
+  grid-row: 3;
   border-top: 3px solid var(--color-primary);
   border-left: 1px solid rgba(26, 29, 51, 0.06);
   display: flex;
   flex-direction: column;
   padding: 32px 24px;
   box-sizing: border-box;
+}
+
+.lockedSectionCh2 {
+  border-top-color: #c17e2f;
+}
+
+.lockedSectionCh3 {
+  border-top-color: #8b3a62;
 }
 
 .lockedTitle {
@@ -604,6 +661,10 @@
     position: static;
     width: auto;
     padding: 10px 20px;
+  }
+
+  .etherealBar {
+    padding: 10px 20px 10px 0;
   }
 
   .leftColumn {

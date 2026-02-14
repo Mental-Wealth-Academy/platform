@@ -94,7 +94,13 @@ export default function Chapters() {
                 </button>
               </div>
 
-              {/* Row 2: Content */}
+              {/* Ethereal Bar — above Chapter 1 sections */}
+              <div className={styles.etherealBar}>
+                <div className={styles.etherealLine} />
+                <span className={styles.etherealText}>The Ethereal Horizon</span>
+              </div>
+
+              {/* Row 3: Content */}
               <div className={styles.leftColumn}>
                 <div className={styles.leftContent}>
                   <h1 className={styles.storyTitle}>://Ethereal 00</h1>
@@ -176,12 +182,18 @@ export default function Chapters() {
               </article>
 
               {/* Chapter 2 Spine */}
-              <div className={styles.spine}>
+              <div className={`${styles.spine} ${styles.spineCh2}`}>
                 <div className={styles.spineChapter}>
                   <span className={styles.spineChLabel}>Ch.</span>
                   <span className={styles.spineChNumber}>2</span>
                 </div>
                 <span className={styles.spineTitle}>Emotional Currents</span>
+              </div>
+
+              {/* Ethereal Bar — above Chapter 2 sections */}
+              <div className={`${styles.etherealBar} ${styles.etherealBarCh2}`}>
+                <div className={styles.etherealLine} />
+                <span className={styles.etherealText}>Telepathic Weaponry &amp; Cold War</span>
               </div>
 
               {/* Chapter 2 — Locked Sections */}
@@ -190,7 +202,7 @@ export default function Chapters() {
                 { num: 2, title: 'Beneath the Surface' },
                 { num: 3, title: "The Current\u2019s Edge" },
               ].map((s) => (
-                <article key={`ch2-${s.num}`} className={styles.lockedSection}>
+                <article key={`ch2-${s.num}`} className={`${styles.lockedSection} ${styles.lockedSectionCh2}`}>
                   <span className={styles.sectionNumber}>Section {s.num}</span>
                   <h3 className={styles.lockedTitle}>{s.title}</h3>
                   <p className={styles.lockedDesc}>
@@ -206,12 +218,18 @@ export default function Chapters() {
               ))}
 
               {/* Chapter 3 Spine */}
-              <div className={styles.spine}>
+              <div className={`${styles.spine} ${styles.spineCh3}`}>
                 <div className={styles.spineChapter}>
                   <span className={styles.spineChLabel}>Ch.</span>
                   <span className={styles.spineChNumber}>3</span>
                 </div>
                 <span className={styles.spineTitle}>The Inner Critic</span>
+              </div>
+
+              {/* Ethereal Bar — above Chapter 3 sections */}
+              <div className={`${styles.etherealBar} ${styles.etherealBarCh3}`}>
+                <div className={styles.etherealLine} />
+                <span className={styles.etherealText}>The Scary Shapeshifter</span>
               </div>
 
               {/* Chapter 3 — Locked Sections */}
@@ -220,7 +238,7 @@ export default function Chapters() {
                 { num: 2, title: 'Echoes of Doubt' },
                 { num: 3, title: 'Breaking the Mirror' },
               ].map((s) => (
-                <article key={`ch3-${s.num}`} className={styles.lockedSection}>
+                <article key={`ch3-${s.num}`} className={`${styles.lockedSection} ${styles.lockedSectionCh3}`}>
                   <span className={styles.sectionNumber}>Section {s.num}</span>
                   <h3 className={styles.lockedTitle}>{s.title}</h3>
                   <p className={styles.lockedDesc}>

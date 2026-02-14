@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react'
 
 const TRACKS = [
+  { name: 'Neo Soul', url: '/Intimate-Neo-Soul.mp3' },
   { name: 'Serenity', url: '/Serenity.mp3' },
   { name: 'Ambient', url: '/Ambient.mp3' },
   { name: 'Calm', url: '/Calm.mp3' },
