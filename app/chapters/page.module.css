@@ -212,12 +212,12 @@
 }
 
 .etherealBarCh2 {
-  --ch-color: #c17e2f;
+  --ch-color: #d4870a;
   grid-column: 7 / 10;
 }
 
 .etherealBarCh3 {
-  --ch-color: #8b3a62;
+  --ch-color: #c42d6a;
   grid-column: 11 / 14;
 }
 
@@ -318,11 +318,11 @@
 }
 
 .spineCh2 {
-  background: #c17e2f;
+  background: #d4870a;
 }
 
 .spineCh3 {
-  background: #8b3a62;
+  background: #c42d6a;
 }
 
 /* ─── Section Main (featured) ─── */
@@ -487,11 +487,11 @@
 }
 
 .lockedSectionCh2 {
-  border-top-color: #c17e2f;
+  border-top-color: #d4870a;
 }
 
 .lockedSectionCh3 {
-  border-top-color: #8b3a62;
+  border-top-color: #c42d6a;
 }
 
 .lockedTitle {

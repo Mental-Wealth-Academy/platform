@@ -151,7 +151,7 @@ export default function Chapters() {
                   <div className={styles.sectionBody}>
                     <div
                       className={styles.sectionImage}
-                      style={{ backgroundImage: 'url(https://i.imgur.com/qQFutfZ.jpeg)' }}
+                      style={{ backgroundImage: 'url(https://i.imgur.com/WSEZOh8.jpeg)' }}
                     />
                     <div className={styles.sectionText}>
                       <p className={styles.sectionDescription}>
