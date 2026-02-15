@@ -159,7 +159,7 @@
 }
 
 .primaryCta {
-  background: #50599B;
+  background: var(--color-primary);
   color: #ffffff;
   box-shadow: 3px 3px 0 #1A1D33;
 }

@@ -244,18 +244,18 @@ export default function VotingPage() {
                   </p>
                   <div className={styles.heroActions}>
                     <button
-                      className={styles.primaryCta}
-                      onClick={() => setIsSubmitModalOpen(true)}
-                      type="button"
-                    >
-                      Submit Form
-                    </button>
-                    <button
                       className={styles.secondaryCta}
                       onClick={() => setShowDemo(!showDemo)}
                       type="button"
                     >
                       Demo
+                    </button>
+                    <button
+                      className={styles.primaryCta}
+                      onClick={() => setIsSubmitModalOpen(true)}
+                      type="button"
+                    >
+                      Proposal
                     </button>
                   </div>
                 </div>

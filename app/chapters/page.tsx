@@ -117,9 +117,9 @@ export default function Chapters() {
               {/* Row 3: Content */}
               <div className={styles.leftColumn}>
                 <div className={styles.leftContent}>
-                  <h1 className={styles.storyTitle}>://Ethereal 00</h1>
+                  <h1 className={styles.storyTitle}>Horizon 01</h1>
                   <p className={styles.storyDescription}>
-                    Vesper wakes in a cryostasis cell with fragmented memories. Any contact
+                    Vesper wakes in cryostasis with fragmented memories. Any contact
                     with the outside denied. Only one person is capable of being reached — the question
                     is, where are they?
                   </p>
@@ -144,7 +144,7 @@ export default function Chapters() {
                 <div className={styles.sectionHead}>
                   <span className={styles.sectionNumber}>Section 1</span>
                   <h2 className={styles.sectionMainTitle}>
-                    Telepathic Machines
+                    Empathetic Lifeforms
                   </h2>
                 </div>
                 <div className={styles.sectionBodyWrapper}>

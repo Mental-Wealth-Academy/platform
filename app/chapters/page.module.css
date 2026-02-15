@@ -242,7 +242,7 @@
 }
 
 .storyTitle {
-  font-family: var(--font-secondary);
+  font-family: 'Space Mono', monospace;
   font-size: 36px;
   font-weight: 700;
   color: #1A1D33;
