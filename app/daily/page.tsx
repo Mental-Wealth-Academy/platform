@@ -14,7 +14,7 @@ const readings = [
     description:
       'In the pantheon of creativity, whether product design, art, science, architecture, software, or some hybrid creature from the abyss of the mind\'s black hole, true greatness emerges not from one stroke of genius, but careful curation of the entire process.',
     category: 'Digital Research',
-    imageUrl: 'https://images.unsplash.com/photo-1639628739763-3d4ada1a656a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y3liZXIlMjBwc3ljaG9sb2d5fGVufDB8fDB8fHww',
+    imageUrl: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=900&auto=format&fit=crop&q=60',
     slug: 'how-to-make-something-great',
   },
   {
@@ -23,7 +23,7 @@ const readings = [
     description:
       'A rigorous theoretical and empirical analysis of governance mechanisms within academic decentralized autonomous organizations. This monograph synthesizes mechanism design theory, social choice theory, and institutional economics to evaluate the efficacy of quadratic voting protocols, reputation-weighted decision-making, and stewardship models.',
     category: 'Decision-making',
-    imageUrl: 'https://plus.unsplash.com/premium_photo-1683977922495-3ab3ce7ba4e6?q=80&w=2200&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    imageUrl: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=900&auto=format&fit=crop&q=60',
     slug: 'micro-university',
   },
   {
@@ -32,7 +32,7 @@ const readings = [
     description:
       'A critical examination of autonomous agents designed for systematic literature review, citation network analysis, and knowledge synthesis. This investigation employs both computational experiments and philosophical inquiry to delineate the boundaries between algorithmic summarization and genuine scholarly comprehension.',
     category: 'AI Tools',
-    imageUrl: 'https://images.unsplash.com/photo-1580077910645-a6fd54032e15?w=900&auto=format&fit=crop&q=60',
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&auto=format&fit=crop&q=60',
     slug: 'from-viral-to-ethereal',
   },
 ];
@@ -106,11 +106,6 @@ export default function DailyPage() {
                 Curated readings from researchers and thought leaders. Read, rate, and save articles to deepen your understanding.
               </p>
             </header>
-
-            <div className={styles.readingsHeader}>
-              <span className={styles.sectionLabel}>Today&apos;s Readings</span>
-              <h2 className={styles.sectionTitle}>Research & Essays</h2>
-            </div>
 
             <div className={`${styles.readingsGrid} ${isLoaded ? styles.readingsGridLoaded : ''}`}>
               {readings.map((book, index) => (
