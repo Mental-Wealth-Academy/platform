@@ -81,7 +81,7 @@ export default function AngelMintSection({ onOpenMintModal }: AngelMintSectionPr
               type="button"
             >
               <span className={styles.mintButtonText}>
-                Support Us ♥
+                Own Your Wings
               </span>
               <svg
                 width="16"

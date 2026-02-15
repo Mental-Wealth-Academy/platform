@@ -47,7 +47,7 @@ const navSections: NavSection[] = [
     id: 'tools',
     label: 'Tools',
     items: [
-      { id: 'voting', label: 'Prizes', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
+      { id: 'voting', label: 'Proposals', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
     ],
@@ -360,13 +360,15 @@ const SideNavigation: React.FC = () => {
                       }}
                       className={`${styles.navItem} ${styles.navItemButton}`}
                     >
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className={styles.navItemIcon}
-                      />
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
                       <span className={styles.navItemLabel}>{item.label}</span>
                       {item.badge && (
                         <span className={`${styles.badge} ${styles.badgePro}`}>
@@ -379,13 +381,15 @@ const SideNavigation: React.FC = () => {
                       key={item.id}
                       className={`${styles.navItem} ${styles.navItemDisabled}`}
                     >
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className={styles.navItemIcon}
-                      />
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
                       <span className={styles.navItemLabel}>{item.label}</span>
                       {item.badge && (
                         <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
@@ -401,13 +405,15 @@ const SideNavigation: React.FC = () => {
                       {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={20}
-                        height={20}
-                        className={styles.navItemIcon}
-                      />
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
                       <span className={styles.navItemLabel}>{item.label}</span>
                       {item.badge && (
                         <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>

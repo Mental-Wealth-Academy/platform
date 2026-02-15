@@ -1,8 +1,9 @@
 /* Section Container */
 .angelSection {
   position: relative;
-  width: 100%;
-  padding: var(--space-4) var(--space-4) var(--space-xl);
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: var(--space-2) 0 var(--space-lg);
   background: transparent;
   z-index: 1;
   display: block;
@@ -16,18 +17,16 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-2);
 }
 
-/* Scrolling Images Container - Full width within section */
+/* Scrolling Images Container - Full viewport width */
 .scrollingImagesContainer {
   position: relative;
   overflow: hidden;
-  width: calc(100% + 2 * var(--space-4));
-  padding: var(--space-md) 0;
+  width: 100%;
+  padding: var(--space-md) 0 0;
   min-height: 280px;
-  margin-left: calc(-1 * var(--space-4));
-  margin-right: calc(-1 * var(--space-4));
 }
 
 .scrollRow {
@@ -68,7 +67,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--space-md) 0;
+  padding: 0;
   width: 100%;
 }
 
@@ -178,7 +177,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .angelSection {
-    padding: var(--space-lg) var(--space-4);
+    padding: var(--space-2) 0 var(--space-md);
     min-height: 350px;
   }
 
@@ -189,9 +188,6 @@
   .scrollingImagesContainer {
     padding: var(--space-sm) 0;
     min-height: 220px;
-    width: calc(100% + 2 * var(--space-4));
-    margin-left: calc(-1 * var(--space-4));
-    margin-right: calc(-1 * var(--space-4));
   }
 
   .scrollRow {
@@ -229,7 +225,7 @@
 
 @media (min-width: 1024px) {
   .angelSection {
-    padding: var(--space-2xl) var(--space-6);
+    padding: var(--space-2) 0 var(--space-xl);
     min-height: 450px;
   }
 
@@ -240,9 +236,6 @@
   .scrollingImagesContainer {
     padding: var(--space-lg) 0;
     min-height: 340px;
-    width: calc(100% + 2 * var(--space-6));
-    margin-left: calc(-1 * var(--space-6));
-    margin-right: calc(-1 * var(--space-6));
   }
 
   .angelImage {

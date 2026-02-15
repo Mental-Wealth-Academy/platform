@@ -125,6 +125,7 @@ export default function VotingPage() {
   const [isContentLoading, setIsContentLoading] = useState(true);
   const [showMintModal, setShowMintModal] = useState(false);
   const [showGuyDialogue, setShowGuyDialogue] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -251,10 +252,10 @@ export default function VotingPage() {
                     </button>
                     <button
                       className={styles.secondaryCta}
-                      onClick={() => setShowTutorial(true)}
+                      onClick={() => setShowDemo(!showDemo)}
                       type="button"
                     >
-                      Tutorial
+                      Demo
                     </button>
                   </div>
                 </div>
@@ -277,6 +278,8 @@ export default function VotingPage() {
             </header>
           </div>
 
+          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
+
           {/* Your Impact Section */}
           <YourImpact />
 
@@ -294,6 +297,9 @@ export default function VotingPage() {
 
           {/* Proposals Section */}
           <section className={styles.proposalsSection}>
+            <div className={styles.proposalsHeader}>
+              <h2 className={styles.proposalsHeaderTitle}>Community Proposals</h2>
+            </div>
             {loading ? (
               <div className={styles.proposalsGrid}>
                 {[...Array(3)].map((_, i) => (
@@ -388,7 +394,6 @@ export default function VotingPage() {
         </div>
       </main>
       </div>
-      <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
 
       {selectedProposal && (
@@ -415,6 +420,34 @@ export default function VotingPage() {
         title="Meet $MWG!"
         showProgress={true}
       />
+
+      {showDemo && (
+        <div className={styles.demoOverlay} onClick={() => setShowDemo(false)}>
+          <div className={styles.demoContainer} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.demoHeader}>
+              <span className={styles.demoLabel}>DEMO // TRANSMISSION</span>
+              <button
+                className={styles.demoClose}
+                onClick={() => setShowDemo(false)}
+                type="button"
+                aria-label="Close demo"
+              >
+                &times;
+              </button>
+            </div>
+            <div className={styles.demoVideoWrapper}>
+              <iframe
+                src="https://www.youtube.com/embed/_i2itVBQSX4?autoplay=1&mute=1"
+                title="Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className={styles.demoVideo}
+              />
+            </div>
+            <div className={styles.demoScanline} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
