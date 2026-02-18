@@ -321,19 +321,34 @@ const SideNavigation: React.FC = () => {
             </button>
           )}
 
-          {/* Daemon Shards Counter */}
-          <div className={styles.shardsCounter}>
-            <Image
-              src="/icons/shard.svg"
-              alt="Daemon"
-              width={20}
-              height={20}
-              className={styles.shardIcon}
-            />
-            <span className={styles.shardsLabel}>Daemon:</span>
-            <span className={styles.shardsValue}>
-              {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
-            </span>
+          {/* Gems Counter + Azura Chat */}
+          <div className={styles.gemsRow}>
+            <div className={styles.shardsCounter}>
+              <Image
+                src="/icons/shard.svg"
+                alt="Gems"
+                width={20}
+                height={20}
+                className={styles.shardIcon}
+              />
+              <span className={styles.shardsLabel}>Gems:</span>
+              <span className={styles.shardsValue}>
+                {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
+              </span>
+            </div>
+            <button
+              className={styles.azuraChatIcon}
+              onClick={() => {
+                setIsChatOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              aria-label="Open Azura AI Chat"
+              title="Azura AI"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -428,23 +443,9 @@ const SideNavigation: React.FC = () => {
           ))}
         </div>
 
-        {/* Bottom Section - Audio Player + Ask Azura */}
+        {/* Bottom Section - Audio Player */}
         <div className={styles.bottomSection}>
           <AudioPlayer />
-          <button
-            className={styles.azuraChatButton}
-            onClick={() => {
-              setIsChatOpen(true);
-              setIsMobileMenuOpen(false);
-            }}
-            aria-label="Open Azura AI Chat"
-            title="Azura AI"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <span className={styles.azuraChatLabel}>Ask Azura Anything</span>
-          </button>
         </div>
       </nav>
 
