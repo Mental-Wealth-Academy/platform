@@ -237,20 +237,20 @@ export default function Chapters() {
                   <span className={styles.spineChLabel}>Ch.</span>
                   <span className={styles.spineChNumber}>3</span>
                 </div>
-                <span className={styles.spineTitle}>The Inner Critic</span>
+                <span className={styles.spineTitle}>The Big Enemies</span>
               </div>
 
               {/* Ethereal Bar — above Chapter 3 sections */}
               <div className={`${styles.etherealBar} ${styles.etherealBarCh3}`}>
                 <div className={styles.etherealLine} />
-                <span className={styles.etherealText}>The Scary Shapeshifter</span>
+                <span className={styles.etherealText}>Shapeshifting Beliefs</span>
               </div>
 
               {/* Chapter 3 — Locked Sections */}
               {[
                 { num: 1, title: 'The Silent Judge' },
                 { num: 2, title: 'Echoes of Doubt' },
-                { num: 3, title: 'Breaking the Mirror' },
+                { num: 3, title: 'A New Horizon' },
               ].map((s) => (
                 <article key={`ch3-${s.num}`} className={`${styles.lockedSection} ${styles.lockedSectionCh3}`}>
                   <span className={styles.sectionNumber}>Section {s.num}</span>
