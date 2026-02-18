@@ -17,6 +17,7 @@ import ProposalDetailsModal from '@/components/proposal-card/ProposalDetailsModa
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
 import GuyTutorial, { GuyStep } from '@/components/voting/GuyTutorial';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
+import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import {
   fetchProposal,
   formatTokenAmount,
@@ -234,6 +235,7 @@ export default function VotingPage() {
           ) : (
           <>
           <div className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
+            <div className={styles.heroBg}><CyberpunkDataViz /></div>
             <header className={styles.header}>
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
