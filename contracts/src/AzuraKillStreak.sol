@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 /**
  * @title AzuraKillStreak
@@ -76,6 +77,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         uint256 azuraLevel;         // Azura's confidence level (0-4)
         bool azuraApproved;         // Did Azura approve?
         bool executed;
+        uint256 snapshotBlock;      // Block number when proposal was created (for getPastVotes)
     }
     
     /// @notice Vote struct to track individual votes
@@ -245,7 +247,8 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         proposal.createdAt = block.timestamp;
         proposal.votingDeadline = block.timestamp + _votingPeriod;
         proposal.status = ProposalStatus.Pending;
-        
+        proposal.snapshotBlock = block.number;
+
         emit ProposalCreated(
             proposalId,
             msg.sender,
@@ -318,15 +321,15 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      * @param _proposalId ID of proposal to vote on
      * @param _support true to approve, false to reject
      */
-    function vote(uint256 _proposalId, bool _support) external {
+    function vote(uint256 _proposalId, bool _support) external nonReentrant {
         Proposal storage proposal = proposals[_proposalId];
-        
+
         if (proposal.status != ProposalStatus.Active) revert ProposalNotActive();
         if (block.timestamp > proposal.votingDeadline) revert VotingEnded();
         if (votes[_proposalId][msg.sender].hasVoted) revert AlreadyVoted();
-        
-        // Check voter's token balance
-        uint256 voterBalance = governanceToken.balanceOf(msg.sender);
+
+        // Check voter's voting power at snapshot block (prevents vote-transfer attacks)
+        uint256 voterBalance = IVotes(address(governanceToken)).getPastVotes(msg.sender, proposal.snapshotBlock);
         if (voterBalance == 0) revert InsufficientVotingPower();
         
         // Record vote
@@ -397,7 +400,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      *        actionType 1 = Auto-execute proposal
      *        actionType 2 = Azura review from DON
      */
-    function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder {
+    function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder nonReentrant {
         (uint8 actionType, bytes memory payload) = abi.decode(report, (uint8, bytes));
 
         if (actionType == 1) {
@@ -560,11 +563,11 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     }
     
     /**
-     * @notice Get voting power of an address
+     * @notice Get current voting power of an address (requires delegation)
      * @param _voter Address to check
-     * @return Voting power (token balance)
+     * @return Voting power (delegated votes)
      */
     function getVotingPower(address _voter) external view returns (uint256) {
-        return governanceToken.balanceOf(_voter);
+        return IVotes(address(governanceToken)).getVotes(_voter);
     }
 }

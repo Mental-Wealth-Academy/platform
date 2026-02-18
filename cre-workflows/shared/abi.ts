@@ -37,6 +37,7 @@ export const GET_PROPOSAL_ABI = [
           { name: "azuraLevel", type: "uint256" },
           { name: "azuraApproved", type: "bool" },
           { name: "executed", type: "bool" },
+          { name: "snapshotBlock", type: "uint256" },
         ],
       },
     ],
