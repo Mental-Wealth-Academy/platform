@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import styles from './SoulGemDisplay.module.css';
 
@@ -81,8 +81,12 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   walletAddress,
   governanceTokenAddress,
 }) => {
-  const handleViewWallet = () => {
-    window.open(`https://basescan.org/token/${governanceTokenAddress}?a=${walletAddress}`, '_blank');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(walletAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -100,6 +104,23 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
           <h4 className={styles.azuraName}>
             Azura
             <span className={styles.aiTag}>Guardian</span>
+            <button
+              className={styles.copyButton}
+              onClick={handleCopy}
+              title={copied ? 'Copied!' : `Copy address: ${walletAddress}`}
+              type="button"
+            >
+              {copied ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+              )}
+            </button>
           </h4>
         </div>
       </div>

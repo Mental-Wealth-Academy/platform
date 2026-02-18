@@ -5,14 +5,9 @@ import { useEffect, useRef, useCallback } from 'react';
 function isInsideMap(x: number, y: number, width: number, height: number) {
   const nx = x / width;
   const ny = y / height;
-  if (nx < 0.06 || nx > 0.96) return false;
-  if (ny < 0.06 || ny > 0.85) return false;
-  const leftBound = 0.06 + ny * 0.12;
-  const rightBound = 0.96 - ny * 0.10;
-  if (nx < leftBound || nx > rightBound) return false;
-  const topBound = 0.06 + (nx < 0.3 ? (0.3 - nx) * 0.3 : 0) + (nx > 0.8 ? (nx - 0.8) * 0.2 : 0);
-  const bottomBound = 0.85 - (nx > 0.7 ? (nx - 0.7) * 0.6 : 0) - (nx < 0.2 ? (0.2 - nx) * 0.15 : 0);
-  return ny > topBound && ny < bottomBound;
+  if (nx < 0.02 || nx > 0.99) return false;
+  if (ny < 0.02 || ny > 0.99) return false;
+  return true;
 }
 
 interface GridCell {
@@ -81,16 +76,12 @@ export default function CyberpunkDataViz() {
       const time = timeRef.current;
       ctx!.clearRect(0, 0, W, H);
 
-      const bgGrad = ctx!.createRadialGradient(W * 0.5, H * 0.4, 50, W * 0.5, H * 0.5, W * 0.8);
-      bgGrad.addColorStop(0, '#1a0a2e');
-      bgGrad.addColorStop(0.5, '#0d0618');
-      bgGrad.addColorStop(1, '#050208');
-      ctx!.fillStyle = bgGrad;
+      ctx!.fillStyle = '#FBF8FF';
       ctx!.fillRect(0, 0, W, H);
 
       const nebulaGrad = ctx!.createRadialGradient(W * 0.4, H * 0.6, 10, W * 0.4, H * 0.6, 300);
-      nebulaGrad.addColorStop(0, 'rgba(180, 40, 120, 0.06)');
-      nebulaGrad.addColorStop(1, 'rgba(180, 40, 120, 0)');
+      nebulaGrad.addColorStop(0, 'rgba(81, 104, 255, 0.06)');
+      nebulaGrad.addColorStop(1, 'rgba(81, 104, 255, 0)');
       ctx!.fillStyle = nebulaGrad;
       ctx!.fillRect(0, 0, W, H);
 
@@ -101,11 +92,11 @@ export default function CyberpunkDataViz() {
 
         let color;
         if (cell.hue === 320) {
-          color = `rgba(255, 80, 200, ${alpha})`;
+          color = `rgba(81, 104, 255, ${alpha * 0.4})`;
         } else if (cell.hue === 280) {
-          color = `rgba(180, 120, 255, ${alpha * 0.8})`;
+          color = `rgba(140, 100, 220, ${alpha * 0.3})`;
         } else {
-          color = `rgba(120, 180, 255, ${alpha * 0.7})`;
+          color = `rgba(26, 29, 51, ${alpha * 0.15})`;
         }
 
         ctx!.fillStyle = color;
@@ -115,15 +106,15 @@ export default function CyberpunkDataViz() {
         ctx!.fillText(cell.char, cell.x, cell.y);
 
         if (alpha > 0.7 && cell.hue === 320) {
-          ctx!.shadowColor = 'rgba(255, 80, 200, 0.4)';
-          ctx!.shadowBlur = 8;
+          ctx!.shadowColor = 'rgba(81, 104, 255, 0.3)';
+          ctx!.shadowBlur = 6;
           ctx!.fillText(cell.char, cell.x, cell.y);
           ctx!.shadowBlur = 0;
         }
       }
 
       for (let sy = 0; sy < H; sy += 3) {
-        ctx!.fillStyle = `rgba(0, 0, 0, ${0.06 + Math.sin(time * 2 + sy * 0.1) * 0.02})`;
+        ctx!.fillStyle = `rgba(81, 104, 255, ${0.02 + Math.sin(time * 2 + sy * 0.1) * 0.01})`;
         ctx!.fillRect(0, sy, W, 1);
       }
 
@@ -133,8 +124,8 @@ export default function CyberpunkDataViz() {
         { text: '8.21', x: W * 0.55, y: H * 0.45 },
       ];
       for (const fn of floatingNums) {
-        const fAlpha = 0.5 + Math.sin(time * 1.2 + fn.x) * 0.3;
-        ctx!.fillStyle = `rgba(255, 140, 100, ${fAlpha})`;
+        const fAlpha = 0.3 + Math.sin(time * 1.2 + fn.x) * 0.2;
+        ctx!.fillStyle = `rgba(81, 104, 255, ${fAlpha})`;
         ctx!.font = '10px "Courier New", monospace';
         ctx!.textAlign = 'center';
         ctx!.fillText(fn.text, fn.x, fn.y + Math.sin(time + fn.x) * 3);
