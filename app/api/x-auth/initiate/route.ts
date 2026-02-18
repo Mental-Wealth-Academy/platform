@@ -37,7 +37,7 @@ export async function GET() {
 
     const user = await getCurrentUserFromRequestCookie();
     if (!user) {
-      return NextResponse.json({ error: 'User account not found. Please complete signup.' }, { status: 404 });
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
     const xApiKey = process.env.X_API_KEY;

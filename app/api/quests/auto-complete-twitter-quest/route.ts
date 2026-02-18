@@ -22,7 +22,7 @@ export async function POST() {
   // Get our internal user record (authenticated via wallet address)
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
-    return NextResponse.json({ error: 'User account not found. Please complete signup.' }, { status: 404 });
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
   try {

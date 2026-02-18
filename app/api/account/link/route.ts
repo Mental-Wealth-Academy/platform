@@ -39,9 +39,9 @@ export async function POST(request: Request) {
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
     return NextResponse.json(
-      { error: 'User account not found. Please complete signup.' }, 
-      { 
-        status: 404,
+      { error: 'Not authenticated' },
+      {
+        status: 401,
         headers: { 'Content-Type': 'application/json' }
       }
     );

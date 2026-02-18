@@ -350,13 +350,13 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, isWa
         onClose();
         // If we're already on the home page, just refresh user data
         // Otherwise redirect to home
-        if (window.location.pathname === '/home') {
-          // Already on home page - profileUpdated event will trigger avatar modal if needed
+        if (window.location.pathname === '/voting') {
+          // Already on dashboard page - profileUpdated event will trigger avatar modal if needed
           // No need to redirect
         } else {
           // Use window.location.replace for reliable redirect (ensures full page reload with new session)
           // This ensures cookies are properly sent and session is recognized
-          window.location.replace('/home');
+          window.location.replace('/voting');
         }
       } else {
         // Log detailed error for debugging

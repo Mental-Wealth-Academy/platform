@@ -263,10 +263,10 @@ const Navbar: React.FC = () => {
               <span className={isActive('/quests') ? styles.buttonLabelActive : styles.buttonLabel}>Quests</span>
             </Link>
 
-            {/* Voting Button */}
+            {/* Proposals Button */}
             <Link href="/voting" className={`${styles.navButton} ${isActive('/voting') ? styles.navButtonActive : ''}`}>
               <VotingIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/voting') ? styles.buttonLabelActive : styles.buttonLabel}>Voting</span>
+              <span className={isActive('/voting') ? styles.buttonLabelActive : styles.buttonLabel}>Proposals</span>
             </Link>
           </div>
 
@@ -416,7 +416,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/home?onboarding=true');
+                  router.push('/voting?onboarding=true');
                 }}
                 type="button"
               >
@@ -431,7 +431,7 @@ const Navbar: React.FC = () => {
                   // Dispatch event to open onboarding modal (works if already on home page)
                   window.dispatchEvent(new Event('openOnboarding'));
                   // Navigate to home with query param to trigger onboarding
-                  router.push('/home?onboarding=true');
+                  router.push('/voting?onboarding=true');
                 }}
                 type="button"
               >
@@ -470,7 +470,7 @@ const Navbar: React.FC = () => {
           className={`${styles.mobileBottomNavButton} ${isActive('/voting') ? styles.mobileBottomNavButtonActive : ''}`}
         >
           <VotingIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Voting</span>
+          <span className={styles.mobileBottomNavLabel}>Proposals</span>
         </Link>
       </div>
 

@@ -37,18 +37,18 @@ const navSections: NavSection[] = [
     id: 'featured',
     label: 'Featured',
     items: [
-      { id: 'home', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
-      { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
-      { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
+      { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
+      { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
+      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
   },
   {
     id: 'tools',
     label: 'Tools',
     items: [
-      { id: 'voting', label: 'Proposals', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
-      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
+      { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
+      { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
+      { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
     ],
   },
@@ -81,6 +81,7 @@ const SideNavigation: React.FC = () => {
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [showLoginGate, setShowLoginGate] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -339,15 +340,17 @@ const SideNavigation: React.FC = () => {
             <button
               className={styles.azuraChatIcon}
               onClick={() => {
-                setIsChatOpen(true);
+                if (username && !username.startsWith('user_')) {
+                  setIsChatOpen(true);
+                } else {
+                  setShowLoginGate(true);
+                }
                 setIsMobileMenuOpen(false);
               }}
               aria-label="Open Azura AI Chat"
               title="Azura AI"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
+              <Image src="/icons/daemon.svg" alt="Azura" width={20} height={20} />
             </button>
           </div>
         </div>
@@ -464,6 +467,51 @@ const SideNavigation: React.FC = () => {
           currentUsername={username}
           onUsernameChanged={handleUsernameChanged}
         />
+      )}
+
+      {/* Login Gate Modal */}
+      {showLoginGate && (
+        <div className={styles.loginGateOverlay} onClick={() => setShowLoginGate(false)}>
+          <div className={styles.loginGateModal} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.loginGateClose}
+              onClick={() => setShowLoginGate(false)}
+              aria-label="Close"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            <div className={styles.loginGateImage}>
+              <Image
+                src="https://i.imgur.com/HFjHyUZ.png"
+                alt="Azura AI"
+                width={500}
+                height={500}
+                unoptimized
+                style={{ width: '110%', height: 'auto' }}
+              />
+            </div>
+            <div className={styles.loginGateContent}>
+              <h1 className={styles.loginGateTitle}>You need to be logged in to access this feature</h1>
+              <p className={styles.loginGateText}>Azura provides:</p>
+              <ul className={styles.loginGateList}>
+                <li>Private Agentic Workflows</li>
+                <li>Fetch shared resources</li>
+                <li>Communicate with nodes</li>
+              </ul>
+              <button
+                className={styles.loginGateButton}
+                onClick={() => {
+                  setShowLoginGate(false);
+                  openConnectModal(true);
+                }}
+              >
+                Connect Wallet
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -62,7 +62,7 @@ export default function ProposalSuccessModal({
           </div>
 
           <div className={styles.actions}>
-            <Link href="/voting" className={styles.primaryButton} onClick={onClose}>
+            <Link href="/home" className={styles.primaryButton} onClick={onClose}>
               View All Proposals
             </Link>
             <button className={styles.secondaryButton} onClick={onClose}>
