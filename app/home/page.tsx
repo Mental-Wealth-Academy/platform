@@ -239,7 +239,7 @@ export default function VotingPage() {
             <header className={styles.header}>
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
-                  <p className={styles.eyebrow}>MWA • Academic Governance</p>
+                  <p className={styles.eyebrow}>MWA • Oracle Network</p>
                   <h1 className={styles.title}>Horizon Home</h1>
                   <p className={styles.subtitle}>
                     Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
