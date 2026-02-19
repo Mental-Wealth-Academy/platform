@@ -4,14 +4,13 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
-import YourImpact from '@/components/your-impact/YourImpact';
 import styles from './HomeDashboard.module.css';
 
 const tabs = [
-  'Voting & Governance',
-  'AI Agent Azura',
+  'Your Impact',
   'Weekly Tasks',
   'Quests & Learning',
+  'Voting & Governance',
 ] as const;
 
 type Tab = (typeof tabs)[number];
@@ -114,8 +113,89 @@ function VotingPanel() {
   );
 }
 
-function AzuraPanel() {
-  return <YourImpact />;
+function ImpactPanel() {
+  return (
+    <div className={styles.panel}>
+      <div className={styles.impactBanner}>
+        <span className={styles.impactBannerText}>
+          Every vote is on-chain. Every dollar is tracked. No backroom decisions.
+        </span>
+      </div>
+      <div className={styles.impactGrid}>
+        <div className={styles.impactCard}>
+          <div className={styles.impactCardHeader}>
+            <span className={styles.impactIcon}>&#9878;</span>
+            <span className={styles.impactCardTitle}>Transparent Governance</span>
+          </div>
+          <p className={styles.impactCardDesc}>
+            Traditional orgs hide how money moves. Here, proposals are AI-reviewed, community-voted, and executed on-chain.
+          </p>
+          <div className={styles.impactStats}>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>3</span>
+              <span className={styles.statLabel}>Proposals Voted</span>
+            </div>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>$2.1k</span>
+              <span className={styles.statLabel}>Funds Guided</span>
+            </div>
+          </div>
+          <div className={styles.impactTags}>
+            <span className={styles.impactTag}>On-chain</span>
+            <span className={styles.impactTag}>Auditable</span>
+          </div>
+        </div>
+
+        <div className={styles.impactCard}>
+          <div className={styles.impactCardHeader}>
+            <span className={styles.impactIcon}>&#9733;</span>
+            <span className={styles.impactCardTitle}>Your Voice Matters</span>
+          </div>
+          <p className={styles.impactCardDesc}>
+            No token-gated whale dominance. Azura Power scales with contribution, not capital. Do the work, earn the weight.
+          </p>
+          <div className={styles.impactStats}>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>2</span>
+              <span className={styles.statLabel}>Themes Shaped</span>
+            </div>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>Active</span>
+              <span className={styles.statLabel}>Agent Memory</span>
+            </div>
+          </div>
+          <div className={styles.impactTags}>
+            <span className={styles.impactTag}>Access</span>
+            <span className={styles.impactTag}>Prevention</span>
+          </div>
+        </div>
+
+        <div className={styles.impactCard}>
+          <div className={styles.impactCardHeader}>
+            <span className={styles.impactIcon}>&#9670;</span>
+            <span className={styles.impactCardTitle}>System Integrity</span>
+          </div>
+          <p className={styles.impactCardDesc}>
+            Azura reviews every proposal across 6 dimensions before it reaches a vote. No spam, no manipulation, no wasted treasury.
+          </p>
+          <div className={styles.impactStats}>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>High</span>
+              <span className={styles.statLabel}>Signal Quality</span>
+            </div>
+            <div className={styles.impactStat}>
+              <span className={styles.impactStatValue}>0</span>
+              <span className={styles.statLabel}>Disputes</span>
+            </div>
+          </div>
+          <div className={styles.impactTags}>
+            <span className={styles.impactTagGreen}>Healthy</span>
+            <span className={styles.impactTag}>No urgency</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function TasksPanel() {
@@ -192,12 +272,11 @@ function QuestsPanel() {
 }
 
 export const HomeDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('Voting & Governance');
+  const [activeTab, setActiveTab] = useState<Tab>('Your Impact');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   return (
     <div className={styles.dashboardWrap}>
-      <ScannerCTA onSubmit={() => setIsSubmitModalOpen(true)} />
       <div className={styles.dashboard}>
         <div className={styles.tabBar}>
         {tabs.map((tab) => (
@@ -213,11 +292,12 @@ export const HomeDashboard: React.FC = () => {
 
       <div className={styles.panelWrap}>
         {activeTab === 'Voting & Governance' && <VotingPanel />}
-        {activeTab === 'AI Agent Azura' && <AzuraPanel />}
+        {activeTab === 'Your Impact' && <ImpactPanel />}
         {activeTab === 'Weekly Tasks' && <TasksPanel />}
         {activeTab === 'Quests & Learning' && <QuestsPanel />}
         </div>
       </div>
+      <ScannerCTA onSubmit={() => setIsSubmitModalOpen(true)} />
       <Link href="/home" className={styles.viewTreasuryCta}>
         View Treasury
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

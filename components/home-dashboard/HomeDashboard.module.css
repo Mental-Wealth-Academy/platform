@@ -336,131 +336,128 @@
   letter-spacing: 0.04em;
 }
 
-/* ── AI Agent Azura ──────────────────────────────── */
-.chatHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ── Your Impact ─────────────────────────────────── */
+.impactBanner {
   padding: 12px 16px;
-  background: #f8f7ff;
+  background: #1A1D33;
   border: 2px solid #1A1D33;
   border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 2px 2px 0 rgba(26, 29, 51, 0.3);
 }
 
-.avatarWrap {
-  position: relative;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  background: var(--color-primary, #5168FF);
-  color: #fff;
-  font-family: var(--font-secondary);
-  font-weight: 700;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 2px solid #1A1D33;
-}
-
-.onlineDot {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  background: var(--color-tertiary, #74C465);
-  border: 2px solid #fff;
-  border-radius: 50%;
-}
-
-.chatName {
-  display: block;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 600;
-  color: #1A1D33;
-}
-
-.chatStatus {
-  display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: var(--color-tertiary, #74C465);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-.chatBody {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bubbleAzura {
-  align-self: flex-start;
-  max-width: 85%;
-  padding: 10px 14px;
-  background: #f0f0ff;
-  border: 2px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 2px 2px 0 #1A1D33;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  line-height: 1.5;
-  color: #1A1D33;
-}
-
-.bubbleUser {
-  align-self: flex-end;
-  max-width: 85%;
-  padding: 10px 14px;
-  background: var(--color-primary, #5168FF);
-  color: #fff;
-  border: 2px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 2px 2px 0 #1A1D33;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.chatInput {
-  padding: 12px 14px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.chatInputText {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: rgba(26, 27, 36, 0.4);
-}
-
-.soulGems {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.impactBannerText {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-accent, #FF7729);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.03em;
 }
 
-.gemIcon {
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.impactCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.impactCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.impactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--color-primary, #5168FF);
+  color: #fff;
+  border-radius: 4px;
+  border: 2px solid #1A1D33;
   font-size: 13px;
+  flex-shrink: 0;
+}
+
+.impactCardTitle {
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.impactCardDesc {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(26, 27, 36, 0.65);
+  margin: 0;
+}
+
+.impactStats {
+  display: flex;
+  gap: 12px;
+}
+
+.impactStat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  background: #f8f7ff;
+  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.impactStatValue {
+  font-family: var(--font-secondary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.impactTags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.impactTag {
+  padding: 4px 10px;
+  background: rgba(81, 104, 255, 0.08);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary, #5168FF);
+}
+
+.impactTagGreen {
+  padding: 4px 10px;
+  background: rgba(116, 196, 101, 0.1);
+  border: 1px solid rgba(116, 196, 101, 0.3);
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-tertiary, #74C465);
 }
 
 /* ── Weekly Tasks ────────────────────────────────── */
@@ -726,9 +723,21 @@
     font-size: 18px;
   }
 
-  .bubbleAzura,
-  .bubbleUser {
-    max-width: 92%;
+  .impactGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .impactBannerText {
+    font-size: 10px;
+  }
+
+  .impactCardDesc {
+    font-size: 11px;
+  }
+
+  .impactStatValue {
+    font-size: 16px;
   }
 
   .questProgress {
