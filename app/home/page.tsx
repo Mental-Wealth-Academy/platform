@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { providers } from 'ethers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import YourImpact from '@/components/your-impact/YourImpact';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import StillTutorial, { TutorialStep } from '@/components/still-tutorial/StillTutorial';
@@ -240,7 +239,7 @@ export default function VotingPage() {
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
                   <p className={styles.eyebrow}>MWA • Oracle Network</p>
-                  <h1 className={styles.title}>Horizon Home</h1>
+                  <h1 className={styles.title}>Community Home</h1>
                   <p className={styles.subtitle}>
                     Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
                   </p>
@@ -281,9 +280,6 @@ export default function VotingPage() {
           </div>
 
           <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-
-          {/* Your Impact Section */}
-          <YourImpact />
 
           {/* Hero Banner Image - Click to open Guy Dialogue */}
           <Image

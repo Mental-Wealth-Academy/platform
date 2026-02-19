@@ -332,7 +332,7 @@ const SideNavigation: React.FC = () => {
                 height={20}
                 className={styles.shardIcon}
               />
-              <span className={styles.shardsLabel}>Gems:</span>
+              <span className={styles.shardsLabel}>Voting Power:</span>
               <span className={styles.shardsValue}>
                 {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
               </span>

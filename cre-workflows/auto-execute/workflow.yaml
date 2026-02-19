@@ -1,11 +1,22 @@
-name: auto-execute-proposals
-description: >
-  Cron workflow that runs every 10 minutes, reads active proposals from
-  AzuraKillStreak, and auto-executes any that have passed the 50% vote
-  threshold.  Delivers a DON-signed report via KeystoneForwarder.
+# ==========================================================================
+# CRE WORKFLOW SETTINGS: auto-execute-proposals
+# ==========================================================================
+# Cron workflow that runs every 10 minutes, reads active proposals from
+# AzuraKillStreak, and auto-executes any that have passed the 50% vote
+# threshold. Delivers a DON-signed report via KeystoneForwarder.
 
-trigger:
-  type: cron
-  schedule: "*/10 * * * *"
+production-settings:
+  user-workflow:
+    workflow-name: "auto-execute-proposals"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"
 
-entry: main.ts
+staging-settings:
+  user-workflow:
+    workflow-name: "auto-execute-proposals-staging"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"

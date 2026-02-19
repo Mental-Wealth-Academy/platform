@@ -1,22 +1,14 @@
-## Chainlink CRE Project Configuration
-## Mental Wealth Academy — Governance Automation Workflows
+# ==========================================================================
+# CRE PROJECT SETTINGS FILE
+# ==========================================================================
+# Mental Wealth Academy — Governance Automation Workflows
 
 production-settings:
-  account:
-    workflow-owner-address: "{{WORKFLOW_OWNER_ADDRESS}}"
   rpcs:
-    - chain-name: base-mainnet
-      url: "{{BASE_RPC_URL}}"
-  forwarder:
-    chain-name: base-mainnet
-    address: "{{KEYSTONE_FORWARDER_ADDRESS}}"
+    - chain-name: ethereum-mainnet-base-1
+      url: https://api.developer.coinbase.com/rpc/v1/base/9oU7BptpclCm3gy0G7d9bfbp9J2oUoQP
 
 staging-settings:
-  account:
-    workflow-owner-address: "{{WORKFLOW_OWNER_ADDRESS}}"
   rpcs:
-    - chain-name: base-sepolia
-      url: "{{BASE_SEPOLIA_RPC_URL}}"
-  forwarder:
-    chain-name: base-sepolia
-    address: "{{KEYSTONE_FORWARDER_ADDRESS_SEPOLIA}}"
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: https://sepolia.base.org

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
+import YourImpact from '@/components/your-impact/YourImpact';
 import styles from './HomeDashboard.module.css';
 
 const tabs = [
@@ -114,37 +115,7 @@ function VotingPanel() {
 }
 
 function AzuraPanel() {
-  return (
-    <div className={styles.panel}>
-      <div className={styles.chatHeader}>
-        <div className={styles.avatarWrap}>
-          <div className={styles.avatar}>A</div>
-          <div className={styles.onlineDot} />
-        </div>
-        <div>
-          <span className={styles.chatName}>Azura</span>
-          <span className={styles.chatStatus}>Online</span>
-        </div>
-      </div>
-      <div className={styles.chatBody}>
-        <div className={styles.bubbleAzura}>
-          Hey! I reviewed your journal entry from yesterday. Your reflection on boundaries was really insightful.
-        </div>
-        <div className={styles.bubbleUser}>
-          Thanks! I&apos;ve been trying to set better limits at work.
-        </div>
-        <div className={styles.bubbleAzura}>
-          That&apos;s great progress. Want me to suggest a micro-task to practice that this week?
-        </div>
-      </div>
-      <div className={styles.chatInput}>
-        <span className={styles.chatInputText}>Ask Azura anything...</span>
-      </div>
-      <div className={styles.soulGems}>
-        <span className={styles.gemIcon}>&#9670;</span> 340 Soul Gems earned
-      </div>
-    </div>
-  );
+  return <YourImpact />;
 }
 
 function TasksPanel() {

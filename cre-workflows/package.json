@@ -10,12 +10,12 @@
     "deploy": "cre workflow deploy --target production-settings"
   },
   "dependencies": {
-    "@chainlink/cre-sdk": "^1.0.9",
+    "@chainlink/cre-sdk": "^1.1.0",
     "viem": "^2.0.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
   }
 }

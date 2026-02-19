@@ -10,13 +10,10 @@
  */
 
 import {
+  cre,
+  Runner,
   type Runtime,
-  EVMClient,
-  CronCapability,
   handler,
-  encodeCallMsg,
-  LATEST_BLOCK_NUMBER,
-  prepareReportRequest,
 } from "@chainlink/cre-sdk";
 import {
   encodeFunctionData,
@@ -32,6 +29,11 @@ import {
   ProposalStatus,
   ActionType,
 } from "../shared/abi";
+import {
+  encodeCallMsg,
+  LATEST_BLOCK_NUMBER,
+  prepareReportRequest,
+} from "@chainlink/cre-sdk";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -42,97 +44,108 @@ interface Config {
 
 // Base mainnet chain selector
 const BASE_MAINNET_SELECTOR =
-  EVMClient.SUPPORTED_CHAIN_SELECTORS["ethereum-mainnet-base-1"];
+  cre.capabilities.EVMClient.SUPPORTED_CHAIN_SELECTORS["ethereum-mainnet-base-1"];
 
 /** Convert CallContractReply.data (Uint8Array) to a hex string for viem. */
-function toHex(data: Uint8Array): Hex {
+function toHexString(data: Uint8Array): Hex {
   return (`0x${Array.from(data).map((b) => b.toString(16).padStart(2, "0")).join("")}`) as Hex;
 }
 
 // ---------------------------------------------------------------------------
-// Handler
+// Workflow initializer
 // ---------------------------------------------------------------------------
-const cron = new CronCapability();
+const initWorkflow = (config: Config) => {
+  const cronCapability = new cre.capabilities.CronCapability();
+  const evm = new cre.capabilities.EVMClient(BASE_MAINNET_SELECTOR);
 
-export default handler(
-  cron.trigger({ schedule: "*/10 * * * *" }),
+  return [
+    handler(
+      cronCapability.trigger({ schedule: "*/10 * * * *" }),
 
-  async (runtime: Runtime<Config>) => {
-    const { contractAddress } = runtime.config;
-    const evm = new EVMClient(BASE_MAINNET_SELECTOR);
+      async (runtime: Runtime<Config>) => {
+        const { contractAddress } = runtime.config;
 
-    // 1. Read proposalCount
-    const countReply = evm
-      .callContract(runtime, {
-        call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: PROPOSAL_COUNT_ABI, functionName: "proposalCount" }) }),
-        blockNumber: LATEST_BLOCK_NUMBER,
-      })
-      .result();
+        // 1. Read proposalCount
+        const countReply = evm
+          .callContract(runtime, {
+            call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: PROPOSAL_COUNT_ABI, functionName: "proposalCount" }) }),
+            blockNumber: LATEST_BLOCK_NUMBER,
+          })
+          .result();
 
-    const count = decodeFunctionResult({
-      abi: PROPOSAL_COUNT_ABI,
-      functionName: "proposalCount",
-      data: toHex(countReply.data),
-    });
+        const count = decodeFunctionResult({
+          abi: PROPOSAL_COUNT_ABI,
+          functionName: "proposalCount",
+          data: toHexString(countReply.data),
+        });
 
-    if (count === 0n) {
-      runtime.log("No proposals found.");
-      return "done";
-    }
+        if (count === 0n) {
+          runtime.log("No proposals found.");
+          return "done";
+        }
 
-    runtime.log(`Checking ${count} proposals for auto-execution...`);
+        runtime.log(`Checking ${count} proposals for auto-execution...`);
 
-    // 2. Iterate over proposals
-    for (let i = 1n; i <= (count as bigint); i++) {
-      const proposalReply = evm
-        .callContract(runtime, {
-          call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: GET_PROPOSAL_ABI, functionName: "getProposal", args: [i] }) }),
-          blockNumber: LATEST_BLOCK_NUMBER,
-        })
-        .result();
+        // 2. Iterate over proposals
+        for (let i = 1n; i <= (count as bigint); i++) {
+          const proposalReply = evm
+            .callContract(runtime, {
+              call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: GET_PROPOSAL_ABI, functionName: "getProposal", args: [i] }) }),
+              blockNumber: LATEST_BLOCK_NUMBER,
+            })
+            .result();
 
-      const decoded = decodeFunctionResult({
-        abi: GET_PROPOSAL_ABI,
-        functionName: "getProposal",
-        data: toHex(proposalReply.data),
-      }) as unknown as { status: number; executed: boolean };
+          const decoded = decodeFunctionResult({
+            abi: GET_PROPOSAL_ABI,
+            functionName: "getProposal",
+            data: toHexString(proposalReply.data),
+          }) as unknown as { status: number; executed: boolean };
 
-      // Skip non-active or already-executed proposals
-      if (decoded.status !== ProposalStatus.Active || decoded.executed) {
-        continue;
+          // Skip non-active or already-executed proposals
+          if (decoded.status !== ProposalStatus.Active || decoded.executed) {
+            continue;
+          }
+
+          // 3. Check threshold
+          const thresholdReply = evm
+            .callContract(runtime, {
+              call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: HAS_REACHED_THRESHOLD_ABI, functionName: "hasReachedThreshold", args: [i] }) }),
+              blockNumber: LATEST_BLOCK_NUMBER,
+            })
+            .result();
+
+          const reached = decodeFunctionResult({
+            abi: HAS_REACHED_THRESHOLD_ABI,
+            functionName: "hasReachedThreshold",
+            data: toHexString(thresholdReply.data),
+          });
+
+          if (!reached) continue;
+
+          // 4. Build report payload: actionType 1 (auto-execute) + proposalId
+          const innerPayload = encodeAbiParameters([{ type: "uint256" }], [i]);
+          const reportPayload = encodeAbiParameters(
+            [{ type: "uint8" }, { type: "bytes" }],
+            [ActionType.AutoExecute, innerPayload]
+          );
+
+          // 5. Generate DON-signed report and write to contract
+          const report = runtime.report(prepareReportRequest(reportPayload)).result();
+
+          evm.writeReport(runtime, { receiver: contractAddress, report }).result();
+
+          runtime.log(`Auto-executed proposal ${i}`);
+        }
+
+        return "done";
       }
+    ),
+  ];
+};
 
-      // 3. Check threshold
-      const thresholdReply = evm
-        .callContract(runtime, {
-          call: encodeCallMsg({ from: zeroAddress, to: contractAddress, data: encodeFunctionData({ abi: HAS_REACHED_THRESHOLD_ABI, functionName: "hasReachedThreshold", args: [i] }) }),
-          blockNumber: LATEST_BLOCK_NUMBER,
-        })
-        .result();
+export async function main() {
+  const runner = await Runner.newRunner<Config>();
+  await runner.run(initWorkflow);
+}
 
-      const reached = decodeFunctionResult({
-        abi: HAS_REACHED_THRESHOLD_ABI,
-        functionName: "hasReachedThreshold",
-        data: toHex(thresholdReply.data),
-      });
-
-      if (!reached) continue;
-
-      // 4. Build report payload: actionType 1 (auto-execute) + proposalId
-      const innerPayload = encodeAbiParameters([{ type: "uint256" }], [i]);
-      const reportPayload = encodeAbiParameters(
-        [{ type: "uint8" }, { type: "bytes" }],
-        [ActionType.AutoExecute, innerPayload]
-      );
-
-      // 5. Generate DON-signed report and write to contract
-      const report = runtime.report(prepareReportRequest(reportPayload)).result();
-
-      evm.writeReport(runtime, { receiver: contractAddress, report }).result();
-
-      runtime.log(`Auto-executed proposal ${i}`);
-    }
-
-    return "done";
-  }
-);
+main();
