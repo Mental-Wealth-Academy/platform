@@ -85,14 +85,7 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-/* Top Section - Chat, Wallet, Daemon */
-.topSection {
-  padding: 12px;
-  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+/* (topSection removed — wallet/gems/chat moved to bottomSection) */
 
 @keyframes chatColorCycle {
   0%   { background: #e74c3c; border-color: #c0392b; box-shadow: 2px 2px 0 #c0392b; }
@@ -166,11 +159,6 @@
 }
 
 /* Account section - menu opens downward from top */
-
-/* Music Player */
-.musicPlayerWrapper {
-  border-bottom: none;
-}
 
 /* Search Bar */
 .searchBar {
@@ -410,11 +398,6 @@
   gap: 10px;
   background: #f5f5f5;
   flex-shrink: 0;
-}
-
-.bottomSection .musicPlayerWrapper {
-  margin: -12px -12px 0 -12px;
-  padding: 0;
 }
 
 .gemsRow {

@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import '@/styles/globals.css';
 import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provider';
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
-import { AudioProvider } from '@/components/audio-player/AudioContext';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.world';
@@ -134,13 +133,11 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AudioProvider>
-          <MiniAppProvider>
-            <ConditionalWeb3Provider>
-              {children}
-            </ConditionalWeb3Provider>
-          </MiniAppProvider>
-        </AudioProvider>
+        <MiniAppProvider>
+          <ConditionalWeb3Provider>
+            {children}
+          </ConditionalWeb3Provider>
+        </MiniAppProvider>
         <SpeedInsights />
       </body>
     </html>

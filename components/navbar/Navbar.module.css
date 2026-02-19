@@ -953,16 +953,4 @@
   }
 }
 
-/* Audio Player Container */
-.audioPlayerContainer {
-  width: 100%;
-  order: 3; /* Place after mobile bottom nav */
-}
-
-@media (min-width: 769px) {
-  .audioPlayerContainer {
-    order: 2; /* On desktop, place after top section */
-  }
-}
-
 

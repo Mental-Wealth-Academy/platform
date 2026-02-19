@@ -9,7 +9,6 @@ import YourAccountsModal from '@/components/nav-buttons/YourAccountsModal';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import AzuraChat from '@/components/azura-chat/AzuraChat';
-import AudioPlayer from '@/components/audio-player/AudioPlayer';
 import styles from './Navbar.module.css';
 
 // Menu Icon Component - Chunky Y2K style
@@ -472,11 +471,6 @@ const Navbar: React.FC = () => {
           <VotingIcon size={24} className={styles.questIcon} />
           <span className={styles.mobileBottomNavLabel}>Proposals</span>
         </Link>
-      </div>
-
-      {/* Audio Player */}
-      <div className={styles.audioPlayerContainer}>
-        <AudioPlayer />
       </div>
 
       {isYourAccountsModalOpen && (

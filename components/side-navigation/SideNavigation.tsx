@@ -7,7 +7,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useModal } from 'connectkit';
 import styles from './SideNavigation.module.css';
-import AudioPlayer from '../audio-player/AudioPlayer';
 import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '../username-change/UsernameChangeModal';
@@ -38,6 +37,7 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
+      { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
       { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
@@ -259,8 +259,99 @@ const SideNavigation: React.FC = () => {
           </button>
         </div>
 
-        {/* Wallet + Daemon */}
-        <div className={styles.topSection}>
+        {/* Navigation Sections */}
+        <div className={styles.navSections}>
+          {navSections.map((section) => (
+            <div key={section.id} className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <span className={styles.sectionLabel}>{section.label}</span>
+                {section.badge && (
+                  <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
+                    {section.badge}
+                  </span>
+                )}
+              </div>
+              <div className={styles.sectionItems}>
+                {section.items.map((item) => (
+                  item.requiresPro ? (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setIsProModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`${styles.navItem} ${styles.navItemButton}`}
+                    >
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
+                      <span className={styles.navItemLabel}>{item.label}</span>
+                      {item.badge && (
+                        <span className={`${styles.badge} ${styles.badgePro}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  ) : item.disabled ? (
+                    <div
+                      key={item.id}
+                      className={`${styles.navItem} ${styles.navItemDisabled}`}
+                    >
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
+                      <span className={styles.navItemLabel}>{item.label}</span>
+                      {item.badge && (
+                        <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
+                      {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.icon && (
+                        <Image
+                          src={item.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className={styles.navItemIcon}
+                        />
+                      )}
+                      <span className={styles.navItemLabel}>{item.label}</span>
+                      {item.badge && (
+                        <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  )
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Section - Wallet, Voting Power, Chat */}
+        <div className={styles.bottomSection}>
           {/* Account Button or Connect Wallet */}
           {username && !username.startsWith('user_') ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
@@ -353,102 +444,6 @@ const SideNavigation: React.FC = () => {
               <Image src="/icons/daemon.svg" alt="Azura" width={20} height={20} />
             </button>
           </div>
-        </div>
-
-        {/* Navigation Sections */}
-        <div className={styles.navSections}>
-          {navSections.map((section) => (
-            <div key={section.id} className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <span className={styles.sectionLabel}>{section.label}</span>
-                {section.badge && (
-                  <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
-                    {section.badge}
-                  </span>
-                )}
-              </div>
-              <div className={styles.sectionItems}>
-                {section.items.map((item) => (
-                  item.requiresPro ? (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        setIsProModalOpen(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className={`${styles.navItem} ${styles.navItemButton}`}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${styles.badgePro}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ) : item.disabled ? (
-                    <div
-                      key={item.id}
-                      className={`${styles.navItem} ${styles.navItemDisabled}`}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
-                      {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  )
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom Section - Audio Player */}
-        <div className={styles.bottomSection}>
-          <AudioPlayer />
         </div>
       </nav>
 
