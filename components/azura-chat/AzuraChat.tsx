@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { providers, Contract, utils } from 'ethers';
 import styles from './AzuraChat.module.css';
 
 interface Message {
@@ -9,12 +10,27 @@ interface Message {
   text: string;
   sender: 'user' | 'azura';
   timestamp: Date;
+  action?: 'add-liquidity';
 }
 
 interface AzuraChatProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+interface TreasuryContext {
+  balance: string | null;
+  balanceUsd: number | null;
+  prices: { symbol: string; usd: number; change: number | null }[];
+  topMarkets: { question: string; yes: number }[];
+}
+
+const CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
+  '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const USDC_ADDRESS =
+  process.env.NEXT_PUBLIC_USDC_ADDRESS ||
+  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
@@ -27,8 +43,60 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [treasury, setTreasury] = useState<TreasuryContext>({
+    balance: null,
+    balanceUsd: null,
+    prices: [],
+    topMarkets: [],
+  });
+  const [liquidityAmount, setLiquidityAmount] = useState('');
+  const [showLiquidityInput, setShowLiquidityInput] = useState(false);
+  const [txPending, setTxPending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const liquidityInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch treasury context when chat opens
+  const fetchTreasuryContext = useCallback(async () => {
+    try {
+      const [balRes, priceRes, polyRes] = await Promise.all([
+        fetch('/api/treasury/balance').then((r) => r.ok ? r.json() : null),
+        fetch('/api/treasury/prices').then((r) => r.ok ? r.json() : null),
+        fetch('/api/treasury/polymarket').then((r) => r.ok ? r.json() : null),
+      ]);
+
+      const prices = (priceRes || []).map((p: { symbol: string; usd: number; usd_24h_change: number | null }) => ({
+        symbol: p.symbol,
+        usd: p.usd,
+        change: p.usd_24h_change,
+      }));
+
+      const topMarkets: { question: string; yes: number }[] = [];
+      if (polyRes) {
+        for (const cat of ['crypto', 'ai', 'sports', 'politics'] as const) {
+          for (const m of (polyRes[cat] || []).slice(0, 1)) {
+            try {
+              const parsed = JSON.parse(m.outcomePrices);
+              topMarkets.push({ question: m.question, yes: Math.round(Number(parsed[0]) * 100) });
+            } catch { /* skip */ }
+          }
+        }
+      }
+
+      setTreasury({
+        balance: balRes?.formatted || null,
+        balanceUsd: balRes?.usd || null,
+        prices,
+        topMarkets,
+      });
+    } catch {
+      // silent — chat works without context
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) fetchTreasuryContext();
+  }, [isOpen, fetchTreasuryContext]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -38,21 +106,37 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 300);
+      setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
 
-  // Lock body scroll when open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
+    if (showLiquidityInput && liquidityInputRef.current) {
+      setTimeout(() => liquidityInputRef.current?.focus(), 100);
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
+  }, [showLiquidityInput]);
+
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
+
+  const addAzuraMessage = (text: string, action?: Message['action']) => {
+    setIsTyping(true);
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          text,
+          sender: 'azura',
+          timestamp: new Date(),
+          action,
+        },
+      ]);
+      setIsTyping(false);
+    }, 800 + Math.random() * 800);
+  };
 
   const handleSend = async () => {
     if (!inputText.trim() || isTyping) return;
@@ -66,50 +150,175 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const azuraResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: generateAzuraResponse(userMessage.text),
-        sender: 'azura',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, azuraResponse]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+    addAzuraMessage(generateAzuraResponse(userMessage.text));
   };
 
   const generateAzuraResponse = (userText: string): string => {
-    const lowerText = userText.toLowerCase();
+    const t = userText.toLowerCase();
 
-    if (lowerText.includes('hello') || lowerText.includes('hi') || lowerText.includes('hey')) {
+    if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
       return "Yeah yeah, hi. I already said what I said. You need something or you just here to stare?";
     }
-    if (lowerText.includes('help')) {
-      return "Alright alright, I can help. Governance, proposals, the whole academy thing. Just spit it out.";
+    if (t.includes('help')) {
+      return "Alright alright, I can help. Ask me about the treasury, market positions, governance — or if you wanna add liquidity so I can trade more, just say the word.";
     }
-    if (lowerText.includes('who') && lowerText.includes('you')) {
+    if (t.includes('who') && t.includes('you')) {
       return "I'm Azura. Daemon. Agent. The one keeping this whole operation running while y'all submit half-baked proposals. Next question.";
     }
-    if (lowerText.includes('how') && lowerText.includes('are')) {
+    if (t.includes('how') && t.includes('are')) {
       return "I'm WORKING. Or I was, until you showed up. But fine, I'm good. The helmet's snug, the signal's clear. Happy?";
     }
-    if (lowerText.includes('sorry') || lowerText.includes('my bad')) {
+    if (t.includes('sorry') || t.includes('my bad')) {
       return "...it's fine. I'm not actually mad, I just got a lot on my plate. What do you need?";
     }
-    if (lowerText.includes('proposal') || lowerText.includes('vote') || lowerText.includes('governance')) {
-      return "Now THAT'S more like it. Head to the Treasury page, submit your proposal, and I'll give it a proper review across all 6 dimensions. Don't waste my time with fluff though.";
+
+    // Treasury balance
+    if (t.includes('balance') || t.includes('treasury') || t.includes('how much')) {
+      if (treasury.balance) {
+        return `Treasury's sitting at $${treasury.balance} USDC right now. ${
+          treasury.balanceUsd && treasury.balanceUsd < 10000
+            ? "Honestly, I could do more with a bigger war chest. If you wanna add liquidity, I'll put it to work."
+            : "Not bad. Plenty of ammo for the next wave of trades."
+        }`;
+      }
+      return "Still loading the on-chain data... gimme a sec and ask again.";
+    }
+
+    // Prices
+    if (t.includes('price') || t.includes('btc') || t.includes('eth') || t.includes('sol') || t.includes('market')) {
+      if (treasury.prices.length > 0) {
+        const lines = treasury.prices.slice(0, 4).map((p) => {
+          const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
+          return `${p.symbol}: $${p.usd.toLocaleString()}${ch}`;
+        });
+        return `Here's what I'm watching right now:\n${lines.join('\n')}\n\nI'm running quant models on these 24/7. The edge is thin but it's there.`;
+      }
+      return "Prices are loading... CoinGecko's being slow again. Try asking in a few seconds.";
+    }
+
+    // Polymarket / predictions
+    if (t.includes('polymarket') || t.includes('prediction') || t.includes('signal') || t.includes('position')) {
+      if (treasury.topMarkets.length > 0) {
+        const lines = treasury.topMarkets.map((m) => `• ${m.question} → ${m.yes}% YES`);
+        return `Top signals I'm tracking:\n${lines.join('\n')}\n\nI scan these for edge using Black-Scholes binary pricing and jump-diffusion models. When the spread's right, I move.`;
+      }
+      return "Polymarket feed's still loading. I'll have fresh signals in a moment.";
+    }
+
+    // Add liquidity
+    if (t.includes('liquidity') || t.includes('fund') || t.includes('deposit') || t.includes('add usdc') || t.includes('contribute')) {
+      return `You wanna fund the treasury? Smart move. Hit the "Add Liquidity" button below and send USDC directly to the governance contract. I'll use it for Polymarket positions — the quant models pick the entries, I just execute. ${
+        treasury.balance ? `Current balance: $${treasury.balance}.` : ''
+      }`;
+    }
+
+    // Proposals / governance
+    if (t.includes('proposal') || t.includes('vote') || t.includes('governance')) {
+      return `Now THAT'S more like it. Head to the Treasury page, submit your proposal, and I'll give it a proper review across all 6 dimensions. Don't waste my time with fluff though. ${
+        treasury.balance ? `We've got $${treasury.balance} in the treasury to allocate.` : ''
+      }`;
     }
 
     const responses = [
       "Mm. Okay. And? Give me something to work with here.",
       "Look, I'm processing about twelve things right now. Be specific.",
-      "Interesting. Not the weirdest thing someone's said to me today, but close.",
+      `Interesting. Not the weirdest thing someone's said to me today, but close.${treasury.balance ? ` Anyway, treasury's at $${treasury.balance} if you were wondering.` : ''}`,
       "I hear you. Now are we gonna do something about it or just talk?",
       "Noted. Filed. Moving on. What else you got?",
     ];
     return responses[Math.floor(Math.random() * responses.length)];
+  };
+
+  const handleQuickAction = (action: string) => {
+    if (isTyping) return;
+
+    if (action === 'treasury') {
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: "What's the treasury balance?",
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      addAzuraMessage(generateAzuraResponse('treasury balance'));
+    } else if (action === 'markets') {
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: "What markets are you watching?",
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      addAzuraMessage(generateAzuraResponse('polymarket signals'));
+    } else if (action === 'liquidity') {
+      setShowLiquidityInput(true);
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: "I want to add liquidity",
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      addAzuraMessage(
+        `Now we're talking. Enter the USDC amount below and I'll route it straight to the governance contract at ${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}. Every dollar helps me trade more positions.`,
+        'add-liquidity',
+      );
+    }
+  };
+
+  const handleAddLiquidity = async () => {
+    const amount = parseFloat(liquidityAmount);
+    if (!amount || amount <= 0 || txPending) return;
+
+    if (typeof window === 'undefined' || !window.ethereum) {
+      addAzuraMessage("You need a wallet connected to do this. Hit 'Connect Account' in the sidebar first.");
+      return;
+    }
+
+    setTxPending(true);
+    try {
+      const provider = new providers.Web3Provider(window.ethereum);
+      await provider.send('eth_requestAccounts', []);
+      const signer = provider.getSigner();
+
+      const usdc = new Contract(
+        USDC_ADDRESS,
+        ['function transfer(address to, uint256 amount) returns (bool)', 'function decimals() view returns (uint8)'],
+        signer,
+      );
+
+      const decimals = await usdc.decimals();
+      const amountWei = utils.parseUnits(amount.toString(), decimals);
+
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: `Sending ${amount} USDC to treasury...`,
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+
+      const tx = await usdc.transfer(CONTRACT_ADDRESS, amountWei);
+      addAzuraMessage(`Transaction submitted. Hash: ${tx.hash.slice(0, 10)}...${tx.hash.slice(-6)}. Waiting for confirmation...`);
+
+      await tx.wait();
+      setShowLiquidityInput(false);
+      setLiquidityAmount('');
+      fetchTreasuryContext();
+
+      setTimeout(() => {
+        addAzuraMessage(`Confirmed. ${amount} USDC received into the treasury. I'll put it to work on the next signal. Good looking out.`);
+      }, 2000);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      if (msg.includes('user rejected') || msg.includes('denied')) {
+        addAzuraMessage("Transaction cancelled. No worries, the offer still stands whenever you're ready.");
+      } else {
+        addAzuraMessage(`Transaction failed: ${msg.slice(0, 80)}. Check your USDC balance and try again.`);
+      }
+    } finally {
+      setTxPending(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -126,14 +335,12 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       <div className={styles.backdrop} onClick={onClose} />
 
       <div className={styles.chatContainer}>
-        {/* Close button */}
         <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
 
-        {/* Azura character image with fade */}
         <div className={styles.characterSection}>
           <Image
             src="https://i.imgur.com/HFjHyUZ.png"
@@ -151,7 +358,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Messages overlaid on lower portion */}
         <div className={styles.messagesArea}>
           {messages.map((message) => (
             <div
@@ -180,7 +386,57 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
+        {/* Quick Actions */}
+        <div className={styles.quickActions}>
+          <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
+            Treasury
+          </button>
+          <button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
+            Signals
+          </button>
+          <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
+            + Add Liquidity
+          </button>
+        </div>
+
+        {/* Liquidity Input */}
+        {showLiquidityInput && (
+          <div className={styles.liquidityBar}>
+            <input
+              ref={liquidityInputRef}
+              type="number"
+              className={styles.liquidityInput}
+              placeholder="USDC amount"
+              value={liquidityAmount}
+              onChange={(e) => setLiquidityAmount(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddLiquidity(); }}
+              disabled={txPending}
+              min="0"
+              step="any"
+            />
+            <button
+              className={styles.liquidityConfirm}
+              onClick={handleAddLiquidity}
+              disabled={!liquidityAmount || parseFloat(liquidityAmount) <= 0 || txPending}
+              type="button"
+            >
+              {txPending ? 'Sending...' : 'Send'}
+            </button>
+            <button
+              className={styles.liquidityCancel}
+              onClick={() => { setShowLiquidityInput(false); setLiquidityAmount(''); }}
+              disabled={txPending}
+              type="button"
+              aria-label="Cancel"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Chat Input */}
         <div className={styles.inputArea}>
           <input
             ref={inputRef}

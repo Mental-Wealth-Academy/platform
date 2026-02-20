@@ -268,6 +268,153 @@
   }
 }
 
+/* Quick Actions */
+.quickActions {
+  display: flex;
+  gap: 6px;
+  padding: 0 16px 8px;
+  flex-shrink: 0;
+}
+
+.quickAction {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.quickAction:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.quickAction:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.quickActionHighlight {
+  background: rgba(116, 196, 101, 0.12);
+  border-color: rgba(116, 196, 101, 0.3);
+  color: #74C465;
+}
+
+.quickActionHighlight:hover:not(:disabled) {
+  background: rgba(116, 196, 101, 0.2);
+  border-color: rgba(116, 196, 101, 0.5);
+  color: #74C465;
+}
+
+/* Liquidity Input Bar */
+.liquidityBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(116, 196, 101, 0.15);
+  background: rgba(116, 196, 101, 0.04);
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquidityInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid rgba(116, 196, 101, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  outline: none;
+  transition: all 0.15s ease;
+  min-width: 0;
+  -moz-appearance: textfield;
+}
+
+.liquidityInput::-webkit-inner-spin-button,
+.liquidityInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.liquidityInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+}
+
+.liquidityInput:focus {
+  border-color: #74C465;
+  box-shadow: 0 0 0 3px rgba(116, 196, 101, 0.15);
+}
+
+.liquidityInput:disabled {
+  opacity: 0.5;
+}
+
+.liquidityConfirm {
+  padding: 8px 16px;
+  background: #74C465;
+  border: 2px solid #5daa50;
+  border-radius: 8px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.liquidityConfirm:hover:not(:disabled) {
+  background: #5daa50;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(116, 196, 101, 0.3);
+}
+
+.liquidityConfirm:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.liquidityCancel {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.liquidityCancel:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.15);
+  border-color: rgba(255, 80, 80, 0.3);
+  color: #ff5050;
+}
+
+.liquidityCancel:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 /* Input area */
 .inputArea {
   display: flex;

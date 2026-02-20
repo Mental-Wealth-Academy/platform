@@ -38,6 +38,7 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
+      { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
     ],
   },
@@ -45,7 +46,6 @@ const navSections: NavSection[] = [
     id: 'featured',
     label: 'Featured',
     items: [
-      { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
   },
@@ -88,7 +88,6 @@ const SideNavigation: React.FC = () => {
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
-  const [showLoginGate, setShowLoginGate] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -384,7 +383,11 @@ const SideNavigation: React.FC = () => {
             {/* Shiny card spacer between Featured and Tools */}
             {section.id === 'featured' && (
               <div className={styles.shinyCardSpacer}>
-                <div className={styles.shinyCard}>
+                <button
+                  className={styles.shinyCard}
+                  onClick={() => setIsChatOpen(true)}
+                  type="button"
+                >
                   <div className={styles.shinyCardShine} />
                   <div className={styles.shinyCardContent}>
                     <div className={styles.shinyCardIcon}>
@@ -395,7 +398,7 @@ const SideNavigation: React.FC = () => {
                       <span className={styles.shinyCardSub}>LV 4 · Active</span>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
             )}
             </React.Fragment>
@@ -461,7 +464,7 @@ const SideNavigation: React.FC = () => {
             </button>
           )}
 
-          {/* Gems Counter + Azura Chat */}
+          {/* Gems Counter */}
           <div className={styles.gemsRow}>
             <button
               className={styles.shardsCounter}
@@ -480,32 +483,17 @@ const SideNavigation: React.FC = () => {
                 {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
               </span>
             </button>
-            <button
-              className={styles.azuraChatIcon}
-              onClick={() => {
-                if (username && !username.startsWith('user_')) {
-                  setIsChatOpen(true);
-                } else {
-                  setShowLoginGate(true);
-                }
-                setIsMobileMenuOpen(false);
-              }}
-              aria-label="Open Azura AI Chat"
-              title="Azura AI"
-            >
-              <Image src="/icons/daemon.svg" alt="Azura" width={20} height={20} />
-            </button>
           </div>
         </div>
       </nav>
 
       {/* Modals */}
+      <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <InventoryModal
         isOpen={isInventoryOpen}
         onClose={() => setIsInventoryOpen(false)}
         shardCount={shardCount}
       />
-      <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
       {isAvatarSelectorOpen && (
         <AvatarSelectorModal
@@ -521,50 +509,6 @@ const SideNavigation: React.FC = () => {
         />
       )}
 
-      {/* Login Gate Modal */}
-      {showLoginGate && (
-        <div className={styles.loginGateOverlay} onClick={() => setShowLoginGate(false)}>
-          <div className={styles.loginGateModal} onClick={(e) => e.stopPropagation()}>
-            <button
-              className={styles.loginGateClose}
-              onClick={() => setShowLoginGate(false)}
-              aria-label="Close"
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-            <div className={styles.loginGateImage}>
-              <Image
-                src="https://i.imgur.com/HFjHyUZ.png"
-                alt="Azura AI"
-                width={500}
-                height={500}
-                unoptimized
-                style={{ width: '110%', height: 'auto' }}
-              />
-            </div>
-            <div className={styles.loginGateContent}>
-              <h1 className={styles.loginGateTitle}>You need to be logged in to access this feature</h1>
-              <p className={styles.loginGateText}>Azura provides:</p>
-              <ul className={styles.loginGateList}>
-                <li>Private Agentic Workflows</li>
-                <li>Fetch shared resources</li>
-                <li>Communicate with nodes</li>
-              </ul>
-              <button
-                className={styles.loginGateButton}
-                onClick={() => {
-                  setShowLoginGate(false);
-                  openConnectModal(true);
-                }}
-              >
-                Connect Account
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

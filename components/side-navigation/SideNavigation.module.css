@@ -309,19 +309,23 @@
 
 .shinyCard {
   position: relative;
+  width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #1A1D33 0%, #2E3366 50%, #1A1D33 100%);
-  border: 2px solid #1A1D33;
-  border-radius: 6px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(80, 89, 155, 0.12) 50%, rgba(81, 104, 255, 0.06) 100%);
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
   overflow: hidden;
-  cursor: default;
+  cursor: pointer;
   transition: all 0.15s ease;
+  font-size: inherit;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .shinyCard:hover {
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.4);
 }
 
 .shinyCardShine {
@@ -333,9 +337,9 @@
   background: linear-gradient(
     115deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.08) 45%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.08) 55%,
+    rgba(81, 104, 255, 0.06) 45%,
+    rgba(81, 104, 255, 0.12) 50%,
+    rgba(81, 104, 255, 0.06) 55%,
     transparent 60%
   );
   animation: shinyCardSweep 3s ease-in-out infinite;
@@ -359,10 +363,9 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid rgba(81, 104, 255, 0.5);
+  border: 2px solid var(--color-primary);
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(81, 104, 255, 0.3);
 }
 
 .shinyCardIcon img {
@@ -381,7 +384,7 @@
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1A1D33;
   letter-spacing: 0.02em;
 }
 
@@ -389,7 +392,7 @@
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: 600;
-  color: rgba(81, 104, 255, 0.9);
+  color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
