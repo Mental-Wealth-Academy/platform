@@ -281,17 +281,35 @@ export default function VotingPage() {
 
           <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
 
-          {/* Hero Banner Image - Click to open Guy Dialogue */}
-          <Image
-            src="https://i.imgur.com/9Wvq3Rm.png"
-            alt="Guy - Click to learn about $MWG"
-            width={400}
-            height={400}
-            className={styles.heroBannerImage}
+          {/* Fund Pods */}
+          <section className={styles.podGrid}>
+            <div className={styles.podCard}>
+              <div className={styles.podIcon}>🪵</div>
+              <h3 className={styles.podTitle}>Treasury</h3>
+              <p className={styles.podDesc}>A shared reserve that grows when the community invests together</p>
+              <span className={styles.podAction}>View →</span>
+            </div>
+            <div className={styles.podCard}>
+              <div className={styles.podIcon}>🏝️</div>
+              <h3 className={styles.podTitle}>Pods</h3>
+              <p className={styles.podDesc}>Shared budgets for wellness, infrastructure, and community initiatives</p>
+              <span className={styles.podAction}>Deposit →</span>
+            </div>
+            <div className={styles.podCard}>
+              <div className={styles.podIcon}>🌳</div>
+              <h3 className={styles.podTitle}>Rewards</h3>
+              <p className={styles.podDesc}>Earn from contributing to shared resources and collective growth</p>
+              <span className={styles.podAction}>Track →</span>
+            </div>
+          </section>
+
+          {/* Explain Button - Opens Guy Dialogue */}
+          <button
+            className={styles.explainButton}
             onClick={() => setShowGuyDialogue(true)}
-            style={{ cursor: 'pointer' }}
-            unoptimized
-          />
+          >
+            Explain
+          </button>
 
           {/* Proposals Section */}
           <section className={styles.proposalsSection}>

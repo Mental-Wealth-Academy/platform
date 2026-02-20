@@ -366,6 +366,76 @@
   box-shadow: 6px 6px 0 #1A1D33;
 }
 
+/* Fund Pods */
+.podGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.podCard {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  background: #ffffff;
+  text-align: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  color: var(--color-text-dark);
+}
+
+.podCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.podIcon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.podTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.podDesc {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 12px;
+  opacity: 0.7;
+}
+
+.podAction {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.explainButton {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  border: 3px solid #1A1D33;
+  border-radius: var(--radius-xl);
+  box-shadow: 4px 4px 0 #1A1D33;
+  background: #ffffff;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.explainButton:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
 .cardHeader {
   display: flex;
   justify-content: space-between;
@@ -1270,6 +1340,28 @@
     box-shadow: 3px 3px 0 #1A1D33;
   }
 
+  .podGrid {
+    max-width: 100%;
+    gap: 12px;
+  }
+
+  .podCard {
+    padding: 16px;
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .podIcon {
+    font-size: 28px;
+  }
+
+  .podTitle {
+    font-size: 14px;
+  }
+
+  .podDesc {
+    font-size: 12px;
+  }
+
   .submissionCard {
     margin: 20px 0 0;
     padding: 20px 16px;
@@ -1432,5 +1524,12 @@
 
   .txLink {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .podGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
