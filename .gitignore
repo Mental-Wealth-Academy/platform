@@ -8,6 +8,7 @@ node_modules
 
 # next.js
 /.next/
+/app/.next/
 /out/
 
 # production
@@ -36,6 +37,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# CRE workflow temp build artifacts
+cre-workflows/*/tmp.js
+cre-workflows/*/tmp.wasm
 
 # Security - additional sensitive files
 *.pem
