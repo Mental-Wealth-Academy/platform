@@ -34,11 +34,17 @@ interface NavSection {
 
 const navSections: NavSection[] = [
   {
-    id: 'featured',
-    label: 'Featured',
+    id: 'main',
+    label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
+    ],
+  },
+  {
+    id: 'featured',
+    label: 'Featured',
+    items: [
       { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
@@ -268,7 +274,9 @@ const SideNavigation: React.FC = () => {
             const isAdmin = section.id === 'admin';
             const isExpanded = isAdmin ? adminExpanded : true;
             return (
-            <div key={section.id} className={styles.section}>
+            <React.Fragment key={section.id}>
+            <div className={styles.section}>
+              {section.label && (
               <button
                 className={`${styles.sectionHeader} ${isAdmin ? styles.sectionHeaderToggle : ''}`}
                 onClick={isAdmin ? () => setAdminExpanded(!adminExpanded) : undefined}
@@ -296,6 +304,7 @@ const SideNavigation: React.FC = () => {
                   </svg>
                 )}
               </button>
+              )}
               <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
                 {section.items.map((item) => (
                   item.requiresPro ? (
@@ -372,6 +381,24 @@ const SideNavigation: React.FC = () => {
                 ))}
               </div>
             </div>
+            {/* Shiny card spacer between Featured and Tools */}
+            {section.id === 'featured' && (
+              <div className={styles.shinyCardSpacer}>
+                <div className={styles.shinyCard}>
+                  <div className={styles.shinyCardShine} />
+                  <div className={styles.shinyCardContent}>
+                    <div className={styles.shinyCardIcon}>
+                      <Image src="https://i.imgur.com/AkflhaJ.png" alt="Azura" width={36} height={36} unoptimized />
+                    </div>
+                    <div className={styles.shinyCardText}>
+                      <span className={styles.shinyCardTitle}>Azura Agent</span>
+                      <span className={styles.shinyCardSub}>LV 4 · Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            </React.Fragment>
             );
           })}
         </div>

@@ -302,6 +302,98 @@
   opacity: 0;
 }
 
+/* Shiny Card Spacer */
+.shinyCardSpacer {
+  padding: 12px 12px 4px;
+}
+
+.shinyCard {
+  position: relative;
+  padding: 14px;
+  background: linear-gradient(135deg, #1A1D33 0%, #2E3366 50%, #1A1D33 100%);
+  border: 2px solid #1A1D33;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 #1A1D33;
+  overflow: hidden;
+  cursor: default;
+  transition: all 0.15s ease;
+}
+
+.shinyCard:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.shinyCardShine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 60%
+  );
+  animation: shinyCardSweep 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shinyCardSweep {
+  0% { transform: translateX(-60%) rotate(15deg); }
+  100% { transform: translateX(60%) rotate(15deg); }
+}
+
+.shinyCardContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.shinyCardIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(81, 104, 255, 0.5);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(81, 104, 255, 0.3);
+}
+
+.shinyCardIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shinyCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shinyCardTitle {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.shinyCardSub {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(81, 104, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 /* Nav Item */
 .navItem {
   display: flex;
