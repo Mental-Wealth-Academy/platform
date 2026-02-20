@@ -352,7 +352,7 @@ const SideNavigation: React.FC = () => {
 
         {/* Bottom Section - Wallet, Voting Power, Chat */}
         <div className={styles.bottomSection}>
-          {/* Account Button or Connect Wallet */}
+          {/* Account Button or Connect Account */}
           {username && !username.startsWith('user_') ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
@@ -404,12 +404,7 @@ const SideNavigation: React.FC = () => {
                 setIsMobileMenuOpen(false);
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M17 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <rect x="13" y="9" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                <circle cx="15" cy="11" r="1" fill="currentColor"/>
-              </svg>
-              <span>Connect Wallet</span>
+              <span>Connect Account</span>
             </button>
           )}
 
@@ -423,7 +418,7 @@ const SideNavigation: React.FC = () => {
                 height={20}
                 className={styles.shardIcon}
               />
-              <span className={styles.shardsLabel}>Voting Power:</span>
+              <span className={styles.shardsLabel}>Inventory:</span>
               <span className={styles.shardsValue}>
                 {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
               </span>
@@ -502,7 +497,7 @@ const SideNavigation: React.FC = () => {
                   openConnectModal(true);
                 }}
               >
-                Connect Wallet
+                Connect Account
               </button>
             </div>
           </div>

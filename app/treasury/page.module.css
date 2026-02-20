@@ -151,6 +151,7 @@
 .paramValue {
   color: var(--color-text-dark);
   font-weight: var(--font-weight-bold);
+  text-align: right;
 }
 
 .paramComment {
@@ -159,8 +160,8 @@
   margin-left: 6px;
   font-weight: var(--font-weight-regular);
   display: inline-block;
-  min-width: 72px;
-  text-align: left;
+  width: 82px;
+  text-align: right;
 }
 
 .signalRow {
