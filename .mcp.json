@@ -3,6 +3,10 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=utrmpqgqafsyatqajroa"
+    },
+    "polymarket": {
+      "command": "node",
+      "args": ["/Users/james/polymarket-mcp/build/index.js"]
     }
   }
 }
