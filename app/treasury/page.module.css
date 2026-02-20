@@ -145,13 +145,12 @@
 .paramKey {
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
-  min-width: 50px;
+  min-width: 60px;
 }
 
 .paramValue {
   color: var(--color-text-dark);
   font-weight: var(--font-weight-bold);
-  text-align: right;
 }
 
 .paramComment {
@@ -159,6 +158,9 @@
   font-size: 11px;
   margin-left: 6px;
   font-weight: var(--font-weight-regular);
+  display: inline-block;
+  min-width: 72px;
+  text-align: left;
 }
 
 .signalRow {
@@ -593,6 +595,7 @@
 
 /* ── Treasury Balance Chart ── */
 .chartArea {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
