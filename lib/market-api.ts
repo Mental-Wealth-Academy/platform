@@ -26,11 +26,44 @@ export interface PolymarketMarket {
   active: boolean;
 }
 
+export interface PolymarketTrade {
+  price: number;
+  size: number;
+  side: 'BUY' | 'SELL';
+  timestamp: number;
+  title: string;
+  slug: string;
+  outcome: string;
+}
+
+export interface OrderFlowMetrics {
+  takerBuyCount: number;
+  takerSellCount: number;
+  takerBuyVolume: number;
+  takerSellVolume: number;
+  totalTrades: number;
+  takerBuyRatio: number;
+  flowDirection: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+  makerEdgeEstimate: number;
+  recentTrades: { price: number; size: number; side: string; ts: string }[];
+}
+
+export type MarketCategory = 'crypto' | 'ai' | 'sports' | 'politics';
+
+export interface CategorizedMarkets {
+  crypto: PolymarketMarket[];
+  ai: PolymarketMarket[];
+  sports: PolymarketMarket[];
+  politics: PolymarketMarket[];
+}
+
 // ── Cache ──
 
 let _prices: { data: CoinPrice[]; ts: number } | null = null;
 let _balance: { data: TreasuryBalance; ts: number } | null = null;
 let _poly: { data: PolymarketMarket[]; ts: number } | null = null;
+let _polyGrouped: { data: CategorizedMarkets; ts: number } | null = null;
+let _trades: { data: PolymarketTrade[]; ts: number } | null = null;
 
 // ── Constants ──
 
@@ -145,6 +178,126 @@ export async function fetchPolymarketCrypto(): Promise<PolymarketMarket[]> {
     return json;
   } catch (err) {
     if (_poly) return _poly.data;
+    throw err;
+  }
+}
+
+// ── Curated Polymarket Categories (event-based) ──
+
+const EVENTS_URL =
+  'https://gamma-api.polymarket.com/events?active=true&closed=false&order=volume&ascending=false&limit=50';
+
+const CATEGORY_ALLOW: Record<MarketCategory, RegExp> = {
+  crypto: /bitcoin|btc|ethereum|eth|solana|sol|xrp|ripple|crypto|stablecoin|defi|web3|cardano|dogecoin|coinbase|microstrategy|megaeth/i,
+  ai: /\bai\b|artificial intelligence|openai|gpt|anthropic|claude|deepseek|llm|machine learning|gemini|chatgpt|frontier model/i,
+  sports: /nba|nfl|mlb|nhl|premier league|champions league|super bowl|world cup|ufc|boxing|tennis|grand slam|olympics|formula 1|\bf1\b|world series|playoffs|mvp|championship|serie a|la liga|bundesliga|march madness|stanley cup|australian open/i,
+  politics: /president|election|congress|senate|governor|supreme court|legislation|policy|democrat|republican|vote|ballot|cabinet|impeach|approval|parliament|tariff|federal reserve|fed chair|fed rate|treasury secretary|ceasefire|prime minister|coalition/i,
+};
+
+const BLOCKLIST =
+  /elon.*tweet|tweet.*count|musk.*post|big brother|love island|reality tv|influencer|celebrity|jersey number|kanye|kardashian|tier list|zodiac|astrology|onlyfans|stranger things|jesus christ|\bgta\b|greenland/i;
+
+const PER_CATEGORY = 3;
+
+interface GammaEvent {
+  title: string;
+  slug: string;
+  volume: number | string;
+  markets: PolymarketMarket[];
+}
+
+/** Pick the most balanced, highest-volume market from an event. Skips lopsided (>98 or <2). */
+function pickBestMarket(mkts: PolymarketMarket[]): PolymarketMarket | null {
+  let best: PolymarketMarket | null = null;
+  let bestScore = -1;
+
+  for (const m of mkts) {
+    let yes: number;
+    try {
+      const prices = JSON.parse(m.outcomePrices);
+      yes = Number(prices[0]) || 0;
+    } catch {
+      continue;
+    }
+    // Skip lopsided / settled
+    if (yes <= 0.02 || yes >= 0.98) continue;
+
+    const vol = Number(m.volume) || 0;
+    const balance = 1 - Math.abs(yes - 0.5) * 2; // 1.0 at 50/50, 0 at edges
+    const score = balance * 0.7 + Math.min(vol / 1e7, 1.0) * 0.3;
+    if (score > bestScore) {
+      bestScore = score;
+      best = m;
+    }
+  }
+  return best;
+}
+
+/**
+ * Fetch curated markets across crypto, AI, sports, politics.
+ * Uses the events endpoint and picks the best market per event.
+ * 60s module-level cache. Filters out meme/noise.
+ */
+export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
+  if (_polyGrouped && Date.now() - _polyGrouped.ts < 60_000)
+    return _polyGrouped.data;
+
+  try {
+    const res = await fetch(EVENTS_URL, { cache: 'no-store' });
+    if (res.status === 429 && _polyGrouped) return _polyGrouped.data;
+    if (!res.ok) throw new Error(`Polymarket events ${res.status}`);
+
+    const events: GammaEvent[] = await res.json();
+
+    const result: CategorizedMarkets = { crypto: [], ai: [], sports: [], politics: [] };
+
+    for (const evt of events) {
+      const title = evt.title || '';
+      if (BLOCKLIST.test(title)) continue;
+
+      for (const cat of ['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]) {
+        if (result[cat].length >= PER_CATEGORY) continue;
+        if (!CATEGORY_ALLOW[cat].test(title)) continue;
+
+        const best = pickBestMarket(evt.markets || []);
+        if (best) {
+          result[cat].push(best);
+          break; // one event → one category
+        }
+      }
+    }
+
+    _polyGrouped = { data: result, ts: Date.now() };
+    return result;
+  } catch (err) {
+    if (_polyGrouped) return _polyGrouped.data;
+    throw err;
+  }
+}
+
+/**
+ * Fetch recent BTC trades from Polymarket Data API.
+ * 30s module-level cache; filters for BTC-related markets.
+ */
+export async function fetchPolymarketTrades(): Promise<PolymarketTrade[]> {
+  if (_trades && Date.now() - _trades.ts < 30_000) return _trades.data;
+
+  const url = 'https://data-api.polymarket.com/trades?limit=100';
+
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (res.status === 429 && _trades) return _trades.data;
+    if (!res.ok) throw new Error(`Polymarket Data API ${res.status}`);
+
+    const raw: PolymarketTrade[] = await res.json();
+    const btcTrades = raw.filter(
+      (t) => /btc|bitcoin/i.test(t.title || '') || /btc/i.test(t.slug || ''),
+    );
+
+    _trades = { data: btcTrades, ts: Date.now() };
+    return btcTrades;
+  } catch (err) {
+    if (_trades) return _trades.data;
     throw err;
   }
 }

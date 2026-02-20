@@ -333,59 +333,156 @@
   color: var(--color-secondary);
 }
 
-/* ── Orderbook ── */
-.orderbookPanel {
+/* ── Order Flow Panel ── */
+.flowPanel {
   grid-column: 4;
   grid-row: 2;
 }
 
-.orderbookTitle {
-  font-family: var(--font-button);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-secondary);
-  margin-bottom: 8px;
-}
-
-.orderbookEntries {
+.flowDirection {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-family: var(--font-button);
-  font-size: 11px;
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  padding: 6px 0;
+  letter-spacing: 0.06em;
 }
 
-.orderbookRow {
-  display: flex;
-  justify-content: space-between;
-  padding: 2px 0;
-}
-
-.orderbookBid {
+.flowBullish {
   color: var(--color-tertiary);
 }
 
-.orderbookAsk {
+.flowBearish {
   color: #E2567B;
 }
 
-.orderbookSize {
+.flowNeutral {
   color: var(--color-secondary);
-  text-align: right;
-  min-width: 50px;
 }
 
-.orderbookSpread {
+.flowBarWrap {
   display: flex;
-  justify-content: center;
-  padding: 4px 0;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(26, 29, 51, 0.06);
+  margin: 4px 0 2px;
+}
+
+.flowBuy {
+  background: var(--color-tertiary);
+  transition: width 0.3s ease;
+}
+
+.flowSell {
+  background: #E2567B;
+  transition: width 0.3s ease;
+}
+
+.flowBarLabels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-button);
+  font-size: 9px;
+  color: var(--color-secondary);
+  margin-bottom: 6px;
+}
+
+.flowStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  margin: 6px 0;
+}
+
+.flowStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.flowStatLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+}
+
+.flowStatValue {
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.flowTradesLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(26, 29, 51, 0.1);
+}
+
+.flowTrades {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   font-family: var(--font-button);
   font-size: 10px;
-  color: var(--color-primary);
-  border-top: 1px solid rgba(26, 29, 51, 0.1);
-  border-bottom: 1px solid rgba(26, 29, 51, 0.1);
-  margin: 4px 0;
+  overflow-y: auto;
+}
+
+.flowTradeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.flowTradeBadge {
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  padding: 1px 5px;
+  border-radius: 2px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.flowTradeBuy {
+  background: rgba(116, 196, 101, 0.12);
+  color: var(--color-tertiary);
+}
+
+.flowTradeSell {
+  background: rgba(226, 86, 123, 0.12);
+  color: #E2567B;
+}
+
+.flowTradePrice {
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-semibold);
+  min-width: 36px;
+}
+
+.flowTradeSize {
+  color: var(--color-secondary);
+  flex: 1;
+  text-align: right;
+}
+
+.flowTradeTime {
+  color: var(--color-secondary);
+  font-size: 9px;
+  min-width: 44px;
+  text-align: right;
 }
 
 /* ── Positions ── */
@@ -533,16 +630,33 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   overflow-y: auto;
-  max-height: 200px;
+  max-height: 360px;
+}
+
+.polySection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.polySectionLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+  padding: 4px 0 2px;
+  border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  margin-bottom: 2px;
 }
 
 .polymarketItem {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 10px;
+  padding: 6px 10px;
   border: 1px solid rgba(26, 29, 51, 0.08);
   border-radius: var(--radius-sm);
 }
@@ -638,7 +752,7 @@
     min-width: 140px;
   }
 
-  .orderbookPanel {
+  .flowPanel {
     grid-column: 1;
     grid-row: auto;
   }

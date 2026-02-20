@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
-import type { CoinPrice, TreasuryBalance, PolymarketMarket } from '@/lib/market-api';
+import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics } from '@/lib/market-api';
 
 // ── Helpers ──
 
@@ -54,8 +54,6 @@ const K_DECAY = 1.50;
 const EDGE_THRESHOLD = 3.0;
 const FALLBACK_MKT_PRICE = 53.78;
 
-const BOOK_SIZES = [6892, 4178, 1555, 5613, 5553, 5843, 4392, 2935, 6711, 1382, 5022, 4199];
-
 const POSITION_ENTRIES = [
   { asset: 'XRP', side: 'UP' as const, entry: 0.54, size: 816 },
   { asset: 'ETH', side: 'DN' as const, entry: 0.54, size: 1058 },
@@ -87,13 +85,79 @@ function normalCDF(x: number): number {
 }
 
 /** Find a BTC-related Polymarket question, return Yes price as % */
-function findBtcMarket(markets: PolymarketMarket[] | null): number | null {
+function findBtcMarket(markets: CategorizedMarkets | null): number | null {
   if (!markets) return null;
-  const match = markets.find(m => /btc|bitcoin/i.test(m.question));
+  const match = markets.crypto.find(m => /btc|bitcoin/i.test(m.question));
   if (!match) return null;
   const [yes] = parseOutcomePrices(match.outcomePrices);
   return yes > 0 ? yes * 100 : null;
 }
+
+/** Compute OrderFlowMetrics from raw trades */
+function computeFlowMetrics(trades: PolymarketTrade[]): OrderFlowMetrics {
+  let takerBuyCount = 0;
+  let takerSellCount = 0;
+  let takerBuyVolume = 0;
+  let takerSellVolume = 0;
+
+  for (const t of trades) {
+    const size = Number(t.size) || 0;
+    if (t.side === 'BUY') {
+      takerBuyCount++;
+      takerBuyVolume += size;
+    } else {
+      takerSellCount++;
+      takerSellVolume += size;
+    }
+  }
+
+  const totalVolume = takerBuyVolume + takerSellVolume;
+  const takerBuyRatio = totalVolume > 0 ? takerBuyVolume / totalVolume : 0.5;
+  const flowDirection: OrderFlowMetrics['flowDirection'] =
+    takerBuyRatio > 0.55 ? 'BULLISH' : takerBuyRatio < 0.45 ? 'BEARISH' : 'NEUTRAL';
+
+  // Maker edge: interpolate +0.77% to +1.25% based on avg price distance from 50c
+  const avgPrice = trades.length > 0
+    ? trades.reduce((s, t) => s + (Number(t.price) || 0.5), 0) / trades.length
+    : 0.5;
+  const distFrom50 = Math.abs(avgPrice - 0.5);
+  const makerEdgeEstimate = 0.77 + (distFrom50 / 0.5) * (1.25 - 0.77);
+
+  const recentTrades = trades.slice(0, 8).map(t => ({
+    price: t.price,
+    size: t.size,
+    side: t.side,
+    ts: String(t.timestamp),
+  }));
+
+  return {
+    takerBuyCount,
+    takerSellCount,
+    takerBuyVolume,
+    takerSellVolume,
+    totalTrades: trades.length,
+    takerBuyRatio,
+    flowDirection,
+    makerEdgeEstimate,
+    recentTrades,
+  };
+}
+
+function formatTradeTime(ts: string): string {
+  try {
+    const d = new Date(Number(ts) * 1000 || ts);
+    return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch {
+    return '--:--';
+  }
+}
+
+const CATEGORY_LABELS: Record<MarketCategory, string> = {
+  crypto: 'CRYPTO',
+  ai: 'AI',
+  sports: 'SPORTS',
+  politics: 'POLITICS',
+};
 
 // ── Sparkline SVG ──
 
@@ -133,7 +197,8 @@ function Sparkline({ values }: { values: number[] }) {
 export default function Treasury() {
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
-  const [polymarkets, setPolymarkets] = useState<PolymarketMarket[] | null>(null);
+  const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
+  const [orderFlow, setOrderFlow] = useState<OrderFlowMetrics | null>(null);
   const [priceError, setPriceError] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
@@ -171,12 +236,21 @@ export default function Treasury() {
     try {
       const res = await fetch('/api/treasury/polymarket');
       if (!res.ok) throw new Error();
-      const data: PolymarketMarket[] = await res.json();
+      const data: CategorizedMarkets = await res.json();
       setPolymarkets(data);
       setPolyError(false);
     } catch {
       setPolyError(true);
     }
+  }, []);
+
+  const fetchTrades = useCallback(async () => {
+    try {
+      const res = await fetch('/api/treasury/trades');
+      if (!res.ok) return;
+      const trades: PolymarketTrade[] = await res.json();
+      if (trades.length > 0) setOrderFlow(computeFlowMetrics(trades));
+    } catch { /* silent */ }
   }, []);
 
   useEffect(() => {
@@ -196,6 +270,13 @@ export default function Treasury() {
       clearInterval(polyInterval);
     };
   }, [fetchPrices, fetchBalance, fetchPoly]);
+
+  // Fetch trades on mount and poll every 30s
+  useEffect(() => {
+    fetchTrades();
+    const tradesInterval = setInterval(fetchTrades, 30_000);
+    return () => clearInterval(tradesInterval);
+  }, [fetchTrades]);
 
   // Refresh the "last updated" display
   const [, setTick] = useState(0);
@@ -259,19 +340,7 @@ export default function Treasury() {
     // Step 14: Fee
     const fee = (p_t * (1 - p_t) + 0.0625) * 100;
 
-    // Step 15: Synthetic orderbook (with size jitter)
-    const step = delta_x * 100 / 6;
-    const asks = Array.from({ length: 6 }, (_, i) => ({
-      price: mkt_price + (6 - i) * step,
-      size: BOOK_SIZES[i] + Math.round(jitter(0, 50)),
-    }));
-    const bids = Array.from({ length: 6 }, (_, i) => ({
-      price: mkt_price - (i + 1) * step,
-      size: BOOK_SIZES[6 + i] + Math.round(jitter(0, 50)),
-    }));
-    const spread = asks[asks.length - 1].price - bids[0].price;
-
-    // Step 16: Positions PnL
+    // Step 15: Positions PnL
     const mktFrac = mkt_price / 100;
     const positions = POSITION_ENTRIES.map(pos => {
       const shares = pos.size / pos.entry;
@@ -284,7 +353,7 @@ export default function Treasury() {
     return {
       S, K, d2, Nd2, C_bin, p_t, x_t, delta_x,
       p_bid, p_ask, model_fair, mkt_price, divergence,
-      signal, fee, asks, bids, spread, positions,
+      signal, fee, positions,
       sigma, sigma_b, lambda_jump, mu_J, q_inv,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -336,7 +405,7 @@ export default function Treasury() {
 
             {/* Black-Scholes Binary Pricing */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>// black-scholes binary pricing</div>
+              <div className={styles.modelName}>{'// black-scholes binary pricing'}</div>
               <div className={styles.modelFormula}>
                 C_binary = e^(-rT) &middot; N(d&#x2082;)
               </div>
@@ -353,40 +422,40 @@ export default function Treasury() {
                 <span><span className={styles.paramValue}>{'$' + derived.C_bin.toFixed(4)}</span></span>
               </div>
               <div style={{ marginTop: 10 }}>
-                <div className={styles.modelName}>// parameters</div>
+                <div className={styles.modelName}>{'// parameters'}</div>
                 <div className={styles.paramRow}>
                   <span className={styles.paramKey}>S</span>
                   <span>
                     <span className={styles.paramValue}>{'$' + derived.S.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
-                    <span className={styles.paramComment}>// spot</span>
+                    <span className={styles.paramComment}>{'// spot'}</span>
                   </span>
                 </div>
                 <div className={styles.paramRow}>
                   <span className={styles.paramKey}>K</span>
                   <span>
                     <span className={styles.paramValue}>{'$' + derived.K.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
-                    <span className={styles.paramComment}>// strike</span>
+                    <span className={styles.paramComment}>{'// strike'}</span>
                   </span>
                 </div>
                 <div className={styles.paramRow}>
                   <span className={styles.paramKey}>&sigma;</span>
                   <span>
                     <span className={styles.paramValue}>{(derived.sigma * 100).toFixed(2)}%</span>
-                    <span className={styles.paramComment}>// annual IV</span>
+                    <span className={styles.paramComment}>{'// annual IV'}</span>
                   </span>
                 </div>
                 <div className={styles.paramRow}>
                   <span className={styles.paramKey}>T</span>
                   <span>
                     <span className={styles.paramValue}>0.0000095</span>
-                    <span className={styles.paramComment}>// 5min/yr</span>
+                    <span className={styles.paramComment}>{'// 5min/yr'}</span>
                   </span>
                 </div>
                 <div className={styles.paramRow}>
                   <span className={styles.paramKey}>r</span>
                   <span>
                     <span className={styles.paramValue}>4.33%</span>
-                    <span className={styles.paramComment}>// risk-free</span>
+                    <span className={styles.paramComment}>{'// risk-free'}</span>
                   </span>
                 </div>
               </div>
@@ -394,7 +463,7 @@ export default function Treasury() {
 
             {/* Logit Jump-Diffusion */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>// logit jump-diffusion</div>
+              <div className={styles.modelName}>{'// logit jump-diffusion'}</div>
               <div className={styles.modelFormula}>
                 x_t = ln(p/(1-p))
               </div>
@@ -410,28 +479,28 @@ export default function Treasury() {
                 <span className={styles.paramKey}>&sigma;_b</span>
                 <span>
                   <span className={styles.paramValue}>{derived.sigma_b.toFixed(3)}</span>
-                  <span className={styles.paramComment}>// belief vol</span>
+                  <span className={styles.paramComment}>{'// belief vol'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>&lambda;_jump</span>
                 <span>
                   <span className={styles.paramValue}>{derived.lambda_jump.toFixed(2)}</span>
-                  <span className={styles.paramComment}>// intensity</span>
+                  <span className={styles.paramComment}>{'// intensity'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>&mu;_J</span>
                 <span>
                   <span className={styles.paramValue}>{derived.mu_J.toFixed(3)}</span>
-                  <span className={styles.paramComment}>// jump size</span>
+                  <span className={styles.paramComment}>{'// jump size'}</span>
                 </span>
               </div>
             </div>
 
             {/* Avellaneda-Stoikov Market Making */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>// avellaneda-stoikov market making</div>
+              <div className={styles.modelName}>{'// avellaneda-stoikov market making'}</div>
               <div className={styles.modelFormula}>
                 r_x = x_t - q&middot;&gamma;&middot;&sigma;&sup2;_b&middot;(T-t)
               </div>
@@ -439,28 +508,28 @@ export default function Treasury() {
                 <span className={styles.paramKey}>q_inv</span>
                 <span>
                   <span className={styles.paramValue}>{derived.q_inv.toLocaleString('en-US').replace(/,/g, ' ')}</span>
-                  <span className={styles.paramComment}>// inventory</span>
+                  <span className={styles.paramComment}>{'// inventory'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>&gamma;</span>
                 <span>
                   <span className={styles.paramValue}>0.10</span>
-                  <span className={styles.paramComment}>// risk aversion</span>
+                  <span className={styles.paramComment}>{'// risk aversion'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>k</span>
                 <span>
                   <span className={styles.paramValue}>1.50</span>
-                  <span className={styles.paramComment}>// arrival decay</span>
+                  <span className={styles.paramComment}>{'// arrival decay'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>&delta;_x</span>
                 <span>
                   <span className={styles.paramValue}>{derived.delta_x.toFixed(4)}</span>
-                  <span className={styles.paramComment}>// half-spread</span>
+                  <span className={styles.paramComment}>{'// half-spread'}</span>
                 </span>
               </div>
               <div className={styles.paramRow}>
@@ -475,7 +544,7 @@ export default function Treasury() {
 
             {/* Edge Detection Pipeline */}
             <div className={styles.modelPanel}>
-              <div className={styles.modelName}>// edge detection pipeline</div>
+              <div className={styles.modelName}>{'// edge detection pipeline'}</div>
               <div className={styles.paramRow}>
                 <span className={styles.paramKey}>model_fair</span>
                 <span><span className={styles.paramValue}>{derived.model_fair.toFixed(2)}%</span></span>
@@ -509,7 +578,7 @@ export default function Treasury() {
                 <span className={styles.paramKey}>fee</span>
                 <span>
                   <span className={styles.paramValue}>{derived.fee.toFixed(2)}%</span>
-                  <span className={styles.paramComment}>// p(1-p)+0.0625</span>
+                  <span className={styles.paramComment}>{'// p(1-p)+0.0625'}</span>
                 </span>
               </div>
             </div>
@@ -540,10 +609,10 @@ export default function Treasury() {
             </div>
           </div>
 
-          {/* Chart 2: Polymarket Crypto Predictions */}
+          {/* Chart 2: Polymarket Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Polymarket &middot; Crypto Predictions &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Polymarket &middot; Signal Markets &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             {!polymarkets && !polyError && (
@@ -552,30 +621,36 @@ export default function Treasury() {
             {polyError && !polymarkets && (
               <span className={styles.errorText}>Failed to load Polymarket data</span>
             )}
-            {polymarkets && polymarkets.length > 0 && (
+            {polymarkets && (
               <div className={styles.polymarketList}>
-                {polymarkets.map((m) => {
-                  const [yes, no] = parseOutcomePrices(m.outcomePrices);
-                  const yesPct = Math.round(yes * 100);
-                  const noPct = Math.round(no * 100);
+                {(['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map((cat) => {
+                  const items = polymarkets[cat];
+                  if (!items || items.length === 0) return null;
                   return (
-                    <div key={m.id} className={styles.polymarketItem}>
-                      <div className={styles.polyQuestion}>{m.question}</div>
-                      <div className={styles.polyBar}>
-                        <div className={styles.polyYes} style={{ width: `${yesPct}%` }} />
-                        <div className={styles.polyNo} style={{ width: `${noPct}%` }} />
-                      </div>
-                      <div className={styles.polyMeta}>
-                        <span>Yes {yesPct}% / No {noPct}%</span>
-                        <span>Vol: {formatVol(m.volume)}</span>
-                      </div>
+                    <div key={cat} className={styles.polySection}>
+                      <div className={styles.polySectionLabel}>{CATEGORY_LABELS[cat]}</div>
+                      {items.map((m) => {
+                        const [yes, no] = parseOutcomePrices(m.outcomePrices);
+                        const yesPct = Math.round(yes * 100);
+                        const noPct = Math.round(no * 100);
+                        return (
+                          <div key={m.id} className={styles.polymarketItem}>
+                            <div className={styles.polyQuestion}>{m.question}</div>
+                            <div className={styles.polyBar}>
+                              <div className={styles.polyYes} style={{ width: `${yesPct}%` }} />
+                              <div className={styles.polyNo} style={{ width: `${noPct}%` }} />
+                            </div>
+                            <div className={styles.polyMeta}>
+                              <span>Yes {yesPct}% / No {noPct}%</span>
+                              <span>Vol: {formatVol(m.volume)}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 })}
               </div>
-            )}
-            {polymarkets && polymarkets.length === 0 && (
-              <span className={styles.loadingText}>No active crypto markets</span>
             )}
           </div>
 
@@ -670,26 +745,65 @@ export default function Treasury() {
             })}
           </div>
 
-          {/* Orderbook */}
-          <div className={`${styles.panel} ${styles.orderbookPanel}`}>
-            <div className={styles.orderbookTitle}>Orderbook &middot; BTC UP/DOWN 5-min</div>
-            <div className={styles.orderbookEntries}>
-              {derived.asks.map((level, i) => (
-                <div key={`ask-${i}`} className={styles.orderbookRow}>
-                  <span className={styles.orderbookAsk}>{level.price.toFixed(2)}</span>
-                  <span className={styles.orderbookSize}>{level.size.toLocaleString('en-US').replace(/,/g, ' ')}</span>
-                </div>
-              ))}
+          {/* Order Flow · Maker vs Taker */}
+          <div className={`${styles.panel} ${styles.flowPanel}`}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>Order Flow &middot; Maker vs Taker</span>
+              <span className={styles.panelBadge}>live</span>
             </div>
-            <div className={styles.orderbookSpread}>spread: {derived.spread.toFixed(2)}</div>
-            <div className={styles.orderbookEntries}>
-              {derived.bids.map((level, i) => (
-                <div key={`bid-${i}`} className={styles.orderbookRow}>
-                  <span className={styles.orderbookBid}>{level.price.toFixed(2)}</span>
-                  <span className={styles.orderbookSize}>{level.size.toLocaleString('en-US').replace(/,/g, ' ')}</span>
+            {!orderFlow ? (
+              <span className={styles.loadingText}>Loading flow data...</span>
+            ) : (
+              <>
+                <div className={`${styles.flowDirection} ${
+                  orderFlow.flowDirection === 'BULLISH' ? styles.flowBullish
+                    : orderFlow.flowDirection === 'BEARISH' ? styles.flowBearish
+                    : styles.flowNeutral
+                }`}>
+                  {orderFlow.flowDirection === 'BULLISH' ? '\u2191' : orderFlow.flowDirection === 'BEARISH' ? '\u2193' : '\u2194'}
+                  {' '}{orderFlow.flowDirection}
                 </div>
-              ))}
-            </div>
+                <div className={styles.flowBarWrap}>
+                  <div className={styles.flowBuy} style={{ width: `${Math.round(orderFlow.takerBuyRatio * 100)}%` }} />
+                  <div className={styles.flowSell} style={{ width: `${Math.round((1 - orderFlow.takerBuyRatio) * 100)}%` }} />
+                </div>
+                <div className={styles.flowBarLabels}>
+                  <span>Buy {Math.round(orderFlow.takerBuyRatio * 100)}%</span>
+                  <span>Sell {Math.round((1 - orderFlow.takerBuyRatio) * 100)}%</span>
+                </div>
+                <div className={styles.flowStats}>
+                  <div className={styles.flowStatItem}>
+                    <span className={styles.flowStatLabel}>Taker Buy Vol</span>
+                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerBuyVolume)}</span>
+                  </div>
+                  <div className={styles.flowStatItem}>
+                    <span className={styles.flowStatLabel}>Taker Sell Vol</span>
+                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerSellVolume)}</span>
+                  </div>
+                  <div className={styles.flowStatItem}>
+                    <span className={styles.flowStatLabel}>Total Trades</span>
+                    <span className={styles.flowStatValue}>{orderFlow.totalTrades}</span>
+                  </div>
+                  <div className={styles.flowStatItem}>
+                    <span className={styles.flowStatLabel}>Maker Edge Est.</span>
+                    <span className={styles.flowStatValue}>+{orderFlow.makerEdgeEstimate.toFixed(2)}%</span>
+                  </div>
+                </div>
+                <div className={styles.flowTradesLabel}>Recent Trades</div>
+                <div className={styles.flowTrades}>
+                  {orderFlow.recentTrades.map((t, i) => (
+                    <div key={i} className={styles.flowTradeRow}>
+                      <span className={`${styles.flowTradeBadge} ${t.side === 'BUY' ? styles.flowTradeBuy : styles.flowTradeSell}`}>
+                        {t.side}
+                      </span>
+                      <span className={styles.flowTradePrice}>{(t.price * 100).toFixed(1)}&cent;</span>
+                      <span className={styles.flowTradeSize}>{formatVol(t.size)}</span>
+                      <span className={styles.flowTradeTime}>{formatTradeTime(t.ts)}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Positions / Kelly Sized */}
