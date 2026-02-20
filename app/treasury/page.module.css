@@ -624,7 +624,6 @@
 
 .sparklineSvg {
   width: 100%;
-  max-width: 400px;
   height: 28px;
   margin-top: 4px;
 }
@@ -696,7 +695,7 @@
 }
 
 .polyNo {
-  background: #E2567B;
+  background: var(--color-primary);
   transition: width 0.3s ease;
 }
 

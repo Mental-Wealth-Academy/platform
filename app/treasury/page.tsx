@@ -159,34 +159,65 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
   politics: 'POLITICS',
 };
 
-// ── Sparkline SVG ──
+// ── Live Ticker Line ──
 
-function Sparkline({ values }: { values: number[] }) {
-  if (values.length < 2) return null;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const w = 400;
-  const h = 60;
-  const pad = 2;
+const TICKER_LEN = 80;
+const TICKER_DRIFT = 0.25;   // upward bias per tick
+const TICKER_VOL = 0.6;      // small random noise
 
-  const points = values
-    .map((v, i) => {
-      const x = (i / (values.length - 1)) * w;
-      const y = h - pad - ((v - min) / range) * (h - pad * 2);
-      return `${x},${y}`;
-    })
-    .join(' ');
+function TickerLine() {
+  const buf = useRef<number[]>((() => {
+    const arr: number[] = [];
+    let v = 0;
+    for (let i = 0; i < TICKER_LEN; i++) {
+      v += TICKER_DRIFT + (Math.random() - 0.5) * TICKER_VOL;
+      arr.push(v);
+    }
+    return arr;
+  })());
+  const [points, setPoints] = useState<string>('');
+
+  useEffect(() => {
+    function tick() {
+      const arr = buf.current as number[];
+      const last = arr[arr.length - 1];
+      arr.push(last + TICKER_DRIFT + (Math.random() - 0.5) * TICKER_VOL);
+      if (arr.length > TICKER_LEN) arr.shift();
+
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+      const range = max - min || 1;
+      const w = 400;
+      const h = 28;
+      const pad = 2;
+
+      const pts = arr
+        .map((v, i) => {
+          const x = (i / (arr.length - 1)) * w;
+          const y = h - pad - ((v - min) / range) * (h - pad * 2);
+          return `${x},${y}`;
+        })
+        .join(' ');
+      setPoints(pts);
+    }
+
+    tick();
+    const id = setInterval(tick, 300);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!points) return null;
 
   return (
-    <svg className={styles.sparklineSvg} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none">
+    <svg className={styles.sparklineSvg} viewBox="0 0 400 28" preserveAspectRatio="none">
       <polyline
         points={points}
         fill="none"
         stroke="var(--color-primary)"
-        strokeWidth="2"
+        strokeWidth="2.5"
         strokeLinejoin="round"
         strokeLinecap="round"
+        opacity="0.8"
       />
     </svg>
   );
@@ -203,7 +234,6 @@ export default function Treasury() {
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
-  const balanceHistory = useRef<number[]>([]);
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -225,8 +255,6 @@ export default function Treasury() {
       const data: TreasuryBalance = await res.json();
       setBalance(data);
       setBalanceError(false);
-      // Track in-session history for sparkline
-      balanceHistory.current = [...balanceHistory.current.slice(-29), data.usd];
     } catch {
       setBalanceError(true);
     }
@@ -603,7 +631,7 @@ export default function Treasury() {
                 <>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
                   <div className={styles.balanceLabel}>USDC Treasury Balance</div>
-                  <Sparkline values={balanceHistory.current} />
+                  <TickerLine />
                 </>
               )}
             </div>
