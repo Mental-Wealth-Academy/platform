@@ -1,0 +1,235 @@
+/* InventoryModal — Brutalist Design System */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 12, 28, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 2000;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2001;
+  width: min(380px, 90vw);
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 6px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  animation: slideIn 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 3px solid #1A1D33;
+  background: #50599B;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.closeButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.content {
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 32px 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Balances Grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px;
+  background: #F4F5FE;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.item:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.itemIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.itemLabel {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.itemValue {
+  font-family: var(--font-button);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  font-variant-numeric: tabular-nums;
+}
+
+/* NFT Section */
+.nftSection {
+  margin-top: 16px;
+}
+
+.nftHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.nftLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.nftOwned {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(98, 190, 143, 0.15);
+  color: #62BE8F;
+  border: 1px solid #62BE8F;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nftNotOwned {
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(226, 86, 123, 0.1);
+  color: #E2567B;
+  border: 1px solid rgba(226, 86, 123, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nftCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: #F4F5FE;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.nftImage {
+  width: 56px;
+  height: 56px;
+  border-radius: 4px;
+  border: 2px solid #1A1D33;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.nftInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nftName {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.nftDesc {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.4;
+}

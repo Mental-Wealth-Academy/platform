@@ -11,6 +11,7 @@ import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '../username-change/UsernameChangeModal';
 import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
+import InventoryModal from '../inventory-modal/InventoryModal';
 
 interface NavItem {
   id: string;
@@ -83,6 +84,7 @@ const SideNavigation: React.FC = () => {
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(false);
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -434,7 +436,11 @@ const SideNavigation: React.FC = () => {
 
           {/* Gems Counter + Azura Chat */}
           <div className={styles.gemsRow}>
-            <div className={styles.shardsCounter}>
+            <button
+              className={styles.shardsCounter}
+              onClick={() => setIsInventoryOpen(true)}
+              type="button"
+            >
               <Image
                 src="/icons/shard.svg"
                 alt="Gems"
@@ -446,7 +452,7 @@ const SideNavigation: React.FC = () => {
               <span className={styles.shardsValue}>
                 {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
               </span>
-            </div>
+            </button>
             <button
               className={styles.azuraChatIcon}
               onClick={() => {
@@ -467,6 +473,11 @@ const SideNavigation: React.FC = () => {
       </nav>
 
       {/* Modals */}
+      <InventoryModal
+        isOpen={isInventoryOpen}
+        onClose={() => setIsInventoryOpen(false)}
+        shardCount={shardCount}
+      />
       <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
       {isAvatarSelectorOpen && (
