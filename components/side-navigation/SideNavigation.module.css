@@ -233,6 +233,32 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: default;
+  text-align: left;
+}
+
+.sectionHeaderToggle {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.sectionHeaderToggle:hover {
+  background: rgba(81, 104, 255, 0.06);
+}
+
+.sectionChevron {
+  margin-left: auto;
+  color: #999999;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sectionChevronOpen {
+  transform: rotate(180deg);
 }
 
 .sectionLabel {
@@ -265,6 +291,15 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+  opacity: 1;
+}
+
+.sectionItemsCollapsed {
+  max-height: 0;
+  opacity: 0;
 }
 
 /* Nav Item */

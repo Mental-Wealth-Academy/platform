@@ -49,7 +49,6 @@ const navSections: NavSection[] = [
       { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Library Icon.svg' },
       { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
       { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
-      { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg' },
     ],
   },
   {
@@ -58,6 +57,7 @@ const navSections: NavSection[] = [
     badge: 'Access With Pro',
     badgeType: 'pro',
     items: [
+      { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'videos', label: 'Workflows', href: '/videos', icon: '/icons/Eye.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
@@ -82,6 +82,7 @@ const SideNavigation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [showLoginGate, setShowLoginGate] = useState(false);
+  const [adminExpanded, setAdminExpanded] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -261,17 +262,39 @@ const SideNavigation: React.FC = () => {
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>
-          {navSections.map((section) => (
+          {navSections.map((section) => {
+            const isAdmin = section.id === 'admin';
+            const isExpanded = isAdmin ? adminExpanded : true;
+            return (
             <div key={section.id} className={styles.section}>
-              <div className={styles.sectionHeader}>
+              <button
+                className={`${styles.sectionHeader} ${isAdmin ? styles.sectionHeaderToggle : ''}`}
+                onClick={isAdmin ? () => setAdminExpanded(!adminExpanded) : undefined}
+                type="button"
+              >
                 <span className={styles.sectionLabel}>{section.label}</span>
                 {section.badge && (
                   <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
                     {section.badge}
                   </span>
                 )}
-              </div>
-              <div className={styles.sectionItems}>
+                {isAdmin && (
+                  <svg
+                    className={`${styles.sectionChevron} ${adminExpanded ? styles.sectionChevronOpen : ''}`}
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                )}
+              </button>
+              <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
                 {section.items.map((item) => (
                   item.requiresPro ? (
                     <button
@@ -347,7 +370,8 @@ const SideNavigation: React.FC = () => {
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Bottom Section - Wallet, Voting Power, Chat */}
