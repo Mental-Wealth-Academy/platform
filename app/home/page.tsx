@@ -94,16 +94,16 @@ const getTutorialSteps = (): TutorialStep[] => [
 
 const getGuyTutorialSteps = (): GuyStep[] => [
   {
-    message: "Hey! I'm Guy. I'm here to tell you about $MWG points. You earn them by doing good work in the academy, and they unlock real rewards.",
+    message: "Hey! I'm Guy. Let me break down these three boxes for you. They're the core of how Mental Wealth Academy works.",
   },
   {
-    message: "How do you earn them? Just finish your weekly tasks and journal entries. The more you do, the more you earn.",
+    message: "Treasury is the shared reserve. When the community invests together, it grows. An autonomous bot compounds returns so the fund works even while you sleep.",
   },
   {
-    message: "Here's the best part. The more points you have, the more you get to decide how the prize pool money is spent at the end of the 12 weeks.",
+    message: "Pods are shared budgets for things that matter — wellness programs, community infrastructure, initiatives that build resilience. Governance proposals decide where these funds flow.",
   },
   {
-    message: "We don't keep the money at the top. It goes back to the members who put in the work. That's how we do things here.",
+    message: "Rewards are what grow back to you. The more you contribute to shared resources, the more the whole community grows. That's mental wealth.",
   },
 ];
 
