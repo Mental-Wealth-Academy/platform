@@ -223,6 +223,39 @@ function TickerLine() {
   );
 }
 
+// ── Live Market Row (real-time micro-jitter) ──
+
+function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
+  // Jitter scale relative to price magnitude — feels real without drifting
+  const jitterScale = coin.usd >= 1000 ? coin.usd * 0.00003
+    : coin.usd >= 1 ? coin.usd * 0.0002
+    : coin.usd * 0.001;
+
+  // Deterministic-ish jitter seeded by tick so it changes every 300ms
+  const jittered = coin.usd + (Math.sin(tick * 0.7 + coin.symbol.charCodeAt(0)) * 0.5 + (Math.random() - 0.5)) * jitterScale;
+
+  const change = formatChange(coin.usd_24h_change);
+
+  return (
+    <div className={styles.marketRow}>
+      <div>
+        <div className={styles.marketSymbol}>{coin.symbol}</div>
+      </div>
+      <div>
+        <div className={`${styles.marketPrice} ${styles.priceTick}`} key={tick}>
+          {formatPrice(jittered)}
+        </div>
+        <div className={styles.marketMeta}>
+          <span className={change.positive ? styles.changePositive : styles.changeNegative}>
+            {change.text}
+          </span>
+          {' '}vol:{formatVol(coin.usd_24h_vol)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ──
 
 export default function Treasury() {
@@ -752,25 +785,9 @@ export default function Treasury() {
                 <span className={styles.errorText}>Failed to load prices</span>
               </div>
             )}
-            {prices && prices.map((coin) => {
-              const change = formatChange(coin.usd_24h_change);
-              return (
-                <div key={coin.symbol} className={styles.marketRow}>
-                  <div>
-                    <div className={styles.marketSymbol}>{coin.symbol}</div>
-                  </div>
-                  <div>
-                    <div className={styles.marketPrice}>{formatPrice(coin.usd)}</div>
-                    <div className={styles.marketMeta}>
-                      <span className={change.positive ? styles.changePositive : styles.changeNegative}>
-                        {change.text}
-                      </span>
-                      {' '}vol:{formatVol(coin.usd_24h_vol)}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {prices && prices.map((coin) => (
+              <LiveMarketRow key={coin.symbol} coin={coin} tick={modelTick} />
+            ))}
           </div>
 
           {/* Order Flow · Maker vs Taker */}
