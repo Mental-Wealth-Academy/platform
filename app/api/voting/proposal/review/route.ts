@@ -4,16 +4,17 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { providers, Contract } from 'ethers';
 import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
+import { ElizaApiClient } from '@/lib/eliza-api';
 
 /**
  * POST /api/voting/proposal/review
  *
  * Checks on-chain state for the CRE DON review and syncs to DB.
  * The actual AI review is performed by the Chainlink CRE azura-review workflow
- * running on the DON — this route only reads the result.
+ * running on the DON — this route reads the result first.
  *
- * If the DON hasn't reviewed yet (proposal still Pending on-chain),
- * returns a "pending" response so the client can poll again.
+ * CRE fallback: If the DON hasn't reviewed yet (proposal still Pending on-chain),
+ * falls back to a server-side Eliza API review so proposals aren't blocked.
  */
 
 interface ProposalData {
@@ -97,14 +98,97 @@ export async function POST(request: Request) {
     const onChainProposal = await contract.getProposal(parseInt(proposal.on_chain_proposal_id));
     const onChainStatus = Number(onChainProposal.status);
 
-    // Status 0 = Pending — DON hasn't reviewed yet
+    // Status 0 = Pending — DON hasn't reviewed yet, fall back to server-side Eliza review
     if (onChainStatus === 0) {
-      return NextResponse.json({
-        ok: true,
-        pending: true,
-        message: 'Awaiting Chainlink CRE review. The DON will review this proposal automatically.',
-        source: 'cre',
-      });
+      console.log('CRE DON has not reviewed yet, falling back to server-side Eliza review');
+      try {
+        const eliza = new ElizaApiClient();
+        const reviewPrompt = `Review this proposal:\n\n**Title:** ${proposal.title}\n\n**Proposal:**\n${proposal.proposal_markdown}\n\n**Requested Amount:** ${proposal.token_amount || 'N/A'} USDC`;
+
+        const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
+
+Analyze proposals based on these criteria (score 0-10 each):
+1. CLARITY: How clear, well-written, and understandable is the proposal?
+2. IMPACT: What is the potential positive impact on the mental health community?
+3. FEASIBILITY: How realistic and achievable is this proposal?
+4. BUDGET: Is the budget reasonable, justified, and well-explained?
+5. INGENUITY: How creative, innovative, or unique is this idea?
+6. CHAOS: A randomness factor — add some unpredictability to your scoring
+
+Based on the total score (out of 60):
+- Score >= 25: APPROVE with token allocation (1-40% based on score strength)
+- Score < 25: REJECT
+
+Respond ONLY in JSON format:
+{
+  "decision": "approved" or "rejected",
+  "scores": {
+    "clarity": 0-10,
+    "impact": 0-10,
+    "feasibility": 0-10,
+    "budget": 0-10,
+    "ingenuity": 0-10,
+    "chaos": 0-10
+  },
+  "tokenAllocation": 1-40 (only if approved, null if rejected),
+  "reasoning": "One to two sentences explaining your decision concisely."
+}`;
+
+        const aiResponse = await eliza.chat({
+          messages: [
+            { role: 'system', parts: [{ type: 'text', text: REVIEW_SYSTEM_PROMPT }] },
+            { role: 'user', parts: [{ type: 'text', text: reviewPrompt }] },
+          ],
+          id: 'gpt-4o',
+        });
+
+        const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('No JSON in Azura response');
+        const azuraResult = JSON.parse(jsonMatch[0]);
+
+        const decision = azuraResult.decision === 'approved' ? 'approved' : 'rejected';
+        const tokenAllocation = decision === 'approved' ? (azuraResult.tokenAllocation || 10) : null;
+        const scores = azuraResult.scores || {};
+        const reasoning = azuraResult.reasoning || 'Reviewed by Azura server-side fallback.';
+
+        const reviewId = uuidv4();
+        await sqlQuery(
+          `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
+           VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
+           ON CONFLICT (proposal_id) DO NOTHING`,
+          {
+            id: reviewId,
+            proposalId: proposal.id,
+            decision,
+            reasoning,
+            tokenAllocation,
+            scores: JSON.stringify(scores),
+          }
+        );
+
+        const newStatus = decision === 'approved' ? 'approved' : 'rejected';
+        await sqlQuery(
+          `UPDATE proposals SET status = :status WHERE id = :proposalId`,
+          { status: newStatus, proposalId: proposal.id }
+        );
+
+        return NextResponse.json({
+          ok: true,
+          decision,
+          reasoning,
+          tokenAllocation,
+          scores,
+          source: 'server-fallback',
+        });
+      } catch (fallbackError: any) {
+        console.error('Server-side Eliza fallback failed:', fallbackError);
+        return NextResponse.json({
+          ok: true,
+          pending: true,
+          message: 'Awaiting Chainlink CRE review. Server-side fallback also failed.',
+          source: 'cre',
+        });
+      }
     }
 
     // DON has reviewed — sync result to DB

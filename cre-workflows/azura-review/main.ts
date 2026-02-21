@@ -113,8 +113,23 @@ interface AzuraResponse {
   reasoning: string;
 }
 
+/** Parse SSE streaming response — concatenate text-delta events into full text. */
+function parseSSE(sseText: string): string {
+  let full = "";
+  for (const line of sseText.split("\n")) {
+    if (!line.startsWith("data: ")) continue;
+    try {
+      const evt = JSON.parse(line.slice(6));
+      if (evt.type === "text-delta" && evt.delta) full += evt.delta;
+    } catch { /* skip non-JSON lines */ }
+  }
+  return full;
+}
+
 function parseAzuraResponse(raw: string): AzuraResponse {
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  // Handle SSE streaming responses from Eliza Cloud
+  const text = raw.startsWith("data:") ? parseSSE(raw) : raw;
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("No JSON object found in Azura response");
   return JSON.parse(jsonMatch[0]) as AzuraResponse;
 }
@@ -207,13 +222,13 @@ ${proposal.description}
                 Authorization: `Bearer ${elizaApiKey.value}`,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
+              body: Buffer.from(JSON.stringify({
                 messages: [
                   { role: "system", parts: [{ type: "text", text: REVIEW_SYSTEM_PROMPT }] },
                   { role: "user", parts: [{ type: "text", text: userPrompt }] },
                 ],
                 id: "gpt-4o",
-              }),
+              })).toString("base64"),
               cacheSettings: {
                 store: true,
                 maxAge: "60s",
