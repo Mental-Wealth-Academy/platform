@@ -82,12 +82,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage3Variant = () => {
-    if (status === 'approved' && onChainProposalId) {
-      return 'active'; // Voting is open
-    }
-    if (status === 'active') {
-      return 'active';
-    }
     if (status === 'completed') {
       return 'completed';
     }

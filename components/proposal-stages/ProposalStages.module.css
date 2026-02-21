@@ -76,7 +76,8 @@
   border: 2px solid rgba(34, 197, 94, 0.5);
 }
 
-.stage2.failed .stageIcon {
+.stage2.failed .stageIcon,
+.stage3.defeated .stageIcon {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(109, 40, 217, 0.25));
   border: 2px solid rgba(124, 58, 237, 0.5);
 }
@@ -120,7 +121,8 @@
 }
 
 .stage1.rejected .stageStatus,
-.stage2.failed .stageStatus {
+.stage2.failed .stageStatus,
+.stage3.defeated .stageStatus {
   color: rgba(124, 58, 237, 0.9);
 }
 

@@ -6,7 +6,7 @@ import styles from './ProposalStages.module.css';
 
 type Stage1Variant = 'waiting' | 'analyzing' | 'approved' | 'rejected';
 type Stage2Variant = 'waiting' | 'processing' | 'success' | 'failed';
-type Stage3Variant = 'waiting' | 'active' | 'completed';
+type Stage3Variant = 'waiting' | 'active' | 'completed' | 'defeated';
 
 interface ProposalStagesProps {
   stage1: Stage1Variant;
@@ -32,7 +32,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       case 'approved':
         return 'Approved by Azura';
       case 'rejected':
-        return 'Failed';
+        return 'Killed by Azura';
       default:
         return 'Unknown';
     }
@@ -41,13 +41,13 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   const getStage2Status = () => {
     switch (stage2) {
       case 'waiting':
-        return 'Awaiting transaction';
+        return 'Awaiting vote';
       case 'processing':
-        return 'Processing on-chain...';
+        return 'Processing...';
       case 'success':
-        return 'Transaction confirmed';
+        return 'Community voting open';
       case 'failed':
-        return 'Transaction failed';
+        return 'Vote failed';
       default:
         return 'Unknown';
     }
@@ -56,11 +56,13 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   const getStage3Status = () => {
     switch (stage3) {
       case 'waiting':
-        return 'Not started';
+        return 'Pending';
       case 'active':
-        return 'Community voting open';
+        return 'Pending';
       case 'completed':
-        return 'Voting completed';
+        return 'Approved';
+      case 'defeated':
+        return 'Defeated';
       default:
         return 'Unknown';
     }
@@ -153,9 +155,9 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-          ) : stage3 === 'active' ? (
+          ) : stage3 === 'defeated' ? (
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           ) : (
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -165,7 +167,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
           )}
         </div>
         <div className={styles.stageContent}>
-          <h4 className={styles.stageName}>Success</h4>
+          <h4 className={styles.stageName}>Outcome</h4>
           <p className={styles.stageStatus}>{getStage3Status()}</p>
         </div>
       </div>
