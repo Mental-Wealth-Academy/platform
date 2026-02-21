@@ -70,12 +70,12 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-.stage2.success .stageIcon,
 .stage3.completed .stageIcon {
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(22, 163, 74, 0.25));
   border: 2px solid rgba(34, 197, 94, 0.5);
 }
 
+.stage2.success .stageIcon,
 .stage2.failed .stageIcon,
 .stage3.defeated .stageIcon {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(109, 40, 217, 0.25));
@@ -115,12 +115,12 @@
 }
 
 .stage1.approved .stageStatus,
-.stage2.success .stageStatus,
 .stage3.completed .stageStatus {
   color: rgba(34, 197, 94, 0.9);
 }
 
 .stage1.rejected .stageStatus,
+.stage2.success .stageStatus,
 .stage2.failed .stageStatus,
 .stage3.defeated .stageStatus {
   color: rgba(124, 58, 237, 0.9);
