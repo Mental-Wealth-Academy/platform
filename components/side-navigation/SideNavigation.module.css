@@ -664,13 +664,13 @@
 
 .accountMenu {
   position: absolute;
-  top: calc(100% + 8px);
+  bottom: calc(100% + 8px);
   left: 0;
   right: 0;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow: 3px -3px 0 #1A1D33;
   z-index: 200;
   overflow: hidden;
 }

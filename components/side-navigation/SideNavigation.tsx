@@ -502,7 +502,7 @@ const SideNavigation: React.FC = () => {
                       setIsMobileMenuOpen(false);
                     }}
                   >
-                    <span className={styles.accountMenuLabel}>Profile</span>
+                    <span className={styles.accountMenuLabel}>PROFILE</span>
                   </Link>
                   <button
                     className={styles.accountMenuItem}
