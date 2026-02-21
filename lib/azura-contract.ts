@@ -63,6 +63,43 @@ export interface VotingProgress {
   percentageFor: number;
 }
 
+const BASE_CHAIN_ID = 8453;
+
+/**
+ * Ensure the wallet is connected to Base Mainnet, prompt to switch if not
+ */
+export async function ensureBaseNetwork(provider: providers.Web3Provider): Promise<void> {
+  const network = await provider.getNetwork();
+  if (network.chainId === BASE_CHAIN_ID) return;
+
+  if (typeof window === 'undefined' || !window.ethereum) {
+    throw new Error('Please switch your wallet to Base network.');
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x' + BASE_CHAIN_ID.toString(16) }],
+    });
+  } catch (switchError: any) {
+    // 4902 = chain not added to wallet
+    if (switchError.code === 4902) {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{
+          chainId: '0x' + BASE_CHAIN_ID.toString(16),
+          chainName: 'Base',
+          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+          rpcUrls: ['https://mainnet.base.org'],
+          blockExplorerUrls: ['https://basescan.org'],
+        }],
+      });
+    } else {
+      throw new Error('Please switch your wallet to Base network to continue.');
+    }
+  }
+}
+
 /**
  * Get contract instance
  */

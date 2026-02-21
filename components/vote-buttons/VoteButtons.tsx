@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { providers } from 'ethers';
-import { voteOnProposal, getUserVotingPower, formatTokenAmount } from '@/lib/azura-contract';
+import { voteOnProposal, getUserVotingPower, formatTokenAmount, ensureBaseNetwork } from '@/lib/azura-contract';
 import styles from './VoteButtons.module.css';
 
 interface VoteButtonsProps {
@@ -125,12 +125,15 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
     try {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new providers.Web3Provider(window.ethereum);
-        
+        await ensureBaseNetwork(provider);
+        // Re-create provider after potential chain switch
+        const baseProvider = new providers.Web3Provider(window.ethereum);
+
         const txHash = await voteOnProposal(
           contractAddress,
           proposalId,
           support,
-          provider
+          baseProvider
         );
         
         alert(`Vote submitted!\n\nTransaction: ${txHash.slice(0, 10)}...\n\nYour ${formatTokenAmount(votingPower)} $MWG tokens have been counted!`);
@@ -143,7 +146,22 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
       }
     } catch (error: any) {
       console.error('Error voting:', error);
-      alert(`Failed to vote: ${error.message || 'Unknown error'}`);
+      const msg = error.message || 'Unknown error';
+      if (msg.includes('user rejected') || msg.includes('denied') || error.code === 4001) {
+        alert('Vote cancelled.');
+      } else if (msg.includes('switch') && msg.includes('Base')) {
+        alert('Please switch your wallet to Base network and try again.');
+      } else if (msg.includes('ProposalNotActive') || msg.includes('proposal') && msg.includes('active')) {
+        alert('This proposal is not currently open for voting.');
+      } else if (msg.includes('AlreadyVoted')) {
+        alert('You have already voted on this proposal.');
+      } else if (msg.includes('VotingEnded')) {
+        alert('The voting period for this proposal has ended.');
+      } else if (msg.includes('cannot estimate gas')) {
+        alert('Transaction would fail. Make sure your wallet is on Base network and the proposal is open for voting.');
+      } else {
+        alert(`Failed to vote: ${msg.slice(0, 150)}`);
+      }
     } finally {
       setVoting(false);
     }

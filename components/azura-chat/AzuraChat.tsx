@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { providers, Contract, utils } from 'ethers';
+import { ensureBaseNetwork } from '@/lib/azura-contract';
 import styles from './AzuraChat.module.css';
 
 interface Message {
@@ -279,7 +280,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     try {
       const provider = new providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
-      const signer = provider.getSigner();
+      await ensureBaseNetwork(provider);
+      // Re-create provider after potential chain switch
+      const baseProvider = new providers.Web3Provider(window.ethereum);
+      const signer = baseProvider.getSigner();
 
       const usdc = new Contract(
         USDC_ADDRESS,
@@ -313,8 +317,14 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       const msg = err instanceof Error ? err.message : 'Unknown error';
       if (msg.includes('user rejected') || msg.includes('denied')) {
         addAzuraMessage("Transaction cancelled. No worries, the offer still stands whenever you're ready.");
+      } else if (msg.includes('switch') && msg.includes('Base')) {
+        addAzuraMessage("You need to switch your wallet to Base network first. Try again after switching.");
+      } else if (msg.includes('insufficient') || msg.includes('exceeds balance')) {
+        addAzuraMessage("Insufficient USDC balance for this amount. Double-check your balance on Base and try again.");
+      } else if (msg.includes('cannot estimate gas')) {
+        addAzuraMessage("Transaction would fail on-chain. Make sure you're on Base network and have enough USDC. Then try again.");
       } else {
-        addAzuraMessage(`Transaction failed: ${msg.slice(0, 80)}. Check your USDC balance and try again.`);
+        addAzuraMessage(`Transaction failed: ${msg.slice(0, 120)}. Check your wallet is on Base and try again.`);
       }
     } finally {
       setTxPending(false);
