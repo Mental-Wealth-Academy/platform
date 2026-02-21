@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
-import FinalizeButton from './FinalizeButton';
+import VoteProgressBar from '@/components/vote-progress/VoteProgressBar';
+import VoteButtons from '@/components/vote-buttons/VoteButtons';
 import styles from './ProposalCard.module.css';
 
 interface ProposalReview {
@@ -35,7 +36,19 @@ interface ProposalCardProps {
   review: ProposalReview | null;
   onViewDetails?: (id: string) => void;
   showAvatar?: boolean;
+  onChainProposalId?: number | null;
+  contractAddress?: string;
+  onChainData?: {
+    forVotes: string;
+    againstVotes: string;
+    votingDeadline: number;
+    azuraLevel: number;
+    executed: boolean;
+  } | null;
+  onVoted?: () => void;
 }
+
+const TOTAL_SUPPLY = '100000'; // 100k tokens
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
   id,
@@ -48,15 +61,11 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   review,
   onViewDetails,
   showAvatar = false,
+  onChainProposalId,
+  contractAddress,
+  onChainData,
+  onVoted,
 }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleFinalized = () => {
-    // Refresh the component to show updated status
-    setRefreshKey(prev => prev + 1);
-    // Optionally refresh the entire proposals list
-    window.location.reload();
-  };
   const getStage1Variant = () => {
     if (status === 'pending_review') {
       return review ? 'analyzing' : 'waiting';
@@ -71,6 +80,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage2Variant = () => {
+    if (status === 'approved' && onChainProposalId) {
+      return 'success'; // Approved and already on blockchain
+    }
     if (status === 'approved') {
       return 'waiting'; // Approved but not yet on blockchain
     }
@@ -81,6 +93,12 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage3Variant = () => {
+    if (status === 'approved' && onChainData) {
+      const forVotesNum = parseFloat(onChainData.forVotes);
+      const totalSupplyNum = parseFloat(TOTAL_SUPPLY);
+      const percentageFor = totalSupplyNum > 0 ? (forVotesNum / totalSupplyNum) * 100 : 0;
+      return percentageFor >= 50 ? 'completed' : 'active';
+    }
     if (status === 'active') {
       return 'active';
     }
@@ -219,14 +237,25 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <p className={styles.previewText}>{getPreviewText()}</p>
       </div>
 
-      {/* Show finalize button for approved proposals */}
-      {status === 'approved' && review?.tokenAllocation && (
-        <div className={styles.finalizeSection}>
-          <FinalizeButton
-            proposalId={id}
-            tokenAllocation={review.tokenAllocation}
-            onFinalized={handleFinalized}
+      {/* Show voting UI for approved/active proposals with on-chain data */}
+      {(status === 'approved' || status === 'active') &&
+       onChainProposalId &&
+       onChainData &&
+       !onChainData.executed && (
+        <div className={styles.votingSection}>
+          <VoteProgressBar
+            forVotes={onChainData.forVotes}
+            againstVotes={onChainData.againstVotes}
+            totalSupply={TOTAL_SUPPLY}
+            threshold={50}
           />
+          {contractAddress && (
+            <VoteButtons
+              proposalId={onChainProposalId}
+              contractAddress={contractAddress}
+              onVoted={onVoted}
+            />
+          )}
         </div>
       )}
 

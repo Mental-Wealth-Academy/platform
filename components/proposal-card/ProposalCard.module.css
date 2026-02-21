@@ -172,7 +172,7 @@
   border-bottom: 2px solid rgba(26, 29, 51, 0.1);
 }
 
-.finalizeSection {
+.votingSection {
   padding: 16px 24px;
   border-top: 2px solid rgba(26, 29, 51, 0.1);
 }
@@ -286,7 +286,7 @@
 
   .stagesSection,
   .preview,
-  .finalizeSection {
+  .votingSection {
     padding: 16px;
   }
 
