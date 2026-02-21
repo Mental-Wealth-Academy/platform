@@ -106,7 +106,10 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     return 'waiting';
   };
 
+  const isDefeated = getStage3Variant() === 'defeated';
+
   const getStatusLabel = () => {
+    if (isDefeated) return 'Defeated';
     switch (status) {
       case 'pending_review':
         return 'Under Review';
@@ -124,6 +127,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStatusClass = () => {
+    if (isDefeated) return 'rejected';
     switch (status) {
       case 'pending_review':
         return 'pending';
