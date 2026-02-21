@@ -676,6 +676,7 @@
 }
 
 .accountMenuItem {
+  display: block;
   width: 100%;
   padding: 12px 16px;
   background: transparent;
@@ -686,6 +687,7 @@
   color: #1A1D33;
   cursor: pointer;
   text-align: left;
+  text-decoration: none;
   transition: background 0.15s ease;
 }
 

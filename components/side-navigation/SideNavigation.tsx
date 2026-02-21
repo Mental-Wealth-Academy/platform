@@ -12,6 +12,7 @@ import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '../username-change/UsernameChangeModal';
 import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
 import InventoryModal from '../inventory-modal/InventoryModal';
+import YourAccountsModal from '../nav-buttons/YourAccountsModal';
 
 interface NavItem {
   id: string;
@@ -38,7 +39,6 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'home', label: 'Profile', href: '/voting', icon: '/icons/Vote Icon (1).svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
     ],
   },
@@ -90,9 +90,73 @@ const SideNavigation: React.FC = () => {
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  // Create server session after wallet connects via ConnectKit
+  const createSessionForWallet = async (walletAddress: string) => {
+    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) return;
+    setIsCreatingSession(true);
+    try {
+      // Check if we already have a session
+      const meResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+      const meData = await meResponse.json().catch(() => ({ user: null }));
+
+      if (meData.user) {
+        setUsername(meData.user.username || null);
+        setAvatarUrl(meData.user.avatarUrl || null);
+        if (meData.user.shardCount !== undefined) setShardCount(meData.user.shardCount);
+        sessionCreatedForRef.current = walletAddress;
+        return;
+      }
+
+      // No session yet - create account with wallet address
+      const signupResponse = await fetch('/api/auth/wallet-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ walletAddress }),
+      });
+
+      if (signupResponse.ok) {
+        const refreshResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const refreshData = await refreshResponse.json().catch(() => ({ user: null }));
+        if (refreshData.user) {
+          setUsername(refreshData.user.username || null);
+          setAvatarUrl(refreshData.user.avatarUrl || null);
+          if (refreshData.user.shardCount !== undefined) setShardCount(refreshData.user.shardCount);
+          window.dispatchEvent(new Event('userLoggedIn'));
+        }
+        sessionCreatedForRef.current = walletAddress;
+      }
+    } catch (error) {
+      console.error('Failed to create session after wallet connect:', error);
+    } finally {
+      setIsCreatingSession(false);
+    }
+  };
+
+  // Auto-create session when wallet connects
+  useEffect(() => {
+    if (!isConnected || !address) return;
+    if (username && !username.startsWith('user_')) return; // Already fully logged in
+    if (sessionCreatedForRef.current === address) return;
+
+    const timer = setTimeout(() => createSessionForWallet(address), 500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, address, username]);
+
+  // Reset session tracking when wallet disconnects
+  useEffect(() => {
+    if (!isConnected) {
+      sessionCreatedForRef.current = null;
+    }
+  }, [isConnected]);
 
   // Fetch user data
   useEffect(() => {
@@ -430,6 +494,26 @@ const SideNavigation: React.FC = () => {
 
               {isAccountMenuOpen && (
                 <div className={styles.accountMenu}>
+                  <Link
+                    href="/voting"
+                    className={styles.accountMenuItem}
+                    onClick={() => {
+                      setIsAccountMenuOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <span className={styles.accountMenuLabel}>Profile</span>
+                  </Link>
+                  <button
+                    className={styles.accountMenuItem}
+                    onClick={() => {
+                      setIsAccountMenuOpen(false);
+                      setIsYourAccountsModalOpen(true);
+                    }}
+                  >
+                    <span className={styles.accountMenuLabel}>Connections</span>
+                  </button>
+                  <div className={styles.accountMenuDivider} />
                   <button
                     className={styles.accountMenuItem}
                     onClick={handleAvatarClick}
@@ -456,11 +540,20 @@ const SideNavigation: React.FC = () => {
             <button
               className={styles.connectWalletButton}
               onClick={() => {
-                openConnectModal(true);
+                if (isConnected && address) {
+                  // Wallet already connected at wagmi level but no session
+                  // Disconnect first so ConnectKit shows fresh wallet selection
+                  // then create session, or just create session directly
+                  sessionCreatedForRef.current = null;
+                  createSessionForWallet(address);
+                } else {
+                  openConnectModal(true);
+                }
                 setIsMobileMenuOpen(false);
               }}
+              disabled={isCreatingSession}
             >
-              <span>Connect Account</span>
+              <span>{isCreatingSession ? 'Connecting...' : 'Create Account / Sign In'}</span>
             </button>
           )}
 
@@ -495,6 +588,9 @@ const SideNavigation: React.FC = () => {
         shardCount={shardCount}
       />
       <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
+      {isYourAccountsModalOpen && (
+        <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />
+      )}
       {isAvatarSelectorOpen && (
         <AvatarSelectorModal
           onClose={() => setIsAvatarSelectorOpen(false)}
