@@ -45,7 +45,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       case 'processing':
         return 'Processing...';
       case 'success':
-        return 'Community voting open';
+        return (stage3 === 'defeated' || stage3 === 'completed') ? 'Vote ended' : 'Community voting open';
       case 'failed':
         return 'Vote failed';
       default:
