@@ -111,6 +111,9 @@
   color: #BA1A1A;
   margin: 0;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @keyframes spin {

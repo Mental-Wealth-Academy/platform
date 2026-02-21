@@ -44,7 +44,20 @@ const VoteButton: React.FC<VoteButtonProps> = ({
       }
     } catch (error: any) {
       console.error('Error voting:', error);
-      setError(error.message || 'Failed to vote');
+      const code = error?.error?.data?.originalError?.data || error?.data || '';
+      if (code === '0x7becc13f' || error.message?.includes('ProposalNotActive')) {
+        setError('Proposal is not active for voting');
+      } else if (error.message?.includes('AlreadyVoted')) {
+        setError('You have already voted');
+      } else if (error.message?.includes('VotingEnded')) {
+        setError('Voting period has ended');
+      } else if (error.message?.includes('InsufficientVotingPower')) {
+        setError('No voting power');
+      } else if (error.code === 'ACTION_REJECTED' || error.code === 4001) {
+        setError('Transaction cancelled');
+      } else {
+        setError('Vote failed — check console for details');
+      }
     } finally {
       setVoting(false);
     }
