@@ -4,7 +4,7 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { providers, Contract } from 'ethers';
 import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
-import { ElizaApiClient } from '@/lib/eliza-api';
+import { elizaAPI } from '@/lib/eliza-api';
 
 /**
  * POST /api/voting/proposal/review
@@ -102,7 +102,6 @@ export async function POST(request: Request) {
     if (onChainStatus === 0) {
       console.log('CRE DON has not reviewed yet, falling back to server-side Eliza review');
       try {
-        const eliza = new ElizaApiClient();
         const reviewPrompt = `Review this proposal:\n\n**Title:** ${proposal.title}\n\n**Proposal:**\n${proposal.proposal_markdown}\n\n**Requested Amount:** ${proposal.token_amount || 'N/A'} USDC`;
 
         const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
@@ -134,7 +133,7 @@ Respond ONLY in JSON format:
   "reasoning": "One to two sentences explaining your decision concisely."
 }`;
 
-        const aiResponse = await eliza.chat({
+        const aiResponse = await elizaAPI.chat({
           messages: [
             { role: 'system', parts: [{ type: 'text', text: REVIEW_SYSTEM_PROMPT }] },
             { role: 'user', parts: [{ type: 'text', text: reviewPrompt }] },
