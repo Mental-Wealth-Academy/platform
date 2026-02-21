@@ -75,7 +75,11 @@
   border: 2px solid rgba(34, 197, 94, 0.5);
 }
 
-.stage2.success .stageIcon,
+.stage2.success .stageIcon {
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.25), rgba(81, 104, 255, 0.35));
+  border: 2px solid rgba(81, 104, 255, 0.5);
+}
+
 .stage2.failed .stageIcon,
 .stage3.defeated .stageIcon {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(109, 40, 217, 0.25));
@@ -119,8 +123,11 @@
   color: rgba(34, 197, 94, 0.9);
 }
 
+.stage2.success .stageStatus {
+  color: var(--color-primary);
+}
+
 .stage1.rejected .stageStatus,
-.stage2.success .stageStatus,
 .stage2.failed .stageStatus,
 .stage3.defeated .stageStatus {
   color: rgba(124, 58, 237, 0.9);
