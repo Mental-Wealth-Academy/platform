@@ -9,6 +9,8 @@ import MintModal from '@/components/mint-modal/MintModal';
 import StillTutorial, { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import { AzuraPowerIndicator } from '@/components/soul-gems/SoulGemDisplay';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
+import VoteProgressBar from '@/components/vote-progress/VoteProgressBar';
+import VoteButtons from '@/components/vote-buttons/VoteButtons';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import ProposalDetailsModal from '@/components/proposal-card/ProposalDetailsModal';
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
@@ -18,6 +20,7 @@ import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import {
   fetchProposal,
   formatTokenAmount,
+  ProposalStatus
 } from '@/lib/azura-contract';
 import styles from './page.module.css';
 
@@ -108,6 +111,7 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x
 const GOV_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS || '0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F';
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
 const AZURA_ADDRESS = '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
+const TOTAL_SUPPLY = '100000'; // 100k tokens
 
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
@@ -153,10 +157,10 @@ export default function VotingPage() {
       // For proposals with on_chain_proposal_id, fetch on-chain data
       const mergedProposals: MergedProposal[] = await Promise.all(
         dbProposals.map(async (proposal) => {
-          // If proposal has on-chain ID and is approved/active/completed, fetch on-chain data
+          // If proposal has on-chain ID and is active, fetch on-chain data
           if (
             proposal.review?.onChainProposalId &&
-            (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
+            (proposal.status === 'active' || proposal.status === 'completed')
           ) {
             try {
               // Try to fetch on-chain data if wallet is available
@@ -352,18 +356,8 @@ export default function VotingPage() {
                       review={proposal.review}
                       onViewDetails={handleViewDetails}
                       showAvatar={false}
-                      onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
-                      contractAddress={CONTRACT_ADDRESS}
-                      onChainData={proposal.onChainData ? {
-                        forVotes: formatTokenAmount(proposal.onChainData.forVotes),
-                        againstVotes: formatTokenAmount(proposal.onChainData.againstVotes),
-                        votingDeadline: proposal.onChainData.votingDeadline,
-                        azuraLevel: proposal.onChainData.azuraLevel,
-                        executed: proposal.onChainData.executed,
-                      } : null}
-                      onVoted={fetchProposals}
                     />
-
+                    
                     {/* Show on-chain transaction info */}
                     {proposal.onChainTxHash && (
                       <div className={styles.onChainInfo}>
@@ -375,7 +369,7 @@ export default function VotingPage() {
                           </svg>
                           <span>Recorded Transparently</span>
                         </div>
-                        <a
+                        <a 
                           href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -383,6 +377,27 @@ export default function VotingPage() {
                         >
                           View Transaction →
                         </a>
+                      </div>
+                    )}
+                    
+                    {/* Show voting UI for active proposals with on-chain data */}
+                    {proposal.status === 'active' && 
+                     proposal.onChainData && 
+                     !proposal.onChainData.executed && (
+                      <div className={styles.votingSection}>
+                        <VoteProgressBar
+                          forVotes={formatTokenAmount(proposal.onChainData.forVotes)}
+                          againstVotes={formatTokenAmount(proposal.onChainData.againstVotes)}
+                          totalSupply={TOTAL_SUPPLY}
+                          threshold={50}
+                        />
+                        {proposal.review?.onChainProposalId && (
+                          <VoteButtons
+                            proposalId={parseInt(proposal.review.onChainProposalId)}
+                            contractAddress={CONTRACT_ADDRESS}
+                            onVoted={fetchProposals}
+                          />
+                        )}
                       </div>
                     )}
                   </div>
