@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { providers } from 'ethers';
 import { voteOnProposal, getUserVotingPower, formatTokenAmount } from '@/lib/azura-contract';
-import { SoulGemDisplay } from '@/components/soul-gems/SoulGemDisplay';
 import styles from './VoteButtons.module.css';
 
 interface VoteButtonsProps {
@@ -117,7 +116,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
     }
 
     if (parseFloat(votingPower) === 0) {
-      alert('You need Soul Gems (governance tokens) to vote!');
+      alert('You need $MWG tokens to vote!');
       return;
     }
 
@@ -134,7 +133,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
           provider
         );
         
-        alert(`Vote submitted! 🎉\n\nTransaction: ${txHash.slice(0, 10)}...\n\nYour ${formatTokenAmount(votingPower)} Soul Gems have been counted!`);
+        alert(`Vote submitted!\n\nTransaction: ${txHash.slice(0, 10)}...\n\nYour ${formatTokenAmount(votingPower)} $MWG tokens have been counted!`);
         
         setUserHasVoted(true);
         
@@ -210,16 +209,13 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
       {(isConnected || walletAddress) && parseFloat(votingPower) > 0 && (
         <div className={styles.votingPower}>
           <span className={styles.votingPowerLabel}>Your Voting Power:</span>
-          <SoulGemDisplay 
-            amount={formatTokenAmount(votingPower)} 
-            showLabel={false}
-          />
+          <span className={styles.votingPowerAmount}>{formatTokenAmount(votingPower)} $MWG</span>
         </div>
       )}
 
       {(isConnected || walletAddress) && parseFloat(votingPower) === 0 && (
         <div className={styles.votingPower}>
-          <span className={styles.votingPowerLabel}>⚠️ You need Soul Gems to vote</span>
+          <span className={styles.votingPowerLabel}>You need $MWG tokens to vote</span>
         </div>
       )}
     </>

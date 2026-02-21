@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
-import FinalizeButton from './FinalizeButton';
+import VoteButton from './FinalizeButton';
 import styles from './ProposalCard.module.css';
 
 interface ProposalReview {
@@ -35,6 +35,9 @@ interface ProposalCardProps {
   review: ProposalReview | null;
   onViewDetails?: (id: string) => void;
   showAvatar?: boolean;
+  onChainProposalId?: number | null;
+  contractAddress?: string;
+  onVoted?: () => void;
 }
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
@@ -48,15 +51,10 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   review,
   onViewDetails,
   showAvatar = false,
+  onChainProposalId,
+  contractAddress,
+  onVoted,
 }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleFinalized = () => {
-    // Refresh the component to show updated status
-    setRefreshKey(prev => prev + 1);
-    // Optionally refresh the entire proposals list
-    window.location.reload();
-  };
   const getStage1Variant = () => {
     if (status === 'pending_review') {
       return review ? 'analyzing' : 'waiting';
@@ -71,6 +69,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage2Variant = () => {
+    if (status === 'approved' && onChainProposalId) {
+      return 'success'; // Approved and already on blockchain
+    }
     if (status === 'approved') {
       return 'waiting'; // Approved but not yet on blockchain
     }
@@ -81,6 +82,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage3Variant = () => {
+    if (status === 'approved' && onChainProposalId) {
+      return 'active'; // Voting is open
+    }
     if (status === 'active') {
       return 'active';
     }
@@ -219,13 +223,13 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <p className={styles.previewText}>{getPreviewText()}</p>
       </div>
 
-      {/* Show finalize button for approved proposals */}
-      {status === 'approved' && review?.tokenAllocation && (
+      {/* Show vote buttons for approved proposals with on-chain ID */}
+      {(status === 'approved' || status === 'active') && onChainProposalId && contractAddress && (
         <div className={styles.finalizeSection}>
-          <FinalizeButton
-            proposalId={id}
-            tokenAllocation={review.tokenAllocation}
-            onFinalized={handleFinalized}
+          <VoteButton
+            onChainProposalId={onChainProposalId}
+            contractAddress={contractAddress}
+            onVoted={onVoted}
           />
         </div>
       )}

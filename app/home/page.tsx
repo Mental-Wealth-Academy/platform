@@ -157,10 +157,10 @@ export default function VotingPage() {
       // For proposals with on_chain_proposal_id, fetch on-chain data
       const mergedProposals: MergedProposal[] = await Promise.all(
         dbProposals.map(async (proposal) => {
-          // If proposal has on-chain ID and is active, fetch on-chain data
+          // If proposal has on-chain ID, fetch on-chain data
           if (
             proposal.review?.onChainProposalId &&
-            (proposal.status === 'active' || proposal.status === 'completed')
+            (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
           ) {
             try {
               // Try to fetch on-chain data if wallet is available
@@ -356,6 +356,9 @@ export default function VotingPage() {
                       review={proposal.review}
                       onViewDetails={handleViewDetails}
                       showAvatar={false}
+                      onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
+                      contractAddress={CONTRACT_ADDRESS}
+                      onVoted={fetchProposals}
                     />
                     
                     {/* Show on-chain transaction info */}

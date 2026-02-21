@@ -5,6 +5,12 @@
   width: 100%;
 }
 
+.voteRow {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
 .finalizeButton {
   display: flex;
   align-items: center;
@@ -19,7 +25,7 @@
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 100%;
+  flex: 1;
 }
 
 .finalizeButton:hover:not(:disabled) {
@@ -39,6 +45,40 @@
   flex-shrink: 0;
 }
 
+.rejectVoteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: rgba(186, 26, 26, 0.1);
+  border: 1px solid rgba(186, 26, 26, 0.3);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #BA1A1A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.rejectVoteButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(186, 26, 26, 0.2);
+}
+
+.rejectVoteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.rejectVoteButton svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .spinner {
   width: 16px;
   height: 16px;
@@ -46,34 +86,6 @@
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}
-
-.viewButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(99, 102, 241, 0.9);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.viewButton:hover {
-  background: rgba(99, 102, 241, 0.2);
-  border-color: rgba(99, 102, 241, 0.5);
-  transform: translateY(-1px);
-}
-
-.viewButton svg {
-  width: 16px;
-  height: 16px;
 }
 
 .successText {
@@ -93,16 +105,9 @@
 
 .hintText {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #666666;
   margin: 0;
   text-align: center;
-}
-
-.loadingText {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  padding: 12px;
 }
 
 @keyframes spin {
@@ -115,13 +120,13 @@
 }
 
 @media (max-width: 768px) {
-  .finalizeButton {
-    padding: 12px 20px;
-    font-size: 13px;
+  .voteRow {
+    flex-direction: column;
   }
 
-  .viewButton {
-    padding: 10px 16px;
-    font-size: 12px;
+  .finalizeButton,
+  .rejectVoteButton {
+    padding: 12px 20px;
+    font-size: 13px;
   }
 }
