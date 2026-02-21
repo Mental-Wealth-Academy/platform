@@ -21,6 +21,14 @@ interface ProposalReview {
   reviewedAt: string;
 }
 
+interface OnChainData {
+  forVotes: string;
+  againstVotes: string;
+  votingDeadline: number;
+  azuraLevel: number;
+  executed: boolean;
+}
+
 interface ProposalCardProps {
   id: string;
   title: string;
@@ -38,6 +46,7 @@ interface ProposalCardProps {
   onChainProposalId?: number | null;
   contractAddress?: string;
   onVoted?: () => void;
+  onChainData?: OnChainData | null;
 }
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
@@ -54,6 +63,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onChainProposalId,
   contractAddress,
   onVoted,
+  onChainData,
 }) => {
   const getStage1Variant = () => {
     if (status === 'pending_review') {
@@ -82,8 +92,16 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStage3Variant = () => {
-    if (status === 'completed') {
+    if (status === 'completed' || onChainData?.executed) {
       return 'completed';
+    }
+    if (onChainData) {
+      const forVotes = parseFloat(onChainData.forVotes);
+      const againstVotes = parseFloat(onChainData.againstVotes);
+      const hasVotes = forVotes > 0 || againstVotes > 0;
+      if (hasVotes && againstVotes > forVotes) {
+        return 'defeated';
+      }
     }
     return 'waiting';
   };

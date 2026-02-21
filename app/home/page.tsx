@@ -359,6 +359,7 @@ export default function VotingPage() {
                       onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
                       contractAddress={CONTRACT_ADDRESS}
                       onVoted={fetchProposals}
+                      onChainData={proposal.onChainData || null}
                     />
                     
                     {/* Show on-chain transaction info */}
