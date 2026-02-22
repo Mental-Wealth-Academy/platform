@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { SoulGemDisplay } from '@/components/soul-gems/SoulGemDisplay';
 import styles from './VoteProgressBar.module.css';
 
 interface VoteProgressBarProps {
@@ -18,12 +17,17 @@ const VoteProgressBar: React.FC<VoteProgressBarProps> = ({
   threshold = 50,
 }) => {
   const forVotesNum = parseFloat(forVotes);
+  const againstVotesNum = parseFloat(againstVotes);
+  const totalVotes = forVotesNum + againstVotesNum;
   const totalSupplyNum = parseFloat(totalSupply);
-  
-  const percentageFor = totalSupplyNum > 0 
-    ? (forVotesNum / totalSupplyNum) * 100 
+
+  const percentageFor = totalSupplyNum > 0
+    ? (forVotesNum / totalSupplyNum) * 100
     : 0;
-  
+
+  const pctOfVotesFor = totalVotes > 0 ? (forVotesNum / totalVotes) * 100 : 0;
+  const pctOfVotesAgainst = totalVotes > 0 ? (againstVotesNum / totalVotes) * 100 : 0;
+
   const thresholdReached = percentageFor >= threshold;
 
   return (
@@ -55,13 +59,13 @@ const VoteProgressBar: React.FC<VoteProgressBarProps> = ({
         <div className={styles.voteItem}>
           <span className={`${styles.voteDot} ${styles.for}`} />
           <span className={styles.voteLabel}>Approve:</span>
-          <SoulGemDisplay amount={forVotes} showLabel={false} />
+          <span className={styles.votePercent}>{pctOfVotesFor.toFixed(1)}%</span>
         </div>
-        
+
         <div className={styles.voteItem}>
           <span className={`${styles.voteDot} ${styles.against}`} />
           <span className={styles.voteLabel}>Reject:</span>
-          <SoulGemDisplay amount={againstVotes} showLabel={false} />
+          <span className={styles.votePercent}>{pctOfVotesAgainst.toFixed(1)}%</span>
         </div>
       </div>
 
