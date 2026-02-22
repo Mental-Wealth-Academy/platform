@@ -459,7 +459,7 @@ const SideNavigation: React.FC = () => {
                     </div>
                     <div className={styles.shinyCardText}>
                       <span className={styles.shinyCardTitle}>Azura Agent</span>
-                      <span className={styles.shinyCardSub}>LV 4 · Active</span>
+                      <span className={styles.shinyCardSub}>Funds, Votes, Chat</span>
                     </div>
                   </div>
                 </button>

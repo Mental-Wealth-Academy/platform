@@ -628,13 +628,13 @@
 .accountButton {
   width: 100%;
   padding: 8px 10px;
-  background: #ffffff;
+  background: var(--color-primary);
   border: 2px solid #1A1D33;
   border-radius: 4px;
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 600;
-  color: #1A1D33;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.15s ease;
   box-shadow: 3px 3px 0 #1A1D33;
