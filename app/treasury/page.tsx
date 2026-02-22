@@ -165,12 +165,14 @@ const TICKER_LEN = 80;
 const TICKER_DRIFT = 0.25;   // upward bias per tick
 const TICKER_VOL = 0.6;      // small random noise
 
-function TickerLine() {
+function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--color-primary)', strokeWidth = 2.5, opacity = 0.8, speed = 300 }: {
+  drift?: number; vol?: number; stroke?: string; strokeWidth?: number; opacity?: number; speed?: number;
+}) {
   const buf = useRef<number[]>((() => {
     const arr: number[] = [];
     let v = 0;
     for (let i = 0; i < TICKER_LEN; i++) {
-      v += TICKER_DRIFT + (Math.random() - 0.5) * TICKER_VOL;
+      v += drift + (Math.random() - 0.5) * vol;
       arr.push(v);
     }
     return arr;
@@ -181,7 +183,7 @@ function TickerLine() {
     function tick() {
       const arr = buf.current as number[];
       const last = arr[arr.length - 1];
-      arr.push(last + TICKER_DRIFT + (Math.random() - 0.5) * TICKER_VOL);
+      arr.push(last + drift + (Math.random() - 0.5) * vol);
       if (arr.length > TICKER_LEN) arr.shift();
 
       const min = Math.min(...arr);
@@ -202,9 +204,9 @@ function TickerLine() {
     }
 
     tick();
-    const id = setInterval(tick, 300);
+    const id = setInterval(tick, speed);
     return () => clearInterval(id);
-  }, []);
+  }, [drift, vol, speed]);
 
   if (!points) return null;
 
@@ -213,11 +215,11 @@ function TickerLine() {
       <polyline
         points={points}
         fill="none"
-        stroke="var(--color-primary)"
-        strokeWidth="2.5"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         strokeLinejoin="round"
         strokeLinecap="round"
-        opacity="0.8"
+        opacity={opacity}
       />
     </svg>
   );
@@ -664,7 +666,12 @@ export default function Treasury() {
                 <>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
                   <div className={styles.balanceLabel}>USDC Treasury Balance</div>
-                  <TickerLine />
+                  <TickerLine stroke="var(--color-primary)" />
+                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
+                  <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
+                  <TickerLine drift={0.12} vol={1.0} stroke="#E2567B" strokeWidth={1.5} opacity={0.4} speed={280} />
+                  <TickerLine drift={0.22} vol={0.7} stroke="#A855F7" strokeWidth={1.5} opacity={0.45} speed={320} />
+                  <TickerLine drift={0.15} vol={0.9} stroke="#06B6D4" strokeWidth={1.5} opacity={0.4} speed={360} />
                 </>
               )}
             </div>

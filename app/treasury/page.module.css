@@ -638,6 +638,10 @@
   margin-top: 4px;
 }
 
+.sparklineSvg + .sparklineSvg {
+  margin-top: -4px;
+}
+
 /* ── Polymarket Display ── */
 .polymarketList {
   flex: 1;
