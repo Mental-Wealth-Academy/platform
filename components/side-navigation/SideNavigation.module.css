@@ -411,8 +411,9 @@
 }
 
 .navItem:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.3);
+  background: rgba(81, 104, 255, 0.12);
+  border-color: var(--color-primary);
+  box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
 }
 
 .navItemButton {
@@ -429,9 +430,8 @@
 }
 
 .navItemActive {
-  background: rgba(81, 104, 255, 0.12);
-  border-color: var(--color-primary);
-  box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.3);
 }
 
 .navItemDisabled {
@@ -453,11 +453,11 @@
 }
 
 .navItemActive .navItemIcon {
-  color: var(--color-primary);
+  color: #1A1D33;
 }
 
 .navItem:hover .navItemIcon {
-  color: #1A1D33;
+  color: var(--color-primary);
 }
 
 .navItemLabel {
@@ -468,12 +468,12 @@
 }
 
 .navItemActive .navItemLabel {
-  color: var(--color-primary);
+  color: #1A1D33;
   font-weight: 600;
 }
 
 .navItem:hover .navItemLabel {
-  color: #1A1D33;
+  color: var(--color-primary);
 }
 
 /* Badge */
