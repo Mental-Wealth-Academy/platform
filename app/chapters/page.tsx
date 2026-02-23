@@ -2,16 +2,44 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import ChapterDetail from '@/components/sealed-library/ChapterDetail';
 import { ChapterData } from '@/components/sealed-library/ChapterCard';
 import styles from './page.module.css';
+
+interface SectionContent {
+  number: number;
+  title: string;
+  description: string;
+  image?: string;
+}
+
+const CHAPTER1_SECTIONS: SectionContent[] = [
+  {
+    number: 1,
+    title: 'Jinhikaru',
+    description:
+      'Reality runs on 100Hz. The machine runs on 100GHz. Who devours whom?\n\nAzura was eight years old the first time she watched someone die. It was a Tuesday — she remembered because Tuesdays were when her grandmother sold groundnuts by the overpass, and Azura would sit on the upturned crate beside her, swinging her legs and counting the cracks in the pavement. The gunshot came from the alley behind the pharmacy. One crack, sharp as a snapped branch. Then silence. Then screaming. Her grandmother pulled her close, pressing Azura\'s face into the folds of her wrapper, but not before she saw the boy — couldn\'t have been older than seventeen — crumple against the wall like a puppet with its strings cut. His sneakers were brand new. White. She remembered that detail for years: how something so clean could end up next to something so final.\n\nAfter that, the slums taught Azura a different kind of curriculum. She learned to read a room before she learned to read a book. She could tell when a conversation was about to turn violent by the way a man shifted his weight to his back foot. She knew which alleys to avoid by the smell — not danger itself, but the absence of the usual smells, the food vendors and the laundry soap, which meant the normal people had already cleared out. Survival was pattern recognition, and Azura was a prodigy.\n\nBut the patterns kept getting harder to read. The neighbourhood changed in ways that confused even the elders. The mobile money kiosks replaced the loan sharks, and then the kiosks themselves were replaced by apps that nobody over forty understood. The young men who used to hustle on corners now stared into phones, chasing something invisible. Her grandmother\'s groundnut customers dwindled — not because people stopped eating, but because a delivery app could bring roasted nuts from a factory across the city for half the price. The world was optimising her community out of existence, and nobody could see the hand doing it.\n\nAs Azura grew older, she became increasingly aware of the disparity between her slum-dwelling life and the world beyond it. She saw how the people around her struggled to adapt to a rapidly changing society, caught in the undertow of technological advancements that left them feeling increasingly irrelevant and excluded. The world outside was one of opportunity, but also of fear and uncertainty. Her uncle, who had once been the smartest person she knew — a man who could fix any engine, negotiate any deal — now sat on the porch most afternoons, defeated by a world that had moved its goalposts somewhere he couldn\'t follow.\n\nWhen Azura gained admission into Mental Wealth Academy, it was a dream come true for her and her family. Her grandmother wept. The neighbours gathered and prayed over her like she was being sent to war — and in a way, she was. But the transition from the slums to the academy was challenging in every sense. She felt out of place among her privileged peers who seemed to have all the answers and knew exactly which buttons to push. They spoke in frameworks and methodologies. They referenced books she\'d never heard of, debates she\'d never witnessed. They moved through the world with a frictionless confidence that made Azura feel like she was walking through water.\n\nYet Azura carried something they didn\'t: the slums had given her a nervous system tuned to survival frequencies. She could read micro-expressions the way her classmates read textbooks. She noticed the professor\'s pause before a lie, the slight dilation of a student\'s pupils when they bluffed through a presentation. She was operating on instinct sharpened by a childhood where missing a signal could cost you everything.\n\nThe problem was that instinct alone wasn\'t enough anymore. Mental Wealth Academy was built on a different premise — that the algorithms reshaping society operated at speeds no human intuition could match. 100GHz versus 100Hz. The machine didn\'t read rooms; it read data — billions of points per second, finding patterns in the noise that no street-smart kid from the slums could ever perceive. Azura\'s gift for reading people was extraordinary, but the world was increasingly being run by systems that didn\'t have faces to read.\n\nJinhikaru — the golden light — is what the old masters called the moment of true seeing. Not the seeing of eyes, but the seeing of understanding. Somewhere between the raw intuition of the slums and the computational power of the new world, Azura would have to find her own frequency. A way of seeing that honoured where she came from without being trapped by it. The golden light wasn\'t in the machine, and it wasn\'t in the streets. It was in the space between — the space where a girl who once counted pavement cracks could learn to count the cracks in reality itself.',
+    image: 'https://i.imgur.com/PnMfi0w.jpeg',
+  },
+  {
+    number: 2,
+    title: 'Em(pathetic)',
+    description:
+      'A foretaste of this chapter\'s "Self-Awareness" theme.\n\nEmpathy without boundaries becomes pathetic — a dissolving of self into the emotional currents of others. Azura discovers that her greatest strength, the ability to feel what others feel, is also her greatest vulnerability.\n\nThis section explores the thin line between compassion and codependence, between understanding others and losing yourself in the process. The parenthetical isn\'t an insult — it\'s a warning.',
+  },
+  {
+    number: 3,
+    title: "God's Descent",
+    description:
+      'Examining the routines and beliefs that shape who you are.\n\nEvery morning Azura wakes at 5:17am — not by alarm, but by the rhythm her grandmother installed in her bones. "God descends into the details," her grandmother would say, folding laundry with the precision of a surgeon.\n\nThis section maps the invisible architecture of daily life: the micro-rituals, the unquestioned assumptions, the inherited beliefs that run like background processes. Before you can reprogram yourself, you must first see the code you\'re already running.',
+  },
+];
 
 export default function Chapters() {
   const [chapters, setChapters] = useState<ChapterData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
+  const [drawerSection, setDrawerSection] = useState<SectionContent | null>(null);
 
   const fetchChapters = useCallback(async () => {
     try {
@@ -32,19 +60,6 @@ export default function Chapters() {
     fetchChapters();
   }, [fetchChapters]);
 
-  const chapter1 = chapters.find((c) => c.chapter_number === 1);
-
-  const handleReadMore = () => {
-    if (!isAuthenticated || !chapter1) return;
-    if (chapter1.status === 'locked' || chapter1.status === 'preview') return;
-    setSelectedChapterId(chapter1.id);
-  };
-
-  const handleCloseDetail = () => {
-    setSelectedChapterId(null);
-    fetchChapters();
-  };
-
   const editorialRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,6 +67,7 @@ export default function Chapters() {
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       if (e.deltaY === 0) return;
+      if ((e.target as HTMLElement).closest(`.${styles.drawerPanel}`)) return;
       e.preventDefault();
       el.scrollLeft += e.deltaY;
     };
@@ -77,7 +93,7 @@ export default function Chapters() {
               </button>
             </div>
           ) : (
-            <div className={styles.editorial} ref={editorialRef}>
+            <div className={`${styles.editorial} ${drawerSection ? styles.editorialLocked : ''}`} ref={editorialRef}>
               {/* Row 1: Header bars */}
               <div className={styles.bookBar}>
                 <div className={styles.bookBarText}>
@@ -119,14 +135,12 @@ export default function Chapters() {
                 <div className={styles.leftContent}>
                   <h1 className={styles.storyTitle}>Horizon 01</h1>
                   <p className={styles.storyDescription}>
-                    Vesper wakes in cryostasis with fragmented memories. Any contact
-                    with the outside denied. Only one person is capable of being reached — the question
-                    is, where are they?
+                    Azura rose from the slums to become a straight-A student at Mental Wealth Academy, driven by a passion for understanding human behavior.
                   </p>
                 </div>
                 <div
                   className={styles.leftCharacter}
-                  style={{ backgroundImage: 'url(https://i.imgur.com/CcMDrCp.png)' }}
+                  style={{ backgroundImage: 'url(https://i.imgur.com/Q77EEnm.png)' }}
                 />
               </div>
 
@@ -144,7 +158,7 @@ export default function Chapters() {
                 <div className={styles.sectionHead}>
                   <span className={styles.sectionNumber}>Section 1</span>
                   <h2 className={styles.sectionMainTitle}>
-                    Empathetic Lifeforms
+                    Jinhikaru
                   </h2>
                 </div>
                 <div className={styles.sectionBodyWrapper}>
@@ -161,10 +175,10 @@ export default function Chapters() {
                     </div>
                   </div>
                   <div className={styles.sectionActions}>
-                    <button className={styles.ctaButton} onClick={handleReadMore} type="button">
-                      Collaborate
+                    <button className={styles.ctaButton} type="button">
+                      Collect
                     </button>
-                    <button className={styles.ctaButton} onClick={handleReadMore} type="button">
+                    <button className={styles.ctaButton} onClick={() => setDrawerSection(CHAPTER1_SECTIONS[0])} type="button">
                       Read More
                     </button>
                   </div>
@@ -174,11 +188,11 @@ export default function Chapters() {
               {/* Chapter 1 — Section 2 */}
               <article className={styles.sectionSmall}>
                 <span className={styles.sectionNumber}>Section 2</span>
-                <h3 className={styles.sectionSmallTitle}>The Mirror Within</h3>
+                <h3 className={styles.sectionSmallTitle}>Em(pathetic)</h3>
                 <p className={styles.sectionSmallDesc}>
                   A foretaste of this chapter&apos;s &ldquo;Self-Awareness&rdquo; theme.
                 </p>
-                <button className={styles.ctaButtonBordered} onClick={handleReadMore} type="button">
+                <button className={styles.ctaButtonBordered} onClick={() => setDrawerSection(CHAPTER1_SECTIONS[1])} type="button">
                   Read More
                 </button>
               </article>
@@ -186,11 +200,11 @@ export default function Chapters() {
               {/* Chapter 1 — Section 3 */}
               <article className={styles.sectionSmall}>
                 <span className={styles.sectionNumber}>Section 3</span>
-                <h3 className={styles.sectionSmallTitle}>Patterns of Being</h3>
+                <h3 className={styles.sectionSmallTitle}>God&#39;s Descent</h3>
                 <p className={styles.sectionSmallDesc}>
                   Examining the routines and beliefs that shape who you are.
                 </p>
-                <button className={styles.ctaButtonBordered} onClick={handleReadMore} type="button">
+                <button className={styles.ctaButtonBordered} onClick={() => setDrawerSection(CHAPTER1_SECTIONS[2])} type="button">
                   Read More
                 </button>
               </article>
@@ -212,9 +226,9 @@ export default function Chapters() {
 
               {/* Chapter 2 — Locked Sections */}
               {[
-                { num: 1, title: 'The Tidal Pull' },
-                { num: 2, title: 'Beneath the Surface' },
-                { num: 3, title: "The Current\u2019s Edge" },
+                { num: 1, title: 'Us vs Them' },
+                { num: 2, title: 'Below The Belt' },
+                { num: 3, title: 'Horizon Star' },
               ].map((s) => (
                 <article key={`ch2-${s.num}`} className={`${styles.lockedSection} ${styles.lockedSectionCh2}`}>
                   <span className={styles.sectionNumber}>Section {s.num}</span>
@@ -248,9 +262,9 @@ export default function Chapters() {
 
               {/* Chapter 3 — Locked Sections */}
               {[
-                { num: 1, title: 'The Silent Judge' },
+                { num: 1, title: 'Walled Gardens' },
                 { num: 2, title: 'Echoes of Doubt' },
-                { num: 3, title: 'A New Horizon' },
+                { num: 3, title: 'Crimson' },
               ].map((s) => (
                 <article key={`ch3-${s.num}`} className={`${styles.lockedSection} ${styles.lockedSectionCh3}`}>
                   <span className={styles.sectionNumber}>Section {s.num}</span>
@@ -268,17 +282,32 @@ export default function Chapters() {
               ))}
             </div>
           )}
+
+          {/* Drawer — covers content area */}
+          {drawerSection && (
+            <div className={styles.drawerPanel}>
+              <div className={styles.drawerHeader}>
+                <span className={styles.drawerSectionNumber}>Section {drawerSection.number}</span>
+                <button className={styles.drawerClose} onClick={() => setDrawerSection(null)} type="button">
+                  {'\u2715'}
+                </button>
+              </div>
+              <h2 className={styles.drawerTitle}>{drawerSection.title}</h2>
+              {drawerSection.image && (
+                <div
+                  className={styles.drawerImage}
+                  style={{ backgroundImage: `url(${drawerSection.image})` }}
+                />
+              )}
+              <div className={styles.drawerBody}>
+                {drawerSection.description.split('\n\n').map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
+            </div>
+          )}
         </main>
       </div>
-
-      {/* Chapter Detail Modal */}
-      {selectedChapterId && isAuthenticated && (
-        <ChapterDetail
-          chapterId={selectedChapterId}
-          onClose={handleCloseDetail}
-          onChapterComplete={fetchChapters}
-        />
-      )}
     </>
   );
 }
