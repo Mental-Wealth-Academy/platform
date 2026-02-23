@@ -2,10 +2,10 @@
 
 .card {
   width: 100%;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
+  background: #F4F5FE;
+  border: 3px solid rgba(81, 104, 255, 0.25);
   border-radius: var(--radius-xl);
-  box-shadow: 4px 4px 0 #1A1D33;
+  box-shadow: 4px 4px 0 rgba(81, 104, 255, 0.15);
   overflow: hidden;
   transition: all 0.15s ease;
   display: flex;
@@ -14,13 +14,14 @@
 
 .card:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.2);
+  border-color: var(--color-primary);
 }
 
 .header {
   padding: 20px 24px;
-  border-bottom: 3px solid #1A1D33;
-  background: #ffffff;
+  border-bottom: 2px solid rgba(81, 104, 255, 0.12);
+  background: #F4F5FE;
 }
 
 .headerTop {
@@ -42,7 +43,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #666666;
+  color: var(--color-primary);
   margin: 0 0 8px 0;
 }
 
@@ -68,7 +69,7 @@
   white-space: nowrap;
   flex-shrink: 0;
   font-family: var(--font-primary);
-  border: 2px solid #1A1D33;
+  border: 2px solid rgba(81, 104, 255, 0.2);
 }
 
 .statusDot {
@@ -128,11 +129,11 @@
   gap: 8px;
   font-size: 13px;
   font-family: var(--font-primary);
-  color: #666666;
+  color: var(--color-secondary);
 }
 
 .metaItem strong {
-  color: #1A1D33;
+  color: var(--color-text-dark);
   font-weight: 700;
 }
 
@@ -141,7 +142,7 @@
   height: 28px;
   border-radius: var(--radius-md);
   background: var(--color-primary);
-  border: 2px solid #1A1D33;
+  border: 2px solid rgba(81, 104, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,29 +160,29 @@
 .walletAddress {
   font-family: var(--font-primary);
   font-size: 12px;
-  color: #666666;
+  color: var(--color-secondary);
 }
 
 .stagesSection {
   padding: 16px 24px;
-  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
+  border-bottom: 2px solid rgba(81, 104, 255, 0.08);
 }
 
 .preview {
   padding: 16px 24px;
-  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
+  border-bottom: 2px solid rgba(81, 104, 255, 0.08);
 }
 
 .finalizeSection {
   padding: 16px 24px;
-  border-top: 2px solid rgba(26, 29, 51, 0.1);
+  border-top: 2px solid rgba(81, 104, 255, 0.08);
 }
 
 .previewLabel {
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
-  color: #666666;
+  color: var(--color-primary);
   margin: 0 0 8px 0;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -191,7 +192,7 @@
   font-size: 14px;
   line-height: 1.6;
   font-family: var(--font-primary);
-  color: #666666;
+  color: var(--color-secondary);
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -201,8 +202,8 @@
 
 .footer {
   padding: 16px 24px;
-  background: #f5f5f5;
-  border-top: 3px solid #1A1D33;
+  background: rgba(81, 104, 255, 0.04);
+  border-top: 2px solid rgba(81, 104, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -212,38 +213,37 @@
 .timestamp {
   font-size: 12px;
   font-family: var(--font-primary);
-  color: #666666;
+  color: var(--color-secondary);
 }
 
 .viewButton {
   padding: 10px 20px;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
+  background: var(--color-primary);
+  border: 2px solid var(--color-primary);
   border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 700;
   font-family: var(--font-primary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #1A1D33;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
 }
 
 .viewButton:hover {
-  background: var(--color-primary);
-  color: #ffffff;
+  background: #3a50e0;
   transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.3);
 }
 
 .viewButton:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  box-shadow: 1px 1px 0 rgba(81, 104, 255, 0.2);
 }
 
 .viewButton svg {
@@ -262,7 +262,7 @@
 
 @media (max-width: 768px) {
   .card {
-    box-shadow: 3px 3px 0 #1A1D33;
+    box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.15);
   }
 
   .header {

@@ -168,6 +168,8 @@
   background: #ffffff;
   color: #1A1D33;
   box-shadow: 3px 3px 0 #1A1D33;
+  padding: 14px 36px;
+  font-size: 14px;
 }
 
 .secondaryCta:hover {
@@ -951,7 +953,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: #50599B;
+  background: var(--color-primary);
   border-bottom: 3px solid #1A1D33;
 }
 

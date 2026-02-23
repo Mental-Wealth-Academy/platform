@@ -208,7 +208,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
                   />
                   <div className={styles.nftInfo}>
                     <span className={styles.nftName}>Academic Angel</span>
-                    <span className={styles.nftDesc}>Celestial guardian NFT granting full 12-week access</span>
+                    <span className={styles.nftDesc}>Your ticket to everything MWA</span>
                   </div>
                 </div>
               </div>
