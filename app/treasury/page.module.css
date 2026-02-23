@@ -48,6 +48,59 @@
   font-weight: var(--font-weight-bold);
 }
 
+/* ── APPLE Stats Bar ── */
+.appleBar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 8px 20px;
+  background: rgba(81, 104, 255, 0.04);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  font-family: var(--font-button);
+  font-size: 11px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.appleBarItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.appleBarLabel {
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-regular);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10px;
+}
+
+.appleBarValue {
+  color: var(--color-text-dark);
+  font-weight: var(--font-weight-bold);
+  font-size: 12px;
+}
+
+.appleBarPositive {
+  color: var(--color-tertiary);
+}
+
+.appleBarNegative {
+  color: #E2567B;
+}
+
+/* ── Position Status ── */
+.positionStatus {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary);
+  min-width: 48px;
+  text-align: right;
+}
+
 /* ── Dashboard Grid ── */
 .grid {
   display: grid;

@@ -42,12 +42,6 @@ const navSections: NavSection[] = [
       { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Chapters.svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
-    ],
-  },
-  {
-    id: 'featured',
-    label: 'Tools',
-    items: [
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
   },
@@ -438,7 +432,7 @@ const SideNavigation: React.FC = () => {
               </div>
             </div>
             {/* Shiny card spacer between Featured and Tools */}
-            {section.id === 'featured' && (
+            {section.id === 'main' && (
               <div className={styles.shinyCardSpacer}>
                 <button
                   className={styles.shinyCard}

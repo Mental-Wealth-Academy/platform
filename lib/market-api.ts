@@ -57,6 +57,13 @@ export interface CategorizedMarkets {
   politics: PolymarketMarket[];
 }
 
+export interface AppleTokenStats {
+  price: number;
+  holders: number;
+  epochPnL: number;
+  nextDistribution: string;
+}
+
 // ── Cache ──
 
 let _prices: { data: CoinPrice[]; ts: number } | null = null;
@@ -64,6 +71,7 @@ let _balance: { data: TreasuryBalance; ts: number } | null = null;
 let _poly: { data: PolymarketMarket[]; ts: number } | null = null;
 let _polyGrouped: { data: CategorizedMarkets; ts: number } | null = null;
 let _trades: { data: PolymarketTrade[]; ts: number } | null = null;
+let _applePrice: { data: number; ts: number } | null = null;
 
 // ── Constants ──
 
@@ -272,6 +280,55 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
   } catch (err) {
     if (_polyGrouped) return _polyGrouped.data;
     throw err;
+  }
+}
+
+/**
+ * Fetch APPLE token price from its Uniswap V3 pool on Base.
+ * Reads slot0 for the current sqrtPriceX96 and computes the USDC price.
+ * 30s module-level cache.
+ */
+export async function fetchApplePrice(): Promise<number> {
+  if (_applePrice && Date.now() - _applePrice.ts < 30_000) return _applePrice.data;
+
+  const poolAddress = process.env.APPLE_UNISWAP_POOL;
+  if (!poolAddress) return 0;
+
+  const POOL_ABI = [
+    'function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)',
+    'function token0() view returns (address)',
+  ];
+
+  try {
+    const provider = new providers.JsonRpcProvider(RPC_URL);
+    const pool = new Contract(poolAddress, POOL_ABI, provider);
+
+    const [slot0, token0] = await Promise.all([pool.slot0(), pool.token0()]);
+    const sqrtPriceX96 = BigInt(slot0.sqrtPriceX96.toString());
+
+    // price = (sqrtPriceX96 / 2^96)^2, adjusted for decimals
+    // APPLE has 18 decimals, USDC has 6 decimals
+    const Q96 = BigInt(2) ** BigInt(96);
+    const num = sqrtPriceX96 * sqrtPriceX96;
+    const denom = Q96 * Q96;
+
+    const isToken0USDC = token0.toLowerCase() === USDC_ADDRESS.toLowerCase();
+
+    let price: number;
+    if (isToken0USDC) {
+      // price = denom / num * 10^(18-6)
+      price = Number(denom * BigInt(10 ** 12) / num) / 10 ** 12;
+    } else {
+      // price = num / denom * 10^(6-18)
+      price = Number(num / (denom / BigInt(10 ** 12))) / 10 ** 12;
+    }
+
+    _applePrice = { data: price, ts: Date.now() };
+    return price;
+  } catch (err) {
+    console.error('fetchApplePrice error:', err);
+    if (_applePrice) return _applePrice.data;
+    return 0;
   }
 }
 

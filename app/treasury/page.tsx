@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import styles from './page.module.css';
-import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics } from '@/lib/market-api';
+import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics, AppleTokenStats } from '@/lib/market-api';
 
 // ── Helpers ──
 
@@ -54,18 +55,25 @@ const K_DECAY = 1.50;
 const EDGE_THRESHOLD = 3.0;
 const FALLBACK_MKT_PRICE = 53.78;
 
-const POSITION_ENTRIES = [
-  { asset: 'XRP', side: 'UP' as const, entry: 0.54, size: 816 },
-  { asset: 'ETH', side: 'DN' as const, entry: 0.54, size: 1058 },
-  { asset: 'SOL', side: 'UP' as const, entry: 0.54, size: 2330 },
-  { asset: 'ETH', side: 'UP' as const, entry: 0.43, size: 833 },
-  { asset: 'SOL', side: 'DN' as const, entry: 0.54, size: 923 },
-  { asset: 'XRP', side: 'UP' as const, entry: 0.54, size: 2359 },
-  { asset: 'XRP', side: 'DN' as const, entry: 0.57, size: 974 },
-  { asset: 'SOL', side: 'DN' as const, entry: 0.50, size: 1286 },
-  { asset: 'ETH', side: 'UP' as const, entry: 0.45, size: 1873 },
-  { asset: 'SOL', side: 'DN' as const, entry: 0.51, size: 1182 },
-];
+// ── Live Trading Log Entry Type ──
+
+interface ExecutionLogEntry {
+  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR';
+  asset?: string;
+  details: string;
+  timestamp: number;
+}
+
+// ── Live Position Type ──
+
+interface LivePosition {
+  asset: string;
+  side: 'BUY' | 'SELL';
+  price: string;
+  size: string;
+  sizeMatched: string;
+  status: string;
+}
 
 // ── Math Helpers ──
 
@@ -265,6 +273,9 @@ export default function Treasury() {
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
   const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
   const [orderFlow, setOrderFlow] = useState<OrderFlowMetrics | null>(null);
+  const [appleStats, setAppleStats] = useState<AppleTokenStats | null>(null);
+  const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
+  const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
   const [priceError, setPriceError] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
@@ -316,6 +327,25 @@ export default function Treasury() {
     } catch { /* silent */ }
   }, []);
 
+  const fetchAppleStats = useCallback(async () => {
+    try {
+      const res = await fetch('/api/treasury/apple-stats');
+      if (!res.ok) return;
+      const data: AppleTokenStats = await res.json();
+      setAppleStats(data);
+    } catch { /* silent */ }
+  }, []);
+
+  const fetchExecutionLogs = useCallback(async () => {
+    try {
+      const res = await fetch('/api/treasury/execution-logs');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.logs) setExecutionLogs(data.logs);
+      if (data.positions) setLivePositions(data.positions);
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => {
     // Initial fetch
     fetchPrices();
@@ -340,6 +370,18 @@ export default function Treasury() {
     const tradesInterval = setInterval(fetchTrades, 30_000);
     return () => clearInterval(tradesInterval);
   }, [fetchTrades]);
+
+  // Fetch APPLE stats and execution logs
+  useEffect(() => {
+    fetchAppleStats();
+    fetchExecutionLogs();
+    const appleInterval = setInterval(fetchAppleStats, 60_000);
+    const logsInterval = setInterval(fetchExecutionLogs, 30_000);
+    return () => {
+      clearInterval(appleInterval);
+      clearInterval(logsInterval);
+    };
+  }, [fetchAppleStats, fetchExecutionLogs]);
 
   // Refresh the "last updated" display
   const [, setTick] = useState(0);
@@ -403,20 +445,10 @@ export default function Treasury() {
     // Step 14: Fee
     const fee = (p_t * (1 - p_t) + 0.0625) * 100;
 
-    // Step 15: Positions PnL
-    const mktFrac = mkt_price / 100;
-    const positions = POSITION_ENTRIES.map(pos => {
-      const shares = pos.size / pos.entry;
-      const pnl = pos.side === 'UP'
-        ? (mktFrac - pos.entry) * shares
-        : (pos.entry - mktFrac) * shares;
-      return { ...pos, pnl: Math.round(pnl) };
-    });
-
     return {
       S, K, d2, Nd2, C_bin, p_t, x_t, delta_x,
       p_bid, p_ask, model_fair, mkt_price, divergence,
-      signal, fee, positions,
+      signal, fee,
       sigma, sigma_b, lambda_jump, mu_J, q_inv,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -458,6 +490,37 @@ export default function Treasury() {
               <span className={styles.lastUpdated}>updated {timeAgo(lastPriceUpdate)}</span>
             </div>
           )}
+          <div className={styles.statusItem}>
+            <HowToButton />
+          </div>
+        </div>
+
+        {/* ── APPLE Stats Bar ── */}
+        <div className={styles.appleBar}>
+          <div className={styles.appleBarItem}>
+            <span className={styles.appleBarLabel}>$APPLE</span>
+            <span className={styles.appleBarValue}>
+              {appleStats ? formatPrice(appleStats.price) : '--'}
+            </span>
+          </div>
+          <div className={styles.appleBarItem}>
+            <span className={styles.appleBarLabel}>holders</span>
+            <span className={styles.appleBarValue}>
+              {appleStats ? appleStats.holders.toLocaleString() : '--'}
+            </span>
+          </div>
+          <div className={styles.appleBarItem}>
+            <span className={styles.appleBarLabel}>epoch P&L</span>
+            <span className={`${styles.appleBarValue} ${appleStats && appleStats.epochPnL >= 0 ? styles.appleBarPositive : styles.appleBarNegative}`}>
+              {appleStats ? (appleStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(appleStats.epochPnL).toFixed(2) : '--'}
+            </span>
+          </div>
+          <div className={styles.appleBarItem}>
+            <span className={styles.appleBarLabel}>next distribution</span>
+            <span className={styles.appleBarValue}>
+              {appleStats?.nextDistribution || '--'}
+            </span>
+          </div>
         </div>
 
         {/* ── Dashboard Grid ── */}
@@ -729,51 +792,23 @@ export default function Treasury() {
               <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.logEntries}>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:51</span>
-                <span className={`${styles.logAction} ${styles.logScan}`}>SCAN</span>
-                <span className={styles.logDetails}>XRP d&#x2082;:-0.001157 N(d&#x2082;):0.49935 &sigma;_b:0.310 lag:447ms</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:51</span>
-                <span className={`${styles.logAction} ${styles.logTrade}`}>TRADE</span>
-                <span className={styles.logDetails}>XRP DN @54&cent; $816 edge:3.53% kelly:2.0%</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:50</span>
-                <span className={`${styles.logAction} ${styles.logScan}`}>SCAN</span>
-                <span className={styles.logDetails}>ETH d&#x2082;:-0.000925 N(d&#x2082;):0.49948 &sigma;_b:0.281 lag:420ms</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:50</span>
-                <span className={`${styles.logAction} ${styles.logTrade}`}>TRADE</span>
-                <span className={styles.logDetails}>ETH DN @54&cent; $1,058 edge:14.14% kelly:2.6%</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:40</span>
-                <span className={`${styles.logAction} ${styles.logScan}`}>SCAN</span>
-                <span className={styles.logDetails}>SOL d&#x2082;:-0.001388 N(d&#x2082;):0.49922 &sigma;_b:0.332 lag:53ms</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:40</span>
-                <span className={`${styles.logAction} ${styles.logTrade}`}>TRADE</span>
-                <span className={styles.logDetails}>SOL DN @54&cent; $2,330 edge:8.42% kelly:5.8%</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:48</span>
-                <span className={`${styles.logAction} ${styles.logSkip}`}>SKIP</span>
-                <span className={styles.logDetails}>XRP edge:1.82% &lt; 3% threshold</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:47</span>
-                <span className={`${styles.logAction} ${styles.logSkip}`}>SKIP</span>
-                <span className={styles.logDetails}>XRP edge:2.45% &lt; 3% threshold</span>
-              </div>
-              <div className={styles.logEntry}>
-                <span className={styles.logTime}>20:38:47</span>
-                <span className={`${styles.logAction} ${styles.logSkip}`}>SKIP</span>
-                <span className={styles.logDetails}>ETH edge:0.40% &lt; 3% threshold</span>
-              </div>
+              {executionLogs.length === 0 && (
+                <span className={styles.loadingText}>Waiting for trading cycle...</span>
+              )}
+              {executionLogs.map((log, i) => (
+                <div key={i} className={styles.logEntry}>
+                  <span className={styles.logTime}>{formatTradeTime(String(log.timestamp / 1000))}</span>
+                  <span className={`${styles.logAction} ${
+                    log.action === 'TRADE' ? styles.logTrade
+                    : log.action === 'SKIP' ? styles.logSkip
+                    : log.action === 'ERROR' ? styles.logSkip
+                    : styles.logScan
+                  }`}>{log.action}</span>
+                  <span className={styles.logDetails}>
+                    {log.asset ? `${log.asset} ` : ''}{log.details}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -862,16 +897,22 @@ export default function Treasury() {
           <div className={`${styles.panel} ${styles.positionsPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Positions &middot; Kelly Sized</span>
+              <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.positionsEntries}>
-              {derived.positions.map((pos, i) => (
+              {livePositions.length === 0 && (
+                <span className={styles.loadingText}>No open positions</span>
+              )}
+              {livePositions.map((pos, i) => (
                 <div key={i} className={styles.positionRow}>
                   <span className={styles.positionAsset}>{pos.asset}</span>
-                  <span className={`${styles.positionSide} ${pos.side === 'UP' ? styles.positionLong : styles.positionShort}`}>{pos.side}</span>
-                  <span className={styles.positionEntry}>{Math.round(pos.entry * 100)}&cent; ${pos.size}</span>
-                  <span className={`${styles.positionPnl} ${pos.pnl >= 0 ? styles.positionPnlPositive : styles.positionPnlNegative}`}>
-                    {pos.pnl >= 0 ? `+$${pos.pnl}` : `-$${Math.abs(pos.pnl)}`}
+                  <span className={`${styles.positionSide} ${pos.side === 'BUY' ? styles.positionLong : styles.positionShort}`}>
+                    {pos.side === 'BUY' ? 'UP' : 'DN'}
                   </span>
+                  <span className={styles.positionEntry}>
+                    {Math.round(parseFloat(pos.price) * 100)}&cent; ${pos.sizeMatched || pos.size}
+                  </span>
+                  <span className={styles.positionStatus}>{pos.status}</span>
                 </div>
               ))}
             </div>

@@ -282,6 +282,46 @@ class AzuraWalletManager {
   }
 
   /**
+   * Distribute USDC to multiple addresses on Base.
+   * Used for APPLE holder profit distribution.
+   */
+  public async distributeUSDC(
+    recipients: { address: string; amount: string }[],
+  ): Promise<{ txHashes: string[]; failed: { address: string; error: string }[] }> {
+    if (!this.wallet) {
+      await this.initialize();
+    }
+
+    const usdcAddress = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+    const walletAddress = await this.wallet!.getDefaultAddress();
+    const txHashes: string[] = [];
+    const failed: { address: string; error: string }[] = [];
+
+    for (const { address, amount } of recipients) {
+      try {
+        const transfer = await walletAddress.invokeContract({
+          contractAddress: usdcAddress,
+          method: 'transfer',
+          args: {
+            to: address,
+            amount,
+          },
+        });
+        await transfer.wait();
+        const hash = transfer.getTransactionHash();
+        if (hash) txHashes.push(hash);
+      } catch (err) {
+        failed.push({
+          address,
+          error: err instanceof Error ? err.message : 'Unknown error',
+        });
+      }
+    }
+
+    return { txHashes, failed };
+  }
+
+  /**
    * Get wallet statistics
    */
   public async getStats(): Promise<{
