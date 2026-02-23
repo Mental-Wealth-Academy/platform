@@ -54,7 +54,6 @@ const navSections: NavSection[] = [
     id: 'tools',
     label: 'Tools',
     items: [
-      { id: 'daily', label: 'Daily', href: '/daily', icon: '/icons/bookicon.svg' },
       { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
     ],
   },
