@@ -457,8 +457,29 @@ const SideNavigation: React.FC = () => {
           })}
         </div>
 
-        {/* Bottom Section - Wallet, Voting Power, Chat */}
+        {/* Bottom Section - Inventory, Wallet */}
         <div className={styles.bottomSection}>
+          {/* Gems Counter */}
+          <div className={styles.gemsRow}>
+            <button
+              className={styles.shardsCounter}
+              onClick={() => setIsInventoryOpen(true)}
+              type="button"
+            >
+              <Image
+                src="/icons/shard.svg"
+                alt="Gems"
+                width={20}
+                height={20}
+                className={styles.shardIcon}
+              />
+              <span className={styles.shardsLabel}>Inventory:</span>
+              <span className={styles.shardsValue}>
+                {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
+              </span>
+            </button>
+          </div>
+
           {/* Account Button or Connect Account */}
           {username && !username.startsWith('user_') ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
@@ -528,9 +549,6 @@ const SideNavigation: React.FC = () => {
               className={styles.connectWalletButton}
               onClick={() => {
                 if (isConnected && address) {
-                  // Wallet already connected at wagmi level but no session
-                  // Disconnect first so ConnectKit shows fresh wallet selection
-                  // then create session, or just create session directly
                   sessionCreatedForRef.current = null;
                   createSessionForWallet(address);
                 } else {
@@ -543,27 +561,6 @@ const SideNavigation: React.FC = () => {
               <span>{isCreatingSession ? 'Connecting...' : 'Create Account / Sign In'}</span>
             </button>
           )}
-
-          {/* Gems Counter */}
-          <div className={styles.gemsRow}>
-            <button
-              className={styles.shardsCounter}
-              onClick={() => setIsInventoryOpen(true)}
-              type="button"
-            >
-              <Image
-                src="/icons/shard.svg"
-                alt="Gems"
-                width={20}
-                height={20}
-                className={styles.shardIcon}
-              />
-              <span className={styles.shardsLabel}>Inventory:</span>
-              <span className={styles.shardsValue}>
-                {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
-              </span>
-            </button>
-          </div>
         </div>
       </nav>
 
