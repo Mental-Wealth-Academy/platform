@@ -8,7 +8,7 @@
 import { providers, Contract, utils } from 'ethers';
 
 const RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
-const APPLE_TOKEN_ADDRESS = process.env.APPLE_TOKEN_ADDRESS || '';
+const APPLE_TOKEN_ADDRESS = process.env.APPLE_TOKEN_ADDRESS || '0xE8a48daB9d307d74aBC8657421f8a2803661FB07';
 
 // Addresses to exclude from distribution
 const EXCLUDED_ADDRESSES = new Set([

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import styles from './TreasuryHowTo.module.css';
 
-const UNISWAP_LINK = `https://app.uniswap.org/swap?outputCurrency=${process.env.NEXT_PUBLIC_APPLE_TOKEN_ADDRESS || '0x'}&chain=base`;
+const UNISWAP_LINK = `https://app.uniswap.org/swap?outputCurrency=${process.env.NEXT_PUBLIC_APPLE_TOKEN_ADDRESS || '0xE8a48daB9d307d74aBC8657421f8a2803661FB07'}&chain=base`;
 
 export function HowToButton() {
   const [open, setOpen] = useState(false);
