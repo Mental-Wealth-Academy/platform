@@ -46,7 +46,7 @@ const navSections: NavSection[] = [
   },
   {
     id: 'featured',
-    label: 'Featured',
+    label: 'Tools',
     items: [
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
