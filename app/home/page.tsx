@@ -246,10 +246,10 @@ export default function VotingPage() {
                   <div className={styles.heroActions}>
                     <button
                       className={styles.secondaryCta}
-                      onClick={() => setShowDemo(!showDemo)}
+                      onClick={() => setShowGuyDialogue(true)}
                       type="button"
                     >
-                      Demo
+                      Explain
                     </button>
                     <button
                       className={styles.primaryCta}
@@ -302,14 +302,6 @@ export default function VotingPage() {
               <span className={styles.podAction}>Track →</span>
             </div>
           </section>
-
-          {/* Explain Button - Opens Guy Dialogue */}
-          <button
-            className={styles.explainButton}
-            onClick={() => setShowGuyDialogue(true)}
-          >
-            Explain
-          </button>
 
           {/* Proposals Section */}
           <section className={styles.proposalsSection}>

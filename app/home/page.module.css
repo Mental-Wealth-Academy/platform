@@ -157,6 +157,8 @@
   background: var(--color-primary);
   color: #ffffff;
   box-shadow: 3px 3px 0 #1A1D33;
+  padding: 14px 36px;
+  font-size: 14px;
 }
 
 .primaryCta:hover {
@@ -173,7 +175,7 @@
 }
 
 .secondaryCta:hover {
-  background: var(--color-tertiary);
+  background: var(--color-primary);
   color: #ffffff;
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 #1A1D33;
@@ -373,7 +375,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  max-width: 720px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
