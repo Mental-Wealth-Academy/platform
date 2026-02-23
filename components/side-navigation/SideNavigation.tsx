@@ -39,6 +39,7 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
+      { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'chapters', label: 'Chapters', href: '/chapters', icon: '/icons/Chapters.svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
     ],
@@ -48,13 +49,6 @@ const navSections: NavSection[] = [
     label: 'Featured',
     items: [
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
-    ],
-  },
-  {
-    id: 'tools',
-    label: 'Tools',
-    items: [
-      { id: 'tasks', label: 'Weekly', href: '/tasks', icon: '/icons/Survey.svg' },
     ],
   },
   {
