@@ -222,6 +222,10 @@
   min-height: 0;
 }
 
+.navSpacer {
+  flex: 1;
+}
+
 .section {
   display: flex;
   flex-direction: column;
