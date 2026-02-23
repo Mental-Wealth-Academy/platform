@@ -331,7 +331,6 @@ const SideNavigation: React.FC = () => {
             const isExpanded = isAdmin ? adminExpanded : true;
             return (
             <React.Fragment key={section.id}>
-            {isAdmin && <div className={styles.navSpacer} />}
             <div className={styles.section}>
               {section.label && (
               <button
