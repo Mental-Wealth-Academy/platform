@@ -84,13 +84,9 @@ class AzuraWalletManager {
           networkId: 'base-mainnet', // or 'base-sepolia' for testnet
         });
 
-        // Export wallet data for storage
-        const walletData = this.wallet.export();
-        console.log('⚠️  IMPORTANT: Save these credentials securely!');
-        console.log('Add to your .env.local:');
-        console.log(`AZURA_WALLET_ID=${walletData.walletId}`);
-        console.log(`AZURA_WALLET_SEED=${walletData.seed}`);
-        console.log('Wallet Address:', await this.wallet.getDefaultAddress());
+        const address = await this.wallet.getDefaultAddress();
+        console.log(`New Azura wallet created: ${address}`);
+        console.warn('AZURA_WALLET_ID and AZURA_WALLET_SEED must be set in env vars. Check wallet setup script.');
       }
 
       this.initialized = true;

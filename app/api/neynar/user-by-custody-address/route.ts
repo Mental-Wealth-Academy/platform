@@ -8,6 +8,12 @@ import { NextRequest, NextResponse } from 'next/server';
  * - address: The custody address (0x...)
  */
 export async function GET(request: NextRequest) {
+  // Require internal secret to prevent unauthenticated API key abuse
+  const internalSecret = request.headers.get('x-internal-secret');
+  if (!internalSecret || internalSecret !== process.env.INTERNAL_API_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const address = searchParams.get('address');

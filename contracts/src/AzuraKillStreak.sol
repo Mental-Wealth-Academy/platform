@@ -232,6 +232,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     ) external returns (uint256) {
         if (_recipient == address(0)) revert InvalidProposal();
         if (_usdcAmount == 0) revert InvalidAmount();
+        if (_usdcAmount > usdcToken.balanceOf(address(this))) revert InvalidAmount();
         if (bytes(_title).length == 0) revert InvalidProposal();
         
         proposalCount++;
@@ -364,11 +365,12 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      */
     function executeProposal(uint256 _proposalId) external nonReentrant {
         Proposal storage proposal = proposals[_proposalId];
-        
+
         if (proposal.status != ProposalStatus.Active) revert ProposalNotActive();
+        if (block.timestamp > proposal.votingDeadline) revert VotingEnded();
         if (proposal.forVotes < approvalThreshold) revert ThresholdNotReached();
         if (proposal.executed) revert AlreadyExecuted();
-        
+
         _executeProposal(_proposalId);
     }
     

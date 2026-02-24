@@ -48,3 +48,11 @@ cre-workflows/*/tmp.wasm
 *.cert
 .secrets
 secrets.json
+
+# MCP config (contains project refs)
+.mcp.json
+
+# Foundry build artifacts and broadcast logs
+contracts/out/
+contracts/cache/
+contracts/broadcast/

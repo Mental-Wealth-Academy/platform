@@ -29,6 +29,12 @@ interface ProposalData {
 }
 
 export async function POST(request: Request) {
+  // Internal-only endpoint: require shared secret to prevent unauthenticated abuse
+  const internalSecret = request.headers.get('x-internal-secret');
+  if (!internalSecret || internalSecret !== process.env.INTERNAL_API_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 });
+  }
+
   if (!isDbConfigured()) {
     return NextResponse.json(
       { error: 'Database not configured.' },
