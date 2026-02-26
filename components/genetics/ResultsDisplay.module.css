@@ -1,0 +1,304 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabBar {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: var(--radius-lg);
+}
+
+.tab {
+  padding: 10px 20px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  background: transparent;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tab:hover {
+  background: rgba(81, 104, 255, 0.08);
+  color: #1A1D33;
+}
+
+.tabActive {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: #1A1D33;
+}
+
+.tabActive:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.snpView {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.searchSection {
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 12px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid rgba(26, 29, 51, 0.15);
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #1A1D33;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.searchMeta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #666666;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+}
+
+.resultCount {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #999999;
+}
+
+.splitView {
+  display: flex;
+  gap: 16px;
+  min-height: 500px;
+  max-height: 70vh;
+}
+
+.detailPanel {
+  flex: 1;
+  border: 3px solid #1A1D33;
+  border-radius: var(--radius-lg);
+  background: var(--color-background, #FBF8FF);
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.listPanel {
+  width: 380px;
+  flex-shrink: 0;
+  border: 3px solid #1A1D33;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.listItem {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.listItem:hover {
+  background: rgba(81, 104, 255, 0.04);
+}
+
+.listItemSelected {
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.listItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.listItemHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.listItemId {
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.magnitudeBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.listItemMeta {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #666666;
+}
+
+.listItemMeta strong {
+  color: #1A1D33;
+}
+
+.listItemPreview {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #999999;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detailTitle {
+  font-family: var(--font-primary);
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 16px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.detailTitle:hover {
+  color: var(--color-primary);
+}
+
+.genotypeCard,
+.infoCard {
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #ffffff;
+  border: 2px solid rgba(26, 29, 51, 0.1);
+  border-radius: var(--radius-lg);
+}
+
+.genotypeCard {
+  border-color: rgba(81, 104, 255, 0.2);
+  background: rgba(81, 104, 255, 0.04);
+}
+
+.cardLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+.genotypeInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.genotypeValue {
+  font-family: var(--font-button);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.magnitudeLarge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.positionInfo {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #666666;
+}
+
+.emptyDetail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: #999999;
+}
+
+@media (max-width: 768px) {
+  .splitView {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .listPanel {
+    width: 100%;
+    max-height: 300px;
+  }
+
+  .detailPanel {
+    min-height: 300px;
+  }
+
+  .searchMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

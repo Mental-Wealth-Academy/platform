@@ -250,10 +250,10 @@ const Navbar: React.FC = () => {
               <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>Home</span>
             </Link>
 
-            {/* Chapters Button */}
+            {/* Story Button */}
             <Link href="/chapters" className={`${styles.navButton} ${isActive('/chapters') ? styles.navButtonActive : ''}`}>
               <LibraryIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>Chapters</span>
+              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>Story</span>
             </Link>
 
             {/* Quests Button */}
@@ -455,7 +455,7 @@ const Navbar: React.FC = () => {
           className={`${styles.mobileBottomNavButton} ${isActive('/chapters') ? styles.mobileBottomNavButtonActive : ''}`}
         >
           <LibraryIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Chapters</span>
+          <span className={styles.mobileBottomNavLabel}>Story</span>
         </Link>
         <Link
           href="/quests"

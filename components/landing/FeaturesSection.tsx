@@ -6,7 +6,7 @@ import styles from './FeaturesSection.module.css';
 const tabs = [
   'Voting & Governance',
   'AI Agent Azura',
-  'Weekly Tasks',
+  'Meditations',
   'Quests & Learning',
 ] as const;
 
@@ -196,7 +196,7 @@ export const FeaturesSection: React.FC = () => {
           <div className={styles.panelWrap}>
             {activeTab === 'Voting & Governance' && <VotingPanel />}
             {activeTab === 'AI Agent Azura' && <AzuraPanel />}
-            {activeTab === 'Weekly Tasks' && <TasksPanel />}
+            {activeTab === 'Meditations' && <TasksPanel />}
             {activeTab === 'Quests & Learning' && <QuestsPanel />}
           </div>
         </div>

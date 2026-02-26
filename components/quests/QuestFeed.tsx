@@ -77,7 +77,7 @@ const sampleQuests: QuestData[] = [
   },
   {
     id: 'q4',
-    title: 'Weekly Productivity Challenge',
+    title: 'Meditations Productivity Challenge',
     description: 'Implement 3 productivity techniques from our library and share your results.',
     category: 'productivity',
     payout: 75,

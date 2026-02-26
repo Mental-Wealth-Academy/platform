@@ -38,7 +38,7 @@ const sampleStories: SuccessStory[] = [
     id: 's3',
     username: 'productivity_pro',
     avatarUrl: '/uploads/ConfusedEmote.png',
-    questTitle: 'Weekly Productivity',
+    questTitle: 'Meditations Productivity',
     reward: 75,
     testimonial: 'Implemented the Pomodoro technique from the ideas. Game changer!',
     completedAt: '1 day ago',

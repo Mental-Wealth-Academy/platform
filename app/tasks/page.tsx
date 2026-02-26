@@ -29,17 +29,17 @@ export default function TasksPage() {
             {/* Hero Section */}
             <header className={styles.hero}>
               <span className={styles.eyebrow}>Community Resources</span>
-              <h1 className={styles.title}>Weekly</h1>
+              <h1 className={styles.title}>Meditations</h1>
               <p className={styles.subtitle}>
                 Structured weekly journal prompts and creative recovery exercises. Complete activities, reflect, and seal your progress on-chain.
               </p>
             </header>
 
-            {/* Weekly Journal Section */}
+            {/* Meditations Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
               <div className={styles.journalHeader}>
                 <span className={styles.sectionLabel}>Creative Recovery</span>
-                <h2 className={styles.sectionTitle}>Weekly Journal</h2>
+                <h2 className={styles.sectionTitle}>Meditations Journal</h2>
               </div>
               <div className={styles.journalCards}>
                 <AccordionJournalCard

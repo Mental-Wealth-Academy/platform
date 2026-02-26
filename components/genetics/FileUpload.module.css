@@ -1,0 +1,119 @@
+.dropzone {
+  background: #ffffff;
+  border: 3px dashed rgba(81, 104, 255, 0.4);
+  border-radius: var(--radius-xl);
+  padding: 48px 24px;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(81, 104, 255, 0.1);
+}
+
+.dropzone:hover {
+  border-color: var(--color-primary);
+  background: rgba(81, 104, 255, 0.03);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.15);
+}
+
+.dropzoneDragging {
+  border-color: var(--color-primary);
+  background: rgba(81, 104, 255, 0.08);
+  border-style: solid;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.2);
+}
+
+.dropzoneDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.dropzoneLabel {
+  display: block;
+  cursor: pointer;
+}
+
+.dropzoneDisabled .dropzoneLabel {
+  cursor: not-allowed;
+}
+
+.uploadIcon {
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.uploadTitle {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin-bottom: 4px;
+}
+
+.uploadSubtitle {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 24px;
+}
+
+.formatsSection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid rgba(26, 29, 51, 0.08);
+}
+
+.formatsTitle {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666666;
+  margin-bottom: 10px;
+}
+
+.formatsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.formatItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(81, 104, 255, 0.06);
+  border: 2px solid rgba(81, 104, 255, 0.15);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+}
+
+.formatName {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.formatExt {
+  font-family: var(--font-primary);
+  color: #666666;
+  font-size: 11px;
+}
+
+.autoDetect {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #999999;
+}
