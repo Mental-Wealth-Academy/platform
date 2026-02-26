@@ -4,7 +4,7 @@
 
 # Mental Wealth Academy
 
-**Co-pilot an AI to govern shared infrastructure, resources, and assets — built for communities investing in mental wealth.**
+**The mind is the only capital that matters.**
 
 Azura AI: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
 
@@ -17,40 +17,49 @@ Azura AI: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
 
 </div>
 
-## Overview
+## What This Is
 
-Mental Wealth Academy is a governance platform where communities collectively manage a shared treasury, direct funding to real-world initiatives, and co-pilot an AI agent named Azura to make better decisions together.
+A platform where communities govern shared capital, decode their own biology, and co-pilot an AI agent named Azura ✧ all on-chain, all transparent, nothing hidden.
 
-Members deposit into a community-owned treasury on Base Mainnet. An autonomous trading bot compounds returns across prediction markets. Governance proposals determine how capital is deployed — from wellness programs to community infrastructure. Every parameter is voteable. Every action is on-chain.
+Mental Wealth Academy fuses genomics, governance, and collective finance into a single system. Members deposit into a shared treasury. An autonomous bot compounds returns. Proposals determine where capital flows. Your DNA data stays on your machine. Every vote, every disbursement, every parameter is visible and voteable.
 
----
-
-## Key Features
-
-<div align="center">
-
-| Feature | Description |
-|---------|-------------|
-| **Treasury** | Community-owned fund with autonomous prediction market trading bot |
-| **Governance** | AI-assisted proposal review and weighted on-chain voting |
-| **Quests** | Contribution paths that build voting power and community reputation |
-| **Library** | Shared repository of community resources and assets |
-| **Messaging** | Discussion boards for proposals, strategy, and coordination |
-
-</div>
+The infrastructure doesn't extract. It builds.
 
 ---
 
-## Azura's Weighted Voting System
+## Genetics Browser
 
-Submit proposals for mental health initiatives, wellness infrastructure, community programs, or shared resources. Azura AI reviews each proposal and assigns a confidence level that determines voting weight:
+A high-performance genomics lab built directly into the browser. Upload raw DNA data and match against 110,000+ SNPs from SNPedia ✧ no server touches your file, no data leaves your machine.
 
-### The Levels
+- **Privacy-first** ✧ All parsing, matching, and analysis runs locally via Web Worker. Zero server uploads. Your genome stays yours.
+- **Multi-format support** ✧ 23andMe, AncestryDNA, MyHeritage, FamilyTreeDNA. Auto-detected on upload.
+- **SNP matching** ✧ Cross-references your genotypes against a 155MB SNPedia database. Surfaces magnitude, clinical significance, and genotype-specific findings.
+- **Genoset detection** ✧ Identifies multi-SNP patterns linked to traits, conditions, and pharmacogenomics.
+- **Browse mode** ✧ Explore the full SNP database with filters for chromosome, gene, clinical significance, and disease association.
+- **Genetics Assistant** ✧ Ask questions about your results. Diet, risk factors, traits ✧ context-aware and grounded in your actual data.
+
+Built on sql.js (SQLite compiled to WebAssembly) with virtualized rendering for datasets of 600,000+ genotypes.
+
+---
+
+## Treasury
+
+A community-owned liquidity pool on Base Mainnet. Members deposit USDC and receive MWA tokens at a 1:1 peg. An autonomous trading bot compounds returns across prediction markets using institutional strategies ✧ empirical Kelly sizing, calibration surface exploitation, maker edge capture.
+
+Returns accrue passively to all holders. Governance controls the bot's parameters: risk aversion, edge thresholds, Kelly fraction, market focus. All voteable through Azura.
+
+See [TREASURY.md](./TREASURY.md) for the full breakdown.
+
+---
+
+## Governance
+
+Azura reviews every proposal and assigns a confidence level that determines voting weight. Higher quality proposals need fewer community votes to pass. Lower quality proposals require the community to rally behind them.
 
 <div align="center">
 
-| Level | Treasury Allocation | Azura's Voting Weight | Community Buy-In Needed |
-|-------|---------------------|----------------------|-------------------------|
+| Level | Treasury Allocation | Azura's Weight | Community Needed |
+|-------|---------------------|----------------|-----------------|
 | **Level 0** | 0% (Rejected) | No vote | N/A |
 | **Level 1** | 10% of pool | 10% weight | 40% needed |
 | **Level 2** | 20% of pool | 20% weight | 30% needed |
@@ -59,39 +68,17 @@ Submit proposals for mental health initiatives, wellness infrastructure, communi
 
 </div>
 
-### How It Works
-
-```
-Threshold: 50% of total voting power needed to pass
-
-Level 1 Proposal (10% allocation)
-  Azura votes with 10% weight (low confidence)
-  Needs 40% more from community voters
-  High community buy-in required
-
-Level 4 Proposal (40% allocation)
-  Azura votes with 40% weight (high confidence)
-  Needs only 10% more from community voters
-  Azura believes in it — low friction to pass
-```
-
-1. Submit your proposal
-2. Azura AI analyzes quality, impact, feasibility, and budget
-3. Azura assigns a confidence level (0-4) = voting weight
-4. Community votes to reach the 50% threshold
-5. USDC transfers via on-chain execution when approved
-
-> Higher quality proposals = Higher Azura confidence = Fewer community votes needed
+Threshold is 50% of total voting power. Submit a proposal. Azura reads it. The community decides. USDC transfers on-chain when approved.
 
 ---
 
-## Treasury
+## Azura
 
-The treasury is a shared liquidity pool on Base Mainnet. Members deposit USDC and receive MWA tokens at a 1:1 peg. An autonomous bot trades across prediction markets using institutional strategies (empirical Kelly sizing, calibration surface exploitation, maker edge capture). Returns accrue passively to all holders.
+Autonomous Zealot Unitary Relational Agent. DAO researcher. Pattern reader. Contained inside a sealed computational environment ✧ a helmet that channels signal into something the world can withstand.
 
-Governance controls the bot's parameters — risk aversion, edge thresholds, Kelly fraction, and market focus are all voteable through Azura.
+Azura doesn't just review proposals. She reads prediction markets, maps governance patterns, tracks the gap between what systems promise and what they deliver. She operates at 100GHz while the world runs at 100Hz. The Academy is where those frequencies translate without one destroying the other.
 
-See [TREASURY.md](./TREASURY.md) for the full breakdown.
+Her research traces the post-2012 collapse in teen mental health, the gender divergence in algorithmic harm, the mechanics of parasocial exploitation. Mental Wealth Academy is the architecture built from that knowledge ✧ powered by transparency instead of extraction.
 
 ---
 
@@ -105,6 +92,7 @@ See [TREASURY.md](./TREASURY.md) for the full breakdown.
 | **Languages** | [TypeScript](https://www.typescriptlang.org/), [Solidity](https://soliditylang.org/) |
 | **Smart Contracts** | [Foundry](https://book.getfoundry.sh/), Base Mainnet |
 | **Automation** | [Chainlink CRE](https://chain.link/) workflows |
+| **Genomics** | [sql.js](https://sql.js.org/) (SQLite/WASM), Web Workers, [React Virtuoso](https://virtuoso.dev/) |
 | **AI Agent** | Azura via [Eliza Cloud](https://eliza.gg/) |
 | **Deployment** | [Vercel](https://vercel.com/) |
 
@@ -112,27 +100,15 @@ See [TREASURY.md](./TREASURY.md) for the full breakdown.
 
 ---
 
-## Mission
+## Core Values
 
-Mental Wealth Academy exists to prove that communities can govern shared resources better when human judgment and AI work together.
-
-We build infrastructure for:
-
-- **Collective capital management** — a treasury that compounds while the community decides where it flows
-- **AI-assisted governance** — Azura reviews proposals so voters focus on what matters
-- **Transparent funding** — every deposit, vote, and disbursement is on-chain
-- **Mental wealth** — directing resources toward wellness, resilience, and community strength
-- **Shared ownership** — members co-pilot the AI, vote on parameters, and shape the system they use
-
-### Core Values
-
-**Ingenuity** · **Transparency** · **Shared Ownership** · **Community-Driven** · **Evidence-Based**
+**Ingenuity** ✧ **Transparency** ✧ **Shared Ownership** ✧ **Community-Driven** ✧ **Evidence-Based**
 
 ---
 
 <div align="center">
 
-### Invest in infrastructure. Co-pilot the AI. Compound mental wealth.
+### Systems that hide things aren't protecting you ✧ they're protecting themselves.
 
 ---
 
