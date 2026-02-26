@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
-import VoteButton from './FinalizeButton';
 import styles from './ProposalCard.module.css';
 
 interface ProposalReview {
@@ -44,8 +43,6 @@ interface ProposalCardProps {
   onViewDetails?: (id: string) => void;
   showAvatar?: boolean;
   onChainProposalId?: number | null;
-  contractAddress?: string;
-  onVoted?: () => void;
   onChainData?: OnChainData | null;
 }
 
@@ -61,8 +58,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onViewDetails,
   showAvatar = false,
   onChainProposalId,
-  contractAddress,
-  onVoted,
   onChainData,
 }) => {
   const getStage1Variant = () => {
@@ -163,19 +158,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     }
   };
 
-  const getPreviewText = () => {
-    // Remove markdown formatting for preview
-    const plainText = proposalMarkdown
-      .replace(/#{1,6}\s/g, '') // Remove headers
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-      .replace(/\*(.*?)\*/g, '$1') // Remove italic
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
-      .replace(/`(.*?)`/g, '$1') // Remove inline code
-      .replace(/^\s*[-*+]\s/gm, '') // Remove list markers
-      .trim();
-    
-    return plainText.substring(0, 200) + (plainText.length > 200 ? '...' : '');
-  };
 
   return (
     <div className={styles.card}>
@@ -234,21 +216,33 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      <div className={styles.preview}>
-        <p className={styles.previewLabel}>Preview</p>
-        <p className={styles.previewText}>{getPreviewText()}</p>
-      </div>
-
-      {/* Show vote buttons for approved proposals with on-chain ID */}
-      {(status === 'approved' || status === 'active') && onChainProposalId && contractAddress && (
-        <div className={styles.finalizeSection}>
-          <VoteButton
-            onChainProposalId={onChainProposalId}
-            contractAddress={contractAddress}
-            onVoted={onVoted}
-          />
+      {review?.reasoning && (
+        <div className={styles.preview}>
+          <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
+          <p className={styles.previewText}>{review.reasoning}</p>
         </div>
       )}
+
+      {/* Voting bar for proposals with on-chain vote data */}
+      {onChainData && (() => {
+        const forVotes = parseFloat(onChainData.forVotes);
+        const againstVotes = parseFloat(onChainData.againstVotes);
+        const totalVotes = forVotes + againstVotes;
+        const yesPct = totalVotes > 0 ? Math.round((forVotes / totalVotes) * 100) : 0;
+        const noPct = totalVotes > 0 ? 100 - yesPct : 0;
+        return (
+          <div className={styles.voteBarSection}>
+            <div className={styles.voteBarTrack}>
+              <div className={styles.voteBarYes} style={{ width: `${yesPct}%` }} />
+              <div className={styles.voteBarDivider} />
+            </div>
+            <div className={styles.voteBarLabels}>
+              <span className={styles.voteBarYesLabel}>Yes {yesPct}%</span>
+              <span className={styles.voteBarNoLabel}>No {noPct}%</span>
+            </div>
+          </div>
+        );
+      })()}
 
       <div className={styles.footer}>
         <span className={styles.timestamp}>{formatTimestamp(createdAt)}</span>

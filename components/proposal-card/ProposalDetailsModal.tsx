@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import VoteButton from './FinalizeButton';
 import styles from './ProposalDetailsModal.module.css';
 
 interface ProposalReview {
@@ -21,6 +22,9 @@ interface ProposalReview {
 interface ProposalDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onChainProposalId?: number | null;
+  contractAddress?: string;
+  onVoted?: () => void;
   proposal: {
     id: string;
     title: string;
@@ -33,6 +37,7 @@ interface ProposalDetailsModalProps {
       avatarUrl: string | null;
     };
     review: ProposalReview | null;
+    onChainTxHash?: string | null;
     onChainData?: {
       forVotes: string;
       againstVotes: string;
@@ -43,9 +48,43 @@ interface ProposalDetailsModalProps {
   };
 }
 
+function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className={styles.accordion}>
+      <button
+        type="button"
+        className={styles.accordionTrigger}
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+      >
+        <h3 className={styles.sectionTitle}>{title}</h3>
+        <svg
+          className={`${styles.accordionChevron} ${open ? styles.accordionChevronOpen : ''}`}
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
+      <div className={`${styles.accordionBody} ${open ? styles.accordionBodyOpen : ''}`}>
+        <div className={styles.accordionInner}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProposalDetailsModal({
   isOpen,
   onClose,
+  onChainProposalId,
+  contractAddress,
+  onVoted,
   proposal,
 }: ProposalDetailsModalProps) {
   useEffect(() => {
@@ -88,110 +127,63 @@ export default function ProposalDetailsModal({
           </svg>
         </button>
 
-        <div className={styles.content}>
+        {/* Fixed top: header + txn + created date */}
+        <div className={styles.topSection}>
           <div className={styles.header}>
             <h2 className={styles.title}>{proposal.title}</h2>
             <div className={styles.meta}>
-              <span className={styles.metaItem}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                  <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                {proposal.walletAddress.slice(0, 6)}...{proposal.walletAddress.slice(-4)}
-              </span>
+              {proposal.onChainTxHash ? (
+                <a
+                  href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.metaItem} ${styles.metaLink}`}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  {proposal.walletAddress.slice(0, 6)}...{proposal.walletAddress.slice(-4)}
+                </a>
+              ) : (
+                <span className={styles.metaItem}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  {proposal.walletAddress.slice(0, 6)}...{proposal.walletAddress.slice(-4)}
+                </span>
+              )}
               <span className={styles.metaItem}>
                 Created {formatDate(proposal.createdAt)}
               </span>
             </div>
           </div>
+        </div>
 
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Proposal</h3>
+        {/* Scrollable middle: proposal content (accordion) */}
+        <div className={styles.scrollArea}>
+          <Accordion title="Proposal">
             <div className={styles.markdownContent}>
               <pre className={styles.markdownPre}>{proposal.proposalMarkdown}</pre>
             </div>
-          </div>
-
-          {proposal.review && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Azura&apos;s Review</h3>
-              <div className={styles.reviewContent}>
-                <div className={styles.reasoning}>
-                  <p>{proposal.review.reasoning}</p>
-                </div>
-                {proposal.review.scores && (
-                  <div className={styles.scores}>
-                    <div className={styles.scoreItem}>
-                      <span>Clarity</span>
-                      <span>{proposal.review.scores.clarity}/10</span>
-                    </div>
-                    <div className={styles.scoreItem}>
-                      <span>Impact</span>
-                      <span>{proposal.review.scores.impact}/10</span>
-                    </div>
-                    <div className={styles.scoreItem}>
-                      <span>Feasibility</span>
-                      <span>{proposal.review.scores.feasibility}/10</span>
-                    </div>
-                    <div className={styles.scoreItem}>
-                      <span>Budget</span>
-                      <span>{proposal.review.scores.budget}/10</span>
-                    </div>
-                    <div className={styles.scoreItem}>
-                      <span>Ingenuity</span>
-                      <span>{proposal.review.scores.ingenuity}/10</span>
-                    </div>
-                    <div className={styles.scoreItem}>
-                      <span>Chaos</span>
-                      <span>{proposal.review.scores.chaos}/10</span>
-                    </div>
-                  </div>
-                )}
-                {proposal.review.tokenAllocation && (
-                  <div className={styles.allocation}>
-                    <strong>Token Allocation: {proposal.review.tokenAllocation}%</strong>
-                  </div>
-                )}
-                <div className={styles.reviewDate}>
-                  Reviewed {formatDate(proposal.review.reviewedAt)}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {proposal.onChainData && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Voting Status</h3>
-              <div className={styles.votingData}>
-                <div className={styles.votingItem}>
-                  <span>For Votes</span>
-                  <span>{proposal.onChainData.forVotes}</span>
-                </div>
-                <div className={styles.votingItem}>
-                  <span>Against Votes</span>
-                  <span>{proposal.onChainData.againstVotes}</span>
-                </div>
-                <div className={styles.votingItem}>
-                  <span>Azura Level</span>
-                  <span>⭐ x {proposal.onChainData.azuraLevel}</span>
-                </div>
-                {proposal.onChainData.votingDeadline && (
-                  <div className={styles.votingItem}>
-                    <span>Voting Deadline</span>
-                    <span>{formatDate(proposal.onChainData.votingDeadline)}</span>
-                  </div>
-                )}
-                {proposal.onChainData.executed && (
-                  <div className={styles.executed}>
-                    ✅ Proposal Executed
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          </Accordion>
         </div>
+
+        {/* Fixed bottom: Vote Yes / Vote No */}
+        {onChainProposalId && contractAddress && proposal.onChainData && !proposal.onChainData.executed && (
+          <div className={styles.bottomSection}>
+            <VoteButton
+              onChainProposalId={onChainProposalId}
+              contractAddress={contractAddress}
+              onVoted={onVoted}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
