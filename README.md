@@ -19,9 +19,7 @@ Azura AI: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
 
 ## What This Is
 
-A platform where communities govern shared capital, decode their own biology, and co-pilot an AI agent named Azura ✧ all on-chain, all transparent, nothing hidden.
-
-Mental Wealth Academy fuses genomics, governance, and collective finance into a single system. Members deposit into a shared treasury. An autonomous bot compounds returns. Proposals determine where capital flows. Your DNA data stays on your machine. Every vote, every disbursement, every parameter is visible and voteable.
+Mental Wealth Academy fuses shared-infrastructure and resources on genomics, governance, and collective finance into a single system. Membership feeds into a shared treasury. An autonomous agent Azura compounds returns. Proposals determine where capital flows. Sensitive information remains private, while votes, disbursements, and parameters are transparent and voteable.
 
 The infrastructure doesn't extract. It builds.
 
