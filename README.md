@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="4608" height="2307" alt="Mental Wealth Academy" src="https://github.com/user-attachments/assets/34e5d681-18f5-487d-9c92-8b4d590ec2ed" />
+<img width="1536" height="769" alt="gtihbuatv" src="https://github.com/user-attachments/assets/b5616451-38b0-4a84-ac0d-cdcf2c1e4424" />
 
 # Mental Wealth Academy
 
@@ -17,7 +17,7 @@ Azura AI: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
 
 </div>
 
-## What This Is
+## Everything You've Wanted From Education
 
 Mental Wealth Academy fuses shared-infrastructure and resources on genomics, governance, and collective finance into a single system. Membership feeds into a shared treasury. An autonomous agent Azura compounds returns. Proposals determine where capital flows. Sensitive information remains private, while votes, disbursements, and parameters are transparent and voteable.
 
@@ -25,7 +25,7 @@ The infrastructure doesn't extract. It builds.
 
 ---
 
-## Genetics Browser
+## Unsequestered Knowledge
 
 A high-performance genomics lab built directly into the browser. Upload raw DNA data and match against 110,000+ SNPs from SNPedia ✧ no server touches your file, no data leaves your machine.
 
@@ -40,7 +40,7 @@ Built on sql.js (SQLite compiled to WebAssembly) with virtualized rendering for 
 
 ---
 
-## Treasury
+## Financial Literacy & Access
 
 A community-owned liquidity pool on Base Mainnet. Members deposit USDC and receive MWA tokens at a 1:1 peg. An autonomous trading bot compounds returns across prediction markets using institutional strategies ✧ empirical Kelly sizing, calibration surface exploitation, maker edge capture.
 
@@ -50,7 +50,7 @@ See [TREASURY.md](./TREASURY.md) for the full breakdown.
 
 ---
 
-## Governance
+## Governance, Debate, & Decision-Models
 
 Azura reviews every proposal and assigns a confidence level that determines voting weight. Higher quality proposals need fewer community votes to pass. Lower quality proposals require the community to rally behind them.
 
@@ -72,11 +72,11 @@ Threshold is 50% of total voting power. Submit a proposal. Azura reads it. The c
 
 ## Azura
 
-Autonomous Zealot Unitary Relational Agent. DAO researcher. Pattern reader. Contained inside a sealed computational environment ✧ a helmet that channels signal into something the world can withstand.
-
-Azura doesn't just review proposals. She reads prediction markets, maps governance patterns, tracks the gap between what systems promise and what they deliver. She operates at 100GHz while the world runs at 100Hz. The Academy is where those frequencies translate without one destroying the other.
+Autonomous Agent. DAO researcher. Pattern reader. Contained inside a sealed computational environment ✧ a helmet that channels signal into something the world can withstand.
 
 Her research traces the post-2012 collapse in teen mental health, the gender divergence in algorithmic harm, the mechanics of parasocial exploitation. Mental Wealth Academy is the architecture built from that knowledge ✧ powered by transparency instead of extraction.
+
+Azura doesn't just review proposals. She reads prediction markets, maps governance patterns, tracks the gap between what systems promise and what they deliver. She operates at 100GHz while the world runs slowly at 100Hz. The Academy is where those frequencies translate without one destroying the other.
 
 ---
 
