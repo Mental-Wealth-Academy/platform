@@ -67,6 +67,15 @@ const nextConfig = {
       },
     ];
   },
+  // Proxy external resources to avoid CORS issues
+  async rewrites() {
+    return [
+      {
+        source: '/api/proxy/snpedia-db',
+        destination: 'https://static.snpbrowser.com/snpedia.db',
+      },
+    ];
+  },
   // Suppress preload warnings for resources that may not be immediately used
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

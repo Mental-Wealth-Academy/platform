@@ -46,7 +46,7 @@ export default function GeneticsPage() {
         setDbError(null);
 
         await workerApi.loadDatabase(
-          'https://static.snpbrowser.com/snpedia.db',
+          '/api/proxy/snpedia-db',
           proxy((progress: number) => {
             if (progressBarRef.current) progressBarRef.current.style.width = `${progress}%`;
             if (progressTextRef.current) progressTextRef.current.textContent = `${Math.round(progress)}% complete`;
