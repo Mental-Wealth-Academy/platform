@@ -73,11 +73,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               ))}
             </ul>
 
-            <button className={styles.ctaButton}>
-              <span>Buy Membership</span>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <button className={styles.ctaButton} disabled style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+              <span>Coming Soon</span>
             </button>
           </div>
         </div>

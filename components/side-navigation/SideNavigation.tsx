@@ -73,7 +73,7 @@ const SideNavigation: React.FC = () => {
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
-  const [adminExpanded, setAdminExpanded] = useState(false);
+  const [adminExpanded, setAdminExpanded] = useState(true);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
