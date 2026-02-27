@@ -40,10 +40,9 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'tasks', label: 'Meditations', href: '/tasks', icon: '/icons/Survey.svg' },
-      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/Chapters.svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
-      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
       { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg', badge: 'New', badgeType: 'green' },
+      { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'New', badgeType: 'green' },
     ],
   },
   {
@@ -52,11 +51,9 @@ const navSections: NavSection[] = [
     badge: 'Access With Pro',
     badgeType: 'pro',
     items: [
+      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/Chapters.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'videos', label: 'Workflows', href: '/videos', icon: '/icons/Eye.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'squads', label: 'Squads', href: '/squads', icon: '/icons/Venetian carnival.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'files', label: 'Files', href: '/files', icon: '/icons/bookicon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'newsletter', label: 'Newsletter', href: 'https://mentalwealthacademy.net', icon: '/icons/newsletter.svg' },
     ],
   },
 ];
