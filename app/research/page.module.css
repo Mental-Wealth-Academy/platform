@@ -1,0 +1,845 @@
+.pageLayout {
+  margin-left: 265px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.content {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 32px 64px;
+  display: grid;
+  gap: 32px;
+}
+
+/* ── HEADER BAR ──────────────────────────────────────── */
+.headerBar {
+  background: #1A1B24;
+  color: #fff;
+  border-bottom: 5px solid #1A1B24;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.logoText {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.logoTag {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5168FF;
+  border: 2px solid #5168FF;
+  padding: 2px 8px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.headerStat {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.headerStatValue {
+  display: block;
+  font-size: 1.1rem;
+  color: #74C465;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+.headerStatValueOrange {
+  composes: headerStatValue;
+  color: #FF8C42;
+}
+
+/* ── SECTION LABELS ──────────────────────────────────── */
+.sectionLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26,27,36,0.55);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionLabel::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: #1A1B24;
+  opacity: 0.15;
+}
+
+/* ── BRUTALIST CARD ──────────────────────────────────── */
+.brutCard {
+  background: #fff;
+  border: 2px solid rgba(26,27,36,0.15);
+  box-shadow: 0 2px 8px rgba(26,27,36,0.06);
+  border-radius: 0;
+  padding: 24px;
+  position: relative;
+}
+
+.brutCardPrimary {
+  composes: brutCard;
+  border-color: rgba(26,27,36,0.15);
+  box-shadow: none;
+  background: #FAFAFE;
+}
+
+.brutCardAccent {
+  composes: brutCard;
+  border-color: rgba(26,27,36,0.15);
+  box-shadow: none;
+  background: #FAFAFE;
+}
+
+/* ── DATA ENTRY PANEL ────────────────────────────────── */
+.entryPanel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.entryForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.entryTitle {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.entryDesc {
+  font-size: 0.78rem;
+  color: rgba(26,27,36,0.55);
+  font-weight: 300;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #1A1B24;
+}
+
+.fieldHint {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-weight: 300;
+  font-size: 0.72rem;
+  color: rgba(26,27,36,0.55);
+  margin-top: -2px;
+}
+
+.input {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border: 2px solid rgba(26,27,36,0.2);
+  border-radius: 0;
+  background: #fff;
+  color: #1A1B24;
+  outline: none;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: #1A1B24;
+  box-shadow: 3px 3px 0 rgba(26,27,36,0.1);
+}
+
+.input::placeholder {
+  color: rgba(26,27,36,0.3);
+}
+
+.select {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.85rem;
+  padding: 10px 36px 10px 14px;
+  border: 2px solid rgba(26,27,36,0.2);
+  border-radius: 0;
+  background: #fff;
+  color: #1A1B24;
+  outline: none;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%231A1B24' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.select:focus {
+  border-color: #1A1B24;
+  box-shadow: 3px 3px 0 rgba(26,27,36,0.1);
+}
+
+.buttonRow {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.btnPrimary {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #1A1B24;
+  color: #fff;
+  border: 2px solid #1A1B24;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  box-shadow: 3px 3px 0 rgba(26,27,36,0.2);
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+}
+
+.btnPrimary:hover {
+  background: #2d2e3d;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(26,27,36,0.25);
+}
+
+.btnPrimary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(26,27,36,0.15);
+}
+
+.btnOutline {
+  display: inline-block;
+  padding: 12px 24px;
+  background: transparent;
+  color: rgba(26,27,36,0.7);
+  border: 2px solid rgba(26,27,36,0.2);
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  box-shadow: none;
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+}
+
+.btnOutline:hover {
+  border-color: #1A1B24;
+  color: #1A1B24;
+  box-shadow: 3px 3px 0 rgba(26,27,36,0.1);
+}
+
+.liveSectionLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26,27,36,0.45);
+  margin-bottom: 16px;
+}
+
+/* ── STATS GRID ──────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.statTile {
+  background: #fff;
+  border: 2px solid rgba(26,27,36,0.12);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statTile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+}
+
+.statTilePrimary::before { background: #5168FF; }
+.statTileAccent::before { background: #FF7729; }
+.statTileTertiary::before { background: #74C465; }
+.statTileSecondary::before { background: #50599B; }
+.statTileMental::before { background: #9724A6; }
+
+.statTileLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(26,27,36,0.55);
+  margin-bottom: 8px;
+}
+
+.statTileValue {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1A1B24;
+  line-height: 1;
+}
+
+.statTileSub {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 0.65rem;
+  font-weight: 300;
+  color: rgba(26,27,36,0.55);
+  margin-top: 8px;
+}
+
+/* ── REWARD STRIP ────────────────────────────────────── */
+.rewardStrip {
+  background: #1A1B24;
+  border: 2px solid rgba(26,27,36,0.15);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rewardText {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.daemonCount {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #74C465;
+}
+
+/* ── DATA TABLE ──────────────────────────────────────── */
+.dataTableWrapper {
+  overflow-x: auto;
+  border: 2px solid rgba(26,27,36,0.15);
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.78rem;
+}
+
+.dataTable thead {
+  background: #1A1B24;
+  color: #fff;
+}
+
+.dataTable th {
+  padding: 12px 20px;
+  text-align: left;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+
+.dataTable td {
+  padding: 12px 20px;
+  border-bottom: 2px solid rgba(26,27,36,0.08);
+  border-right: 1px solid rgba(26,27,36,0.08);
+  color: #1A1B24;
+  white-space: nowrap;
+}
+
+.dataTable tr:nth-child(even) td {
+  background: rgba(81,104,255,0.03);
+}
+
+.dataTable tr:hover td {
+  background: rgba(81,104,255,0.07);
+}
+
+.tdN { color: #5168FF; font-weight: 700; }
+.tdMean { color: #1A1B24; }
+.tdSd { color: #50599B; }
+.tdMin { color: #5FA852; }
+.tdMax { color: #FF7729; }
+.tdP { color: #9724A6; font-weight: 600; }
+
+.emptyRow {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(26,27,36,0.55);
+}
+
+/* ── GROUP BADGE ─────────────────────────────────────── */
+.groupBadge {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+.groupTreatment {
+  background: rgba(116,196,101,0.15);
+  border: 1px solid #74C465;
+}
+
+.groupControl {
+  background: rgba(81,104,255,0.1);
+  border: 1px solid #5168FF;
+}
+
+.groupWaitlist {
+  background: rgba(255,119,41,0.1);
+  border: 1px solid #FF7729;
+}
+
+/* ── TAB BAR ─────────────────────────────────────────── */
+.tabBar {
+  display: flex;
+  border-bottom: 2px solid rgba(26,27,36,0.15);
+  margin-bottom: 24px;
+  gap: 0;
+}
+
+.tabBtn {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border: none;
+  border-right: 1px solid rgba(26,27,36,0.1);
+  background: transparent;
+  color: rgba(26,27,36,0.4);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.2s;
+}
+
+.tabBtn:hover {
+  background: rgba(26,27,36,0.04);
+  color: #1A1B24;
+}
+
+.tabBtnActive {
+  composes: tabBtn;
+  background: #1A1B24;
+  color: #fff;
+}
+
+/* ── CHART GRID ──────────────────────────────────────── */
+.chartGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.chartCard {
+  background: #fff;
+  border: 2px solid rgba(26,27,36,0.15);
+  box-shadow: 0 2px 8px rgba(26,27,36,0.06);
+  padding: 24px;
+}
+
+.chartTitle {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1A1B24;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(26,27,36,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chartTypeBadge {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: rgba(26,27,36,0.08);
+  color: rgba(26,27,36,0.5);
+  padding: 3px 8px;
+  border-radius: 0;
+}
+
+.chartContainer {
+  position: relative;
+  height: 260px;
+}
+
+/* ── CORRELATION MATRIX ──────────────────────────────── */
+.matrixGrid {
+  display: grid;
+  gap: 2px;
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.72rem;
+}
+
+.matrixCell {
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid rgba(26,27,36,0.12);
+  font-weight: 500;
+}
+
+.matrixHeader {
+  background: #1A1B24;
+  color: #fff;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.matrixDiag { background: rgba(81,104,255,0.1); color: #5168FF; }
+.matrixHighPos { background: rgba(116,196,101,0.25); color: #2d7a1f; }
+.matrixModPos { background: rgba(116,196,101,0.12); color: #3d8a2f; }
+.matrixNeg { background: rgba(255,119,41,0.15); color: #E5631A; }
+.matrixLow { background: rgba(26,27,36,0.04); color: rgba(26,27,36,0.55); }
+
+.corrNote {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 0.72rem;
+  color: rgba(26,27,36,0.55);
+  margin-top: 16px;
+  font-weight: 300;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────── */
+.emptyState {
+  text-align: center;
+  padding: 48px 32px;
+  border: 2px dashed rgba(26,27,36,0.12);
+}
+
+.emptyStateText {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(26,27,36,0.55);
+}
+
+/* ── INFERENTIAL STATS ───────────────────────────────── */
+.inferGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.inferTitle {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(26,27,36,0.15);
+}
+
+.inferSubtitle {
+  color: rgba(26,27,36,0.55);
+}
+
+.inferNote {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 0.7rem;
+  color: rgba(26,27,36,0.55);
+  margin-top: 12px;
+  font-weight: 300;
+}
+
+/* ── AZURA PANEL ─────────────────────────────────────── */
+.azuraPanel {
+  background: #1A1B24;
+  border: 5px solid #1A1B24;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.azuraId {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.azuraGlyph {
+  width: 56px;
+  height: 56px;
+  background: #5168FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 3px solid rgba(255,255,255,0.2);
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.azuraNameLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5168FF;
+}
+
+.azuraOutputLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 12px;
+}
+
+.azuraInterpretation {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-weight: 300;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  border-left: 3px solid #5168FF;
+  padding-left: 16px;
+}
+
+.azuraFindings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.findingTag {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 2px solid;
+}
+
+.findingTagSig { border-color: #74C465; color: #74C465; }
+.findingTagWarn { border-color: #FF7729; color: #FF7729; }
+.findingTagInfo { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); }
+
+/* ── TOAST ───────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #1A1B24;
+  color: #fff;
+  border: 3px solid #74C465;
+  box-shadow: 6px 6px 0 #74C465;
+  padding: 16px 24px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 700;
+  transform: translateY(120px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.toastShow {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── CSV TEXTAREA ────────────────────────────────────── */
+.csvTextarea {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.82rem;
+  padding: 12px 14px;
+  border: 2px solid rgba(26,27,36,0.2);
+  border-radius: 0;
+  background: #fff;
+  color: #1A1B24;
+  outline: none;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  white-space: pre-wrap;
+  word-break: break-all;
+  box-sizing: border-box;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.csvTextarea:focus {
+  border-color: #1A1B24;
+  box-shadow: 3px 3px 0 rgba(26,27,36,0.1);
+}
+
+.csvTextarea::placeholder {
+  color: rgba(26,27,36,0.3);
+}
+
+/* ── CHECKBOX ROW ────────────────────────────────────── */
+.checkboxRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(26,27,36,0.1);
+}
+
+/* ── FILE INPUT ──────────────────────────────────────── */
+.fileInput {
+  font-family: var(--font-mono, 'Space Mono', monospace);
+  font-size: 0.78rem;
+  padding: 8px 0;
+  color: #1A1B24;
+  cursor: pointer;
+}
+
+.fileInput::file-selector-button {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: #1A1B24;
+  color: #fff;
+  border: 2px solid #1A1B24;
+  cursor: pointer;
+  margin-right: 12px;
+  border-radius: 0;
+}
+
+.fileInput::file-selector-button:hover {
+  background: #2d2e3d;
+}
+
+/* ── CHART SINGLE ────────────────────────────────────── */
+.chartSingle {
+  background: #fff;
+  border: 2px solid rgba(26,27,36,0.15);
+  box-shadow: 0 2px 8px rgba(26,27,36,0.06);
+  padding: 24px;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+    padding-top: 56px;
+  }
+
+  .headerBar {
+    display: none;
+  }
+
+  .entryPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .chartGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .inferGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .inputRow {
+    grid-template-columns: 1fr;
+  }
+
+  .azuraPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .azuraId {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .content {
+    padding: 16px 16px 48px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 400px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
