@@ -962,7 +962,7 @@ export default function ResearchPage() {
                 <div className={styles.azuraNameLabel}>Azura</div>
               </div>
               <div>
-                <div className={styles.azuraOutputLabel}>// Automated Statistical Interpretation</div>
+                <div className={styles.azuraOutputLabel}>{'// Automated Statistical Interpretation'}</div>
                 <div className={styles.azuraInterpretation}>{azuraText}</div>
                 <div className={styles.azuraFindings}>
                   {azuraFindings.map((f, i) => (
