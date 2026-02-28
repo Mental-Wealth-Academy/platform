@@ -159,6 +159,7 @@ export default function ResearchPage() {
   const [csvText, setCsvText] = useState('');
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
+  const [parsing, setParsing] = useState(false);
 
   // Manual mode
   const [schemaLocked, setSchemaLocked] = useState(false);
@@ -221,12 +222,24 @@ export default function ResearchPage() {
     showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES — +${data.length * 5} SHARDS`);
   };
 
+  const parseAndLoad = useCallback((text: string) => {
+    setParsing(true);
+    // Defer heavy parsing so UI can show loading state first
+    setTimeout(() => {
+      const { columns: cols, rows: data } = parseCsv(text);
+      if (cols.length === 0 || data.length === 0) {
+        showToast('COULD NOT PARSE CSV — CHECK FORMAT');
+      } else {
+        loadData(cols, data);
+      }
+      setParsing(false);
+    }, 0);
+  }, [showToast]);
+
   const handleCsvImport = () => {
     const text = csvText.trim();
     if (!text) { showToast('PASTE CSV DATA FIRST'); return; }
-    const { columns: cols, rows: data } = parseCsv(text);
-    if (cols.length === 0 || data.length === 0) { showToast('COULD NOT PARSE CSV — CHECK FORMAT'); return; }
-    loadData(cols, data);
+    parseAndLoad(text);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,9 +249,7 @@ export default function ResearchPage() {
     reader.onload = (ev) => {
       const text = ev.target?.result as string;
       setCsvText(text);
-      const { columns: cols, rows: data } = parseCsv(text);
-      if (cols.length > 0 && data.length > 0) loadData(cols, data);
-      else showToast('COULD NOT PARSE FILE — CHECK FORMAT');
+      parseAndLoad(text);
     };
     reader.readAsText(file);
   };
@@ -514,6 +525,9 @@ export default function ResearchPage() {
             <span className={styles.logoText}>MWA</span>
             <span className={styles.logoTag}>Statistical Workbench</span>
           </div>
+          <div className={styles.headerCenter}>
+            <button className={styles.btnHeaderDemo} onClick={loadDemo}>LOAD DEMO DATA</button>
+          </div>
           <div className={styles.headerRight}>
             <div className={styles.headerStat}>
               Dataset
@@ -561,13 +575,11 @@ export default function ResearchPage() {
                         rows={6}
                       />
                     </div>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Or Upload .csv File</label>
-                      <input ref={fileRef} type="file" accept=".csv,.tsv,.txt" className={styles.fileInput} onChange={handleFileUpload} />
-                    </div>
                     <div className={styles.buttonRow}>
-                      <button className={styles.btnPrimary} onClick={handleCsvImport}>IMPORT CSV</button>
-                      <button className={styles.btnOutline} onClick={loadDemo}>LOAD DEMO DATA</button>
+                      <button className={styles.btnPrimary} onClick={handleCsvImport} disabled={parsing}>
+                        {parsing ? 'PARSING...' : 'LOAD DATA'}
+                      </button>
+                      <input ref={fileRef} type="file" accept=".csv,.tsv,.txt" className={styles.fileInput} onChange={handleFileUpload} />
                     </div>
                   </div>
                 ) : (

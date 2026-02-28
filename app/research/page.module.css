@@ -52,6 +52,31 @@
   padding: 2px 8px;
 }
 
+.headerCenter {
+  display: flex;
+  align-items: center;
+}
+
+.btnHeaderDemo {
+  padding: 8px 20px;
+  background: transparent;
+  color: #74C465;
+  border: 2px solid #74C465;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+}
+
+.btnHeaderDemo:hover {
+  background: #74C465;
+  color: #1A1B24;
+}
+
 .headerRight {
   display: flex;
   align-items: center;
@@ -803,6 +828,10 @@
   }
 
   .headerBar {
+    display: none;
+  }
+
+  .headerCenter {
     display: none;
   }
 
