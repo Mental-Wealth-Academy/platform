@@ -791,7 +791,7 @@ export default function AccordionJournalCard({
       >
         <div className={styles.cardFaceLeft}>
           <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
-            {isSealed ? 'Sealed' : `Week ${weekNumber}`}
+            {isSealed ? 'Sealed' : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
           </div>
           <div className={styles.cardTitleGroup}>
             <h3 className={styles.cardTitle}>{weekTitle}</h3>

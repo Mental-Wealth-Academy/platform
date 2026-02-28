@@ -90,12 +90,60 @@ export default function TasksPage() {
               </div>
               <div className={styles.journalCards}>
                 <AccordionJournalCard
+                  weekNumber={0}
+                  weekTitle="Introduction: Reading"
+                />
+                <AccordionJournalCard
                   weekNumber={1}
                   weekTitle="Recovering a Sense of Safety"
                 />
                 <AccordionJournalCard
                   weekNumber={2}
                   weekTitle="Recovering a Sense of Identity"
+                />
+                <AccordionJournalCard
+                  weekNumber={3}
+                  weekTitle="Recovering a Sense of Power"
+                />
+                <AccordionJournalCard
+                  weekNumber={4}
+                  weekTitle="Recovering a Sense of Integrity"
+                />
+                <AccordionJournalCard
+                  weekNumber={5}
+                  weekTitle="Recovering a Sense of Possibility"
+                />
+                <AccordionJournalCard
+                  weekNumber={6}
+                  weekTitle="Recovering a Sense of Abundance"
+                />
+                <AccordionJournalCard
+                  weekNumber={7}
+                  weekTitle="Recovering a Sense of Connection"
+                />
+                <AccordionJournalCard
+                  weekNumber={8}
+                  weekTitle="Recovering a Sense of Strength"
+                />
+                <AccordionJournalCard
+                  weekNumber={9}
+                  weekTitle="Recovering a Sense of Compassion"
+                />
+                <AccordionJournalCard
+                  weekNumber={10}
+                  weekTitle="Recovering a Sense of Self-Protection"
+                />
+                <AccordionJournalCard
+                  weekNumber={11}
+                  weekTitle="Recovering a Sense of Autonomy"
+                />
+                <AccordionJournalCard
+                  weekNumber={12}
+                  weekTitle="Recovering a Sense of Faith"
+                />
+                <AccordionJournalCard
+                  weekNumber={13}
+                  weekTitle="Epilogue"
                 />
               </div>
             </div>
