@@ -1,442 +1,179 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { providers } from 'ethers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
-import MintModal from '@/components/mint-modal/MintModal';
-import StillTutorial, { TutorialStep } from '@/components/still-tutorial/StillTutorial';
-import { AzuraPowerIndicator } from '@/components/soul-gems/SoulGemDisplay';
-import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
-import ProposalCard from '@/components/proposal-card/ProposalCard';
-import ProposalDetailsModal from '@/components/proposal-card/ProposalDetailsModal';
-import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
-import GuyTutorial, { GuyStep } from '@/components/voting/GuyTutorial';
-import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
-import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
-import {
-  fetchProposal,
-  ProposalStatus
-} from '@/lib/azura-contract';
+import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
+import { SurveysPageSkeleton } from '@/components/skeleton/Skeleton';
 import styles from './page.module.css';
 
-interface ProposalReview {
-  decision: 'approved' | 'rejected';
-  reasoning: string;
-  tokenAllocation: number | null;
-  scores: {
-    clarity: number;
-    impact: number;
-    feasibility: number;
-    budget: number;
-    ingenuity: number;
-    chaos: number;
-  } | null;
-  reviewedAt: string;
-  onChainProposalId: string | null;
-}
+function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState('');
 
-interface DatabaseProposal {
-  id: string;
-  title: string;
-  proposalMarkdown: string;
-  status: 'pending_review' | 'approved' | 'rejected' | 'active' | 'completed';
-  walletAddress: string;
-  createdAt: string;
-  onChainProposalId: string | null;
-  onChainTxHash: string | null;
-  user: {
-    username: string | null;
-    avatarUrl: string | null;
-  };
-  review: ProposalReview | null;
-}
-
-interface MergedProposal extends DatabaseProposal {
-  onChainData?: {
-    forVotes: string;
-    againstVotes: string;
-    votingDeadline: number;
-    azuraLevel: number;
-    executed: boolean;
-  };
-}
-
-const getTutorialSteps = (): TutorialStep[] => [
-  {
-    message: 'Hey there! Welcome to the Decision Room. I\'m Azura, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
-    emotion: 'happy',
-  },
-  {
-    message: 'Got an idea? Submit it and I\'ll give it a thoughtful read. I check for clarity, positive impact, and whether it\'s doable. Clear proposals help everyone feel heard and understood.',
-    emotion: 'happy',
-    targetElement: '[data-tutorial-target="voting-stages"]',
-  },
-  {
-    message: 'Once a proposal passes my vibe check, it goes to the whole community. Your voice matters here—every vote helps shape what we build together. Collective wisdom is powerful.',
-    emotion: 'happy',
-    targetElement: '[data-tutorial-target="admin-room"]',
-  },
-  {
-    message: 'Each proposal is someone\'s way of saying "I care about this community." Whether it passes or not, putting ideas out there takes courage. We celebrate that energy.',
-    emotion: 'confused',
-    targetElement: '[data-tutorial-target="submission"]',
-  },
-  {
-    message: 'This space is about us supporting each other\'s growth. You bring the ideas, I help nurture them, and together we make something meaningful. Ready to participate?',
-    emotion: 'happy',
-  },
-];
-
-const getGuyTutorialSteps = (): GuyStep[] => [
-  {
-    message: "Hey! I'm Guy. Let me break down these three boxes for you. They're the core of how Mental Wealth Academy works.",
-  },
-  {
-    message: "Treasury is the shared reserve. When the community invests together, it grows. An autonomous bot compounds returns so the fund works even while you sleep.",
-  },
-  {
-    message: "Pods are shared budgets for things that matter — wellness programs, community infrastructure, initiatives that build resilience. Governance proposals decide where these funds flow.",
-  },
-  {
-    message: "Rewards are what grow back to you. The more you contribute to shared resources, the more the whole community grows. That's mental wealth.",
-  },
-];
-
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
-const GOV_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS || '0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F';
-const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
-const AZURA_ADDRESS = '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
-
-export default function VotingPage() {
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [proposals, setProposals] = useState<MergedProposal[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedProposal, setSelectedProposal] = useState<MergedProposal | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isContentLoading, setIsContentLoading] = useState(true);
-  const [showMintModal, setShowMintModal] = useState(false);
-  const [showGuyDialogue, setShowGuyDialogue] = useState(false);
-  const [showDemo, setShowDemo] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-    // Show skeleton briefly, then reveal content
-    const timer = setTimeout(() => {
-      setIsContentLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    fetchProposals();
-  }, []);
-
-  const fetchProposals = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Fetch reviewed proposals from database
-      const dbResponse = await fetch('/api/voting/proposals');
-      if (!dbResponse.ok) {
-        throw new Error('Failed to fetch proposals from database');
-      }
-
-      const dbData = await dbResponse.json();
-      const dbProposals: DatabaseProposal[] = dbData.proposals || [];
-
-      // For proposals with on_chain_proposal_id, fetch on-chain data
-      const mergedProposals: MergedProposal[] = await Promise.all(
-        dbProposals.map(async (proposal) => {
-          // If proposal has on-chain ID, fetch on-chain data
-          if (
-            proposal.review?.onChainProposalId &&
-            (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
-          ) {
-            try {
-              // Use wallet provider if available, otherwise fall back to public RPC
-              const provider = typeof window.ethereum !== 'undefined'
-                ? new providers.Web3Provider(window.ethereum)
-                : new providers.JsonRpcProvider('https://mainnet.base.org');
-              const onChainProposal = await fetchProposal(
-                CONTRACT_ADDRESS,
-                parseInt(proposal.review.onChainProposalId),
-                provider as providers.Web3Provider
-              );
-
-              return {
-                ...proposal,
-                onChainData: {
-                  forVotes: onChainProposal.forVotes,
-                  againstVotes: onChainProposal.againstVotes,
-                  votingDeadline: onChainProposal.votingDeadline,
-                  azuraLevel: onChainProposal.azuraLevel,
-                  executed: onChainProposal.executed,
-                },
-              };
-            } catch (error) {
-              console.error(`Error fetching on-chain data for proposal ${proposal.id}:`, error);
-              // Continue without on-chain data
-            }
-          }
-
-          return proposal as MergedProposal;
-        })
-      );
-
-      setProposals(mergedProposals);
-    } catch (error) {
-      console.error('Error fetching proposals:', error);
-      setError('Failed to load proposals');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTutorialComplete = () => {
-    localStorage.setItem('hasSeenAdminTutorial', 'true');
-    setShowTutorial(false);
-  };
-
-  const handleViewDetails = (proposalId: string) => {
-    const proposal = proposals.find((p) => p.id === proposalId);
-    if (proposal) {
-      setSelectedProposal(proposal);
-      setIsModalOpen(true);
-    }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setFileName(file ? file.name : '');
   };
 
   return (
-    <>
-      <StillTutorial
-        steps={getTutorialSteps()}
-        isOpen={showTutorial}
-        onClose={() => setShowTutorial(false)}
-        onComplete={handleTutorialComplete}
-        title="Voting Guide"
-        showProgress={true}
-      />
-      <div className={styles.pageLayout}>
-        <SideNavigation />
-        <main className={styles.page}>
-        <div className={styles.content}>
-          {isContentLoading ? (
-            <VotingPageSkeleton />
-          ) : (
-          <>
-          <div className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-            <div className={styles.heroBg}><CyberpunkDataViz /></div>
-            <header className={styles.header}>
-              <div className={styles.headerContent}>
-                <div className={styles.headerText}>
-                  <p className={styles.eyebrow}>MWA • Oracle Network</p>
-                  <h1 className={styles.title}>Community Home</h1>
-                  <p className={styles.subtitle}>
-                    Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
-                  </p>
-                  <div className={styles.heroActions}>
-                    <button
-                      className={styles.secondaryCta}
-                      onClick={() => setShowGuyDialogue(true)}
-                      type="button"
-                    >
-                      Explain
-                    </button>
-                    <button
-                      className={styles.primaryCta}
-                      onClick={() => setIsSubmitModalOpen(true)}
-                      type="button"
-                    >
-                      Proposal
-                    </button>
-                  </div>
-                </div>
-                {/* Stats Grid - Bento Grid Style Top Right */}
-                <div className={styles.statsGrid}>
-                  {/* Azura Power Indicator */}
-                  <AzuraPowerIndicator 
-                    soulGems="40000"
-                    walletAddress={AZURA_ADDRESS}
-                    governanceTokenAddress={GOV_TOKEN_ADDRESS}
-                  />
-
-                  {/* Treasury Display */}
-                  <TreasuryDisplay
-                    contractAddress={CONTRACT_ADDRESS}
-                    usdcAddress={USDC_ADDRESS}
-                  />
-                </div>
-              </div>
-            </header>
-          </div>
-
-          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-
-          {/* Fund Pods */}
-          <section className={styles.podGrid}>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🪵</div>
-              <h3 className={styles.podTitle}>Treasury</h3>
-              <p className={styles.podDesc}>A shared reserve that grows when the community invests together</p>
-              <span className={styles.podAction}>View →</span>
-            </div>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🏝️</div>
-              <h3 className={styles.podTitle}>Pods</h3>
-              <p className={styles.podDesc}>Shared budgets for wellness, infrastructure, and community initiatives</p>
-              <span className={styles.podAction}>Deposit →</span>
-            </div>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🌳</div>
-              <h3 className={styles.podTitle}>Rewards</h3>
-              <p className={styles.podDesc}>Earn from contributing to shared resources and collective growth</p>
-              <span className={styles.podAction}>Track →</span>
-            </div>
-          </section>
-
-          {/* Proposals Section */}
-          <section className={styles.proposalsSection}>
-            <div className={styles.proposalsHeader}>
-              <h2 className={styles.proposalsHeaderTitle}>Community Proposals</h2>
-            </div>
-            {loading ? (
-              <div className={styles.proposalsGrid}>
-                {[...Array(3)].map((_, i) => (
-                  <ProposalCardSkeleton key={i} />
-                ))}
-              </div>
-            ) : proposals.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <h3>No proposals yet</h3>
-                <p>Be the first to submit a proposal to the community!</p>
-              </div>
-            ) : error ? (
-              <div className={styles.errorState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <h3>Error Loading Proposals</h3>
-                <p>{error}</p>
-                <button onClick={() => window.location.reload()} className={styles.retryButton} type="button">
-                  Retry
-                </button>
-              </div>
-            ) : (
-              <div className={styles.proposalsGrid} data-tutorial-target="submission">
-                {proposals.map((proposal) => (
-                  <div key={proposal.id} className={styles.proposalCardContainer}>
-                    <ProposalCard
-                      id={proposal.id}
-                      title={proposal.title}
-                      proposalMarkdown={proposal.proposalMarkdown}
-                      status={proposal.status}
-                      walletAddress={proposal.walletAddress}
-                      createdAt={proposal.createdAt}
-                      user={proposal.user}
-                      review={proposal.review}
-                      onViewDetails={handleViewDetails}
-                      showAvatar={false}
-                      onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
-                      onChainData={proposal.onChainData || null}
-                    />
-                    
-                    {/* Show on-chain transaction info */}
-                    {proposal.onChainTxHash && (
-                      <div className={styles.onChainInfo}>
-                        <div className={styles.onChainBadge}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-                            <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-                            <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-                          </svg>
-                          <span>Recorded Transparently</span>
-                        </div>
-                        <a 
-                          href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.txLink}
-                        >
-                          View Transaction →
-                        </a>
-                      </div>
-                    )}
-                    
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-          </>
-          )}
-        </div>
-      </main>
+    <div className={`${styles.artworkSection} ${isLoaded ? styles.artworkSectionLoaded : ''}`}>
+      <div className={styles.journalHeader}>
+        <span className={styles.sectionLabel}>Creative Expression</span>
+        <h2 className={styles.sectionTitle}>Artwork</h2>
       </div>
-      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
-
-      {selectedProposal && (
-        <ProposalDetailsModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedProposal(null);
-          }}
-          proposal={selectedProposal}
-          onChainProposalId={selectedProposal.review?.onChainProposalId ? parseInt(selectedProposal.review.onChainProposalId) : null}
-          contractAddress={CONTRACT_ADDRESS}
-          onVoted={fetchProposals}
-        />
-      )}
-
-      <SubmitProposalModal
-        isOpen={isSubmitModalOpen}
-        onClose={() => setIsSubmitModalOpen(false)}
-        onSuccess={fetchProposals}
-      />
-
-      <GuyTutorial
-        steps={getGuyTutorialSteps()}
-        isOpen={showGuyDialogue}
-        onClose={() => setShowGuyDialogue(false)}
-        title="Meet $MWG!"
-        showProgress={true}
-      />
-
-      {showDemo && (
-        <div className={styles.demoOverlay} onClick={() => setShowDemo(false)}>
-          <div className={styles.demoContainer} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.demoHeader}>
-              <span className={styles.demoLabel}>DEMO // TRANSMISSION</span>
-              <button
-                className={styles.demoClose}
-                onClick={() => setShowDemo(false)}
-                type="button"
-                aria-label="Close demo"
-              >
-                &times;
-              </button>
-            </div>
-            <div className={styles.demoVideoWrapper}>
-              <iframe
-                src="https://www.youtube.com/embed/_i2itVBQSX4?autoplay=1&mute=1"
-                title="Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className={styles.demoVideo}
-              />
-            </div>
-            <div className={styles.demoScanline} />
-          </div>
+      <div className={styles.artworkCard}>
+        <p className={styles.artworkDesc}>
+          Seal all 12 weeks then upload a piece of art that represents the new you.
+        </p>
+        <div
+          className={styles.artworkDropzone}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className={styles.artworkFileInput}
+            onChange={handleFileChange}
+          />
+          <span className={styles.artworkDropzoneIcon}>+</span>
+          <span className={styles.artworkDropzoneText}>
+            {fileName || 'Click to select an image'}
+          </span>
+          <span className={styles.artworkDropzoneHint}>PNG, JPG, or GIF up to 10 MB</span>
         </div>
-      )}
-    </>
+        <button className={styles.artworkSubmit} type="button">
+          Submit Artwork
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function TasksPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      setTimeout(() => setIsLoaded(true), 100);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className={styles.pageLayout}>
+      <SideNavigation />
+      <main className={styles.content}>
+        {isLoading ? (
+          <SurveysPageSkeleton />
+        ) : (
+          <>
+            {/* Hero Pill */}
+            <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
+              <Image
+                src="https://i.imgur.com/HFjHyUZ.png"
+                alt="Azura"
+                width={40}
+                height={40}
+                className={styles.heroPillAvatar}
+                unoptimized
+              />
+              <span className={styles.heroPillText}>For those seeking something more</span>
+            </div>
+
+            {/* Course Intro */}
+            <div className={`${styles.courseIntro} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
+              <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
+              <h2 className={styles.courseTitle}>Exploring The Self</h2>
+              <p className={styles.courseDesc}>
+                A 12-week guided journey inspired by The Artist&apos;s Way. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them at your own pace.
+              </p>
+              <div className={styles.courseBanner}>
+                <Image
+                  src="https://i.imgur.com/ckhi8jC.jpeg"
+                  alt="Exploring The Self"
+                  width={900}
+                  height={240}
+                  className={styles.courseBannerImg}
+                  unoptimized
+                />
+              </div>
+            </div>
+
+            {/* Journal Section */}
+            <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
+              <div className={styles.journalHeader}>
+                <span className={styles.sectionLabel}>Weekly Workbooks</span>
+                <h2 className={styles.sectionTitle}>12-Week Pathway</h2>
+              </div>
+              <div className={styles.journalCards}>
+                <AccordionJournalCard
+                  weekNumber={0}
+                  weekTitle="Introduction: Reading"
+                />
+                <AccordionJournalCard
+                  weekNumber={1}
+                  weekTitle="Recovering a Sense of Safety"
+                />
+                <AccordionJournalCard
+                  weekNumber={2}
+                  weekTitle="Recovering a Sense of Identity"
+                />
+                <AccordionJournalCard
+                  weekNumber={3}
+                  weekTitle="Recovering a Sense of Power"
+                />
+                <AccordionJournalCard
+                  weekNumber={4}
+                  weekTitle="Recovering a Sense of Integrity"
+                />
+                <AccordionJournalCard
+                  weekNumber={5}
+                  weekTitle="Recovering a Sense of Possibility"
+                />
+                <AccordionJournalCard
+                  weekNumber={6}
+                  weekTitle="Recovering a Sense of Abundance"
+                />
+                <AccordionJournalCard
+                  weekNumber={7}
+                  weekTitle="Recovering a Sense of Connection"
+                />
+                <AccordionJournalCard
+                  weekNumber={8}
+                  weekTitle="Recovering a Sense of Strength"
+                />
+                <AccordionJournalCard
+                  weekNumber={9}
+                  weekTitle="Recovering a Sense of Compassion"
+                />
+                <AccordionJournalCard
+                  weekNumber={10}
+                  weekTitle="Recovering a Sense of Self-Protection"
+                />
+                <AccordionJournalCard
+                  weekNumber={11}
+                  weekTitle="Recovering a Sense of Autonomy"
+                />
+                <AccordionJournalCard
+                  weekNumber={12}
+                  weekTitle="Recovering a Sense of Faith"
+                />
+                <AccordionJournalCard
+                  weekNumber={13}
+                  weekTitle="Epilogue"
+                />
+              </div>
+            </div>
+
+            {/* Artwork Section */}
+            <ArtworkSection isLoaded={isLoaded} />
+          </>
+        )}
+      </main>
+    </div>
   );
 }
