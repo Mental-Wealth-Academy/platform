@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
-import { SurveysPageSkeleton } from '@/components/skeleton/Skeleton';
 import styles from './page.module.css';
 
 function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
@@ -51,26 +50,17 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
   );
 }
 
-export default function TasksPage() {
-  const [isLoading, setIsLoading] = useState(true);
+export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      setTimeout(() => setIsLoaded(true), 100);
-    }, 800);
-    return () => clearTimeout(timer);
+    requestAnimationFrame(() => setIsLoaded(true));
   }, []);
 
   return (
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content}>
-        {isLoading ? (
-          <SurveysPageSkeleton />
-        ) : (
-          <>
             {/* Hero Pill */}
             <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
               <Image
@@ -171,8 +161,6 @@ export default function TasksPage() {
 
             {/* Artwork Section */}
             <ArtworkSection isLoaded={isLoaded} />
-          </>
-        )}
       </main>
     </div>
   );
