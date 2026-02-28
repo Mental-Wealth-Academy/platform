@@ -432,7 +432,7 @@ export const CoursesShowcase: React.FC = () => {
           <div className={styles.programHighlights}>
             <div className={styles.highlight}>
               <span className={`${styles.highlightNumber} ${styles.highlightNumberBlue}`}>12</span>
-              <span className={styles.highlightLabel}>Meditations</span>
+              <span className={styles.highlightLabel}>Activities</span>
             </div>
             <div className={styles.highlight}>
               <span className={`${styles.highlightNumber} ${styles.highlightNumberOrange}`}>90</span>

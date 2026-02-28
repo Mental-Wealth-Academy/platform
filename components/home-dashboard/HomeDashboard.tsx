@@ -8,7 +8,7 @@ import styles from './HomeDashboard.module.css';
 
 const tabs = [
   'Your Impact',
-  'Meditations',
+  'Activities',
   'Quests & Learning',
   'Voting & Governance',
 ] as const;
@@ -293,7 +293,7 @@ export const HomeDashboard: React.FC = () => {
       <div className={styles.panelWrap}>
         {activeTab === 'Voting & Governance' && <VotingPanel />}
         {activeTab === 'Your Impact' && <ImpactPanel />}
-        {activeTab === 'Meditations' && <TasksPanel />}
+        {activeTab === 'Activities' && <TasksPanel />}
         {activeTab === 'Quests & Learning' && <QuestsPanel />}
         </div>
       </div>
