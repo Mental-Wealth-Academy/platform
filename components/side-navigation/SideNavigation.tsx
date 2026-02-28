@@ -41,8 +41,8 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'tasks', label: 'Activities', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'treasury', label: 'Treasury', href: '/treasury', icon: '/icons/treasury.svg' },
-      { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg', badge: 'New', badgeType: 'green' },
-      { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'New', badgeType: 'green' },
+      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/Chapters.svg' },
+      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg' },
     ],
   },
   {
@@ -51,8 +51,8 @@ const navSections: NavSection[] = [
     badge: 'Access With Pro',
     badgeType: 'pro',
     items: [
-      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/Chapters.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
