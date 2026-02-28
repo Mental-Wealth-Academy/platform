@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import { SurveysPageSkeleton } from '@/components/skeleton/Skeleton';
@@ -23,7 +24,7 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
       </div>
       <div className={styles.artworkCard}>
         <p className={styles.artworkDesc}>
-          Share your creative work with the community. Upload drawings, paintings, digital art, or any visual expression of your recovery journey.
+          Seal all 12 weeks then upload a piece of art that represents the new you.
         </p>
         <div
           className={styles.artworkDropzone}
@@ -70,23 +71,33 @@ export default function TasksPage() {
           <SurveysPageSkeleton />
         ) : (
           <>
-            {/* Hero Section */}
-            <header className={styles.hero}>
-              <span className={styles.eyebrow}>Community Resources</span>
-              <h1 className={styles.title}>Meditations</h1>
-              <p className={styles.subtitle}>
-                Structured weekly journal prompts and creative recovery exercises. Complete activities, reflect, and seal your progress on-chain.
+            {/* Hero Pill */}
+            <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
+              <Image
+                src="https://i.imgur.com/HFjHyUZ.png"
+                alt="Azura"
+                width={40}
+                height={40}
+                className={styles.heroPillAvatar}
+                unoptimized
+              />
+              <span className={styles.heroPillText}>For those seeking something more</span>
+            </div>
+
+            {/* Course Intro */}
+            <div className={`${styles.courseIntro} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
+              <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
+              <h2 className={styles.courseTitle}>Exploring The Self</h2>
+              <p className={styles.courseDesc}>
+                A 12-week guided pathway inspired by The Artist&apos;s Way. Each week focuses on recovering a core sense of self — from safety and identity to autonomy and faith. Complete readings, journal prompts, and creative exercises at your own pace, then seal your progress on-chain.
               </p>
-            </header>
+            </div>
 
-            {/* Artwork Section */}
-            <ArtworkSection isLoaded={isLoaded} />
-
-            {/* Meditations Journal Section */}
+            {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
               <div className={styles.journalHeader}>
-                <span className={styles.sectionLabel}>Creative Recovery</span>
-                <h2 className={styles.sectionTitle}>Meditations Journal</h2>
+                <span className={styles.sectionLabel}>Weekly Workbooks</span>
+                <h2 className={styles.sectionTitle}>12-Week Pathway</h2>
               </div>
               <div className={styles.journalCards}>
                 <AccordionJournalCard
@@ -147,6 +158,9 @@ export default function TasksPage() {
                 />
               </div>
             </div>
+
+            {/* Artwork Section */}
+            <ArtworkSection isLoaded={isLoaded} />
           </>
         )}
       </main>

@@ -13,39 +13,43 @@
   padding: 40px 24px;
 }
 
-/* Hero Section */
-.hero {
+/* Hero Pill */
+.heroPill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 8px 24px 8px 8px;
+  background: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 999px;
+  box-shadow: 3px 3px 0 #1A1D33;
   margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.eyebrow {
-  display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 8px;
+.heroPillLoaded {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: #000000;
-  margin: 0 0 12px 0;
-  letter-spacing: -0.02em;
+.heroPillAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #1A1D33;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.subtitle {
-  font-family: 'Poppins', sans-serif;
+.heroPillText {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
-  font-weight: 300;
-  color: rgba(0, 0, 0, 0.7);
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0;
+  font-weight: 500;
+  color: #1A1D33;
+  white-space: nowrap;
 }
 
 /* Filter Tabs */
@@ -89,6 +93,47 @@
   background: var(--color-primary, #5168FF);
 }
 
+/* Course Intro */
+.courseIntro {
+  text-align: center;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.courseIntroLoaded {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.courseLabel {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary, #5168FF);
+  margin-bottom: 6px;
+}
+
+.courseTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 12px 0;
+}
+
+.courseDesc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.7;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
 /* Artwork Section */
 .artworkSection {
   margin-bottom: 32px;
@@ -106,15 +151,17 @@
   border: 2px solid #1A1D33;
   border-radius: 4px;
   box-shadow: 3px 3px 0 #1A1D33;
+  text-align: center;
 }
 
 .artworkDesc {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 300;
-  color: rgba(0, 0, 0, 0.7);
-  line-height: 1.6;
-  margin: 0 0 16px 0;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.7;
+  margin: 0 auto 16px;
+  max-width: 500px;
 }
 
 .artworkDropzone {
@@ -297,8 +344,13 @@
     padding: 24px 16px;
   }
 
-  .title {
-    font-size: 26px;
+  .heroPill {
+    gap: 10px;
+    padding: 6px 18px 6px 6px;
+  }
+
+  .heroPillText {
+    font-size: 13px;
   }
 
   .filterTabs {
@@ -338,16 +390,17 @@
 }
 
 @media (max-width: 480px) {
-  .hero {
+  .heroPill {
     margin-bottom: 24px;
   }
 
-  .title {
-    font-size: 22px;
+  .heroPillAvatar {
+    width: 32px;
+    height: 32px;
   }
 
-  .subtitle {
-    font-size: 13px;
+  .heroPillText {
+    font-size: 12px;
   }
 
   .filterTabs {
