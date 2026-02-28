@@ -134,6 +134,22 @@
   margin: 0 auto;
 }
 
+.courseBanner {
+  width: 75%;
+  margin: 24px auto 0;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid #1A1D33;
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.courseBannerImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
 /* Artwork Section */
 .artworkSection {
   margin-bottom: 32px;

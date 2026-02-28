@@ -89,8 +89,18 @@ export default function TasksPage() {
               <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
               <h2 className={styles.courseTitle}>Exploring The Self</h2>
               <p className={styles.courseDesc}>
-                A 12-week guided pathway inspired by The Artist&apos;s Way. Each week focuses on recovering a core sense of self — from safety and identity to autonomy and faith. Complete readings, journal prompts, and creative exercises at your own pace, then seal your progress on-chain.
+                A 12-week guided journey inspired by The Artist&apos;s Way. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them at your own pace.
               </p>
+              <div className={styles.courseBanner}>
+                <Image
+                  src="https://i.imgur.com/ckhi8jC.jpeg"
+                  alt="Exploring The Self"
+                  width={900}
+                  height={240}
+                  className={styles.courseBannerImg}
+                  unoptimized
+                />
+              </div>
             </div>
 
             {/* Journal Section */}
