@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useReadContract } from 'wagmi';
 import { useModal } from 'connectkit';
 import styles from './SideNavigation.module.css';
 import AzuraChat from '../azura-chat/AzuraChat';
@@ -58,6 +58,9 @@ const navSections: NavSection[] = [
   },
 ];
 
+const PRO_TOKEN_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F' as const;
+const BALANCE_OF_ABI = [{ type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] }] as const;
+
 const SideNavigation: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -81,6 +84,15 @@ const SideNavigation: React.FC = () => {
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  const { data: proTokenBalance } = useReadContract({
+    address: PRO_TOKEN_ADDRESS,
+    abi: BALANCE_OF_ABI,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+  const isPro = !!proTokenBalance && proTokenBalance > 0n;
 
   // Create server session after wallet connects via ConnectKit
   const createSessionForWallet = async (walletAddress: string) => {
@@ -355,7 +367,7 @@ const SideNavigation: React.FC = () => {
               )}
               <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
                 {section.items.map((item) => (
-                  item.requiresPro ? (
+                  item.requiresPro && !isPro ? (
                     <button
                       key={item.id}
                       onClick={() => {
