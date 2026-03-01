@@ -13,6 +13,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Scatter, Bar, Line } from 'react-chartjs-2';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
@@ -940,7 +941,7 @@ export default function ResearchPage() {
             <div className={styles.sectionLabel}>07 — Azura Statistical Interpretation</div>
             <div className={styles.azuraPanel}>
               <div className={styles.azuraId}>
-                <div className={styles.azuraGlyph}>{'\u25C8'}</div>
+                <Image src="https://i.imgur.com/qTEmw8E.png" alt="Azura" width={56} height={56} className={styles.azuraPfp} unoptimized />
                 <div className={styles.azuraNameLabel}>Azura</div>
               </div>
               <div>

@@ -704,6 +704,15 @@
   color: #fff;
 }
 
+.azuraPfp {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid rgba(81,104,255,0.5);
+  margin-bottom: 8px;
+  object-fit: cover;
+}
+
 .azuraNameLabel {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 0.6rem;
