@@ -24,7 +24,7 @@ type ColumnType = 'numeric' | 'categorical';
 interface ColumnDef { name: string; type: ColumnType; }
 type DataRow = Record<string, string | number>;
 
-type ChartType = 'scatter' | 'histogram' | 'bar' | 'line';
+type ChartType = 'scatter' | 'histogram' | 'bar' | 'line' | 'boxplot';
 type TestType = 'ttest' | 'correlation' | 'regression' | 'anova';
 
 // ── Stats Helpers ────────────────────────────────────────
@@ -49,6 +49,93 @@ function pearson(x: number[], y: number[]) {
   return den === 0 ? 0 : num / den;
 }
 
+// ── Distribution Functions ──────────────────────────────
+function lnGamma(z: number): number {
+  const g = 7;
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lnGamma(1 - z);
+  z -= 1;
+  let s = c[0];
+  for (let i = 1; i < g + 2; i++) s += c[i] / (z + i);
+  const t = z + g + 0.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(s);
+}
+
+function betaCF(a: number, b: number, x: number): number {
+  const maxIter = 200;
+  const eps = 3e-14;
+  const qab = a + b, qap = a + 1, qam = a - 1;
+  let c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < 1e-30) d = 1e-30;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m <= maxIter; m++) {
+    const m2 = 2 * m;
+    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+    c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+    d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
+    c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
+    d = 1 / d;
+    const del = d * c; h *= del;
+    if (Math.abs(del - 1) < eps) break;
+  }
+  return h;
+}
+
+function regularizedIncompleteBeta(a: number, b: number, x: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const lnBetaVal = lnGamma(a) + lnGamma(b) - lnGamma(a + b);
+  const front = Math.exp(a * Math.log(x) + b * Math.log(1 - x) - lnBetaVal);
+  if (x > (a + 1) / (a + b + 2)) return 1 - regularizedIncompleteBeta(b, a, 1 - x);
+  return front * betaCF(a, b, x) / a;
+}
+
+function tCDF(t: number, df: number): number {
+  const x = df / (df + t * t);
+  const p = 0.5 * regularizedIncompleteBeta(df / 2, 0.5, x);
+  return t >= 0 ? 1 - p : p;
+}
+
+function fCDF(f: number, d1: number, d2: number): number {
+  if (f <= 0) return 0;
+  const x = d1 * f / (d1 * f + d2);
+  return regularizedIncompleteBeta(d1 / 2, d2 / 2, x);
+}
+
+function pFromT(t: number, df: number): number { return 2 * (1 - tCDF(Math.abs(t), df)); }
+function pFromF(f: number, d1: number, d2: number): number { return 1 - fCDF(f, d1, d2); }
+function formatP(p: number): string { return p < 0.0001 ? '< .0001' : p.toFixed(4); }
+
+// ── Extended Descriptive Stats ──────────────────────────
+function quartile(arr: number[], q: number): number {
+  if (!arr.length) return 0;
+  const sorted = [...arr].sort((a, b) => a - b);
+  const pos = (sorted.length - 1) * q;
+  const lo = Math.floor(pos), hi = Math.ceil(pos);
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+
+function skewness(arr: number[]): number {
+  const n = arr.length;
+  if (n < 3) return 0;
+  const m = mean(arr), s = std(arr);
+  if (s === 0) return 0;
+  return (n / ((n - 1) * (n - 2))) * arr.reduce((a, v) => a + Math.pow((v - m) / s, 3), 0);
+}
+
+function kurtosis(arr: number[]): number {
+  const n = arr.length;
+  if (n < 4) return 0;
+  const m = mean(arr), s = std(arr);
+  if (s === 0) return 0;
+  const sum4 = arr.reduce((a, v) => a + Math.pow((v - m) / s, 4), 0);
+  return ((n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))) * sum4 - (3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3));
+}
+
 function tTest(a: number[], b: number[]) {
   const na = a.length, nb = b.length;
   if (na < 2 || nb < 2) return null;
@@ -59,7 +146,8 @@ function tTest(a: number[], b: number[]) {
   const df = Math.pow(sa * sa / na + sb * sb / nb, 2) / (Math.pow(sa * sa / na, 2) / (na - 1) + Math.pow(sb * sb / nb, 2) / (nb - 1));
   const pooledSD = Math.sqrt(((na - 1) * sa * sa + (nb - 1) * sb * sb) / (na + nb - 2));
   const d = pooledSD > 0 ? (ma - mb) / pooledSD : 0;
-  return { t: round2(t), df: round2(df), d: round2(d), ma: round2(ma), mb: round2(mb), na, nb };
+  const p = pFromT(t, df);
+  return { t: round2(t), df: round2(df), d: round2(d), ma: round2(ma), mb: round2(mb), na, nb, p };
 }
 
 function anova(groups: number[][]) {
@@ -76,8 +164,8 @@ function anova(groups: number[][]) {
   const msBetween = ssBetween / dfBetween;
   const msWithin = ssWithin / dfWithin;
   const f = msBetween / msWithin;
-  const pBracket = f > 5.0 ? '< .01' : f > 3.0 ? '< .05' : '> .05';
-  return { f: round2(f), dfBetween, dfWithin, pBracket, msBetween: round2(msBetween), msWithin: round2(msWithin) };
+  const p = pFromF(f, dfBetween, dfWithin);
+  return { f: round2(f), dfBetween, dfWithin, p, msBetween: round2(msBetween), msWithin: round2(msWithin) };
 }
 
 function inferColumnType(values: string[]): ColumnType {
@@ -188,6 +276,10 @@ export default function ResearchPage() {
 
   const [dragging, setDragging] = useState(false);
 
+  // Azura panel state
+  const [azuraGenerated, setAzuraGenerated] = useState(false);
+  const [azuraRating, setAzuraRating] = useState<'up' | 'down' | null>(null);
+
   const numericCols = columns.filter(c => c.type === 'numeric');
   const categoricalCols = columns.filter(c => c.type === 'categorical');
   const n = rows.length;
@@ -217,6 +309,8 @@ export default function ResearchPage() {
     }
     if (numCols.length >= 2) { setTestVar1(numCols[0]); setTestVar2(numCols[1]); }
     setTestResult(null);
+    setAzuraGenerated(false);
+    setAzuraRating(null);
     showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES`);
   };
 
@@ -320,7 +414,6 @@ export default function ResearchPage() {
       const b = rows.filter(r => String(r[testGroupVar]) === testGroup2).map(r => r[testOutcomeVar]).filter((v): v is number => typeof v === 'number');
       const result = tTest(a, b);
       if (!result) { showToast('NOT ENOUGH DATA IN EACH GROUP'); return; }
-      const pApprox = Math.abs(result.t) > 3 ? '< .001' : Math.abs(result.t) > 2 ? '< .05' : '> .05';
       const dInterp = Math.abs(result.d) >= 0.8 ? 'large' : Math.abs(result.d) >= 0.5 ? 'medium' : 'small';
       setTestResult({
         [`M (${testGroup1})`]: result.ma,
@@ -329,7 +422,7 @@ export default function ResearchPage() {
         [`n (${testGroup2})`]: result.nb,
         't-statistic': result.t,
         'df': result.df,
-        'p (approx.)': pApprox,
+        'p-value': formatP(result.p),
         [`Cohen's d`]: `${result.d} (${dInterp})`,
       });
       setTestLabel(`Independent Samples t-Test: ${testOutcomeVar} by ${testGroupVar}`);
@@ -339,12 +432,14 @@ export default function ResearchPage() {
       if (x.length < 3 || y.length < 3) { showToast('NOT ENOUGH NUMERIC DATA'); return; }
       const minLen = Math.min(x.length, y.length);
       const r = pearson(x.slice(0, minLen), y.slice(0, minLen));
-      const pBracket = Math.abs(r) > 0.7 ? '< .001' : Math.abs(r) > 0.4 ? '< .05' : '> .05';
+      const tStat = minLen > 2 ? r * Math.sqrt((minLen - 2) / (1 - r * r)) : 0;
+      const pVal = minLen > 2 ? pFromT(tStat, minLen - 2) : 1;
       setTestResult({
         'Pearson r': round2(r),
         'r\u00B2': round2(r * r),
         'N (pairs)': minLen,
-        'p (approx.)': pBracket,
+        't-statistic': round2(tStat),
+        'p-value': formatP(pVal),
       });
       setTestLabel(`Pearson Correlation: ${testVar1} \u00D7 ${testVar2}`);
     } else if (testType === 'regression') {
@@ -356,9 +451,13 @@ export default function ResearchPage() {
       const r = pearson(xSlice, ySlice);
       const slopeVal = std(ySlice) !== 0 ? r * (std(ySlice) / (std(xSlice) || 1)) : 0;
       const interceptVal = mean(ySlice) - slopeVal * mean(xSlice);
+      const tSlope = minLen > 2 ? r * Math.sqrt((minLen - 2) / (1 - r * r)) : 0;
+      const pSlope = minLen > 2 ? pFromT(tSlope, minLen - 2) : 1;
       setTestResult({
         [`Intercept (\u03B2\u2080)`]: round2(interceptVal),
         [`Slope (\u03B2\u2081)`]: round2(slopeVal),
+        'Slope t-stat': round2(tSlope),
+        'Slope p-value': formatP(pSlope),
         'Pearson r': round2(r),
         'R\u00B2': `${round2(r * r * 100)}%`,
         'Equation': `\u0176 = ${round2(slopeVal)}x + ${round2(interceptVal)}`,
@@ -378,7 +477,7 @@ export default function ResearchPage() {
         'df (within)': result.dfWithin,
         'MS (between)': result.msBetween,
         'MS (within)': result.msWithin,
-        'p (approx.)': result.pBracket,
+        'p-value': formatP(result.p),
         'Groups': groupNames.join(', '),
       });
       setTestLabel(`One-Way ANOVA: ${testOutcomeVar} by ${testGroupVar}`);
@@ -445,6 +544,64 @@ export default function ResearchPage() {
       return <Line data={{ labels, datasets: [{ label: `${chartY} over ${chartX}`, data: yVals, borderColor: '#5168FF', backgroundColor: 'rgba(81,104,255,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#5168FF', fill: true, tension: 0.3 }] }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: monoFont, size: 10 }, color: '#1A1B24' } } }, scales: { x: { title: { display: true, text: chartX, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } }, y: { title: { display: true, text: chartY, font: { family: buttonFont, size: 10 }, color: tickColor }, grid: { color: gridColor }, ticks: { font: { family: monoFont, size: 9 }, color: tickColor } } } }} />;
     }
 
+    if (chartType === 'boxplot') {
+      if (!chartX || !chartY) return <div className={styles.emptyState}><p className={styles.emptyStateText}>Select a grouping variable (X) and numeric variable (Y)</p></div>;
+      const groups = uniqueVals(chartX);
+      const groupStats = groups.map(g => {
+        const vals = rows.filter(r => String(r[chartX]) === g).map(r => r[chartY]).filter((v): v is number => typeof v === 'number').sort((a, b) => a - b);
+        if (vals.length === 0) return null;
+        return { name: g, min: vals[0], q1: quartile(vals, 0.25), med: median(vals), q3: quartile(vals, 0.75), max: vals[vals.length - 1], n: vals.length };
+      }).filter(Boolean) as { name: string; min: number; q1: number; med: number; q3: number; max: number; n: number }[];
+      if (groupStats.length === 0) return <div className={styles.emptyState}><p className={styles.emptyStateText}>No numeric data for selected groups</p></div>;
+      const globalMin = Math.min(...groupStats.map(g => g.min));
+      const globalMax = Math.max(...groupStats.map(g => g.max));
+      const range = globalMax - globalMin || 1;
+      const pad = range * 0.05;
+      const yMin = globalMin - pad, yMax = globalMax + pad;
+      const yRange = yMax - yMin;
+      const svgW = 600, svgH = 240, leftPad = 50, rightPad = 20, topPad = 10, botPad = 30;
+      const plotW = svgW - leftPad - rightPad, plotH = svgH - topPad - botPad;
+      const boxW = Math.min(60, plotW / groupStats.length * 0.6);
+      const toY = (v: number) => topPad + plotH - ((v - yMin) / yRange) * plotH;
+      const ticks = Array.from({ length: 5 }, (_, i) => yMin + (yRange * i) / 4);
+
+      return (
+        <svg viewBox={`0 0 ${svgW} ${svgH}`} className={styles.boxPlotSvg}>
+          {/* Y-axis ticks */}
+          {ticks.map((t, i) => (
+            <g key={i}>
+              <line x1={leftPad} y1={toY(t)} x2={leftPad + plotW} y2={toY(t)} stroke="rgba(26,27,36,0.08)" strokeWidth={1} />
+              <text x={leftPad - 6} y={toY(t) + 3} textAnchor="end" fill="#6b6890" fontSize={9} fontFamily="'Space Mono', monospace">{round2(t)}</text>
+            </g>
+          ))}
+          {/* Boxes */}
+          {groupStats.map((g, i) => {
+            const cx = leftPad + (plotW / groupStats.length) * (i + 0.5);
+            const color = CHART_COLORS[i % CHART_COLORS.length];
+            return (
+              <g key={g.name}>
+                {/* Whisker line */}
+                <line x1={cx} y1={toY(g.max)} x2={cx} y2={toY(g.min)} stroke={color.border} strokeWidth={1.5} />
+                {/* Whisker caps */}
+                <line x1={cx - boxW * 0.3} y1={toY(g.max)} x2={cx + boxW * 0.3} y2={toY(g.max)} stroke={color.border} strokeWidth={2} />
+                <line x1={cx - boxW * 0.3} y1={toY(g.min)} x2={cx + boxW * 0.3} y2={toY(g.min)} stroke={color.border} strokeWidth={2} />
+                {/* IQR box */}
+                <rect x={cx - boxW / 2} y={toY(g.q3)} width={boxW} height={toY(g.q1) - toY(g.q3)} fill={color.bg} stroke={color.border} strokeWidth={2} />
+                {/* Median line */}
+                <line x1={cx - boxW / 2} y1={toY(g.med)} x2={cx + boxW / 2} y2={toY(g.med)} stroke={color.border} strokeWidth={3} />
+                {/* Group label */}
+                <text x={cx} y={svgH - 8} textAnchor="middle" fill="#1A1B24" fontSize={10} fontFamily="'IBM Plex Mono', monospace" fontWeight={600}>{g.name}</text>
+                {/* N label */}
+                <text x={cx} y={svgH - 19} textAnchor="middle" fill="#6b6890" fontSize={8} fontFamily="'Space Mono', monospace">n={g.n}</text>
+              </g>
+            );
+          })}
+          {/* Y-axis label */}
+          <text x={12} y={topPad + plotH / 2} textAnchor="middle" fill="#6b6890" fontSize={10} fontFamily="'IBM Plex Mono', monospace" transform={`rotate(-90, 12, ${topPad + plotH / 2})`}>{chartY}</text>
+        </svg>
+      );
+    }
+
     return null;
   };
 
@@ -463,27 +620,16 @@ export default function ResearchPage() {
     return `${styles.findingTag} ${styles.findingTagInfo}`;
   };
 
-  // ── Azura Interpretation ──────────────────────────
-  let azuraText = 'Awaiting data input. Paste CSV data, upload a file, or enter rows manually. Once loaded, I will summarize your descriptive statistics, correlation structure, and any tests you run.';
-  let azuraFindings: { cls: string; label: string }[] = [
-    { cls: 'info', label: 'N = 0' },
-    { cls: 'info', label: 'AWAITING INPUT' },
-  ];
-
-  if (n >= 3) {
+  // ── Azura Interpretation (computed only when generated) ──
+  const computeAzuraInterpretation = () => {
+    if (n < 3) return { text: '', findings: [] as { cls: string; label: string }[] };
     const numNames = numericCols.map(c => c.name);
     const catNames = categoricalCols.map(c => c.name);
-
-    // Dataset summary
     let text = `Dataset: N=${n} observations across ${columns.length} variables (${numNames.length} numeric, ${catNames.length} categorical). `;
-
-    // Top 3 numeric descriptives
     const top3 = numNames.slice(0, 3);
     if (top3.length > 0) {
       text += top3.map(c => { const v = colVals(c); return `${c}: M=${round2(mean(v))}, SD=${round2(std(v))}`; }).join('; ') + '. ';
     }
-
-    // Strongest correlation from selected matrix
     if (corrCols.length >= 2) {
       let maxR = 0, maxPair = '';
       for (let i = 0; i < corrCols.length; i++) {
@@ -494,23 +640,43 @@ export default function ResearchPage() {
       }
       if (maxR > 0) text += `Strongest correlation: r(${maxPair})=${round2(maxR)}. `;
     }
-
-    // Last test summary
-    if (testResult && testLabel) {
-      text += `Last test: ${testLabel}. `;
-    }
-
-    // Power warning
+    if (testResult && testLabel) text += `Last test: ${testLabel}. `;
     if (n < 30) text += 'Note: N<30 limits statistical power; interpret with caution.';
-
-    azuraText = text;
-    azuraFindings = [
+    const findings = [
       { cls: 'info', label: `N = ${n}` },
       { cls: 'info', label: `${numNames.length} NUMERIC` },
       { cls: 'info', label: `${catNames.length} CATEGORICAL` },
       { cls: n >= 30 ? 'sig' : 'warn', label: n >= 30 ? 'POWER: ADEQUATE' : 'POWER: LOW (N<30)' },
     ];
-  }
+    return { text, findings };
+  };
+
+  // ── Azura rating localStorage helpers ──
+  const getDatasetHash = () => {
+    const str = rows.map(r => Object.values(r).join(',')).join('|');
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+    return `azura-rating-${hash}`;
+  };
+
+  const handleAzuraGenerate = () => {
+    setAzuraGenerated(true);
+    // Load persisted rating for this dataset
+    try {
+      const saved = localStorage.getItem(getDatasetHash());
+      setAzuraRating(saved === 'up' || saved === 'down' ? saved : null);
+    } catch { setAzuraRating(null); }
+  };
+
+  const handleAzuraRate = (rating: 'up' | 'down') => {
+    const next = azuraRating === rating ? null : rating;
+    setAzuraRating(next);
+    try {
+      if (next) localStorage.setItem(getDatasetHash(), next);
+      else localStorage.removeItem(getDatasetHash());
+    } catch { /* noop */ }
+    showToast(next ? 'FEEDBACK RECORDED' : 'FEEDBACK CLEARED');
+  };
 
   return (
     <>
@@ -699,6 +865,9 @@ export default function ResearchPage() {
                           <div className={styles.statTileLabel}>{col.name}</div>
                           <div className={styles.statTileValue}>{round2(mean(vals))}</div>
                           <div className={styles.statTileSub}>SD: {round2(std(vals))} | Med: {round2(median(vals))}</div>
+                          <div className={styles.statTileSub}>Min: {round2(Math.min(...vals))} | Max: {round2(Math.max(...vals))}</div>
+                          <div className={styles.statTileSub}>Q1: {round2(quartile(vals, 0.25))} | Q3: {round2(quartile(vals, 0.75))}</div>
+                          <div className={styles.statTileSub}>Skew: {round2(skewness(vals))} | Kurt: {round2(kurtosis(vals))}</div>
                         </div>
                       );
                     })}
@@ -712,13 +881,13 @@ export default function ResearchPage() {
           <div>
             <div className={styles.sectionLabel}>04 — Visualizations</div>
             <div className={styles.tabBar}>
-              {(['scatter', 'histogram', 'bar', 'line'] as ChartType[]).map(tab => (
+              {(['scatter', 'histogram', 'bar', 'line', 'boxplot'] as ChartType[]).map(tab => (
                 <button
                   key={tab}
                   className={chartType === tab ? styles.tabBtnActive : styles.tabBtn}
                   onClick={() => setChartType(tab)}
                 >
-                  {tab === 'scatter' ? 'Scatter' : tab === 'histogram' ? 'Histogram' : tab === 'bar' ? 'Bar' : 'Line'}
+                  {tab === 'scatter' ? 'Scatter' : tab === 'histogram' ? 'Histogram' : tab === 'bar' ? 'Bar' : tab === 'line' ? 'Line' : 'Box'}
                 </button>
               ))}
             </div>
@@ -729,7 +898,7 @@ export default function ResearchPage() {
                 <label className={styles.fieldLabel}>X Axis</label>
                 <select className={styles.select} value={chartX} onChange={e => setChartX(e.target.value)}>
                   <option value="">Select column</option>
-                  {(chartType === 'bar' ? columns : numericCols).map(c => (
+                  {(chartType === 'bar' || chartType === 'boxplot' ? columns : numericCols).map(c => (
                     <option key={c.name} value={c.name}>{c.name}</option>
                   ))}
                 </select>
@@ -771,9 +940,10 @@ export default function ResearchPage() {
                   {chartType === 'histogram' && `Distribution of ${chartX || '?'}`}
                   {chartType === 'bar' && `Mean ${chartY || '?'} by ${chartX || '?'}`}
                   {chartType === 'line' && `${chartY || '?'} over ${chartX || '?'}`}
+                  {chartType === 'boxplot' && `${chartY || '?'} by ${chartX || '?'}`}
                 </span>
                 <span className={styles.chartTypeBadge}>
-                  {chartType === 'scatter' ? 'XY' : chartType === 'histogram' ? 'HIST' : chartType === 'bar' ? 'BAR' : 'LINE'}
+                  {chartType === 'scatter' ? 'XY' : chartType === 'histogram' ? 'HIST' : chartType === 'bar' ? 'BAR' : chartType === 'line' ? 'LINE' : 'BOX'}
                 </span>
               </div>
               <div className={styles.chartContainer}>
@@ -924,10 +1094,10 @@ export default function ResearchPage() {
                         </tbody>
                       </table>
                       <p className={styles.inferNote}>
-                        {testType === 'ttest' && "Welch\u2019s t-test; two-tailed. Cohen\u2019s d: small \u2265 0.2, medium \u2265 0.5, large \u2265 0.8."}
-                        {testType === 'correlation' && 'Pearson product-moment correlation. p approximated from |r| thresholds.'}
-                        {testType === 'regression' && 'OLS regression. R\u00B2 = proportion of Y variance explained by X.'}
-                        {testType === 'anova' && 'One-way ANOVA. F-ratio tests equality of group means. p approximated from F thresholds.'}
+                        {testType === 'ttest' && "Welch\u2019s t-test; two-tailed p from t-distribution. Cohen\u2019s d: small \u2265 0.2, medium \u2265 0.5, large \u2265 0.8."}
+                        {testType === 'correlation' && 'Pearson product-moment correlation. p from t-transform: t = r\u221A((n\u22122)/(1\u2212r\u00B2)).'}
+                        {testType === 'regression' && 'OLS regression. Slope p from t-distribution. R\u00B2 = proportion of Y variance explained by X.'}
+                        {testType === 'anova' && 'One-way ANOVA. F-ratio tests equality of group means. p from F-distribution.'}
                       </p>
                     </div>
                   )}
@@ -946,12 +1116,47 @@ export default function ResearchPage() {
               </div>
               <div>
                 <div className={styles.azuraOutputLabel}>{'// Automated Statistical Interpretation'}</div>
-                <div className={styles.azuraInterpretation}>{azuraText}</div>
-                <div className={styles.azuraFindings}>
-                  {azuraFindings.map((f, i) => (
-                    <span key={i} className={getFindingClass(f.cls)}>{f.label}</span>
-                  ))}
-                </div>
+                {!azuraGenerated ? (
+                  <div className={styles.azuraPrompt}>
+                    <p className={styles.azuraPromptText}>
+                      {n < 3 ? 'Load data to enable analysis' : 'Click to generate statistical interpretation'}
+                    </p>
+                    {n >= 3 && (
+                      <button className={styles.btnGenerate} onClick={handleAzuraGenerate}>
+                        GENERATE ANALYSIS
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {(() => { const { text, findings } = computeAzuraInterpretation(); return (
+                      <>
+                        <div className={styles.azuraInterpretation}>{text}</div>
+                        <div className={styles.azuraFindings}>
+                          {findings.map((f, i) => (
+                            <span key={i} className={getFindingClass(f.cls)}>{f.label}</span>
+                          ))}
+                        </div>
+                      </>
+                    ); })()}
+                    <div className={styles.azuraRatingRow}>
+                      <button
+                        className={`${styles.ratingBtn} ${azuraRating === 'up' ? styles.ratingBtnActiveUp : ''}`}
+                        onClick={() => handleAzuraRate('up')}
+                        title="Helpful"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                      </button>
+                      <button
+                        className={`${styles.ratingBtn} ${azuraRating === 'down' ? styles.ratingBtnActiveDown : ''}`}
+                        onClick={() => handleAzuraRate('down')}
+                        title="Not helpful"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10zM17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></svg>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

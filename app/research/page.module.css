@@ -163,9 +163,11 @@
 /* ── DATA ENTRY PANEL ────────────────────────────────── */
 .entryPanel {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 32px;
   min-width: 0;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .entryPanel > * {
@@ -877,7 +879,7 @@
   }
 
   .entryPanel {
-    grid-template-columns: 1fr;
+    max-width: none;
   }
 
   .chartGrid {
@@ -906,6 +908,95 @@
     padding: 16px 16px 48px;
     gap: 24px;
   }
+}
+
+/* ── BOX PLOT ───────────────────────────────────────── */
+.boxPlotSvg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── AZURA GENERATE BUTTON ──────────────────────────── */
+.azuraPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.azuraPromptText {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-weight: 300;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+}
+
+.btnGenerate {
+  padding: 10px 24px;
+  background: #5168FF;
+  color: #fff;
+  border: 2px solid #5168FF;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+  box-shadow: 3px 3px 0 rgba(81,104,255,0.3);
+}
+
+.btnGenerate:hover {
+  background: #3d52e0;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(81,104,255,0.4);
+}
+
+.btnGenerate:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(81,104,255,0.2);
+}
+
+/* ── AZURA RATING ───────────────────────────────────── */
+.azuraRatingRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.ratingBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+}
+
+.ratingBtn:hover {
+  border-color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.7);
+}
+
+.ratingBtnActiveUp {
+  border-color: #74C465;
+  color: #74C465;
+  background: rgba(116,196,101,0.15);
+}
+
+.ratingBtnActiveDown {
+  border-color: #FF8C42;
+  color: #FF8C42;
+  background: rgba(255,140,66,0.15);
 }
 
 @media (max-width: 400px) {
