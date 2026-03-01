@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +13,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Scatter, Bar, Line } from 'react-chartjs-2';
-import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
@@ -154,7 +153,6 @@ export default function ResearchPage() {
   // ── Data State ──────────────────────────────────────
   const [columns, setColumns] = useState<ColumnDef[]>([]);
   const [rows, setRows] = useState<DataRow[]>([]);
-  const [daemon, setDaemon] = useState(0);
   const [inputMode, setInputMode] = useState<'csv' | 'manual'>('csv');
   const [csvText, setCsvText] = useState('');
   const [toastMsg, setToastMsg] = useState('');
@@ -187,7 +185,7 @@ export default function ResearchPage() {
   const [testResult, setTestResult] = useState<Record<string, string | number> | null>(null);
   const [testLabel, setTestLabel] = useState('');
 
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
 
   const numericCols = columns.filter(c => c.type === 'numeric');
   const categoricalCols = columns.filter(c => c.type === 'categorical');
@@ -218,8 +216,7 @@ export default function ResearchPage() {
     }
     if (numCols.length >= 2) { setTestVar1(numCols[0]); setTestVar2(numCols[1]); }
     setTestResult(null);
-    setDaemon(prev => prev + data.length * 5);
-    showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES — +${data.length * 5} SHARDS`);
+    showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES`);
   };
 
   const parseAndLoad = useCallback((text: string) => {
@@ -242,8 +239,10 @@ export default function ResearchPage() {
     parseAndLoad(text);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -292,9 +291,8 @@ export default function ResearchPage() {
     });
     if (!valid) { showToast('FILL ALL NUMERIC FIELDS WITH VALID NUMBERS'); return; }
     setRows(prev => [...prev, row]);
-    setDaemon(prev => prev + 5);
     setManualRow({});
-    showToast(`ROW ${rows.length + 1} ADDED — +5 SHARDS`);
+    showToast(`ROW ${rows.length + 1} ADDED`);
   };
 
   const resetSchema = () => {
@@ -384,8 +382,7 @@ export default function ResearchPage() {
       });
       setTestLabel(`One-Way ANOVA: ${testOutcomeVar} by ${testGroupVar}`);
     }
-    setDaemon(prev => prev + 10);
-    showToast(`TEST COMPLETE — +10 SHARDS`);
+    showToast('TEST COMPLETE');
   };
 
   // Unique values for a categorical column
@@ -537,10 +534,6 @@ export default function ResearchPage() {
               Variables
               <strong className={styles.headerStatValue}>{columns.length}</strong>
             </div>
-            <div className={styles.headerStat}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Image src="/icons/shard.svg" alt="Shards" width={14} height={14} />Shards</span>
-              <strong className={styles.headerStatValueOrange}>{daemon}</strong>
-            </div>
           </div>
         </div>
 
@@ -565,21 +558,26 @@ export default function ResearchPage() {
 
                 {inputMode === 'csv' ? (
                   <div className={styles.entryForm}>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Paste CSV Data</label>
+                    <div
+                      className={styles.fieldGroup}
+                      onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                      onDragLeave={() => setDragging(false)}
+                      onDrop={handleFileDrop}
+                    >
+                      <label className={styles.fieldLabel}>Paste or Drop CSV Data</label>
                       <textarea
                         className={styles.csvTextarea}
                         value={csvText}
                         onChange={e => setCsvText(e.target.value)}
-                        placeholder="name,age,group,score&#10;Alice,28,A,82&#10;Bob,35,B,67"
+                        placeholder="Paste CSV here or drag & drop a .csv file&#10;&#10;name,age,group,score&#10;Alice,28,A,82&#10;Bob,35,B,67"
                         rows={6}
+                        style={dragging ? { borderColor: '#5168FF', background: 'rgba(81,104,255,0.05)' } : undefined}
                       />
                     </div>
                     <div className={styles.buttonRow}>
                       <button className={styles.btnPrimary} onClick={handleCsvImport} disabled={parsing}>
                         {parsing ? 'PARSING...' : 'LOAD DATA'}
                       </button>
-                      <input ref={fileRef} type="file" accept=".csv,.tsv,.txt" className={styles.fileInput} onChange={handleFileUpload} />
                     </div>
                   </div>
                 ) : (
@@ -644,34 +642,6 @@ export default function ResearchPage() {
                 )}
               </div>
 
-              {/* Right column: Live summary + reward strip */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                <div className={styles.brutCardPrimary}>
-                  <div className={styles.liveSectionLabel}>Live Descriptive Stats</div>
-                  <div className={styles.statsGrid}>
-                    <div className={`${styles.statTile} ${styles.statTilePrimary}`}>
-                      <div className={styles.statTileLabel}>N (obs)</div>
-                      <div className={styles.statTileValue}>{n}</div>
-                    </div>
-                    {numericCols.map((col, i) => {
-                      const vals = colVals(col.name);
-                      return (
-                        <div key={col.name} className={`${styles.statTile} ${styles[ACCENT_CLASSES[(i + 1) % ACCENT_CLASSES.length]]}`}>
-                          <div className={styles.statTileLabel}>{col.name} M</div>
-                          <div className={styles.statTileValue}>{n ? round2(mean(vals)) : '\u2014'}</div>
-                          <div className={styles.statTileSub}>SD: {n ? round2(std(vals)) : '\u2014'}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Reward Strip */}
-                <div className={styles.rewardStrip}>
-                  <div className={styles.rewardText}>Shards Earned</div>
-                  <div className={styles.daemonCount}><Image src="/icons/shard.svg" alt="Shards" width={20} height={20} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 6 }} />{daemon}</div>
-                </div>
-              </div>
             </div>
           </div>
 
