@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -279,6 +279,9 @@ export default function ResearchPage() {
   // Azura panel state
   const [azuraGenerated, setAzuraGenerated] = useState(false);
   const [azuraRating, setAzuraRating] = useState<'up' | 'down' | null>(null);
+
+  // Chart ref for export
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   const numericCols = columns.filter(c => c.type === 'numeric');
   const categoricalCols = columns.filter(c => c.type === 'categorical');
@@ -678,6 +681,105 @@ export default function ResearchPage() {
     showToast(next ? 'FEEDBACK RECORDED' : 'FEEDBACK CLEARED');
   };
 
+  // ── Export helpers ──────────────────────────────────
+  const downloadFile = (content: string, filename: string, mime: string) => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportResults = () => {
+    if (n === 0) { showToast('NO DATA TO EXPORT'); return; }
+    const lines: string[] = [];
+    const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    lines.push(`R-TOOL STATISTICAL REPORT`);
+    lines.push(`Generated: ${ts}`);
+    lines.push(`${'='.repeat(60)}\n`);
+
+    // Descriptive stats
+    lines.push(`DESCRIPTIVE STATISTICS (N = ${n})`);
+    lines.push(`${'-'.repeat(60)}`);
+    lines.push(`${'Variable'.padEnd(16)}${'Mean'.padEnd(10)}${'SD'.padEnd(10)}${'Med'.padEnd(10)}${'Min'.padEnd(10)}${'Max'.padEnd(10)}${'Q1'.padEnd(10)}${'Q3'.padEnd(10)}${'Skew'.padEnd(10)}${'Kurt'.padEnd(10)}`);
+    numericCols.forEach(col => {
+      const v = colVals(col.name);
+      lines.push(
+        `${col.name.padEnd(16)}${round2(mean(v)).toString().padEnd(10)}${round2(std(v)).toString().padEnd(10)}${round2(median(v)).toString().padEnd(10)}${round2(Math.min(...v)).toString().padEnd(10)}${round2(Math.max(...v)).toString().padEnd(10)}${round2(quartile(v, 0.25)).toString().padEnd(10)}${round2(quartile(v, 0.75)).toString().padEnd(10)}${round2(skewness(v)).toString().padEnd(10)}${round2(kurtosis(v)).toString().padEnd(10)}`
+      );
+    });
+    lines.push('');
+
+    // Correlation matrix
+    if (corrCols.length >= 2) {
+      lines.push(`PEARSON CORRELATION MATRIX`);
+      lines.push(`${'-'.repeat(60)}`);
+      lines.push(`${''.padEnd(16)}${corrCols.map(c => c.padEnd(10)).join('')}`);
+      corrCols.forEach((rowC, i) => {
+        const row = corrCols.map((_, j) => {
+          const r = i === j ? 1 : pearson(corrData[i], corrData[j]);
+          return round2(r).toFixed(2).padEnd(10);
+        }).join('');
+        lines.push(`${rowC.padEnd(16)}${row}`);
+      });
+      lines.push('');
+    }
+
+    // Test results
+    if (testResult && testLabel) {
+      lines.push(`INFERENTIAL TEST: ${testLabel}`);
+      lines.push(`${'-'.repeat(60)}`);
+      Object.entries(testResult).forEach(([k, v]) => {
+        lines.push(`  ${k.padEnd(24)}${String(v)}`);
+      });
+      lines.push('');
+    }
+
+    downloadFile(lines.join('\n'), `r-tool-report-${Date.now()}.txt`, 'text/plain');
+    showToast('REPORT EXPORTED');
+  };
+
+  const exportChart = () => {
+    const container = chartContainerRef.current;
+    if (!container) { showToast('NO CHART TO EXPORT'); return; }
+
+    // For Chart.js canvases
+    const canvas = container.querySelector('canvas');
+    if (canvas) {
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url; a.download = `r-tool-chart-${Date.now()}.png`; a.click();
+      showToast('CHART EXPORTED');
+      return;
+    }
+
+    // For SVG box plots
+    const svg = container.querySelector('svg');
+    if (svg) {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new window.Image();
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = img.width * 2; c.height = img.height * 2;
+        const ctx = c.getContext('2d')!;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        const pngUrl = c.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl; a.download = `r-tool-chart-${Date.now()}.png`; a.click();
+        URL.revokeObjectURL(url);
+        showToast('CHART EXPORTED');
+      };
+      img.src = url;
+      return;
+    }
+
+    showToast('NO CHART TO EXPORT');
+  };
+
   return (
     <>
       <div className={styles.pageLayout}>
@@ -942,11 +1044,14 @@ export default function ResearchPage() {
                   {chartType === 'line' && `${chartY || '?'} over ${chartX || '?'}`}
                   {chartType === 'boxplot' && `${chartY || '?'} by ${chartX || '?'}`}
                 </span>
-                <span className={styles.chartTypeBadge}>
-                  {chartType === 'scatter' ? 'XY' : chartType === 'histogram' ? 'HIST' : chartType === 'bar' ? 'BAR' : chartType === 'line' ? 'LINE' : 'BOX'}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className={styles.chartTypeBadge}>
+                    {chartType === 'scatter' ? 'XY' : chartType === 'histogram' ? 'HIST' : chartType === 'bar' ? 'BAR' : chartType === 'line' ? 'LINE' : 'BOX'}
+                  </span>
+                  {n > 0 && <button className={styles.btnExport} onClick={exportChart} title="Export chart as PNG">PNG</button>}
                 </span>
               </div>
-              <div className={styles.chartContainer}>
+              <div className={styles.chartContainer} ref={chartContainerRef}>
                 {renderChart()}
               </div>
             </div>
@@ -1076,6 +1181,7 @@ export default function ResearchPage() {
 
                   <div className={styles.buttonRow} style={{ marginBottom: 16 }}>
                     <button className={styles.btnPrimary} onClick={runTest}>RUN TEST</button>
+                    <button className={styles.btnOutline} onClick={exportResults}>EXPORT RESULTS</button>
                   </div>
 
                   {testResult && (
@@ -1132,29 +1238,31 @@ export default function ResearchPage() {
                     {(() => { const { text, findings } = computeAzuraInterpretation(); return (
                       <>
                         <div className={styles.azuraInterpretation}>{text}</div>
-                        <div className={styles.azuraFindings}>
-                          {findings.map((f, i) => (
-                            <span key={i} className={getFindingClass(f.cls)}>{f.label}</span>
-                          ))}
+                        <div className={styles.azuraFindingsRow}>
+                          <div className={styles.azuraFindings}>
+                            {findings.map((f, i) => (
+                              <span key={i} className={getFindingClass(f.cls)}>{f.label}</span>
+                            ))}
+                          </div>
+                          <div className={styles.azuraRatingRow}>
+                            <button
+                              className={`${styles.ratingBtn} ${azuraRating === 'up' ? styles.ratingBtnActiveUp : ''}`}
+                              onClick={() => handleAzuraRate('up')}
+                              title="Helpful"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                            </button>
+                            <button
+                              className={`${styles.ratingBtn} ${azuraRating === 'down' ? styles.ratingBtnActiveDown : ''}`}
+                              onClick={() => handleAzuraRate('down')}
+                              title="Not helpful"
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10zM17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></svg>
+                            </button>
+                          </div>
                         </div>
                       </>
                     ); })()}
-                    <div className={styles.azuraRatingRow}>
-                      <button
-                        className={`${styles.ratingBtn} ${azuraRating === 'up' ? styles.ratingBtnActiveUp : ''}`}
-                        onClick={() => handleAzuraRate('up')}
-                        title="Helpful"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
-                      </button>
-                      <button
-                        className={`${styles.ratingBtn} ${azuraRating === 'down' ? styles.ratingBtnActiveDown : ''}`}
-                        onClick={() => handleAzuraRate('down')}
-                        title="Not helpful"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10zM17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></svg>
-                      </button>
-                    </div>
                   </>
                 )}
               </div>

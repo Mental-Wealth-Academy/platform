@@ -742,11 +742,18 @@
   padding-left: 16px;
 }
 
+.azuraFindingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+
 .azuraFindings {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 16px;
 }
 
 .findingTag {
@@ -910,6 +917,26 @@
   }
 }
 
+/* ── EXPORT BUTTON ──────────────────────────────────── */
+.btnExport {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: transparent;
+  color: rgba(26,27,36,0.45);
+  border: 1.5px solid rgba(26,27,36,0.15);
+  cursor: pointer;
+  transition: all 200ms ease;
+  border-radius: 0;
+}
+
+.btnExport:hover {
+  border-color: #5168FF;
+  color: #5168FF;
+}
+
 /* ── BOX PLOT ───────────────────────────────────────── */
 .boxPlotSvg {
   width: 100%;
@@ -962,18 +989,16 @@
 /* ── AZURA RATING ───────────────────────────────────── */
 .azuraRatingRow {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .ratingBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   background: transparent;
   border: 2px solid rgba(255,255,255,0.2);
   color: rgba(255,255,255,0.4);
