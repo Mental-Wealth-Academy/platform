@@ -94,11 +94,11 @@ function artistWalk(): JournalSection {
 export const week0Sections: JournalSection[] = [
   {
     id: 'intro-reading',
-    title: 'Introduction Reading',
+    title: 'Genesis Thoughts',
     icon: TextIcon,
     type: 'text',
-    instructions: 'Read the introduction chapter. Reflect on what brought you to this journey. What are your hopes? What are you afraid of? Write freely.',
-    placeholder: 'Write your reflections on the introduction...',
+    instructions: 'There once was a traveller who had walked so long they forgot why they started. One evening, at the edge of a silver lake, they caught their own reflection and did not recognize the face staring back. "Who are you?" they whispered. The reflection smiled and replied, "I am the person you were before the world told you who to be." The traveller sat down, pulled out a worn journal, and began to write — not to remember the past, but to finally meet themselves.\n\nThis is your silver lake. Before the weeks ahead ask you to recover what was lost, sit with this: What brought you here? What do you hope to find? What are you afraid to uncover? Write freely. There are no wrong answers at the beginning of a journey.',
+    placeholder: 'Write your genesis thoughts...',
   },
 ];
 
