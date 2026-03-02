@@ -309,6 +309,7 @@ export default function AccordionJournalCard({
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
+  const isAuthenticatedRef = useRef(false);
 
   // Sync initialIsSealed / initialSealTxHash when props change
   useEffect(() => {
@@ -336,8 +337,10 @@ export default function AccordionJournalCard({
 
     (async () => {
       try {
-        const res = await fetch(`/api/wealth-progress?week=${weekNumber}`, { credentials: 'include' });
+        const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, { credentials: 'include' });
+        if (res.status === 401) return; // Not authenticated — skip silently
         if (!res.ok) return;
+        isAuthenticatedRef.current = true;
         const data = await res.json();
         if (!data.progressData || Object.keys(data.progressData).length === 0) return;
 
@@ -359,14 +362,14 @@ export default function AccordionJournalCard({
 
   // Debounced auto-save (1.5s)
   useEffect(() => {
-    if (!hasLoadedRef.current || isSealed) return;
+    if (!hasLoadedRef.current || isSealed || !isAuthenticatedRef.current) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
 
     saveTimerRef.current = setTimeout(async () => {
       setSaveStatus('saving');
       try {
-        const res = await fetch('/api/wealth-progress', {
+        const res = await fetch('/api/ethereal-progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -474,7 +477,7 @@ export default function AccordionJournalCard({
       setSealStep('signing');
 
       // Step 2: Call API to seal (server handles on-chain tx)
-      const res = await fetch('/api/wealth-progress', {
+      const res = await fetch('/api/ethereal-progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

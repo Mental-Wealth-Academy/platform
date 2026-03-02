@@ -85,7 +85,7 @@ export default function HomePage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/wealth-progress/all', { credentials: 'include' });
+        const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           setWeekStatuses(data.weeks);

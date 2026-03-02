@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { ensureWealthProgressSchema } from '@/lib/ensureWealthProgressSchema';
+import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/wealth-progress/all
+ * GET /api/ethereal-progress/all
  * Returns seal status for all 14 weeks in one call (used by home page)
  */
 export async function GET() {
@@ -20,7 +20,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
 
-  await ensureWealthProgressSchema();
+  await ensureEtherealProgressSchema();
 
   const rows = await sqlQuery<Array<{
     week_number: number;
@@ -29,7 +29,7 @@ export async function GET() {
     updated_at: string;
   }>>(
     `SELECT week_number, is_sealed, seal_tx_hash, updated_at
-     FROM wealth_progress
+     FROM ethereal_progress
      WHERE user_id = :userId
      ORDER BY week_number ASC`,
     { userId: user.id }
