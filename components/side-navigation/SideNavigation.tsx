@@ -42,6 +42,7 @@ const navSections: NavSection[] = [
       { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/World Icon.svg' },
       { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
+      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/problems.svg' },
     ],
   },
   {
@@ -80,10 +81,26 @@ const SideNavigation: React.FC = () => {
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  // Load collapsed state from localStorage and sync CSS variable
+  useEffect(() => {
+    const saved = localStorage.getItem('sideNavCollapsed');
+    const collapsed = saved === 'true';
+    setIsCollapsed(collapsed);
+    document.documentElement.style.setProperty('--sidebar-width', collapsed ? '72px' : '265px');
+  }, []);
+
+  const toggleCollapsed = () => {
+    const next = !isCollapsed;
+    setIsCollapsed(next);
+    localStorage.setItem('sideNavCollapsed', String(next));
+    document.documentElement.style.setProperty('--sidebar-width', next ? '72px' : '265px');
+  };
 
   const { data: proTokenBalance } = useReadContract({
     address: PRO_TOKEN_ADDRESS,
@@ -311,12 +328,25 @@ const SideNavigation: React.FC = () => {
 
       {/* Side Navigation / Mobile Drawer */}
       <nav
-        className={`${styles.sideNav} ${isMobileMenuOpen ? styles.sideNavOpen : ''}`}
+        className={`${styles.sideNav} ${isMobileMenuOpen ? styles.sideNavOpen : ''} ${isCollapsed ? styles.sideNavCollapsed : ''}`}
         ref={mobileMenuRef}
       >
         {/* Header */}
         <div className={styles.header}>
-          <span className={styles.logoText}>Mental Wealth Academy</span>
+          <span className={styles.logoText}>{isCollapsed ? 'MWA' : 'Mental Wealth Academy'}</span>
+          <button
+            className={styles.collapseButton}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            onClick={toggleCollapsed}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              {isCollapsed ? (
+                <path d="M13 17l5-5-5-5M6 17l5-5-5-5" />
+              ) : (
+                <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5" />
+              )}
+            </svg>
+          </button>
           <button
             className={styles.closeMenuButton}
             aria-label="Close menu"
@@ -375,6 +405,7 @@ const SideNavigation: React.FC = () => {
                         setIsMobileMenuOpen(false);
                       }}
                       className={`${styles.navItem} ${styles.navItemButton}`}
+                      title={isCollapsed ? item.label : undefined}
                     >
                       {item.icon && (
                         <Image
@@ -398,6 +429,7 @@ const SideNavigation: React.FC = () => {
                     <div
                       key={item.id}
                       className={`${styles.navItem} ${styles.navItemDisabled}`}
+                      title={isCollapsed ? item.label : undefined}
                     >
                       {item.icon && (
                         <Image
@@ -422,6 +454,7 @@ const SideNavigation: React.FC = () => {
                       className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
                       {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       onClick={() => setIsMobileMenuOpen(false)}
+                      title={isCollapsed ? item.label : undefined}
                     >
                       {item.icon && (
                         <Image
@@ -450,16 +483,19 @@ const SideNavigation: React.FC = () => {
                   className={styles.shinyCard}
                   onClick={() => setIsChatOpen(true)}
                   type="button"
+                  title="Azura Agent"
                 >
                   <div className={styles.shinyCardShine} />
                   <div className={styles.shinyCardContent}>
                     <div className={styles.shinyCardIcon}>
                       <Image src="https://i.imgur.com/AkflhaJ.png" alt="Azura" width={36} height={36} unoptimized />
                     </div>
-                    <div className={styles.shinyCardText}>
-                      <span className={styles.shinyCardTitle}>Azura Agent</span>
-                      <span className={styles.shinyCardSub}>Funds, Votes, Chat</span>
-                    </div>
+                    {!isCollapsed && (
+                      <div className={styles.shinyCardText}>
+                        <span className={styles.shinyCardTitle}>Azura Agent</span>
+                        <span className={styles.shinyCardSub}>Funds, Votes, Chat</span>
+                      </div>
+                    )}
                   </div>
                 </button>
               </div>
@@ -477,6 +513,7 @@ const SideNavigation: React.FC = () => {
               className={styles.shardsCounter}
               onClick={() => setIsInventoryOpen(true)}
               type="button"
+              title="Inventory"
             >
               <Image
                 src="/icons/shard.svg"
@@ -485,10 +522,14 @@ const SideNavigation: React.FC = () => {
                 height={20}
                 className={styles.shardIcon}
               />
-              <span className={styles.shardsLabel}>Inventory:</span>
-              <span className={styles.shardsValue}>
-                {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
-              </span>
+              {!isCollapsed && (
+                <>
+                  <span className={styles.shardsLabel}>Inventory:</span>
+                  <span className={styles.shardsValue}>
+                    {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
+                  </span>
+                </>
+              )}
             </button>
           </div>
 
@@ -498,6 +539,7 @@ const SideNavigation: React.FC = () => {
               <button
                 className={styles.accountButton}
                 onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                title={`@${username}`}
               >
                 {avatarUrl && (
                   <Image
@@ -509,7 +551,7 @@ const SideNavigation: React.FC = () => {
                     unoptimized
                   />
                 )}
-                <span className={styles.accountUsername}>@{username}</span>
+                {!isCollapsed && <span className={styles.accountUsername}>@{username}</span>}
               </button>
 
               {isAccountMenuOpen && (
@@ -569,8 +611,16 @@ const SideNavigation: React.FC = () => {
                 setIsMobileMenuOpen(false);
               }}
               disabled={isCreatingSession}
+              title="Create Account / Sign In"
             >
-              <span>{isCreatingSession ? 'Connecting...' : 'Create Account / Sign In'}</span>
+              {isCollapsed ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              ) : (
+                <span>{isCreatingSession ? 'Connecting...' : 'Create Account / Sign In'}</span>
+              )}
             </button>
           )}
         </div>

@@ -21,6 +21,11 @@
   box-shadow: 4px 0 0 #1A1D33;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sideNavCollapsed {
+  width: 72px;
 }
 
 /* Header */
@@ -31,6 +36,7 @@
   padding: 16px;
   border-bottom: 2px solid rgba(26, 29, 51, 0.1);
   background: #ffffff;
+  position: relative;
 }
 
 .logoText {
@@ -83,6 +89,144 @@
   color: #ffffff;
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 #1A1D33;
+}
+
+/* Collapse Toggle Button */
+.collapseButton {
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border: 2px solid rgba(26, 29, 51, 0.2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #999999;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.collapseButton:hover {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+/* Collapsed state overrides */
+.sideNavCollapsed .header {
+  justify-content: center;
+  padding: 16px 8px;
+}
+
+.sideNavCollapsed .logoText {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.sideNavCollapsed .collapseButton {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sideNavCollapsed .collapseButton:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+.sideNavCollapsed .sectionHeader {
+  justify-content: center;
+  padding: 8px 4px;
+}
+
+.sideNavCollapsed .sectionLabel,
+.sideNavCollapsed .sectionBadge,
+.sideNavCollapsed .sectionChevron {
+  display: none;
+}
+
+.sideNavCollapsed .navItem {
+  justify-content: center;
+  padding: 12px 8px;
+  margin: 0 4px;
+}
+
+.sideNavCollapsed .navItemLabel,
+.sideNavCollapsed .badge {
+  display: none;
+}
+
+.sideNavCollapsed .navItemIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.sideNavCollapsed .shinyCardSpacer {
+  padding: 8px 6px 16px;
+}
+
+.sideNavCollapsed .shinyCard {
+  padding: 10px;
+}
+
+.sideNavCollapsed .shinyCardContent {
+  justify-content: center;
+}
+
+.sideNavCollapsed .shinyCardIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.sideNavCollapsed .bottomSection {
+  padding: 8px 6px;
+}
+
+.sideNavCollapsed .shardsCounter {
+  justify-content: center;
+  padding: 10px 6px;
+}
+
+.sideNavCollapsed .accountButton {
+  justify-content: center;
+  padding: 6px;
+}
+
+.sideNavCollapsed .accountAvatar {
+  width: 36px;
+  height: 36px;
+}
+
+.sideNavCollapsed .connectWalletButton {
+  padding: 10px 6px;
+}
+
+/* Fade transitions for text content during collapse */
+.navItemLabel,
+.shardsLabel,
+.shardsValue,
+.shinyCardText,
+.accountUsername,
+.sectionLabel,
+.sectionBadge,
+.sectionChevron {
+  transition: opacity 0.2s ease;
+}
+
+.sideNavCollapsed .navItemLabel,
+.sideNavCollapsed .shardsLabel,
+.sideNavCollapsed .shardsValue,
+.sideNavCollapsed .shinyCardText,
+.sideNavCollapsed .accountUsername,
+.sideNavCollapsed .sectionLabel,
+.sideNavCollapsed .sectionBadge,
+.sideNavCollapsed .sectionChevron {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 /* (topSection removed — wallet/gems/chat moved to bottomSection) */
@@ -1039,6 +1183,12 @@
     box-shadow: none;
   }
 
+  /* Override collapsed state on mobile - always full width */
+  .sideNavCollapsed {
+    width: 300px;
+    max-width: 85vw;
+  }
+
   .sideNavOpen {
     transform: translateX(0);
     border-right: 1px solid rgba(120, 138, 255, 0.15);
@@ -1051,6 +1201,10 @@
   }
 
   .menuButton {
+    display: none;
+  }
+
+  .collapseButton {
     display: none;
   }
 
