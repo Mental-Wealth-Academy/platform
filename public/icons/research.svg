@@ -1,16 +1,1 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Eyepiece -->
-  <rect x="9" y="2" width="6" height="3" rx="1" stroke="currentColor" stroke-width="2"/>
-  <!-- Tube -->
-  <path d="M10 5V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <path d="M14 5V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <!-- Body / Nosepiece -->
-  <path d="M10 10L8 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <path d="M14 10L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <!-- Objective lens -->
-  <circle cx="12" cy="15" r="2" stroke="currentColor" stroke-width="2"/>
-  <!-- Stage -->
-  <path d="M6 18H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-  <!-- Base -->
-  <path d="M8 18V21H16V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg height="512" viewBox="0 0 48 48" width="512" xmlns="http://www.w3.org/2000/svg"><g id="_11_-_20" data-name="11 - 20"><g id="Research"><path d="m34 14a5.006 5.006 0 0 1 -5-5v-7h-17a5 5 0 0 0 -5 5v34a5 5 0 0 0 5 5h20a10 10 0 1 1 9-14.337v-17.663zm-20-3h11a1 1 0 0 1 0 2h-11a1 1 0 0 1 0-2zm5 28h-5a1 1 0 0 1 0-2h5a1 1 0 0 1 0 2zm-6-6a1 1 0 0 1 1-1h4a1 1 0 0 1 0 2h-4a1 1 0 0 1 -1-1zm7-4h-6a1 1 0 0 1 0-2h6a1 1 0 0 1 0 2zm14-5h-20a1 1 0 0 1 0-2h20a1 1 0 0 1 0 2zm0-5h-17a1 1 0 0 1 0-2h17a1 1 0 0 1 0 2z"/><path d="m40.414 11.414-8.828-8.828a1.988 1.988 0 0 0 -.586-.4v6.814a3 3 0 0 0 3 3h6.814a1.988 1.988 0 0 0 -.4-.586z"/><path d="m43.31 44.49-4.424-4.432a8.02 8.02 0 1 0 -2.828 2.828l4.432 4.424a1.994 1.994 0 1 0 2.82-2.82zm-16.31-8.49a5 5 0 1 1 5 5 5 5 0 0 1 -5-5z"/></g></g></svg>

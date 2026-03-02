@@ -42,7 +42,7 @@ const navSections: NavSection[] = [
       { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/World Icon.svg' },
       { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
-      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/problems.svg' },
+      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/puzzle.svg' },
     ],
   },
   {
@@ -52,7 +52,7 @@ const navSections: NavSection[] = [
     badgeType: 'pro',
     items: [
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/Chapters.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/dna.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'livestream', label: 'Livestream', href: '/livestream', icon: '/icons/livestream.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
@@ -606,14 +606,14 @@ const SideNavigation: React.FC = () => {
                 setIsMobileMenuOpen(false);
               }}
               disabled={isCreatingSession}
-              title="Connect"
+              title="Sync Account"
             >
               {isCollapsed ? (
-                <Image src="/icons/Eye.svg" alt="" width={18} height={18} className={styles.navItemIcon} />
+                <Image src="/icons/plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
               ) : (
                 <>
-                  <span>{isCreatingSession ? 'Connecting...' : 'Connect'}</span>
-                  <Image src="/icons/Eye.svg" alt="" width={16} height={16} style={{ marginLeft: 6 }} />
+                  <span>{isCreatingSession ? 'Syncing...' : 'Sync Account'}</span>
+                  <Image src="/icons/plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
                 </>
               )}
             </button>
