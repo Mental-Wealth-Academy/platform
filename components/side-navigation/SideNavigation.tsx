@@ -645,10 +645,10 @@ const SideNavigation: React.FC = () => {
           onAvatarSelected={handleAvatarSelected}
         />
       )}
-      {isUsernameChangeModalOpen && username && (
+      {isUsernameChangeModalOpen && (
         <UsernameChangeModal
           onClose={() => setIsUsernameChangeModalOpen(false)}
-          currentUsername={username}
+          currentUsername={username || ''}
           onUsernameChanged={handleUsernameChanged}
         />
       )}

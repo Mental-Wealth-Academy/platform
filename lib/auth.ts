@@ -49,12 +49,51 @@ export async function createSessionForUser(userId: string) {
 }
 
 /**
- * Gets the current user via wallet address authentication
+ * Gets the current user via wallet address authentication or session cookie.
+ * Tries wallet auth header first, then falls back to session cookie.
  */
 export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | null> {
+  // Try wallet auth header first
   try {
     const walletAddress = await getWalletAddressFromRequest();
-    if (!walletAddress) return null;
+    if (walletAddress) {
+      const rows = await sqlQuery<
+        Array<{
+          id: string;
+          username: string;
+          avatar_url: string | null;
+          created_at: string;
+          wallet_address: string;
+          shard_count: number;
+        }>
+      >(
+        `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count
+         FROM users u
+         WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
+         LIMIT 1`,
+        { walletAddress }
+      );
+
+      const user = rows[0];
+      if (user) {
+        return {
+          id: user.id,
+          username: user.username,
+          avatarUrl: user.avatar_url,
+          createdAt: user.created_at,
+          walletAddress: user.wallet_address,
+          shardCount: user.shard_count,
+        };
+      }
+    }
+  } catch (error) {
+    console.warn('Wallet auth failed, trying session cookie:', error);
+  }
+
+  // Fallback to session cookie
+  try {
+    const token = await getSessionTokenFromCookies();
+    if (!token) return null;
 
     const rows = await sqlQuery<
       Array<{
@@ -68,9 +107,10 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
     >(
       `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count
        FROM users u
-       WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
+       JOIN sessions s ON s.user_id = u.id
+       WHERE s.token = :token AND s.expires_at > NOW()
        LIMIT 1`,
-      { walletAddress }
+      { token }
     );
 
     const user = rows[0];
@@ -85,7 +125,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
       shardCount: user.shard_count,
     };
   } catch (error) {
-    console.warn('Wallet auth failed:', error);
+    console.warn('Session cookie auth failed:', error);
     return null;
   }
 }
