@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useDisconnect, useReadContract } from 'wagmi';
-import { ConnectKitButton } from 'connectkit';
+import { useModal } from 'connectkit';
 import styles from './SideNavigation.module.css';
 import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
@@ -67,6 +67,7 @@ const SideNavigation: React.FC = () => {
   const router = useRouter();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { setOpen: openConnectModal } = useModal();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -598,37 +599,24 @@ const SideNavigation: React.FC = () => {
               )}
             </div>
           ) : (
-            <ConnectKitButton.Custom>
-              {({ show }) => (
-                <button
-                  className={styles.connectWalletButton}
-                  onClick={() => {
-                    if (isConnected && address) {
-                      sessionCreatedForRef.current = null;
-                      createSessionForWallet(address);
-                    } else if (show) {
-                      show();
-                    }
-                    setIsMobileMenuOpen(false);
-                  }}
-                  disabled={isCreatingSession}
-                  title="Connect"
-                >
-                  {isCollapsed ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2v6M12 18v4M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M18 12h4M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24" />
-                    </svg>
-                  ) : (
-                    <>
-                      <span>{isCreatingSession ? 'Connecting...' : 'Connect'}</span>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 6 }}>
-                        <path d="M12 2v6M12 18v4M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M18 12h4M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24" />
-                      </svg>
-                    </>
-                  )}
-                </button>
+            <button
+              className={styles.connectWalletButton}
+              onClick={() => {
+                openConnectModal(true);
+                setIsMobileMenuOpen(false);
+              }}
+              disabled={isCreatingSession}
+              title="Connect"
+            >
+              {isCollapsed ? (
+                <Image src="/icons/Eye.svg" alt="" width={18} height={18} className={styles.navItemIcon} />
+              ) : (
+                <>
+                  <span>{isCreatingSession ? 'Connecting...' : 'Connect'}</span>
+                  <Image src="/icons/Eye.svg" alt="" width={16} height={16} style={{ marginLeft: 6 }} />
+                </>
               )}
-            </ConnectKitButton.Custom>
+            </button>
           )}
         </div>
       </nav>

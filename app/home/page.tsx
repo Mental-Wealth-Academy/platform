@@ -76,15 +76,21 @@ const WEEK_TITLES = [
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
   }, []);
 
-  // Fetch all week statuses on mount
+  // Check auth first, then fetch week statuses only if authenticated
   useEffect(() => {
     (async () => {
       try {
+        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const meData = await meRes.json().catch(() => ({ user: null }));
+        if (!meData?.user) return;
+
+        setIsAuthenticated(true);
         const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
@@ -159,6 +165,7 @@ export default function HomePage() {
                       initialIsSealed={status?.isSealed}
                       initialSealTxHash={status?.sealTxHash}
                       onSealComplete={handleSealComplete}
+                      enablePersistence={isAuthenticated}
                     />
                   );
                 })}

@@ -259,6 +259,7 @@ interface AccordionJournalCardProps {
   initialIsSealed?: boolean;
   initialSealTxHash?: string | null;
   onSealComplete?: (weekNumber: number, txHash: string) => void;
+  enablePersistence?: boolean;
 }
 
 export default function AccordionJournalCard({
@@ -268,6 +269,7 @@ export default function AccordionJournalCard({
   initialIsSealed,
   initialSealTxHash,
   onSealComplete,
+  enablePersistence = false,
 }: AccordionJournalCardProps) {
   // Use provided sections, weekSectionsMap, or defaults for weeks 1/2
   const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
@@ -309,7 +311,6 @@ export default function AccordionJournalCard({
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
-  const isAuthenticatedRef = useRef(false);
 
   // Sync initialIsSealed / initialSealTxHash when props change
   useEffect(() => {
@@ -330,17 +331,15 @@ export default function AccordionJournalCard({
     };
   }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections]);
 
-  // Load progress on mount
+  // Load progress on mount (only if authenticated)
   useEffect(() => {
-    if (hasLoadedRef.current) return;
+    if (hasLoadedRef.current || !enablePersistence) return;
     hasLoadedRef.current = true;
 
     (async () => {
       try {
         const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, { credentials: 'include' });
-        if (res.status === 401) return; // Not authenticated — skip silently
         if (!res.ok) return;
-        isAuthenticatedRef.current = true;
         const data = await res.json();
         if (!data.progressData || Object.keys(data.progressData).length === 0) return;
 
@@ -355,14 +354,14 @@ export default function AccordionJournalCard({
         if (data.isSealed) setIsSealed(true);
         if (data.sealTxHash) setSealTxHash(data.sealTxHash);
       } catch {
-        // Not authenticated or server error — silent fail
+        // Server error — silent fail
       }
     })();
-  }, [weekNumber]);
+  }, [weekNumber, enablePersistence]);
 
   // Debounced auto-save (1.5s)
   useEffect(() => {
-    if (!hasLoadedRef.current || isSealed || !isAuthenticatedRef.current) return;
+    if (!hasLoadedRef.current || isSealed || !enablePersistence) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
 
@@ -392,7 +391,7 @@ export default function AccordionJournalCard({
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, collectProgressData]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData]);
 
   // Initialize checklist states (only if not loaded from DB)
   useEffect(() => {
