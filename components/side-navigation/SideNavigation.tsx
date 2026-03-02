@@ -13,6 +13,7 @@ import UsernameChangeModal from '../username-change/UsernameChangeModal';
 import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
 import InventoryModal from '../inventory-modal/InventoryModal';
 import YourAccountsModal from '../nav-buttons/YourAccountsModal';
+import OnboardingModal from '../onboarding/OnboardingModal';
 
 interface NavItem {
   id: string;
@@ -81,6 +82,7 @@ const SideNavigation: React.FC = () => {
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -124,6 +126,10 @@ const SideNavigation: React.FC = () => {
         setAvatarUrl(meData.user.avatarUrl || null);
         if (meData.user.shardCount !== undefined) setShardCount(meData.user.shardCount);
         sessionCreatedForRef.current = walletAddress;
+        // If user still has temp username, they need to complete onboarding
+        if (!meData.user.username || meData.user.username.startsWith('user_')) {
+          setIsOnboardingOpen(true);
+        }
         return;
       }
 
@@ -136,6 +142,7 @@ const SideNavigation: React.FC = () => {
       });
 
       if (signupResponse.ok) {
+        const signupData = await signupResponse.json().catch(() => ({}));
         const refreshResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const refreshData = await refreshResponse.json().catch(() => ({ user: null }));
         if (refreshData.user) {
@@ -145,6 +152,10 @@ const SideNavigation: React.FC = () => {
           window.dispatchEvent(new Event('userLoggedIn'));
         }
         sessionCreatedForRef.current = walletAddress;
+        // Open onboarding for new users or users who haven't completed setup
+        if (!signupData.existing || !refreshData.user?.username || refreshData.user?.username?.startsWith('user_')) {
+          setIsOnboardingOpen(true);
+        }
       }
     } catch (error) {
       console.error('Failed to create session after wallet connect:', error);
@@ -267,6 +278,13 @@ const SideNavigation: React.FC = () => {
 
   const handleUsernameChanged = (newUsername: string) => {
     setUsername(newUsername);
+  };
+
+  const handleOnboardingComplete = (newUsername: string, newAvatarUrl: string | null) => {
+    setUsername(newUsername);
+    setAvatarUrl(newAvatarUrl);
+    setIsOnboardingOpen(false);
+    window.dispatchEvent(new Event('userLoggedIn'));
   };
 
   const handleSignOut = async () => {
@@ -652,6 +670,11 @@ const SideNavigation: React.FC = () => {
           onUsernameChanged={handleUsernameChanged}
         />
       )}
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onComplete={handleOnboardingComplete}
+      />
 
     </>
   );
