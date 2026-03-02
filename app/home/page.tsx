@@ -126,14 +126,14 @@ export default function HomePage() {
             {/* Course Intro */}
             <div className={`${styles.courseIntro} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
               <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
-              <h2 className={styles.courseTitle}>Exploring The Self</h2>
+              <h2 className={styles.courseTitle}>Discover Your Ethereal Horizon</h2>
               <p className={styles.courseDesc}>
-                A 14-milestone guided journey through the Ethereal Horizon. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them at your own pace.
+                A 12-week journey towards the Ethereal Horizon. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them for your self-paced evolution.
               </p>
               <div className={styles.courseBanner}>
                 <Image
                   src="https://i.imgur.com/ckhi8jC.jpeg"
-                  alt="Exploring The Self"
+                  alt="Discover Your Ethereal Horizon"
                   width={900}
                   height={240}
                   className={styles.courseBannerImg}
