@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import styles from './AccordionJournalCard.module.css';
+import { weekSectionsMap } from './weekSections';
 
 interface BlurtEntry {
   id: string;
@@ -255,15 +256,21 @@ interface AccordionJournalCardProps {
   weekNumber?: number;
   weekTitle?: string;
   sections?: JournalSection[];
+  initialIsSealed?: boolean;
+  initialSealTxHash?: string | null;
+  onSealComplete?: (weekNumber: number, txHash: string) => void;
 }
 
 export default function AccordionJournalCard({
   weekNumber = 1,
   weekTitle = 'Recovering a Sense of Safety',
-  sections
+  sections,
+  initialIsSealed,
+  initialSealTxHash,
+  onSealComplete,
 }: AccordionJournalCardProps) {
-  // Use provided sections or default to week 1
-  const journalSections = sections || (weekNumber === 2 ? week2Sections : week1Sections);
+  // Use provided sections, weekSectionsMap, or defaults for weeks 1/2
+  const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
@@ -291,22 +298,112 @@ export default function AccordionJournalCard({
   });
 
   // Seal/Attestation state
-  const [isSealed, setIsSealed] = useState(false);
+  const [isSealed, setIsSealed] = useState(initialIsSealed ?? false);
   const [isSealing, setIsSealing] = useState(false);
   const [sealStep, setSealStep] = useState<'confirm' | 'verifying' | 'signing' | 'complete'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
   const [sealAttestation, setSealAttestation] = useState<SealAttestation | null>(null);
-  const [sealTxHash, setSealTxHash] = useState<string | null>(null);
+  const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
 
-  // Initialize checklist states
+  // Save indicator state
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasLoadedRef = useRef(false);
+
+  // Sync initialIsSealed / initialSealTxHash when props change
   useEffect(() => {
-    const initialStates: Record<string, boolean[]> = {};
-    journalSections.forEach(section => {
-      if (section.type === 'checklist' && section.checkItems) {
-        initialStates[section.id] = new Array(section.checkItems.length).fill(false);
+    if (initialIsSealed !== undefined) setIsSealed(initialIsSealed);
+    if (initialSealTxHash !== undefined) setSealTxHash(initialSealTxHash ?? null);
+  }, [initialIsSealed, initialSealTxHash]);
+
+  // Collect all state into a single progress blob for persistence
+  const collectProgressData = useCallback(() => {
+    return {
+      sectionData,
+      blurtEntries,
+      checklistStates,
+      enjoyListEntries,
+      timeMapActivities,
+      lifePieValues,
+      completedSections: Array.from(completedSections),
+    };
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections]);
+
+  // Load progress on mount
+  useEffect(() => {
+    if (hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/wealth-progress?week=${weekNumber}`, { credentials: 'include' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.progressData || Object.keys(data.progressData).length === 0) return;
+
+        const pd = data.progressData;
+        if (pd.sectionData) setSectionData(pd.sectionData);
+        if (pd.blurtEntries) setBlurtEntries(pd.blurtEntries);
+        if (pd.checklistStates) setChecklistStates(pd.checklistStates);
+        if (pd.enjoyListEntries) setEnjoyListEntries(pd.enjoyListEntries);
+        if (pd.timeMapActivities) setTimeMapActivities(pd.timeMapActivities);
+        if (pd.lifePieValues) setLifePieValues(pd.lifePieValues);
+        if (pd.completedSections) setCompletedSections(new Set(pd.completedSections));
+        if (data.isSealed) setIsSealed(true);
+        if (data.sealTxHash) setSealTxHash(data.sealTxHash);
+      } catch {
+        // Not authenticated or server error — silent fail
       }
+    })();
+  }, [weekNumber]);
+
+  // Debounced auto-save (1.5s)
+  useEffect(() => {
+    if (!hasLoadedRef.current || isSealed) return;
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
+    saveTimerRef.current = setTimeout(async () => {
+      setSaveStatus('saving');
+      try {
+        const res = await fetch('/api/wealth-progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            weekNumber,
+            progressData: collectProgressData(),
+          }),
+        });
+        if (res.ok) {
+          setSaveStatus('saved');
+          setTimeout(() => setSaveStatus('idle'), 2000);
+        } else {
+          setSaveStatus('idle');
+        }
+      } catch {
+        setSaveStatus('idle');
+      }
+    }, 1500);
+
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, collectProgressData]);
+
+  // Initialize checklist states (only if not loaded from DB)
+  useEffect(() => {
+    setChecklistStates(prev => {
+      // Don't overwrite if we already have data from DB load
+      if (Object.keys(prev).length > 0) return prev;
+      const initialStates: Record<string, boolean[]> = {};
+      journalSections.forEach(section => {
+        if (section.type === 'checklist' && section.checkItems) {
+          initialStates[section.id] = new Array(section.checkItems.length).fill(false);
+        }
+      });
+      return initialStates;
     });
-    setChecklistStates(initialStates);
   }, [journalSections]);
 
   const completedCount = completedSections.size;
@@ -362,7 +459,7 @@ export default function AccordionJournalCard({
   // Check if ready to seal (at least 50% complete)
   const canSeal = completedCount >= Math.ceil(totalSections / 2) && !isSealed;
 
-  // Handle seal process
+  // Handle seal process — real API call
   const handleSealWeek = async () => {
     if (!canSeal || isSealing) return;
 
@@ -370,14 +467,31 @@ export default function AccordionJournalCard({
     setSealStep('verifying');
 
     try {
-      // Step 1: Generate content hash
+      // Step 1: Generate content hash (for attestation display)
       const contentHash = await generateContentHash();
 
-      // Simulate Azura verification delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 800));
       setSealStep('signing');
 
-      // Step 2: Create attestation object
+      // Step 2: Call API to seal (server handles on-chain tx)
+      const res = await fetch('/api/wealth-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          weekNumber,
+          progressData: collectProgressData(),
+          seal: true,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Seal failed');
+      }
+
+      // Step 3: Update local state
       const attestation: SealAttestation = {
         weekNumber,
         contentHash,
@@ -387,18 +501,15 @@ export default function AccordionJournalCard({
         attester: 'azura'
       };
 
-      // Simulate signing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Step 3: Call API to create on-chain attestation (gasless via paymaster)
-      // In production, this would call: POST /api/attestations/seal
-      // The backend would use EAS on Base with a paymaster for gasless tx
-      const mockTxHash = `0x${contentHash.slice(0, 64)}`;
-
       setSealAttestation(attestation);
-      setSealTxHash(mockTxHash);
+      setSealTxHash(data.txHash);
       setSealStep('complete');
       setIsSealed(true);
+
+      // Notify parent
+      if (onSealComplete && data.txHash) {
+        onSealComplete(weekNumber, data.txHash);
+      }
 
       // Haptic feedback
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
@@ -465,6 +576,8 @@ export default function AccordionJournalCard({
   };
 
   const renderSectionContent = (section: JournalSection) => {
+    const disabled = isSealed;
+
     switch (section.type) {
       case 'text':
         return (
@@ -474,6 +587,7 @@ export default function AccordionJournalCard({
             value={(sectionData[section.id] as string) || ''}
             onChange={(e) => handleTextChange(section.id, null, e.target.value)}
             rows={4}
+            disabled={disabled}
           />
         );
 
@@ -495,6 +609,7 @@ export default function AccordionJournalCard({
                     value={(sectionData[`${section.id}-${idx}`] as string) || ''}
                     onChange={(e) => handleTextChange(section.id, idx, e.target.value)}
                     rows={4}
+                    disabled={disabled}
                   />
                 ) : (
                   <input
@@ -503,6 +618,7 @@ export default function AccordionJournalCard({
                     placeholder={section.type === 'numbered-list' ? '' : `Enter here...`}
                     value={(sectionData[`${section.id}-${idx}`] as string) || ''}
                     onChange={(e) => handleTextChange(section.id, idx, e.target.value)}
+                    disabled={disabled}
                   />
                 )}
               </div>
@@ -525,6 +641,7 @@ export default function AccordionJournalCard({
                   placeholder="I'm stupid..."
                   value={entry.blurt}
                   onChange={(e) => handleBlurtChange(entry.id, 'blurt', e.target.value)}
+                  disabled={disabled}
                 />
                 <span className={styles.blurtArrow}>→</span>
                 <input
@@ -533,6 +650,7 @@ export default function AccordionJournalCard({
                   placeholder="I'm always learning"
                   value={entry.affirmation}
                   onChange={(e) => handleBlurtChange(entry.id, 'affirmation', e.target.value)}
+                  disabled={disabled}
                 />
               </div>
             ))}
@@ -540,6 +658,7 @@ export default function AccordionJournalCard({
               type="button"
               className={styles.addBlurtButton}
               onClick={addBlurtEntry}
+              disabled={disabled}
             >
               + Add another blurt
             </button>
@@ -559,6 +678,7 @@ export default function AccordionJournalCard({
                   placeholder={`If I could be anything, I'd be a...`}
                   value={(sectionData[`${section.id}-${idx}`] as string) || ''}
                   onChange={(e) => handleTextChange(section.id, idx, e.target.value)}
+                  disabled={disabled}
                 />
               </div>
             ))}
@@ -570,6 +690,7 @@ export default function AccordionJournalCard({
                 value={(sectionData[`${section.id}-action`] as string) || ''}
                 onChange={(e) => setSectionData(prev => ({ ...prev, [`${section.id}-action`]: e.target.value }))}
                 rows={3}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -585,6 +706,7 @@ export default function AccordionJournalCard({
                   checked={checklistStates[section.id]?.[idx] || false}
                   onChange={() => handleChecklistToggle(section.id, idx)}
                   className={styles.checkbox}
+                  disabled={disabled}
                 />
                 <span className={styles.checklistText}>{item}</span>
               </label>
@@ -610,6 +732,7 @@ export default function AccordionJournalCard({
                     placeholder={`Activity ${idx + 1}`}
                     value={activity.activity}
                     onChange={(e) => handleTimeMapChange(idx, 'activity', e.target.value)}
+                    disabled={disabled}
                   />
                   <input
                     type="text"
@@ -617,11 +740,13 @@ export default function AccordionJournalCard({
                     placeholder="Hours"
                     value={activity.time}
                     onChange={(e) => handleTimeMapChange(idx, 'time', e.target.value)}
+                    disabled={disabled}
                   />
                   <select
                     className={styles.select}
                     value={activity.wantOrShould}
                     onChange={(e) => handleTimeMapChange(idx, 'wantOrShould', e.target.value)}
+                    disabled={disabled}
                   >
                     <option value="">Select</option>
                     <option value="want">Want to</option>
@@ -631,6 +756,7 @@ export default function AccordionJournalCard({
                     className={styles.select}
                     value={activity.forWhom}
                     onChange={(e) => handleTimeMapChange(idx, 'forWhom', e.target.value)}
+                    disabled={disabled}
                   >
                     <option value="">Select</option>
                     <option value="me">For me</option>
@@ -651,6 +777,7 @@ export default function AccordionJournalCard({
                     value={(sectionData['time-map-protect'] as string) || ''}
                     onChange={(e) => setSectionData(prev => ({ ...prev, 'time-map-protect': e.target.value }))}
                     rows={3}
+                    disabled={disabled}
                   />
                 </div>
                 <div className={styles.safetyMapColumn}>
@@ -661,6 +788,7 @@ export default function AccordionJournalCard({
                     value={(sectionData['time-map-cautious'] as string) || ''}
                     onChange={(e) => setSectionData(prev => ({ ...prev, 'time-map-cautious': e.target.value }))}
                     rows={3}
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -672,6 +800,7 @@ export default function AccordionJournalCard({
                   value={(sectionData['time-map-doubts'] as string) || ''}
                   onChange={(e) => setSectionData(prev => ({ ...prev, 'time-map-doubts': e.target.value }))}
                   rows={2}
+                  disabled={disabled}
                 />
               </div>
             </div>
@@ -694,6 +823,7 @@ export default function AccordionJournalCard({
                   placeholder="Something I enjoy..."
                   value={entry.activity}
                   onChange={(e) => handleEnjoyListChange(idx, 'activity', e.target.value)}
+                  disabled={disabled}
                 />
                 <input
                   type="text"
@@ -701,6 +831,7 @@ export default function AccordionJournalCard({
                   placeholder="Date"
                   value={entry.lastDate}
                   onChange={(e) => handleEnjoyListChange(idx, 'lastDate', e.target.value)}
+                  disabled={disabled}
                 />
               </div>
             ))}
@@ -720,6 +851,7 @@ export default function AccordionJournalCard({
                     placeholder="I am creative and my ideas have value..."
                     value={(sectionData[`affirmation-${num}`] as string) || ''}
                     onChange={(e) => setSectionData(prev => ({ ...prev, [`affirmation-${num}`]: e.target.value }))}
+                    disabled={disabled}
                   />
                 </div>
               ))}
@@ -758,6 +890,7 @@ export default function AccordionJournalCard({
                     value={lifePieValues[key]}
                     onChange={(e) => handleLifePieChange(key, parseInt(e.target.value))}
                     className={styles.slider}
+                    disabled={disabled}
                   />
                 </div>
               ))}
@@ -770,6 +903,7 @@ export default function AccordionJournalCard({
                 value={(sectionData['life-pie-reflection'] as string) || ''}
                 onChange={(e) => setSectionData(prev => ({ ...prev, 'life-pie-reflection': e.target.value }))}
                 rows={3}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -793,6 +927,11 @@ export default function AccordionJournalCard({
           <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
             {isSealed ? 'Sealed' : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
           </div>
+          {saveStatus !== 'idle' && !isSealed && (
+            <span className={styles.saveIndicator}>
+              {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
+            </span>
+          )}
           <div className={styles.cardTitleGroup}>
             <h3 className={styles.cardTitle}>{weekTitle}</h3>
             <p className={styles.cardSubtitle}>

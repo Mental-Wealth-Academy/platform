@@ -75,7 +75,6 @@ export async function GET() {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email || null,
         avatarUrl: user.avatarUrl,
         shardCount: user.shardCount,
         walletAddress: user.walletAddress,

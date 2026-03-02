@@ -214,7 +214,6 @@ export default function Home() {
       <OnboardingModal
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
-        isWalletSignup={isConnected && !!address}
       />
       <AvatarSelectionModal
         isOpen={showAvatarModal}

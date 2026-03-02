@@ -68,14 +68,15 @@ const CreateAccountButton: React.FC = () => {
       const uploaded = await uploadIfPresent(avatarFile);
 
       if (!me) {
-        // New account creation
-        const res = await fetch('/api/auth/signup', {
+        // New account creation via wallet
+        const res = await fetch('/api/auth/wallet-signup', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             ...(await getWalletAuthHeaders(address, signMessageAsync)),
           },
           body: JSON.stringify({
+            walletAddress: address,
             username,
             avatarUrl: uploaded?.url ?? null,
           }),

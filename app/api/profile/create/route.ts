@@ -24,7 +24,6 @@ export const dynamic = 'force-dynamic';
 
 interface CreateProfileBody {
   username: string;
-  email?: string;
   avatar_id: string;
   wallet_address?: string;
   gender?: 'male' | 'female';
@@ -33,8 +32,6 @@ interface CreateProfileBody {
 
 // Username validation regex: 5-32 chars, alphanumeric + underscores
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{5,32}$/;
-// Email validation regex (basic)
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   // Database check
@@ -83,7 +80,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { username, email, avatar_id, wallet_address, gender, birthday } = body;
+  const { username, avatar_id, wallet_address, gender, birthday } = body;
 
   // Validate username
   if (!username || !USERNAME_REGEX.test(username)) {
@@ -92,14 +89,6 @@ export async function POST(request: Request) {
         error: 'Invalid username.',
         message: 'Username must be 5-32 characters and contain only letters, numbers, and underscores.'
       },
-      { status: 400 }
-    );
-  }
-
-  // Validate email if provided
-  if (email && !EMAIL_REGEX.test(email)) {
-    return NextResponse.json(
-      { error: 'Invalid email format.' },
       { status: 400 }
     );
   }
@@ -196,24 +185,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if email is already taken by another user (if provided)
-    if (email) {
-      const existingEmail = await sqlQuery<Array<{ id: string }>>(
-        `SELECT id FROM users WHERE email = :email AND id != :userId LIMIT 1`,
-        { email, userId }
-      );
-
-      if (existingEmail.length > 0) {
-        return NextResponse.json(
-          { 
-            error: 'Email already registered.',
-            message: 'Please use a different email.'
-          },
-          { status: 409 }
-        );
-      }
-    }
-
     // Get all 5 assigned avatars for this user
     const assignedAvatars = getAssignedAvatars(userId);
     
@@ -226,7 +197,6 @@ export async function POST(request: Request) {
         username,
         selectedAvatarId: avatar_id || null,
         avatarUrl: avatar?.image_url || null,
-        email: email || null,
         gender: gender || null,
         birthday: birthday || null,
       };
@@ -238,11 +208,10 @@ export async function POST(request: Request) {
       // Update user profile - ensure username is always set
       await sqlQueryWithClient(
         client,
-        `UPDATE users 
+        `UPDATE users
          SET username = :username,
              selected_avatar_id = :selectedAvatarId,
              avatar_url = :avatarUrl,
-             email = COALESCE(:email, email),
              gender = :gender,
              birthday = :birthday${WELCOME_SHARDS !== undefined ? ', shard_count = :shardCount' : ''}
          WHERE id = :userId`,
@@ -292,7 +261,6 @@ export async function POST(request: Request) {
       user: {
         id: userId,
         username,
-        email: email || null,
         avatarUrl: avatar?.image_url || null,
         shardCount: WELCOME_SHARDS,
       }
@@ -317,14 +285,8 @@ export async function POST(request: Request) {
           { status: 409 }
         );
       }
-      if (constraint.includes('email') || message.includes('email')) {
-        return NextResponse.json(
-          { error: 'Email already taken.' },
-          { status: 409 }
-        );
-      }
       return NextResponse.json(
-        { error: 'Username or email already exists.' },
+        { error: 'Username already exists.' },
         { status: 409 }
       );
     }

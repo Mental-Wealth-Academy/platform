@@ -56,17 +56,15 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
-  // Users table - simplified for email/password accounts
+  // Users table - wallet-only accounts
   await sqlQuery(`
     CREATE TABLE IF NOT EXISTS users (
       id CHAR(36) PRIMARY KEY,
       username VARCHAR(32) NOT NULL UNIQUE,
-      email VARCHAR(255) NULL UNIQUE,
-      password_hash VARCHAR(255) NULL,
       selected_avatar_id VARCHAR(50) NULL,
       avatar_url VARCHAR(1024) NULL,
       privy_user_id VARCHAR(255) NULL UNIQUE,
-      wallet_address VARCHAR(255) NULL,
+      wallet_address VARCHAR(255) NOT NULL,
       gender VARCHAR(10) NULL,
       birthday DATE NULL,
       shard_count INTEGER NOT NULL DEFAULT 0,
@@ -74,6 +72,15 @@ async function _ensureForumSchemaImpl() {
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migration: drop legacy email/password columns
+  try {
+    await sqlQuery(`ALTER TABLE users DROP COLUMN IF EXISTS password_hash`);
+    await sqlQuery(`ALTER TABLE users DROP COLUMN IF EXISTS email`);
+  } catch (err: any) {
+    // Columns may not exist on fresh databases
+    console.warn('Migration: could not drop legacy columns (may not exist):', err?.message);
+  }
 
   // Add avatar_url column if it doesn't exist (for existing databases)
   try {
@@ -110,59 +117,6 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
-  // Add password_hash column if it doesn't exist (for existing databases)
-  try {
-    await sqlQuery(`
-      ALTER TABLE users 
-      ADD COLUMN password_hash VARCHAR(255) NULL
-    `);
-  } catch (err: any) {
-    // Column might already exist, ignore error
-    if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
-      console.warn('Error adding password_hash column:', err);
-    }
-  }
-
-  // Make password_hash nullable for wallet-based signups (if not already nullable)
-  // This is critical - wallet signups don't have passwords
-  try {
-    await sqlQuery(`
-      ALTER TABLE users 
-      ALTER COLUMN password_hash DROP NOT NULL
-    `);
-    if (process.env.NODE_ENV === 'development') {
-    console.log('Successfully made password_hash nullable');
-    }
-  } catch (err: any) {
-    // Check if error is because column is already nullable or doesn't exist
-    const errorMessage = err?.message || String(err || '');
-    if (errorMessage.includes('does not exist') || 
-        errorMessage.includes('cannot be cast') ||
-        errorMessage.includes('already') ||
-        errorMessage.includes('tuple concurrently updated') ||
-        errorMessage.includes('constraint') && errorMessage.includes('does not exist')) {
-      // Column might already be nullable or doesn't exist, or concurrent update - which is fine
-      if (process.env.NODE_ENV === 'development') {
-      console.log('password_hash column is already nullable or constraint already dropped');
-      }
-    } else {
-      // Log other errors so we can see what's happening
-      console.warn('Error making password_hash nullable:', errorMessage);
-    }
-  }
-
-  // Make email nullable for wallet-based signups (if not already nullable)
-  try {
-    await sqlQuery(`
-      ALTER TABLE users 
-      ALTER COLUMN email DROP NOT NULL
-    `);
-  } catch (err: any) {
-    // Column might already be nullable, ignore error
-    if (!err?.message?.includes('does not exist') && !err?.message?.includes('cannot be cast')) {
-      console.warn('Error making email nullable:', err);
-    }
-  }
 
   // Add selected_avatar_id column if it doesn't exist
   try {
@@ -200,28 +154,15 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
-  // Make privy_user_id and wallet_address nullable (for email/password accounts)
+  // Make privy_user_id nullable (legacy field)
   try {
     await sqlQuery(`
-      ALTER TABLE users 
+      ALTER TABLE users
       ALTER COLUMN privy_user_id DROP NOT NULL
     `);
   } catch (err: any) {
-    // Column might already be nullable, ignore error
     if (!err?.message?.includes('does not exist') && !err?.message?.includes('not found')) {
       console.warn('Error making privy_user_id nullable:', err);
-    }
-  }
-
-  try {
-    await sqlQuery(`
-      ALTER TABLE users 
-      ALTER COLUMN wallet_address DROP NOT NULL
-    `);
-  } catch (err: any) {
-    // Column might already be nullable, ignore error
-    if (!err?.message?.includes('does not exist') && !err?.message?.includes('not found')) {
-      console.warn('Error making wallet_address nullable:', err);
     }
   }
 

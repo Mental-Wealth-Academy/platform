@@ -1,10 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import styles from './page.module.css';
+
+interface WeekStatus {
+  weekNumber: number;
+  isSealed: boolean;
+  sealTxHash: string | null;
+}
 
 function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +29,7 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
       </div>
       <div className={styles.artworkCard}>
         <p className={styles.artworkDesc}>
-          Seal all 12 weeks then upload a piece of art that represents the new you.
+          Seal all 14 milestones then upload a piece of art that represents the new you.
         </p>
         <div
           className={styles.artworkDropzone}
@@ -50,12 +56,55 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
   );
 }
 
+const WEEK_TITLES = [
+  'Introduction: Reading',
+  'Recovering a Sense of Safety',
+  'Recovering a Sense of Identity',
+  'Recovering a Sense of Power',
+  'Recovering a Sense of Integrity',
+  'Recovering a Sense of Possibility',
+  'Recovering a Sense of Abundance',
+  'Recovering a Sense of Connection',
+  'Recovering a Sense of Strength',
+  'Recovering a Sense of Compassion',
+  'Recovering a Sense of Self-Protection',
+  'Recovering a Sense of Autonomy',
+  'Recovering a Sense of Faith',
+  'Epilogue',
+];
+
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
   }, []);
+
+  // Fetch all week statuses on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/wealth-progress/all', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          setWeekStatuses(data.weeks);
+        }
+      } catch {
+        // Not authenticated — use empty defaults
+      }
+    })();
+  }, []);
+
+  const handleSealComplete = useCallback((weekNumber: number, txHash: string) => {
+    setWeekStatuses(prev =>
+      prev.map(w =>
+        w.weekNumber === weekNumber ? { ...w, isSealed: true, sealTxHash: txHash } : w
+      )
+    );
+  }, []);
+
+  const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);
 
   return (
     <div className={styles.pageLayout}>
@@ -79,7 +128,7 @@ export default function HomePage() {
               <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
               <h2 className={styles.courseTitle}>Exploring The Self</h2>
               <p className={styles.courseDesc}>
-                A 12-week guided journey inspired by The Artist&apos;s Way. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them at your own pace.
+                A 14-milestone guided journey through the Ethereal Horizon. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them at your own pace.
               </p>
               <div className={styles.courseBanner}>
                 <Image
@@ -96,66 +145,23 @@ export default function HomePage() {
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
               <div className={styles.journalHeader}>
-                <span className={styles.sectionLabel}>Weekly Workbooks</span>
-                <h2 className={styles.sectionTitle}>12-Week Pathway</h2>
+                <span className={styles.sectionLabel}>Wealth Progress</span>
+                <h2 className={styles.sectionTitle}>Ethereal Horizon Pathway</h2>
               </div>
               <div className={styles.journalCards}>
-                <AccordionJournalCard
-                  weekNumber={0}
-                  weekTitle="Introduction: Reading"
-                />
-                <AccordionJournalCard
-                  weekNumber={1}
-                  weekTitle="Recovering a Sense of Safety"
-                />
-                <AccordionJournalCard
-                  weekNumber={2}
-                  weekTitle="Recovering a Sense of Identity"
-                />
-                <AccordionJournalCard
-                  weekNumber={3}
-                  weekTitle="Recovering a Sense of Power"
-                />
-                <AccordionJournalCard
-                  weekNumber={4}
-                  weekTitle="Recovering a Sense of Integrity"
-                />
-                <AccordionJournalCard
-                  weekNumber={5}
-                  weekTitle="Recovering a Sense of Possibility"
-                />
-                <AccordionJournalCard
-                  weekNumber={6}
-                  weekTitle="Recovering a Sense of Abundance"
-                />
-                <AccordionJournalCard
-                  weekNumber={7}
-                  weekTitle="Recovering a Sense of Connection"
-                />
-                <AccordionJournalCard
-                  weekNumber={8}
-                  weekTitle="Recovering a Sense of Strength"
-                />
-                <AccordionJournalCard
-                  weekNumber={9}
-                  weekTitle="Recovering a Sense of Compassion"
-                />
-                <AccordionJournalCard
-                  weekNumber={10}
-                  weekTitle="Recovering a Sense of Self-Protection"
-                />
-                <AccordionJournalCard
-                  weekNumber={11}
-                  weekTitle="Recovering a Sense of Autonomy"
-                />
-                <AccordionJournalCard
-                  weekNumber={12}
-                  weekTitle="Recovering a Sense of Faith"
-                />
-                <AccordionJournalCard
-                  weekNumber={13}
-                  weekTitle="Epilogue"
-                />
+                {WEEK_TITLES.map((title, i) => {
+                  const status = getWeekStatus(i);
+                  return (
+                    <AccordionJournalCard
+                      key={i}
+                      weekNumber={i}
+                      weekTitle={title}
+                      initialIsSealed={status?.isSealed}
+                      initialSealTxHash={status?.sealTxHash}
+                      onSealComplete={handleSealComplete}
+                    />
+                  );
+                })}
               </div>
             </div>
 
