@@ -533,24 +533,32 @@ const SideNavigation: React.FC = () => {
           </div>
 
           {/* Account Button or Connect Account */}
-          {username && !username.startsWith('user_') ? (
+          {(isConnected && address) || (username && !username.startsWith('user_')) ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
                 className={styles.accountButton}
                 onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-                title={`@${username}`}
+                title={username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}
               >
-                {avatarUrl && (
+                {avatarUrl ? (
                   <Image
                     src={avatarUrl}
-                    alt={username}
+                    alt={username || 'Account'}
                     width={32}
                     height={32}
                     className={styles.accountAvatar}
                     unoptimized
                   />
+                ) : (
+                  <div className={styles.accountAvatar} style={{ width: 32, height: 32, background: '#5168FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700 }}>
+                    {address ? address.slice(2, 4).toUpperCase() : '?'}
+                  </div>
                 )}
-                {!isCollapsed && <span className={styles.accountUsername}>@{username}</span>}
+                {!isCollapsed && (
+                  <span className={styles.accountUsername}>
+                    {username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}
+                  </span>
+                )}
               </button>
 
               {isAccountMenuOpen && (
