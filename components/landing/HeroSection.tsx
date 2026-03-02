@@ -23,7 +23,7 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroContent}>
           <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> For<br /> Building Real-World Skills</h1>
           <p className={styles.heroSubtext}>
-            A 12-week journey to unlock your potential. Join your cohort, learn psychology hacks, and forge lasting connections.
+            MWA is a grassroots micro-university for mental wellness. Investing in the capital of the human mind, with the heart of tomorrow.
           </p>
           <button
             type="button"

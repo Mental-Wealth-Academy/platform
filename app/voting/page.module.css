@@ -1,7 +1,8 @@
 .main {
   min-height: 100vh;
   /* Background removed to show global body background (same as quests page) */
-  margin-left: 272px; /* Sidebar width (265px) + shadow (4px) + gap */
+  margin-left: var(--sidebar-width, 272px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pageLayout {

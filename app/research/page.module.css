@@ -1,10 +1,11 @@
 .pageLayout {
-  margin-left: 265px;
+  margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
   overflow-x: hidden;
-  width: calc(100vw - 265px);
-  max-width: calc(100vw - 265px);
+  width: calc(100vw - var(--sidebar-width, 265px));
+  max-width: calc(100vw - var(--sidebar-width, 265px));
   box-sizing: border-box;
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s cubic-bezier(0.25, 1, 0.5, 1), max-width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .content {

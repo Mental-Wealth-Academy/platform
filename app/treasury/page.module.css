@@ -1,6 +1,7 @@
 .main {
   min-height: 100vh;
-  margin-left: 272px;
+  margin-left: var(--sidebar-width, 272px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   background: #F4F5FE;
 }
 

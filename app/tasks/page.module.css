@@ -1,7 +1,8 @@
 /* Voting Page - Data Storytelling Design */
 
 .pageLayout {
-  margin-left: 265px; /* Account for fixed sidebar width */
+  margin-left: var(--sidebar-width, 265px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
 }
 
