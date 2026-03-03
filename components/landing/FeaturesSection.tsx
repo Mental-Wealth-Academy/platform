@@ -137,8 +137,9 @@ function TreeNodeRow({ node, depth, expanded, onToggle }: {
 }
 
 const tabs = [
-  'AI Agent Azura',
+  'Activities',
   'Voting & Governance',
+  'AI Agent Azura',
   'Quests & Learning',
 ] as const;
 
@@ -301,7 +302,7 @@ function QuestsPanel() {
 }
 
 export const FeaturesSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('AI Agent Azura');
+  const [activeTab, setActiveTab] = useState<Tab>('Activities');
 
   return (
     <section className={styles.featuresSection}>
@@ -330,6 +331,7 @@ export const FeaturesSection: React.FC = () => {
           </div>
 
           <div className={styles.panelWrap}>
+            {activeTab === 'Activities' && <TasksPanel />}
             {activeTab === 'Voting & Governance' && <VotingPanel />}
             {activeTab === 'AI Agent Azura' && <AzuraPanel />}
             {activeTab === 'Quests & Learning' && <QuestsPanel />}
