@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './FAQSection.module.css';
+import { useSound } from '@/hooks/useSound';
 
 const FAQ_ITEMS = [
   {
@@ -54,9 +55,12 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 
 export const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { play } = useSound();
 
   const toggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    const willOpen = openIndex !== index;
+    play(willOpen ? 'toggle-on' : 'toggle-off');
+    setOpenIndex(willOpen ? index : null);
   };
 
   return (
@@ -72,6 +76,7 @@ export const FAQSection = () => {
                 <button
                   className={styles.faqQuestion}
                   onClick={() => toggle(i)}
+                  onMouseEnter={() => play('hover')}
                   aria-expanded={isOpen}
                   type="button"
                 >

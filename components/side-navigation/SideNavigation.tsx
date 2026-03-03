@@ -14,6 +14,7 @@ import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
 import InventoryModal from '../inventory-modal/InventoryModal';
 import YourAccountsModal from '../nav-buttons/YourAccountsModal';
 import OnboardingModal from '../onboarding/OnboardingModal';
+import { useSound } from '@/hooks/useSound';
 
 interface NavItem {
   id: string;
@@ -40,10 +41,9 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/World Icon.svg' },
+      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/puzzle.svg' },
       { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/Survey.svg' },
       { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
-      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/puzzle.svg' },
     ],
   },
   {
@@ -52,6 +52,7 @@ const navSections: NavSection[] = [
     badge: 'Access With Pro',
     badgeType: 'pro',
     items: [
+      { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/Chapters.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/dna.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
@@ -83,6 +84,7 @@ const SideNavigation: React.FC = () => {
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -98,6 +100,7 @@ const SideNavigation: React.FC = () => {
 
   const toggleCollapsed = () => {
     const next = !isCollapsed;
+    play(next ? 'toggle-off' : 'toggle-on');
     setIsCollapsed(next);
     localStorage.setItem('sideNavCollapsed', String(next));
     document.documentElement.style.setProperty('--sidebar-width', next ? '72px' : '265px');
@@ -470,7 +473,11 @@ const SideNavigation: React.FC = () => {
                       href={item.href}
                       className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
                       {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        play('navigation');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      onMouseEnter={() => play('hover')}
                       title={isCollapsed ? item.label : undefined}
                     >
                       {item.icon && (
@@ -498,7 +505,11 @@ const SideNavigation: React.FC = () => {
               <div className={styles.shinyCardSpacer}>
                 <button
                   className={styles.shinyCard}
-                  onClick={() => setIsChatOpen(true)}
+                  onClick={() => {
+                    play('click');
+                    setIsChatOpen(true);
+                  }}
+                  onMouseEnter={() => play('hover')}
                   type="button"
                   title="Azura Agent"
                 >
@@ -555,7 +566,11 @@ const SideNavigation: React.FC = () => {
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
                 className={styles.accountButton}
-                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                onClick={() => {
+                  play('click');
+                  setIsAccountMenuOpen(!isAccountMenuOpen);
+                }}
+                onMouseEnter={() => play('hover')}
                 title={username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}
               >
                 {avatarUrl ? (
@@ -627,9 +642,11 @@ const SideNavigation: React.FC = () => {
             <button
               className={styles.connectWalletButton}
               onClick={() => {
+                play('click');
                 openConnectModal(true);
                 setIsMobileMenuOpen(false);
               }}
+              onMouseEnter={() => play('hover')}
               disabled={isCreatingSession}
               title="Sync Account"
             >

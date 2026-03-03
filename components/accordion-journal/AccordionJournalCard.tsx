@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import styles from './AccordionJournalCard.module.css';
 import { weekSectionsMap } from './weekSections';
+import { useSound } from '@/hooks/useSound';
 
 interface BlurtEntry {
   id: string;
@@ -274,6 +275,7 @@ export default function AccordionJournalCard({
   // Use provided sections, weekSectionsMap, or defaults for weeks 1/2
   const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
 
+  const { play } = useSound();
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
@@ -922,7 +924,8 @@ export default function AccordionJournalCard({
       <button
         type="button"
         className={styles.cardFace}
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
+        onMouseEnter={() => play('hover')}
         aria-expanded={isExpanded}
       >
         <div className={styles.cardFaceLeft}>
@@ -1000,7 +1003,8 @@ export default function AccordionJournalCard({
             <button
               type="button"
               className={styles.sectionHeader}
-              onClick={() => toggleSection(section.id)}
+              onClick={() => { play(expandedSections.has(section.id) ? 'toggle-off' : 'toggle-on'); toggleSection(section.id); }}
+              onMouseEnter={() => play('hover')}
               aria-expanded={expandedSections.has(section.id)}
             >
               <div className={styles.sectionHeaderLeft}>
@@ -1036,7 +1040,8 @@ export default function AccordionJournalCard({
               <button
                 type="button"
                 className={`${styles.completeButton} ${completedSections.has(section.id) ? styles.completeButtonActive : ''}`}
-                onClick={() => markComplete(section.id)}
+                onClick={() => { play('success'); markComplete(section.id); }}
+                onMouseEnter={() => play('hover')}
                 disabled={isSealed}
               >
                 {completedSections.has(section.id) ? 'Completed' : 'Mark Complete'}
@@ -1103,7 +1108,8 @@ export default function AccordionJournalCard({
               <button
                 type="button"
                 className={`${styles.sealButton} ${canSeal ? styles.sealButtonActive : ''}`}
-                onClick={() => setShowSealModal(true)}
+                onClick={() => { play('click'); setShowSealModal(true); }}
+                onMouseEnter={() => play('hover')}
                 disabled={!canSeal}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1208,14 +1214,14 @@ export default function AccordionJournalCard({
                   <button
                     type="button"
                     className={styles.sealModalCancel}
-                    onClick={() => setShowSealModal(false)}
+                    onClick={() => { play('click'); setShowSealModal(false); }}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     className={styles.sealModalConfirm}
-                    onClick={handleSealWeek}
+                    onClick={() => { play('celebration'); handleSealWeek(); }}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -1229,7 +1235,7 @@ export default function AccordionJournalCard({
                 <button
                   type="button"
                   className={styles.sealModalDone}
-                  onClick={() => setShowSealModal(false)}
+                  onClick={() => { play('success'); setShowSealModal(false); }}
                 >
                   Done
                 </button>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
 interface WeekStatus {
@@ -15,6 +16,7 @@ interface WeekStatus {
 function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState('');
+  const { play } = useSound();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -33,7 +35,8 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
         </p>
         <div
           className={styles.artworkDropzone}
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => { play('click'); fileInputRef.current?.click(); }}
+          onMouseEnter={() => play('hover')}
         >
           <input
             ref={fileInputRef}
@@ -48,7 +51,7 @@ function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
           </span>
           <span className={styles.artworkDropzoneHint}>PNG, JPG, or GIF up to 10 MB</span>
         </div>
-        <button className={styles.artworkSubmit} type="button">
+        <button className={styles.artworkSubmit} type="button" onClick={() => play('success')} onMouseEnter={() => play('hover')}>
           Submit Artwork
         </button>
       </div>
@@ -77,6 +80,7 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { play } = useSound();
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -112,10 +116,15 @@ export default function HomePage() {
 
   const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);
 
+  const handleFocus = useCallback((e: React.FocusEvent) => {
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
+  }, [play]);
+
   return (
     <div className={styles.pageLayout}>
       <SideNavigation />
-      <main className={styles.content}>
+      <main className={styles.content} onFocus={handleFocus}>
             {/* Hero Pill */}
             <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
               <Image

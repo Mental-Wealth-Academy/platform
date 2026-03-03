@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
 // ── Canvas Data ──
@@ -32,6 +33,7 @@ export default function ProblemsPage() {
   const [canvas, setCanvas] = useState<CanvasData>(EMPTY_CANVAS);
   const [toast, setToast] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { play } = useSound();
 
   useEffect(() => {
     try {
@@ -106,8 +108,13 @@ export default function ProblemsPage() {
     setTimeout(() => setToast(null), 2000);
   };
 
+  const handleFocus = useCallback((e: React.FocusEvent) => {
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
+  }, [play]);
+
   return (
-    <div className={styles.main}>
+    <div className={styles.main} onFocus={handleFocus}>
       <SideNavigation />
 
       {/* Header */}
@@ -117,8 +124,8 @@ export default function ProblemsPage() {
           <span className={styles.subtitle}>Mental Wealth Academy Framework</span>
         </div>
         <div className={styles.headerActions}>
-          <button className={styles.btnSecondary} onClick={handleClear}>Clear</button>
-          <button className={styles.btnPrimary} onClick={handleSave}>Save</button>
+          <button className={styles.btnSecondary} onClick={() => { play('click'); handleClear(); }} onMouseEnter={() => play('hover')}>Clear</button>
+          <button className={styles.btnPrimary} onClick={() => { play('success'); handleSave(); }} onMouseEnter={() => play('hover')}>Save</button>
         </div>
       </div>
 
@@ -176,7 +183,8 @@ export default function ProblemsPage() {
               <div
                 key={q}
                 className={`${styles.cynefinQuadrant} ${canvas.cynefin === q ? styles.cynefinSelected : ''}`}
-                onClick={() => setCynefin(q)}
+                onClick={() => { play(canvas.cynefin === q ? 'toggle-off' : 'toggle-on'); setCynefin(q); }}
+                onMouseEnter={() => play('hover')}
               >
                 {q}
               </div>

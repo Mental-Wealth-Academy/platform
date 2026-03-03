@@ -4,11 +4,14 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import MobileOnboarding from '../mobile-onboarding/MobileOnboarding';
+import { useSound } from '@/hooks/useSound';
 
 export const HeroSection: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const { play } = useSound();
 
   const handleEnterAcademy = () => {
+    play('click');
     window.location.href = '/home';
   };
 
@@ -28,6 +31,7 @@ export const HeroSection: React.FC = () => {
           <button
             type="button"
             onClick={handleEnterAcademy}
+            onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
             Enter Academy
