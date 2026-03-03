@@ -21,7 +21,7 @@ const GLASSES_COUNT = ImageData.images.glasses.length;
 const BACKGROUND_COLORS = ImageData.bgcolors;
 
 // Number of avatars to assign per user
-const AVATARS_PER_USER = 5;
+const AVATARS_PER_USER = 6;
 
 /**
  * Avatar interface representing a single avatar
