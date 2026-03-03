@@ -62,7 +62,7 @@ async function _ensureForumSchemaImpl() {
       id CHAR(36) PRIMARY KEY,
       username VARCHAR(32) NOT NULL UNIQUE,
       selected_avatar_id VARCHAR(50) NULL,
-      avatar_url VARCHAR(1024) NULL,
+      avatar_url TEXT NULL,
       privy_user_id VARCHAR(255) NULL UNIQUE,
       wallet_address VARCHAR(255) NOT NULL,
       gender VARCHAR(10) NULL,
@@ -84,12 +84,19 @@ async function _ensureForumSchemaImpl() {
 
   // Add avatar_url column if it doesn't exist (for existing databases)
   try {
-    await sqlQuery(`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(1024) NULL`);
+    await sqlQuery(`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT NULL`);
   } catch (err: any) {
     // Column might already exist, ignore error
     if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
       console.warn('Could not add avatar_url column (may already exist):', err?.message);
     }
+  }
+
+  // Migration: widen avatar_url from VARCHAR(1024) to TEXT for SVG data URIs
+  try {
+    await sqlQuery(`ALTER TABLE users ALTER COLUMN avatar_url TYPE TEXT`);
+  } catch (err: any) {
+    console.warn('Migration: could not widen users.avatar_url (may already be TEXT):', err?.message);
   }
 
   // Create indexes for users
@@ -337,13 +344,20 @@ async function _ensureForumSchemaImpl() {
       id CHAR(36) PRIMARY KEY,
       user_id CHAR(36) NOT NULL,
       avatar_id VARCHAR(50) NOT NULL,
-      avatar_url VARCHAR(1024) NOT NULL,
+      avatar_url TEXT NOT NULL,
       is_selected BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       UNIQUE (user_id, avatar_id)
     )
   `);
+
+  // Migration: widen user_avatars.avatar_url from VARCHAR(1024) to TEXT
+  try {
+    await sqlQuery(`ALTER TABLE user_avatars ALTER COLUMN avatar_url TYPE TEXT`);
+  } catch (err: any) {
+    console.warn('Migration: could not widen user_avatars.avatar_url (may already be TEXT):', err?.message);
+  }
 
   try {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_user_avatars_user_id ON user_avatars(user_id)`);
