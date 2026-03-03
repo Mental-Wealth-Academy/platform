@@ -56,7 +56,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) }, // Pinkish red: #E84057 (rgb(232, 64, 87))
     ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) }, // White: rgb(255, 255, 255)
     ucolor5: { value: new THREE.Vector3(0.118, 0.047, 0.224) }, // Dark purple: #1E0C39 (rgb(30, 12, 57))
-    ucolor6: { value: new THREE.Vector3(0.180, 0.608, 0.478) }, // Bluish green: #2E9B7A (rgb(46, 155, 122))
+    ucolor6: { value: new THREE.Vector3(1.0, 0.522, 0.106) }, // Orange: #FF851B (rgb(255, 133, 27))
     asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
