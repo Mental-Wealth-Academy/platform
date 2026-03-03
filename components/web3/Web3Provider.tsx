@@ -67,7 +67,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider options={{ initialChainId: base.id }}>
+        <ConnectKitProvider theme="rounded" options={{ initialChainId: base.id }}>
           {children}
         </ConnectKitProvider>
       </QueryClientProvider>
