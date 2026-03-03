@@ -19,6 +19,8 @@
     "@coinbase/coinbase-sdk": "^0.25.0",
     "@coinbase/onchainkit": "^1.1.2",
     "@farcaster/miniapp-sdk": "^0.2.1",
+    "@nouns/assets": "^0.10.0",
+    "@nouns/sdk": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",

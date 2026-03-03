@@ -1,26 +1,24 @@
 /**
- * Avatar System with Deterministic Selection
- * 
- * This module provides:
- * - 555 avatar records with IPFS-hosted images
- * - Deterministic seeded RNG (Mulberry32)
- * - Function to get 5 unique avatars for any user seed
- * 
+ * Avatar System with Deterministic Selection (Lil Nouns)
+ *
+ * Generates unique Lil Noun avatars for each user using:
+ * - @nouns/assets for trait data (bodies, accessories, heads, glasses)
+ * - @nouns/sdk for SVG rendering (buildSVG)
+ * - Deterministic seeded RNG (Mulberry32) for stable assignment
+ *
  * The same user seed will ALWAYS return the same 5 avatars.
+ * No on-chain calls or IPFS needed — everything is computed locally.
  */
 
-// IPFS gateway configuration
-// Using ipfs.io public gateway (reliable and well-cached)
-const IPFS_GATEWAY = 'https://ipfs.io/ipfs';
-const COLLECTION_CID = 'bafybeieww32fskd7h3f7x3v2pk6y4raplotzeeojag7pwhoket5yrbxdgi';
+import { ImageData, getNounData } from '@nouns/assets';
+import { buildSVG } from '@nouns/sdk';
 
-// Alternative gateways (fallbacks):
-// - https://cloudflare-ipfs.com/ipfs
-// - https://gateway.pinata.cloud/ipfs
-// - https://dweb.link/ipfs
-
-// Total number of avatars in the collection
-const TOTAL_AVATARS = 555;
+// Trait counts from @nouns/assets
+const BODY_COUNT = ImageData.images.bodies.length;
+const ACCESSORY_COUNT = ImageData.images.accessories.length;
+const HEAD_COUNT = ImageData.images.heads.length;
+const GLASSES_COUNT = ImageData.images.glasses.length;
+const BACKGROUND_COLORS = ImageData.bgcolors;
 
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 5;
@@ -29,21 +27,24 @@ const AVATARS_PER_USER = 5;
  * Avatar interface representing a single avatar
  */
 export interface Avatar {
-  id: string;           // Unique avatar identifier (e.g., "avatar_001")
-  image_url: string;    // Full IPFS gateway URL for the image
-  metadata_url: string; // Full IPFS gateway URL for metadata JSON
+  id: string;           // Unique avatar identifier (e.g., "noun_00_11_042_200_06")
+  image_url: string;    // SVG data URI
+  metadata_url: string; // Empty (no metadata needed)
+}
+
+/**
+ * Noun seed matching @nouns/assets NounSeed interface
+ */
+interface NounSeed {
+  background: number;
+  body: number;
+  accessory: number;
+  head: number;
+  glasses: number;
 }
 
 /**
  * Mulberry32 - A fast, high-quality 32-bit seeded PRNG
- * 
- * This is a deterministic random number generator that:
- * - Always produces the same sequence for the same seed
- * - Has good statistical properties for our use case
- * - Is simple and efficient
- * 
- * @param seed - A 32-bit integer seed
- * @returns A function that returns the next random float [0, 1)
  */
 function mulberry32(seed: number): () => number {
   return function() {
@@ -55,102 +56,86 @@ function mulberry32(seed: number): () => number {
 }
 
 /**
- * Converts a string to a 32-bit integer hash
- * 
- * Uses a simple but effective hash function (djb2 variant)
- * to convert any string (user_id, wallet address, etc.) to a seed.
- * 
- * @param str - The string to hash
- * @returns A 32-bit integer suitable for seeding the RNG
+ * Converts a string to a 32-bit integer hash (djb2 variant)
  */
 function stringToSeed(str: string): number {
   let hash = 5381;
   for (let i = 0; i < str.length; i++) {
-    // hash * 33 + char
     hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
-    hash = hash >>> 0; // Convert to unsigned 32-bit
+    hash = hash >>> 0;
   }
   return hash;
 }
 
 /**
- * Generates avatar data for a given avatar index
- * 
- * @param index - Zero-based avatar index (0-554)
- * @returns Avatar object with id and IPFS URLs
+ * Generates a deterministic NounSeed from a numeric RNG
  */
-function getAvatarById(index: number): Avatar {
-  // Avatar IDs are 1-indexed and zero-padded to 3 digits
-  const avatarNumber = index + 1;
-  const paddedNumber = avatarNumber.toString().padStart(3, '0');
-  const id = `avatar_${paddedNumber}`;
-  
-  // Construct IPFS URLs
-  // NOTE: Files on IPFS have a space prefix in the filename (e.g., " 1.png")
-  // We URL-encode the space as %20
-  const image_url = `${IPFS_GATEWAY}/${COLLECTION_CID}/%20${avatarNumber}.png`;
-  const metadata_url = `${IPFS_GATEWAY}/${COLLECTION_CID}/metadata/${avatarNumber}.json`;
-  
+function generateSeed(rng: () => number): NounSeed {
   return {
-    id,
-    image_url,
-    metadata_url,
+    background: Math.floor(rng() * BACKGROUND_COLORS.length),
+    body: Math.floor(rng() * BODY_COUNT),
+    accessory: Math.floor(rng() * ACCESSORY_COUNT),
+    head: Math.floor(rng() * HEAD_COUNT),
+    glasses: Math.floor(rng() * GLASSES_COUNT),
   };
 }
 
 /**
- * Gets exactly 5 deterministically assigned avatars for a user
- * 
- * CRITICAL: This function MUST return the same 5 avatars for the same userSeed.
- * This is enforced by using a seeded PRNG.
- * 
- * Algorithm:
- * 1. Convert userSeed to a 32-bit hash
- * 2. Initialize Mulberry32 RNG with that hash
- * 3. Select 5 unique random indices from 0-554
- * 4. Return corresponding avatar objects
- * 
- * @param userSeed - A stable user identifier (user_id or wallet address)
- * @returns Array of exactly 5 Avatar objects
+ * Builds an SVG data URI from a NounSeed
+ */
+function buildAvatarSvgDataUri(seed: NounSeed): string {
+  const { parts, background } = getNounData(seed);
+  const svg = buildSVG(parts, ImageData.palette, background);
+  const base64 = Buffer.from(svg).toString('base64');
+  return `data:image/svg+xml;base64,${base64}`;
+}
+
+/**
+ * Creates a stable ID from a seed
+ */
+function seedToId(seed: NounSeed): string {
+  const bg = String(seed.background).padStart(2, '0');
+  const bo = String(seed.body).padStart(2, '0');
+  const ac = String(seed.accessory).padStart(3, '0');
+  const he = String(seed.head).padStart(3, '0');
+  const gl = String(seed.glasses).padStart(2, '0');
+  return `noun_${bg}_${bo}_${ac}_${he}_${gl}`;
+}
+
+/**
+ * Gets exactly 5 deterministically assigned Lil Noun avatars for a user
+ *
+ * Same user seed always returns the same 5 avatars.
  */
 export function getAssignedAvatars(userSeed: string): Avatar[] {
-  // Convert user identifier to numeric seed
   const seed = stringToSeed(userSeed);
-  
-  // Initialize deterministic RNG
   const rng = mulberry32(seed);
-  
-  // Set to track selected indices (ensures uniqueness)
-  const selectedIndices = new Set<number>();
-  
-  // Select 5 unique avatar indices
-  // Loop is bounded by the fact that 5 << 555, so collisions are rare
-  while (selectedIndices.size < AVATARS_PER_USER) {
-    // Generate random index in range [0, TOTAL_AVATARS)
-    const index = Math.floor(rng() * TOTAL_AVATARS);
-    selectedIndices.add(index);
-  }
-  
-  // Convert indices to Avatar objects
+
+  // Generate 5 unique seeds
+  const seenIds = new Set<string>();
   const avatars: Avatar[] = [];
-  for (const index of selectedIndices) {
-    avatars.push(getAvatarById(index));
+
+  while (avatars.length < AVATARS_PER_USER) {
+    const nounSeed = generateSeed(rng);
+    const id = seedToId(nounSeed);
+
+    if (seenIds.has(id)) continue;
+    seenIds.add(id);
+
+    avatars.push({
+      id,
+      image_url: buildAvatarSvgDataUri(nounSeed),
+      metadata_url: '',
+    });
   }
-  
+
   // Sort by ID for consistent ordering
   avatars.sort((a, b) => a.id.localeCompare(b.id));
-  
   return avatars;
 }
 
 /**
  * Validates that an avatar ID is in the user's assigned set
- * 
- * This MUST be called server-side to prevent avatar spoofing.
- * 
- * @param userSeed - The user's stable identifier
- * @param avatarId - The avatar ID to validate
- * @returns true if the avatar is valid for this user, false otherwise
  */
 export function isAvatarValidForUser(userSeed: string, avatarId: string): boolean {
   const assignedAvatars = getAssignedAvatars(userSeed);
@@ -158,33 +143,47 @@ export function isAvatarValidForUser(userSeed: string, avatarId: string): boolea
 }
 
 /**
- * Gets a single avatar by its ID
- * 
- * @param avatarId - The avatar ID (e.g., "avatar_017")
- * @returns Avatar object or null if invalid ID
+ * Gets a single avatar by its ID (e.g., "noun_00_11_042_200_06")
  */
 export function getAvatarByAvatarId(avatarId: string): Avatar | null {
-  // Parse the numeric part from the ID
-  const match = avatarId.match(/^avatar_(\d{3})$/);
+  const match = avatarId.match(/^noun_(\d{2})_(\d{2})_(\d{3})_(\d{3})_(\d{2})$/);
   if (!match) {
+    // Legacy IPFS avatar format — return null to trigger re-selection
+    if (avatarId.startsWith('avatar_')) return null;
     return null;
   }
-  
-  const avatarNumber = parseInt(match[1], 10);
-  if (avatarNumber < 1 || avatarNumber > TOTAL_AVATARS) {
+
+  const seed: NounSeed = {
+    background: parseInt(match[1], 10),
+    body: parseInt(match[2], 10),
+    accessory: parseInt(match[3], 10),
+    head: parseInt(match[4], 10),
+    glasses: parseInt(match[5], 10),
+  };
+
+  // Validate ranges
+  if (seed.background >= BACKGROUND_COLORS.length ||
+      seed.body >= BODY_COUNT ||
+      seed.accessory >= ACCESSORY_COUNT ||
+      seed.head >= HEAD_COUNT ||
+      seed.glasses >= GLASSES_COUNT) {
     return null;
   }
-  
-  return getAvatarById(avatarNumber - 1);
+
+  return {
+    id: avatarId,
+    image_url: buildAvatarSvgDataUri(seed),
+    metadata_url: '',
+  };
 }
 
 /**
  * Constants exported for use in other modules
  */
 export const AVATAR_CONFIG = {
-  TOTAL_AVATARS,
+  BODY_COUNT,
+  ACCESSORY_COUNT,
+  HEAD_COUNT,
+  GLASSES_COUNT,
   AVATARS_PER_USER,
-  IPFS_GATEWAY,
-  COLLECTION_CID,
 } as const;
-
