@@ -97,7 +97,7 @@ export const week0Sections: JournalSection[] = [
     title: 'Genesis Thoughts',
     icon: TextIcon,
     type: 'text',
-    instructions: 'There once was a traveller who had walked so long they forgot why they started. One evening, at the edge of a silver lake, they caught their own reflection and did not recognize the face staring back. "Who are you?" they whispered. The reflection smiled and replied, "I am the person you were before the world told you who to be." The traveller sat down, pulled out a worn journal, and began to write — not to remember the past, but to finally meet themselves.\n\nThis is your silver lake. Before the weeks ahead ask you to recover what was lost, sit with this: What brought you here? What do you hope to find? What are you afraid to uncover? Write freely. There are no wrong answers at the beginning of a journey.',
+    instructions: 'You\'ve walked long enough to forget why you started. Somewhere along the way, the world handed you a script and you read every line.\n\nThis is where you put it down.\n\nBefore the weeks ahead strip back what\'s been layered on, sit with 3 questions: What brought you here? What do you hope to find? What are you afraid to uncover?\n\nWrite freely. There\'s no wrong way to begin.',
     placeholder: 'Write your genesis thoughts...',
   },
 ];

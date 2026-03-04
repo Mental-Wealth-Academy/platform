@@ -515,8 +515,12 @@
     margin-bottom: 20px;
   }
 
+  .courseTitle {
+    font-size: 20px;
+  }
+
   .sectionTitle {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .journalSection {

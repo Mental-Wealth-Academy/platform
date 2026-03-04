@@ -78,11 +78,15 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     window.addEventListener('click', handler, true);
     window.addEventListener('keydown', handler, true);
     window.addEventListener('touchstart', handler, true);
+    window.addEventListener('pointerdown', handler, true);
+    window.addEventListener('mousemove', handler, { once: true });
 
     return () => {
       window.removeEventListener('click', handler, true);
       window.removeEventListener('keydown', handler, true);
       window.removeEventListener('touchstart', handler, true);
+      window.removeEventListener('pointerdown', handler, true);
+      window.removeEventListener('mousemove', handler);
     };
   }, [doInit]);
 
