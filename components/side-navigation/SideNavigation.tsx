@@ -41,8 +41,9 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/puzzle.svg' },
-      { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/Survey.svg' },
+      { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/governance.svg' },
+      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
+      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/problems.svg' },
       { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
     ],
   },

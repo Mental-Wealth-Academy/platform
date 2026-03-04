@@ -1,0 +1,141 @@
+/* Shop Page */
+
+.pageLayout {
+  margin-left: var(--sidebar-width, 265px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+  color: var(--color-text-dark);
+  position: relative;
+}
+
+.content {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Product Grid */
+.productGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+/* Product Item */
+.productItem {
+  position: relative;
+  width: fit-content;
+  cursor: pointer;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.productItem:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.productImg {
+  display: block;
+  width: 240px;
+  height: 382px;
+  object-fit: cover;
+}
+
+.productPreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+
+.hoverOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.buyBtn {
+  padding: 10px 24px;
+  background: #1A1D33;
+  color: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: var(--radius-md);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.productItemBorderless {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.productItemBorderless:hover {
+  box-shadow: none;
+}
+
+.productItemBorderless .productImg,
+.productItemBorderless .productPreview {
+  object-fit: contain;
+}
+
+.productItem:hover .productPreview {
+  opacity: 1;
+}
+
+.productItem:hover .hoverOverlay {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+    padding-top: 66px;
+  }
+
+  .page {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .productItem {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+}
