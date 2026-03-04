@@ -125,44 +125,54 @@ export default function HomePage() {
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
-            {/* Hero Pill */}
+            {/* Aquarium Pill */}
             <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
-              <Image
-                src="https://i.imgur.com/HFjHyUZ.png"
-                alt="Azura"
-                width={40}
-                height={40}
-                className={styles.heroPillAvatar}
-                unoptimized
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://i.imgur.com/ACKcust.gif"
+                alt="Aquarium"
+                className={styles.heroPillGif}
               />
-              <span className={styles.heroPillText}>For those seeking something more</span>
             </div>
 
-            {/* Course Intro */}
-            <div className={`${styles.courseIntro} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
-              <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
-              <h2 className={styles.courseTitle}>Discover Your Ethereal Horizon</h2>
-              <p className={styles.courseDesc}>
-                A 12-week journey towards the Ethereal Horizon. Each week focuses on recovering a core sense of self. Complete creative exercises and seal them for your self-paced evolution.
-              </p>
-              <div className={styles.courseBanner}>
-                <Image
-                  src="https://i.imgur.com/ckhi8jC.jpeg"
-                  alt="Discover Your Ethereal Horizon"
-                  width={900}
-                  height={240}
-                  className={styles.courseBannerImg}
-                  unoptimized
-                />
+            {/* 12-Week Timeline */}
+            <div className={`${styles.calendarSection} ${isLoaded ? styles.calendarSectionLoaded : ''}`}>
+              <div className={styles.journalHeader}>
+                <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
+                <h2 className={styles.courseTitle}>Discover Your Ethereal Horizon</h2>
+                <p className={styles.courseDesc}>
+                  Each week strips back a layer, recovering a core sense of self you probably forgot you had. Creative exercises, sealed on-chain, at your own pace.
+                </p>
+              </div>
+              <div className={styles.timeline}>
+                <div className={styles.timelineTrack}>
+                  <div
+                    className={styles.timelineFill}
+                    style={{ width: `${(weekStatuses.filter(w => w.isSealed).length / WEEK_TITLES.length) * 100}%` }}
+                  />
+                </div>
+                <div className={styles.timelineMarkers}>
+                  {WEEK_TITLES.map((title, i) => {
+                    const status = getWeekStatus(i);
+                    const isSealed = status?.isSealed ?? false;
+                    const isIntro = i === 0;
+                    const isEpilogue = i === WEEK_TITLES.length - 1;
+                    const label = isIntro ? 'Intro' : isEpilogue ? 'End' : `${i}`;
+                    return (
+                      <div key={i} className={styles.timelineMarker} title={title}>
+                        <div className={`${styles.timelineDot} ${isSealed ? styles.timelineDotSealed : ''}`}>
+                          {isSealed && <span className={styles.timelineDotCheck}>&#10003;</span>}
+                        </div>
+                        <span className={styles.timelineLabel}>{label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
-              <div className={styles.journalHeader}>
-                <span className={styles.sectionLabel}>Wealth Progress</span>
-                <h2 className={styles.sectionTitle}>Ethereal Horizon Pathway</h2>
-              </div>
               <div className={styles.journalCards}>
                 {WEEK_TITLES.map((title, i) => {
                   const status = getWeekStatus(i);
@@ -183,6 +193,18 @@ export default function HomePage() {
 
             {/* Artwork Section */}
             <ArtworkSection isLoaded={isLoaded} />
+
+            {/* Course Banner */}
+            <div className={`${styles.courseBanner} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
+              <Image
+                src="https://i.imgur.com/ckhi8jC.jpeg"
+                alt="Discover Your Ethereal Horizon"
+                width={900}
+                height={240}
+                className={styles.courseBannerImg}
+                unoptimized
+              />
+            </div>
       </main>
     </div>
   );

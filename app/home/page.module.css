@@ -14,13 +14,12 @@
   padding: 40px 24px;
 }
 
-/* Hero Pill */
+/* Aquarium Pill */
 .heroPill {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 8px 24px 8px 8px;
+  padding: 0;
   background: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 999px;
@@ -29,6 +28,8 @@
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.4s ease, transform 0.4s ease;
+  overflow: hidden;
+  height: 48px;
 }
 
 .heroPillLoaded {
@@ -36,21 +37,10 @@
   transform: translateY(0);
 }
 
-.heroPillAvatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #1A1D33;
+.heroPillGif {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  flex-shrink: 0;
-}
-
-.heroPillText {
-  font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 14px;
-  font-weight: 500;
-  color: #1A1D33;
-  white-space: nowrap;
 }
 
 /* Filter Tabs */
@@ -132,7 +122,7 @@
   color: rgba(0, 0, 0, 0.65);
   line-height: 1.7;
   max-width: 640px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .courseBanner {
@@ -259,6 +249,107 @@
 .artworkSubmit:active {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 #1A1D33;
+}
+
+/* 12-Week Calendar Grid */
+.calendarSection {
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.calendarSectionLoaded {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.timeline {
+  position: relative;
+  padding: 0 8px;
+}
+
+.timelineTrack {
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  background: #E0E1EE;
+  border-radius: 2px;
+}
+
+.timelineFill {
+  height: 100%;
+  background: var(--color-primary, #5168FF);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.timelineMarkers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.timelineMarker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+}
+
+.timelineDot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #E0E1EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.timelineDot:hover {
+  border-color: var(--color-primary, #5168FF);
+  transform: scale(1.15);
+}
+
+.timelineDotSealed {
+  background: var(--color-primary, #5168FF);
+  border-color: var(--color-primary, #5168FF);
+}
+
+.timelineDotCheck {
+  font-size: 11px;
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.timelineLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 600px) {
+  .timelineLabel {
+    font-size: 7px;
+  }
+  .timelineDot {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+  }
+  .timelineDotCheck {
+    font-size: 8px;
+  }
 }
 
 /* Journal Section */

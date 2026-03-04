@@ -421,9 +421,11 @@ const SideNavigation: React.FC = () => {
                     <button
                       key={item.id}
                       onClick={() => {
+                        play('click');
                         setIsProModalOpen(true);
                         setIsMobileMenuOpen(false);
                       }}
+                      onMouseEnter={() => play('hover')}
                       className={`${styles.navItem} ${styles.navItemButton}`}
                       title={isCollapsed ? item.label : undefined}
                     >
@@ -539,7 +541,8 @@ const SideNavigation: React.FC = () => {
           <div className={styles.gemsRow}>
             <button
               className={styles.shardsCounter}
-              onClick={() => setIsInventoryOpen(true)}
+              onClick={() => { play('click'); setIsInventoryOpen(true); }}
+              onMouseEnter={() => play('hover')}
               type="button"
               title="Inventory"
             >
@@ -600,38 +603,45 @@ const SideNavigation: React.FC = () => {
                     href="/voting"
                     className={styles.accountMenuItem}
                     onClick={() => {
+                      play('navigation');
                       setIsAccountMenuOpen(false);
                       setIsMobileMenuOpen(false);
                     }}
+                    onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>PROFILE</span>
                   </Link>
                   <button
                     className={styles.accountMenuItem}
                     onClick={() => {
+                      play('click');
                       setIsAccountMenuOpen(false);
                       setIsYourAccountsModalOpen(true);
                     }}
+                    onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>Connections</span>
                   </button>
                   <div className={styles.accountMenuDivider} />
                   <button
                     className={styles.accountMenuItem}
-                    onClick={handleAvatarClick}
+                    onClick={() => { play('click'); handleAvatarClick(); }}
+                    onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>Change Avatar</span>
                   </button>
                   <button
                     className={styles.accountMenuItem}
-                    onClick={handleUsernameClick}
+                    onClick={() => { play('click'); handleUsernameClick(); }}
+                    onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>Change Username</span>
                   </button>
                   <div className={styles.accountMenuDivider} />
                   <button
                     className={styles.accountMenuItem}
-                    onClick={handleSignOut}
+                    onClick={() => { play('click'); handleSignOut(); }}
+                    onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>Sign Out</span>
                   </button>

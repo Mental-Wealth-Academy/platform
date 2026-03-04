@@ -189,26 +189,32 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
                 </div>
               </div>
 
-              {/* Academic Angel NFT */}
+              {/* Eligible Members */}
               <div className={styles.nftSection}>
                 <div className={styles.nftHeader}>
-                  <span className={styles.nftLabel}>Membership NFT</span>
+                  <span className={styles.nftLabel}>Eligible Members</span>
                   {hasAngel !== null && (
                     <span className={hasAngel ? styles.nftOwned : styles.nftNotOwned}>
                       {hasAngel ? 'Owned' : 'Not Owned'}
                     </span>
                   )}
                 </div>
-                <div className={styles.nftCard}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://i.imgur.com/GXA3DBV.gif"
-                    alt="Academic Angel NFT"
-                    className={styles.nftImage}
-                  />
-                  <div className={styles.nftInfo}>
-                    <span className={styles.nftName}>Academic Angel</span>
-                    <span className={styles.nftDesc}>Your ticket to everything MWA</span>
+                <div className={styles.nftRow}>
+                  <div className={styles.nftCard}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://i.imgur.com/GXA3DBV.gif"
+                      alt="Academic Angel"
+                      className={styles.nftImage}
+                    />
+                  </div>
+                  <div className={`${styles.nftCard} ${styles.nftCardNouns}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://www.lilnouns.wtf/app-icon.jpeg"
+                      alt="Lil Nouns"
+                      className={styles.nftImage}
+                    />
                   </div>
                 </div>
               </div>
