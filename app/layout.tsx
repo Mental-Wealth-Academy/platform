@@ -5,6 +5,7 @@ import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provid
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.world';
 
@@ -142,8 +143,8 @@ export default function RootLayout({
           </SoundProvider>
         </MiniAppProvider>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
 }
-
