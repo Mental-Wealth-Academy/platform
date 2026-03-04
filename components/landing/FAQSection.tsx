@@ -8,32 +8,32 @@ const FAQ_ITEMS = [
   {
     question: 'What is Mental Wealth Academy?',
     answer:
-      'Mental Wealth Academy (MWA) is a decentralized education platform that combines evidence-based mental health curriculum with blockchain governance. Members complete weekly quests, earn on-chain credentials, and vote on how the community treasury is allocated.',
+      'A 12-week cohort where you actually do the work on yourself. Each week strips back a layer, recovering a core sense of self through structured exercises rooted in psychology and neuroscience. It\'s peer-governed, on-chain, and designed for people who want agency over their own growth.',
   },
   {
-    question: 'How does governance work?',
+    question: 'What does the 12-week course cover?',
     answer:
-      'Governance is handled through the AzuraKillStreak smart contract deployed on Base. Members who complete quests earn voting power. Proposals are submitted on-chain, reviewed by the Azura AI agent, and executed automatically once they reach quorum.',
+      'Each week targets a specific psychological domain: safety, identity, power, integrity, possibility, abundance, connection, strength, compassion, self-protection, autonomy, and faith. The curriculum pulls from behavioral science research and pairs it with creative exercises you seal on-chain as proof of completion.',
+  },
+  {
+    question: 'What kind of tools do you use?',
+    answer:
+      'We research and integrate tools from neuroscience and personal development. Things like reflective journaling frameworks, cognitive behavioral exercises, mindfulness protocols, and decision-making models. All of it bolted onto infrastructure that gives you ownership over your progress.',
   },
   {
     question: 'Who is Azura?',
     answer:
-      'Azura is the academy\'s AI agent — she reviews governance proposals for safety and alignment, manages the community treasury, and provides personalized feedback on quest submissions. She runs on ElizaOS and operates transparently on-chain.',
+      'Azura is our AI agent. She reviews your submissions, manages the community treasury, and provides feedback grounded in the course material. Think of her as a co-pilot who\'s read every paper you haven\'t gotten to yet.',
   },
   {
-    question: 'Is Mental Wealth Academy free to use?',
+    question: 'How much time does it take each week?',
     answer:
-      'The core curriculum and community features are free to access. Premium quests and advanced tracks may require a small contribution to the community treasury, which is governed and allocated by members themselves.',
+      'Roughly 2 to 3 hours. One lesson, one reflective exercise, one optional discussion with your cohort. You move at your own pace. Consistency matters more than speed here.',
   },
   {
-    question: 'How much time do I need each week?',
+    question: 'Is this a therapy replacement?',
     answer:
-      'Most members spend around 2–3 hours per week. Each weekly quest includes a short lesson, a reflective exercise, and an optional discussion prompt. You can move at your own pace — streaks reward consistency, not speed.',
-  },
-  {
-    question: 'How does the treasury work?',
-    answer:
-      'The treasury is a multi-sig smart contract on Base that holds community funds. Members propose and vote on how funds are spent — whether that\'s funding new course content, grants for mental health research, or community initiatives. Every transaction is verified by Azura\'s oracle network before execution.',
+      'No. This is education on psychology and behavioral improvement, not clinical treatment. We teach you frameworks for understanding how your mind works, how groups coordinate, and how to take ownership of your mental wealth. If you need therapy, get therapy. This sits alongside it.',
   },
 ];
 

@@ -5,22 +5,23 @@ import styles from './LandingPage.module.css';
 
 export const RotatingTextSection: React.FC = () => {
   const texts = useMemo(() => [
-    'gain agency in their lives',
-    'fund holistic decisions',
-    'control their own destiny'
+    'reclaim their agency',
+    'reshape their future',
+    'own their mental wealth'
   ], []);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [step, setStep] = useState(0);
+  const currentIndex = step % texts.length;
   const [currentWidth, setCurrentWidth] = useState(0);
   const [textWidths, setTextWidths] = useState<number[]>([]);
   const textItemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % texts.length);
+      setStep((prev) => prev + 1);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [texts.length]);
+  }, []);
 
   useEffect(() => {
     const measureAllWidths = () => {
@@ -78,7 +79,8 @@ export const RotatingTextSection: React.FC = () => {
     }
   }, [currentIndex, textWidths]);
 
-  const rotation = currentIndex * 120;
+  const degreesPerItem = 360 / texts.length;
+  const rotation = step * degreesPerItem;
 
   return (
     <div className={styles.rotatingTextContainer}>
@@ -108,7 +110,7 @@ export const RotatingTextSection: React.FC = () => {
               }}
             >
               {texts.map((text, index) => {
-                const itemRotation = index * 120;
+                const itemRotation = index * degreesPerItem;
                 return (
                   <div
                     key={index}
@@ -131,7 +133,7 @@ export const RotatingTextSection: React.FC = () => {
             </div>
           </div>
         </h3>
-        <p className={styles.rotatingTextStaticLine}>with other humans for a better world</p>
+        <p className={styles.rotatingTextStaticLine}>with the heart of tomorrow</p>
       </div>
     </div>
   );

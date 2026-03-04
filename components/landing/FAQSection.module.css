@@ -4,9 +4,7 @@
   width: 100%;
   padding: 48px 0;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.9);
 }
 
 @media (min-width: 768px) {
@@ -45,7 +43,7 @@
   line-height: 1.2;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.02em;
-  color: var(--color-text-dark);
+  color: #ffffff;
   margin: 0 0 40px 0;
   max-width: 700px;
 }
@@ -72,7 +70,7 @@
 
 /* Accordion Item */
 .faqItem {
-  border-bottom: 1px solid #d4d6e4;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Question Row */
@@ -93,7 +91,7 @@
   font-family: var(--font-primary);
   font-size: 1.0625rem;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-dark);
+  color: #ffffff;
   line-height: 1.4;
 }
 
@@ -109,7 +107,7 @@
   width: 20px;
   height: 20px;
   transition: transform 0.3s ease;
-  color: var(--color-text-dark);
+  color: #ffffff;
 }
 
 .faqChevronOpen {
@@ -136,7 +134,7 @@
   font-size: 0.875rem;
   font-weight: var(--font-weight-regular);
   line-height: 1.7;
-  color: rgba(26, 27, 36, 0.8);
+  color: rgba(255, 255, 255, 0.7);
   margin: 0;
   max-width: 720px;
 }

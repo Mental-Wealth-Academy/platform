@@ -1533,7 +1533,7 @@
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  gap: 0.25rem;
+  gap: 0.5em;
   margin: 0;
   padding: 0 8px;
   font-family: var(--font-primary);
@@ -1572,7 +1572,7 @@
 
 .rotatingTextWrapper {
   position: relative;
-  margin: 0 0.25rem;
+  margin: 0;
   vertical-align: middle;
   text-align: center;
   flex-shrink: 0;
