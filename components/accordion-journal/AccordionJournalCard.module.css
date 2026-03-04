@@ -1294,6 +1294,330 @@
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
+/* ─── Morning Pages Strip ─── */
+.morningPagesStrip {
+  border-bottom: 3px solid #1A1D33;
+  background: #F4F5FE;
+  padding: 16px 24px;
+}
+
+.morningPagesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.morningPagesLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1A1D33;
+  margin: 0;
+}
+
+.morningPagesDays {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.morningPagesDayBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 4px;
+  border: 2px solid #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.morningPagesDayAvailable {
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  box-shadow: 2px 2px 0 #1A1D33;
+  cursor: pointer;
+}
+
+.morningPagesDayAvailable:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.morningPagesDayDone {
+  background: #22C55E;
+  color: #FFFFFF;
+  box-shadow: 2px 2px 0 #1A1D33;
+  cursor: default;
+}
+
+.morningPagesDayLocked {
+  background: #E8E9F0;
+  color: #AAAAAA;
+  border-color: #CCCCCC;
+  cursor: not-allowed;
+}
+
+.morningPagesPending {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #666;
+  margin: 10px 0 0 0;
+}
+
+/* ─── Sections List (wrapper for gate overlay) ─── */
+.sectionsList {
+  position: relative;
+}
+
+/* ─── Sections Gate Overlay ─── */
+.sectionsGateOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: rgba(244, 245, 254, 0.92);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.sectionsGateContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.sectionsGateText {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1D33;
+  max-width: 280px;
+  margin: 0;
+}
+
+.sectionsGateBtn {
+  padding: 12px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  background: var(--color-primary, #5168FF);
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.sectionsGateBtn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.sectionsGatePending {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* ─── Morning Pages Timer Modal ─── */
+.morningPagesModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.morningPagesModalBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.morningPagesModal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 8px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.3s ease;
+}
+
+.morningPagesModalHeader {
+  padding: 24px 24px 16px;
+  background: linear-gradient(135deg, #F4F5FE 0%, #EBEEFF 100%);
+  border-bottom: 3px solid #1A1D33;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.morningPagesModalDayBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 20px;
+  border: 2px solid #1A1D33;
+}
+
+.morningPagesModalTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+}
+
+.morningPagesModalSubtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.morningPagesTimerDisplay {
+  padding: 24px 24px 16px;
+  text-align: center;
+}
+
+.morningPagesTimerCount {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 56px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
+}
+
+.morningPagesTimerWarning {
+  color: #E53E3E;
+}
+
+.morningPagesTimerBar {
+  height: 6px;
+  background: #E8E9F0;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.morningPagesTimerBarFill {
+  height: 100%;
+  background: var(--color-primary, #5168FF);
+  transition: width 1s linear;
+}
+
+.morningPagesWriteArea {
+  padding: 0 24px 16px;
+  flex: 1;
+}
+
+.morningPagesTextarea {
+  width: 100%;
+  height: 200px;
+  padding: 12px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: #1A1D33;
+  background: #FFFEF7;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.morningPagesTextarea:focus {
+  outline: none;
+  border-color: var(--color-primary, #5168FF);
+  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+}
+
+.morningPagesTextarea::placeholder {
+  color: #BBBBAA;
+}
+
+.morningPagesModalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px 20px;
+  border-top: 2px solid rgba(26, 29, 51, 0.1);
+}
+
+.morningPagesModalNote {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  flex: 1;
+}
+
+.morningPagesSubmitBtn {
+  padding: 12px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  background: #22C55E;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.morningPagesSubmitBtn:hover {
+  background: #16A34A;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .card {

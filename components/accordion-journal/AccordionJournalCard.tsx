@@ -22,6 +22,13 @@ interface SealAttestation {
   attester: 'azura';
 }
 
+interface MorningPageEntry {
+  day: number;
+  date: string;        // YYYY-MM-DD
+  content: string;
+  submittedAt: number;
+}
+
 export interface JournalSection {
   id: string;
   title: string;
@@ -37,23 +44,6 @@ export interface JournalSection {
 
 // Week 1 Sections
 export const week1Sections: JournalSection[] = [
-  {
-    id: 'morning-pages',
-    title: 'Morning Pages',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3v18M3 12h18" />
-      </svg>
-    ),
-    type: 'checklist',
-    instructions: 'Every morning, set your clock one-half hour early; get up and write three pages of longhand, stream-of-consciousness morning writing. Do not reread these pages or allow anyone else to read them. Ideally, stick these pages in a large manila envelope, or hide them somewhere. Welcome to the morning pages. They will change you.',
-    checkItems: [
-      'Woke up 30 minutes early',
-      'Wrote 3 pages of stream-of-consciousness',
-      'Did not reread the pages',
-      'Stored pages safely away'
-    ]
-  },
   {
     id: 'blurts-affirmations',
     title: 'Blurts → Affirmations',
@@ -301,6 +291,14 @@ export default function AccordionJournalCard({
     romance: 50
   });
 
+  // Morning Pages state
+  const [morningPages, setMorningPages] = useState<MorningPageEntry[]>([]);
+  const [timerActive, setTimerActive] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(1800);
+  const [timerText, setTimerText] = useState('');
+  const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Seal/Attestation state
   const [isSealed, setIsSealed] = useState(initialIsSealed ?? false);
   const [isSealing, setIsSealing] = useState(false);
@@ -313,6 +311,49 @@ export default function AccordionJournalCard({
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
+
+  // Morning Pages computed values
+  const todayDateStr = new Date().toISOString().split('T')[0];
+
+  const availableDayIndex = (() => {
+    if (morningPages.length === 0) return 0;
+    if (morningPages.length >= 7) return -1;
+    const last = morningPages[morningPages.length - 1];
+    return last.date < todayDateStr ? morningPages.length : -1;
+  })();
+
+  const sectionsUnlocked = morningPages.some(e => e.date === todayDateStr);
+
+  const formatTimer = (s: number) =>
+    `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+
+  const startTimer = (dayIndex: number) => {
+    setActiveDayIndex(dayIndex);
+    setTimerSeconds(1800);
+    setTimerText('');
+    setTimerActive(true);
+    timerIntervalRef.current = setInterval(() => {
+      setTimerSeconds(prev => {
+        if (prev <= 1) { clearInterval(timerIntervalRef.current!); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const submitMorningPages = () => {
+    if (activeDayIndex === null) return;
+    clearInterval(timerIntervalRef.current!);
+    setMorningPages(prev => [...prev, {
+      day: activeDayIndex + 1,
+      date: todayDateStr,
+      content: timerText,
+      submittedAt: Date.now(),
+    }]);
+    setTimerActive(false);
+    setActiveDayIndex(null);
+    setTimerSeconds(1800);
+    setTimerText('');
+  };
 
   // Sync initialIsSealed / initialSealTxHash when props change
   useEffect(() => {
@@ -330,8 +371,9 @@ export default function AccordionJournalCard({
       timeMapActivities,
       lifePieValues,
       completedSections: Array.from(completedSections),
+      morningPages,
     };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, morningPages]);
 
   // Load progress on mount (only if authenticated)
   useEffect(() => {
@@ -353,6 +395,7 @@ export default function AccordionJournalCard({
         if (pd.timeMapActivities) setTimeMapActivities(pd.timeMapActivities);
         if (pd.lifePieValues) setLifePieValues(pd.lifePieValues);
         if (pd.completedSections) setCompletedSections(new Set(pd.completedSections));
+        if (pd.morningPages) setMorningPages(pd.morningPages);
         if (data.isSealed) setIsSealed(true);
         if (data.sealTxHash) setSealTxHash(data.sealTxHash);
       } catch {
@@ -393,7 +436,40 @@ export default function AccordionJournalCard({
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, morningPages, weekNumber, isSealed, enablePersistence, collectProgressData]);
+
+  // Reset timer if user leaves tab
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!timerActive) return;
+      if (document.visibilityState === 'hidden') {
+        clearInterval(timerIntervalRef.current!);
+        setTimerSeconds(1800);
+        setTimerText('');
+      } else {
+        timerIntervalRef.current = setInterval(() => {
+          setTimerSeconds(prev => {
+            if (prev <= 1) { clearInterval(timerIntervalRef.current!); return 0; }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [timerActive]);
+
+  // Warn on page unload while timer is active
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (timerActive) { e.preventDefault(); e.returnValue = ''; }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [timerActive]);
+
+  // Cleanup interval on unmount
+  useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
   // Initialize checklist states (only if not loaded from DB)
   useEffect(() => {
@@ -925,10 +1001,10 @@ export default function AccordionJournalCard({
       <button
         type="button"
         className={styles.cardFace}
-        onClick={() => { if (isSealed) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
+        onClick={() => { if (isSealed || timerActive) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
         onMouseEnter={() => play('hover')}
         aria-expanded={isExpanded}
-        disabled={isSealed}
+        disabled={isSealed || timerActive}
       >
         <div className={styles.cardFaceLeft}>
           <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
@@ -994,60 +1070,120 @@ export default function AccordionJournalCard({
 
       {/* Expandable Sections */}
       <div className={`${styles.sectionsContainer} ${isExpanded ? styles.sectionsVisible : ''}`}>
-        {journalSections.map((section) => (
-          <div
-            key={section.id}
-            className={`${styles.section} ${completedSections.has(section.id) ? styles.sectionCompleted : ''}`}
-          >
-            <button
-              type="button"
-              className={styles.sectionHeader}
-              onClick={() => { play(expandedSections.has(section.id) ? 'toggle-off' : 'toggle-on'); toggleSection(section.id); }}
-              onMouseEnter={() => play('hover')}
-              aria-expanded={expandedSections.has(section.id)}
-            >
-              <div className={styles.sectionHeaderLeft}>
-                <div className={`${styles.sectionIcon} ${completedSections.has(section.id) ? styles.sectionIconCompleted : ''}`}>
-                  {completedSections.has(section.id) ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : section.icon}
-                </div>
-                <span className={styles.sectionTitle}>{section.title}</span>
+
+        {/* Morning Pages Strip — weekly weeks only */}
+        {weekNumber !== 0 && weekNumber !== 13 && (
+          <div className={styles.morningPagesStrip}>
+            <div className={styles.morningPagesHeader}>
+              <p className={styles.morningPagesLabel}>Morning Pages</p>
+              <div className={styles.morningPagesDays}>
+                {Array.from({ length: 7 }, (_, i) => {
+                  const done = morningPages.find(e => e.day === i + 1);
+                  const isAvailable = availableDayIndex === i;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`${styles.morningPagesDayBtn} ${done ? styles.morningPagesDayDone : isAvailable ? styles.morningPagesDayAvailable : styles.morningPagesDayLocked}`}
+                      onClick={() => isAvailable && startTimer(i)}
+                      disabled={!isAvailable}
+                      title={done ? `Day ${i + 1} complete — ${done.date}` : isAvailable ? `Start Day ${i + 1}` : `Day ${i + 1} locked`}
+                    >
+                      {done ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      ) : (
+                        <span>{i + 1}</span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              <svg
-                className={`${styles.sectionChevron} ${expandedSections.has(section.id) ? styles.sectionChevronRotated : ''}`}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-
-            <div className={`${styles.sectionContent} ${expandedSections.has(section.id) ? styles.sectionContentVisible : ''}`}>
-              <p className={styles.instructions}>{section.instructions}</p>
-
-              {renderSectionContent(section)}
-
-              <button
-                type="button"
-                className={`${styles.completeButton} ${completedSections.has(section.id) ? styles.completeButtonActive : ''}`}
-                onClick={() => { play('success'); markComplete(section.id); }}
-                onMouseEnter={() => play('hover')}
-                disabled={isSealed}
-              >
-                {completedSections.has(section.id) ? 'Completed' : 'Mark Complete'}
-              </button>
             </div>
           </div>
-        ))}
+        )}
+
+        <div className={styles.sectionsList}>
+          {journalSections.map((section) => (
+            <div
+              key={section.id}
+              className={`${styles.section} ${completedSections.has(section.id) ? styles.sectionCompleted : ''}`}
+            >
+              <button
+                type="button"
+                className={styles.sectionHeader}
+                onClick={() => { play(expandedSections.has(section.id) ? 'toggle-off' : 'toggle-on'); toggleSection(section.id); }}
+                onMouseEnter={() => play('hover')}
+                aria-expanded={expandedSections.has(section.id)}
+              >
+                <div className={styles.sectionHeaderLeft}>
+                  <div className={`${styles.sectionIcon} ${completedSections.has(section.id) ? styles.sectionIconCompleted : ''}`}>
+                    {completedSections.has(section.id) ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    ) : section.icon}
+                  </div>
+                  <span className={styles.sectionTitle}>{section.title}</span>
+                </div>
+                <svg
+                  className={`${styles.sectionChevron} ${expandedSections.has(section.id) ? styles.sectionChevronRotated : ''}`}
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              <div className={`${styles.sectionContent} ${expandedSections.has(section.id) ? styles.sectionContentVisible : ''}`}>
+                <p className={styles.instructions}>{section.instructions}</p>
+
+                {renderSectionContent(section)}
+
+                <button
+                  type="button"
+                  className={`${styles.completeButton} ${completedSections.has(section.id) ? styles.completeButtonActive : ''}`}
+                  onClick={() => { play('success'); markComplete(section.id); }}
+                  onMouseEnter={() => play('hover')}
+                  disabled={isSealed}
+                >
+                  {completedSections.has(section.id) ? 'Completed' : 'Mark Complete'}
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Section Gate Overlay — weekly weeks only */}
+          {weekNumber !== 0 && weekNumber !== 13 && !sectionsUnlocked && (
+            <div className={styles.sectionsGateOverlay}>
+              <div className={styles.sectionsGateContent}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A1D33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                {availableDayIndex >= 0 && (
+                  <button
+                    type="button"
+                    className={styles.sectionsGateBtn}
+                    onClick={() => startTimer(availableDayIndex)}
+                  >
+                    Start Day {availableDayIndex + 1} — 30 min timer
+                  </button>
+                )}
+                {availableDayIndex === -1 && morningPages.length < 7 && (
+                  <span className={styles.sectionsGatePending}>Return tomorrow</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Seal the Week Section */}
         <div className={styles.sealSection}>
@@ -1115,6 +1251,59 @@ export default function AccordionJournalCard({
           )}
         </div>
       </div>
+
+      {/* Morning Pages Timer Modal */}
+      {timerActive && typeof window !== 'undefined' && createPortal(
+        <div className={styles.morningPagesModalOverlay}>
+          <div className={styles.morningPagesModalBackdrop} />
+          <div className={styles.morningPagesModal}>
+            <div className={styles.morningPagesModalHeader}>
+              <span className={styles.morningPagesModalDayBadge}>Day {(activeDayIndex ?? 0) + 1} of 7</span>
+              <h3 className={styles.morningPagesModalTitle}>Morning Pages</h3>
+              <p className={styles.morningPagesModalSubtitle}>Write freely for 30 minutes. Tab switching resets the timer.</p>
+            </div>
+
+            <div className={styles.morningPagesTimerDisplay}>
+              <div className={`${styles.morningPagesTimerCount} ${timerSeconds <= 300 ? styles.morningPagesTimerWarning : ''}`}>
+                {formatTimer(timerSeconds)}
+              </div>
+              <div className={styles.morningPagesTimerBar}>
+                <div
+                  className={styles.morningPagesTimerBarFill}
+                  style={{ width: `${((1800 - timerSeconds) / 1800) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <div className={styles.morningPagesWriteArea}>
+              <textarea
+                className={styles.morningPagesTextarea}
+                placeholder="Start writing. Let your thoughts flow freely..."
+                value={timerText}
+                onChange={(e) => setTimerText(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            <div className={styles.morningPagesModalFooter}>
+              <p className={styles.morningPagesModalNote}>
+                {timerSeconds > 0
+                  ? `${formatTimer(timerSeconds)} remaining — keep writing!`
+                  : 'Time is up! Submit when ready.'}
+              </p>
+              <button
+                type="button"
+                className={styles.morningPagesSubmitBtn}
+                onClick={() => { play('success'); submitMorningPages(); }}
+                onMouseEnter={() => play('hover')}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {/* Seal Modal */}
       {showSealModal && typeof window !== 'undefined' && createPortal(

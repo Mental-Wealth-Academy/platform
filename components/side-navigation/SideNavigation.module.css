@@ -426,9 +426,9 @@
 }
 
 .sectionBadgePro {
-  background: rgba(81, 104, 255, 0.12);
-  color: var(--color-primary);
-  border-color: rgba(81, 104, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.15) 0%, rgba(255, 154, 92, 0.15) 100%);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .sectionItems {
@@ -657,9 +657,9 @@
 }
 
 .badgePro {
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(123, 140, 255, 0.15) 100%);
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.15) 0%, rgba(255, 154, 92, 0.15) 100%);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
   font-size: 9px;
 }
 

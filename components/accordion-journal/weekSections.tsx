@@ -45,23 +45,6 @@ const StarIcon = (
   </svg>
 );
 
-// Morning Pages section (shared across most weeks)
-function morningPages(): JournalSection {
-  return {
-    id: 'morning-pages',
-    title: 'Morning Pages',
-    icon: PenIcon,
-    type: 'checklist',
-    instructions: 'Every morning, set your clock one-half hour early; get up and write three pages of longhand, stream-of-consciousness morning writing. Do not reread these pages or allow anyone else to read them. Ideally, stick these pages in a large manila envelope, or hide them somewhere.',
-    checkItems: [
-      'Woke up 30 minutes early',
-      'Wrote 3 pages of stream-of-consciousness',
-      'Did not reread the pages',
-      'Stored pages safely away',
-    ],
-  };
-}
-
 // Artist Date section (shared across most weeks)
 function artistDate(): JournalSection {
   return {
@@ -104,7 +87,6 @@ export const week0Sections: JournalSection[] = [
 
 // ─── Week 3: Power ───────────────────────────────────────────────────
 export const week3Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -146,7 +128,6 @@ export const week3Sections: JournalSection[] = [
 
 // ─── Week 4: Integrity ───────────────────────────────────────────────
 export const week4Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -191,7 +172,6 @@ export const week4Sections: JournalSection[] = [
 
 // ─── Week 5: Possibility ─────────────────────────────────────────────
 export const week5Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -224,7 +204,6 @@ export const week5Sections: JournalSection[] = [
 
 // ─── Week 6: Abundance ───────────────────────────────────────────────
 export const week6Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -264,7 +243,6 @@ export const week6Sections: JournalSection[] = [
 
 // ─── Week 7: Connection ──────────────────────────────────────────────
 export const week7Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -305,7 +283,6 @@ export const week7Sections: JournalSection[] = [
 
 // ─── Week 8: Strength ────────────────────────────────────────────────
 export const week8Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -347,7 +324,6 @@ export const week8Sections: JournalSection[] = [
 
 // ─── Week 9: Compassion ──────────────────────────────────────────────
 export const week9Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -387,7 +363,6 @@ export const week9Sections: JournalSection[] = [
 
 // ─── Week 10: Self-Protection ────────────────────────────────────────
 export const week10Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -434,7 +409,6 @@ export const week10Sections: JournalSection[] = [
 
 // ─── Week 11: Autonomy ───────────────────────────────────────────────
 export const week11Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
@@ -477,7 +451,6 @@ export const week11Sections: JournalSection[] = [
 
 // ─── Week 12: Faith ──────────────────────────────────────────────────
 export const week12Sections: JournalSection[] = [
-  morningPages(),
   artistDate(),
   artistWalk(),
   {
