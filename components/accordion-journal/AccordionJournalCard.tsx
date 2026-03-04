@@ -509,6 +509,7 @@ export default function AccordionJournalCard({
       setSealTxHash(data.txHash);
       setSealStep('complete');
       setIsSealed(true);
+      setIsExpanded(false);
 
       // Notify parent
       if (onSealComplete && data.txHash) {
@@ -924,9 +925,10 @@ export default function AccordionJournalCard({
       <button
         type="button"
         className={styles.cardFace}
-        onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
+        onClick={() => { if (isSealed) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
         onMouseEnter={() => play('hover')}
         aria-expanded={isExpanded}
+        disabled={isSealed}
       >
         <div className={styles.cardFaceLeft}>
           <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
@@ -967,10 +969,7 @@ export default function AccordionJournalCard({
               />
             </svg>
             {isSealed ? (
-              <svg className={styles.sealedIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <polyline points="9 12 11 14 15 10" />
-              </svg>
+              <img src="/icons/seal.svg" className={styles.sealedIcon} width="16" height="16" alt="shield" />
             ) : (
               <span className={styles.progressText}>{completedCount}/{totalSections}</span>
             )}
@@ -1055,10 +1054,7 @@ export default function AccordionJournalCard({
           {isSealed ? (
             <div className={styles.sealedInfo}>
               <div className={styles.sealedBadge}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  <polyline points="9 12 11 14 15 10" />
-                </svg>
+                <img src="/icons/seal.svg" width="20" height="20" alt="shield" />
                 <span>Week Sealed on Base</span>
               </div>
               <p className={styles.sealedDetails}>
@@ -1112,9 +1108,7 @@ export default function AccordionJournalCard({
                 onMouseEnter={() => play('hover')}
                 disabled={!canSeal}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
+                <img src="/icons/seal.svg" width="18" height="18" alt="shield" />
                 Seal the Week
               </button>
             </>
@@ -1193,10 +1187,7 @@ export default function AccordionJournalCard({
               {sealStep === 'complete' && (
                 <div className={styles.sealComplete}>
                   <div className={styles.sealCompleteIcon}>
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                      <polyline points="9 12 11 14 15 10" />
-                    </svg>
+                    <img src="/icons/seal.svg" width="48" height="48" alt="shield" />
                   </div>
                   <p className={styles.sealCompleteText}>
                     Your creative journey for Week {weekNumber} is now permanently attested on Base.
@@ -1223,9 +1214,7 @@ export default function AccordionJournalCard({
                     className={styles.sealModalConfirm}
                     onClick={() => { play('celebration'); handleSealWeek(); }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
+                    <img src="/icons/seal.svg" width="16" height="16" alt="shield" />
                     Seal with Azura
                   </button>
                 </>
