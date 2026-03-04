@@ -398,7 +398,9 @@
 }
 
 .podIcon {
-  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 8px;
 }
 
@@ -415,10 +417,190 @@
   opacity: 0.7;
 }
 
+.podCardActive {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-bottom-width: 5px;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.podCardActive .podTitle,
+.podCardActive .podDesc {
+  color: #ffffff;
+}
+
 .podAction {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-primary);
+}
+
+/* Tab Content */
+.tabContent {
+  animation: tabFadeIn 0.25s ease;
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Funding Pod Cards — Dashboard Style */
+.fundingGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fundingCard {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius-xl);
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  background: #ffffff;
+  overflow: hidden;
+  transition: all 0.15s ease;
+  color: var(--color-text-dark);
+}
+
+.fundingCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.fundingAccent {
+  width: 6px;
+  flex-shrink: 0;
+}
+
+.fundingLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  min-width: 100px;
+  border-right: 2px solid rgba(26, 29, 51, 0.1);
+}
+
+.fundingAmount {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1A1D33;
+  font-family: var(--font-primary);
+  white-space: nowrap;
+}
+
+.fundingPercent {
+  font-size: 12px;
+  font-weight: 700;
+  color: #666666;
+  font-family: var(--font-primary);
+  margin-top: 2px;
+}
+
+.fundingRight {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.fundingTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  font-family: var(--font-primary);
+  color: #1A1D33;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.fundingDesc {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+  color: #666666;
+  font-family: var(--font-primary);
+}
+
+.fundingBar {
+  width: 100%;
+  height: 6px;
+  background: rgba(26, 29, 51, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.fundingBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.fundingMeta {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999999;
+  font-family: var(--font-primary);
+  letter-spacing: 0.03em;
+}
+
+/* Bounty / Reward Cards */
+.bountyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.bountyCard {
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  background: #ffffff;
+  transition: all 0.15s ease;
+  color: var(--color-text-dark);
+}
+
+.bountyCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.bountyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.bountyTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  font-family: var(--font-primary);
+  color: #1A1D33;
+}
+
+.bountyPoints {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  border: 2px solid #1A1D33;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .explainButton {
@@ -1483,6 +1665,37 @@
     gap: 12px;
   }
 
+  .fundingCard {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .fundingLeft {
+    padding: 16px;
+    min-width: 80px;
+  }
+
+  .fundingAmount {
+    font-size: 22px;
+  }
+
+  .fundingRight {
+    padding: 16px;
+  }
+
+  .fundingTitle {
+    font-size: 14px;
+  }
+
+  .bountyGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .bountyCard {
+    padding: 16px;
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
   .proposalsSection {
     padding: 0;
   }
@@ -1534,6 +1747,11 @@
 
 @media (max-width: 480px) {
   .podGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .bountyGrid {
     grid-template-columns: 1fr;
     gap: 12px;
   }

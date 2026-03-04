@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { providers } from 'ethers';
 import { voteOnProposal } from '@/lib/azura-contract';
+import { useSound } from '@/hooks/useSound';
 import styles from './FinalizeButton.module.css';
 
 interface VoteButtonProps {
@@ -16,6 +17,7 @@ const VoteButton: React.FC<VoteButtonProps> = ({
   contractAddress,
   onVoted,
 }) => {
+  const { play } = useSound();
   const [voting, setVoting] = useState(false);
   const [voted, setVoted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,8 @@ const VoteButton: React.FC<VoteButtonProps> = ({
       <div className={styles.voteRow}>
         <button
           className={styles.yesButton}
-          onClick={() => handleVote(true)}
+          onClick={() => { play('click'); handleVote(true); }}
+          onMouseEnter={() => play('hover')}
           disabled={voting}
           type="button"
         >
@@ -91,7 +94,8 @@ const VoteButton: React.FC<VoteButtonProps> = ({
         </button>
         <button
           className={styles.noButton}
-          onClick={() => handleVote(false)}
+          onClick={() => { play('click'); handleVote(false); }}
+          onMouseEnter={() => play('hover')}
           disabled={voting}
           type="button"
         >

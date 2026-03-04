@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useSound } from '@/hooks/useSound';
 import styles from './SoulGemDisplay.module.css';
 
 interface SoulGemDisplayProps {
@@ -81,6 +82,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   walletAddress,
   governanceTokenAddress,
 }) => {
+  const { play } = useSound();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -106,7 +108,8 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
             <span className={styles.aiTag}>Guardian</span>
             <button
               className={styles.copyButton}
-              onClick={handleCopy}
+              onClick={() => { play('click'); handleCopy(); }}
+              onMouseEnter={() => play('hover')}
               title={copied ? 'Copied!' : `Copy address: ${walletAddress}`}
               type="button"
             >

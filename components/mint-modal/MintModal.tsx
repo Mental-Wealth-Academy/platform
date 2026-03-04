@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { useAccount } from 'wagmi'
 import { providers } from 'ethers'
 import { getEligibleInviteLists, getMintTransaction, SCATTER_COLLECTION_SLUG, type MintList } from '@/lib/scatter-api'
+import { useSound } from '@/hooks/useSound'
 import styles from './MintModal.module.css'
 
 interface MintModalProps {
@@ -13,6 +14,7 @@ interface MintModalProps {
 }
 
 export default function MintModal({ isOpen, onClose }: MintModalProps) {
+  const { play } = useSound()
   const { address, isConnected, connector } = useAccount()
   const [mintLists, setMintLists] = useState<MintList[]>([])
   const [selectedList, setSelectedList] = useState<MintList | null>(null)
@@ -186,7 +188,8 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={() => { play('click'); onClose() }}
+          onMouseEnter={() => play('hover')}
           className={styles.closeButton}
           type="button"
           aria-label="Close modal"
@@ -275,7 +278,8 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
                   )}
 
                   <button
-                    onClick={handleMint}
+                    onClick={() => { play('click'); handleMint() }}
+                    onMouseEnter={() => play('hover')}
                     disabled={loading || !selectedList}
                     className={styles.mintButton}
                     type="button"
@@ -301,12 +305,15 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.transactionLink}
+                  onClick={() => play('navigation')}
+                  onMouseEnter={() => play('hover')}
                 >
                   View on BaseScan
                 </a>
               )}
               <button
-                onClick={onClose}
+                onClick={() => { play('click'); onClose() }}
+                onMouseEnter={() => play('hover')}
                 className={styles.closeButtonSecondary}
                 type="button"
               >

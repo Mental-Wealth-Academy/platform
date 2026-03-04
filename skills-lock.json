@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "configurator": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "251add1c645e4a3063a9f359b25c8da8fa31dc46be9a122dab253644f778cf45"
+    },
+    "deployer": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "84345b141dfd206f04b093edfb643d44f143bc1b1b63f88eda6df12f79fae8ec"
+    },
+    "liquidity-planner": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "c86013424ead1aa0a269b0a01e5e48095a53415d256afb516f8c24257dfef704"
+    },
+    "swap-integration": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "b9eae27efd142c36fdf89ce398e983a9d643889f74dfa36611bf6be9f518bc77"
+    },
+    "swap-planner": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "b0b5fc08d9e119025d13a7cc37a3012810f59796e17f0f41a17d6409f71c53d0"
+    },
+    "v4-security-foundations": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "fd89603fa2e0ce1d98d1d3769b36b4f23a42fc421e01e9a830874eccc4656462"
+    },
+    "viem-integration": {
+      "source": "Uniswap/uniswap-ai",
+      "sourceType": "github",
+      "computedHash": "20114c990a6d05fa7d7b96e77d65cb440d270651fe34374614c2c0d13a538e2c"
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import VoteButton from './FinalizeButton';
+import { useSound } from '@/hooks/useSound';
 import styles from './ProposalDetailsModal.module.css';
 
 interface ProposalReview {
@@ -50,12 +51,14 @@ interface ProposalDetailsModalProps {
 
 function Accordion({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(true);
+  const { play } = useSound();
   return (
     <div className={styles.accordion}>
       <button
         type="button"
         className={styles.accordionTrigger}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { play(open ? 'toggle-off' : 'toggle-on'); setOpen((v) => !v); }}
+        onMouseEnter={() => play('hover')}
         aria-expanded={open}
       >
         <h3 className={styles.sectionTitle}>{title}</h3>
@@ -87,6 +90,8 @@ export default function ProposalDetailsModal({
   onVoted,
   proposal,
 }: ProposalDetailsModalProps) {
+  const { play } = useSound();
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -121,7 +126,7 @@ export default function ProposalDetailsModal({
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close">
+        <button className={styles.closeButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')} aria-label="Close">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -138,6 +143,8 @@ export default function ProposalDetailsModal({
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`${styles.metaItem} ${styles.metaLink}`}
+                  onClick={() => play('navigation')}
+                  onMouseEnter={() => play('hover')}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>

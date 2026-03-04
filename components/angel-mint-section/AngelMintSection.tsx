@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useSound } from '@/hooks/useSound'
 import styles from './AngelMintSection.module.css'
 
 interface AngelMintSectionProps {
@@ -8,6 +9,7 @@ interface AngelMintSectionProps {
 }
 
 export default function AngelMintSection({ onOpenMintModal }: AngelMintSectionProps) {
+  const { play } = useSound()
   return (
     <>
       <section className={styles.angelSection}>
@@ -75,8 +77,10 @@ export default function AngelMintSection({ onOpenMintModal }: AngelMintSectionPr
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
+                play('click')
                 onOpenMintModal()
               }}
+              onMouseEnter={() => play('hover')}
               className={styles.mintButton}
               type="button"
             >

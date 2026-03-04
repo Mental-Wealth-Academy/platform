@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
+import { useSound } from '@/hooks/useSound';
 import styles from './ProposalCard.module.css';
 
 interface ProposalReview {
@@ -60,6 +61,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onChainProposalId,
   onChainData,
 }) => {
+  const { play } = useSound();
+
   const getStage1Variant = () => {
     if (status === 'pending_review') {
       return review ? 'analyzing' : 'waiting';
@@ -248,7 +251,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <span className={styles.timestamp}>{formatTimestamp(createdAt)}</span>
         <button
           className={styles.viewButton}
-          onClick={() => onViewDetails?.(id)}
+          onClick={() => { play('click'); onViewDetails?.(id); }}
+          onMouseEnter={() => play('hover')}
           type="button"
         >
           View Details

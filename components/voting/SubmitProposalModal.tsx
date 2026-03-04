@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { providers } from 'ethers';
 import { createProposalOnChain } from '@/lib/azura-contract';
 import ProposalSuccessModal from './ProposalSuccessModal';
+import { useSound } from '@/hooks/useSound';
 import styles from './SubmitProposalModal.module.css';
 
 const ACTIVATION_TEMPLATE = `## Activation Proposal
@@ -94,6 +95,7 @@ interface SubmitProposalModalProps {
 }
 
 const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { play } = useSound();
   const { address, isConnected, connector } = useAccount();
   const [title, setTitle] = useState('');
   const [proposal, setProposal] = useState('');
@@ -320,7 +322,7 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>Submit Proposal</h2>
-          <button className={styles.closeButton} onClick={onClose} aria-label="Close" type="button">
+          <button className={styles.closeButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')} aria-label="Close" type="button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -364,7 +366,8 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
                 ) : (
                   <button
                     className={styles.connectButton}
-                    onClick={show}
+                    onClick={() => { play('click'); show?.(); }}
+                    onMouseEnter={() => play('hover')}
                     disabled={isConnecting}
                     type="button"
                   >
@@ -434,14 +437,16 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
             <div className={styles.templateButtons}>
               <button
                 className={styles.templateButton}
-                onClick={() => handleTemplateClick(ACTIVATION_TEMPLATE)}
+                onClick={() => { play('click'); handleTemplateClick(ACTIVATION_TEMPLATE); }}
+                onMouseEnter={() => play('hover')}
                 type="button"
               >
                 <span className={styles.templateName}>Activation</span>
               </button>
               <button
                 className={styles.templateButton}
-                onClick={() => handleTemplateClick(RESEARCH_TEMPLATE)}
+                onClick={() => { play('click'); handleTemplateClick(RESEARCH_TEMPLATE); }}
+                onMouseEnter={() => play('hover')}
                 type="button"
               >
                 <span className={styles.templateName}>Research</span>
@@ -470,7 +475,8 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
           <div className={styles.submitRow}>
             <button
               className={styles.submitButton}
-              onClick={handleSubmit}
+              onClick={() => { play('click'); handleSubmit(); }}
+              onMouseEnter={() => play('hover')}
               disabled={isSubmitting || !title.trim() || !proposal.trim()}
               type="button"
             >

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSound } from '@/hooks/useSound';
 import styles from './ProposalSuccessModal.module.css';
 
 interface ProposalSuccessModalProps {
@@ -16,6 +17,8 @@ export default function ProposalSuccessModal({
   txHash,
   proposalId,
 }: ProposalSuccessModalProps) {
+  const { play } = useSound();
+
   if (!isOpen) return null;
 
   const baseScanUrl = `https://basescan.org/tx/${txHash}`;
@@ -47,6 +50,8 @@ export default function ProposalSuccessModal({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.txLink}
+                onClick={() => play('navigation')}
+                onMouseEnter={() => play('hover')}
               >
                 {shortTxHash}
                 <span className={styles.externalIcon}>↗</span>
@@ -62,10 +67,10 @@ export default function ProposalSuccessModal({
           </div>
 
           <div className={styles.actions}>
-            <Link href="/home" className={styles.primaryButton} onClick={onClose}>
+            <Link href="/home" className={styles.primaryButton} onClick={() => { play('navigation'); onClose(); }} onMouseEnter={() => play('hover')}>
               View All Proposals
             </Link>
-            <button className={styles.secondaryButton} onClick={onClose}>
+            <button className={styles.secondaryButton} onClick={() => { play('click'); onClose(); }} onMouseEnter={() => play('hover')}>
               Close
             </button>
           </div>

@@ -1,0 +1,280 @@
+/* Swap Modal — Brutalist Uniswap Style */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 29, 51, 0.85);
+  z-index: 9999;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translate(-1px, -1px);
+}
+
+.content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  background: var(--color-primary);
+  margin: -24px -24px 0 -24px;
+  padding: 20px 24px;
+  border-bottom: 3px solid #1A1D33;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Token Input Cards */
+.tokenCard {
+  background: #f8f8fb;
+  border: 2px solid #1A1D33;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: border-color 0.15s ease;
+}
+
+.tokenCard:focus-within {
+  border-color: var(--color-primary);
+}
+
+.tokenRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tokenInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tokenLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #999999;
+}
+
+.tokenName {
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: 0.02em;
+}
+
+.tokenInput {
+  width: 140px;
+  text-align: right;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A1D33;
+  padding: 0;
+}
+
+.tokenInput::placeholder {
+  color: #cccccc;
+}
+
+/* Hide number input arrows */
+.tokenInput::-webkit-outer-spin-button,
+.tokenInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.tokenInput[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.balanceRow {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.balanceLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: #999999;
+}
+
+/* Swap Direction Button */
+.swapButtonRow {
+  display: flex;
+  justify-content: center;
+  margin: -6px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.swapDirectionBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.swapDirectionBtn:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Rate Display */
+.rateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(81, 104, 255, 0.06);
+  border: 2px solid rgba(26, 29, 51, 0.1);
+  border-radius: var(--radius-md);
+}
+
+.rateLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999999;
+}
+
+.rateValue {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+/* Swap CTA */
+.swapCta {
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 3px 3px 0 #1A1D33;
+  margin-top: 4px;
+}
+
+.swapCta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .modal {
+    box-shadow: 4px 4px 0 #1A1D33;
+  }
+
+  .content {
+    padding: 20px 16px;
+  }
+
+  .header {
+    margin: -20px -16px 0 -16px;
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 15px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .tokenInput {
+    font-size: 20px;
+    width: 120px;
+  }
+
+  .tokenName {
+    font-size: 16px;
+  }
+}

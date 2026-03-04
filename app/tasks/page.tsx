@@ -12,13 +12,14 @@ import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import ProposalDetailsModal from '@/components/proposal-card/ProposalDetailsModal';
 import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
-import GuyTutorial, { GuyStep } from '@/components/voting/GuyTutorial';
+import SwapModal from '@/components/swap/SwapModal';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import {
   fetchProposal,
   ProposalStatus
 } from '@/lib/azura-contract';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
 interface ProposalReview {
@@ -89,20 +90,6 @@ const getTutorialSteps = (): TutorialStep[] => [
   },
 ];
 
-const getGuyTutorialSteps = (): GuyStep[] => [
-  {
-    message: "Hey! I'm Guy. Let me break down these three boxes for you. They're the core of how Mental Wealth Academy works.",
-  },
-  {
-    message: "Treasury is the shared reserve. When the community invests together, it grows. An autonomous bot compounds returns so the fund works even while you sleep.",
-  },
-  {
-    message: "Pods are shared budgets for things that matter — wellness programs, community infrastructure, initiatives that build resilience. Governance proposals decide where these funds flow.",
-  },
-  {
-    message: "Rewards are what grow back to you. The more you contribute to shared resources, the more the whole community grows. That's mental wealth.",
-  },
-];
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const GOV_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS || '0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F';
@@ -120,8 +107,10 @@ export default function VotingPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isContentLoading, setIsContentLoading] = useState(true);
   const [showMintModal, setShowMintModal] = useState(false);
-  const [showGuyDialogue, setShowGuyDialogue] = useState(false);
+  const [isSwapOpen, setIsSwapOpen] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
+  const [activeTab, setActiveTab] = useState<'proposals' | 'pods' | 'rewards'>('pods');
+  const { play } = useSound();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -242,14 +231,16 @@ export default function VotingPage() {
                   <div className={styles.heroActions}>
                     <button
                       className={styles.secondaryCta}
-                      onClick={() => setShowGuyDialogue(true)}
+                      onClick={() => { play('click'); setIsSwapOpen(true); }}
+                      onMouseEnter={() => play('hover')}
                       type="button"
                     >
-                      Explain
+                      Exchange
                     </button>
                     <button
                       className={styles.primaryCta}
-                      onClick={() => setIsSubmitModalOpen(true)}
+                      onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
+                      onMouseEnter={() => play('hover')}
                       type="button"
                     >
                       Proposal
@@ -275,106 +266,198 @@ export default function VotingPage() {
             </header>
           </div>
 
-          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-
-          {/* Fund Pods */}
+          {/* Tab Navigation */}
           <section className={styles.podGrid}>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🪵</div>
-              <h3 className={styles.podTitle}>Treasury</h3>
-              <p className={styles.podDesc}>A shared reserve that grows when the community invests together</p>
-              <span className={styles.podAction}>View →</span>
-            </div>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🏝️</div>
-              <h3 className={styles.podTitle}>Pods</h3>
+            <div
+              className={`${styles.podCard} ${activeTab === 'pods' ? styles.podCardActive : ''}`}
+              onClick={() => { play('click'); setActiveTab('pods'); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.podIcon}>
+                <Image src="/icons/community-pods.svg" alt="Community Pods" width={40} height={40} />
+              </div>
+              <h3 className={styles.podTitle}>Community Pods</h3>
               <p className={styles.podDesc}>Shared budgets for wellness, infrastructure, and community initiatives</p>
-              <span className={styles.podAction}>Deposit →</span>
             </div>
-            <div className={styles.podCard}>
-              <div className={styles.podIcon}>🌳</div>
+            <div
+              className={`${styles.podCard} ${activeTab === 'rewards' ? styles.podCardActive : ''}`}
+              onClick={() => { play('click'); setActiveTab('rewards'); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.podIcon}>
+                <Image src="/icons/rewards.svg" alt="Rewards" width={40} height={40} />
+              </div>
               <h3 className={styles.podTitle}>Rewards</h3>
               <p className={styles.podDesc}>Earn from contributing to shared resources and collective growth</p>
-              <span className={styles.podAction}>Track →</span>
+            </div>
+            <div
+              className={`${styles.podCard} ${activeTab === 'proposals' ? styles.podCardActive : ''}`}
+              onClick={() => { play('click'); setActiveTab('proposals'); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.podIcon}>
+                <Image src="/icons/proposals.svg" alt="Proposals" width={40} height={40} />
+              </div>
+              <h3 className={styles.podTitle}>Proposals</h3>
+              <p className={styles.podDesc}>A shared reserve that grows when the community invests together</p>
             </div>
           </section>
 
-          {/* Proposals Section */}
-          <section className={styles.proposalsSection}>
-            <div className={styles.proposalsHeader}>
-              <h2 className={styles.proposalsHeaderTitle}>Community Proposals</h2>
-            </div>
-            {loading ? (
-              <div className={styles.proposalsGrid}>
-                {[...Array(3)].map((_, i) => (
-                  <ProposalCardSkeleton key={i} />
-                ))}
-              </div>
-            ) : proposals.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <h3>No proposals yet</h3>
-                <p>Be the first to submit a proposal to the community!</p>
-              </div>
-            ) : error ? (
-              <div className={styles.errorState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-                <h3>Error Loading Proposals</h3>
-                <p>{error}</p>
-                <button onClick={() => window.location.reload()} className={styles.retryButton} type="button">
-                  Retry
-                </button>
-              </div>
-            ) : (
-              <div className={styles.proposalsGrid} data-tutorial-target="submission">
-                {proposals.map((proposal) => (
-                  <div key={proposal.id} className={styles.proposalCardContainer}>
-                    <ProposalCard
-                      id={proposal.id}
-                      title={proposal.title}
-                      proposalMarkdown={proposal.proposalMarkdown}
-                      status={proposal.status}
-                      walletAddress={proposal.walletAddress}
-                      createdAt={proposal.createdAt}
-                      user={proposal.user}
-                      review={proposal.review}
-                      onViewDetails={handleViewDetails}
-                      showAvatar={false}
-                      onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
-                      onChainData={proposal.onChainData || null}
-                    />
-                    
-                    {/* Show on-chain transaction info */}
-                    {proposal.onChainTxHash && (
-                      <div className={styles.onChainInfo}>
-                        <div className={styles.onChainBadge}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-                            <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-                            <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-                          </svg>
-                          <span>Recorded Transparently</span>
-                        </div>
-                        <a 
-                          href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.txLink}
-                        >
-                          View Transaction →
-                        </a>
+          {/* Tab Content */}
+          <div className={styles.tabContent}>
+            {activeTab === 'proposals' && (
+              <section className={styles.proposalsSection}>
+                <div className={styles.proposalsHeader}>
+                  <h2 className={styles.proposalsHeaderTitle}>Community Proposals</h2>
+                </div>
+                {loading ? (
+                  <div className={styles.proposalsGrid}>
+                    {[...Array(3)].map((_, i) => (
+                      <ProposalCardSkeleton key={i} />
+                    ))}
+                  </div>
+                ) : proposals.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <h3>No proposals yet</h3>
+                    <p>Be the first to submit a proposal to the community!</p>
+                  </div>
+                ) : error ? (
+                  <div className={styles.errorState}>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <h3>Error Loading Proposals</h3>
+                    <p>{error}</p>
+                    <button onClick={() => { play('click'); window.location.reload(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">
+                      Retry
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.proposalsGrid} data-tutorial-target="submission">
+                    {proposals.map((proposal) => (
+                      <div key={proposal.id} className={styles.proposalCardContainer} onMouseEnter={() => play('hover')}>
+                        <ProposalCard
+                          id={proposal.id}
+                          title={proposal.title}
+                          proposalMarkdown={proposal.proposalMarkdown}
+                          status={proposal.status}
+                          walletAddress={proposal.walletAddress}
+                          createdAt={proposal.createdAt}
+                          user={proposal.user}
+                          review={proposal.review}
+                          onViewDetails={handleViewDetails}
+                          showAvatar={false}
+                          onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
+                          onChainData={proposal.onChainData || null}
+                        />
+
+                        {proposal.onChainTxHash && (
+                          <div className={styles.onChainInfo}>
+                            <div className={styles.onChainBadge}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
+                                <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
+                                <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
+                              </svg>
+                              <span>Recorded Transparently</span>
+                            </div>
+                            <a
+                              href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.txLink}
+                              onClick={() => play('navigation')}
+                              onMouseEnter={() => play('hover')}
+                            >
+                              View Transaction →
+                            </a>
+                          </div>
+                        )}
+
                       </div>
-                    )}
-                    
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
+
+            {activeTab === 'pods' && (
+              <section className={styles.fundingGrid}>
+                {[
+                  {
+                    title: 'Brand Awareness',
+                    amount: 2100,
+                    total: 5200,
+                    desc: 'Outreach, partnerships, and marketing that drives community growth',
+                    accent: 'var(--color-primary)',
+                  },
+                  {
+                    title: 'Internal Research',
+                    amount: 1820,
+                    total: 5200,
+                    desc: 'R&D, tooling, and knowledge infrastructure for the academy',
+                    accent: 'var(--color-tertiary)',
+                  },
+                  {
+                    title: 'Emergency Individual Support',
+                    amount: 1280,
+                    total: 5200,
+                    desc: 'Safety net for members facing unexpected hardship',
+                    accent: '#E85D3A',
+                  },
+                ].map((pod) => (
+                  <div key={pod.title} className={styles.fundingCard} onMouseEnter={() => play('hover')}>
+                    <div className={styles.fundingAccent} style={{ background: pod.accent }} />
+                    <div className={styles.fundingLeft}>
+                      <div className={styles.fundingAmount}>${pod.amount.toLocaleString()}</div>
+                      <span className={styles.fundingPercent}>
+                        {Math.round((pod.amount / pod.total) * 100)}%
+                      </span>
+                    </div>
+                    <div className={styles.fundingRight}>
+                      <h3 className={styles.fundingTitle}>{pod.title}</h3>
+                      <p className={styles.fundingDesc}>{pod.desc}</p>
+                      <div className={styles.fundingBar}>
+                        <div
+                          className={styles.fundingBarFill}
+                          style={{ width: `${(pod.amount / pod.total) * 100}%`, background: pod.accent }}
+                        />
+                      </div>
+                      <span className={styles.fundingMeta}>
+                        of ${pod.total.toLocaleString()} total budget
+                      </span>
+                    </div>
                   </div>
                 ))}
-              </div>
+              </section>
             )}
-          </section>
+
+            {activeTab === 'rewards' && (
+              <section className={styles.bountyGrid}>
+                {[
+                  { title: 'Write a community blog post', points: 50, desc: 'Share knowledge or a personal story with the community' },
+                  { title: 'Onboard a new member', points: 75, desc: 'Walk someone through their first week in the academy' },
+                  { title: 'Host a study session', points: 100, desc: 'Lead a group learning session on any relevant topic' },
+                  { title: 'Submit a bug report', points: 30, desc: 'Find and document a bug in the platform with steps to reproduce' },
+                  { title: 'Design a social media asset', points: 60, desc: 'Create a shareable graphic that represents MWA values' },
+                  { title: 'Moderate a weekly call', points: 40, desc: 'Facilitate discussion and keep the community call on track' },
+                ].map((bounty) => (
+                  <div key={bounty.title} className={styles.bountyCard} onMouseEnter={() => play('hover')}>
+                    <div className={styles.bountyHeader}>
+                      <h3 className={styles.bountyTitle}>{bounty.title}</h3>
+                      <span className={styles.bountyPoints}>{bounty.points} pts</span>
+                    </div>
+                    <p className={styles.podDesc}>{bounty.desc}</p>
+                  </div>
+                ))}
+              </section>
+            )}
+          </div>
+
+          <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
           </>
           )}
         </div>
@@ -402,13 +485,7 @@ export default function VotingPage() {
         onSuccess={fetchProposals}
       />
 
-      <GuyTutorial
-        steps={getGuyTutorialSteps()}
-        isOpen={showGuyDialogue}
-        onClose={() => setShowGuyDialogue(false)}
-        title="Meet $MWG!"
-        showProgress={true}
-      />
+      <SwapModal isOpen={isSwapOpen} onClose={() => setIsSwapOpen(false)} />
 
       {showDemo && (
         <div className={styles.demoOverlay} onClick={() => setShowDemo(false)}>
@@ -417,7 +494,8 @@ export default function VotingPage() {
               <span className={styles.demoLabel}>DEMO // TRANSMISSION</span>
               <button
                 className={styles.demoClose}
-                onClick={() => setShowDemo(false)}
+                onClick={() => { play('click'); setShowDemo(false); }}
+                onMouseEnter={() => play('hover')}
                 type="button"
                 aria-label="Close demo"
               >

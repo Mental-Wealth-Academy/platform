@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { providers, Contract } from 'ethers';
+import { useSound } from '@/hooks/useSound';
 import styles from './TreasuryDisplay.module.css';
 
 interface TreasuryDisplayProps {
@@ -18,6 +19,7 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   contractAddress,
   usdcAddress,
 }) => {
+  const { play } = useSound();
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -120,7 +122,8 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
               Treasure Chest
               <button
                 className={styles.copyButton}
-                onClick={handleCopy}
+                onClick={() => { play('click'); handleCopy(); }}
+                onMouseEnter={() => play('hover')}
                 title={copied ? 'Copied!' : `Copy address: ${contractAddress}`}
                 type="button"
               >
@@ -138,9 +141,10 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
             </h3>
           </div>
         </div>
-        <button 
+        <button
           className={styles.refreshButton}
-          onClick={handleRefresh}
+          onClick={() => { play('click'); handleRefresh(); }}
+          onMouseEnter={() => play('hover')}
           disabled={loading}
           type="button"
         >
@@ -162,11 +166,13 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
       <div className={styles.stats}>
         <div className={styles.statItem}>
           <p className={styles.statLabel}>Contract</p>
-          <a 
+          <a
             href={`https://basescan.org/address/${contractAddress}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.contractLink}
+            onClick={() => play('navigation')}
+            onMouseEnter={() => play('hover')}
           >
             {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
