@@ -386,6 +386,23 @@
   margin: 0;
 }
 
+.privacyNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.privacyNotice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 .journalCards {
   display: flex;
   flex-direction: column;
