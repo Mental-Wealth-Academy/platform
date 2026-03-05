@@ -52,9 +52,9 @@
 /* ── Dashboard Frame ─────────────────────────────── */
 .dashboard {
   background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 6px 6px 0 #1A1D33;
+  border: 2px solid rgba(26, 29, 51, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
   overflow: hidden;
 }
 
@@ -62,7 +62,7 @@
 .tabBar {
   display: flex;
   gap: 0;
-  border-bottom: 3px solid #1A1D33;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.12);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -77,7 +77,7 @@
   padding: 14px 20px;
   background: #ffffff;
   border: none;
-  border-right: 3px solid #1A1D33;
+  border-right: 1px solid rgba(26, 29, 51, 0.12);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
@@ -131,9 +131,8 @@
   gap: 4px;
   padding: 16px;
   background: #f8f7ff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
 }
 
 .statLabel {
@@ -494,8 +493,8 @@
 .miniTab {
   padding: 8px 14px;
   background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.15);
+  border-radius: 20px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
   font-weight: 600;
@@ -503,22 +502,19 @@
   letter-spacing: 0.05em;
   color: #1A1D33;
   cursor: default;
-  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .miniTabActive {
   background: var(--color-primary, #5168FF);
   color: #ffffff;
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #1A1D33;
+  border-color: var(--color-primary, #5168FF);
 }
 
 .taskCard {
   padding: 20px;
   background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
 }
 
 .taskHeader {
@@ -544,8 +540,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 2px;
-  border: 2px solid #1A1D33;
+  border-radius: 20px;
+  border: none;
 }
 
 .taskDesc {
@@ -589,9 +585,8 @@
   gap: 12px;
   padding: 14px 16px;
   background: #f8f7ff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
 }
 
 .questProgressLabel {
@@ -608,15 +603,15 @@
   flex: 1;
   height: 10px;
   background: #e8e8f0;
-  border-radius: 2px;
-  border: 1px solid #1A1D33;
+  border-radius: 20px;
+  border: none;
   overflow: hidden;
 }
 
 .questProgressFill {
   height: 100%;
   background: var(--color-primary, #5168FF);
-  border-radius: 1px;
+  border-radius: 20px;
 }
 
 .questProgressText {
@@ -630,9 +625,8 @@
 .questCard {
   padding: 20px;
   background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
 }
 
 .questHeader {
@@ -680,9 +674,8 @@
   gap: 10px;
   padding: 14px 16px;
   background: #f8f7ff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
@@ -715,9 +708,10 @@
   }
 
   .tab {
-    flex: 0 0 auto;
+    flex: 1;
     padding: 12px 16px;
     font-size: 10px;
+    text-align: center;
   }
 
   .panelWrap {

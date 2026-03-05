@@ -5,56 +5,10 @@ import styles from './FeaturesSection.module.css';
 
 const tabs = [
   'Your Weekly Flow',
-  '12-Week Course',
   'What You Earn',
 ] as const;
 
 type Tab = (typeof tabs)[number];
-
-function CoursePanel() {
-  return (
-    <div className={styles.panel}>
-      <div className={styles.statsRow}>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Your Progress</span>
-          <span className={styles.statValue}>Week 4 / 12</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Chapters Done</span>
-          <span className={styles.statValue}>3 completed</span>
-        </div>
-      </div>
-      <div className={styles.proposalCard}>
-        <div className={styles.proposalHeader}>
-          <span className={styles.badgeActive}>Current</span>
-          <span className={styles.proposalId}>Ch. 4</span>
-        </div>
-        <p className={styles.proposalTitle}>Emotional Resilience — understanding your stress patterns and building recovery habits</p>
-        <div className={styles.voteBar}>
-          <div className={styles.voteFor} style={{ width: '40%' }} />
-        </div>
-        <div className={styles.voteLabels}>
-          <span>40% through</span>
-          <span>8 weeks left</span>
-        </div>
-      </div>
-      <div className={styles.proposalCard}>
-        <div className={styles.proposalHeader}>
-          <span className={styles.badgePassed}>Done</span>
-          <span className={styles.proposalId}>Ch. 3</span>
-        </div>
-        <p className={styles.proposalTitle}>Cognitive Reframing — you learned to catch distortions before they spiral</p>
-        <div className={styles.voteBar}>
-          <div className={styles.voteFor} style={{ width: '100%' }} />
-        </div>
-        <div className={styles.voteLabels}>
-          <span>Completed</span>
-          <span>+85 points</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function WeeklyFlowPanel() {
   return (
@@ -160,7 +114,6 @@ export const FeaturesSection: React.FC = () => {
 
           <div className={styles.panelWrap}>
             {activeTab === 'Your Weekly Flow' && <WeeklyFlowPanel />}
-            {activeTab === '12-Week Course' && <CoursePanel />}
             {activeTab === 'What You Earn' && <EarningsPanel />}
 
           </div>
