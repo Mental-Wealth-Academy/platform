@@ -24,9 +24,9 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> For<br /> Building Real-World Skills</h1>
+          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> For<br /> Intellectual Refreshment</h1>
           <p className={styles.heroSubtext}>
-            MWA is a grassroots micro-university for mental wellness. Investing in the capital of the human mind, with the heart of tomorrow.
+            MWA is a gamified micro-university where you tackle 12 weeks of self-reflection through notes, games, and activities, earning points in the system.
           </p>
           <button
             type="button"
@@ -34,7 +34,7 @@ export const HeroSection: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
-            Enter Academy
+            Start Now
           </button>
           <p className={styles.heroQuote}>&ldquo;The mind is not a vessel to be filled, but a fire to be kindled.&rdquo; &mdash; Plutarch</p>
         </div>

@@ -9,6 +9,13 @@
   padding: 60px 0;
 }
 
+@media (max-width: 767px) {
+  .patternSection {
+    min-height: 200px;
+    padding: 32px 0;
+  }
+}
+
 .patternOverlay {
   position: absolute;
   inset: 0;
