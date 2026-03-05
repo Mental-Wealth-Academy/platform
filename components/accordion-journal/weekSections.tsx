@@ -77,10 +77,10 @@ function artistWalk(): JournalSection {
 export const week0Sections: JournalSection[] = [
   {
     id: 'intro-reading',
-    title: 'Genesis Thoughts',
+    title: 'What\'s Your Ethereal Horizon?',
     icon: TextIcon,
     type: 'text',
-    instructions: 'You\'ve walked long enough to forget why you started. Somewhere along the way, the world handed you a script and you read every line.\n\nThis is where you put it down.\n\nBefore the weeks ahead strip back what\'s been layered on, sit with 3 questions: What brought you here? What do you hope to find? What are you afraid to uncover?\n\nWrite freely. There\'s no wrong way to begin.',
+    instructions: 'A DIVINE BEING STRUCK BY INFINITE! A DIVINE TREE THAT GREW FROM WITHIN ME, AND IT BRANCHED THROUGH THE RHIZOME. AND ROSE AN ETHEREAL HORIZON.',
     placeholder: 'Write your genesis thoughts...',
   },
 ];

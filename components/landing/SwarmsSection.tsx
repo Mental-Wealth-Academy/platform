@@ -57,7 +57,7 @@ export const SwarmsSection = () => {
         {/* Title */}
         <p className={styles.swarmsEyebrow}>Benefits</p>
         <h2 className={styles.swarmsTitle}>
-          An academic foundation structured on decentralization of educational tools
+          Not a waste of time, completely async and no private data collected
         </h2>
 
         {/* Portfolio Button */}
@@ -106,10 +106,10 @@ export const SwarmsSection = () => {
                 <div className={styles.swarmsFeatureIcon}>
                   <img src="/icons/atom-icon.svg" alt="Academic Foundation" width={35} height={35} />
                 </div>
-                <h3 className={styles.swarmsFeatureTitle}>Building an Academic Foundation</h3>
+                <h3 className={styles.swarmsFeatureTitle}>12-Week Curriculum</h3>
               </div>
               <p className={styles.swarmsFeatureText}>
-                Presenting the revolutionary Agentic Azura Agent, a cutting-edge computational swarm assistant crafted to explore the complex interactions of tectonic plate movements. This advanced technology leverages collective intelligence, allowing it to analyze and forecast geological changes with remarkable precision. Envision a network of digital minds collaborating seamlessly, each adding to a rich reservoir of knowledge that breaks ignorance. The Agentic Azura Agent is more than just a tool; it&apos;s a gateway to understanding our planet&apos;s dynamics.
+                A structured course that walks you through self-reflection, behavioral science, and mental wellness — one week at a time. Each chapter builds on the last, designed by a psychologist with 12 years of research experience. No fluff, no filler. Just the material that actually moves the needle.
               </p>
             </div>
 
@@ -118,12 +118,12 @@ export const SwarmsSection = () => {
             <div className={styles.swarmsFeatureBlock}>
               <div className={styles.swarmsFeatureHeader}>
                 <div className={styles.swarmsFeatureIcon}>
-                  <img src="/icons/shadow-icon.svg" alt="Daemon Database" width={35} height={35} />
+                  <img src="/icons/refreshment-icon.svg" alt="Intellectual Refreshment" width={35} height={35} />
                 </div>
-                <h3 className={styles.swarmsFeatureTitle}>Fully Private Daemon Database</h3>
+                <h3 className={styles.swarmsFeatureTitle}>Intellectual Refreshment</h3>
               </div>
               <p className={styles.swarmsFeatureText}>
-                Introducing the innovative Daemon Dataset, our latest agentic DeSci model designed to enhance decision-making through engaging role-play and gamification. This cutting-edge technology leverages collective intelligence to create a dynamic environment where users can explore and influence outcomes with thrilling excitement. Picture a network of digital agents collaborating seamlessly, each adding to a rich tapestry of insights that push beyond conventional limits. The Daemon Dataset is more than just a resource; it&apos;s an interactive experience.
+                We re-imagined what a mental health network would look and feel like from the perspective of a game for a younger audience. Notes, journaling, and activities replace lectures. No private data collected, completely async — you move at your own pace and keep what&apos;s yours.
               </p>
             </div>
 
@@ -134,10 +134,10 @@ export const SwarmsSection = () => {
                 <div className={styles.swarmsFeatureIcon}>
                   <img src="/icons/debate-icon.svg" alt="Oracle Network" width={35} height={35} />
                 </div>
-                <h3 className={styles.swarmsFeatureTitle}>Decentralized Oracle Network</h3>
+                <h3 className={styles.swarmsFeatureTitle}>Gamified Social Network</h3>
               </div>
               <p className={styles.swarmsFeatureText}>
-                The decentralized oracle network provides 20 copies of every agentic transaction, only once the oracle has fully verified the swarm are transactions sent from the treasury designed to delve into the intricate dynamics of tectonic plate movements. This innovative technology harnesses the power of collective intelligence, enabling it to analyze and predict geological shifts with unprecedented accuracy. Imagine a network of digital minds working in harmony, each contributing to a vast pool of knowledge that transcends traditional boundaries. The Azura Agent is not just a tool; she is the underpinning system unix that controls the network.
+                Earn points, unlock quests, and level up through the system like an MMO. A seed community building the new territory for mental wellness — with on-chain governance, an AI co-pilot, and statistical dashboards tracking real progress. Think less app, more academy.
               </p>
             </div>
           </div>

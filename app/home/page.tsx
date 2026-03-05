@@ -148,22 +148,20 @@ export default function HomePage() {
                 <div className={styles.timelineTrack}>
                   <div
                     className={styles.timelineFill}
-                    style={{ width: `${(weekStatuses.filter(w => w.isSealed).length / WEEK_TITLES.length) * 100}%` }}
+                    style={{ width: `${(weekStatuses.filter(w => w.isSealed && w.weekNumber > 0 && w.weekNumber < WEEK_TITLES.length - 1).length / (WEEK_TITLES.length - 2)) * 100}%` }}
                   />
                 </div>
                 <div className={styles.timelineMarkers}>
                   {WEEK_TITLES.map((title, i) => {
+                    if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                     const status = getWeekStatus(i);
                     const isSealed = status?.isSealed ?? false;
-                    const isIntro = i === 0;
-                    const isEpilogue = i === WEEK_TITLES.length - 1;
-                    const label = isIntro ? 'Intro' : isEpilogue ? 'End' : `${i}`;
                     return (
                       <div key={i} className={styles.timelineMarker} title={title}>
                         <div className={`${styles.timelineDot} ${isSealed ? styles.timelineDotSealed : ''}`}>
                           {isSealed && <span className={styles.timelineDotCheck}>&#10003;</span>}
                         </div>
-                        <span className={styles.timelineLabel}>{label}</span>
+                        <span className={styles.timelineLabel}>{i}</span>
                       </div>
                     );
                   })}
@@ -182,6 +180,7 @@ export default function HomePage() {
               </div>
               <div className={styles.journalCards}>
                 {WEEK_TITLES.map((title, i) => {
+                  if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                   const status = getWeekStatus(i);
                   return (
                     <AccordionJournalCard

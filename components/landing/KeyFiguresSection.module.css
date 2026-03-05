@@ -100,28 +100,33 @@
   }
 
   .container {
-    flex-direction: column;
-    gap: 32px;
-    width: 90%;
-  }
-
-  .figure {
-    text-align: center;
-  }
-
-  .valueRow {
-    justify-content: center;
+    flex-direction: row;
+    width: 92%;
+    gap: 4px;
   }
 
   .number {
-    font-size: 3.5rem;
+    font-size: 1.5rem;
   }
 
   .unit {
-    font-size: 2rem;
+    font-size: 1rem;
+  }
+
+  .label {
+    font-size: 10px;
+  }
+
+  .valueRow {
+    gap: 4px;
   }
 
   .arrow {
-    display: none;
+    width: 50px;
+    transform: translateY(-6px);
+  }
+
+  .arrowSvgSmall {
+    width: 100%;
   }
 }
