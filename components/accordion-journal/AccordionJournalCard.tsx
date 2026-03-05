@@ -6,6 +6,7 @@ import Image from 'next/image';
 import styles from './AccordionJournalCard.module.css';
 import { weekSectionsMap } from './weekSections';
 import { useSound } from '@/hooks/useSound';
+import LetterModal from './LetterModal';
 
 interface BlurtEntry {
   id: string;
@@ -267,6 +268,7 @@ export default function AccordionJournalCard({
 
   const { play } = useSound();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [letterModal, setLetterModal] = useState<{ title: string; content: string } | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
   const [sectionData, setSectionData] = useState<Record<string, unknown>>({});
@@ -1143,7 +1145,20 @@ export default function AccordionJournalCard({
               </button>
 
               <div className={`${styles.sectionContent} ${expandedSections.has(section.id) ? styles.sectionContentVisible : ''}`}>
-                <p className={styles.instructions}>{section.instructions}</p>
+                {section.instructions && (
+                  <button
+                    type="button"
+                    className={styles.readLetterButton}
+                    onClick={() => { play('click'); setLetterModal({ title: section.title, content: section.instructions }); }}
+                    onMouseEnter={() => play('hover')}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Read the Letter
+                  </button>
+                )}
 
                 {renderSectionContent(section)}
 
@@ -1423,6 +1438,12 @@ export default function AccordionJournalCard({
         </div>,
         document.body
       )}
+      <LetterModal
+        isOpen={letterModal !== null}
+        onClose={() => setLetterModal(null)}
+        title={letterModal?.title ?? ''}
+        content={letterModal?.content ?? ''}
+      />
     </div>
   );
 }
