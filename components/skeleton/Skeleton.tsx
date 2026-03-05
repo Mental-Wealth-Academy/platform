@@ -260,10 +260,31 @@ export function VotingPageSkeleton() {
   return (
     <div className={styles.votingPageSkeleton}>
       <VotingHeroSkeleton />
-      <VotingBannerSkeleton />
-      <div className={styles.proposalsGridSkeleton}>
+      {/* Tab nav - 3 pod cards */}
+      <div className={styles.votingTabNavSkeleton}>
         {[...Array(3)].map((_, i) => (
-          <ProposalCardSkeleton key={i} />
+          <div key={i} className={styles.votingTabCardSkeleton}>
+            <div className={`${styles.skeleton} ${styles.votingTabIconSkeleton}`} />
+            <div className={`${styles.skeleton} ${styles.votingTabTitleSkeleton}`} />
+            <div className={`${styles.skeleton} ${styles.votingTabDescSkeleton}`} />
+          </div>
+        ))}
+      </div>
+      {/* Tab content - funding cards (default pods tab) */}
+      <div className={styles.votingPodsContentSkeleton}>
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className={styles.votingFundingCardSkeleton}>
+            <div className={styles.votingFundingLeftSkeleton}>
+              <div className={`${styles.skeleton} ${styles.votingFundingAmountSkeleton}`} />
+              <div className={`${styles.skeleton} ${styles.votingFundingPercentSkeleton}`} />
+            </div>
+            <div className={styles.votingFundingRightSkeleton}>
+              <div className={`${styles.skeleton} ${styles.votingFundingTitleSkeleton}`} />
+              <div className={`${styles.skeleton} ${styles.votingFundingDescSkeleton}`} />
+              <div className={`${styles.skeleton} ${styles.votingFundingBarSkeleton}`} />
+              <div className={`${styles.skeleton} ${styles.votingFundingMetaSkeleton}`} />
+            </div>
+          </div>
         ))}
       </div>
     </div>

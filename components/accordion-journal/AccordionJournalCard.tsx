@@ -8,6 +8,23 @@ import { weekSectionsMap } from './weekSections';
 import { useSound } from '@/hooks/useSound';
 import LetterModal from './LetterModal';
 
+const WEEK_COLORS: Record<number, string> = {
+  0: '#FF6B6B',   // Intro - Red
+  1: '#FF6B6B',   // Red
+  2: '#FF8E53',   // Orange
+  3: '#FFB347',   // Amber
+  4: '#FFD93D',   // Yellow
+  5: '#6BCB77',   // Green
+  6: '#4ECDC4',   // Teal
+  7: '#45B7D1',   // Cyan
+  8: '#5168FF',   // Blue
+  9: '#7C3AED',   // Violet
+  10: '#A855F7',  // Purple
+  11: '#D946EF',  // Magenta
+  12: '#EC4899',  // Pink
+  13: '#EC4899',  // End - Pink
+};
+
 interface BlurtEntry {
   id: string;
   blurt: string;
@@ -998,7 +1015,10 @@ export default function AccordionJournalCard({
   };
 
   return (
-    <div className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''} ${isSealed ? styles.cardSealed : ''}`}>
+    <div
+      className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''} ${isSealed ? styles.cardSealed : ''}`}
+      style={{ '--week-color': WEEK_COLORS[weekNumber] || '#5168FF' } as React.CSSProperties}
+    >
       {/* Card Face - Always Visible */}
       <button
         type="button"

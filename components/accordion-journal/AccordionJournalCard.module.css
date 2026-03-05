@@ -1,13 +1,26 @@
 /* AccordionJournalCard - Brutalist Flat Design */
 
 .card {
+  position: relative;
   width: 100%;
   background: #FFFFFF;
   border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: var(--radius-xl, 16px);
   overflow: hidden;
   box-shadow: 4px 4px 0 #1A1D33;
   transition: all 0.2s ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--week-color, #5168FF);
+  z-index: 1;
+  border-radius: 13px 0 0 13px;
 }
 
 .card:hover {
@@ -850,12 +863,12 @@
 
 /* Sealed Card State */
 .cardSealed {
-  border-color: #22C55E;
-  box-shadow: 4px 4px 0 #22C55E;
+  border-color: #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .cardSealed:hover {
-  box-shadow: 6px 6px 0 #22C55E;
+  box-shadow: 6px 6px 0 #1A1D33;
 }
 
 .weekBadgeSealed {

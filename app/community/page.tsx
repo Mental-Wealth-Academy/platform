@@ -15,6 +15,7 @@ import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
 import SwapModal from '@/components/swap/SwapModal';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
+import RewardDetailModal, { Reward } from '@/components/reward-detail-modal/RewardDetailModal';
 import {
   fetchProposal,
   ProposalStatus
@@ -110,6 +111,8 @@ export default function VotingPage() {
   const [isSwapOpen, setIsSwapOpen] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [activeTab, setActiveTab] = useState<'proposals' | 'pods' | 'rewards'>('pods');
+  const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
+  const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const { play } = useSound();
 
   useEffect(() => {
@@ -224,7 +227,7 @@ export default function VotingPage() {
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
                   <p className={styles.eyebrow}>MWA • Oracle Network</p>
-                  <h1 className={styles.title}>Governance & Funding</h1>
+                  <h1 className={styles.title}>Community</h1>
                   <p className={styles.subtitle}>
                     Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
                   </p>
@@ -437,15 +440,21 @@ export default function VotingPage() {
 
             {activeTab === 'rewards' && (
               <section className={styles.bountyGrid}>
-                {[
-                  { title: 'Write a community blog post', points: 50, desc: 'Share knowledge or a personal story with the community' },
-                  { title: 'Onboard a new member', points: 75, desc: 'Walk someone through their first week in the academy' },
-                  { title: 'Host a study session', points: 100, desc: 'Lead a group learning session on any relevant topic' },
-                  { title: 'Submit a bug report', points: 30, desc: 'Find and document a bug in the platform with steps to reproduce' },
-                  { title: 'Design a social media asset', points: 60, desc: 'Create a shareable graphic that represents MWA values' },
-                  { title: 'Moderate a weekly call', points: 40, desc: 'Facilitate discussion and keep the community call on track' },
-                ].map((bounty) => (
-                  <div key={bounty.title} className={styles.bountyCard} onMouseEnter={() => play('hover')}>
+                {([
+                  { id: 'reward-blog', title: 'Write a community blog post', points: 50, desc: 'Share knowledge or a personal story with the community', rewardType: 'proof-required' as const },
+                  { id: 'reward-onboard', title: 'Onboard a new member', points: 75, desc: 'Walk someone through their first week in the academy', rewardType: 'no-proof' as const },
+                  { id: 'reward-study', title: 'Host a study session', points: 100, desc: 'Lead a group learning session on any relevant topic', rewardType: 'proof-required' as const },
+                  { id: 'reward-bug', title: 'Submit a bug report', points: 30, desc: 'Find and document a bug in the platform with steps to reproduce', rewardType: 'proof-required' as const },
+                  { id: 'reward-social', title: 'Design a social media asset', points: 60, desc: 'Create a shareable graphic that represents MWA values', rewardType: 'proof-required' as const },
+                  { id: 'reward-twitter', title: 'Follow @MentalWealthDAO on X', points: 40, desc: 'Connect your X account and follow the official MWA account', rewardType: 'twitter-follow' as const },
+                ] satisfies Reward[]).map((bounty) => (
+                  <div
+                    key={bounty.id}
+                    className={styles.bountyCard}
+                    onMouseEnter={() => play('hover')}
+                    onClick={() => { play('click'); setSelectedReward(bounty); setIsRewardModalOpen(true); }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.bountyHeader}>
                       <h3 className={styles.bountyTitle}>{bounty.title}</h3>
                       <span className={styles.bountyPoints}>{bounty.points} pts</span>
@@ -486,6 +495,12 @@ export default function VotingPage() {
       />
 
       <SwapModal isOpen={isSwapOpen} onClose={() => setIsSwapOpen(false)} />
+
+      <RewardDetailModal
+        isOpen={isRewardModalOpen}
+        onClose={() => { setIsRewardModalOpen(false); setSelectedReward(null); }}
+        reward={selectedReward}
+      />
 
       {showDemo && (
         <div className={styles.demoOverlay} onClick={() => setShowDemo(false)}>

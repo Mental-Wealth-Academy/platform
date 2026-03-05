@@ -29,7 +29,7 @@ const EMPTY_CANVAS: CanvasData = {
 
 // ── Component ──
 
-export default function ProblemsPage() {
+export default function GuidancePage() {
   const [canvas, setCanvas] = useState<CanvasData>(EMPTY_CANVAS);
   const [toast, setToast] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

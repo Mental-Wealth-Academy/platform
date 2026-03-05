@@ -736,15 +736,107 @@
   height: 24px;
 }
 
-/* Banner Image Skeleton */
-.bannerImageSkeleton {
-  width: clamp(200px, 35%, 400px);
-  height: 120px;
-  margin: 0 auto;
-  border-radius: 4px;
+/* Tab Nav Skeleton - 3 pod cards */
+.votingTabNavSkeleton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
   animation-delay: 0.15s;
+}
+
+.votingTabCardSkeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border: 3px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 #e0e0e0;
+}
+
+.votingTabIconSkeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.votingTabTitleSkeleton {
+  width: 70%;
+  height: 18px;
+}
+
+.votingTabDescSkeleton {
+  width: 100%;
+  height: 40px;
+}
+
+/* Pods Content Skeleton - funding cards */
+.votingPodsContentSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.25s;
+}
+
+.votingFundingCardSkeleton {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border: 3px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 #e0e0e0;
+}
+
+.votingFundingLeftSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 80px;
+}
+
+.votingFundingAmountSkeleton {
+  width: 72px;
+  height: 28px;
+}
+
+.votingFundingPercentSkeleton {
+  width: 40px;
+  height: 14px;
+}
+
+.votingFundingRightSkeleton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.votingFundingTitleSkeleton {
+  width: 60%;
+  height: 18px;
+}
+
+.votingFundingDescSkeleton {
+  width: 90%;
+  height: 32px;
+}
+
+.votingFundingBarSkeleton {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.votingFundingMetaSkeleton {
+  width: 50%;
+  height: 12px;
 }
 
 /* Proposals Grid Skeleton */
@@ -831,9 +923,20 @@
     grid-template-columns: 1fr;
   }
 
-  .bannerImageSkeleton {
-    width: clamp(180px, 55%, 300px);
-    height: 100px;
+  .votingTabNavSkeleton {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .votingFundingCardSkeleton {
+    flex-direction: column;
+    box-shadow: 3px 3px 0 #e0e0e0;
+  }
+
+  .votingFundingLeftSkeleton {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 
   .proposalCardSkeleton {

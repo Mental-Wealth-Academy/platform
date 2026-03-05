@@ -41,20 +41,19 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
-      { id: 'tasks', label: 'Governance', href: '/tasks', icon: '/icons/governance.svg' },
+      { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
-      { id: 'problems', label: 'Problems', href: '/problems', icon: '/icons/problems.svg' },
+      { id: 'guidance', label: 'Guidance', href: '/guidance', icon: '/icons/guidance.svg' },
       { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
     ],
   },
   {
     id: 'admin',
-    label: 'ADMIN',
+    label: 'ADMIN TOOLS',
     badge: 'Access With Pro',
     badgeType: 'pro',
     items: [
       { id: 'chapters', label: 'Story', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'quests', label: 'Quests', href: '/quests', icon: '/icons/Chapters.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/dna.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
