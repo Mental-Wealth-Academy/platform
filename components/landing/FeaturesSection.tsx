@@ -1,146 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import styles from './FeaturesSection.module.css';
-
-interface TreeNode {
-  label: string;
-  avatar?: string;
-  icon?: string;
-  disabled?: boolean;
-  children?: TreeNode[];
-}
-
-const agentTree: TreeNode[] = [
-  {
-    label: 'Azura Agent Configuration',
-    avatar: 'https://i.imgur.com/HFjHyUZ.png',
-    children: [
-      {
-        label: 'Personality Module',
-        icon: '&#9672;',
-        children: [
-          { label: 'Tone: Empathetic & Direct' },
-          { label: 'Response Style: Conversational' },
-          { label: 'Creativity: 0.7' },
-          { label: 'Language: Multi-lingual' },
-        ],
-      },
-      {
-        label: 'Memory & Context',
-        icon: '&#9683;',
-        children: [
-          { label: 'Session Memory: Enabled' },
-          { label: 'Long-term Recall: Active' },
-          { label: 'Context Window: 128k tokens' },
-          { label: 'RAG Pipeline: Connected' },
-        ],
-      },
-      {
-        label: 'Skills & Capabilities',
-        icon: '&#9733;',
-        children: [
-          { label: 'Journal Review' },
-          { label: 'Quest Generation' },
-          { label: 'Governance Advisor' },
-          { label: 'Meditation Guide' },
-          { label: 'Crisis Detection' },
-        ],
-      },
-      {
-        label: 'Wallet Integration',
-        icon: '&#9670;',
-        children: [
-          { label: 'Auto-distribute Rewards' },
-          { label: 'Treasury Monitoring' },
-          { label: 'Gas Optimization: On' },
-          { label: 'Network: Base Mainnet' },
-        ],
-      },
-      {
-        label: 'Safety & Moderation',
-        icon: '&#9888;',
-        children: [
-          { label: 'Content Filtering: Strict' },
-          { label: 'Escalation Protocol: Active' },
-          { label: 'Audit Logging: Enabled' },
-        ],
-      },
-      {
-        label: 'Scheduling & Automation',
-        icon: '&#8635;',
-        disabled: true,
-        children: [
-          { label: 'Cron Jobs: Paused' },
-          { label: 'Event Triggers: Disabled' },
-          { label: 'Batch Processing: Off' },
-        ],
-      },
-    ],
-  },
-];
-
-function TreeNodeRow({ node, depth, expanded, onToggle }: {
-  node: TreeNode;
-  depth: number;
-  expanded: Set<string>;
-  onToggle: (label: string) => void;
-}) {
-  const hasChildren = node.children && node.children.length > 0;
-  const isExpanded = expanded.has(node.label);
-
-  return (
-    <>
-      <div
-        className={`${styles.treeRow} ${node.disabled ? styles.treeRowDisabled : ''}`}
-        style={{ paddingLeft: `${depth * 20 + 8}px` }}
-        onClick={() => hasChildren && !node.disabled && onToggle(node.label)}
-        role={hasChildren ? 'button' : undefined}
-      >
-        {hasChildren && (
-          <span className={styles.treeArrow}>
-            {isExpanded ? '\u25BE' : '\u25B8'}
-          </span>
-        )}
-        {!hasChildren && <span className={styles.treeSpacer} />}
-        {node.avatar && (
-          <Image
-            src={node.avatar}
-            alt="Azura"
-            width={24}
-            height={24}
-            className={styles.treeAvatar}
-            unoptimized
-          />
-        )}
-        {node.icon && !node.avatar && (
-          <span
-            className={styles.treeIcon}
-            dangerouslySetInnerHTML={{ __html: node.icon }}
-          />
-        )}
-        <span className={styles.treeLabel}>{node.label}</span>
-        {node.disabled && <span className={styles.treeBadgeDisabled}>Paused</span>}
-      </div>
-      {hasChildren && isExpanded && node.children!.map((child) => (
-        <TreeNodeRow
-          key={child.label}
-          node={child}
-          depth={depth + 1}
-          expanded={expanded}
-          onToggle={onToggle}
-        />
-      ))}
-    </>
-  );
-}
 
 const tabs = [
   'Your Weekly Flow',
   '12-Week Course',
   'What You Earn',
-  'AI Co-pilot',
 ] as const;
 
 type Tab = (typeof tabs)[number];
@@ -185,44 +51,6 @@ function CoursePanel() {
           <span>Completed</span>
           <span>+85 points</span>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function AzuraPanel() {
-  const [expanded, setExpanded] = useState<Set<string>>(
-    new Set(['Azura Agent Configuration', 'Skills & Capabilities', 'Personality Module'])
-  );
-
-  const onToggle = (label: string) => {
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) next.delete(label);
-      else next.add(label);
-      return next;
-    });
-  };
-
-  return (
-    <div className={styles.panel}>
-      <div className={styles.treeHeader}>
-        <span className={styles.treeHeaderLabel}>Modular Agent Settings</span>
-        <span className={styles.treeHeaderVersion}>v1.3</span>
-      </div>
-      <div className={styles.treeContainer}>
-        {agentTree.map((node) => (
-          <TreeNodeRow
-            key={node.label}
-            node={node}
-            depth={0}
-            expanded={expanded}
-            onToggle={onToggle}
-          />
-        ))}
-      </div>
-      <div className={styles.soulGems}>
-        <span className={styles.gemIcon}>&#9670;</span> Azura has reviewed 340 submissions this season
       </div>
     </div>
   );
@@ -334,7 +162,7 @@ export const FeaturesSection: React.FC = () => {
             {activeTab === 'Your Weekly Flow' && <WeeklyFlowPanel />}
             {activeTab === '12-Week Course' && <CoursePanel />}
             {activeTab === 'What You Earn' && <EarningsPanel />}
-            {activeTab === 'AI Co-pilot' && <AzuraPanel />}
+
           </div>
         </div>
       </div>
