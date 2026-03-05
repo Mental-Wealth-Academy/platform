@@ -138,10 +138,10 @@ export const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Dashboard</p>
           <h2 className={styles.title}>
-            Your course, your pace, your progress
+            Your course, your pace
           </h2>
           <p className={styles.description}>
-            You journal, play games, and complete activities at your own pace. Your AI co-pilot reviews what you write. Your points track real progress. No deadlines, no data harvesting — just structured self-reflection that actually sticks.
+            Tackle 12-weeks completely at your own pace, weeks are sealed as you complete them, fully private, and unlocked with prizes after course completion.
           </p>
         </div>
 

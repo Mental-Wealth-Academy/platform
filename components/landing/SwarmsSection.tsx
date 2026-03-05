@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import styles from './SwarmsSection.module.css';
 import PortfolioModal from './PortfolioModal';
+import { useSound } from '@/hooks/useSound';
 
 const AZURA_WALLET = '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const AZURA_WALLET_TRUNCATED = '0x2cbb...992d';
@@ -32,6 +33,7 @@ const CheckIcon = () => (
 export const SwarmsSection = () => {
   const [copied, setCopied] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const { play } = useSound();
 
   const handleCopy = async () => {
     try {
@@ -57,7 +59,7 @@ export const SwarmsSection = () => {
         {/* Title */}
         <p className={styles.swarmsEyebrow}>Benefits</p>
         <h2 className={styles.swarmsTitle}>
-          Not a waste of time, completely async and no private data collected
+          Transparent governance
         </h2>
 
         {/* Portfolio Button */}
@@ -106,7 +108,7 @@ export const SwarmsSection = () => {
                 <div className={styles.swarmsFeatureIcon}>
                   <img src="/icons/atom-icon.svg" alt="Academic Foundation" width={35} height={35} />
                 </div>
-                <h3 className={styles.swarmsFeatureTitle}>12-Week Curriculum</h3>
+                <h3 className={styles.swarmsFeatureTitle}>Community Public Goods</h3>
               </div>
               <p className={styles.swarmsFeatureText}>
                 A structured course that walks you through self-reflection, behavioral science, and mental wellness — one week at a time. Each chapter builds on the last, designed by a psychologist with 12 years of research experience. No fluff, no filler. Just the material that actually moves the needle.
@@ -155,7 +157,7 @@ export const SwarmsSection = () => {
         </div>
         {/* CTA */}
         <div className={styles.ctaWrapper}>
-          <a href="/home" className={styles.ctaButton}>
+          <a href="/home" className={styles.ctaButton} onClick={() => play('click')} onMouseEnter={() => play('hover')}>
             Enter The Academy
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />

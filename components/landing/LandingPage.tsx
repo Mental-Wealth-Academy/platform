@@ -28,6 +28,12 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
+      {/* Features Section - Server rendered */}
+      <FeaturesSection />
+
+      {/* Key Figures Section - Server rendered */}
+      <KeyFiguresSection />
+
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
 
@@ -36,12 +42,6 @@ const LandingPage = () => {
 
       {/* Testimonial Section - Server rendered */}
       <TestimonialSection />
-
-      {/* Features Section - Server rendered */}
-      <FeaturesSection />
-
-      {/* Key Figures Section - Server rendered */}
-      <KeyFiguresSection />
 
       {/* FAQ Section - Client component for accordion */}
       <FAQSection />

@@ -24,7 +24,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span> Where<br /> You Take Control</h1>
+          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span><br /> For Mental Health</h1>
           <p className={styles.heroSubtext}>
             MWA is a gamified micro-university where you tackle 12 weeks of self-reflection through notes, games, and activities.
           </p>
@@ -36,7 +36,7 @@ export const HeroSection: React.FC = () => {
           >
             Start Now
           </button>
-          <p className={styles.heroQuote}>&ldquo;The mind is not a vessel to be filled, but a fire to be kindled.&rdquo; &mdash; Plutarch</p>
+
         </div>
       </div>
       <Image
