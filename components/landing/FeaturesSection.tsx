@@ -302,7 +302,7 @@ function EarningsPanel() {
 }
 
 export const FeaturesSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('Activities');
+  const [activeTab, setActiveTab] = useState<Tab>('Your Weekly Flow');
 
   return (
     <section className={styles.featuresSection}>
