@@ -3,7 +3,7 @@
 .card {
   position: relative;
   width: 100%;
-  background: #FFFFFF;
+  background: color-mix(in srgb, var(--week-color, #5168FF) 8%, #FFFFFF);
   border: 3px solid #1A1D33;
   border-radius: var(--radius-xl, 16px);
   overflow: hidden;
@@ -64,7 +64,7 @@
 
 .weekBadge {
   padding: 6px 12px;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #FFFFFF;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
@@ -865,22 +865,36 @@
 .cardSealed {
   border-color: #1A1D33;
   box-shadow: 4px 4px 0 #1A1D33;
+  background: linear-gradient(135deg, #FFFDF5 0%, #FFF8E7 50%, #FFFDF5 100%);
 }
 
 .cardSealed:hover {
   box-shadow: 6px 6px 0 #1A1D33;
 }
 
+.cardSealed::before {
+  background: linear-gradient(180deg, #D4A017, #F5C842, #D4A017);
+}
+
 .weekBadgeSealed {
-  background: #22C55E;
+  background: linear-gradient(135deg, #D4A017, #F5C842);
+  color: #1A1D33;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 #1A1D33, inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: sealedShimmer 3s ease-in-out infinite;
+}
+
+@keyframes sealedShimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 .progressRingSealed {
-  /* Glow effect for sealed */
+  filter: drop-shadow(0 0 6px rgba(212, 160, 23, 0.4));
 }
 
 .progressFillSealed {
-  stroke: #22C55E;
+  stroke: #D4A017;
 }
 
 .sealedIcon {
@@ -888,7 +902,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #22C55E;
+  filter: brightness(0) saturate(100%) invert(62%) sepia(85%) saturate(500%) hue-rotate(10deg) brightness(95%);
 }
 
 /* Seal Section */

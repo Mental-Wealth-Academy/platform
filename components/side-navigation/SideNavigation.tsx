@@ -658,13 +658,13 @@ const SideNavigation: React.FC = () => {
               }}
               onMouseEnter={() => play('hover')}
               disabled={isCreatingSession}
-              title="Sync Account"
+              title="Connect Account"
             >
               {isCollapsed ? (
                 <Image src="/icons/plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
               ) : (
                 <>
-                  <span>{isCreatingSession ? 'Syncing...' : 'Sync Account'}</span>
+                  <span>{isCreatingSession ? 'Connecting...' : 'Connect Account'}</span>
                   <Image src="/icons/plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
                 </>
               )}

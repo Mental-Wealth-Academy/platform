@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
+import BookCard from '@/components/book-card/BookCard';
+import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -13,51 +15,6 @@ interface WeekStatus {
   sealTxHash: string | null;
 }
 
-function ArtworkSection({ isLoaded }: { isLoaded: boolean }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState('');
-  const { play } = useSound();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setFileName(file ? file.name : '');
-  };
-
-  return (
-    <div className={`${styles.artworkSection} ${isLoaded ? styles.artworkSectionLoaded : ''}`}>
-      <div className={styles.journalHeader}>
-        <span className={styles.sectionLabel}>Creative Expression</span>
-        <h2 className={styles.sectionTitle}>Artwork</h2>
-      </div>
-      <div className={styles.artworkCard}>
-        <p className={styles.artworkDesc}>
-          Seal all 14 milestones then upload a piece of art that represents the new you.
-        </p>
-        <div
-          className={styles.artworkDropzone}
-          onClick={() => { play('click'); fileInputRef.current?.click(); }}
-          onMouseEnter={() => play('hover')}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className={styles.artworkFileInput}
-            onChange={handleFileChange}
-          />
-          <span className={styles.artworkDropzoneIcon}>+</span>
-          <span className={styles.artworkDropzoneText}>
-            {fileName || 'Click to select an image'}
-          </span>
-          <span className={styles.artworkDropzoneHint}>PNG, JPG, or GIF up to 10 MB</span>
-        </div>
-        <button className={styles.artworkSubmit} type="button" onClick={() => play('success')} onMouseEnter={() => play('hover')}>
-          Submit Artwork
-        </button>
-      </div>
-    </div>
-  );
-}
 
 const WEEK_TITLES = [
   'Introduction: Reading',
@@ -80,6 +37,7 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isReaderOpen, setIsReaderOpen] = useState(false);
   const { play } = useSound();
 
   useEffect(() => {
@@ -178,27 +136,38 @@ export default function HomePage() {
                 </svg>
                 Daily journals are stored safely against your pseudonym. All journal entries are saved through encryption, and unlocked using the final key earned after all 12 weeks are sealed.
               </div>
-              <div className={styles.journalCards}>
-                {WEEK_TITLES.map((title, i) => {
-                  if (i === 0 || i === WEEK_TITLES.length - 1) return null;
-                  const status = getWeekStatus(i);
-                  return (
-                    <AccordionJournalCard
-                      key={i}
-                      weekNumber={i}
-                      weekTitle={title}
-                      initialIsSealed={status?.isSealed}
-                      initialSealTxHash={status?.sealTxHash}
-                      onSealComplete={handleSealComplete}
-                      enablePersistence={isAuthenticated}
-                    />
-                  );
-                })}
+              <div className={styles.journalLayout}>
+                <aside className={styles.readingSidebar}>
+                  <BookCard
+                    title="The Journey Ahead"
+                    author="By: Jhinn Bay"
+                    description="True greatness emerges not from one stroke of genius, but careful curation of the entire process."
+                    category="Week 1"
+                    imageUrl="https://i.imgur.com/D2NetZM.png"
+                    slug="how-to-make-something-great"
+                    onReadClick={() => setIsReaderOpen(true)}
+                  />
+                </aside>
+                <div className={styles.journalCards}>
+                  {WEEK_TITLES.map((title, i) => {
+                    if (i === 0 || i === WEEK_TITLES.length - 1) return null;
+                    const status = getWeekStatus(i);
+                    return (
+                      <AccordionJournalCard
+                        key={i}
+                        weekNumber={i}
+                        weekTitle={title}
+                        initialIsSealed={status?.isSealed}
+                        initialSealTxHash={status?.sealTxHash}
+                        onSealComplete={handleSealComplete}
+                        enablePersistence={isAuthenticated}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-            {/* Artwork Section */}
-            <ArtworkSection isLoaded={isLoaded} />
 
             {/* Course Banner */}
             <div className={`${styles.courseBanner} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
@@ -212,6 +181,14 @@ export default function HomePage() {
               />
             </div>
       </main>
+      <BookReaderModal
+        isOpen={isReaderOpen}
+        onClose={() => setIsReaderOpen(false)}
+        title="The Journey Ahead"
+        author="By: Jhinn Bay"
+        markdownPath="/readings/how-to-make-something-great.md"
+        slug="how-to-make-something-great"
+      />
     </div>
   );
 }

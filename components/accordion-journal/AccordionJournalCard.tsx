@@ -1030,7 +1030,7 @@ export default function AccordionJournalCard({
       >
         <div className={styles.cardFaceLeft}>
           <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
-            {isSealed ? 'Sealed' : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
+            {isSealed ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{marginRight: 4, verticalAlign: -1}}><path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/><path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/><path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/></svg>Sealed</>) : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
           </div>
           {saveStatus !== 'idle' && !isSealed && (
             <span className={styles.saveIndicator}>

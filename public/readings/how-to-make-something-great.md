@@ -1,6 +1,6 @@
-# How to Make Something Great
+# The Journey Ahead
 
-**By Dr. Lina Ortiz, Ph.D. | Digital Research**
+**By Dr. Jhinova Bay, Ph.D. | Digital Research**
 
 ---
 

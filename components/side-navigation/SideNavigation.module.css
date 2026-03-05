@@ -790,7 +790,7 @@
 }
 
 .accountButton:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: var(--color-primary-hover);
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 #1A1D33;
 }

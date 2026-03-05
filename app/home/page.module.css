@@ -403,6 +403,21 @@
   margin-top: 2px;
 }
 
+.journalLayout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.readingSidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .journalCards {
   display: flex;
   flex-direction: column;
@@ -503,6 +518,17 @@
     transform: translate(-1px, -1px);
   }
 
+  .journalLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .readingSidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
   .tasksGrid {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -542,5 +568,9 @@
 
   .journalSection {
     margin-bottom: 24px;
+  }
+
+  .readingSidebar {
+    grid-template-columns: 1fr;
   }
 }

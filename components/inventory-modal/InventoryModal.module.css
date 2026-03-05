@@ -43,7 +43,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 3px solid #1A1D33;
-  background: #50599B;
+  background: var(--color-primary, #5168FF);
 }
 
 .title {
@@ -214,7 +214,7 @@
 }
 
 .nftCardNouns {
-  background: #FFC110;
+  background: #F4F5FE;
 }
 
 .nftImage {
