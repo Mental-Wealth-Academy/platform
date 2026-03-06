@@ -50,7 +50,7 @@ const navSections: NavSection[] = [
   {
     id: 'admin',
     label: 'ADMIN TOOLS',
-    badge: 'Access With Pro',
+    badge: 'BETA',
     badgeType: 'pro',
     items: [
       { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },

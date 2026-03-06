@@ -7,7 +7,7 @@ import styles from './ProposalStages.module.css';
 
 type Stage1Variant = 'waiting' | 'analyzing' | 'approved' | 'rejected';
 type Stage2Variant = 'waiting' | 'processing' | 'success' | 'failed';
-type Stage3Variant = 'waiting' | 'active' | 'completed' | 'defeated';
+type Stage3Variant = 'waiting' | 'active' | 'completed' | 'defeated' | 'expired';
 
 interface ProposalStagesProps {
   stage1: Stage1Variant;
@@ -46,7 +46,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       case 'processing':
         return 'Processing...';
       case 'success':
-        return (stage3 === 'defeated' || stage3 === 'completed') ? 'Vote ended' : 'Community voting open';
+        return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Vote ended' : 'Community voting open';
       case 'failed':
         return 'Vote failed';
       default:
@@ -64,6 +64,8 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
         return 'Approved';
       case 'defeated':
         return 'Defeated';
+      case 'expired':
+        return 'Expired';
       default:
         return 'Unknown';
     }
@@ -156,7 +158,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-          ) : stage3 === 'defeated' ? (
+          ) : stage3 === 'defeated' || stage3 === 'expired' ? (
             <Skull size={20} weight="duotone" />
           ) : (
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -116,6 +116,16 @@
   background: var(--color-primary);
 }
 
+.statusBadge.expired {
+  background: rgba(107, 114, 128, 0.15);
+  color: #6B7280;
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+.statusBadge.expired .statusDot {
+  background: #6B7280;
+}
+
 .meta {
   display: flex;
   align-items: center;

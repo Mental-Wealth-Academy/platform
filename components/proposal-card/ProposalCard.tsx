@@ -89,6 +89,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     return 'waiting';
   };
 
+  const isExpired = !!onChainData && onChainData.votingDeadline > 0 && Date.now() / 1000 > onChainData.votingDeadline && !onChainData.executed;
+
   const getStage3Variant = () => {
     if (status === 'completed' || onChainData?.executed) {
       return 'completed';
@@ -100,13 +102,20 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       if (hasVotes && againstVotes > forVotes) {
         return 'defeated';
       }
+      if (isExpired) {
+        const totalVotes = forVotes + againstVotes;
+        if (totalVotes === 0) return 'expired';
+        return forVotes > againstVotes ? 'completed' : 'defeated';
+      }
     }
     return 'waiting';
   };
 
   const isDefeated = getStage3Variant() === 'defeated';
+  const isExpiredState = getStage3Variant() === 'expired';
 
   const getStatusLabel = () => {
+    if (isExpiredState) return 'Expired';
     if (isDefeated) return 'Defeated';
     switch (status) {
       case 'pending_review':
@@ -116,7 +125,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       case 'rejected':
         return 'Failed';
       case 'active':
-        return 'Active';
+        return isExpired ? 'Expired' : 'Active';
       case 'completed':
         return 'Completed';
       default:
@@ -125,6 +134,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   };
 
   const getStatusClass = () => {
+    if (isExpiredState) return 'expired';
     if (isDefeated) return 'rejected';
     switch (status) {
       case 'pending_review':
@@ -134,7 +144,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       case 'rejected':
         return 'rejected';
       case 'active':
-        return 'active';
+        return isExpired ? 'expired' : 'active';
       case 'completed':
         return 'approved';
       default:

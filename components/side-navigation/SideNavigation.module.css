@@ -52,7 +52,7 @@
   height: 32px;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +75,7 @@
   height: 32px;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 50%;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -97,7 +97,7 @@
   height: 28px;
   background: #ffffff;
   border: 2px solid rgba(26, 29, 51, 0.2);
-  border-radius: 4px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +248,7 @@
   gap: 10px;
   background: #e74c3c;
   border: 2px solid #c0392b;
-  border-radius: 4px;
+  border-radius: 12px;
   box-shadow: 2px 2px 0 #c0392b;
   cursor: pointer;
   color: #ffffff;
@@ -285,7 +285,7 @@
   justify-content: center;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 12px;
   box-shadow: 2px 2px 0 #1A1D33;
   cursor: pointer;
   color: #1A1D33;
@@ -458,7 +458,7 @@
   padding: 14px;
   background: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(80, 89, 155, 0.12) 50%, rgba(81, 104, 255, 0.06) 100%);
   border: 2px solid var(--color-primary);
-  border-radius: 4px;
+  border-radius: 14px;
   box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
   overflow: hidden;
   cursor: pointer;
@@ -549,7 +549,7 @@
   gap: 12px;
   padding: 12px 16px;
   margin: 0 8px;
-  border-radius: 4px;
+  border-radius: 12px;
   text-decoration: none;
   transition: all 0.15s ease;
   border: 2px solid transparent;
@@ -562,12 +562,13 @@
 }
 
 .navItemButton {
-  width: 100%;
+  width: auto;
   cursor: pointer;
   background: transparent;
   font-size: inherit;
   text-align: left;
   text-transform: none;
+  box-sizing: border-box;
 }
 
 .navItemButton .navItemLabel {
@@ -690,7 +691,7 @@
   padding: 10px;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 12px;
   box-shadow: 2px 2px 0 #1A1D33;
   box-sizing: border-box;
   cursor: pointer;
@@ -732,7 +733,7 @@
   padding: 10px 12px;
   background: var(--color-primary);
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 12px;
   font-family: var(--font-button);
   font-size: 11px;
   font-weight: 700;
@@ -775,7 +776,7 @@
   padding: 8px 10px;
   background: var(--color-primary);
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 12px;
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 600;
@@ -798,7 +799,7 @@
 .accountAvatar {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 50%;
   border: 2px solid #1A1D33;
   flex-shrink: 0;
 }
@@ -814,7 +815,7 @@
   right: 0;
   background: #ffffff;
   border: 2px solid #1A1D33;
-  border-radius: 4px;
+  border-radius: 12px;
   box-shadow: 3px -3px 0 #1A1D33;
   z-index: 200;
   overflow: hidden;
@@ -1104,7 +1105,7 @@
     gap: 5px;
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    border-radius: 50%;
     cursor: pointer;
     box-shadow: none;
     transition: all 0.15s ease;
