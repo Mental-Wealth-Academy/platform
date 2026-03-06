@@ -106,6 +106,11 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
   }, [isOpen, onClose]);
 
   useEffect(() => {
+    setMarkdown('');
+    setComments([]);
+  }, [markdownPath]);
+
+  useEffect(() => {
     if (!isOpen || markdown) return;
     fetch(markdownPath)
       .then(res => res.text())
