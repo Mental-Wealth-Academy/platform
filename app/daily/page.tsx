@@ -18,22 +18,22 @@ const readings = [
     slug: 'how-to-make-something-great',
   },
   {
-    title: 'Micro University?',
-    author: 'By: Prof. Marcus Li, D.Phil.',
+    title: 'The Micro University',
+    author: 'By: Jhinova Bay, PhD',
     description:
-      'A rigorous theoretical and empirical analysis of governance mechanisms within academic decentralized autonomous organizations. This monograph synthesizes mechanism design theory, social choice theory, and institutional economics to evaluate the efficacy of quadratic voting protocols, reputation-weighted decision-making, and stewardship models.',
-    category: 'Decision-making',
+      '500 seats, 12 weeks, one treasury on Base. How small sovereign communities with transparent governance outlearn and outgrow traditional institutions.',
+    category: 'Governance',
     imageUrl: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=900&auto=format&fit=crop&q=60',
     slug: 'micro-university',
   },
   {
-    title: 'From Viral 2 Ethereal',
-    author: 'By: Dr. Jhinn Bay, Ph.D.',
+    title: 'The Electric Universe',
+    author: 'By: Jhinova Bay, PhD',
     description:
-      'A critical examination of autonomous agents designed for systematic literature review, citation network analysis, and knowledge synthesis. This investigation employs both computational experiments and philosophical inquiry to delineate the boundaries between algorithmic summarization and genuine scholarly comprehension.',
-    category: 'AI Tools',
+      'You run at 100Hz. The machine screams at 100GHz. The gap between human perception and machine processing is the terrain we build on.',
+    category: 'Frequency',
     imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&auto=format&fit=crop&q=60',
-    slug: 'from-viral-to-ethereal',
+    slug: 'electric-universe',
   },
 ];
 

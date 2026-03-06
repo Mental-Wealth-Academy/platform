@@ -17,9 +17,9 @@ interface WeekStatus {
 
 
 const WEEKLY_READINGS = [
-  { title: 'The Journey Ahead', author: 'By: Jhinn Bay', description: 'True greatness emerges not from one stroke of genius, but careful curation of the entire process.', category: 'Week 1', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'how-to-make-something-great', markdownPath: '/readings/how-to-make-something-great.md' },
-  { title: 'From Viral to Ethereal', author: 'By: Jhinn Bay', description: 'Why chasing virality is a trap, and how building something ethereal creates lasting impact.', category: 'Week 2', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'from-viral-to-ethereal', markdownPath: '/readings/from-viral-to-ethereal.md' },
-  { title: 'The Micro University', author: 'By: Jhinn Bay', description: 'How small, focused communities can outlearn and outgrow traditional institutions.', category: 'Week 3', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'micro-university', markdownPath: '/readings/micro-university.md' },
+  { title: 'The Journey Ahead', author: 'By: Jhinova Bay, PhD', description: 'True greatness emerges not from one stroke of genius, but careful curation of the entire process.', category: 'Week 1', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'how-to-make-something-great', markdownPath: '/readings/how-to-make-something-great.md' },
+  { title: 'The Electric Universe', author: 'By: Jhinova Bay, PhD', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'electric-universe', markdownPath: '/readings/electric-universe.md' },
+  { title: 'The Micro University', author: 'By: Jhinova Bay, PhD', description: '500 seats, 12 weeks, one treasury. How small sovereign communities outlearn institutions.', category: 'Week 3', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'micro-university', markdownPath: '/readings/micro-university.md' },
 ];
 
 const WEEK_TITLES = [
