@@ -269,6 +269,28 @@ interface AccordionJournalCardProps {
   initialSealTxHash?: string | null;
   onSealComplete?: (weekNumber: number, txHash: string) => void;
   enablePersistence?: boolean;
+  isLocked?: boolean;
+  weekEndsAt?: string | null;
+}
+
+function useCountdown(targetDate: string | null | undefined) {
+  const [timeLeft, setTimeLeft] = useState('');
+  useEffect(() => {
+    if (!targetDate) { setTimeLeft(''); return; }
+    const update = () => {
+      const diff = new Date(targetDate).getTime() - Date.now();
+      if (diff <= 0) { setTimeLeft('Unlocking...'); return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft(d > 0 ? `${d}d ${h}h ${m}m` : `${h}h ${m}m ${s}s`);
+    };
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+  return timeLeft;
 }
 
 export default function AccordionJournalCard({
@@ -279,6 +301,8 @@ export default function AccordionJournalCard({
   initialSealTxHash,
   onSealComplete,
   enablePersistence = false,
+  isLocked = false,
+  weekEndsAt,
 }: AccordionJournalCardProps) {
   // Use provided sections, weekSectionsMap, or defaults for weeks 1/2
   const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
@@ -1014,33 +1038,40 @@ export default function AccordionJournalCard({
     }
   };
 
+  const countdown = useCountdown(weekEndsAt);
+
   return (
     <div
-      className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''} ${isSealed ? styles.cardSealed : ''}`}
+      className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''} ${isSealed ? styles.cardSealed : ''} ${isLocked ? styles.cardLocked : ''}`}
       style={{ '--week-color': WEEK_COLORS[weekNumber] || '#5168FF' } as React.CSSProperties}
     >
       {/* Card Face - Always Visible */}
       <button
         type="button"
         className={styles.cardFace}
-        onClick={() => { if (isSealed || timerActive) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
+        onClick={() => { if (isSealed || timerActive || isLocked) return; play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
         onMouseEnter={() => play('hover')}
         aria-expanded={isExpanded}
-        disabled={isSealed || timerActive}
+        disabled={isSealed || timerActive || isLocked}
       >
         <div className={styles.cardFaceLeft}>
-          <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''}`}>
-            {isSealed ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{marginRight: 4, verticalAlign: -1}}><path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/><path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/><path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/></svg>Sealed</>) : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
+          <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''} ${isLocked ? styles.weekBadgeLocked : ''}`}>
+            {isSealed ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{marginRight: 4, verticalAlign: -1}}><path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/><path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/><path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/></svg>Sealed</>) : isLocked ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4, verticalAlign: -1}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</>) : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
           </div>
-          {saveStatus !== 'idle' && !isSealed && (
+          {saveStatus !== 'idle' && !isSealed && !isLocked && (
             <span className={styles.saveIndicator}>
               {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
             </span>
           )}
+          {countdown && !isSealed && !isLocked && (
+            <span className={styles.countdownBadge}>{countdown}</span>
+          )}
           <div className={styles.cardTitleGroup}>
             <h3 className={styles.cardTitle}>{weekTitle}</h3>
             <p className={styles.cardSubtitle}>
-              {isSealed
+              {isLocked
+                ? 'This week hasn\u2019t started yet'
+                : isSealed
                 ? 'Verified by Azura and sealed on Base'
                 : `${completedCount} of ${totalSections} activities completed`
               }

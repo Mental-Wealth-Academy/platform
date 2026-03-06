@@ -4,6 +4,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
 import { sealWeekOnChain, PATHWAY_CONTRACT_ADDRESS } from '@/lib/pathway-contract';
+import { getSeasonInfo } from '@/lib/season';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -100,6 +101,12 @@ export async function POST(request: Request) {
 
   if (typeof weekNumber !== 'number' || weekNumber < 0 || weekNumber > 13) {
     return NextResponse.json({ error: 'Invalid week number (0-13).' }, { status: 400 });
+  }
+
+  // Enforce universal season timer — can't save/seal future weeks
+  const season = getSeasonInfo();
+  if (season.seasonActive && weekNumber > season.currentWeek) {
+    return NextResponse.json({ error: 'This week hasn\'t started yet.' }, { status: 403 });
   }
 
   // Check if week is already sealed

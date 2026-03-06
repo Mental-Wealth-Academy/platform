@@ -905,6 +905,41 @@
   filter: brightness(0) saturate(100%) invert(62%) sepia(85%) saturate(500%) hue-rotate(10deg) brightness(95%);
 }
 
+/* Locked Card State */
+.cardLocked {
+  opacity: 0.55;
+  border-color: rgba(26, 29, 51, 0.4);
+  box-shadow: 3px 3px 0 rgba(26, 29, 51, 0.3);
+  pointer-events: none;
+}
+
+.cardLocked::before {
+  background: rgba(26, 29, 51, 0.25);
+}
+
+.cardLocked:hover {
+  transform: none;
+  box-shadow: 3px 3px 0 rgba(26, 29, 51, 0.3);
+}
+
+.weekBadgeLocked {
+  background: rgba(26, 29, 51, 0.15);
+  color: rgba(26, 29, 51, 0.6);
+  font-weight: 700;
+}
+
+.countdownBadge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--week-color, #5168FF);
+  background: color-mix(in srgb, var(--week-color, #5168FF) 12%, transparent);
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 /* Seal Section */
 .sealSection {
   padding: 20px 24px;

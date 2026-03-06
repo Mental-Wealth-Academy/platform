@@ -45,11 +45,27 @@ export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
   const [readingIndex, setReadingIndex] = useState(0);
+  const [activeWeek, setActiveWeek] = useState<number>(0);
+  const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
+  const [seasonActive, setSeasonActive] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readingIndex];
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
+  }, []);
+
+  // Fetch season info (universal timer)
+  useEffect(() => {
+    fetch('/api/season', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        setActiveWeek(data.currentWeek ?? 0);
+        setWeekEndsAt(data.weekEndsAt ?? null);
+        setSeasonActive(data.seasonActive ?? false);
+      })
+      .catch(() => {});
   }, []);
 
   // Check auth first, then fetch week statuses only if authenticated
@@ -61,6 +77,8 @@ export default function HomePage() {
         if (!meData?.user) return;
 
         setIsAuthenticated(true);
+        const uname = meData.user.username;
+        if (uname && !uname.startsWith('user_')) setDisplayName(uname);
         const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
@@ -87,6 +105,24 @@ export default function HomePage() {
     if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
   }, [play]);
 
+  const sealedCount = weekStatuses.filter(w => w.isSealed && w.weekNumber >= 1 && w.weekNumber <= 12).length;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    const timeOfDay = hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening';
+    if (displayName) return `Good ${timeOfDay}, ${displayName}`;
+    return `Good ${timeOfDay}`;
+  };
+
+  const getProgressDesc = () => {
+    if (sealedCount === 0) return 'Your journey starts here... It may seem long, but so did everything in the beginning.';
+    if (sealedCount <= 3) return `${sealedCount} week${sealedCount > 1 ? 's' : ''} sealed. You're building momentum. Keep showing up.`;
+    if (sealedCount <= 6) return `${sealedCount} weeks down. You're past the point where most people quit. That says something.`;
+    if (sealedCount <= 9) return `${sealedCount} weeks sealed. Your brain is literally rewiring itself right now. Stay with it.`;
+    if (sealedCount <= 11) return `${sealedCount} weeks. You can see the finish line. Don't coast. The last stretch matters most.`;
+    return 'All 12 weeks sealed. You did the work. Every milestone, permanently on Base.';
+  };
+
   return (
     <div className={styles.pageLayout}>
       <SideNavigation />
@@ -104,10 +140,10 @@ export default function HomePage() {
             {/* 12-Week Timeline */}
             <div className={`${styles.calendarSection} ${isLoaded ? styles.calendarSectionLoaded : ''}`}>
               <div className={styles.journalHeader}>
-                <span className={styles.courseLabel}>An Oasis of Intellectual Refreshment</span>
-                <h2 className={styles.courseTitle}>Discover Your Ethereal Horizon</h2>
+                <span className={styles.courseLabel}>DIVINE WORK</span>
+                <h2 className={styles.courseTitle}>{getGreeting()}</h2>
                 <p className={styles.courseDesc}>
-                  Each week strips back a layer, recovering a core sense of self you probably forgot you had. Creative exercises, sealed on-chain, at your own pace.
+                  {getProgressDesc()}
                 </p>
               </div>
               <div className={styles.timeline}>
@@ -142,7 +178,7 @@ export default function HomePage() {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
-                Daily journals are stored safely against your pseudonym. All journal entries are saved through encryption, and unlocked using the final key earned after all 12 weeks are sealed.
+                All daily journals are private.
               </div>
               <div className={styles.journalLayout}>
                 <aside className={styles.readingSidebar}>
@@ -181,6 +217,7 @@ export default function HomePage() {
                   {WEEK_TITLES.map((title, i) => {
                     if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                     const status = getWeekStatus(i);
+                    const isLocked = seasonActive && i > activeWeek;
                     return (
                       <AccordionJournalCard
                         key={i}
@@ -190,6 +227,8 @@ export default function HomePage() {
                         initialSealTxHash={status?.sealTxHash}
                         onSealComplete={handleSealComplete}
                         enablePersistence={isAuthenticated}
+                        isLocked={isLocked}
+                        weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
                       />
                     );
                   })}
