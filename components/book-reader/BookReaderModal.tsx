@@ -17,11 +17,16 @@ interface Comment {
   id: string;
   body: string;
   created_at: string;
+  user_id: string;
   username: string | null;
   avatar_url: string | null;
+  like_count: number;
+  liked_by_me: boolean;
+  is_own: boolean;
 }
 
 interface UserInfo {
+  id: string;
   username: string | null;
   avatarUrl: string | null;
 }
@@ -64,6 +69,8 @@ function timeAgo(dateStr: string): string {
   if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
   return new Date(dateStr).toLocaleDateString();
 }
+
+const MAX_CHARS = 100;
 
 const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, title, author, markdownPath, slug }) => {
   const [shouldRender, setShouldRender] = useState(false);
@@ -108,7 +115,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
 
   const fetchComments = useCallback(async () => {
     try {
-      const res = await fetch(`/api/readings/comments?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/readings/comments?slug=${encodeURIComponent(slug)}`, { cache: 'no-store', credentials: 'include' });
       const data = await res.json();
       if (data.comments) setComments(data.comments);
     } catch (err) {
@@ -122,36 +129,106 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
     fetch('/api/me', { credentials: 'include', cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        if (data.user) setUser({ username: data.user.username, avatarUrl: data.user.avatarUrl });
+        if (data.user) setUser({ id: data.user.id, username: data.user.username, avatarUrl: data.user.avatarUrl });
       })
       .catch(() => {});
   }, [isOpen, fetchComments]);
 
   const handleSubmitComment = async () => {
-    if (!newComment.trim() || isSubmitting) return;
+    if (!newComment.trim() || isSubmitting || !user) return;
     setIsSubmitting(true);
+
+    // Optimistic: add comment immediately
+    const optimisticId = `optimistic-${Date.now()}`;
+    const optimisticComment: Comment = {
+      id: optimisticId,
+      body: newComment.trim(),
+      created_at: new Date().toISOString(),
+      user_id: user.id,
+      username: user.username,
+      avatar_url: user.avatarUrl,
+      like_count: 0,
+      liked_by_me: false,
+      is_own: true,
+    };
+    setComments(prev => [optimisticComment, ...prev]);
+    const commentText = newComment;
+    setNewComment('');
+
     try {
       const res = await fetch('/api/readings/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ slug, comment: newComment }),
+        body: JSON.stringify({ slug, comment: commentText }),
       });
       const data = await res.json();
-      if (data.ok) {
-        setNewComment('');
-        fetchComments();
+      if (data.ok && data.comment) {
+        // Replace optimistic with real
+        setComments(prev => prev.map(c => c.id === optimisticId ? data.comment : c));
       } else {
-        alert(data.error || 'Failed to post comment.');
+        // Revert on failure
+        setComments(prev => prev.filter(c => c.id !== optimisticId));
+        setNewComment(commentText);
       }
-    } catch (err) {
-      console.error('Failed to post comment:', err);
+    } catch {
+      setComments(prev => prev.filter(c => c.id !== optimisticId));
+      setNewComment(commentText);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    const prev = comments;
+    setComments(c => c.filter(x => x.id !== commentId));
+
+    try {
+      const res = await fetch('/api/readings/comments', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ commentId }),
+      });
+      const data = await res.json();
+      if (!data.ok) setComments(prev);
+    } catch {
+      setComments(prev);
+    }
+  };
+
+  const handleToggleLike = async (commentId: string) => {
+    const comment = comments.find(c => c.id === commentId);
+    if (!comment || !user) return;
+
+    const wasLiked = comment.liked_by_me;
+
+    // Optimistic toggle
+    setComments(prev => prev.map(c =>
+      c.id === commentId
+        ? { ...c, liked_by_me: !wasLiked, like_count: wasLiked ? c.like_count - 1 : c.like_count + 1 }
+        : c
+    ));
+
+    try {
+      await fetch('/api/readings/comments', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ commentId, action: wasLiked ? 'unlike' : 'like' }),
+      });
+    } catch {
+      // Revert
+      setComments(prev => prev.map(c =>
+        c.id === commentId
+          ? { ...c, liked_by_me: wasLiked, like_count: wasLiked ? c.like_count + 1 : c.like_count - 1 }
+          : c
+      ));
+    }
+  };
+
   const htmlContent = useMemo(() => parseMarkdown(markdown), [markdown]);
+  const charsLeft = MAX_CHARS - newComment.length;
 
   if (!shouldRender) return null;
 
@@ -180,7 +257,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
           <div className={styles.commentsSection}>
             <h3 className={styles.commentsTitle}>Discussion ({comments.length})</h3>
 
-            {user && (
+            {user ? (
               <div className={styles.commentForm}>
                 <div className={styles.commentFormAvatar}>
                   {user.avatarUrl ? (
@@ -196,8 +273,8 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
                     className={styles.commentTextarea}
                     placeholder="Share your thoughts..."
                     value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    maxLength={1000}
+                    onChange={(e) => setNewComment(e.target.value.slice(0, MAX_CHARS))}
+                    maxLength={MAX_CHARS}
                     rows={2}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
@@ -206,19 +283,22 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
                       }
                     }}
                   />
-                  <button
-                    className={styles.commentSubmit}
-                    onClick={handleSubmitComment}
-                    disabled={isSubmitting || !newComment.trim()}
-                    type="button"
-                  >
-                    {isSubmitting ? 'Posting...' : 'Post'}
-                  </button>
+                  <div className={styles.commentFormFooter}>
+                    <span className={`${styles.charCount} ${charsLeft < 50 ? styles.charCountLow : ''}`}>
+                      {charsLeft}
+                    </span>
+                    <button
+                      className={styles.commentSubmit}
+                      onClick={handleSubmitComment}
+                      disabled={isSubmitting || !newComment.trim()}
+                      type="button"
+                    >
+                      {isSubmitting ? 'Posting...' : 'Post'}
+                    </button>
+                  </div>
                 </div>
               </div>
-            )}
-
-            {!user && (
+            ) : (
               <p className={styles.signInPrompt}>Sign in to join the discussion.</p>
             )}
 
@@ -240,6 +320,34 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
                       <span className={styles.commentTime}>{timeAgo(c.created_at)}</span>
                     </div>
                     <p className={styles.commentText}>{c.body}</p>
+                    <div className={styles.commentActions}>
+                      {user && (
+                        <button
+                          className={`${styles.likeButton} ${c.liked_by_me ? styles.likeButtonActive : ''}`}
+                          onClick={() => handleToggleLike(c.id)}
+                          type="button"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill={c.liked_by_me ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                          </svg>
+                          {c.like_count > 0 && <span>{c.like_count}</span>}
+                        </button>
+                      )}
+                      {c.is_own && (
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => handleDeleteComment(c.id)}
+                          type="button"
+                          aria-label="Delete comment"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          </svg>
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

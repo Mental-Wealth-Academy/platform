@@ -270,8 +270,25 @@
   border-color: var(--color-primary, #5168FF);
 }
 
+.commentFormFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.charCount {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: rgba(26, 29, 51, 0.3);
+  transition: color 0.15s ease;
+}
+
+.charCountLow {
+  color: #E85D3A;
+  font-weight: 600;
+}
+
 .commentSubmit {
-  align-self: flex-end;
   padding: 8px 20px;
   background: var(--color-primary, #5168FF);
   color: #ffffff;
@@ -353,6 +370,53 @@
   color: rgba(26, 29, 51, 0.8);
   margin: 0;
   word-break: break-word;
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: rgba(26, 29, 51, 0.4);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.likeButton:hover {
+  color: #E85D3A;
+}
+
+.likeButtonActive {
+  color: #E85D3A;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: rgba(26, 29, 51, 0.3);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.deleteButton:hover {
+  color: #D03660;
 }
 
 .noComments {

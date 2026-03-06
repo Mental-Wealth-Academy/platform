@@ -16,6 +16,12 @@ interface WeekStatus {
 }
 
 
+const WEEKLY_READINGS = [
+  { title: 'The Journey Ahead', author: 'By: Jhinn Bay', description: 'True greatness emerges not from one stroke of genius, but careful curation of the entire process.', category: 'Week 1', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'how-to-make-something-great', markdownPath: '/readings/how-to-make-something-great.md' },
+  { title: 'From Viral to Ethereal', author: 'By: Jhinn Bay', description: 'Why chasing virality is a trap, and how building something ethereal creates lasting impact.', category: 'Week 2', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'from-viral-to-ethereal', markdownPath: '/readings/from-viral-to-ethereal.md' },
+  { title: 'The Micro University', author: 'By: Jhinn Bay', description: 'How small, focused communities can outlearn and outgrow traditional institutions.', category: 'Week 3', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'micro-university', markdownPath: '/readings/micro-university.md' },
+];
+
 const WEEK_TITLES = [
   'Introduction: Reading',
   'Recovering a Sense of Safety',
@@ -38,7 +44,9 @@ export default function HomePage() {
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [readingIndex, setReadingIndex] = useState(0);
   const { play } = useSound();
+  const currentReading = WEEKLY_READINGS[readingIndex];
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -139,14 +147,35 @@ export default function HomePage() {
               <div className={styles.journalLayout}>
                 <aside className={styles.readingSidebar}>
                   <BookCard
-                    title="The Journey Ahead"
-                    author="By: Jhinn Bay"
-                    description="True greatness emerges not from one stroke of genius, but careful curation of the entire process."
-                    category="Week 1"
-                    imageUrl="https://i.imgur.com/D2NetZM.png"
-                    slug="how-to-make-something-great"
+                    title={currentReading.title}
+                    author={currentReading.author}
+                    description={currentReading.description}
+                    category={currentReading.category}
+                    imageUrl={currentReading.imageUrl}
+                    slug={currentReading.slug}
                     onReadClick={() => setIsReaderOpen(true)}
                   />
+                  <div className={styles.readingNav}>
+                    <button
+                      className={styles.readingNavBtn}
+                      disabled={readingIndex === 0}
+                      onClick={() => { play('click'); setReadingIndex(i => i - 1); }}
+                      onMouseEnter={() => play('hover')}
+                      aria-label="Previous reading"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <span className={styles.readingNavLabel}>{readingIndex + 1} / {WEEKLY_READINGS.length}</span>
+                    <button
+                      className={styles.readingNavBtn}
+                      disabled={readingIndex === WEEKLY_READINGS.length - 1}
+                      onClick={() => { play('click'); setReadingIndex(i => i + 1); }}
+                      onMouseEnter={() => play('hover')}
+                      aria-label="Next reading"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                  </div>
                 </aside>
                 <div className={styles.journalCards}>
                   {WEEK_TITLES.map((title, i) => {
@@ -184,10 +213,10 @@ export default function HomePage() {
       <BookReaderModal
         isOpen={isReaderOpen}
         onClose={() => setIsReaderOpen(false)}
-        title="The Journey Ahead"
-        author="By: Jhinn Bay"
-        markdownPath="/readings/how-to-make-something-great.md"
-        slug="how-to-make-something-great"
+        title={currentReading.title}
+        author={currentReading.author}
+        markdownPath={currentReading.markdownPath}
+        slug={currentReading.slug}
       />
     </div>
   );

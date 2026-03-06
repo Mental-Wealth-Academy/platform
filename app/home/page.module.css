@@ -418,6 +418,55 @@
   gap: 16px;
 }
 
+.readingNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.readingNavBtn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #5168FF);
+  color: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.readingNavBtn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.readingNavBtn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
+
+.readingNavBtn:disabled {
+  background: #E8E9F0;
+  color: #AAAAAA;
+  border-color: #CCCCCC;
+  box-shadow: 2px 2px 0 #CCCCCC;
+  cursor: not-allowed;
+}
+
+.readingNavLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1D33;
+  letter-spacing: 0.05em;
+}
+
 .journalCards {
   display: flex;
   flex-direction: column;

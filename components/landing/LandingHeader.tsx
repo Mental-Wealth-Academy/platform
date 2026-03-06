@@ -6,9 +6,9 @@ import styles from './LandingHeader.module.css';
 import { useSound } from '@/hooks/useSound';
 
 const TOOLS_ITEMS = [
-  { label: 'Genetic Health', href: '/genetics' },
-  { label: 'Community', href: '/home' },
-  { label: 'Cognitive Benefits', href: '/research' },
+  { label: 'What is Wealth?', href: '/learn#wealth' },
+  { label: 'Community DAO', href: '/learn#community' },
+  { label: 'Cognitive Benefits', href: '/learn#cognitive' },
   { label: 'Treasury Management', href: 'https://azura-theta.vercel.app/' },
 ];
 
