@@ -22,6 +22,9 @@ const BACKGROUND_COLORS = ImageData.bgcolors;
 
 // Number of avatars to assign per user
 const AVATARS_PER_USER = 6;
+const NOUNS_PER_USER = 3;
+const ANGELS_PER_USER = 3;
+const TOTAL_ANGELS = 12;
 
 /**
  * Avatar interface representing a single avatar
@@ -103,18 +106,34 @@ function seedToId(seed: NounSeed): string {
 }
 
 /**
- * Gets exactly 5 deterministically assigned Lil Noun avatars for a user
+ * Gets deterministically assigned avatars for a user.
+ * Mix of 3 Academic Angels + 3 Lil Nouns = 6 total.
  *
- * Same user seed always returns the same 5 avatars.
+ * Same user seed always returns the same 6 avatars.
  */
 export function getAssignedAvatars(userSeed: string): Avatar[] {
   const seed = stringToSeed(userSeed);
   const rng = mulberry32(seed);
 
-  // Generate 5 unique seeds
-  const seenIds = new Set<string>();
   const avatars: Avatar[] = [];
 
+  // Pick 3 unique Academic Angels (from 12 total)
+  const angelIndices = new Set<number>();
+  while (angelIndices.size < ANGELS_PER_USER) {
+    const idx = Math.floor(rng() * TOTAL_ANGELS) + 1; // 1-12
+    angelIndices.add(idx);
+  }
+  for (const idx of angelIndices) {
+    const padded = String(idx).padStart(2, '0');
+    avatars.push({
+      id: `angel_${padded}`,
+      image_url: `/anbel${padded}.png`,
+      metadata_url: '',
+    });
+  }
+
+  // Generate 3 unique Lil Nouns
+  const seenIds = new Set<string>();
   while (avatars.length < AVATARS_PER_USER) {
     const nounSeed = generateSeed(rng);
     const id = seedToId(nounSeed);
@@ -129,7 +148,7 @@ export function getAssignedAvatars(userSeed: string): Avatar[] {
     });
   }
 
-  // Sort by ID for consistent ordering
+  // Sort angels first, then nouns
   avatars.sort((a, b) => a.id.localeCompare(b.id));
   return avatars;
 }
@@ -143,9 +162,21 @@ export function isAvatarValidForUser(userSeed: string, avatarId: string): boolea
 }
 
 /**
- * Gets a single avatar by its ID (e.g., "noun_00_11_042_200_06")
+ * Gets a single avatar by its ID (e.g., "noun_00_11_042_200_06" or "angel_03")
  */
 export function getAvatarByAvatarId(avatarId: string): Avatar | null {
+  // Academic Angel format
+  const angelMatch = avatarId.match(/^angel_(\d{2})$/);
+  if (angelMatch) {
+    const num = parseInt(angelMatch[1], 10);
+    if (num < 1 || num > TOTAL_ANGELS) return null;
+    return {
+      id: avatarId,
+      image_url: `/anbel${angelMatch[1]}.png`,
+      metadata_url: '',
+    };
+  }
+
   const match = avatarId.match(/^noun_(\d{2})_(\d{2})_(\d{3})_(\d{3})_(\d{2})$/);
   if (!match) {
     // Legacy IPFS avatar format — return null to trigger re-selection

@@ -6,6 +6,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookCard from '@/components/book-card/BookCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
+import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -123,7 +124,28 @@ export default function HomePage() {
     return 'All 12 weeks sealed. You did the work. Every milestone, permanently on Base.';
   };
 
+  const handleWelcomeAuthenticated = useCallback(() => {
+    // Re-fetch auth state after onboarding completes
+    (async () => {
+      try {
+        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const meData = await meRes.json().catch(() => ({ user: null }));
+        if (meData?.user) {
+          setIsAuthenticated(true);
+          const uname = meData.user.username;
+          if (uname && !uname.startsWith('user_')) setDisplayName(uname);
+          const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
+          if (res.ok) {
+            const data = await res.json();
+            setWeekStatuses(data.weeks);
+          }
+        }
+      } catch {}
+    })();
+  }, []);
+
   return (
+    <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
@@ -258,5 +280,6 @@ export default function HomePage() {
         slug={currentReading.slug}
       />
     </div>
+    </HomeWelcomeFlow>
   );
 }
