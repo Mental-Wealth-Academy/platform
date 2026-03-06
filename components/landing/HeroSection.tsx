@@ -24,7 +24,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span><br /> For Mental Health</h1>
+          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span><br /> For Intellectual Refreshment</h1>
           <p className={styles.heroSubtext}>
             MWA is a gamified micro-university where you tackle 12 weeks of self-reflection through notes, games, and activities.
           </p>
