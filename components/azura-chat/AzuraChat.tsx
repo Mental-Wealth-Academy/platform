@@ -251,20 +251,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       };
       setMessages((prev) => [...prev, userMsg]);
       addAzuraMessage(generateAzuraResponse('polymarket signals'));
-    } else if (action === 'genes') {
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: "Can you read my genes?",
-        sender: 'user',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      const geneResponses = [
-        "I'm not a genie or a wish-granter ✧ The Genetics Lab is where you upload your alleles or molecular structure. That's where the magic happens ✧ go use it.",
-        "Genes, not genies. I don't do wishes. Head to the Genetics Lab and upload your alleles or molecular structure ✧ it'll walk you through the rest.",
-        "Wrong ask. I'm not granting wishes over here. The Genetics Lab handles all of that ✧ upload your alleles or molecular structure and let it do its thing.",
-      ];
-      addAzuraMessage(geneResponses[Math.floor(Math.random() * geneResponses.length)]);
     } else if (action === 'liquidity') {
       setShowLiquidityInput(true);
       const userMsg: Message = {
@@ -415,10 +401,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
             Treasury
           </button>
-          <button className={styles.quickAction} onClick={() => handleQuickAction('genes')} disabled={isTyping} type="button">
-            Genes
-          </button>
-          <button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
+<button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
             Signals
           </button>
           <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">

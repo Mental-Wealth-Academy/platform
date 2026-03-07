@@ -1,0 +1,27 @@
+# ==========================================================================
+# CRE WORKFLOW SETTINGS: trade-execute-proposals
+# ==========================================================================
+# Event-triggered workflow that listens for ProposalExecuted events on
+# AzuraKillStreak. When a governance proposal passes and is executed via
+# standard flow (USDC to recipient), this workflow picks up the signal and
+# executes a corresponding trade on the MockPredictionMarket — completing
+# the CRE-managed proposal-to-trade pipeline.
+#
+# For trade proposals (actionType 3), the auto-execute workflow delegates
+# to this workflow's logic to route USDC into prediction market positions.
+
+production-settings:
+  user-workflow:
+    workflow-name: "trade-execute-proposals"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"
+
+staging-settings:
+  user-workflow:
+    workflow-name: "trade-execute-proposals-staging"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: "../secrets.yaml"

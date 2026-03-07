@@ -16,20 +16,7 @@ interface DailyNotesProps {
   enablePersistence?: boolean;
 }
 
-const WEEK_COLORS: Record<number, string> = {
-  1: 'rgba(255, 107, 107, 0.5)',
-  2: 'rgba(255, 142, 83, 0.5)',
-  3: 'rgba(255, 179, 71, 0.5)',
-  4: 'rgba(255, 217, 61, 0.5)',
-  5: 'rgba(107, 203, 119, 0.5)',
-  6: 'rgba(78, 205, 196, 0.5)',
-  7: 'rgba(69, 183, 209, 0.5)',
-  8: 'rgba(81, 104, 255, 0.5)',
-  9: 'rgba(124, 58, 237, 0.5)',
-  10: 'rgba(168, 85, 247, 0.5)',
-  11: 'rgba(217, 70, 239, 0.5)',
-  12: 'rgba(236, 72, 153, 0.5)',
-};
+const PRIMARY_COLOR = '#5168FF';
 
 export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
   const { play } = useSound();
@@ -37,7 +24,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [timerSeconds, setTimerSeconds] = useState(1800);
+  const [timerSeconds, setTimerSeconds] = useState(900);
   const [timerText, setTimerText] = useState('');
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -48,7 +35,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
-  const weekColor = WEEK_COLORS[currentWeek] || '#5168FF';
+  const weekColor = PRIMARY_COLOR;
 
   const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
 
@@ -79,7 +66,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const startTimer = (dayIndex: number) => {
     setActiveDayIndex(dayIndex);
-    setTimerSeconds(1800);
+    setTimerSeconds(900);
     setTimerText('');
     setTimerActive(true);
     setIsPaused(false);
@@ -103,7 +90,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     setIsPaused(false);
     setShowConfirmDialog(false);
     setActiveDayIndex(null);
-    setTimerSeconds(1800);
+    setTimerSeconds(900);
     setTimerText('');
   };
 
@@ -130,7 +117,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     setIsPaused(false);
     setShowConfirmDialog(false);
     setActiveDayIndex(null);
-    setTimerSeconds(1800);
+    setTimerSeconds(900);
     setTimerText('');
   };
 
@@ -204,7 +191,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     if (!isWeekUnlocked) return `Complete Week ${currentWeek - 1} first`;
     if (weekComplete) return `Week ${currentWeek} complete`;
     if (todayDone) return 'Done for today';
-    if (availableDayIndex >= 0) return `Day ${availableDayIndex + 1} of 7 — 30 min writing`;
+    if (availableDayIndex >= 0) return `Day ${availableDayIndex + 1} of 7 — 15 min writing`;
     return 'Return tomorrow';
   };
 
@@ -271,7 +258,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
         {isExpanded && (
           <div className={styles.expandedContent}>
             <p className={styles.instructions}>
-              Write freely for 30 minutes each day. Let your thoughts flow without judgment.
+              Write freely for 15 minutes each day. Let your thoughts flow without judgment.
               Morning pages clear your mind and unlock your creative self.
             </p>
             <div className={styles.dayButtons}>
@@ -332,7 +319,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div className={styles.modalHeader}>
               <span className={styles.modalDayBadge}>Week {currentWeek} — Day {(activeDayIndex ?? 0) + 1} of 7</span>
               <h3 className={styles.modalTitle}>Morning Pages</h3>
-              <p className={styles.modalSubtitle}>Write freely for 30 minutes. Your notes are encrypted.</p>
+              <p className={styles.modalSubtitle}>Write freely for 15 minutes. Your notes are encrypted.</p>
             </div>
 
             <div className={styles.timerDisplay}>
@@ -342,7 +329,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               <div className={styles.timerBar}>
                 <div
                   className={styles.timerBarFill}
-                  style={{ width: `${((1800 - timerSeconds) / 1800) * 100}%` }}
+                  style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
                 />
               </div>
             </div>

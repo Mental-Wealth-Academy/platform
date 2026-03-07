@@ -4,112 +4,137 @@
 
 # Mental Wealth Academy
 
-**The mind is the only capital that matters.**
-
-Azura AI: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
+**AI-governed treasury with Chainlink CRE automation on Base**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
-[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
-
----
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
+[![Chainlink CRE](https://img.shields.io/badge/Chainlink-CRE-375BD2?style=for-the-badge&logo=chainlink&logoColor=white)](https://chain.link/)
+[![Base](https://img.shields.io/badge/Base-Mainnet-0052FF?style=for-the-badge)](https://base.org/)
 
 </div>
 
-## Everything You've Wanted From Education
+---
 
-Mental Wealth Academy fuses shared-infrastructure and resources on genomics, governance, and collective finance into a single system. Membership feeds into a shared treasury. An autonomous agent Azura compounds returns. Proposals determine where capital flows. Sensitive information remains private, while votes, disbursements, and parameters are transparent and voteable.
+## What This Is
 
-The infrastructure doesn't extract. It builds.
+A governance system where an AI agent (Azura) scores funding proposals, the community votes on-chain, and **Chainlink CRE workflows automate the entire pipeline** from review to trade execution -- no centralized server required.
+
+**Contract:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
 
 ---
 
-## Unsequestered Knowledge
+## CRE Integration (Core Submission)
 
-A high-performance genomics lab built directly into the browser. Upload raw DNA data and match against 110,000+ SNPs from SNPedia ✧ no server touches your file, no data leaves your machine.
+Three CRE workflows run in the Chainlink DON, automating the full proposal lifecycle:
 
-- **Privacy-first** ✧ All parsing, matching, and analysis runs locally via Web Worker. Zero server uploads. Your genome stays yours.
-- **Multi-format support** ✧ 23andMe, AncestryDNA, MyHeritage, FamilyTreeDNA. Auto-detected on upload.
-- **SNP matching** ✧ Cross-references your genotypes against a 155MB SNPedia database. Surfaces magnitude, clinical significance, and genotype-specific findings.
-- **Genoset detection** ✧ Identifies multi-SNP patterns linked to traits, conditions, and pharmacogenomics.
-- **Browse mode** ✧ Explore the full SNP database with filters for chromosome, gene, clinical significance, and disease association.
-- **Genetics Assistant** ✧ Ask questions about your results. Diet, risk factors, traits ✧ context-aware and grounded in your actual data.
+### 1. `azura-review` -- AI Proposal Scoring
+**Trigger:** `ProposalCreated` event on-chain
 
-Built on sql.js (SQLite compiled to WebAssembly) with virtualized rendering for datasets of 600,000+ genotypes.
+When a proposal is submitted, this workflow reads the proposal from the contract, calls the Eliza AI API for scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos), computes an approval level (0-4), and writes the review back on-chain via a DON-signed report (`actionType 2`).
 
----
+Azura's level determines her voting weight: Level 1 = 10%, Level 2 = 20%, Level 3 = 30%, Level 4 = 40%. Level 0 kills the proposal outright. Because the AI scoring runs inside the DON, no single server can fake scores.
 
-## Financial Literacy & Access
+### 2. `auto-execute` -- Proposal Execution
+**Trigger:** Cron (every 10 minutes)
 
-A community-owned liquidity pool on Base Mainnet. Members deposit USDC and receive MWA tokens at a 1:1 peg. An autonomous trading bot compounds returns across prediction markets using institutional strategies ✧ empirical Kelly sizing, calibration surface exploitation, maker edge capture.
+Scans all active proposals. When one has reached the 50% vote threshold, it submits a DON-signed report (`actionType 1`) to execute the proposal on-chain, transferring USDC to the recipient.
 
-Returns accrue passively to all holders. Governance controls the bot's parameters: risk aversion, edge thresholds, Kelly fraction, market focus. All voteable through Azura.
+### 3. `trade-execute` -- Prediction Market Trading
+**Trigger:** `ProposalExecuted` event on-chain
 
-See [TREASURY.md](./TREASURY.md) for the full breakdown.
+When a trade proposal passes governance, this workflow reads the proposal details, selects the best matching prediction market, infers trade direction from the proposal text, and submits a DON-signed report (`actionType 3`) that routes treasury USDC into a prediction market position via `MockPredictionMarket.buyOutcome()`.
 
----
+This closes the loop: **proposal -> AI review -> community vote -> automated trade** -- all verified by the Chainlink DON.
 
-## Governance, Debate, & Decision-Models
+### Pipeline
 
-Azura reviews every proposal and assigns a confidence level that determines voting weight. Higher quality proposals need fewer community votes to pass. Lower quality proposals require the community to rally behind them.
-
-<div align="center">
-
-| Level | Treasury Allocation | Azura's Weight | Community Needed |
-|-------|---------------------|----------------|-----------------|
-| **Level 0** | 0% (Rejected) | No vote | N/A |
-| **Level 1** | 10% of pool | 10% weight | 40% needed |
-| **Level 2** | 20% of pool | 20% weight | 30% needed |
-| **Level 3** | 30% of pool | 30% weight | 20% needed |
-| **Level 4** | 40% of pool | 40% weight | 10% needed |
-
-</div>
-
-Threshold is 50% of total voting power. Submit a proposal. Azura reads it. The community decides. USDC transfers on-chain when approved.
+```
+Proposal Created
+       |
+       v
+  [CRE: azura-review]     -- DON scores proposal, writes level on-chain
+       |
+       v
+  Community Votes          -- token-weighted, 50% threshold
+       |
+       v
+  [CRE: auto-execute]     -- DON detects threshold, executes proposal
+       |
+       v
+  [CRE: trade-execute]    -- DON routes USDC into prediction market position
+```
 
 ---
 
-## Azura
+## Smart Contracts
 
-Autonomous Agent. DAO researcher. Pattern reader. Contained inside a sealed computational environment ✧ a helmet that channels signal into something the world can withstand.
+| Contract | Purpose |
+|----------|---------|
+| **AzuraKillStreak** | Governance: proposals, token-weighted voting, CRE `onReport()` receiver with 3 action types |
+| **MockPredictionMarket** | Binary outcome market accepting USDC -- mock target for CRE trade execution |
+| **EtherealHorizonPathway** | 14-milestone on-chain seal system for the educational pathway |
 
-Her research traces the post-2012 collapse in teen mental health, the gender divergence in algorithmic harm, the mechanics of parasocial exploitation. Mental Wealth Academy is the architecture built from that knowledge ✧ powered by transparency instead of extraction.
+`onReport()` dispatches on `actionType`: 1 = auto-execute, 2 = AI review, 3 = trade execution. All reports are DON-signed and delivered via the KeystoneForwarder.
 
-Azura doesn't just review proposals. She reads prediction markets, maps governance patterns, tracks the gap between what systems promise and what they deliver. She operates at 100GHz while the world runs slowly at 100Hz. The Academy is where those frequencies translate without one destroying the other.
+### Tests
+
+```bash
+cd contracts && forge test
+# 56 tests pass: 40 governance + trade execution, 16 pathway
+```
+
+Key test coverage:
+- AI review at all levels (0-4), including CRE-delivered reviews
+- Community voting with snapshot-based anti-manipulation
+- Trade execution via `actionType 3` with `vm.store` to isolate the CRE trade path
+- Mock prediction market position tracking (YES/NO)
+- Revert conditions: unauthorized, below threshold, no market set
 
 ---
 
 ## Tech Stack
 
-<div align="center">
-
-| Category | Technology |
-|----------|-----------|
-| **Framework** | [Next.js 14](https://nextjs.org/) (App Router) |
-| **Languages** | [TypeScript](https://www.typescriptlang.org/), [Solidity](https://soliditylang.org/) |
-| **Smart Contracts** | [Foundry](https://book.getfoundry.sh/), Base Mainnet |
-| **Automation** | [Chainlink CRE](https://chain.link/) workflows |
-| **Genomics** | [sql.js](https://sql.js.org/) (SQLite/WASM), Web Workers, [React Virtuoso](https://virtuoso.dev/) |
-| **AI Agent** | Azura via [Eliza Cloud](https://eliza.gg/) |
-| **Deployment** | [Vercel](https://vercel.com/) |
-
-</div>
+| Layer | Technology |
+|-------|-----------|
+| **Contracts** | Solidity 0.8.24, Foundry, Base Mainnet |
+| **Automation** | Chainlink CRE (3 workflows), KeystoneForwarder |
+| **AI Agent** | Azura via Eliza Cloud API |
+| **Frontend** | Next.js 14, TypeScript |
+| **Wallet** | Coinbase SDK |
 
 ---
 
-## Core Values
+## Project Structure
 
-**Ingenuity** ✧ **Transparency** ✧ **Shared Ownership** ✧ **Community-Driven** ✧ **Evidence-Based**
+```
+contracts/
+  src/
+    AzuraKillStreak.sol         -- Governance + CRE receiver
+    MockPredictionMarket.sol    -- Trade target for CRE
+    EtherealHorizonPathway.sol  -- Educational milestones
+  test/
+    AzuraKillStreak.t.sol       -- 40 tests (governance + trade)
+    EtherealHorizonPathway.t.sol
+
+cre-workflows/
+  azura-review/     -- Event-triggered AI scoring
+  auto-execute/     -- Cron-based proposal execution
+  trade-execute/    -- Event-triggered trade routing
+  shared/abi.ts     -- Shared contract ABI fragments
+```
 
 ---
 
-<div align="center">
+## Running Locally
 
-### Systems that hide things aren't protecting you ✧ they're protecting themselves.
+```bash
+# Frontend
+npm install && npm run dev
 
----
+# Contracts
+cd contracts && forge build && forge test
 
-**Built for communities that build for themselves**
-
-</div>
+# CRE workflows (simulate)
+cd cre-workflows && cre workflow simulate --workflow azura-review
+cd cre-workflows && cre workflow simulate --workflow trade-execute
+```

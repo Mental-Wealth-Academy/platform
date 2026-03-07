@@ -68,8 +68,40 @@ export const ProposalStatus = {
 export const ActionType = {
   AutoExecute: 1,
   AzuraReview: 2,
+  ExecuteTrade: 3,
 } as const;
 
 /** ProposalCreated event signature for log trigger */
 export const PROPOSAL_CREATED_EVENT_SIG =
   "ProposalCreated(uint256,address,address,uint256,string,uint256)";
+
+/** ProposalExecuted event signature for trade-execute workflow */
+export const PROPOSAL_EXECUTED_EVENT_SIG =
+  "ProposalExecuted(uint256,address,uint256)";
+
+/** MockPredictionMarket ABI fragments */
+export const GET_MARKET_ABI = [
+  {
+    name: "getMarket",
+    type: "function",
+    inputs: [{ name: "_marketId", type: "uint256" }],
+    outputs: [
+      { name: "question", type: "string" },
+      { name: "totalYes", type: "uint256" },
+      { name: "totalNo", type: "uint256" },
+      { name: "resolved", type: "bool" },
+      { name: "outcome", type: "bool" },
+    ],
+    stateMutability: "view",
+  },
+] as const;
+
+export const MARKET_COUNT_ABI = [
+  {
+    name: "marketCount",
+    type: "function",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+] as const;
