@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #FFFFFF;
   border: 2px solid #1A1D33;
   border-radius: 8px;
@@ -126,7 +126,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-primary, #5168FF);
+  color: var(--week-color, #5168FF);
   margin: 0 0 4px;
 }
 
@@ -166,7 +166,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #FFFFFF;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   border: 2px solid #1A1D33;
   border-radius: 4px;
   cursor: pointer;
@@ -195,7 +195,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 6px;

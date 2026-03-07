@@ -19,14 +19,31 @@ interface DailyReadProps {
   onReadClick: (index: number) => void;
 }
 
+const READING_COLORS = [
+  '#5168FF', // Intro — primary
+  '#4A7AFF', // Week 1
+  '#3D8EF7', // Week 2
+  '#2FA3E8', // Week 3
+  '#22B8D6', // Week 4
+  '#1CC9C4', // Week 5
+  '#20D4A8', // Week 6
+  '#2ADBA0', // Week 7 (shifted from the earlier teal toward a bit of a different hue, and starting from here it gets into cooler tones)
+  '#34C7B8', // Week 8
+  '#3BADD0', // Week 9
+  '#4B8FDB', // Week 10
+  '#6B6FE0', // Week 11
+  '#8B5CE5', // Week 12
+];
+
 export default function DailyRead({ readings, onReadClick }: DailyReadProps) {
   const { play } = useSound();
   const [isExpanded, setIsExpanded] = useState(true);
   const [readingIndex, setReadingIndex] = useState(0);
   const currentReading = readings[readingIndex];
+  const readingColor = READING_COLORS[readingIndex] || READING_COLORS[0];
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} style={{ '--week-color': readingColor } as React.CSSProperties}>
       <button
         type="button"
         className={styles.cardButton}
