@@ -17,6 +17,7 @@ interface Reading {
 interface DailyReadProps {
   readings: Reading[];
   onReadClick: (index: number) => void;
+  activeWeek: number;
 }
 
 const READING_COLORS = [
@@ -35,12 +36,14 @@ const READING_COLORS = [
   '#8B5CE5', // Week 12
 ];
 
-export default function DailyRead({ readings, onReadClick }: DailyReadProps) {
+export default function DailyRead({ readings, onReadClick, activeWeek }: DailyReadProps) {
   const { play } = useSound();
   const [isExpanded, setIsExpanded] = useState(true);
   const [readingIndex, setReadingIndex] = useState(0);
   const currentReading = readings[readingIndex];
   const readingColor = READING_COLORS[readingIndex] || READING_COLORS[0];
+  // Index 0 = Introduction (always unlocked), index 1 = Week 1, etc.
+  const isReadingLocked = readingIndex > activeWeek;
 
   return (
     <div className={styles.card} style={{ '--week-color': readingColor } as React.CSSProperties}>
@@ -85,18 +88,28 @@ export default function DailyRead({ readings, onReadClick }: DailyReadProps) {
               <h4 className={styles.readingTitle}>{currentReading.title}</h4>
               <p className={styles.readingAuthor}>{currentReading.author}</p>
               <p className={styles.readingDesc}>{currentReading.description}</p>
-              <button
-                type="button"
-                className={styles.readBtn}
-                onClick={() => { play('click'); onReadClick(readingIndex); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                Read Article
-              </button>
+              {isReadingLocked ? (
+                <span className={styles.lockedBadge}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  Unlocks Week {readingIndex}
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.readBtn}
+                  onClick={() => { play('click'); onReadClick(readingIndex); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                  Read Article
+                </button>
+              )}
             </div>
           </div>
 

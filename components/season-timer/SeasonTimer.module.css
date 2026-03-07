@@ -1,0 +1,183 @@
+/* Season Timer */
+
+.container {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 2px solid rgba(26, 29, 51, 0.08);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seasonLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary, #5168FF);
+}
+
+.weekBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1.5px solid #1A1D33;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.nextLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.body {
+  padding: 16px 20px 18px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.progressSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.progressTrack {
+  height: 6px;
+  background: #E0E1EE;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary, #5168FF);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.weekMarkers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 1px;
+}
+
+.weekDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #E0E1EE;
+  border: 1.5px solid #CCC;
+  transition: all 0.2s ease;
+}
+
+.weekDotActive {
+  background: var(--color-primary, #5168FF);
+  border-color: #1A1D33;
+}
+
+.countdown {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.countdownSegment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+}
+
+.countdownValue {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1;
+}
+
+.countdownLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .body {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .countdown {
+    gap: 12px;
+  }
+
+  .countdownValue {
+    font-size: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .weekMarkers {
+    gap: 2px;
+  }
+
+  .weekDot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .countdownValue {
+    font-size: 18px;
+  }
+
+  .countdownSegment {
+    min-width: 34px;
+  }
+}

@@ -8,6 +8,7 @@ import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import DailyRead from '@/components/daily-read/DailyRead';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
+import SeasonTimer from '@/components/season-timer/SeasonTimer';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -207,16 +208,22 @@ export default function HomePage() {
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
               <div className={styles.journalCards}>
+                <SeasonTimer
+                  activeWeek={activeWeek}
+                  weekEndsAt={weekEndsAt}
+                  seasonActive={seasonActive}
+                />
                 <DailyRead
                   readings={WEEKLY_READINGS}
                   onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
+                  activeWeek={activeWeek}
                 />
                 <DailyNotes enablePersistence={isAuthenticated} />
                 <hr className={styles.sectionDivider} />
                 {WEEK_TITLES.map((title, i) => {
                   if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                   const status = getWeekStatus(i);
-                  const isLocked = seasonActive && i > activeWeek;
+                  const isLocked = i > activeWeek;
                   return (
                     <AccordionJournalCard
                       key={i}

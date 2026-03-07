@@ -179,6 +179,20 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
+.lockedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  background: #F0F0F5;
+  border: 2px solid #DDD;
+  border-radius: 4px;
+}
+
 .readingNav {
   display: flex;
   align-items: center;

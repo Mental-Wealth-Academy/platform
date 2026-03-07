@@ -14,8 +14,8 @@ const WEEK_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export function getSeasonStartDate(): Date {
   const env = process.env.SEASON_START_DATE;
   if (env) return new Date(env);
-  // Default: no season started yet (far future)
-  return new Date('2099-01-01T00:00:00Z');
+  // Default: Season 1 starts Monday March 2, 2026
+  return new Date('2026-03-02T00:00:00Z');
 }
 
 export interface SeasonInfo {
