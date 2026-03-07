@@ -80,7 +80,7 @@ export default function HomePage() {
 
         setIsAuthenticated(true);
         const uname = meData.user.username;
-        if (uname && !uname.startsWith('user_')) setDisplayName(uname);
+        if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
         const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
@@ -134,7 +134,7 @@ export default function HomePage() {
         if (meData?.user) {
           setIsAuthenticated(true);
           const uname = meData.user.username;
-          if (uname && !uname.startsWith('user_')) setDisplayName(uname);
+          if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
           if (res.ok) {
             const data = await res.json();
