@@ -17,18 +17,18 @@ interface DailyNotesProps {
 }
 
 const WEEK_COLORS: Record<number, string> = {
-  1: '#FF6B6B',   // Red
-  2: '#FF8E53',   // Orange
-  3: '#FFB347',   // Amber
-  4: '#FFD93D',   // Yellow
-  5: '#6BCB77',   // Green
-  6: '#4ECDC4',   // Teal
-  7: '#45B7D1',   // Cyan
-  8: '#5168FF',   // Blue
-  9: '#7C3AED',   // Violet
-  10: '#A855F7',  // Purple
-  11: '#D946EF',  // Magenta
-  12: '#EC4899',  // Pink
+  1: 'rgba(255, 107, 107, 0.5)',
+  2: 'rgba(255, 142, 83, 0.5)',
+  3: 'rgba(255, 179, 71, 0.5)',
+  4: 'rgba(255, 217, 61, 0.5)',
+  5: 'rgba(107, 203, 119, 0.5)',
+  6: 'rgba(78, 205, 196, 0.5)',
+  7: 'rgba(69, 183, 209, 0.5)',
+  8: 'rgba(81, 104, 255, 0.5)',
+  9: 'rgba(124, 58, 237, 0.5)',
+  10: 'rgba(168, 85, 247, 0.5)',
+  11: 'rgba(217, 70, 239, 0.5)',
+  12: 'rgba(236, 72, 153, 0.5)',
 };
 
 export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
