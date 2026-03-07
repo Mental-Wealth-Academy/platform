@@ -36,10 +36,12 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const [currentWeek, setCurrentWeek] = useState(1);
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(1800);
   const [timerText, setTimerText] = useState('');
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -48,7 +50,6 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const todayDateStr = new Date().toISOString().split('T')[0];
   const weekColor = WEEK_COLORS[currentWeek] || '#5168FF';
 
-  // Check if previous week is complete (week 1 is always unlocked)
   const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
 
   const availableDayIndex = (() => {
@@ -61,28 +62,60 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const todayDone = morningPages.some(e => e.date === todayDateStr);
   const weekComplete = morningPages.length >= 7;
-
   const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
-  const startTimer = (dayIndex: number) => {
-    setActiveDayIndex(dayIndex);
-    setTimerSeconds(1800);
-    setTimerText('');
-    setTimerActive(true);
+  const startTimerInterval = useCallback(() => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     timerIntervalRef.current = setInterval(() => {
       setTimerSeconds(prev => {
         if (prev <= 1) { clearInterval(timerIntervalRef.current!); return 0; }
         return prev - 1;
       });
     }, 1000);
+  }, []);
+
+  const startTimer = (dayIndex: number) => {
+    setActiveDayIndex(dayIndex);
+    setTimerSeconds(1800);
+    setTimerText('');
+    setTimerActive(true);
+    setIsPaused(false);
+    startTimerInterval();
+  };
+
+  const pauseTimer = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setIsPaused(true);
+  };
+
+  const resumeTimer = () => {
+    setIsPaused(false);
+    setShowConfirmDialog(false);
+    startTimerInterval();
+  };
+
+  const closeSession = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setTimerActive(false);
+    setIsPaused(false);
+    setShowConfirmDialog(false);
+    setActiveDayIndex(null);
+    setTimerSeconds(1800);
+    setTimerText('');
+  };
+
+  const requestClose = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setIsPaused(true);
+    setShowConfirmDialog(true);
   };
 
   const submitMorningPages = () => {
     if (activeDayIndex === null) return;
-    clearInterval(timerIntervalRef.current!);
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     const newEntry: MorningPageEntry = {
       day: activeDayIndex + 1,
       date: todayDateStr,
@@ -94,6 +127,8 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
       [currentWeek]: [...(prev[currentWeek] ?? []), newEntry],
     }));
     setTimerActive(false);
+    setIsPaused(false);
+    setShowConfirmDialog(false);
     setActiveDayIndex(null);
     setTimerSeconds(1800);
     setTimerText('');
@@ -141,26 +176,17 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
   }, [allWeekPages, enablePersistence, save]);
 
-  // Reset timer if user leaves tab
+  // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
     const handleVisibility = () => {
-      if (!timerActive) return;
+      if (!timerActive || isPaused) return;
       if (document.visibilityState === 'hidden') {
-        clearInterval(timerIntervalRef.current!);
-        setTimerSeconds(1800);
-        setTimerText('');
-      } else {
-        timerIntervalRef.current = setInterval(() => {
-          setTimerSeconds(prev => {
-            if (prev <= 1) { clearInterval(timerIntervalRef.current!); return 0; }
-            return prev - 1;
-          });
-        }, 1000);
+        requestClose();
       }
     };
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [timerActive]);
+  }, [timerActive, isPaused]);
 
   // Warn on unload
   useEffect(() => {
@@ -233,7 +259,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          All daily journals are private.
+          All daily journals are encrypted &amp; private.
         </div>
 
         {isExpanded && (
@@ -295,17 +321,17 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
       {/* Timer Modal */}
       {timerActive && typeof window !== 'undefined' && createPortal(
         <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
-          <div className={styles.modalBackdrop} />
+          <div className={styles.modalBackdrop} onClick={requestClose} />
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <span className={styles.modalDayBadge}>Week {currentWeek} — Day {(activeDayIndex ?? 0) + 1} of 7</span>
               <h3 className={styles.modalTitle}>Morning Pages</h3>
-              <p className={styles.modalSubtitle}>Write freely for 30 minutes. Tab switching resets the timer.</p>
+              <p className={styles.modalSubtitle}>Write freely for 30 minutes. Your notes are encrypted.</p>
             </div>
 
             <div className={styles.timerDisplay}>
-              <div className={`${styles.timerCount} ${timerSeconds <= 300 ? styles.timerWarning : ''}`}>
-                {formatTimer(timerSeconds)}
+              <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
               </div>
               <div className={styles.timerBar}>
                 <div
@@ -322,15 +348,29 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
                 value={timerText}
                 onChange={(e) => setTimerText(e.target.value)}
                 autoFocus
+                disabled={isPaused}
               />
             </div>
 
             <div className={styles.modalFooter}>
-              <p className={styles.modalNote}>
-                {timerSeconds > 0
-                  ? `${formatTimer(timerSeconds)} remaining — keep writing!`
-                  : 'Time is up! Submit when ready.'}
-              </p>
+              <button
+                type="button"
+                className={styles.pauseBtn}
+                onClick={() => { play('click'); isPaused ? resumeTimer() : pauseTimer(); }}
+                onMouseEnter={() => play('hover')}
+              >
+                {isPaused ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Resume
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    Pause
+                  </>
+                )}
+              </button>
               <button
                 type="button"
                 className={styles.submitBtn}
@@ -341,6 +381,47 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               </button>
             </div>
           </div>
+
+          {/* Confirm Close Dialog */}
+          {showConfirmDialog && (
+            <div className={styles.confirmOverlay}>
+              <div className={styles.confirmDialog}>
+                <div className={styles.confirmTitleBar}>
+                  <span className={styles.confirmTitleText}>session.pause</span>
+                </div>
+                <div className={styles.confirmBody}>
+                  <div className={styles.confirmIcon}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="8" x2="12" y2="12"/>
+                      <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                  </div>
+                  <p className={styles.confirmMessage}>
+                    Are you sure you want to close? Your writing progress will be lost.
+                  </p>
+                  <div className={styles.confirmButtons}>
+                    <button
+                      type="button"
+                      className={styles.confirmBtnResume}
+                      onClick={() => { play('click'); resumeTimer(); }}
+                      onMouseEnter={() => play('hover')}
+                    >
+                      Resume
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.confirmBtnClose}
+                      onClick={() => { play('click'); closeSession(); }}
+                      onMouseEnter={() => play('hover')}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>,
         document.body
       )}

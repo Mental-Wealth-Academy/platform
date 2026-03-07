@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
+import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,7 +12,7 @@ const DAILY_NOTES_WEEK = 99;
 
 /**
  * GET /api/daily-notes
- * Load all 12 weeks of morning pages for the authenticated user
+ * Load all 12 weeks of morning pages (decrypted) for the authenticated user
  */
 export async function GET() {
   if (!isDbConfigured()) {
@@ -37,12 +38,25 @@ export async function GET() {
   }
 
   const pd = rows[0].progress_data;
+
+  // If encrypted, decrypt
+  if (pd?.encrypted && pd?.data) {
+    try {
+      const decrypted = decryptForUser(user.id, pd.data);
+      const parsed = JSON.parse(decrypted);
+      return NextResponse.json({ allWeekPages: parsed.allWeekPages ?? {} });
+    } catch {
+      return NextResponse.json({ allWeekPages: {} });
+    }
+  }
+
+  // Legacy unencrypted data — return as-is
   return NextResponse.json({ allWeekPages: pd?.allWeekPages ?? {} });
 }
 
 /**
  * POST /api/daily-notes
- * Save all 12 weeks of morning pages
+ * Save all 12 weeks of morning pages (encrypted at rest)
  * Body: { allWeekPages: Record<number, MorningPageEntry[]> }
  */
 export async function POST(request: Request) {
@@ -64,7 +78,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
-  const progressData = JSON.stringify({ allWeekPages: body.allWeekPages });
+  // Encrypt the content before storing
+  const plaintext = JSON.stringify({ allWeekPages: body.allWeekPages });
+  const encrypted = encryptForUser(user.id, plaintext);
+  const progressData = JSON.stringify({ encrypted: true, data: encrypted });
 
   await sqlQuery(
     `INSERT INTO ethereal_progress (id, user_id, week_number, progress_data)

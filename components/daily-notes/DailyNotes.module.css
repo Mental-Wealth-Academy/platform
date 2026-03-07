@@ -334,6 +334,12 @@
   color: #E53E3E;
 }
 
+.timerPaused {
+  color: #888;
+  font-size: 36px;
+  letter-spacing: 0.1em;
+}
+
 .timerBar {
   height: 6px;
   background: #E8E9F0;
@@ -382,21 +388,41 @@
 .modalFooter {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 12px;
   padding: 16px 24px 20px;
   border-top: 2px solid rgba(26, 29, 51, 0.1);
 }
 
-.modalNote {
-  font-family: 'Poppins', sans-serif;
+.pauseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  color: #666;
-  margin: 0;
-  flex: 1;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1A1D33;
+  background: #E8E9F0;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.pauseBtn:hover {
+  background: #D5D6E0;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 12px 24px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
@@ -417,6 +443,118 @@
   background: #16A34A;
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 #1A1D33;
+}
+
+/* ─── Confirm Close Dialog ─── */
+.confirmOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.confirmDialog {
+  width: 100%;
+  max-width: 400px;
+  background: #1A1D33;
+  border: 3px solid var(--week-color, #5168FF);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 6px #1A1D33,
+    0 0 0 8px rgba(168, 85, 247, 0.3),
+    8px 8px 0 #000;
+  overflow: hidden;
+  animation: modalSlideIn 0.2s ease;
+}
+
+.confirmTitleBar {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--week-color, #5168FF);
+}
+
+.confirmTitleText {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.confirmBody {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.confirmIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 107, 107, 0.2);
+  color: #FF6B6B;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 107, 107, 0.4);
+}
+
+.confirmMessage {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.confirmBtnResume {
+  flex: 1;
+  padding: 12px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: transparent;
+  border: 2px solid var(--week-color, #5168FF);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.confirmBtnResume:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.confirmBtnClose {
+  flex: 1;
+  padding: 12px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: rgba(255, 107, 107, 0.25);
+  border: 2px solid #FF6B6B;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.confirmBtnClose:hover {
+  background: rgba(255, 107, 107, 0.4);
 }
 
 /* Responsive */
