@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #FFFFFF;
   border: 2px solid #1A1D33;
   border-radius: 8px;
@@ -85,7 +85,7 @@
 }
 
 .dayDotDone {
-  background: #22C55E;
+  background: var(--week-color, #22C55E);
   border-color: #1A1D33;
 }
 
@@ -152,7 +152,7 @@
 }
 
 .dayBtnAvailable {
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #FFFFFF;
   box-shadow: 3px 3px 0 #1A1D33;
   cursor: pointer;
@@ -194,7 +194,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #ffffff;
   border: 2px solid #1A1D33;
   border-radius: 6px;
@@ -288,7 +288,7 @@
 .modalDayBadge {
   display: inline-block;
   padding: 4px 12px;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   color: #FFFFFF;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
@@ -344,7 +344,7 @@
 
 .timerBarFill {
   height: 100%;
-  background: var(--color-primary, #5168FF);
+  background: var(--week-color, #5168FF);
   transition: width 1s linear;
 }
 
@@ -371,8 +371,8 @@
 
 .textarea:focus {
   outline: none;
-  border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+  border-color: var(--week-color, #5168FF);
+  box-shadow: 3px 3px 0 var(--week-color, #5168FF);
 }
 
 .textarea::placeholder {

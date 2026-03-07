@@ -16,10 +16,24 @@ interface DailyNotesProps {
   enablePersistence?: boolean;
 }
 
+const WEEK_COLORS: Record<number, string> = {
+  1: '#FF6B6B',   // Red
+  2: '#FF8E53',   // Orange
+  3: '#FFB347',   // Amber
+  4: '#FFD93D',   // Yellow
+  5: '#6BCB77',   // Green
+  6: '#4ECDC4',   // Teal
+  7: '#45B7D1',   // Cyan
+  8: '#5168FF',   // Blue
+  9: '#7C3AED',   // Violet
+  10: '#A855F7',  // Purple
+  11: '#D946EF',  // Magenta
+  12: '#EC4899',  // Pink
+};
+
 export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
   const { play } = useSound();
   const [currentWeek, setCurrentWeek] = useState(1);
-  // All 12 weeks of morning pages: weekPages[weekNumber] = entries
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(1800);
@@ -32,8 +46,13 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
+  const weekColor = WEEK_COLORS[currentWeek] || '#5168FF';
+
+  // Check if previous week is complete (week 1 is always unlocked)
+  const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
 
   const availableDayIndex = (() => {
+    if (!isWeekUnlocked) return -1;
     if (morningPages.length === 0) return 0;
     if (morningPages.length >= 7) return -1;
     const last = morningPages[morningPages.length - 1];
@@ -43,7 +62,6 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const todayDone = morningPages.some(e => e.date === todayDateStr);
   const weekComplete = morningPages.length >= 7;
 
-  // Count total completed days across all weeks
   const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
 
   const formatTimer = (s: number) =>
@@ -157,6 +175,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
   const getSubLabel = () => {
+    if (!isWeekUnlocked) return `Complete Week ${currentWeek - 1} first`;
     if (weekComplete) return `Week ${currentWeek} complete`;
     if (todayDone) return 'Done for today';
     if (availableDayIndex >= 0) return `Day ${availableDayIndex + 1} of 7 — 30 min writing`;
@@ -165,7 +184,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   return (
     <>
-      <div className={styles.card}>
+      <div className={styles.card} style={{ '--week-color': weekColor } as React.CSSProperties}>
         <button
           type="button"
           className={styles.cardButton}
@@ -275,7 +294,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
       {/* Timer Modal */}
       {timerActive && typeof window !== 'undefined' && createPortal(
-        <div className={styles.modalOverlay}>
+        <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
           <div className={styles.modalBackdrop} />
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
