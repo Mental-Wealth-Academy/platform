@@ -19,7 +19,7 @@ interface WeekStatus {
 
 
 const WEEKLY_READINGS = [
-  { title: 'Art is a Spiritual Warfare', author: 'By: Jhinova Bay, PhD', description: 'This week initiates your creative recovery. Establish a sense of safety and explore your creativity with less fear.', category: 'Week 1', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
+  { title: 'Art is a Spiritual Warfare', author: 'By: Jhinova Bay, PhD', description: 'This week initiates your creative recovery. Establish a sense of safety and explore your creativity with less fear.', category: 'Introduction', imageUrl: 'https://i.imgur.com/HQfzBXM.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
   { title: 'The Electric Universe', author: 'By: Jhinova Bay, PhD', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'electric-universe', markdownPath: '/readings/electric-universe.md' },
   { title: 'The Micro University', author: 'By: Jhinova Bay, PhD', description: '500 seats, 12 weeks, one treasury. How small sovereign communities outlearn institutions.', category: 'Week 3', imageUrl: 'https://i.imgur.com/D2NetZM.png', slug: 'micro-university', markdownPath: '/readings/micro-university.md' },
 ];
