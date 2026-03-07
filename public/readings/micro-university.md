@@ -1,4 +1,4 @@
-# The Micro University
+# The Absolute
 
 **By Jhinova Bay, PhD | Governance**
 

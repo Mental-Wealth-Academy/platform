@@ -6,11 +6,22 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 async function ensureReadingCommentsTable() {
+  // Fix type mismatch: users.id is CHAR(36), not UUID
+  // Drop and recreate if the old UUID-typed columns exist
+  const cols = await sqlQuery<Array<{ data_type: string }>>(`
+    SELECT data_type FROM information_schema.columns
+    WHERE table_name = 'reading_comments' AND column_name = 'user_id'
+  `);
+  if (cols.length > 0 && cols[0].data_type === 'uuid') {
+    await sqlQuery(`DROP TABLE IF EXISTS reading_comment_likes`);
+    await sqlQuery(`DROP TABLE IF EXISTS reading_comments`);
+  }
+
   await sqlQuery(`
     CREATE TABLE IF NOT EXISTS reading_comments (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
       reading_slug TEXT NOT NULL,
-      user_id UUID NOT NULL REFERENCES users(id),
+      user_id CHAR(36) NOT NULL REFERENCES users(id),
       body TEXT NOT NULL,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
@@ -22,7 +33,7 @@ async function ensureReadingCommentsTable() {
     CREATE TABLE IF NOT EXISTS reading_comment_likes (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
       comment_id UUID NOT NULL REFERENCES reading_comments(id) ON DELETE CASCADE,
-      user_id UUID NOT NULL REFERENCES users(id),
+      user_id CHAR(36) NOT NULL REFERENCES users(id),
       created_at TIMESTAMPTZ DEFAULT NOW(),
       UNIQUE(comment_id, user_id)
     )
