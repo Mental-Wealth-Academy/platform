@@ -197,11 +197,12 @@ export default function HomePage() {
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
               <div className={styles.journalCards}>
-                <DailyNotes enablePersistence={isAuthenticated} />
                 <DailyRead
                   readings={WEEKLY_READINGS}
                   onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
                 />
+                <DailyNotes enablePersistence={isAuthenticated} />
+                <hr className={styles.sectionDivider} />
                 {WEEK_TITLES.map((title, i) => {
                   if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                   const status = getWeekStatus(i);

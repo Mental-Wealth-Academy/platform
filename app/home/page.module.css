@@ -473,6 +473,12 @@
   gap: 20px;
 }
 
+.sectionDivider {
+  border: none;
+  border-top: 2px solid rgba(26, 29, 51, 0.1);
+  margin: 4px 0;
+}
+
 /* Tasks Grid */
 .tasksGrid {
   display: grid;
