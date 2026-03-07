@@ -21,7 +21,7 @@ interface DailyReadProps {
 
 export default function DailyRead({ readings, onReadClick }: DailyReadProps) {
   const { play } = useSound();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [readingIndex, setReadingIndex] = useState(0);
   const currentReading = readings[readingIndex];
 

@@ -232,6 +232,12 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             </div>
           </div>
           <div className={styles.cardRight}>
+            <span className={styles.shardBadge} title="Earn 100 shards per day completed">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15 10 24 10 17 15 19 24 12 19 5 24 7 15 0 10 9 10" />
+              </svg>
+              +100
+            </span>
             <span className={styles.counter}>{totalCompleted}/84</span>
             <div className={styles.dayDots}>
               {Array.from({ length: 7 }, (_, i) => {

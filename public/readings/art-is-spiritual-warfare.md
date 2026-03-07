@@ -1,4 +1,4 @@
-This week initiates your creative recovery. You may feel both giddy and defiant, hopeful and skeptical. The readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear.
+This week initiates your creative recovery.
 
 
 ## Art is a Spiritual Warfare.
