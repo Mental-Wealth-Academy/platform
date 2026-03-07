@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import styles from './DailyNotes.module.css';
 
@@ -29,6 +30,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -119,6 +121,10 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     setActiveDayIndex(null);
     setTimerSeconds(900);
     setTimerText('');
+
+    play('success');
+    setShowCelebration(true);
+    setTimeout(() => setShowCelebration(false), 2200);
   };
 
   // Load all weeks from DB
@@ -187,22 +193,19 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
-  const getSubLabel = () => {
-    if (!isWeekUnlocked) return `Complete Week ${currentWeek - 1} first`;
-    if (weekComplete) return `Week ${currentWeek} complete`;
-    if (todayDone) return 'Done for today';
-    if (availableDayIndex >= 0) return `Day ${availableDayIndex + 1} of 7 — 15 min writing`;
-    return 'Return tomorrow';
-  };
+  const canStart = isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
   return (
     <>
-      <div className={styles.card} style={{ '--week-color': weekColor } as React.CSSProperties}>
+      <div
+        className={styles.card}
+        style={{ '--week-color': weekColor } as React.CSSProperties}
+        onMouseEnter={() => play('hum')}
+      >
         <button
           type="button"
           className={styles.cardButton}
           onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
-          onMouseEnter={() => play('hover')}
         >
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
@@ -214,15 +217,17 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div>
               <span className={styles.label}>Daily Notes</span>
               <span className={styles.sublabel}>
-                Week {currentWeek} — {getSubLabel()}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                All daily journals are encrypted.
               </span>
             </div>
           </div>
           <div className={styles.cardRight}>
             <span className={styles.shardBadge} title="Earn 100 shards per day completed">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="12 2 15 10 24 10 17 15 19 24 12 19 5 24 7 15 0 10 9 10" />
-              </svg>
+              <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
               +100
             </span>
             <span className={styles.counter}>{totalCompleted}/84</span>
@@ -247,13 +252,25 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
           </div>
         </button>
 
-        <div className={styles.privacyNotice}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-          All daily journals are encrypted &amp; private.
-        </div>
+        {!isExpanded && (
+          <div className={styles.startSection}>
+            <button
+              type="button"
+              className={`${styles.startBtn} ${!canStart ? styles.startBtnDisabled : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (canStart) { play('click'); startTimer(availableDayIndex); }
+              }}
+              onMouseEnter={() => { if (canStart) play('hover'); }}
+              disabled={!canStart}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              {canStart ? `Start Day ${availableDayIndex + 1}` : weekComplete ? 'Week Complete' : todayDone ? 'Done for Today' : !isWeekUnlocked ? 'Locked' : 'Return Tomorrow'}
+            </button>
+          </div>
+        )}
 
         {isExpanded && (
           <div className={styles.expandedContent}>
@@ -367,7 +384,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               <button
                 type="button"
                 className={styles.submitBtn}
-                onClick={() => { play('success'); submitMorningPages(); }}
+                onClick={() => submitMorningPages()}
                 onMouseEnter={() => play('hover')}
               >
                 Submit
@@ -415,6 +432,16 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               </div>
             </div>
           )}
+        </div>,
+        document.body
+      )}
+
+      {showCelebration && typeof window !== 'undefined' && createPortal(
+        <div className={styles.celebrationOverlay}>
+          <div className={styles.celebrationContent}>
+            <Image src="/icons/shard.svg" alt="shard" width={48} height={48} className={styles.celebrationShard} />
+            <span className={styles.celebrationText}>+100 Shards</span>
+          </div>
         </div>,
         document.body
       )}

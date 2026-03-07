@@ -8,7 +8,8 @@ export type SoundType =
   | 'navigation'
   | 'toggle-on'
   | 'toggle-off'
-  | 'celebration';
+  | 'celebration'
+  | 'hum';
 
 // C pentatonic scale frequencies
 const PENTATONIC_C4 = [261.63, 293.66, 329.63, 392.0, 440.0];
@@ -219,6 +220,14 @@ export class SoundEngine {
         // Descending pair — soft sine, matching click character
         this.tone(scale[2], now, this.dur(0.18), 'sine', 0.3);
         this.tone(scale[0], now + this.dur(0.1), this.dur(0.2), 'sine', 0.25);
+        break;
+      }
+
+      case 'hum': {
+        // Like hover but one octave deeper — same snappy two-tone P5
+        const humBase = pick(scale) / 4;
+        this.tone(humBase, now, this.dur(0.08), 'sine', 0.2);
+        this.tone(humBase * 1.5, now + this.dur(0.03), this.dur(0.14), 'sine', 0.15);
         break;
       }
 
