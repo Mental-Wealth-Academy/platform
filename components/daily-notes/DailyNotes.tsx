@@ -18,7 +18,9 @@ interface DailyNotesProps {
 
 export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
   const { play } = useSound();
-  const [morningPages, setMorningPages] = useState<MorningPageEntry[]>([]);
+  const [currentWeek, setCurrentWeek] = useState(1);
+  // All 12 weeks of morning pages: weekPages[weekNumber] = entries
+  const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(1800);
   const [timerText, setTimerText] = useState('');
@@ -28,6 +30,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
 
   const availableDayIndex = (() => {
@@ -38,6 +41,10 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   })();
 
   const todayDone = morningPages.some(e => e.date === todayDateStr);
+  const weekComplete = morningPages.length >= 7;
+
+  // Count total completed days across all weeks
+  const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
@@ -58,19 +65,23 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const submitMorningPages = () => {
     if (activeDayIndex === null) return;
     clearInterval(timerIntervalRef.current!);
-    setMorningPages(prev => [...prev, {
+    const newEntry: MorningPageEntry = {
       day: activeDayIndex + 1,
       date: todayDateStr,
       content: timerText,
       submittedAt: Date.now(),
-    }]);
+    };
+    setAllWeekPages(prev => ({
+      ...prev,
+      [currentWeek]: [...(prev[currentWeek] ?? []), newEntry],
+    }));
     setTimerActive(false);
     setActiveDayIndex(null);
     setTimerSeconds(1800);
     setTimerText('');
   };
 
-  // Load from DB (uses week_number = 99 as dedicated daily notes slot)
+  // Load all weeks from DB
   useEffect(() => {
     if (hasLoadedRef.current || !enablePersistence) return;
     hasLoadedRef.current = true;
@@ -80,7 +91,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
         const res = await fetch('/api/daily-notes', { credentials: 'include' });
         if (!res.ok) return;
         const data = await res.json();
-        if (data.morningPages) setMorningPages(data.morningPages);
+        if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
       } catch {
         // silent
       }
@@ -89,8 +100,8 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   // Debounced auto-save
   const save = useCallback(() => {
-    return { morningPages };
-  }, [morningPages]);
+    return { allWeekPages };
+  }, [allWeekPages]);
 
   useEffect(() => {
     if (!hasLoadedRef.current || !enablePersistence) return;
@@ -110,7 +121,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     }, 1500);
 
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [morningPages, enablePersistence, save]);
+  }, [allWeekPages, enablePersistence, save]);
 
   // Reset timer if user leaves tab
   useEffect(() => {
@@ -145,13 +156,20 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
+  const getSubLabel = () => {
+    if (weekComplete) return `Week ${currentWeek} complete`;
+    if (todayDone) return 'Done for today';
+    if (availableDayIndex >= 0) return `Day ${availableDayIndex + 1} of 7 — 30 min writing`;
+    return 'Return tomorrow';
+  };
+
   return (
     <>
       <div className={styles.card}>
         <button
           type="button"
           className={styles.cardButton}
-          onClick={() => { play('toggle-on'); setIsExpanded(!isExpanded); }}
+          onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
           onMouseEnter={() => play('hover')}
         >
           <div className={styles.cardLeft}>
@@ -164,15 +182,12 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div>
               <span className={styles.label}>Daily Notes</span>
               <span className={styles.sublabel}>
-                {todayDone
-                  ? 'Done for today'
-                  : availableDayIndex >= 0
-                    ? `Day ${availableDayIndex + 1} of 7 — 30 min writing`
-                    : 'Return tomorrow'}
+                Week {currentWeek} — {getSubLabel()}
               </span>
             </div>
           </div>
           <div className={styles.cardRight}>
+            <span className={styles.counter}>{totalCompleted}/84</span>
             <div className={styles.dayDots}>
               {Array.from({ length: 7 }, (_, i) => {
                 const done = morningPages.find(e => e.day === i + 1);
@@ -232,6 +247,28 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
                 );
               })}
             </div>
+
+            <div className={styles.weekNav}>
+              <button
+                className={styles.weekNavBtn}
+                disabled={currentWeek === 1}
+                onClick={() => { play('click'); setCurrentWeek(w => w - 1); }}
+                onMouseEnter={() => play('hover')}
+                aria-label="Previous week"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <span className={styles.weekNavLabel}>Week {currentWeek} / 12</span>
+              <button
+                className={styles.weekNavBtn}
+                disabled={currentWeek === 12}
+                onClick={() => { play('click'); setCurrentWeek(w => w + 1); }}
+                onMouseEnter={() => play('hover')}
+                aria-label="Next week"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -242,7 +279,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
           <div className={styles.modalBackdrop} />
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <span className={styles.modalDayBadge}>Day {(activeDayIndex ?? 0) + 1} of 7</span>
+              <span className={styles.modalDayBadge}>Week {currentWeek} — Day {(activeDayIndex ?? 0) + 1} of 7</span>
               <h3 className={styles.modalTitle}>Morning Pages</h3>
               <p className={styles.modalSubtitle}>Write freely for 30 minutes. Tab switching resets the timer.</p>
             </div>

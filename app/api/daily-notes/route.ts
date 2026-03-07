@@ -11,7 +11,7 @@ const DAILY_NOTES_WEEK = 99;
 
 /**
  * GET /api/daily-notes
- * Load morning pages for the authenticated user
+ * Load all 12 weeks of morning pages for the authenticated user
  */
 export async function GET() {
   if (!isDbConfigured()) {
@@ -33,17 +33,17 @@ export async function GET() {
   );
 
   if (rows.length === 0) {
-    return NextResponse.json({ morningPages: [] });
+    return NextResponse.json({ allWeekPages: {} });
   }
 
   const pd = rows[0].progress_data;
-  return NextResponse.json({ morningPages: pd?.morningPages ?? [] });
+  return NextResponse.json({ allWeekPages: pd?.allWeekPages ?? {} });
 }
 
 /**
  * POST /api/daily-notes
- * Save morning pages
- * Body: { morningPages: MorningPageEntry[] }
+ * Save all 12 weeks of morning pages
+ * Body: { allWeekPages: Record<number, MorningPageEntry[]> }
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -57,14 +57,14 @@ export async function POST(request: Request) {
 
   await ensureEtherealProgressSchema();
 
-  let body: { morningPages: unknown[] };
+  let body: { allWeekPages: Record<string, unknown[]> };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
-  const progressData = JSON.stringify({ morningPages: body.morningPages });
+  const progressData = JSON.stringify({ allWeekPages: body.allWeekPages });
 
   await sqlQuery(
     `INSERT INTO ethereal_progress (id, user_id, week_number, progress_data)
