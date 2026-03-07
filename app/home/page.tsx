@@ -6,6 +6,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookCard from '@/components/book-card/BookCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
+import DailyNotes from '@/components/daily-notes/DailyNotes';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -195,13 +196,6 @@ export default function HomePage() {
 
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
-              <div className={styles.privacyNotice}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                All daily journals are private.
-              </div>
               <div className={styles.journalLayout}>
                 <aside className={styles.readingSidebar}>
                   <BookCard
@@ -236,6 +230,14 @@ export default function HomePage() {
                   </div>
                 </aside>
                 <div className={styles.journalCards}>
+                  <DailyNotes enablePersistence={isAuthenticated} />
+                  <div className={styles.privacyNotice}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    All daily journals are private.
+                  </div>
                   {WEEK_TITLES.map((title, i) => {
                     if (i === 0 || i === WEEK_TITLES.length - 1) return null;
                     const status = getWeekStatus(i);

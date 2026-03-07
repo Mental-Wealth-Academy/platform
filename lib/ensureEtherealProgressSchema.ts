@@ -19,7 +19,7 @@ export async function ensureEtherealProgressSchema() {
     CREATE TABLE IF NOT EXISTS ethereal_progress (
       id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
       user_id CHAR(36) NOT NULL,
-      week_number INTEGER NOT NULL CHECK (week_number >= 0 AND week_number <= 13),
+      week_number INTEGER NOT NULL CHECK (week_number >= 0 AND week_number <= 99),
       progress_data JSONB NOT NULL DEFAULT '{}',
       is_sealed BOOLEAN NOT NULL DEFAULT false,
       seal_tx_hash VARCHAR(255) NULL,
@@ -30,6 +30,14 @@ export async function ensureEtherealProgressSchema() {
       UNIQUE (user_id, week_number)
     )
   `);
+
+  // Update check constraint to allow week 99 (daily notes)
+  try {
+    await sqlQuery(`ALTER TABLE ethereal_progress DROP CONSTRAINT IF EXISTS ethereal_progress_week_number_check`);
+    await sqlQuery(`ALTER TABLE ethereal_progress ADD CONSTRAINT ethereal_progress_week_number_check CHECK (week_number >= 0 AND week_number <= 99)`);
+  } catch {
+    // constraint may already be updated
+  }
 
   try {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_ethereal_progress_user_id ON ethereal_progress(user_id)`);

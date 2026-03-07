@@ -1,0 +1,380 @@
+/* DailyNotes - Standalone morning pages card */
+
+.card {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: all 0.2s ease;
+}
+
+.cardButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.cardButton:hover {
+  background: #F4F5FE;
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.label {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.sublabel {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  margin-top: 2px;
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dayDots {
+  display: flex;
+  gap: 6px;
+}
+
+.dayDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E0E1EE;
+  border: 2px solid #CCC;
+  transition: all 0.2s ease;
+}
+
+.dayDotDone {
+  background: #22C55E;
+  border-color: #1A1D33;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: #1A1D33;
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+/* Expanded Content */
+.expandedContent {
+  padding: 0 20px 20px;
+  border-top: 2px solid rgba(26, 29, 51, 0.08);
+}
+
+.instructions {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.7;
+  margin: 16px 0;
+}
+
+.dayButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dayBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 2px solid #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.dayBtnAvailable {
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  box-shadow: 3px 3px 0 #1A1D33;
+  cursor: pointer;
+}
+
+.dayBtnAvailable:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.dayBtnDone {
+  background: #22C55E;
+  color: #FFFFFF;
+  box-shadow: 2px 2px 0 #1A1D33;
+  cursor: default;
+}
+
+.dayBtnLocked {
+  background: #E8E9F0;
+  color: #AAAAAA;
+  border-color: #CCCCCC;
+  cursor: not-allowed;
+}
+
+/* Timer Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalBackdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 8px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalHeader {
+  padding: 24px 24px 16px;
+  background: linear-gradient(135deg, #F4F5FE 0%, #EBEEFF 100%);
+  border-bottom: 3px solid #1A1D33;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalDayBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--color-primary, #5168FF);
+  color: #FFFFFF;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 20px;
+  border: 2px solid #1A1D33;
+}
+
+.modalTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+}
+
+.modalSubtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.timerDisplay {
+  padding: 24px 24px 16px;
+  text-align: center;
+}
+
+.timerCount {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 56px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
+}
+
+.timerWarning {
+  color: #E53E3E;
+}
+
+.timerBar {
+  height: 6px;
+  background: #E8E9F0;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.timerBarFill {
+  height: 100%;
+  background: var(--color-primary, #5168FF);
+  transition: width 1s linear;
+}
+
+.writeArea {
+  padding: 0 24px 16px;
+  flex: 1;
+}
+
+.textarea {
+  width: 100%;
+  height: 200px;
+  padding: 12px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: #1A1D33;
+  background: #FFFEF7;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary, #5168FF);
+  box-shadow: 3px 3px 0 var(--color-primary, #5168FF);
+}
+
+.textarea::placeholder {
+  color: #BBBBAA;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px 20px;
+  border-top: 2px solid rgba(26, 29, 51, 0.1);
+}
+
+.modalNote {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  flex: 1;
+}
+
+.submitBtn {
+  padding: 12px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  background: #22C55E;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.submitBtn:hover {
+  background: #16A34A;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .cardButton {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+
+  .dayDots {
+    gap: 4px;
+  }
+
+  .dayBtn {
+    width: 38px;
+    height: 38px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .label {
+    font-size: 14px;
+  }
+
+  .dayDots {
+    display: none;
+  }
+}
