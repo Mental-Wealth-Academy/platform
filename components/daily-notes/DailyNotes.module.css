@@ -98,6 +98,24 @@
   transform: rotate(180deg);
 }
 
+/* Privacy Notice */
+.privacyNotice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+  line-height: 1.6;
+  border-top: 2px solid rgba(26, 29, 51, 0.06);
+}
+
+.privacyNotice svg {
+  flex-shrink: 0;
+}
+
 /* Expanded Content */
 .expandedContent {
   padding: 0 20px 20px;

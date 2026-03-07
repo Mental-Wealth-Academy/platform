@@ -1,0 +1,260 @@
+/* DailyRead - Collapsible reading card */
+
+.card {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: all 0.2s ease;
+}
+
+.cardButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.cardButton:hover {
+  background: #F4F5FE;
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FF8E53;
+  color: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.label {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.sublabel {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.counter {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: #1A1D33;
+}
+
+.chevronRotated {
+  transform: rotate(180deg);
+}
+
+/* Expanded Content */
+.expandedContent {
+  padding: 0 20px 20px;
+  border-top: 2px solid rgba(26, 29, 51, 0.08);
+}
+
+.readingCard {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.readingImage {
+  width: 100px;
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #1A1D33;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.readingInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.readingCategory {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #FF8E53;
+  margin: 0 0 4px;
+}
+
+.readingTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 4px;
+}
+
+.readingAuthor {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.readingDesc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.readBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  background: #FF8E53;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.readBtn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.readingNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 2px solid rgba(26, 29, 51, 0.06);
+}
+
+.navBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FF8E53;
+  color: #ffffff;
+  border: 2px solid #1A1D33;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.navBtn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.navBtn:disabled {
+  background: #E8E9F0;
+  color: #AAAAAA;
+  border-color: #CCCCCC;
+  box-shadow: 2px 2px 0 #CCCCCC;
+  cursor: not-allowed;
+}
+
+.navLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1D33;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .cardButton {
+    padding: 14px 16px;
+  }
+
+  .readingCard {
+    flex-direction: column;
+  }
+
+  .readingImage {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .label {
+    font-size: 14px;
+  }
+
+  .sublabel {
+    max-width: 160px;
+  }
+
+  .counter {
+    display: none;
+  }
+}

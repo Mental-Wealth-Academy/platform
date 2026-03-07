@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
-import BookCard from '@/components/book-card/BookCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
+import DailyRead from '@/components/daily-read/DailyRead';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -46,13 +46,13 @@ export default function HomePage() {
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
-  const [readingIndex, setReadingIndex] = useState(0);
+  const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const { play } = useSound();
-  const currentReading = WEEKLY_READINGS[readingIndex];
+  const currentReading = WEEKLY_READINGS[readerIndex];
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -196,67 +196,30 @@ export default function HomePage() {
 
             {/* Journal Section */}
             <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
-              <div className={styles.journalLayout}>
-                <aside className={styles.readingSidebar}>
-                  <BookCard
-                    title={currentReading.title}
-                    author={currentReading.author}
-                    description={currentReading.description}
-                    category={currentReading.category}
-                    imageUrl={currentReading.imageUrl}
-                    slug={currentReading.slug}
-                    onReadClick={() => setIsReaderOpen(true)}
-                  />
-                  <div className={styles.readingNav}>
-                    <button
-                      className={styles.readingNavBtn}
-                      disabled={readingIndex === 0}
-                      onClick={() => { play('click'); setReadingIndex(i => i - 1); }}
-                      onMouseEnter={() => play('hover')}
-                      aria-label="Previous reading"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <span className={styles.readingNavLabel}>{readingIndex + 1} / {WEEKLY_READINGS.length}</span>
-                    <button
-                      className={styles.readingNavBtn}
-                      disabled={readingIndex === WEEKLY_READINGS.length - 1}
-                      onClick={() => { play('click'); setReadingIndex(i => i + 1); }}
-                      onMouseEnter={() => play('hover')}
-                      aria-label="Next reading"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
-                  </div>
-                </aside>
-                <div className={styles.journalCards}>
-                  <DailyNotes enablePersistence={isAuthenticated} />
-                  <div className={styles.privacyNotice}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    All daily journals are private.
-                  </div>
-                  {WEEK_TITLES.map((title, i) => {
-                    if (i === 0 || i === WEEK_TITLES.length - 1) return null;
-                    const status = getWeekStatus(i);
-                    const isLocked = seasonActive && i > activeWeek;
-                    return (
-                      <AccordionJournalCard
-                        key={i}
-                        weekNumber={i}
-                        weekTitle={title}
-                        initialIsSealed={status?.isSealed}
-                        initialSealTxHash={status?.sealTxHash}
-                        onSealComplete={handleSealComplete}
-                        enablePersistence={isAuthenticated}
-                        isLocked={isLocked}
-                        weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
-                      />
-                    );
-                  })}
-                </div>
+              <div className={styles.journalCards}>
+                <DailyNotes enablePersistence={isAuthenticated} />
+                <DailyRead
+                  readings={WEEKLY_READINGS}
+                  onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
+                />
+                {WEEK_TITLES.map((title, i) => {
+                  if (i === 0 || i === WEEK_TITLES.length - 1) return null;
+                  const status = getWeekStatus(i);
+                  const isLocked = seasonActive && i > activeWeek;
+                  return (
+                    <AccordionJournalCard
+                      key={i}
+                      weekNumber={i}
+                      weekTitle={title}
+                      initialIsSealed={status?.isSealed}
+                      initialSealTxHash={status?.sealTxHash}
+                      onSealComplete={handleSealComplete}
+                      enablePersistence={isAuthenticated}
+                      isLocked={isLocked}
+                      weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
+                    />
+                  );
+                })}
               </div>
             </div>
 
