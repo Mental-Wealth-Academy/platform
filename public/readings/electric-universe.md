@@ -1,4 +1,4 @@
-# The Electric Universe
+# The Electric Sheep
 
 **By Jhinova Bay, PhD | Frequency**
 

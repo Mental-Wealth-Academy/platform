@@ -79,10 +79,21 @@ export default function DailyRead({ readings, onReadClick, activeWeek }: DailyRe
       {isExpanded && (
         <div className={styles.expandedContent}>
           <div className={styles.readingCard}>
-            <div
-              className={styles.readingImage}
-              style={{ backgroundImage: `url(${currentReading.imageUrl})` }}
-            />
+            {currentReading.imageUrl.endsWith('.mp4') ? (
+              <video
+                className={styles.readingVideo}
+                src={currentReading.imageUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            ) : (
+              <div
+                className={styles.readingImage}
+                style={{ backgroundImage: `url(${currentReading.imageUrl})` }}
+              />
+            )}
             <div className={styles.readingInfo}>
               <p className={styles.readingCategory}>{currentReading.category}</p>
               <h4 className={styles.readingTitle}>{currentReading.title}</h4>
