@@ -689,7 +689,7 @@ export default function Markets() {
               </div>
               <div
                 className={styles.signalRow}
-                style={derived.signal === 'SKIP' ? { background: 'rgba(226, 86, 123, 0.08)', borderColor: 'rgba(226, 86, 123, 0.2)' } : undefined}
+                style={derived.signal === 'SKIP' ? { background: 'rgba(248, 113, 113, 0.06)', borderColor: 'rgba(248, 113, 113, 0.12)' } : undefined}
               >
                 <span className={styles.signalLabel}>signal</span>
                 <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
@@ -711,6 +711,7 @@ export default function Markets() {
           </div>
 
           {/* ════ CENTER: Charts ════ */}
+          <div className={styles.centerColumn}>
 
           {/* Chart 1: Trading Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
@@ -738,9 +739,6 @@ export default function Markets() {
                   <TickerLine stroke="var(--color-primary)" />
                   <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
-                  <TickerLine drift={0.12} vol={1.0} stroke="#E2567B" strokeWidth={1.5} opacity={0.4} speed={280} />
-                  <TickerLine drift={0.22} vol={0.7} stroke="#A855F7" strokeWidth={1.5} opacity={0.45} speed={320} />
-                  <TickerLine drift={0.15} vol={0.9} stroke="#06B6D4" strokeWidth={1.5} opacity={0.4} speed={360} />
                 </>
               )}
             </div>
@@ -818,7 +816,11 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ RIGHT COLUMN: Live Markets ════ */}
+          </div>{/* end centerColumn */}
+
+          {/* ════ RIGHT COLUMN ════ */}
+          <div className={styles.rightColumn}>
+
           <div className={styles.marketsColumn}>
             <div className={styles.panel}>
               <div className={styles.panelTitle}>Live Spot Prices</div>
@@ -923,6 +925,8 @@ export default function Markets() {
               ))}
             </div>
           </div>
+
+          </div>{/* end rightColumn */}
 
         </div>
       </div>

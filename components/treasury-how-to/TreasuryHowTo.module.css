@@ -1,4 +1,4 @@
-/* Treasury How It Works — Brutalist Flat Design */
+/* How It Works — Dark Terminal Theme */
 
 .overlay {
   position: fixed;
@@ -6,7 +6,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(26, 29, 51, 0.85);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
   z-index: 1000;
 }
 
@@ -15,14 +16,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(580px, calc(100vw - 32px));
+  width: min(620px, calc(100vw - 32px));
   max-height: 85vh;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
+  background: #12141F;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 0;
   z-index: 1001;
-  box-shadow: 6px 6px 0 #1A1D33;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -33,19 +34,19 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 24px;
-  background: var(--color-primary);
-  border-bottom: 3px solid #1A1D33;
+  padding: 20px 28px;
+  background: #181A28;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .title {
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  color: #ffffff;
+  color: #E2E4F0;
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .closeButton {
@@ -54,143 +55,246 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 2px solid #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
-  color: #ffffff;
+  color: #8B8FA3;
   cursor: pointer;
   font-size: 18px;
   font-weight: 700;
-  border-radius: 6px;
-  transition: background 0.15s ease;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .closeButton:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #E2E4F0;
 }
 
 .body {
-  padding: 24px;
+  padding: 28px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .sectionTitle {
   font-family: var(--font-button);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-primary);
-  padding-bottom: 6px;
-  border-bottom: 2px solid rgba(81, 104, 255, 0.15);
+  color: #7B8CFF;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(123, 140, 255, 0.12);
 }
 
 .sectionText {
   font-family: var(--font-button);
   font-size: 13px;
-  line-height: 1.7;
-  color: var(--color-text-dark);
+  line-height: 1.8;
+  color: #C8CAD8;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
 }
 
 .highlight {
-  color: var(--color-primary);
+  color: #7B8CFF;
   font-weight: 700;
 }
 
+/* ── Pipeline Steps ── */
 .stepList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .step {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 14px;
   font-family: var(--font-button);
   font-size: 13px;
   line-height: 1.6;
-  color: var(--color-text-dark);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  color: #C8CAD8;
 }
 
 .stepNumber {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 24px;
-  height: 24px;
-  background: var(--color-primary);
-  color: #ffffff;
+  min-width: 28px;
+  height: 28px;
+  background: rgba(123, 140, 255, 0.1);
+  color: #7B8CFF;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid rgba(123, 140, 255, 0.15);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.stepLabel {
+  display: block;
+  font-weight: 700;
+  color: #E2E4F0;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.stepDesc {
+  display: block;
+  color: #8B8FA3;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* ── Bayesian Framework Grid ── */
+.frameworkGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.frameworkItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.frameworkLabel {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  color: #E2E4F0;
+}
+
+.frameworkDesc {
+  font-family: var(--font-button);
+  font-size: 11px;
+  color: #6B6F83;
+  line-height: 1.5;
+}
+
+/* ── Risk Controls Grid ── */
+.riskGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.riskItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.riskValue {
+  font-family: var(--font-button);
+  font-size: 20px;
+  font-weight: 700;
+  color: #4ADE80;
+}
+
+.riskLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  color: #6B6F83;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ── Architecture Diagram ── */
+.archDiagram {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.archRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.archNode {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 600;
+  color: #C8CAD8;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.archNodeHighlight {
+  font-family: var(--font-button);
   font-size: 11px;
   font-weight: 700;
-  border-radius: 6px;
+  color: #7B8CFF;
+  padding: 8px 14px;
+  background: rgba(123, 140, 255, 0.08);
+  border: 1px solid rgba(123, 140, 255, 0.15);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.archArrow {
+  color: #4E5268;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
-.buyLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-button);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-primary);
-  text-decoration: none;
-  border: 2px solid var(--color-primary);
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin-top: 4px;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.buyLink:hover {
-  background: var(--color-primary);
-  color: #ffffff;
-}
-
+/* ── Disclaimer ── */
 .disclaimer {
   font-family: var(--font-button);
   font-size: 11px;
-  line-height: 1.6;
-  color: var(--color-secondary);
-  padding: 12px;
-  background: rgba(26, 29, 51, 0.04);
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 8px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  line-height: 1.7;
+  color: #4E5268;
+  padding: 14px 16px;
+  background: rgba(248, 113, 113, 0.04);
+  border: 1px solid rgba(248, 113, 113, 0.08);
+  border-radius: 10px;
 }
 
-/* Trigger button in status bar */
+/* ── Trigger Button (in status bar) ── */
 .howToButton {
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-primary);
-  background: rgba(81, 104, 255, 0.08);
-  border: 1.5px solid rgba(81, 104, 255, 0.25);
-  padding: 4px 12px;
+  color: #7B8CFF;
+  background: rgba(123, 140, 255, 0.08);
+  border: 1px solid rgba(123, 140, 255, 0.15);
+  padding: 5px 14px;
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
@@ -198,6 +302,27 @@
 }
 
 .howToButton:hover {
-  background: rgba(81, 104, 255, 0.15);
-  border-color: rgba(81, 104, 255, 0.4);
+  background: rgba(123, 140, 255, 0.15);
+  border-color: rgba(123, 140, 255, 0.3);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .frameworkGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .riskGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .archRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .archArrow {
+    text-align: center;
+    transform: rotate(90deg);
+  }
 }

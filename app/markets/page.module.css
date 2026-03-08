@@ -1,8 +1,11 @@
+/* ── Dark Terminal Theme for Markets Page ── */
+
 .main {
   min-height: 100vh;
   margin-left: var(--sidebar-width, 272px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  background: #F4F5FE;
+  background: #0D0F1A;
+  color: #E2E4F0;
 }
 
 .pageLayout {
@@ -17,13 +20,13 @@
 .statusBar {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 2px solid #1A1D33;
+  gap: 28px;
+  padding: 12px 24px;
+  background: #12141F;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: #8B8FA3;
   overflow-x: auto;
   white-space: nowrap;
 }
@@ -35,17 +38,17 @@
 }
 
 .statusLabel {
-  color: var(--color-secondary);
+  color: #6B6F83;
   font-weight: var(--font-weight-regular);
 }
 
 .statusValue {
-  color: var(--color-text-dark);
+  color: #C8CAD8;
   font-weight: var(--font-weight-semibold);
 }
 
 .statusHighlight {
-  color: var(--color-primary);
+  color: #7B8CFF;
   font-weight: var(--font-weight-bold);
 }
 
@@ -53,10 +56,10 @@
 .appleBar {
   display: flex;
   align-items: center;
-  gap: 28px;
-  padding: 8px 20px;
+  gap: 32px;
+  padding: 10px 24px;
   background: rgba(81, 104, 255, 0.04);
-  border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   font-family: var(--font-button);
   font-size: 11px;
   overflow-x: auto;
@@ -70,7 +73,7 @@
 }
 
 .appleBarLabel {
-  color: var(--color-secondary);
+  color: #6B6F83;
   font-weight: var(--font-weight-regular);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -78,17 +81,17 @@
 }
 
 .appleBarValue {
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   font-weight: var(--font-weight-bold);
   font-size: 12px;
 }
 
 .appleBarPositive {
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .appleBarNegative {
-  color: #E2567B;
+  color: #F87171;
 }
 
 /* ── Position Status ── */
@@ -97,7 +100,7 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-secondary);
+  color: #6B6F83;
   min-width: 48px;
   text-align: right;
 }
@@ -105,20 +108,20 @@
 /* ── Dashboard Grid ── */
 .grid {
   display: grid;
-  grid-template-columns: 280px 1fr 1fr 300px;
-  grid-template-rows: auto auto auto;
-  gap: 2px;
-  background: rgba(26, 29, 51, 0.08);
+  grid-template-columns: 260px 1fr 280px;
+  grid-template-rows: 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
   min-height: calc(100vh - 42px);
 }
 
 /* ── Panel Base ── */
 .panel {
-  background: #F4F5FE;
-  padding: 16px 18px;
+  background: #12141F;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   overflow: hidden;
   position: relative;
 }
@@ -127,7 +130,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .panelTitle {
@@ -136,17 +139,17 @@
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .panelBadge {
   font-family: var(--font-button);
   font-size: 9px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-sm);
-  background: rgba(81, 104, 255, 0.08);
-  color: var(--color-primary);
-  border: 1px solid rgba(81, 104, 255, 0.2);
+  background: rgba(123, 140, 255, 0.08);
+  color: #7B8CFF;
+  border: 1px solid rgba(123, 140, 255, 0.15);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -157,13 +160,13 @@
   grid-row: 1 / 4;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: rgba(26, 29, 51, 0.08);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .modelPanel {
-  background: #F4F5FE;
-  padding: 16px 18px;
+  background: #12141F;
+  padding: 20px 20px;
   flex: 1;
 }
 
@@ -173,16 +176,16 @@
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-secondary);
-  margin-bottom: 10px;
+  color: #6B6F83;
+  margin-bottom: 12px;
 }
 
 .modelFormula {
   font-family: var(--font-button);
   font-size: 14px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
-  margin-bottom: 12px;
+  color: #E2E4F0;
+  margin-bottom: 14px;
   line-height: 1.4;
 }
 
@@ -190,26 +193,26 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 2px 0;
+  padding: 3px 0;
   font-family: var(--font-button);
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .paramKey {
-  color: var(--color-primary);
+  color: #7B8CFF;
   font-weight: var(--font-weight-semibold);
   min-width: 60px;
 }
 
 .paramValue {
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   font-weight: var(--font-weight-bold);
   text-align: right;
 }
 
 .paramComment {
-  color: var(--color-secondary);
+  color: #4E5268;
   font-size: 11px;
   margin-left: 6px;
   font-weight: var(--font-weight-regular);
@@ -222,37 +225,57 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 6px;
-  padding: 6px 10px;
-  background: rgba(116, 196, 101, 0.08);
-  border: 1px solid rgba(116, 196, 101, 0.2);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(74, 222, 128, 0.06);
+  border: 1px solid rgba(74, 222, 128, 0.12);
   border-radius: var(--radius-sm);
 }
 
 .signalLabel {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .signalValue {
   font-family: var(--font-button);
   font-size: 12px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .signalSkip {
-  color: #E2567B;
+  color: #F87171;
   font-weight: bold;
   font-size: 12px;
 }
 
+/* ── Center Column Wrapper ── */
+.centerColumn {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ── Right Column Wrapper ── */
+.rightColumn {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
 /* ── Center Charts ── */
 .chartPanel {
-  grid-column: 2 / 4;
-  min-height: auto;
+  min-height: 0;
   position: relative;
+  padding: 14px 20px;
 }
 
 .chartPlaceholder {
@@ -260,12 +283,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed rgba(26, 29, 51, 0.15);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   min-height: 160px;
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .chartLine {
@@ -274,7 +297,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(26, 29, 51, 0.1) 10%, var(--color-primary) 50%, rgba(26, 29, 51, 0.1) 90%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 10%, #7B8CFF 50%, rgba(255, 255, 255, 0.05) 90%, transparent 100%);
 }
 
 .chartStats {
@@ -290,38 +313,40 @@
 }
 
 .chartStatLabel {
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .chartStatValue {
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   font-weight: var(--font-weight-bold);
 }
 
 /* ── Right Column: Live Markets ── */
 .marketsColumn {
-  grid-column: 4;
-  grid-row: 1 / 2;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: rgba(26, 29, 51, 0.08);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .marketRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: #F4F5FE;
-  transition: background var(--duration-fast) var(--ease-default);
+  padding: 14px 20px;
+  background: #12141F;
+  transition: background 0.15s ease;
+}
+
+.marketRow:hover {
+  background: #181A28;
 }
 
 .marketSymbol {
   font-family: var(--font-secondary);
   font-size: 15px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   min-width: 44px;
 }
 
@@ -329,7 +354,7 @@
   font-family: var(--font-button);
   font-size: 17px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -339,43 +364,42 @@
 }
 
 @keyframes priceFlash {
-  0% { color: var(--color-primary); }
-  100% { color: var(--color-text-dark); }
+  0% { color: #7B8CFF; }
+  100% { color: #E2E4F0; }
 }
 
 .marketMeta {
   font-family: var(--font-button);
   font-size: 9px;
-  color: var(--color-secondary);
+  color: #6B6F83;
   text-align: right;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* ── Execution Log ── */
 .logPanel {
-  grid-column: 2 / 4;
-  min-height: 180px;
+  min-height: 0;
 }
 
 .logEntries {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   font-family: var(--font-button);
   font-size: 11px;
-  line-height: 1.7;
+  line-height: 1.8;
   overflow-y: auto;
   max-height: 200px;
 }
 
 .logEntry {
   display: flex;
-  gap: 8px;
-  padding: 1px 0;
+  gap: 10px;
+  padding: 2px 0;
 }
 
 .logTime {
-  color: var(--color-secondary);
+  color: #4E5268;
   white-space: nowrap;
   min-width: 60px;
 }
@@ -385,25 +409,23 @@
 }
 
 .logScan {
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .logTrade {
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .logSkip {
-  color: var(--color-accent);
+  color: #FBBF24;
 }
 
 .logDetails {
-  color: var(--color-secondary);
+  color: #8B8FA3;
 }
 
 /* ── Order Flow Panel ── */
 .flowPanel {
-  grid-column: 4;
-  grid-row: 2;
 }
 
 .flowDirection {
@@ -414,20 +436,20 @@
   font-family: var(--font-button);
   font-size: 16px;
   font-weight: var(--font-weight-bold);
-  padding: 6px 0;
+  padding: 8px 0;
   letter-spacing: 0.06em;
 }
 
 .flowBullish {
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .flowBearish {
-  color: #E2567B;
+  color: #F87171;
 }
 
 .flowNeutral {
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .flowBarWrap {
@@ -435,17 +457,17 @@
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
-  background: rgba(26, 29, 51, 0.06);
-  margin: 4px 0 2px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 6px 0 4px;
 }
 
 .flowBuy {
-  background: var(--color-tertiary);
+  background: #4ADE80;
   transition: width 0.3s ease;
 }
 
 .flowSell {
-  background: #E2567B;
+  background: #F87171;
   transition: width 0.3s ease;
 }
 
@@ -454,21 +476,21 @@
   justify-content: space-between;
   font-family: var(--font-button);
   font-size: 9px;
-  color: var(--color-secondary);
-  margin-bottom: 6px;
+  color: #6B6F83;
+  margin-bottom: 8px;
 }
 
 .flowStats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
-  margin: 6px 0;
+  gap: 8px 16px;
+  margin: 8px 0;
 }
 
 .flowStatItem {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .flowStatLabel {
@@ -476,14 +498,14 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-secondary);
+  color: #4E5268;
 }
 
 .flowStatValue {
   font-family: var(--font-button);
   font-size: 13px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
+  color: #E2E4F0;
 }
 
 .flowTradesLabel {
@@ -491,17 +513,17 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-secondary);
-  margin-top: 4px;
-  margin-bottom: 4px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(26, 29, 51, 0.1);
+  color: #4E5268;
+  margin-top: 8px;
+  margin-bottom: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .flowTrades {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   font-family: var(--font-button);
   font-size: 10px;
   overflow-y: auto;
@@ -510,43 +532,43 @@
 .flowTradeRow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 0;
+  gap: 8px;
+  padding: 3px 0;
 }
 
 .flowTradeBadge {
   font-size: 9px;
   font-weight: var(--font-weight-bold);
-  padding: 1px 5px;
-  border-radius: 2px;
+  padding: 2px 6px;
+  border-radius: 3px;
   min-width: 30px;
   text-align: center;
 }
 
 .flowTradeBuy {
-  background: rgba(116, 196, 101, 0.12);
-  color: var(--color-tertiary);
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ADE80;
 }
 
 .flowTradeSell {
-  background: rgba(226, 86, 123, 0.12);
-  color: #E2567B;
+  background: rgba(248, 113, 113, 0.1);
+  color: #F87171;
 }
 
 .flowTradePrice {
-  color: var(--color-text-dark);
+  color: #E2E4F0;
   font-weight: var(--font-weight-semibold);
   min-width: 36px;
 }
 
 .flowTradeSize {
-  color: var(--color-secondary);
+  color: #6B6F83;
   flex: 1;
   text-align: right;
 }
 
 .flowTradeTime {
-  color: var(--color-secondary);
+  color: #4E5268;
   font-size: 9px;
   min-width: 44px;
   text-align: right;
@@ -554,14 +576,12 @@
 
 /* ── Positions ── */
 .positionsPanel {
-  grid-column: 4;
-  grid-row: 3;
 }
 
 .positionsEntries {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   font-family: var(--font-button);
   font-size: 10px;
   overflow-y: auto;
@@ -571,11 +591,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 0;
+  padding: 4px 0;
 }
 
 .positionAsset {
-  color: var(--color-secondary);
+  color: #8B8FA3;
   min-width: 32px;
 }
 
@@ -585,15 +605,15 @@
 }
 
 .positionLong {
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .positionShort {
-  color: #E2567B;
+  color: #F87171;
 }
 
 .positionEntry {
-  color: var(--color-secondary);
+  color: #6B6F83;
   min-width: 50px;
   text-align: right;
 }
@@ -605,11 +625,11 @@
 }
 
 .positionPnlPositive {
-  color: var(--color-tertiary);
+  color: #4ADE80;
 }
 
 .positionPnlNegative {
-  color: #E2567B;
+  color: #F87171;
 }
 
 /* ── Coming Soon Overlay ── */
@@ -618,11 +638,11 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--color-secondary);
+  color: #6B6F83;
   padding: 6px 14px;
-  border: 1px solid rgba(26, 29, 51, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(18, 20, 31, 0.9);
   z-index: 2;
 }
 
@@ -630,14 +650,14 @@
 .loadingText {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
+  color: #4E5268;
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 .errorText {
   font-family: var(--font-button);
   font-size: 11px;
-  color: #E2567B;
+  color: #F87171;
 }
 
 @keyframes pulse {
@@ -647,33 +667,32 @@
 
 /* ── 24h Change Colors ── */
 .changePositive {
-  color: var(--color-tertiary);
+  color: #4ADE80;
   font-weight: var(--font-weight-semibold);
   font-size: 11px;
 }
 
 .changeNegative {
-  color: #E2567B;
+  color: #F87171;
   font-weight: var(--font-weight-semibold);
   font-size: 11px;
 }
 
-/* ── Treasury Balance Chart ── */
+/* ── Balance Chart ── */
 .chartArea {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 0;
+  padding: 4px 0;
   position: relative;
 }
 
 .balanceHero {
   font-family: var(--font-button);
-  font-size: 30px;
+  font-size: 24px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
+  color: #FFFFFF;
   letter-spacing: -0.02em;
 }
 
@@ -682,29 +701,28 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-secondary);
+  color: #6B6F83;
   margin-top: 2px;
 }
 
 .balanceBreakdown {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   justify-content: center;
-  margin-top: 6px;
+  margin-top: 4px;
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-secondary);
-  opacity: 0.7;
+  color: #8B8FA3;
 }
 
 .sparklineSvg {
   width: 100%;
-  height: 28px;
-  margin-top: 4px;
+  height: 16px;
+  margin-top: 2px;
 }
 
 .sparklineSvg + .sparklineSvg {
-  margin-top: -4px;
+  margin-top: -6px;
 }
 
 /* ── Polymarket Display ── */
@@ -712,7 +730,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   overflow-y: auto;
   max-height: 360px;
 }
@@ -720,7 +738,7 @@
 .polySection {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .polySectionLabel {
@@ -728,27 +746,28 @@
   font-size: 9px;
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.12em;
-  color: var(--color-primary);
-  padding: 4px 0 2px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.12);
+  color: #7B8CFF;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid rgba(123, 140, 255, 0.1);
   margin-bottom: 2px;
 }
 
 .polymarketItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 6px 10px;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .polyQuestion {
   font-family: var(--font-button);
   font-size: 11px;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-dark);
-  line-height: 1.4;
+  color: #C8CAD8;
+  line-height: 1.5;
 }
 
 .polyMeta {
@@ -757,7 +776,7 @@
   justify-content: space-between;
   font-family: var(--font-button);
   font-size: 9px;
-  color: var(--color-secondary);
+  color: #6B6F83;
 }
 
 .polyBar {
@@ -765,16 +784,16 @@
   height: 6px;
   border-radius: 3px;
   overflow: hidden;
-  background: rgba(26, 29, 51, 0.06);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .polyYes {
-  background: var(--color-tertiary);
+  background: #4ADE80;
   transition: width 0.3s ease;
 }
 
 .polyNo {
-  background: var(--color-primary);
+  background: #7B8CFF;
   transition: width 0.3s ease;
 }
 
@@ -782,21 +801,21 @@
 .lastUpdated {
   font-family: var(--font-button);
   font-size: 9px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-sm);
-  background: rgba(26, 29, 51, 0.04);
-  color: var(--color-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  color: #4E5268;
   white-space: nowrap;
 }
 
 /* ── Responsive ── */
-@media (max-width: 1400px) {
+@media (max-width: 1200px) {
   .grid {
-    grid-template-columns: 240px 1fr 1fr 260px;
+    grid-template-columns: 220px 1fr 240px;
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
   .grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
