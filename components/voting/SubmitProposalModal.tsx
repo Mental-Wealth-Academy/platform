@@ -399,15 +399,28 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
           {/* Recipient Address Input */}
           <div className={styles.inputGroup}>
             <label className={styles.label}>
-              <span className={styles.labelText}>Recipient Address</span>
+              <span className={styles.labelText}>Send funds to</span>
             </label>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="0x..."
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-            />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                type="text"
+                className={styles.input}
+                style={{ flex: 1 }}
+                placeholder="0x..."
+                value={recipientAddress}
+                onChange={(e) => setRecipientAddress(e.target.value)}
+              />
+              {address && (
+                <button
+                  type="button"
+                  className={styles.templateButton}
+                  style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+                  onClick={() => setRecipientAddress(address)}
+                >
+                  My wallet
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Token Amount Input */}
