@@ -4,7 +4,7 @@
 
 # Mental Wealth Academy
 
-**AI-governed treasury with Chainlink CRE automation on Base**
+**Decentralized Education, Alternative Digital Academia For Humans Evolving Through Collectively Owned Cyberspace.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
@@ -17,15 +17,15 @@
 
 ## What This Is
 
-A governance system where an AI agent (Azura) scores funding proposals, the community votes on-chain, and **Chainlink CRE workflows automate the entire pipeline** from review to trade execution -- no centralized server required.
+A governance system where an AI agent (Azura) scores funding proposals, the community votes on-chain, and **Chainlink CRE workflows automate the entire pipeline** from review to autonomous market trading -- no centralized server required.
 
-**Contract:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
+**Governance:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
 
 ---
 
-## CRE Integration (Core Submission)
+## CRE Integration
 
-Three CRE workflows run in the Chainlink DON, automating the full proposal lifecycle:
+Four CRE workflows run in the Chainlink DON, automating governance, AI review, and autonomous trading:
 
 ### 1. `azura-review` -- AI Proposal Scoring
 **Trigger:** `ProposalCreated` event on-chain
@@ -39,12 +39,24 @@ Azura's level determines her voting weight: Level 1 = 10%, Level 2 = 20%, Level 
 
 Scans all active proposals. When one has reached the 50% vote threshold, it submits a DON-signed report (`actionType 1`) to execute the proposal on-chain, transferring USDC to the recipient.
 
-### 3. `trade-execute` -- Prediction Market Trading
+### 3. `trade-execute` -- Governance-Triggered Trading
 **Trigger:** `ProposalExecuted` event on-chain
 
-When a trade proposal passes governance, this workflow reads the proposal details, selects the best matching prediction market, infers trade direction from the proposal text, and submits a DON-signed report (`actionType 3`) that routes treasury USDC into a prediction market position via `MockPredictionMarket.buyOutcome()`.
+When a trade proposal passes governance and the recipient is the trader contract, this workflow infers trade direction from the proposal text and submits a DON-signed report to `AzuraMarketTrader.onReport()`, routing the trading treasury's USDC into a prediction market position.
 
-This closes the loop: **proposal -> AI review -> community vote -> automated trade** -- all verified by the Chainlink DON.
+### 4. `polymarket-trader` -- Autonomous Bayesian Market Scanner
+**Trigger:** Cron (every 30 minutes)
+
+The autonomous trading engine. Scans Polymarket for mispriced markets using **Anthropic Claude** with a rigorous decision framework:
+
+1. **EV** -- tells you whether to act
+2. **Base rates** -- ground estimates in reality
+3. **Sunk costs** -- tells you what to ignore
+4. **Bayes' theorem** -- how to update beliefs with new evidence
+5. **Survivorship bias** -- what's missing from the picture
+6. **Quarter-Kelly** -- how much to commit (conservative sizing)
+
+Claude analyzes each market candidate and returns structured JSON with fair probabilities, edge estimates, and confidence scores. Quarter-Kelly sizing caps risk at 5% of the trading treasury per position. Trades are submitted as DON-signed reports to `AzuraMarketTrader`.
 
 ### Pipeline
 
@@ -52,16 +64,21 @@ This closes the loop: **proposal -> AI review -> community vote -> automated tra
 Proposal Created
        |
        v
-  [CRE: azura-review]     -- DON scores proposal, writes level on-chain
+  [CRE: azura-review]         -- DON scores proposal, writes level on-chain
        |
        v
-  Community Votes          -- token-weighted, 50% threshold
+  Community Votes              -- token-weighted, 50% threshold
        |
        v
-  [CRE: auto-execute]     -- DON detects threshold, executes proposal
+  [CRE: auto-execute]         -- DON detects threshold, executes proposal
        |
        v
-  [CRE: trade-execute]    -- DON routes USDC into prediction market position
+  [CRE: trade-execute]        -- DON routes USDC to trader (governance path)
+
+  [CRE: polymarket-trader]    -- DON scans markets autonomously (Bayesian path)
+       |
+       v
+  AzuraMarketTrader            -- executes trades on prediction markets
 ```
 
 ---
@@ -70,25 +87,24 @@ Proposal Created
 
 | Contract | Purpose |
 |----------|---------|
-| **AzuraKillStreak** | Governance: proposals, token-weighted voting, CRE `onReport()` receiver with 3 action types |
-| **MockPredictionMarket** | Binary outcome market accepting USDC -- mock target for CRE trade execution |
-| **EtherealHorizonPathway** | 14-milestone on-chain seal system for the educational pathway |
-
-`onReport()` dispatches on `actionType`: 1 = auto-execute, 2 = AI review, 3 = trade execution. All reports are DON-signed and delivered via the KeystoneForwarder.
+| **AzuraKillStreak** | Governance: proposals, token-weighted voting, CRE `onReport()` receiver (actionType 1 = auto-execute, 2 = AI review). All reports DON-signed via KeystoneForwarder. |
+| **AzuraMarketTrader** | Separate trading treasury: owner and CRE-triggered trades on prediction markets. Own `onReport()` receiver, `deposit()`/`withdraw()` for treasury management. |
+| **MockPredictionMarket** | Binary outcome market accepting USDC -- mock target for trade execution testing. |
+| **EtherealHorizonPathway** | 14-milestone on-chain seal system for the 12-week educational pathway. |
 
 ### Tests
 
 ```bash
 cd contracts && forge test
-# 56 tests pass: 40 governance + trade execution, 16 pathway
+# 70 tests pass: 31 governance, 23 market trader, 16 pathway
 ```
 
 Key test coverage:
 - AI review at all levels (0-4), including CRE-delivered reviews
 - Community voting with snapshot-based anti-manipulation
-- Trade execution via `actionType 3` with `vm.store` to isolate the CRE trade path
-- Mock prediction market position tracking (YES/NO)
-- Revert conditions: unauthorized, below threshold, no market set
+- Trader contract: buy YES/NO, CRE onReport, deposit/withdraw, insufficient balance
+- Mock prediction market position tracking
+- Revert conditions: unauthorized, below threshold, no market set, zero amount
 
 ---
 
@@ -97,8 +113,8 @@ Key test coverage:
 | Layer | Technology |
 |-------|-----------|
 | **Contracts** | Solidity 0.8.24, Foundry, Base Mainnet |
-| **Automation** | Chainlink CRE (3 workflows), KeystoneForwarder |
-| **AI Agent** | Azura via Eliza Cloud API |
+| **Automation** | Chainlink CRE (4 workflows), KeystoneForwarder |
+| **AI Agent** | Azura via Eliza Cloud API (reviews), Anthropic Claude (trading) |
 | **Frontend** | Next.js 14, TypeScript |
 | **Wallet** | Coinbase SDK |
 
@@ -110,17 +126,22 @@ Key test coverage:
 contracts/
   src/
     AzuraKillStreak.sol         -- Governance + CRE receiver
-    MockPredictionMarket.sol    -- Trade target for CRE
+    AzuraMarketTrader.sol       -- Trading treasury + CRE receiver
+    MockPredictionMarket.sol    -- Trade target for testing
     EtherealHorizonPathway.sol  -- Educational milestones
   test/
-    AzuraKillStreak.t.sol       -- 40 tests (governance + trade)
+    AzuraKillStreak.t.sol       -- 31 governance tests
+    AzuraMarketTrader.t.sol     -- 23 trader tests
     EtherealHorizonPathway.t.sol
 
 cre-workflows/
-  azura-review/     -- Event-triggered AI scoring
-  auto-execute/     -- Cron-based proposal execution
-  trade-execute/    -- Event-triggered trade routing
-  shared/abi.ts     -- Shared contract ABI fragments
+  azura-review/        -- Event-triggered AI scoring
+  auto-execute/        -- Cron-based proposal execution
+  trade-execute/       -- Event-triggered governance trade routing
+  polymarket-trader/   -- Cron-based autonomous Bayesian market scanner
+  shared/
+    abi.ts             -- Governance contract ABI fragments
+    trader-abi.ts      -- Trader contract ABI fragments
 ```
 
 ---
@@ -135,6 +156,7 @@ npm install && npm run dev
 cd contracts && forge build && forge test
 
 # CRE workflows (simulate)
-cd cre-workflows && cre workflow simulate --workflow azura-review
-cd cre-workflows && cre workflow simulate --workflow trade-execute
+cd cre-workflows
+cre workflow simulate --workflow azura-review
+cre workflow simulate --workflow polymarket-trader
 ```
