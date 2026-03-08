@@ -268,7 +268,7 @@ function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
 
 // ── Page ──
 
-export default function Treasury() {
+export default function Markets() {
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
   const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
@@ -462,20 +462,16 @@ export default function Treasury() {
         {/* ── Status Bar ── */}
         <div className={styles.statusBar}>
           <div className={styles.statusItem}>
+            <span className={styles.statusLabel}>exchange</span>
+            <span className={styles.statusHighlight}>POLYMARKET CLOB</span>
+          </div>
+          <div className={styles.statusItem}>
             <span className={styles.statusLabel}>model</span>
             <span className={styles.statusHighlight}>BLACK-SCHOLES BINARY</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>markets:</span>
-            <span className={styles.statusValue}>BTC ETH SOL XRP GOLD</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>MC_paths:</span>
-            <span className={styles.statusValue}>200,000</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>refresh:</span>
-            <span className={styles.statusValue}>100-500ms</span>
+            <span className={styles.statusLabel}>chain:</span>
+            <span className={styles.statusValue}>POLYGON</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>edge_threshold:</span>
@@ -484,6 +480,10 @@ export default function Treasury() {
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>kelly:</span>
             <span className={styles.statusValue}>0.25x</span>
+          </div>
+          <div className={styles.statusItem}>
+            <span className={styles.statusLabel}>max_position:</span>
+            <span className={styles.statusValue}>5%</span>
           </div>
           {lastPriceUpdate > 0 && (
             <div className={styles.statusItem}>
@@ -712,10 +712,10 @@ export default function Treasury() {
 
           {/* ════ CENTER: Charts ════ */}
 
-          {/* Chart 1: Treasury Balance */}
+          {/* Chart 1: Trading Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Treasury Balance &middot; USDC &middot; Base Mainnet</span>
+              <span className={styles.panelTitle}>Trading Balance &middot; USDC &middot; Polymarket CLOB</span>
               <span className={styles.panelBadge}>on-chain</span>
             </div>
             <div className={styles.chartArea}>
@@ -728,11 +728,11 @@ export default function Treasury() {
               {balance && (
                 <>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
-                  <div className={styles.balanceLabel}>USDC Treasury Balance</div>
+                  <div className={styles.balanceLabel}>Total USDC Balance</div>
                   {(balance.governance || balance.trader) && (
                     <div className={styles.balanceBreakdown}>
                       {balance.governance && <span>Governance: ${balance.governance.formatted}</span>}
-                      {balance.trader && balance.trader.usd > 0 && <span>Trading: ${balance.trader.formatted}</span>}
+                      {balance.trader && <span>Polymarket: ${balance.trader.formatted}</span>}
                     </div>
                   )}
                   <TickerLine stroke="var(--color-primary)" />
@@ -749,7 +749,7 @@ export default function Treasury() {
           {/* Chart 2: Polymarket Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Polymarket &middot; Signal Markets &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Polymarket CLOB &middot; Active Markets &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             {!polymarkets && !polyError && (
@@ -794,7 +794,7 @@ export default function Treasury() {
           {/* Execution Log */}
           <div className={`${styles.panel} ${styles.logPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Execution Log &middot; Edge Capture</span>
+              <span className={styles.panelTitle}>CLOB Execution Log &middot; Bayesian Edge Capture</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.logEntries}>
@@ -821,7 +821,7 @@ export default function Treasury() {
           {/* ════ RIGHT COLUMN: Live Markets ════ */}
           <div className={styles.marketsColumn}>
             <div className={styles.panel}>
-              <div className={styles.panelTitle}>Live 5-Min Markets</div>
+              <div className={styles.panelTitle}>Live Spot Prices</div>
             </div>
             {!prices && !priceError && (
               <div className={styles.marketRow}>
@@ -902,7 +902,7 @@ export default function Treasury() {
           {/* Positions / Kelly Sized */}
           <div className={`${styles.panel} ${styles.positionsPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Positions &middot; Kelly Sized</span>
+              <span className={styles.panelTitle}>CLOB Positions &middot; Quarter-Kelly</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             <div className={styles.positionsEntries}>

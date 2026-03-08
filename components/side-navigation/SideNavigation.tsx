@@ -44,7 +44,7 @@ const navSections: NavSection[] = [
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
       { id: 'guidance', label: 'Guidance', href: '/guidance', icon: '/icons/guidance.svg' },
-      { id: 'treasury', label: 'Markets', href: '/treasury', icon: '/icons/treasury.svg' },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/treasury.svg' },
     ],
   },
   {
