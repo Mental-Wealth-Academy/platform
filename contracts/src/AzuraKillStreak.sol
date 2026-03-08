@@ -48,9 +48,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     /// @notice Chainlink CRE KeystoneForwarder address (delivers DON-signed reports)
     address public keystoneForwarder;
 
-    /// @notice Mock prediction market for CRE trade execution
-    address public predictionMarket;
-    
     // ============================================================================
     // STRUCTS
     // ============================================================================
@@ -146,13 +143,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         address indexed cancelledBy
     );
 
-    event TradeExecuted(
-        uint256 indexed proposalId,
-        uint256 indexed marketId,
-        bool isYes,
-        uint256 usdcAmount
-    );
-    
     // ============================================================================
     // ERRORS
     // ============================================================================
@@ -411,7 +401,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      * @param report ABI-encoded payload: (uint8 actionType, bytes payload)
      *        actionType 1 = Auto-execute proposal (USDC to recipient)
      *        actionType 2 = Azura review from DON
-     *        actionType 3 = Execute trade on prediction market
      */
     function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder nonReentrant {
         (uint8 actionType, bytes memory payload) = abi.decode(report, (uint8, bytes));
@@ -426,9 +415,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         } else if (actionType == 2) {
             (uint256 proposalId, uint256 level) = abi.decode(payload, (uint256, uint256));
             _azuraReviewInternal(proposalId, level);
-        } else if (actionType == 3) {
-            (uint256 proposalId, uint256 marketId, bool isYes) = abi.decode(payload, (uint256, uint256, bool));
-            _executeTrade(proposalId, marketId, isYes);
         } else {
             revert InvalidProposal();
         }
@@ -471,42 +457,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         emit VoteCast(_proposalId, azuraAgent, true, azuraVoteWeight);
     }
 
-    /**
-     * @notice Execute a prediction-market trade using a proposal's USDC allocation.
-     *         Called by CRE via onReport (actionType 3) after a trade proposal passes governance.
-     * @param _proposalId Proposal whose USDC funds the trade
-     * @param _marketId   Market ID on the prediction market contract
-     * @param _isYes      true = buy YES outcome, false = buy NO outcome
-     */
-    function _executeTrade(uint256 _proposalId, uint256 _marketId, bool _isYes) internal {
-        Proposal storage proposal = proposals[_proposalId];
-
-        if (proposal.status != ProposalStatus.Active) revert ProposalNotActive();
-        if (proposal.forVotes < approvalThreshold) revert ThresholdNotReached();
-        if (proposal.executed) revert AlreadyExecuted();
-        if (predictionMarket == address(0)) revert InvalidProposal();
-
-        proposal.executed = true;
-        proposal.status = ProposalStatus.Executed;
-
-        // Approve prediction market to pull USDC, then call buyOutcome
-        usdcToken.approve(predictionMarket, proposal.usdcAmount);
-
-        // MockPredictionMarket.buyOutcome(uint256,bool,uint256)
-        (bool ok,) = predictionMarket.call(
-            abi.encodeWithSignature(
-                "buyOutcome(uint256,bool,uint256)",
-                _marketId,
-                _isYes,
-                proposal.usdcAmount
-            )
-        );
-        if (!ok) revert TransferFailed();
-
-        emit TradeExecuted(_proposalId, _marketId, _isYes, proposal.usdcAmount);
-        emit ProposalExecuted(_proposalId, proposal.recipient, proposal.usdcAmount);
-    }
-
     // ============================================================================
     // ADMIN FUNCTIONS
     // ============================================================================
@@ -517,14 +467,6 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      */
     function setKeystoneForwarder(address _forwarder) external onlyOwner {
         keystoneForwarder = _forwarder;
-    }
-
-    /**
-     * @notice Set the prediction market contract address for CRE trade execution
-     * @param _market Address of the prediction market contract
-     */
-    function setPredictionMarket(address _market) external onlyOwner {
-        predictionMarket = _market;
     }
 
     /**

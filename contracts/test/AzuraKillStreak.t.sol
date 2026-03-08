@@ -3,7 +3,6 @@ pragma solidity 0.8.24;
 
 import "forge-std/Test.sol";
 import "../src/AzuraKillStreak.sol";
-import "../src/MockPredictionMarket.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
@@ -56,8 +55,6 @@ contract AzuraKillStreakTest is Test {
     AzuraKillStreak public governance;
     MockERC20Votes public governanceToken;
     MockERC20 public usdc;
-    MockPredictionMarket public market;
-
     address public owner;
     address public azuraAgent;
     address public proposer;
@@ -101,13 +98,6 @@ contract AzuraKillStreakTest is Test {
     event ProposalExecuted(
         uint256 indexed proposalId,
         address indexed recipient,
-        uint256 usdcAmount
-    );
-
-    event TradeExecuted(
-        uint256 indexed proposalId,
-        uint256 indexed marketId,
-        bool isYes,
         uint256 usdcAmount
     );
 
@@ -161,10 +151,6 @@ contract AzuraKillStreakTest is Test {
 
         // Fund governance contract with USDC
         usdc.transfer(address(governance), 500_000 * 1e6); // 500k USDC
-
-        // Deploy mock prediction market
-        market = new MockPredictionMarket(address(usdc));
-        governance.setPredictionMarket(address(market));
 
         // Verify balances
         assertEq(governanceToken.balanceOf(azuraAgent), AZURA_BALANCE);
@@ -761,218 +747,4 @@ contract AzuraKillStreakTest is Test {
         assertLt(gasUsed, 200_000);
     }
 
-    // ============================================================================
-    // TRADE EXECUTION TESTS (CRE actionType 3 + MockPredictionMarket)
-    // ============================================================================
-
-    function test_SetPredictionMarket() public {
-        address newMarket = makeAddr("newMarket");
-        governance.setPredictionMarket(newMarket);
-        assertEq(governance.predictionMarket(), newMarket);
-    }
-
-    function test_MockPredictionMarket_BuyAndVerify() public {
-        uint256 marketId = market.createMarket("ETH > 5k?");
-
-        address trader = makeAddr("trader");
-        usdc.mint(trader, 5000 * 1e6);
-
-        vm.startPrank(trader);
-        usdc.approve(address(market), 5000 * 1e6);
-        market.buyOutcome(marketId, true, 3000 * 1e6);
-        market.buyOutcome(marketId, false, 2000 * 1e6);
-        vm.stopPrank();
-
-        (uint256 yes, uint256 no) = market.getPosition(marketId, trader);
-        assertEq(yes, 3000 * 1e6);
-        assertEq(no, 2000 * 1e6);
-
-        (,uint256 totalYes, uint256 totalNo,,) = market.getMarket(marketId);
-        assertEq(totalYes, 3000 * 1e6);
-        assertEq(totalNo, 2000 * 1e6);
-    }
-
-    function test_TradeProposal_USDCFlowsToMarket() public {
-        // When proposal.recipient = market address, standard execution sends USDC to market
-        governance.setKeystoneForwarder(forwarder);
-        market.createMarket("BTC > 150k?");
-
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, address(market), 1000 * 1e6,
-            "Trade BTC", "Buy YES on BTC", VOTING_PERIOD
-        );
-
-        // CRE review (level 4 = 40%)
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(4))));
-
-        uint256 marketBalBefore = usdc.balanceOf(address(market));
-
-        // Voter pushes to 50%, auto-executes, USDC flows to recipient (market)
-        vm.prank(voter1);
-        governance.vote(proposalId, true);
-
-        assertEq(usdc.balanceOf(address(market)) - marketBalBefore, 1000 * 1e6);
-        AzuraKillStreak.Proposal memory p = governance.getProposal(proposalId);
-        assertEq(uint(p.status), uint(AzuraKillStreak.ProposalStatus.Executed));
-    }
-
-    function test_CREFullPipeline_ReviewVoteTrade() public {
-        // End-to-end: CRE review -> community vote -> execution -> USDC to market
-        governance.setKeystoneForwarder(forwarder);
-        market.createMarket("Will ETH surpass 5k by Q3?");
-
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, address(market), 3000 * 1e6,
-            "Trade: Long ETH", "Buy YES on ETH surpassing 5k", VOTING_PERIOD
-        );
-
-        // Step 1: CRE azura-review (actionType 2)
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(4))));
-
-        AzuraKillStreak.Proposal memory reviewed = governance.getProposal(proposalId);
-        assertEq(uint(reviewed.status), uint(AzuraKillStreak.ProposalStatus.Active));
-        assertEq(reviewed.azuraLevel, 4);
-
-        // Step 2: Community votes to threshold (40% + 10% = 50%)
-        vm.prank(voter1);
-        governance.vote(proposalId, true);
-
-        // Step 3: Verify execution
-        AzuraKillStreak.Proposal memory executed = governance.getProposal(proposalId);
-        assertEq(uint(executed.status), uint(AzuraKillStreak.ProposalStatus.Executed));
-    }
-
-    /// @dev Uses vm.store to set forVotes >= threshold without triggering vote() auto-execute,
-    ///      then calls actionType 3 directly to test the _executeTrade path.
-    function test_ActionType3_ExecuteTrade_DirectPath() public {
-        governance.setKeystoneForwarder(forwarder);
-        uint256 marketId = market.createMarket("SOL > 300?");
-
-        uint256 tradeAmount = 2000 * 1e6;
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, address(market), tradeAmount,
-            "CRE Trade SOL", "Buy YES", VOTING_PERIOD
-        );
-
-        // CRE review (level 2 = 20%)
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(2))));
-
-        // Verify proposal is Active with 20% forVotes
-        AzuraKillStreak.Proposal memory before = governance.getProposal(proposalId);
-        assertEq(uint(before.status), uint(AzuraKillStreak.ProposalStatus.Active));
-        assertEq(before.forVotes, (TOTAL_SUPPLY * 20) / 100);
-
-        // Use vm.store to set forVotes to 50% without triggering vote() auto-execute.
-        // Storage layout: Ownable(slot 0), ReentrancyGuard(slot 1), then contract vars.
-        // proposals mapping is at slot 6. Proposal.forVotes is struct offset 9.
-        bytes32 baseSlot = keccak256(abi.encode(uint256(proposalId), uint256(5)));
-        bytes32 forVotesSlot = bytes32(uint256(baseSlot) + 9);
-        vm.store(address(governance), forVotesSlot, bytes32(TOTAL_SUPPLY / 2));
-
-        // Verify forVotes is now 50%
-        AzuraKillStreak.Proposal memory after_ = governance.getProposal(proposalId);
-        assertEq(after_.forVotes, TOTAL_SUPPLY / 2);
-
-        // CRE sends actionType 3: ExecuteTrade
-        uint256 marketBalBefore = usdc.balanceOf(address(market));
-        bytes memory tradePayload = abi.encode(uint256(proposalId), uint256(marketId), true);
-        bytes memory tradeReport = abi.encode(uint8(3), tradePayload);
-
-        vm.prank(forwarder);
-        vm.expectEmit(true, true, false, true);
-        emit TradeExecuted(proposalId, marketId, true, tradeAmount);
-        governance.onReport("", tradeReport);
-
-        // Verify trade executed
-        AzuraKillStreak.Proposal memory traded = governance.getProposal(proposalId);
-        assertEq(uint(traded.status), uint(AzuraKillStreak.ProposalStatus.Executed));
-        assertEq(traded.executed, true);
-
-        // Verify USDC went to market via buyOutcome
-        assertEq(usdc.balanceOf(address(market)) - marketBalBefore, tradeAmount);
-
-        // Verify position was recorded on the prediction market
-        (uint256 yes,) = market.getPosition(marketId, address(governance));
-        assertEq(yes, tradeAmount);
-    }
-
-    function test_ActionType3_BuyNO() public {
-        governance.setKeystoneForwarder(forwarder);
-        uint256 marketId = market.createMarket("Market downturn?");
-
-        uint256 tradeAmount = 1500 * 1e6;
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, address(market), tradeAmount,
-            "Short Market", "Buy NO", VOTING_PERIOD
-        );
-
-        // CRE review level 1 (10%) — then store forVotes to 50%
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(1))));
-
-        bytes32 baseSlot = keccak256(abi.encode(uint256(proposalId), uint256(5)));
-        vm.store(address(governance), bytes32(uint256(baseSlot) + 9), bytes32(TOTAL_SUPPLY / 2));
-
-        // CRE sends actionType 3 with isYes=false
-        bytes memory tradePayload = abi.encode(uint256(proposalId), uint256(marketId), false);
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(3), tradePayload));
-
-        // Verify NO position
-        (, uint256 no) = market.getPosition(marketId, address(governance));
-        assertEq(no, tradeAmount);
-    }
-
-    function test_RevertWhen_TradeOnNonActiveProposal() public {
-        governance.setKeystoneForwarder(forwarder);
-
-        bytes memory tradeReport = abi.encode(uint8(3), abi.encode(uint256(999), uint256(1), true));
-        vm.prank(forwarder);
-        vm.expectRevert(AzuraKillStreak.ProposalNotActive.selector);
-        governance.onReport("", tradeReport);
-    }
-
-    function test_RevertWhen_TradeBelowThreshold() public {
-        governance.setKeystoneForwarder(forwarder);
-        market.createMarket("Test?");
-
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, address(market), 1000 * 1e6,
-            "Under Threshold", "Test", VOTING_PERIOD
-        );
-
-        // CRE review level 1 (10%) — below 50% threshold
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(1))));
-
-        bytes memory tradeReport = abi.encode(uint8(3), abi.encode(uint256(proposalId), uint256(1), true));
-        vm.prank(forwarder);
-        vm.expectRevert(AzuraKillStreak.ThresholdNotReached.selector);
-        governance.onReport("", tradeReport);
-    }
-
-    function test_RevertWhen_TradeWithNoPredictionMarket() public {
-        governance.setPredictionMarket(address(0));
-        governance.setKeystoneForwarder(forwarder);
-
-        uint256 proposalId = _createProposalAndAdvance(
-            proposer, recipient, 1000 * 1e6,
-            "Trade No Market", "Should fail", VOTING_PERIOD
-        );
-
-        // CRE review + store forVotes to 50%
-        vm.prank(forwarder);
-        governance.onReport("", abi.encode(uint8(2), abi.encode(uint256(proposalId), uint256(2))));
-
-        bytes32 baseSlot = keccak256(abi.encode(uint256(proposalId), uint256(5)));
-        vm.store(address(governance), bytes32(uint256(baseSlot) + 9), bytes32(TOTAL_SUPPLY / 2));
-
-        bytes memory tradeReport = abi.encode(uint8(3), abi.encode(uint256(proposalId), uint256(1), true));
-        vm.prank(forwarder);
-        vm.expectRevert(AzuraKillStreak.InvalidProposal.selector);
-        governance.onReport("", tradeReport);
-    }
 }

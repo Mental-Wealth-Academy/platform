@@ -14,6 +14,8 @@ export interface TreasuryBalance {
   raw: string;
   formatted: string;
   usd: number;
+  governance: { raw: string; formatted: string; usd: number };
+  trader: { raw: string; formatted: string; usd: number };
 }
 
 export interface PolymarketMarket {
@@ -87,6 +89,8 @@ const SYMBOL_MAP: Record<string, string> = {
 const CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
   '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const TRADER_ADDRESS =
+  process.env.NEXT_PUBLIC_AZURA_MARKET_TRADER_ADDRESS || '';
 const USDC_ADDRESS =
   process.env.NEXT_PUBLIC_USDC_ADDRESS ||
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
@@ -132,9 +136,14 @@ export async function fetchPrices(): Promise<CoinPrice[]> {
   }
 }
 
+function formatUsd(n: number): string {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 /**
- * Fetch on-chain USDC balance of the treasury contract.
- * 60s module-level cache; falls back to $5,252.00 on error.
+ * Fetch on-chain USDC balance of both the governance and trader contracts.
+ * Returns individual balances plus a combined total.
+ * 60s module-level cache; falls back to cached/fallback on error.
  */
 export async function fetchTreasuryBalance(): Promise<TreasuryBalance> {
   if (_balance && Date.now() - _balance.ts < 60_000) return _balance.data;
@@ -144,16 +153,29 @@ export async function fetchTreasuryBalance(): Promise<TreasuryBalance> {
     const usdc = new Contract(USDC_ADDRESS, USDC_ABI, provider);
 
     const decimals: number = await usdc.decimals();
-    const balanceRaw = await usdc.balanceOf(CONTRACT_ADDRESS);
-    const balanceNum = Number(balanceRaw) / 10 ** Number(decimals);
+    const divisor = 10 ** Number(decimals);
+
+    // Fetch governance balance
+    const govRaw = await usdc.balanceOf(CONTRACT_ADDRESS);
+    const govNum = Number(govRaw) / divisor;
+
+    // Fetch trader balance (if address is configured)
+    let traderRaw = '0';
+    let traderNum = 0;
+    if (TRADER_ADDRESS) {
+      const rawBal = await usdc.balanceOf(TRADER_ADDRESS);
+      traderRaw = rawBal.toString();
+      traderNum = Number(rawBal) / divisor;
+    }
+
+    const totalNum = govNum + traderNum;
 
     const result: TreasuryBalance = {
-      raw: balanceRaw.toString(),
-      formatted: balanceNum.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-      usd: balanceNum,
+      raw: (BigInt(govRaw.toString()) + BigInt(traderRaw)).toString(),
+      formatted: formatUsd(totalNum),
+      usd: totalNum,
+      governance: { raw: govRaw.toString(), formatted: formatUsd(govNum), usd: govNum },
+      trader: { raw: traderRaw, formatted: formatUsd(traderNum), usd: traderNum },
     };
 
     _balance = { data: result, ts: Date.now() };
@@ -161,8 +183,8 @@ export async function fetchTreasuryBalance(): Promise<TreasuryBalance> {
   } catch (err) {
     console.error('fetchTreasuryBalance error:', err);
     if (_balance) return _balance.data;
-    // Fallback matches TreasuryDisplay.tsx
-    return { raw: '0', formatted: '5,252.00', usd: 5252 };
+    const fallback = { raw: '0', formatted: '0.00', usd: 0 };
+    return { raw: '0', formatted: '5,252.00', usd: 5252, governance: { raw: '0', formatted: '5,252.00', usd: 5252 }, trader: fallback };
   }
 }
 

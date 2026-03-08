@@ -7,6 +7,7 @@
     "build": "tsc --noEmit",
     "simulate:auto-execute": "cre workflow simulate --workflow auto-execute",
     "simulate:azura-review": "cre workflow simulate --workflow azura-review",
+    "simulate:polymarket-trader": "cre workflow simulate --workflow polymarket-trader",
     "deploy": "cre workflow deploy --target production-settings"
   },
   "dependencies": {

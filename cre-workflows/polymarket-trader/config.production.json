@@ -1,0 +1,7 @@
+{
+  "traderAddress": "0x0000000000000000000000000000000000000000",
+  "polymarketApiUrl": "https://gamma-api.polymarket.com",
+  "minEdgeBps": 300,
+  "maxPositionPct": 5,
+  "maxTradesPerRun": 2
+}

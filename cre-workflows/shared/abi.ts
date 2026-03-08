@@ -64,11 +64,10 @@ export const ProposalStatus = {
   Cancelled: 4,
 } as const;
 
-/** Action types for onReport() dispatch */
+/** Action types for AzuraKillStreak.onReport() dispatch */
 export const ActionType = {
   AutoExecute: 1,
   AzuraReview: 2,
-  ExecuteTrade: 3,
 } as const;
 
 /** ProposalCreated event signature for log trigger */

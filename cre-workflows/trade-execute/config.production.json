@@ -1,5 +1,4 @@
 {
-  "chainSelectorName": "base-mainnet",
   "contractAddress": "0x2cbb90a761ba64014b811be342b8ef01b471992d",
-  "predictionMarketAddress": "0x0000000000000000000000000000000000000000"
+  "traderAddress": "0x0000000000000000000000000000000000000000"
 }

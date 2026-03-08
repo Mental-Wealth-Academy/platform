@@ -729,6 +729,12 @@ export default function Treasury() {
                 <>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
                   <div className={styles.balanceLabel}>USDC Treasury Balance</div>
+                  {(balance.governance || balance.trader) && (
+                    <div className={styles.balanceBreakdown}>
+                      {balance.governance && <span>Governance: ${balance.governance.formatted}</span>}
+                      {balance.trader && balance.trader.usd > 0 && <span>Trading: ${balance.trader.formatted}</span>}
+                    </div>
+                  )}
                   <TickerLine stroke="var(--color-primary)" />
                   <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />

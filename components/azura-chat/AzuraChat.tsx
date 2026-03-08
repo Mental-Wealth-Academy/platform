@@ -22,16 +22,22 @@ interface AzuraChatProps {
 interface TreasuryContext {
   balance: string | null;
   balanceUsd: number | null;
+  governanceBalance: string | null;
+  traderBalance: string | null;
   prices: { symbol: string; usd: number; change: number | null }[];
   topMarkets: { question: string; yes: number }[];
 }
 
-const CONTRACT_ADDRESS =
+const GOVERNANCE_ADDRESS =
   process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS ||
   '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const TRADER_ADDRESS =
+  process.env.NEXT_PUBLIC_AZURA_MARKET_TRADER_ADDRESS || '';
 const USDC_ADDRESS =
   process.env.NEXT_PUBLIC_USDC_ADDRESS ||
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+
+type LiquidityTarget = 'governance' | 'trader';
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
@@ -47,11 +53,14 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
+    governanceBalance: null,
+    traderBalance: null,
     prices: [],
     topMarkets: [],
   });
   const [liquidityAmount, setLiquidityAmount] = useState('');
   const [showLiquidityInput, setShowLiquidityInput] = useState(false);
+  const [liquidityTarget, setLiquidityTarget] = useState<LiquidityTarget>('governance');
   const [txPending, setTxPending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -87,6 +96,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       setTreasury({
         balance: balRes?.formatted || null,
         balanceUsd: balRes?.usd || null,
+        governanceBalance: balRes?.governance?.formatted || null,
+        traderBalance: balRes?.trader?.formatted || null,
         prices,
         topMarkets,
       });
@@ -176,7 +187,12 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     // Treasury balance
     if (t.includes('balance') || t.includes('treasury') || t.includes('how much')) {
       if (treasury.balance) {
-        return `Treasury's sitting at $${treasury.balance} USDC right now. ${
+        const breakdown = [
+          treasury.governanceBalance ? `Governance: $${treasury.governanceBalance}` : null,
+          treasury.traderBalance && treasury.traderBalance !== '0.00' ? `Trading: $${treasury.traderBalance}` : null,
+        ].filter(Boolean);
+        const breakdownText = breakdown.length > 1 ? `\n${breakdown.join(' | ')}` : '';
+        return `Treasury's sitting at $${treasury.balance} USDC total.${breakdownText}\n\n${
           treasury.balanceUsd && treasury.balanceUsd < 10000
             ? "Honestly, I could do more with a bigger war chest. If you wanna add liquidity, I'll put it to work."
             : "Not bad. Plenty of ammo for the next wave of trades."
@@ -208,8 +224,11 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     // Add liquidity
     if (t.includes('liquidity') || t.includes('fund') || t.includes('deposit') || t.includes('add usdc') || t.includes('contribute')) {
-      return `You wanna fund the treasury? Smart move. Hit the "Add Liquidity" button below and send USDC directly to the governance contract. I'll use it for Polymarket positions — the quant models pick the entries, I just execute. ${
-        treasury.balance ? `Current balance: $${treasury.balance}.` : ''
+      const hasTrader = !!TRADER_ADDRESS;
+      return `You wanna fund the treasury? Smart move. Hit the "Add Liquidity" button below and send USDC.${
+        hasTrader ? ' You can choose to fund the governance treasury or the trading treasury — pick your target before sending.' : ''
+      } I'll use it for Polymarket positions — the quant models pick the entries, I just execute. ${
+        treasury.balance ? `Current total: $${treasury.balance}.` : ''
       }`;
     }
 
@@ -253,6 +272,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       addAzuraMessage(generateAzuraResponse('polymarket signals'));
     } else if (action === 'liquidity') {
       setShowLiquidityInput(true);
+      setLiquidityTarget('governance');
       const userMsg: Message = {
         id: Date.now().toString(),
         text: "I want to add liquidity",
@@ -260,8 +280,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, userMsg]);
+      const targetAddr = GOVERNANCE_ADDRESS;
       addAzuraMessage(
-        `Now we're talking. Enter the USDC amount below and I'll route it straight to the governance contract at ${CONTRACT_ADDRESS.slice(0, 6)}...${CONTRACT_ADDRESS.slice(-4)}. Every dollar helps me trade more positions.`,
+        `Now we're talking. ${TRADER_ADDRESS ? 'Pick your target — governance or trading treasury — then enter' : 'Enter'} the USDC amount below and I'll route it to ${targetAddr.slice(0, 6)}...${targetAddr.slice(-4)}. Every dollar helps me trade more positions.`,
         'add-liquidity',
       );
     }
@@ -275,6 +296,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       addAzuraMessage("You need a wallet connected to do this. Hit 'Connect Account' in the sidebar first.");
       return;
     }
+
+    const targetAddress = liquidityTarget === 'trader' && TRADER_ADDRESS ? TRADER_ADDRESS : GOVERNANCE_ADDRESS;
+    const targetLabel = liquidityTarget === 'trader' && TRADER_ADDRESS ? 'trading' : 'governance';
 
     setTxPending(true);
     try {
@@ -296,13 +320,13 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
       const userMsg: Message = {
         id: Date.now().toString(),
-        text: `Sending ${amount} USDC to treasury...`,
+        text: `Sending ${amount} USDC to ${targetLabel} treasury...`,
         sender: 'user',
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, userMsg]);
 
-      const tx = await usdc.transfer(CONTRACT_ADDRESS, amountWei);
+      const tx = await usdc.transfer(targetAddress, amountWei);
       addAzuraMessage(`Transaction submitted. Hash: ${tx.hash.slice(0, 10)}...${tx.hash.slice(-6)}. Waiting for confirmation...`);
 
       await tx.wait();
@@ -311,7 +335,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       fetchTreasuryContext();
 
       setTimeout(() => {
-        addAzuraMessage(`Confirmed. ${amount} USDC received into the treasury. I'll put it to work on the next signal. Good looking out.`);
+        addAzuraMessage(`Confirmed. ${amount} USDC received into the ${targetLabel} treasury. I'll put it to work on the next signal. Good looking out.`);
       }, 2000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
@@ -412,37 +436,59 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         {/* Liquidity Input */}
         {showLiquidityInput && (
           <div className={styles.liquidityBar}>
-            <input
-              ref={liquidityInputRef}
-              type="number"
-              className={styles.liquidityInput}
-              placeholder="USDC amount"
-              value={liquidityAmount}
-              onChange={(e) => setLiquidityAmount(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleAddLiquidity(); }}
-              disabled={txPending}
-              min="0"
-              step="any"
-            />
-            <button
-              className={styles.liquidityConfirm}
-              onClick={handleAddLiquidity}
-              disabled={!liquidityAmount || parseFloat(liquidityAmount) <= 0 || txPending}
-              type="button"
-            >
-              {txPending ? 'Sending...' : 'Send'}
-            </button>
-            <button
-              className={styles.liquidityCancel}
-              onClick={() => { setShowLiquidityInput(false); setLiquidityAmount(''); }}
-              disabled={txPending}
-              type="button"
-              aria-label="Cancel"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+            {TRADER_ADDRESS && (
+              <div className={styles.targetSelector}>
+                <button
+                  type="button"
+                  className={`${styles.targetButton} ${liquidityTarget === 'governance' ? styles.targetActive : ''}`}
+                  onClick={() => setLiquidityTarget('governance')}
+                  disabled={txPending}
+                >
+                  Governance
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.targetButton} ${liquidityTarget === 'trader' ? styles.targetActive : ''}`}
+                  onClick={() => setLiquidityTarget('trader')}
+                  disabled={txPending}
+                >
+                  Trading
+                </button>
+              </div>
+            )}
+            <div className={styles.liquidityInputRow}>
+              <input
+                ref={liquidityInputRef}
+                type="number"
+                className={styles.liquidityInput}
+                placeholder="USDC amount"
+                value={liquidityAmount}
+                onChange={(e) => setLiquidityAmount(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleAddLiquidity(); }}
+                disabled={txPending}
+                min="0"
+                step="any"
+              />
+              <button
+                className={styles.liquidityConfirm}
+                onClick={handleAddLiquidity}
+                disabled={!liquidityAmount || parseFloat(liquidityAmount) <= 0 || txPending}
+                type="button"
+              >
+                {txPending ? 'Sending...' : 'Send'}
+              </button>
+              <button
+                className={styles.liquidityCancel}
+                onClick={() => { setShowLiquidityInput(false); setLiquidityAmount(''); }}
+                disabled={txPending}
+                type="button"
+                aria-label="Cancel"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
         )}
 
