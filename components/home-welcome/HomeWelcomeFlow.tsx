@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useModal } from 'connectkit';
-import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './HomeWelcomeFlow.module.css';
 
 interface HomeWelcomeFlowProps {
@@ -16,14 +15,13 @@ interface HomeWelcomeFlowProps {
  * Wraps the home page content. For first-time users arriving from the landing page:
  * 1. Shows a wallet connect prompt
  * 2. After wallet connects, authenticates the user
- * 3. Shows the onboarding modal (name + avatar selection)
- * 4. Once complete, reveals the home page
+ * 3. Reveals the home page (SideNavigation handles onboarding modal)
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const { address, isConnected } = useAccount();
   const { setOpen: openConnectModal } = useModal();
 
-  const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'connecting' | 'needs-onboarding' | 'ready'>('checking');
+  const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'connecting' | 'ready'>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
   const processedRef = useRef<string | null>(null);
 
@@ -34,12 +32,10 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
+          setAuthState('ready');
           const hasUsername = data.user.username && !data.user.username.startsWith('user_');
           if (hasUsername) {
-            setAuthState('ready');
             onAuthenticated?.();
-          } else {
-            setAuthState('needs-onboarding');
           }
         } else {
           setAuthState('needs-wallet');
@@ -67,12 +63,10 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         const meData = await meRes.json().catch(() => ({ user: null }));
 
         if (meData?.user) {
+          setAuthState('ready');
           const hasUsername = meData.user.username && !meData.user.username.startsWith('user_');
           if (hasUsername) {
-            setAuthState('ready');
             onAuthenticated?.();
-          } else {
-            setAuthState('needs-onboarding');
           }
         } else {
           // Create account
@@ -84,7 +78,8 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           });
 
           if (signupRes.ok) {
-            setAuthState('needs-onboarding');
+            // SideNavigation will detect the temp username and show OnboardingModal
+            setAuthState('ready');
           } else {
             console.error('Wallet signup failed');
             setAuthState('needs-wallet');
@@ -106,13 +101,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
     openConnectModal(true);
   }, [openConnectModal]);
 
-  const handleOnboardingComplete = useCallback(() => {
-    setAuthState('ready');
-    onAuthenticated?.();
-    window.dispatchEvent(new Event('profileUpdated'));
-  }, [onAuthenticated]);
-
-  // Already authenticated — show home content
+  // Already authenticated or needs onboarding (SideNavigation handles the modal)
   if (authState === 'ready') {
     return <>{children}</>;
   }
@@ -120,20 +109,6 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
   // Checking auth — show nothing (brief flash)
   if (authState === 'checking') {
     return <>{children}</>;
-  }
-
-  // Needs onboarding — show home content behind the modal
-  if (authState === 'needs-onboarding') {
-    return (
-      <>
-        {children}
-        <OnboardingModal
-          isOpen={true}
-          onClose={() => setAuthState('ready')}
-          onComplete={() => handleOnboardingComplete()}
-        />
-      </>
-    );
   }
 
   // Wallet already connected but session not yet established — show content while auth processes
