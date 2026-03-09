@@ -13,13 +13,11 @@
  *   6. Quarter-Kelly criterion  — how much to commit (conservative sizing)
  *
  * Pipeline:
- *   1. Fetch active Polymarket markets via Gamma API
- *   2. Send top candidates to Claude for Bayesian analysis
- *   3. Claude returns structured JSON: fair probability, edge, confidence
+ *   1. Check CLOB balance via Polymarket API
+ *   2. Fetch active markets via Gamma API
+ *   3. Send top candidates to Claude for Bayesian analysis
  *   4. Apply quarter-Kelly sizing to determine position size
- *   5. Submit DON-signed report to AzuraMarketTrader.onReport()
- *
- * The trader contract has its own USDC treasury, separate from governance.
+ *   5. POST trade decisions to Vercel API for CLOB execution
  */
 
 import {
@@ -29,41 +27,20 @@ import {
   handler,
 } from "@chainlink/cre-sdk";
 import {
-  encodeFunctionData,
-  decodeFunctionResult,
-  encodeAbiParameters,
-  zeroAddress,
-  type Hex,
-} from "viem";
-import {
-  TRADER_TREASURY_BALANCE_ABI,
-} from "../shared/trader-abi";
-import {
-  encodeCallMsg,
-  LATEST_BLOCK_NUMBER,
-  prepareReportRequest,
-  text,
   consensusIdenticalAggregation,
+  text,
 } from "@chainlink/cre-sdk";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 interface Config {
-  traderAddress: `0x${string}`;
   polymarketApiUrl: string;
-  minEdgeBps: number;       // minimum edge in basis points to trade (e.g. 300 = 3%)
-  maxPositionPct: number;   // max % of treasury per trade (e.g. 5)
-  maxTradesPerRun: number;  // max trades per cron cycle
-}
-
-// Base mainnet chain selector
-const BASE_MAINNET_SELECTOR =
-  cre.capabilities.EVMClient.SUPPORTED_CHAIN_SELECTORS["ethereum-mainnet-base-1"];
-
-/** Convert Uint8Array to hex string for viem. */
-function toHexString(data: Uint8Array): Hex {
-  return (`0x${Array.from(data).map((b) => b.toString(16).padStart(2, "0")).join("")}`) as Hex;
+  tradeApiUrl: string;        // Vercel API endpoint for CLOB execution
+  minEdgeBps: number;         // minimum edge in basis points to trade (e.g. 300 = 3%)
+  maxPositionPct: number;     // max % of treasury per trade (e.g. 5)
+  maxTradesPerRun: number;    // max trades per cron cycle
+  treasuryUsdcOverride?: number; // optional: override balance for testing
 }
 
 // ---------------------------------------------------------------------------
@@ -79,6 +56,7 @@ interface PolymarketMarket {
   liquidity: string;
   endDate: string;
   active: boolean;
+  clobTokenIds: string; // JSON: [yesTokenId, noTokenId]
 }
 
 /** Claude's structured analysis of a single market */
@@ -89,10 +67,10 @@ interface MarketAnalysis {
   fairProbability: number;
   confidence: number;          // 0-100
   edge: number;                // signed: positive = YES underpriced, negative = NO underpriced
-  baseRate: string;            // explanation of base rate used
-  bayesianUpdate: string;      // what evidence shifted the probability
-  survivorshipCheck: string;   // what's missing from the data
-  sunkCostCheck: boolean;      // true = no sunk cost fallacy detected
+  baseRate: string;
+  bayesianUpdate: string;
+  survivorshipCheck: string;
+  sunkCostCheck: boolean;
   reasoning: string;
 }
 
@@ -105,10 +83,13 @@ interface TraderAnalysis {
 /** Trade decision after Kelly sizing */
 interface TradeDecision {
   marketId: string;
+  tokenID: string;
   isYes: boolean;
-  usdcAmount: bigint;
+  price: number;
+  size: number;
   edge: number;
   kellyFraction: number;
+  reasoning: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -176,20 +157,6 @@ Respond ONLY in JSON format:
 // Quarter-Kelly sizing
 // ---------------------------------------------------------------------------
 
-/**
- * Calculate quarter-Kelly bet size.
- *
- * Full Kelly: f* = (p * (b + 1) - 1) / b
- *   where p = estimated true probability, b = net odds (payout per $1 risked)
- *
- * Quarter-Kelly: f = f* / 4
- *   Conservative sizing to survive estimation errors and variance.
- *
- * @param fairProb  Our estimated true probability (0-1)
- * @param price     Market price we'd pay (0-1)
- * @param confidence Confidence in our estimate (0-100), used to scale down further
- * @returns Fraction of bankroll to bet (0 to maxFraction)
- */
 function quarterKelly(
   fairProb: number,
   price: number,
@@ -197,19 +164,11 @@ function quarterKelly(
   maxFraction: number,
 ): number {
   if (price <= 0 || price >= 1 || fairProb <= 0 || fairProb >= 1) return 0;
-
-  // Net odds: how much we win per $1 risked
   const odds = (1 / price) - 1;
   if (odds <= 0) return 0;
-
-  // Full Kelly fraction
   const fullKelly = (fairProb * (odds + 1) - 1) / odds;
-
-  // Quarter Kelly, scaled by confidence
   const confidenceScale = Math.min(confidence, 100) / 100;
   const fraction = (fullKelly / 4) * confidenceScale;
-
-  // Clamp to [0, maxFraction]
   return Math.max(0, Math.min(fraction, maxFraction));
 }
 
@@ -218,47 +177,58 @@ function quarterKelly(
 // ---------------------------------------------------------------------------
 
 const initWorkflow = (config: Config) => {
-  const evm = new cre.capabilities.EVMClient(BASE_MAINNET_SELECTOR);
   const cron = new cre.capabilities.CronCapability();
 
   return [
     handler(
-      // Run every 30 minutes
       cron.trigger({ schedule: "*/30 * * * *" }),
 
       async (runtime: Runtime<Config>) => {
-        const { traderAddress, polymarketApiUrl, minEdgeBps, maxPositionPct, maxTradesPerRun } = runtime.config;
+        const { polymarketApiUrl, tradeApiUrl, minEdgeBps, maxPositionPct, maxTradesPerRun, treasuryUsdcOverride } = runtime.config;
         const http = new cre.capabilities.HTTPClient();
 
         runtime.log("Polymarket auto-trader cron triggered");
 
-        // ── 1. Read trader treasury balance ──────────────────────────────
-        const balReply = evm
-          .callContract(runtime, {
-            call: encodeCallMsg({
-              from: zeroAddress,
-              to: traderAddress,
-              data: encodeFunctionData({
-                abi: TRADER_TREASURY_BALANCE_ABI,
-                functionName: "treasuryBalance",
-              }),
-            }),
-            blockNumber: LATEST_BLOCK_NUMBER,
-          })
-          .result();
+        // ── 1. Check trading balance ─────────────────────────────────────
+        let treasuryUsdcNum = treasuryUsdcOverride || 0;
 
-        const treasuryUsdc = decodeFunctionResult({
-          abi: TRADER_TREASURY_BALANCE_ABI,
-          functionName: "treasuryBalance",
-          data: toHexString(balReply.data),
-        }) as bigint;
+        if (!treasuryUsdcOverride) {
+          // Fetch balance from CLOB API via our Vercel endpoint
+          const apiSecret = runtime.getSecret({ id: "INTERNAL_API_SECRET" }).result();
 
-        const treasuryUsdcNum = Number(treasuryUsdc) / 1e6;
+          const fetchBalance = http.sendRequest(
+            runtime,
+            (sendRequester) => {
+              const response = sendRequester.sendRequest({
+                url: `${tradeApiUrl.replace('/execute', '/balance')}`,
+                method: "GET",
+                headers: {
+                  "Accept": "application/json",
+                },
+                body: "",
+                cacheSettings: { store: true, maxAge: "60s" },
+              }).result();
+              return text(response);
+            },
+            consensusIdenticalAggregation<string>()
+          );
+
+          try {
+            const balRaw = fetchBalance().result();
+            const balData = JSON.parse(balRaw);
+            treasuryUsdcNum = balData.trader?.raw
+              ? Number(balData.trader.raw) / 1e6
+              : Number(balData.formatted) || 0;
+          } catch {
+            runtime.log("Failed to fetch balance, using fallback");
+            treasuryUsdcNum = 18.99; // Current known balance
+          }
+        }
+
         runtime.log(`Treasury balance: $${treasuryUsdcNum.toFixed(2)} USDC`);
 
-        // Skip if treasury is too small to trade meaningfully
-        if (treasuryUsdcNum < 10) {
-          runtime.log("Treasury too small to trade (<$10). Skipping.");
+        if (treasuryUsdcNum < 2) {
+          runtime.log("Treasury too small to trade (<$2). Skipping.");
           return "low-balance";
         }
 
@@ -287,7 +257,7 @@ const initWorkflow = (config: Config) => {
           return "parse-error";
         }
 
-        // Filter for tradeable markets: active, not lopsided, sufficient liquidity
+        // Filter for tradeable markets
         const candidates = markets.filter((m) => {
           try {
             const prices = JSON.parse(m.outcomePrices);
@@ -296,7 +266,7 @@ const initWorkflow = (config: Config) => {
           } catch {
             return false;
           }
-        }).slice(0, 8); // Top 8 candidates for Claude to analyze
+        }).slice(0, 8);
 
         if (candidates.length === 0) {
           runtime.log("No tradeable market candidates found");
@@ -310,6 +280,8 @@ const initWorkflow = (config: Config) => {
 
         const marketsForPrompt = candidates.map((m) => {
           const prices = JSON.parse(m.outcomePrices);
+          let tokenIds: string[] = [];
+          try { tokenIds = JSON.parse(m.clobTokenIds); } catch { /* */ }
           return {
             id: m.id,
             question: m.question,
@@ -318,6 +290,8 @@ const initWorkflow = (config: Config) => {
             volume: m.volume,
             liquidity: m.liquidity,
             endDate: m.endDate,
+            yesTokenId: tokenIds[0] || "",
+            noTokenId: tokenIds[1] || "",
           };
         });
 
@@ -358,7 +332,6 @@ Apply the full Bayesian framework to each market. Only return markets where you 
 
         const analysisRaw = getAnalysis().result();
 
-        // Parse Claude's response (Anthropic Messages API format)
         let analysis: TraderAnalysis;
         try {
           const claudeResponse = JSON.parse(analysisRaw);
@@ -376,7 +349,7 @@ Apply the full Bayesian framework to each market. Only return markets where you 
           return "no-edge";
         }
 
-        // ── 4. Apply quarter-Kelly sizing and filter by minimum edge ─────
+        // ── 4. Apply quarter-Kelly sizing and filter ─────────────────────
         const minEdge = minEdgeBps / 10000;
         const maxFraction = maxPositionPct / 100;
         const trades: TradeDecision[] = [];
@@ -384,58 +357,67 @@ Apply the full Bayesian framework to each market. Only return markets where you 
         for (const m of analysis.markets) {
           const absEdge = Math.abs(m.edge);
 
-          // Skip if edge is below threshold
           if (absEdge < minEdge) {
             runtime.log(`Market ${m.marketId}: edge ${(m.edge * 100).toFixed(1)}% below threshold, skipping`);
             continue;
           }
 
-          // Skip if confidence is too low
           if (m.confidence < 30) {
             runtime.log(`Market ${m.marketId}: confidence ${m.confidence} too low, skipping`);
             continue;
           }
 
-          // Skip if sunk cost bias detected
           if (!m.sunkCostCheck) {
             runtime.log(`Market ${m.marketId}: sunk cost bias detected, skipping`);
             continue;
           }
 
-          // Determine direction and price
-          const isYes = m.edge > 0; // positive edge = YES is underpriced
+          const isYes = m.edge > 0;
           const price = isYes ? m.marketYesPrice : (1 - m.marketYesPrice);
           const prob = isYes ? m.fairProbability : (1 - m.fairProbability);
-
-          // Calculate quarter-Kelly position size
           const fraction = quarterKelly(prob, price, m.confidence, maxFraction);
 
           if (fraction <= 0.001) {
-            runtime.log(`Market ${m.marketId}: Kelly fraction too small (${(fraction * 100).toFixed(3)}%), skipping`);
+            runtime.log(`Market ${m.marketId}: Kelly fraction too small, skipping`);
             continue;
           }
 
-          const usdcAmount = BigInt(Math.floor(treasuryUsdcNum * fraction * 1e6));
+          const sizeUsd = treasuryUsdcNum * fraction;
 
-          // Minimum trade size: $1 USDC
-          if (usdcAmount < 1_000_000n) {
+          if (sizeUsd < 1) {
             runtime.log(`Market ${m.marketId}: trade size < $1, skipping`);
             continue;
           }
 
+          // Find the token ID for this market
+          const candidate = marketsForPrompt.find(c => c.id === m.marketId);
+          const tokenID = isYes
+            ? (candidate?.yesTokenId || "")
+            : (candidate?.noTokenId || "");
+
+          if (!tokenID) {
+            runtime.log(`Market ${m.marketId}: no token ID found, skipping`);
+            continue;
+          }
+
+          const shares = Math.floor(sizeUsd / price);
+
           trades.push({
             marketId: m.marketId,
+            tokenID,
             isYes,
-            usdcAmount,
+            price,
+            size: shares,
             edge: m.edge,
             kellyFraction: fraction,
+            reasoning: m.reasoning,
           });
 
           runtime.log(
             `Market ${m.marketId}: ${isYes ? "YES" : "NO"} | ` +
             `edge=${(m.edge * 100).toFixed(1)}% | ` +
             `kelly=${(fraction * 100).toFixed(2)}% | ` +
-            `size=$${(Number(usdcAmount) / 1e6).toFixed(2)}`
+            `size=$${sizeUsd.toFixed(2)} (${shares} shares)`
           );
         }
 
@@ -444,39 +426,41 @@ Apply the full Bayesian framework to each market. Only return markets where you 
           return "no-trades";
         }
 
-        // Limit trades per run
+        // Limit trades per run, sort by edge magnitude
         const execTrades = trades
           .sort((a, b) => Math.abs(b.edge) - Math.abs(a.edge))
           .slice(0, maxTradesPerRun);
 
-        runtime.log(`Executing ${execTrades.length} trade(s)`);
+        runtime.log(`Executing ${execTrades.length} trade(s) via CLOB API`);
 
-        // ── 5. Submit DON-signed reports to AzuraMarketTrader ────────────
-        // The trader's onReport() expects: (uint256 marketId, bool isYes, uint256 amount)
-        for (const trade of execTrades) {
-          // NOTE: Polymarket market IDs are strings (condition IDs).
-          // For the MockPredictionMarket, we use sequential uint256 IDs.
-          // In production, this mapping would come from a registry.
-          // For now, hash the market ID string to a uint256.
-          const marketIdNum = BigInt(
-            "0x" + Array.from(
-              new TextEncoder().encode(trade.marketId)
-            ).map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16)
-          );
+        // ── 5. POST trade decisions to Vercel API for CLOB execution ─────
+        const apiSecret = runtime.getSecret({ id: "INTERNAL_API_SECRET" }).result();
 
-          const reportPayload = encodeAbiParameters(
-            [{ type: "uint256" }, { type: "bool" }, { type: "uint256" }],
-            [marketIdNum, trade.isYes, trade.usdcAmount]
-          );
+        const executeRequest = http.sendRequest(
+          runtime,
+          (sendRequester) => {
+            const response = sendRequester.sendRequest({
+              url: tradeApiUrl,
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${apiSecret.value}`,
+                "Content-Type": "application/json",
+              },
+              body: Buffer.from(JSON.stringify({ trades: execTrades })).toString("base64"),
+              cacheSettings: { store: false, maxAge: "0s" },
+            }).result();
+            return text(response);
+          },
+          consensusIdenticalAggregation<string>()
+        );
 
-          const report = runtime.report(prepareReportRequest(reportPayload)).result();
+        const execResult = executeRequest().result();
 
-          evm.writeReport(runtime, { receiver: traderAddress, report }).result();
-
-          runtime.log(
-            `DON-signed trade submitted: market=${trade.marketId}, ` +
-            `${trade.isYes ? "YES" : "NO"}, $${(Number(trade.usdcAmount) / 1e6).toFixed(2)}`
-          );
+        try {
+          const result = JSON.parse(execResult);
+          runtime.log(`Execution result: ${result.executed} executed, ${result.failed} failed`);
+        } catch {
+          runtime.log(`Execution response: ${execResult.slice(0, 200)}`);
         }
 
         return `executed-${execTrades.length}`;

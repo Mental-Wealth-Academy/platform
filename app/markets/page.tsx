@@ -757,7 +757,7 @@ export default function Markets() {
                       {balance.trader && <span>Polymarket: ${balance.trader.formatted}</span>}
                     </div>
                   )}
-                  <WalletAddress address="0x9eDd8c473c2a53b7A8512c1B0f6b573E219dF840" />
+                  <WalletAddress address="0xcc4c93b6f74ce22e00874bce3fabe439a2572990" />
                   <TickerLine stroke="var(--color-primary)" />
                   <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
