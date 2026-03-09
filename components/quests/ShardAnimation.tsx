@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useSound } from '@/hooks/useSound';
 import styles from './ShardAnimation.module.css';
 
 interface ShardAnimationProps {
@@ -15,6 +16,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
   startingShards = 0,
   onComplete 
 }) => {
+  const { play } = useSound();
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayShards, setDisplayShards] = useState(0);
   const [displayTotal, setDisplayTotal] = useState(startingShards);
@@ -22,6 +24,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
 
   useEffect(() => {
     setIsAnimating(true);
+    play('celebration');
     setDisplayShards(0);
     setDisplayTotal(startingShards);
     
@@ -44,6 +47,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
         // Second phase: show the meter filling animation
         setTimeout(() => {
           setShowMeter(true);
+          play('success');
           
           // Animate total from starting to final
           const finalTotal = startingShards + shards;
@@ -72,7 +76,7 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
     }, duration / steps);
 
     return () => clearInterval(interval);
-  }, [shards, startingShards, onComplete]);
+  }, [shards, startingShards, onComplete, play]);
 
   if (!isAnimating) return null;
 

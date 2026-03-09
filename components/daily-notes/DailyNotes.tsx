@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { ShardAnimation } from '@/components/quests/ShardAnimation';
+import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
 import styles from './DailyNotes.module.css';
 
@@ -30,7 +32,8 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
+  const [showRewardAnimation, setShowRewardAnimation] = useState(false);
+  const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -102,7 +105,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     setShowConfirmDialog(true);
   };
 
-  const submitMorningPages = () => {
+  const submitMorningPages = async () => {
     if (activeDayIndex === null) return;
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     const newEntry: MorningPageEntry = {
@@ -123,8 +126,35 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
     setTimerText('');
 
     play('success');
-    setShowCelebration(true);
-    setTimeout(() => setShowCelebration(false), 2200);
+
+    // Award shards via API
+    if (enablePersistence) {
+      try {
+        const meRes = await fetch('/api/me', { cache: 'no-store' });
+        const meData = await meRes.json();
+        const startingShards = meData?.user?.shardCount ?? 0;
+
+        const questId = `daily-notes-w${currentWeek}-d${activeDayIndex + 1}`;
+        const res = await fetch('/api/quests/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ questId, shards: 100 }),
+        });
+        const data = await res.json();
+
+        if (data.ok && data.shardsAwarded > 0) {
+          setRewardData({
+            shards: data.shardsAwarded,
+            startingShards: data.newShardCount - data.shardsAwarded,
+          });
+          setShowRewardAnimation(true);
+          window.dispatchEvent(new Event('shardsUpdated'));
+        }
+      } catch {
+        // Silent — notes still saved even if shard award fails
+      }
+    }
   };
 
   // Load all weeks from DB
@@ -436,14 +466,15 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
         document.body
       )}
 
-      {showCelebration && typeof window !== 'undefined' && createPortal(
-        <div className={styles.celebrationOverlay}>
-          <div className={styles.celebrationContent}>
-            <Image src="/icons/shard.svg" alt="shard" width={48} height={48} className={styles.celebrationShard} />
-            <span className={styles.celebrationText}>+100 Shards</span>
-          </div>
-        </div>,
-        document.body
+      {showRewardAnimation && rewardData && (
+        <>
+          <ConfettiCelebration trigger={true} />
+          <ShardAnimation
+            shards={rewardData.shards}
+            startingShards={rewardData.startingShards}
+            onComplete={() => setShowRewardAnimation(false)}
+          />
+        </>
       )}
     </>
   );
