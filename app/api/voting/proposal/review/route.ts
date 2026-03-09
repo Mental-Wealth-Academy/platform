@@ -96,18 +96,24 @@ export async function POST(request: Request) {
   }
 
   // Read on-chain state to check if DON has reviewed
+  let onChainStatus = -1; // -1 = RPC failed, treat as pending
+  let onChainProposal: any = null;
+  const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
+  const contractAddress = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+
   try {
-    const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
-    const contractAddress = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
     const provider = new providers.JsonRpcProvider(rpcUrl);
     const contract = new Contract(contractAddress, AZURA_KILLSTREAK_ABI, provider);
+    onChainProposal = await contract.getProposal(parseInt(proposal.on_chain_proposal_id));
+    onChainStatus = Number(onChainProposal.status);
+  } catch (rpcError: any) {
+    console.error('RPC read failed, falling back to server-side review:', rpcError.message);
+  }
 
-    const onChainProposal = await contract.getProposal(parseInt(proposal.on_chain_proposal_id));
-    const onChainStatus = Number(onChainProposal.status);
-
-    // Status 0 = Pending — DON hasn't reviewed yet, fall back to server-side Eliza review
-    if (onChainStatus === 0) {
-      console.log('CRE DON has not reviewed yet, falling back to server-side Eliza review');
+  try {
+    // Status 0 = Pending or -1 = RPC failed — fall back to server-side Eliza review
+    if (onChainStatus <= 0) {
+      console.log(`On-chain status=${onChainStatus}, falling back to server-side Eliza review`);
       try {
         const reviewPrompt = `Review this proposal:\n\n**Title:** ${proposal.title}\n\n**Proposal:**\n${proposal.proposal_markdown}\n\n**Requested Amount:** ${proposal.token_amount || 'N/A'} USDC`;
 
@@ -282,9 +288,9 @@ Respond ONLY in JSON format:
       source: 'cre',
     });
   } catch (error: any) {
-    console.error('Error reading on-chain review state:', error);
+    console.error('Error during proposal review:', error);
     return NextResponse.json(
-      { error: 'Failed to read on-chain review state.' },
+      { error: 'Failed to review proposal.' },
       { status: 500 }
     );
   }
