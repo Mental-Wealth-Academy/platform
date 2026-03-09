@@ -5,6 +5,7 @@ import { setExecutionLogs } from '@/lib/execution-log-store';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
+export const preferredRegion = 'lhr1'; // London — avoids US geoblock
 
 interface TradeDecision {
   marketId: string;
