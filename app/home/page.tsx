@@ -6,7 +6,8 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import DailyRead from '@/components/daily-read/DailyRead';
+import WeeklyRead from '@/components/daily-read/DailyRead';
+import DailyReadPopup from '@/components/daily-read/DailyReadPopup';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import SeasonTimer from '@/components/season-timer/SeasonTimer';
 import { useSound } from '@/hooks/useSound';
@@ -158,6 +159,7 @@ export default function HomePage() {
 
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
+    <DailyReadPopup activeWeek={activeWeek} />
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
@@ -213,7 +215,7 @@ export default function HomePage() {
                   weekEndsAt={weekEndsAt}
                   seasonActive={seasonActive}
                 />
-                <DailyRead
+                <WeeklyRead
                   readings={WEEKLY_READINGS}
                   onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
                   activeWeek={activeWeek}

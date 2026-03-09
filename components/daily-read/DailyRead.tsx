@@ -14,7 +14,7 @@ interface Reading {
   markdownPath: string;
 }
 
-interface DailyReadProps {
+interface WeeklyReadProps {
   readings: Reading[];
   onReadClick: (index: number) => void;
   activeWeek: number;
@@ -36,7 +36,7 @@ const READING_COLORS = [
   '#8B5CE5', // Week 12
 ];
 
-export default function DailyRead({ readings, onReadClick, activeWeek }: DailyReadProps) {
+export default function WeeklyRead({ readings, onReadClick, activeWeek }: WeeklyReadProps) {
   const { play } = useSound();
   const [isExpanded, setIsExpanded] = useState(true);
   const [readingIndex, setReadingIndex] = useState(0);
@@ -61,7 +61,7 @@ export default function DailyRead({ readings, onReadClick, activeWeek }: DailyRe
             </svg>
           </div>
           <div>
-            <span className={styles.label}>Daily Read</span>
+            <span className={styles.label}>Weekly Read</span>
             <span className={styles.sublabel}>{currentReading.category} — {currentReading.title}</span>
           </div>
         </div>
