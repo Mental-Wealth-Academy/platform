@@ -266,6 +266,27 @@ function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
   );
 }
 
+// ── Wallet Address with Copy ──
+
+function WalletAddress({ address }: { address: string }) {
+  const [copied, setCopied] = useState(false);
+  const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+
+  const copy = () => {
+    navigator.clipboard.writeText(address);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <button className={styles.walletAddress} onClick={copy} title={address}>
+      <span className={styles.walletLabel}>Polygon</span>
+      <span className={styles.walletAddr}>{short}</span>
+      <span className={styles.walletCopy}>{copied ? '✓' : '⧉'}</span>
+    </button>
+  );
+}
+
 // ── Page ──
 
 export default function Markets() {
@@ -736,6 +757,7 @@ export default function Markets() {
                       {balance.trader && <span>Polymarket: ${balance.trader.formatted}</span>}
                     </div>
                   )}
+                  <WalletAddress address="0x9eDd8c473c2a53b7A8512c1B0f6b573E219dF840" />
                   <TickerLine stroke="var(--color-primary)" />
                   <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
