@@ -2,10 +2,10 @@
 
 .card {
   width: 100%;
-  background: #F4F5FE;
-  border: 3px solid rgba(81, 104, 255, 0.25);
+  background: #ffffff;
+  border: 3px solid #1A1D33;
   border-radius: var(--radius-xl);
-  box-shadow: 4px 4px 0 rgba(81, 104, 255, 0.15);
+  box-shadow: 4px 4px 0 #1A1D33;
   overflow: hidden;
   transition: all 0.15s ease;
   display: flex;
@@ -14,14 +14,13 @@
 
 .card:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(81, 104, 255, 0.2);
-  border-color: var(--color-primary);
+  box-shadow: 6px 6px 0 #1A1D33;
 }
 
 .header {
   padding: 20px 24px;
-  border-bottom: 2px solid rgba(81, 104, 255, 0.12);
-  background: #F4F5FE;
+  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
+  background: #ffffff;
 }
 
 .headerTop {

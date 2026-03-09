@@ -237,18 +237,27 @@ export default function VotingPage() {
                       <span className={styles.exchangePrice}>Price: 0.033</span>
                       <span className={styles.exchangeAddress}>0x84939...EA6F</span>
                     </button>
-                    <button
-                      className={styles.primaryCta}
-                      onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
-                      onMouseEnter={() => play('hover')}
-                      type="button"
-                    >
-                      Proposal
-                    </button>
                   </div>
                 </div>
               </div>
             </header>
+          </div>
+
+          {/* Stat Cards — side by side */}
+          <div className={styles.statCardsRow}>
+            <div className={styles.statCardCompact}>
+              <AzuraPowerIndicator
+                soulGems="40000"
+                walletAddress={AZURA_ADDRESS}
+                governanceTokenAddress={GOV_TOKEN_ADDRESS}
+              />
+            </div>
+            <div className={styles.statCardCompact}>
+              <TreasuryDisplay
+                contractAddress={CONTRACT_ADDRESS}
+                usdcAddress={USDC_ADDRESS}
+              />
+            </div>
           </div>
 
           {/* Tab Navigation */}
@@ -288,31 +297,20 @@ export default function VotingPage() {
             </div>
           </section>
 
-          {/* Stat Cards — side by side */}
-          <div className={styles.statCardsRow}>
-            <div className={styles.statCardCompact}>
-              <AzuraPowerIndicator
-                soulGems="40000"
-                walletAddress={AZURA_ADDRESS}
-                governanceTokenAddress={GOV_TOKEN_ADDRESS}
-              />
-            </div>
-            <div className={styles.statCardCompact}>
-              <TreasuryDisplay
-                contractAddress={CONTRACT_ADDRESS}
-                usdcAddress={USDC_ADDRESS}
-              />
-            </div>
-          </div>
-
           {/* Tab Content */}
           <div className={styles.tabContent}>
             {activeTab === 'proposals' && (
-              <section className={styles.proposalsSection}>
-                <div className={styles.proposalsHeader}>
-                  <h2 className={styles.proposalsHeaderTitle}>Community Proposals</h2>
-                </div>
-                {loading ? (
+              <>
+              <button
+                className={styles.primaryCta}
+                onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
+                onMouseEnter={() => play('hover')}
+                type="button"
+              >
+                <span className={styles.proposalLabel}>Proposal</span>
+                <span className={styles.proposalPrice}>Price: 100 ORBS</span>
+              </button>
+              {loading ? (
                   <div className={styles.proposalsGrid}>
                     {[...Array(3)].map((_, i) => (
                       <ProposalCardSkeleton key={i} />
@@ -383,7 +381,7 @@ export default function VotingPage() {
                     ))}
                   </div>
                 )}
-              </section>
+              </>
             )}
 
             {activeTab === 'pods' && (
