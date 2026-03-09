@@ -11,81 +11,6 @@ import ProposalSuccessModal from './ProposalSuccessModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './SubmitProposalModal.module.css';
 
-const ACTIVATION_TEMPLATE = `## Activation Proposal
-
-**Event/Project Name:** [Your event name]
-
-**Duration:** [Start date - End date]
-
-**Location:** [Physical/Virtual/Hybrid]
-
-### Overview
-[Describe your activation in 2-3 sentences]
-
-### Objectives
-- Objective 1
-- Objective 2
-- Objective 3
-
-### Target Audience
-[Who will benefit from this activation?]
-
-### Budget Breakdown
-- Item 1: $XXX
-- Item 2: $XXX
-- Total: $XXX
-
-### Expected Impact
-[How will this benefit the Mental Wealth Academy community?]
-
-### Timeline
-- Milestone 1: [Date]
-- Milestone 2: [Date]
-- Completion: [Date]
-
-### Success Metrics
-[How will you measure success?]`;
-
-const RESEARCH_TEMPLATE = `## Research Funding Proposal
-
-**Research Title:** [Your research title]
-
-**Principal Investigator:** [Your name]
-
-**Duration:** [X months/years]
-
-### Abstract
-[200-300 word summary of your research]
-
-### Research Question
-[What specific question are you investigating?]
-
-### Background & Significance
-[Why is this research important to mental wealth?]
-
-### Methodology
-[How will you conduct this research?]
-
-### Budget Request
-**Total Amount:** $XXX
-
-**Budget Breakdown:**
-- Personnel: $XXX
-- Equipment/Materials: $XXX
-- Data Collection: $XXX
-- Publication/Dissemination: $XXX
-
-### Expected Outcomes
-[What will this research produce?]
-
-### Community Benefit
-[How will this research help the Mental Wealth Academy community?]
-
-### Timeline & Milestones
-- Phase 1: [Description] - [Date]
-- Phase 2: [Description] - [Date]
-- Final Report: [Date]`;
-
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 
 interface SubmitProposalModalProps {
@@ -153,10 +78,6 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
       setAmountMessage('');
     }
   }, [tokenAmount]);
-
-  const handleTemplateClick = (template: string) => {
-    setProposal(template);
-  };
 
   const handleSubmit = async () => {
     // Validation
@@ -442,29 +363,6 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
                 {amountMessage}
               </div>
             )}
-          </div>
-
-          {/* Template Buttons */}
-          <div className={styles.templateSection}>
-            <span className={styles.templateLabel}>Templates</span>
-            <div className={styles.templateButtons}>
-              <button
-                className={styles.templateButton}
-                onClick={() => { play('click'); handleTemplateClick(ACTIVATION_TEMPLATE); }}
-                onMouseEnter={() => play('hover')}
-                type="button"
-              >
-                <span className={styles.templateName}>Activation</span>
-              </button>
-              <button
-                className={styles.templateButton}
-                onClick={() => { play('click'); handleTemplateClick(RESEARCH_TEMPLATE); }}
-                onMouseEnter={() => play('hover')}
-                type="button"
-              >
-                <span className={styles.templateName}>Research</span>
-              </button>
-            </div>
           </div>
 
           {/* Markdown Input */}
