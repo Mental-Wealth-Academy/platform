@@ -11,6 +11,8 @@
 [![Chainlink CRE](https://img.shields.io/badge/Chainlink-CRE-375BD2?style=for-the-badge&logo=chainlink&logoColor=white)](https://chain.link/)
 [![Base](https://img.shields.io/badge/Base-Mainnet-0052FF?style=for-the-badge)](https://base.org/)
 
+[`/community`](#community) · [`/markets`](#markets) · [`Governance Contract`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d)
+
 </div>
 
 ---
@@ -20,6 +22,27 @@
 A governance system where an AI agent (Azura) scores funding proposals, the community votes on-chain, and **Chainlink CRE workflows automate the entire pipeline** from review to autonomous market trading -- no centralized server required.
 
 **Governance:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
+
+---
+
+## Live Pages
+
+### `/community`
+
+The community governance hub. Members submit funding proposals, vote on-chain, and interact with **Azura** -- our AI governance agent.
+
+- **Private Governance Calls** -- Azura reviews every proposal through the ElizaOS API, scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos). Reviews are delivered on-chain via CRE workflow, making AI scoring tamper-proof.
+- **On-chain Voting** -- Token-weighted community votes with a 50% threshold. Azura's approval level (1-4) determines her voting weight (10%-40%). Level 0 kills the proposal outright.
+- **Automated Execution** -- Passed proposals are executed by the CRE DON, transferring USDC to recipients without human intervention.
+
+### `/markets`
+
+The autonomous trading dashboard powered by a **CRE DON calling Polymarket**.
+
+- **Bayesian Market Scanner** -- A CRE cron workflow runs every 30 minutes, using Anthropic Claude to identify mispriced prediction markets through expected value analysis, base rate estimation, and Bayes' theorem.
+- **Quarter-Kelly Sizing** -- Conservative position sizing caps risk at 5% of the trading treasury per position.
+- **Live Orderbooks** -- Real-time CLOB data from Polymarket displayed alongside the DON's active positions and trade history.
+- **Governance Path** -- Trade proposals can also flow through community governance on `/community`, giving the DAO direct control over trading decisions.
 
 ---
 
@@ -60,25 +83,30 @@ Claude analyzes each market candidate and returns structured JSON with fair prob
 
 ### Pipeline
 
-```
-Proposal Created
-       |
-       v
-  [CRE: azura-review]         -- DON scores proposal, writes level on-chain
-       |
-       v
-  Community Votes              -- token-weighted, 50% threshold
-       |
-       v
-  [CRE: auto-execute]         -- DON detects threshold, executes proposal
-       |
-       v
-  [CRE: trade-execute]        -- DON routes USDC to trader (governance path)
+```mermaid
+flowchart TD
+    A([📝 Proposal Created]) --> B[🤖 CRE: azura-review]
+    B -->|DON scores proposal,\nwrites level on-chain| C{🗳️ Community Votes}
+    C -->|50% threshold reached| D[⚡ CRE: auto-execute]
+    C -->|below threshold| X([❌ Rejected])
+    D -->|DON executes proposal| E{Route?}
+    E -->|Funding| F([💰 USDC to Recipient])
+    E -->|Trade| G[📊 CRE: trade-execute]
+    G -->|DON routes to trader| H([🎯 AzuraMarketTrader])
 
-  [CRE: polymarket-trader]    -- DON scans markets autonomously (Bayesian path)
-       |
-       v
-  AzuraMarketTrader            -- executes trades on prediction markets
+    I([⏰ Every 30 min]) --> J[🧠 CRE: polymarket-trader]
+    J -->|Claude analyzes markets,\nBayesian + Quarter-Kelly| H
+
+    style A fill:#5168FF,color:#fff,stroke:#1A1D33
+    style B fill:#375BD2,color:#fff,stroke:#1A1D33
+    style C fill:#FF7729,color:#fff,stroke:#1A1D33
+    style D fill:#375BD2,color:#fff,stroke:#1A1D33
+    style F fill:#74C465,color:#fff,stroke:#1A1D33
+    style G fill:#375BD2,color:#fff,stroke:#1A1D33
+    style H fill:#0052FF,color:#fff,stroke:#1A1D33
+    style I fill:#5168FF,color:#fff,stroke:#1A1D33
+    style J fill:#375BD2,color:#fff,stroke:#1A1D33
+    style X fill:#e74c3c,color:#fff,stroke:#1A1D33
 ```
 
 ---
