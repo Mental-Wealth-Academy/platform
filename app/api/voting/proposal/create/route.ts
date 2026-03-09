@@ -171,18 +171,34 @@ export async function POST(request: Request) {
       }
     );
 
-    // Trigger Azura review asynchronously (don't wait for it)
-    // In production, this would be a background job or webhook
-    fetch(`${request.url.split('/api')[0]}/api/voting/proposal/review`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-internal-secret': process.env.INTERNAL_API_SECRET || '',
-      },
-      body: JSON.stringify({ proposalId }),
-    }).catch(error => {
-      console.error('Failed to trigger Azura review:', error);
-    });
+    // Trigger Azura review with retry (up to 3 attempts with exponential backoff)
+    const baseUrl = request.url.split('/api')[0];
+    const triggerReview = async (attempt: number) => {
+      try {
+        const res = await fetch(`${baseUrl}/api/voting/proposal/review`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-internal-secret': process.env.INTERNAL_API_SECRET || '',
+          },
+          body: JSON.stringify({ proposalId }),
+        });
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          throw new Error(`Review API returned ${res.status}: ${text}`);
+        }
+        console.log(`Azura review triggered successfully on attempt ${attempt}`);
+      } catch (error) {
+        console.error(`Azura review attempt ${attempt} failed:`, error);
+        if (attempt < 3) {
+          const delay = Math.pow(2, attempt) * 2000; // 4s, 8s
+          await new Promise(r => setTimeout(r, delay));
+          return triggerReview(attempt + 1);
+        }
+        console.error(`All 3 Azura review attempts failed for proposal ${proposalId}`);
+      }
+    };
+    triggerReview(1);
 
     return NextResponse.json({
       ok: true,

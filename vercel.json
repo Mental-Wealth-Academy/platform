@@ -7,6 +7,10 @@
     {
       "path": "/api/treasury/trade",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/voting/proposal/review-sweep",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
