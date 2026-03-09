@@ -76,14 +76,7 @@ export default function CyberpunkDataViz() {
       const time = timeRef.current;
       ctx!.clearRect(0, 0, W, H);
 
-      ctx!.fillStyle = '#FBF8FF';
-      ctx!.fillRect(0, 0, W, H);
-
-      const nebulaGrad = ctx!.createRadialGradient(W * 0.4, H * 0.6, 10, W * 0.4, H * 0.6, 300);
-      nebulaGrad.addColorStop(0, 'rgba(81, 104, 255, 0.06)');
-      nebulaGrad.addColorStop(1, 'rgba(81, 104, 255, 0)');
-      ctx!.fillStyle = nebulaGrad;
-      ctx!.fillRect(0, 0, W, H);
+      ctx!.clearRect(0, 0, W, H);
 
       for (const cell of grid) {
         const pulse = Math.sin(time * 1.5 + cell.pulseOffset) * 0.15;

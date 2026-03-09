@@ -205,7 +205,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(90deg, rgba(81, 104, 255, 0.35), rgba(81, 104, 255, 0.2));
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.45), rgba(76, 175, 80, 0.2));
   transition: width 0.4s ease;
 }
 
@@ -332,12 +332,25 @@
   }
 
   .headerTop {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    gap: 8px;
   }
 
   .title {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  .statusBadge {
+    padding: 4px 8px;
+    font-size: 9px;
+    gap: 4px;
+    border-width: 1.5px;
+  }
+
+  .statusDot {
+    width: 6px;
+    height: 6px;
   }
 
   .meta {
@@ -346,8 +359,14 @@
     gap: 8px;
   }
 
-  .stagesSection,
-  .preview,
+  .stagesSection {
+    display: none;
+  }
+
+  .preview {
+    display: none;
+  }
+
   .voteBarSection {
     padding: 12px 16px;
   }

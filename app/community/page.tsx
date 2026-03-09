@@ -222,15 +222,9 @@ export default function VotingPage() {
           ) : (
           <>
           <div className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-            <div className={styles.heroBg}><CyberpunkDataViz /></div>
             <header className={styles.header}>
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
-                  <p className={styles.eyebrow}>MWA • Oracle Network</p>
-                  <h1 className={styles.title}>Community</h1>
-                  <p className={styles.subtitle}>
-                    Got an idea that helps the community? You can request real funds to make it happen. Submit your idea to Azura, and the more points you earn, the fewer approvals you need. Every dollar spent goes toward making this academy better for everyone.
-                  </p>
                   <div className={styles.heroActions}>
                     <button
                       className={styles.secondaryCta}
@@ -238,7 +232,10 @@ export default function VotingPage() {
                       onMouseEnter={() => play('hover')}
                       type="button"
                     >
-                      Exchange
+                      <div className={styles.exchangeBg}><CyberpunkDataViz /></div>
+                      <span className={styles.exchangeLabel}>Exchange Orbs</span>
+                      <span className={styles.exchangePrice}>Price: 0.033</span>
+                      <span className={styles.exchangeAddress}>0x84939...EA6F</span>
                     </button>
                     <button
                       className={styles.primaryCta}
@@ -249,21 +246,6 @@ export default function VotingPage() {
                       Proposal
                     </button>
                   </div>
-                </div>
-                {/* Stats Grid - Bento Grid Style Top Right */}
-                <div className={styles.statsGrid}>
-                  {/* Azura Power Indicator */}
-                  <AzuraPowerIndicator 
-                    soulGems="40000"
-                    walletAddress={AZURA_ADDRESS}
-                    governanceTokenAddress={GOV_TOKEN_ADDRESS}
-                  />
-
-                  {/* Treasury Display */}
-                  <TreasuryDisplay
-                    contractAddress={CONTRACT_ADDRESS}
-                    usdcAddress={USDC_ADDRESS}
-                  />
                 </div>
               </div>
             </header>
@@ -279,7 +261,7 @@ export default function VotingPage() {
               <div className={styles.podIcon}>
                 <Image src="/icons/community-pods.svg" alt="Community Pods" width={40} height={40} />
               </div>
-              <h3 className={styles.podTitle}>Community Pods</h3>
+              <h3 className={styles.podTitle}>Treasury</h3>
               <p className={styles.podDesc}>Shared budgets for wellness, infrastructure, and community initiatives</p>
             </div>
             <div
@@ -305,6 +287,23 @@ export default function VotingPage() {
               <p className={styles.podDesc}>A shared reserve that grows when the community invests together</p>
             </div>
           </section>
+
+          {/* Stat Cards — side by side */}
+          <div className={styles.statCardsRow}>
+            <div className={styles.statCardCompact}>
+              <AzuraPowerIndicator
+                soulGems="40000"
+                walletAddress={AZURA_ADDRESS}
+                governanceTokenAddress={GOV_TOKEN_ADDRESS}
+              />
+            </div>
+            <div className={styles.statCardCompact}>
+              <TreasuryDisplay
+                contractAddress={CONTRACT_ADDRESS}
+                usdcAddress={USDC_ADDRESS}
+              />
+            </div>
+          </div>
 
           {/* Tab Content */}
           <div className={styles.tabContent}>

@@ -181,7 +181,35 @@
 @media (max-width: 768px) {
   .azuraPower {
     flex-direction: column;
+    align-items: center;
     text-align: center;
+    padding: 12px;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .azuraPower > div:first-child {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .azuraAvatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .azuraName {
+    font-size: 12px;
+    justify-content: center;
+  }
+
+  .copyButton {
+    display: none;
+  }
+
+  .aiTag {
+    font-size: 8px;
   }
 
   .viewWalletButton {

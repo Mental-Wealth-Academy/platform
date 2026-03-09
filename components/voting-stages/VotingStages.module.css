@@ -155,34 +155,25 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 16px;
+    padding: 12px 16px;
     border-radius: 8px;
   }
 
   .innerContainer {
-    flex-direction: column;
-    gap: 16px;
+    flex-direction: row;
+    gap: 6px;
   }
 
   .stageItem {
     flex: 1;
-    min-width: 100%;
-  }
-
-  .itemHeader {
-    flex-wrap: wrap;
-    height: auto;
-    min-height: 24px;
-  }
-
-  .itemLine {
-    width: 100%;
-    margin-top: 8px;
-    order: 3;
+    min-width: 0;
   }
 
   .descriptionContainer {
-    padding-left: 0;
-    margin-top: 8px;
+    display: none;
+  }
+
+  .itemTitle {
+    font-size: 12px;
   }
 }

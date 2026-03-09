@@ -44,12 +44,12 @@
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 40px 48px;
-  background: var(--color-background, #FBF8FF);
-  border: 3px solid #1A1D33;
-  border-radius: var(--radius-xl);
-  box-shadow: 6px 6px 0 #1A1D33;
-  overflow: hidden;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
   opacity: 0;
   transform: translateX(-40px);
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -61,14 +61,7 @@
 }
 
 .heroBg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  mask-image: linear-gradient(to left, black 0%, black 50%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 85%);
+  display: none;
 }
 
 .breadcrumbs {
@@ -115,9 +108,8 @@
 
 .headerContent {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
+  flex-direction: column;
+  width: 100%;
 }
 
 .headerText {
@@ -130,17 +122,18 @@
 
 .heroActions {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
   margin-top: 16px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .primaryCta,
 .secondaryCta {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  width: 100%;
   padding: 12px 20px;
   border-radius: var(--radius-lg);
   border: 3px solid #1A1D33;
@@ -171,8 +164,10 @@
   background: #ffffff;
   color: #1A1D33;
   box-shadow: 3px 3px 0 #1A1D33;
-  padding: 14px 36px;
+  padding: 28px 36px;
   font-size: 14px;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .secondaryCta:hover {
@@ -180,6 +175,62 @@
   color: #ffffff;
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.exchangeLabel {
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.exchangePrice {
+  font-weight: 600;
+  font-size: 17px;
+  opacity: 0.7;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.exchangeAddress {
+  font-weight: 400;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+  background: rgba(26, 29, 51, 0.08);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  opacity: 0.5;
+}
+
+.secondaryCta:hover .exchangeAddress {
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0.7;
+}
+
+.exchangeBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 1;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.secondaryCta {
+  position: relative;
+  overflow: hidden;
+}
+
+.secondaryCta .exchangeLabel,
+.secondaryCta .exchangePrice,
+.secondaryCta .exchangeAddress {
+  position: relative;
+  z-index: 1;
 }
 
 /* ─── Demo Modal — Retro Futurism ─── */
@@ -1091,14 +1142,28 @@
   flex-shrink: 0;
 }
 
-/* Stats Grid */
+/* Stats Grid — desktop only, hidden on mobile */
 .statsGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  width: fit-content;
-  flex-shrink: 0;
+  display: none;
 }
+
+/* Stat Cards Row — side by side under tabs */
+.statCardsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.statCardCompact {
+  min-width: 0;
+  display: flex;
+}
+
+.statCardCompact > * {
+  flex: 1;
+}
+
 
 /* Hero Banner Image */
 .heroBannerImage {
@@ -1457,15 +1522,8 @@
     gap: 20px;
   }
 
-  .statsGrid {
-    width: 100%;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
   .hero {
-    padding: 32px;
-    box-shadow: 4px 4px 0 #1A1D33;
+    padding: 0;
   }
 
   .grid {
@@ -1488,17 +1546,6 @@
     align-items: flex-start;
   }
 
-  .heroActions {
-    width: 100%;
-    gap: 12px;
-  }
-
-  .primaryCta,
-  .secondaryCta {
-    flex: 1;
-    justify-content: center;
-  }
-
   .proposalsGrid {
     grid-template-columns: 1fr;
   }
@@ -1510,8 +1557,7 @@
   }
 
   .hero {
-    padding: 24px;
-    box-shadow: 3px 3px 0 #1A1D33;
+    padding: 0;
   }
 
   .content {
@@ -1648,23 +1694,6 @@
     height: 32px;
   }
 
-  .heroActions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .primaryCta,
-  .secondaryCta {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .statsGrid {
-    width: 100%;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
   .fundingCard {
     box-shadow: 3px 3px 0 #1A1D33;
   }
@@ -1735,9 +1764,7 @@
   }
 
   .onChainInfo {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    display: none;
   }
 
   .txLink {
@@ -1749,6 +1776,30 @@
   .podGrid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .podCard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .podCard .podIcon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .podCard .podTitle {
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .podCard .podDesc {
+    font-size: 11px;
+    margin-bottom: 0;
   }
 
   .bountyGrid {
