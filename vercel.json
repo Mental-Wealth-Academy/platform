@@ -10,7 +10,7 @@
     },
     {
       "path": "/api/voting/proposal/review-sweep",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
