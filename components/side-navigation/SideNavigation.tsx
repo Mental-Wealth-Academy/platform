@@ -501,6 +501,22 @@ const SideNavigation: React.FC = () => {
                           {item.badge}
                         </span>
                       )}
+                      {item.id === 'shop' && (
+                        <button
+                          className={styles.lootDot}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            play('click');
+                            setIsLootBoxOpen(true);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          onMouseEnter={() => play('hover')}
+                          title="Loot Box"
+                          type="button"
+                          aria-label="Open Loot Box"
+                        />
+                      )}
                     </Link>
                   )
                 ))}
@@ -531,32 +547,6 @@ const SideNavigation: React.FC = () => {
                       </div>
                     )}
                   </div>
-                </button>
-                <button
-                  className={styles.lootBoxButton}
-                  onClick={() => {
-                    play('click');
-                    setIsLootBoxOpen(true);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  onMouseEnter={() => play('hover')}
-                  type="button"
-                  title="Loot Box"
-                >
-                  <svg width={isCollapsed ? 22 : 18} height={isCollapsed ? 22 : 18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 8v13H3V8" />
-                    <path d="M1 3h22v5H1z" />
-                    <path d="M12 3v18" />
-                  </svg>
-                  {!isCollapsed && (
-                    <span className={styles.lootBoxLabel}>Loot Box</span>
-                  )}
-                  {!isCollapsed && (
-                    <span className={styles.lootBoxCost}>
-                      <Image src="/icons/shard.svg" alt="" width={12} height={12} />
-                      10
-                    </span>
-                  )}
                 </button>
               </div>
             )}
