@@ -155,48 +155,8 @@ export default function DuelsPage() {
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <section className={styles.tabGrid}>
-            <div
-              className={`${styles.tabCard} ${activeTab === 'arena' ? styles.tabCardActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('arena'); }}
-              onMouseEnter={() => play('hover')}
-            >
-              <div className={styles.tabIcon}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <path d="M12 18v-6" />
-                  <path d="M9 15l3 3 3-3" />
-                </svg>
-              </div>
-              <h3 className={styles.tabTitle}>Arena</h3>
-              <p className={styles.tabDesc}>Live duels & open challenges</p>
-            </div>
-            <div
-              className={`${styles.tabCard} ${activeTab === 'history' ? styles.tabCardActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('history'); }}
-              onMouseEnter={() => play('hover')}
-            >
-              <div className={styles.tabIcon}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-              </div>
-              <h3 className={styles.tabTitle}>History</h3>
-              <p className={styles.tabDesc}>Past results & earnings</p>
-            </div>
-          </section>
-
-          {/* Tab Content */}
-          <div className={styles.tabContent}>
-
-            {/* ─── Arena Tab ─── */}
-            {activeTab === 'arena' && (
-              <>
-                {/* Create Duel CTA */}
-                <div className={styles.createDuelCard}>
+          {/* Create Duel CTA */}
+          <div className={styles.createDuelCard}>
                   <div className={styles.createDuelHeader}>
                     <h2 className={styles.createDuelTitle}>Create a Challenge</h2>
                     <p className={styles.createDuelDesc}>Pick a topic, set your stake, and wait for an opponent</p>
@@ -270,6 +230,38 @@ export default function DuelsPage() {
                   </div>
                 </div>
 
+          {/* Tab Navigation */}
+          <section className={styles.tabGrid}>
+            <div
+              className={`${styles.tabCard} ${activeTab === 'arena' ? styles.tabCardActive : ''}`}
+              onClick={() => { play('click'); setActiveTab('arena'); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.tabIcon}>
+                <Image src="/icons/podium.svg" alt="" width={40} height={40} />
+              </div>
+              <h3 className={styles.tabTitle}>Active Duels</h3>
+              <p className={styles.tabDesc}>Live battles & open challenges</p>
+            </div>
+            <div
+              className={`${styles.tabCard} ${activeTab === 'history' ? styles.tabCardActive : ''}`}
+              onClick={() => { play('click'); setActiveTab('history'); }}
+              onMouseEnter={() => play('hover')}
+            >
+              <div className={styles.tabIcon}>
+                <Image src="/icons/battle-globe.svg" alt="" width={40} height={40} />
+              </div>
+              <h3 className={styles.tabTitle}>Battle Log</h3>
+              <p className={styles.tabDesc}>Past results & earnings</p>
+            </div>
+          </section>
+
+          {/* Tab Content */}
+          <div className={styles.tabContent}>
+
+            {/* ─── Active Duels Tab ─── */}
+            {activeTab === 'arena' && (
+              <>
                 {/* Live Duels */}
                 {liveDuels.length > 0 && (
                   <section id="live-duels-section">

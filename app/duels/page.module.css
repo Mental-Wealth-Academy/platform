@@ -192,7 +192,7 @@
 
 .tabGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
@@ -1197,34 +1197,6 @@
 }
 
 @media (max-width: 480px) {
-  .tabGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .tabCard {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    padding: 14px 16px;
-    gap: 12px;
-  }
-
-  .tabCard .tabIcon {
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
-
-  .tabCard .tabTitle {
-    font-size: 13px;
-    margin-bottom: 2px;
-  }
-
-  .tabCard .tabDesc {
-    font-size: 11px;
-    margin-bottom: 0;
-  }
 
   .heroStats {
     gap: 12px;
