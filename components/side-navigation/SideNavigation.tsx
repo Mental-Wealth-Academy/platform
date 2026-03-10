@@ -44,6 +44,7 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
       { id: 'duels', label: 'Duels', href: '/duels', icon: '/icons/debate-icon.svg', badge: 'New', badgeType: 'highlight' },
+      { id: 'leaderboard', label: 'Leaderboard', href: '/leaderboard', icon: '/icons/rewards.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/treasury.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
