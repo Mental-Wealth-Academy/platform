@@ -19,17 +19,6 @@ interface Duel {
   score?: { challenger: number; opponent: number };
 }
 
-interface LeaderboardEntry {
-  rank: number;
-  name: string;
-  avatar: string;
-  wins: number;
-  losses: number;
-  winRate: number;
-  streak: number;
-  earnings: number;
-}
-
 const MOCK_DUELS: Duel[] = [
   {
     id: '1',
@@ -87,14 +76,6 @@ const MOCK_DUELS: Duel[] = [
   },
 ];
 
-const MOCK_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, name: 'PsychPilot', avatar: 'PP', wins: 47, losses: 8, winRate: 85, streak: 9, earnings: 2340 },
-  { rank: 2, name: 'NeuroNova', avatar: 'NN', wins: 41, losses: 12, winRate: 77, streak: 5, earnings: 1890 },
-  { rank: 3, name: 'MindForge', avatar: 'MF', wins: 38, losses: 15, winRate: 72, streak: 3, earnings: 1650 },
-  { rank: 4, name: 'ZenCoder', avatar: 'ZC', wins: 35, losses: 14, winRate: 71, streak: 4, earnings: 1420 },
-  { rank: 5, name: 'SynapseKid', avatar: 'SK', wins: 29, losses: 18, winRate: 62, streak: 1, earnings: 980 },
-];
-
 type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
 interface Topic {
@@ -112,7 +93,7 @@ const TOPICS: Topic[] = [
 ];
 
 export default function DuelsPage() {
-  const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'history'>('arena');
+  const [activeTab, setActiveTab] = useState<'arena' | 'history'>('arena');
   const [selectedStake, setSelectedStake] = useState<number>(50);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const { play } = useSound();
@@ -191,24 +172,6 @@ export default function DuelsPage() {
               </div>
               <h3 className={styles.tabTitle}>Arena</h3>
               <p className={styles.tabDesc}>Live duels & open challenges</p>
-            </div>
-            <div
-              className={`${styles.tabCard} ${activeTab === 'leaderboard' ? styles.tabCardActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('leaderboard'); }}
-              onMouseEnter={() => play('hover')}
-            >
-              <div className={styles.tabIcon}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                  <path d="M4 22h16" />
-                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-                </svg>
-              </div>
-              <h3 className={styles.tabTitle}>Leaderboard</h3>
-              <p className={styles.tabDesc}>Top duelists this week</p>
             </div>
             <div
               className={`${styles.tabCard} ${activeTab === 'history' ? styles.tabCardActive : ''}`}
@@ -411,66 +374,6 @@ export default function DuelsPage() {
                   </section>
                 )}
               </>
-            )}
-
-            {/* ─── Leaderboard Tab ─── */}
-            {activeTab === 'leaderboard' && (
-              <div className={styles.leaderboardCard}>
-                <div className={styles.leaderboardHeader}>
-                  <h2 className={styles.leaderboardTitle}>Weekly Rankings</h2>
-                  <span className={styles.leaderboardPeriod}>Mar 4 - Mar 10</span>
-                </div>
-                <div className={styles.leaderboardTable}>
-                  <div className={styles.leaderboardHead}>
-                    <span className={styles.colRank}>#</span>
-                    <span className={styles.colPlayer}>Player</span>
-                    <span className={styles.colRecord}>W / L</span>
-                    <span className={styles.colWinRate}>Win %</span>
-                    <span className={styles.colStreak}>Streak</span>
-                    <span className={styles.colEarnings}>Earned</span>
-                  </div>
-                  {MOCK_LEADERBOARD.map((entry) => (
-                    <div
-                      key={entry.rank}
-                      className={`${styles.leaderboardRow} ${entry.rank <= 3 ? styles.leaderboardRowTop : ''}`}
-                      onMouseEnter={() => play('hover')}
-                    >
-                      <span className={styles.colRank}>
-                        {entry.rank <= 3 ? (
-                          <span className={`${styles.rankMedal} ${styles[`rankMedal${entry.rank}`]}`}>
-                            {entry.rank}
-                          </span>
-                        ) : entry.rank}
-                      </span>
-                      <span className={styles.colPlayer}>
-                        <div className={styles.leaderboardAvatar} style={{
-                          background: entry.rank === 1 ? 'var(--color-accent)' :
-                                     entry.rank === 2 ? 'var(--color-primary)' :
-                                     entry.rank === 3 ? 'var(--color-tertiary)' : 'var(--color-secondary)'
-                        }}>
-                          {entry.avatar}
-                        </div>
-                        <span>{entry.name}</span>
-                      </span>
-                      <span className={styles.colRecord}>{entry.wins} / {entry.losses}</span>
-                      <span className={styles.colWinRate}>
-                        <span className={styles.winRateBar}>
-                          <span className={styles.winRateFill} style={{ width: `${entry.winRate}%` }} />
-                        </span>
-                        {entry.winRate}%
-                      </span>
-                      <span className={styles.colStreak}>
-                        {entry.streak > 0 && (
-                          <span className={styles.streakBadge}>{entry.streak}W</span>
-                        )}
-                      </span>
-                      <span className={`${styles.colEarnings}`}>
-                        {entry.earnings.toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             )}
 
             {/* ─── History Tab ─── */}
