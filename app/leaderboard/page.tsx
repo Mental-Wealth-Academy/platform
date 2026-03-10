@@ -17,16 +17,16 @@ interface LeaderboardEntry {
 }
 
 const MOCK_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, username: 'luminara.eth', avatarUrl: null, orbsStaked: 4200, weeklyXp: 9840, streakWeeks: 11, tier: 'gold' },
-  { rank: 2, username: 'quietstorm', avatarUrl: null, orbsStaked: 3800, weeklyXp: 8720, streakWeeks: 10, tier: 'gold' },
-  { rank: 3, username: 'dreamweaver', avatarUrl: null, orbsStaked: 3100, weeklyXp: 7650, streakWeeks: 12, tier: 'gold' },
-  { rank: 4, username: 'solace.base', avatarUrl: null, orbsStaked: 2600, weeklyXp: 6200, streakWeeks: 9, tier: 'silver' },
-  { rank: 5, username: 'mindforge', avatarUrl: null, orbsStaked: 2100, weeklyXp: 5480, streakWeeks: 8, tier: 'silver' },
-  { rank: 6, username: 'zenith404', avatarUrl: null, orbsStaked: 1800, weeklyXp: 4900, streakWeeks: 7, tier: 'silver' },
-  { rank: 7, username: 'calmcode', avatarUrl: null, orbsStaked: 1500, weeklyXp: 4100, streakWeeks: 6, tier: 'bronze' },
-  { rank: 8, username: 'wellspring', avatarUrl: null, orbsStaked: 1200, weeklyXp: 3600, streakWeeks: 5, tier: 'bronze' },
-  { rank: 9, username: 'innerlight', avatarUrl: null, orbsStaked: 900, weeklyXp: 2900, streakWeeks: 4, tier: 'bronze' },
-  { rank: 10, username: 'novamind', avatarUrl: null, orbsStaked: 600, weeklyXp: 2100, streakWeeks: 3, tier: 'iron' },
+  { rank: 1, username: 'luminara.eth', avatarUrl: '/anbel03.png', orbsStaked: 4200, weeklyXp: 9840, streakWeeks: 11, tier: 'gold' },
+  { rank: 2, username: 'quietstorm', avatarUrl: '/anbel07.png', orbsStaked: 3800, weeklyXp: 8720, streakWeeks: 10, tier: 'gold' },
+  { rank: 3, username: 'dreamweaver', avatarUrl: '/anbel11.png', orbsStaked: 3100, weeklyXp: 7650, streakWeeks: 12, tier: 'gold' },
+  { rank: 4, username: 'solace.base', avatarUrl: '/anbel01.png', orbsStaked: 2600, weeklyXp: 6200, streakWeeks: 9, tier: 'silver' },
+  { rank: 5, username: 'mindforge', avatarUrl: '/anbel05.png', orbsStaked: 2100, weeklyXp: 5480, streakWeeks: 8, tier: 'silver' },
+  { rank: 6, username: 'zenith404', avatarUrl: '/anbel09.png', orbsStaked: 1800, weeklyXp: 4900, streakWeeks: 7, tier: 'silver' },
+  { rank: 7, username: 'calmcode', avatarUrl: '/anbel02.png', orbsStaked: 1500, weeklyXp: 4100, streakWeeks: 6, tier: 'bronze' },
+  { rank: 8, username: 'wellspring', avatarUrl: '/anbel06.png', orbsStaked: 1200, weeklyXp: 3600, streakWeeks: 5, tier: 'bronze' },
+  { rank: 9, username: 'innerlight', avatarUrl: '/anbel10.png', orbsStaked: 900, weeklyXp: 2900, streakWeeks: 4, tier: 'bronze' },
+  { rank: 10, username: 'novamind', avatarUrl: '/anbel04.png', orbsStaked: 600, weeklyXp: 2100, streakWeeks: 3, tier: 'iron' },
 ];
 
 const PAYOUT_TIERS = [
@@ -48,10 +48,6 @@ function getRankDisplay(rank: number) {
   if (rank === 2) return '2nd';
   if (rank === 3) return '3rd';
   return `${rank}th`;
-}
-
-function getInitials(username: string) {
-  return username.slice(0, 2).toUpperCase();
 }
 
 export default function LeaderboardPage() {
@@ -142,7 +138,13 @@ export default function LeaderboardPage() {
                     className={styles.podiumAvatar}
                     style={{ borderColor: TIER_COLORS[entry.tier] }}
                   >
-                    {getInitials(entry.username)}
+                    <Image
+                      src={entry.avatarUrl!}
+                      alt={entry.username}
+                      width={isFirst ? 68 : 56}
+                      height={isFirst ? 68 : 56}
+                      className={styles.avatarImg}
+                    />
                   </div>
                   <span className={styles.podiumName}>{entry.username}</span>
                   <span className={styles.podiumXp}>{entry.weeklyXp.toLocaleString()} XP</span>
@@ -180,7 +182,13 @@ export default function LeaderboardPage() {
                     className={styles.tableAvatar}
                     style={{ borderColor: TIER_COLORS[entry.tier] }}
                   >
-                    {getInitials(entry.username)}
+                    <Image
+                      src={entry.avatarUrl!}
+                      alt={entry.username}
+                      width={32}
+                      height={32}
+                      className={styles.avatarImg}
+                    />
                   </div>
                   <span className={styles.tableUsername}>{entry.username}</span>
                 </span>

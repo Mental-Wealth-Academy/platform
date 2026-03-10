@@ -216,21 +216,21 @@
   width: 56px;
   height: 56px;
   border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1A1D33;
-  color: #ffffff;
-  font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 18px;
+  overflow: hidden;
   border: 3px solid;
+  flex-shrink: 0;
 }
 
 .podiumFirst .podiumAvatar {
   width: 68px;
   height: 68px;
-  font-size: 22px;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .podiumName {
@@ -322,14 +322,7 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #1A1D33;
-  color: #ffffff;
-  font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 11px;
+  overflow: hidden;
   border: 2px solid;
   flex-shrink: 0;
 }
