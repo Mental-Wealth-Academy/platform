@@ -85,7 +85,7 @@ export default function LeaderboardPage() {
           <div className={styles.statsRow}>
             <div className={styles.statCard}>
               <span className={styles.statValue}>{totalPool.toLocaleString()}</span>
-              <span className={styles.statLabel}>Orbs in Pool</span>
+              <span className={styles.statLabel}>Shards in Pool</span>
             </div>
             <div className={styles.statCard}>
               <span className={styles.statValue}>{totalStakers}</span>
@@ -149,7 +149,7 @@ export default function LeaderboardPage() {
                   <span className={styles.podiumName}>{entry.username}</span>
                   <span className={styles.podiumXp}>{entry.weeklyXp.toLocaleString()} XP</span>
                   <div className={styles.podiumStake}>
-                    <Image src="/icons/shard.svg" alt="Orbs" width={14} height={14} />
+                    <Image src="/icons/shard.svg" alt="Shards" width={14} height={14} />
                     <span>{entry.orbsStaked.toLocaleString()}</span>
                   </div>
                   <span className={styles.podiumStreak}>{entry.streakWeeks}wk streak</span>
@@ -194,7 +194,7 @@ export default function LeaderboardPage() {
                 </span>
                 <span className={styles.colXp}>{entry.weeklyXp.toLocaleString()}</span>
                 <span className={styles.colStake}>
-                  <Image src="/icons/shard.svg" alt="Orbs" width={12} height={12} />
+                  <Image src="/icons/shard.svg" alt="Shards" width={12} height={12} />
                   {entry.orbsStaked.toLocaleString()}
                 </span>
                 <span className={styles.colStreak}>{entry.streakWeeks}w</span>

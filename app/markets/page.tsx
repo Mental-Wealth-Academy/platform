@@ -176,7 +176,7 @@ interface MWAMarket {
   question: string;
   category: 'COHORT' | 'RETENTION' | 'GOVERNANCE' | 'TREASURY';
   yesProbability: number; // 0-1 current implied probability
-  totalPool: number;      // total Orbs wagered
+  totalPool: number;      // total Shards wagered
   yesPool: number;
   noPool: number;
   endDate: string;
@@ -309,14 +309,14 @@ function MWAMarketCard({ market, onBet }: { market: MWAMarket; onBet: (id: strin
         <span className={styles.mwaProbNoLabel}>No {noPct}%</span>
       </div>
       <div className={styles.mwaPoolInfo}>
-        <span>Pool: {market.totalPool.toLocaleString()} ORBS</span>
+        <span>Pool: {market.totalPool.toLocaleString()} SHARDS</span>
         <span>Fee: {market.fee}% → Treasure Chest</span>
       </div>
       <div className={styles.mwaBetRow}>
         <input
           className={styles.mwaBetInput}
           type="number"
-          placeholder="ORBS"
+          placeholder="SHARDS"
           value={betAmount}
           onChange={(e) => setBetAmount(e.target.value)}
           min="1"
@@ -683,7 +683,7 @@ export default function Markets() {
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>native</span>
-            <span className={styles.statusHighlight}>MWA ORBS</span>
+            <span className={styles.statusHighlight}>MWA SHARDS</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>model</span>
@@ -936,7 +936,7 @@ export default function Markets() {
           {/* MWA Markets Header */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with ORBS</span>
+              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with SHARDS</span>
               <span className={styles.panelBadge}>$APPLE</span>
             </div>
             <div className={styles.mwaStatsRow}>
@@ -946,7 +946,7 @@ export default function Markets() {
               </div>
               <div className={styles.mwaStat}>
                 <span className={styles.mwaStatLabel}>Total Pool</span>
-                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} ORBS</span>
+                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} SHARDS</span>
               </div>
               <div className={styles.mwaStat}>
                 <span className={styles.mwaStatLabel}>Settlement</span>

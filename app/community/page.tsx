@@ -233,7 +233,7 @@ export default function VotingPage() {
                       type="button"
                     >
                       <div className={styles.exchangeBg}><CyberpunkDataViz /></div>
-                      <span className={styles.exchangeLabel}>Exchange Orbs</span>
+                      <span className={styles.exchangeLabel}>Exchange Shards</span>
                       <span className={styles.exchangePrice}>Price: 0.033</span>
                       <span className={styles.exchangeAddress}>0x84939...EA6F</span>
                     </button>
@@ -308,7 +308,7 @@ export default function VotingPage() {
                 type="button"
               >
                 <span className={styles.proposalLabel}>Proposal</span>
-                <span className={styles.proposalPrice}>Price: 100 ORBS</span>
+                <span className={styles.proposalPrice}>Price: 100 SHARDS</span>
               </button>
               {loading ? (
                   <div className={styles.proposalsGrid}>

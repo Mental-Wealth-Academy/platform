@@ -114,7 +114,7 @@ export default function DuelsPage() {
               <span className={styles.heroEyebrow}>PvP Knowledge</span>
               <h1 className={styles.heroTitle}>Duels</h1>
               <p className={styles.heroSubtitle}>
-                Challenge another learner to a timed quiz battle. Stake Orbs, test your knowledge, winner takes the pot.
+                Challenge another learner to a timed quiz battle. Stake Shards, test your knowledge, winner takes the pot.
               </p>
             </div>
             {liveDuels.length > 0 && (
@@ -145,7 +145,7 @@ export default function DuelsPage() {
               <div className={styles.heroStatDivider} />
               <div className={styles.heroStat}>
                 <span className={styles.heroStatValue}>7,840</span>
-                <span className={styles.heroStatLabel}>Orbs Staked</span>
+                <span className={styles.heroStatLabel}>Shards Staked</span>
               </div>
               <div className={styles.heroStatDivider} />
               <div className={styles.heroStat}>
@@ -184,7 +184,7 @@ export default function DuelsPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label className={styles.formLabel}>Stake Amount (Orbs)</label>
+                      <label className={styles.formLabel}>Stake Amount (Shards)</label>
                       <div className={styles.stakeOptions}>
                         {[25, 50, 100, 200].map((amount) => (
                           <button
@@ -203,15 +203,15 @@ export default function DuelsPage() {
                     <div className={styles.stakeBreakdown}>
                       <div className={styles.breakdownRow}>
                         <span className={styles.breakdownLabel}>Your Stake</span>
-                        <span className={styles.breakdownValue}>{selectedStake} ORBS</span>
+                        <span className={styles.breakdownValue}>{selectedStake} SHARDS</span>
                       </div>
                       <div className={styles.breakdownRow}>
                         <span className={styles.breakdownLabel}>Winner Takes</span>
-                        <span className={styles.breakdownValueHighlight}>{Math.floor(selectedStake * 2 * 0.96)} ORBS</span>
+                        <span className={styles.breakdownValueHighlight}>{Math.floor(selectedStake * 2 * 0.96)} SHARDS</span>
                       </div>
                       <div className={styles.breakdownRow}>
                         <span className={styles.breakdownLabel}>Treasury Fee (4%)</span>
-                        <span className={styles.breakdownValueMuted}>{Math.ceil(selectedStake * 2 * 0.04)} ORBS</span>
+                        <span className={styles.breakdownValueMuted}>{Math.ceil(selectedStake * 2 * 0.04)} SHARDS</span>
                       </div>
                     </div>
 
@@ -293,7 +293,7 @@ export default function DuelsPage() {
                             </div>
                             <div className={styles.vsBlock}>
                               <span className={styles.vsText}>VS</span>
-                              <span className={styles.duelStake}>{duel.stake * 2} ORBS</span>
+                              <span className={styles.duelStake}>{duel.stake * 2} SHARDS</span>
                             </div>
                             <div className={styles.duelPlayer}>
                               <div className={styles.playerAvatar} style={{ background: 'var(--color-accent)' }}>
@@ -333,7 +333,7 @@ export default function DuelsPage() {
                         >
                           <div className={styles.duelTopicRow}>
                             <span className={styles.duelTopic}>{duel.topic}</span>
-                            <span className={styles.duelStakeBadge}>{duel.stake} ORBS</span>
+                            <span className={styles.duelStakeBadge}>{duel.stake} SHARDS</span>
                           </div>
                           <div className={styles.duelMatchup}>
                             <div className={styles.duelPlayer}>
@@ -426,7 +426,7 @@ export default function DuelsPage() {
                   </div>
                   <div className={styles.treasuryInfoStat}>
                     <span className={styles.treasuryInfoValue}>312</span>
-                    <span className={styles.treasuryInfoLabel}>Orbs to Treasury Today</span>
+                    <span className={styles.treasuryInfoLabel}>Shards to Treasury Today</span>
                   </div>
                 </div>
               </section>
