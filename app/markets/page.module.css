@@ -108,7 +108,7 @@
 /* ── Dashboard Grid ── */
 .grid {
   display: grid;
-  grid-template-columns: 260px 1fr 280px;
+  grid-template-columns: 240px 1fr 1fr 260px;
   grid-template-rows: 1fr;
   gap: 1px;
   background: rgba(255, 255, 255, 0.03);
@@ -251,9 +251,19 @@
   font-size: 12px;
 }
 
-/* ── Center Column Wrapper ── */
-.centerColumn {
+/* ── Center-Left Column (Polymarket) ── */
+.centerLeft {
   grid-column: 2;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ── Center-Right Column (MWA Markets) ── */
+.centerRight {
+  grid-column: 3;
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -263,7 +273,7 @@
 
 /* ── Right Column Wrapper ── */
 .rightColumn {
-  grid-column: 3;
+  grid-column: 4;
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -846,14 +856,264 @@
   white-space: nowrap;
 }
 
+/* ── MWA Custom Markets ── */
+.mwaStatsRow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.mwaStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mwaStatLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4E5268;
+}
+
+.mwaStatValue {
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  color: #E2E4F0;
+}
+
+.mwaListPanel {
+  flex: 1;
+  min-height: 0;
+  padding: 10px 14px;
+}
+
+.mwaMarketsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
+}
+
+.mwaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(167, 139, 250, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(167, 139, 250, 0.03);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mwaCard:hover {
+  border-color: rgba(167, 139, 250, 0.2);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.mwaCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mwaCategoryBadge {
+  font-family: var(--font-button);
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mwaExpiry {
+  font-family: var(--font-button);
+  font-size: 9px;
+  color: #6B6F83;
+}
+
+.mwaQuestion {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  color: #C8CAD8;
+  line-height: 1.5;
+}
+
+.mwaProbBar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mwaProbYes {
+  background: #A78BFA;
+  transition: width 0.3s ease;
+}
+
+.mwaProbNo {
+  background: #F87171;
+  transition: width 0.3s ease;
+}
+
+.mwaProbLabels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-button);
+  font-size: 9px;
+}
+
+.mwaProbYesLabel {
+  color: #A78BFA;
+  font-weight: var(--font-weight-semibold);
+}
+
+.mwaProbNoLabel {
+  color: #F87171;
+  font-weight: var(--font-weight-semibold);
+}
+
+.mwaPoolInfo {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-button);
+  font-size: 9px;
+  color: #4E5268;
+}
+
+.mwaBetRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.mwaBetInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: var(--font-button);
+  font-size: 11px;
+  color: #E2E4F0;
+  outline: none;
+  transition: border-color 0.15s ease;
+  min-width: 0;
+}
+
+.mwaBetInput::placeholder {
+  color: #4E5268;
+}
+
+.mwaBetInput:focus {
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.mwaBetInput::-webkit-outer-spin-button,
+.mwaBetInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mwaBetBtn {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+}
+
+.mwaBetBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.mwaBetYes {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.25);
+  color: #A78BFA;
+}
+
+.mwaBetYes:not(:disabled):hover {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.mwaBetNo {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.25);
+  color: #F87171;
+}
+
+.mwaBetNo:not(:disabled):hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.mwaResolver {
+  font-family: var(--font-button);
+  font-size: 9px;
+  color: #4E5268;
+  text-align: right;
+}
+
+.mwaResolverName {
+  color: #7B8CFF;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ── MWA Fee Panel ── */
+.mwaFeePanel {
+  padding: 14px 20px;
+}
+
+.mwaFeeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+}
+
+.mwaFeeItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mwaFeeLabel {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4E5268;
+}
+
+.mwaFeeValue {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  color: #E2E4F0;
+}
+
 /* ── Responsive ── */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .grid {
-    grid-template-columns: 220px 1fr 240px;
+    grid-template-columns: 220px 1fr 1fr 240px;
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -871,12 +1131,21 @@
     min-width: 260px;
   }
 
-  .chartPanel {
-    grid-column: 1 / 3;
+  .centerLeft {
+    grid-column: 1;
+    grid-row: auto;
   }
 
-  .logPanel {
+  .centerRight {
+    grid-column: 2;
+    grid-row: auto;
+  }
+
+  .rightColumn {
     grid-column: 1 / 3;
+    grid-row: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .marketsColumn {
@@ -892,13 +1161,13 @@
   }
 
   .flowPanel {
-    grid-column: 1;
-    grid-row: auto;
+    flex: 1;
+    min-width: 280px;
   }
 
   .positionsPanel {
-    grid-column: 2;
-    grid-row: auto;
+    flex: 1;
+    min-width: 280px;
   }
 }
 
@@ -921,23 +1190,33 @@
     min-width: auto;
   }
 
-  .chartPanel {
+  .centerLeft {
     grid-column: 1;
   }
 
-  .logPanel {
+  .centerRight {
     grid-column: 1;
+  }
+
+  .rightColumn {
+    grid-column: 1;
+    flex-direction: column;
   }
 
   .marketsColumn {
     grid-column: 1;
   }
 
-  .orderbookPanel {
-    grid-column: 1;
+  .flowPanel {
+    min-width: auto;
   }
 
   .positionsPanel {
     grid-column: 1;
+    min-width: auto;
+  }
+
+  .mwaMarketsList {
+    max-height: none;
   }
 }

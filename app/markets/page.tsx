@@ -167,6 +167,183 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
   politics: 'POLITICS',
 };
 
+// ── MWA Custom Prediction Markets ──
+
+type MWAMarketStatus = 'OPEN' | 'LOCKED' | 'SETTLED';
+
+interface MWAMarket {
+  id: string;
+  question: string;
+  category: 'COHORT' | 'RETENTION' | 'GOVERNANCE' | 'TREASURY';
+  yesProbability: number; // 0-1 current implied probability
+  totalPool: number;      // total Orbs wagered
+  yesPool: number;
+  noPool: number;
+  endDate: string;
+  resolver: string;
+  status: MWAMarketStatus;
+  fee: number;            // % fee to Treasure Chest
+}
+
+const SEED_MWA_MARKETS: MWAMarket[] = [
+  {
+    id: 'mwa-1',
+    question: 'Will Cohort 3 average above 80% completion?',
+    category: 'COHORT',
+    yesProbability: 0.62,
+    totalPool: 14_820,
+    yesPool: 9_188,
+    noPool: 5_632,
+    endDate: '2026-04-15',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 3,
+  },
+  {
+    id: 'mwa-2',
+    question: 'Will Week 4 retention beat Week 3?',
+    category: 'RETENTION',
+    yesProbability: 0.55,
+    totalPool: 8_450,
+    yesPool: 4_648,
+    noPool: 3_802,
+    endDate: '2026-03-24',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 3,
+  },
+  {
+    id: 'mwa-3',
+    question: 'Will a governance proposal pass this epoch?',
+    category: 'GOVERNANCE',
+    yesProbability: 0.78,
+    totalPool: 22_100,
+    yesPool: 17_238,
+    noPool: 4_862,
+    endDate: '2026-03-31',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 5,
+  },
+  {
+    id: 'mwa-4',
+    question: 'Treasury balance > $500 USDC by end of March?',
+    category: 'TREASURY',
+    yesProbability: 0.41,
+    totalPool: 6_300,
+    yesPool: 2_583,
+    noPool: 3_717,
+    endDate: '2026-03-31',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 5,
+  },
+  {
+    id: 'mwa-5',
+    question: 'Will average quiz score exceed 75% this week?',
+    category: 'COHORT',
+    yesProbability: 0.68,
+    totalPool: 11_200,
+    yesPool: 7_616,
+    noPool: 3_584,
+    endDate: '2026-03-17',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 3,
+  },
+  {
+    id: 'mwa-6',
+    question: 'Will $APPLE price be above $0.01 by April?',
+    category: 'TREASURY',
+    yesProbability: 0.33,
+    totalPool: 19_750,
+    yesPool: 6_518,
+    noPool: 13_232,
+    endDate: '2026-04-01',
+    resolver: 'Azura',
+    status: 'OPEN',
+    fee: 5,
+  },
+];
+
+const MWA_CATEGORY_COLORS: Record<string, string> = {
+  COHORT: '#A78BFA',
+  RETENTION: '#38BDF8',
+  GOVERNANCE: '#FBBF24',
+  TREASURY: '#4ADE80',
+};
+
+function MWAMarketCard({ market, onBet }: { market: MWAMarket; onBet: (id: string, side: 'YES' | 'NO', amount: number) => void }) {
+  const [betAmount, setBetAmount] = useState('');
+  const [placing, setPlacing] = useState(false);
+  const yesPct = Math.round(market.yesProbability * 100);
+  const noPct = 100 - yesPct;
+  const daysLeft = Math.max(0, Math.ceil((new Date(market.endDate).getTime() - Date.now()) / 86400000));
+
+  const handleBet = (side: 'YES' | 'NO') => {
+    const amt = parseInt(betAmount);
+    if (!amt || amt <= 0) return;
+    setPlacing(true);
+    onBet(market.id, side, amt);
+    setTimeout(() => {
+      setBetAmount('');
+      setPlacing(false);
+    }, 600);
+  };
+
+  return (
+    <div className={styles.mwaCard}>
+      <div className={styles.mwaCardHeader}>
+        <span className={styles.mwaCategoryBadge} style={{ color: MWA_CATEGORY_COLORS[market.category], borderColor: MWA_CATEGORY_COLORS[market.category] + '33' }}>
+          {market.category}
+        </span>
+        <span className={styles.mwaExpiry}>{daysLeft}d left</span>
+      </div>
+      <div className={styles.mwaQuestion}>{market.question}</div>
+      <div className={styles.mwaProbBar}>
+        <div className={styles.mwaProbYes} style={{ width: `${yesPct}%` }} />
+        <div className={styles.mwaProbNo} style={{ width: `${noPct}%` }} />
+      </div>
+      <div className={styles.mwaProbLabels}>
+        <span className={styles.mwaProbYesLabel}>Yes {yesPct}%</span>
+        <span className={styles.mwaProbNoLabel}>No {noPct}%</span>
+      </div>
+      <div className={styles.mwaPoolInfo}>
+        <span>Pool: {market.totalPool.toLocaleString()} ORBS</span>
+        <span>Fee: {market.fee}% → Treasure Chest</span>
+      </div>
+      <div className={styles.mwaBetRow}>
+        <input
+          className={styles.mwaBetInput}
+          type="number"
+          placeholder="ORBS"
+          value={betAmount}
+          onChange={(e) => setBetAmount(e.target.value)}
+          min="1"
+          disabled={placing || market.status !== 'OPEN'}
+        />
+        <button
+          className={`${styles.mwaBetBtn} ${styles.mwaBetYes}`}
+          onClick={() => handleBet('YES')}
+          disabled={placing || !betAmount || market.status !== 'OPEN'}
+        >
+          Yes
+        </button>
+        <button
+          className={`${styles.mwaBetBtn} ${styles.mwaBetNo}`}
+          onClick={() => handleBet('NO')}
+          disabled={placing || !betAmount || market.status !== 'OPEN'}
+        >
+          No
+        </button>
+      </div>
+      <div className={styles.mwaResolver}>
+        settled by <span className={styles.mwaResolverName}>{market.resolver}</span>
+      </div>
+    </div>
+  );
+}
+
 // ── Live Ticker Line ──
 
 const TICKER_LEN = 80;
@@ -297,6 +474,7 @@ export default function Markets() {
   const [appleStats, setAppleStats] = useState<AppleTokenStats | null>(null);
   const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
   const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
+  const [mwaMarkets, setMwaMarkets] = useState<MWAMarket[]>(SEED_MWA_MARKETS);
   const [priceError, setPriceError] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
@@ -365,6 +543,23 @@ export default function Markets() {
       if (data.logs) setExecutionLogs(data.logs);
       if (data.positions) setLivePositions(data.positions);
     } catch { /* silent */ }
+  }, []);
+
+  // Handle MWA market bet (optimistic local update)
+  const handleMwaBet = useCallback((id: string, side: 'YES' | 'NO', amount: number) => {
+    setMwaMarkets(prev => prev.map(m => {
+      if (m.id !== id) return m;
+      const newYesPool = side === 'YES' ? m.yesPool + amount : m.yesPool;
+      const newNoPool = side === 'NO' ? m.noPool + amount : m.noPool;
+      const newTotal = newYesPool + newNoPool;
+      return {
+        ...m,
+        yesPool: newYesPool,
+        noPool: newNoPool,
+        totalPool: newTotal,
+        yesProbability: newYesPool / newTotal,
+      };
+    }));
   }, []);
 
   useEffect(() => {
@@ -487,12 +682,16 @@ export default function Markets() {
             <span className={styles.statusHighlight}>POLYMARKET CLOB</span>
           </div>
           <div className={styles.statusItem}>
+            <span className={styles.statusLabel}>native</span>
+            <span className={styles.statusHighlight}>MWA ORBS</span>
+          </div>
+          <div className={styles.statusItem}>
             <span className={styles.statusLabel}>model</span>
             <span className={styles.statusHighlight}>BLACK-SCHOLES BINARY</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>chain:</span>
-            <span className={styles.statusValue}>POLYGON</span>
+            <span className={styles.statusValue}>POLYGON + BASE</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>edge_threshold:</span>
@@ -731,10 +930,10 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ CENTER: Charts ════ */}
-          <div className={styles.centerColumn}>
+          {/* ════ CENTER-LEFT: Polymarket ════ */}
+          <div className={styles.centerLeft}>
 
-          {/* Chart 1: Trading Balance */}
+          {/* Trading Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Trading Balance &middot; USDC &middot; Polymarket CLOB</span>
@@ -766,10 +965,10 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* Chart 2: Polymarket Signal Markets */}
+          {/* Polymarket Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Polymarket CLOB &middot; Active Markets &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Polymarket CLOB &middot; Active Markets</span>
               <span className={styles.panelBadge}>live</span>
             </div>
             {!polymarkets && !polyError && (
@@ -838,7 +1037,68 @@ export default function Markets() {
             </div>
           </div>
 
-          </div>{/* end centerColumn */}
+          </div>{/* end centerLeft */}
+
+          {/* ════ CENTER-RIGHT: MWA Custom Markets ════ */}
+          <div className={styles.centerRight}>
+
+          {/* MWA Markets Header */}
+          <div className={`${styles.panel} ${styles.chartPanel}`}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with ORBS</span>
+              <span className={styles.panelBadge}>$APPLE</span>
+            </div>
+            <div className={styles.mwaStatsRow}>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Total Markets</span>
+                <span className={styles.mwaStatValue}>{mwaMarkets.length}</span>
+              </div>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Total Pool</span>
+                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} ORBS</span>
+              </div>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Settlement</span>
+                <span className={styles.mwaStatValue}>Azura AI</span>
+              </div>
+            </div>
+          </div>
+
+          {/* MWA Market Cards */}
+          <div className={`${styles.panel} ${styles.mwaListPanel}`}>
+            <div className={styles.mwaMarketsList}>
+              {mwaMarkets.map((market) => (
+                <MWAMarketCard key={market.id} market={market} onBet={handleMwaBet} />
+              ))}
+            </div>
+          </div>
+
+          {/* MWA Fee Info */}
+          <div className={`${styles.panel} ${styles.mwaFeePanel}`}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>Fee Structure &middot; Treasure Chest</span>
+            </div>
+            <div className={styles.mwaFeeGrid}>
+              <div className={styles.mwaFeeItem}>
+                <span className={styles.mwaFeeLabel}>Cohort / Retention</span>
+                <span className={styles.mwaFeeValue}>3%</span>
+              </div>
+              <div className={styles.mwaFeeItem}>
+                <span className={styles.mwaFeeLabel}>Governance / Treasury</span>
+                <span className={styles.mwaFeeValue}>5%</span>
+              </div>
+              <div className={styles.mwaFeeItem}>
+                <span className={styles.mwaFeeLabel}>Destination</span>
+                <span className={styles.mwaFeeValue}>Treasure Chest</span>
+              </div>
+              <div className={styles.mwaFeeItem}>
+                <span className={styles.mwaFeeLabel}>Resolver</span>
+                <span className={styles.mwaFeeValue}>Azura</span>
+              </div>
+            </div>
+          </div>
+
+          </div>{/* end centerRight */}
 
           {/* ════ RIGHT COLUMN ════ */}
           <div className={styles.rightColumn}>
