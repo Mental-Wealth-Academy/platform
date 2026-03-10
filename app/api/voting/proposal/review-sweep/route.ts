@@ -5,12 +5,20 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * POST /api/voting/proposal/review-sweep
+ * GET|POST /api/voting/proposal/review-sweep
  *
  * Safety net: finds proposals stuck in 'pending_review' for more than 2 minutes
- * and re-triggers the review for each one. Called by Vercel cron or manually.
+ * and re-triggers the review for each one. Called by Vercel cron (GET) or manually (POST).
  */
+export async function GET(request: Request) {
+  return handleSweep(request);
+}
+
 export async function POST(request: Request) {
+  return handleSweep(request);
+}
+
+async function handleSweep(request: Request) {
   // Accept either x-internal-secret (internal calls) or Authorization: Bearer (Vercel cron)
   const internalSecret = request.headers.get('x-internal-secret');
   const authHeader = request.headers.get('authorization');
