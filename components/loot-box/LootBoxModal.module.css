@@ -1,0 +1,530 @@
+/* LootBox Modal - Brutalist Design System */
+
+@keyframes lootBoxIn {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes spinGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(81, 104, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(81, 104, 255, 0.6); }
+}
+
+@keyframes revealPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shineSwipe {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes tierGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 12, 28, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  position: relative;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 6px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  max-width: 440px;
+  width: 100%;
+  animation: lootBoxIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1A1D33;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: #1A1D33;
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+/* Header */
+.header {
+  padding: 24px 24px 0;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 22px;
+  font-weight: 800;
+  color: #1A1D33;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: #999999;
+  margin: 0;
+}
+
+/* Spin Area */
+.spinArea {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Reel strip */
+.reelWindow {
+  width: 100%;
+  height: 140px;
+  border: 3px solid #1A1D33;
+  border-radius: 6px;
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.08), 4px 4px 0 #1A1D33;
+  overflow: hidden;
+  position: relative;
+  background: #fafafa;
+}
+
+.reelWindow::before,
+.reelWindow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reelWindow::before {
+  top: 0;
+  background: linear-gradient(to bottom, #fafafa 0%, transparent 100%);
+}
+
+.reelWindow::after {
+  bottom: 0;
+  background: linear-gradient(to top, #fafafa 0%, transparent 100%);
+}
+
+.reelPointer {
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 14px solid var(--color-primary);
+  filter: drop-shadow(-2px 0 0 #1A1D33);
+}
+
+.reelPointerLeft {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 14px solid var(--color-primary);
+  filter: drop-shadow(2px 0 0 #1A1D33);
+}
+
+.reelStrip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.05s linear;
+}
+
+.reelItem {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px 20px;
+  flex-shrink: 0;
+}
+
+.reelItemIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: 2px solid #1A1D33;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.reelItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.reelItemName {
+  font-family: var(--font-primary);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reelItemTier {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.tierCommon {
+  background: rgba(26, 29, 51, 0.08);
+  color: #666666;
+  border: 1px solid rgba(26, 29, 51, 0.15);
+}
+
+.tierUncommon {
+  background: rgba(46, 204, 113, 0.12);
+  color: #27ae60;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.tierRare {
+  background: rgba(81, 104, 255, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(81, 104, 255, 0.3);
+  animation: tierGlow 2s ease-in-out infinite;
+}
+
+.tierLegendary {
+  background: linear-gradient(135deg, rgba(255, 119, 41, 0.15) 0%, rgba(255, 200, 50, 0.15) 100%);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  animation: tierGlow 1.5s ease-in-out infinite;
+}
+
+/* Spin button */
+.spinButton {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--color-primary);
+  border: 3px solid #1A1D33;
+  border-radius: 4px;
+  font-family: var(--font-button);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 5px 5px 0 #1A1D33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.spinButton:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #1A1D33;
+}
+
+.spinButton:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.spinButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinButtonSpinning {
+  animation: spinGlow 1s ease-in-out infinite;
+}
+
+.costBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.costIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Result overlay */
+.resultOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.97);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 5;
+  animation: revealPulse 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  padding: 24px;
+}
+
+.resultImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  object-fit: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.resultShine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shineSwipe 1.5s ease-in-out infinite;
+}
+
+.resultTitle {
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 800;
+  color: #1A1D33;
+  text-align: center;
+}
+
+.resultTier {
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.resultDescription {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #666666;
+  text-align: center;
+  max-width: 300px;
+}
+
+.resultButton {
+  width: 100%;
+  max-width: 260px;
+  padding: 14px 20px;
+  background: var(--color-primary);
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  font-family: var(--font-button);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 3px 3px 0 #1A1D33;
+  margin-top: 4px;
+}
+
+.resultButton:hover {
+  background: var(--color-primary-hover);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+/* Loot table */
+.lootTable {
+  padding: 0 24px 20px;
+}
+
+.lootTableTitle {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 10px;
+}
+
+.lootTableGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lootTableRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(26, 29, 51, 0.03);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 4px;
+}
+
+.lootTableItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lootTableIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.15);
+  object-fit: cover;
+}
+
+.lootTableName {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1D33;
+}
+
+.lootTableChance {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 700;
+  color: #999999;
+}
+
+/* Fund notice */
+.fundNotice {
+  padding: 12px 24px 20px;
+  text-align: center;
+}
+
+.fundNoticeText {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #999999;
+  line-height: 1.4;
+}
+
+.fundNoticeHighlight {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* Insufficient shards */
+.insufficientNotice {
+  width: 100%;
+  padding: 10px;
+  background: rgba(231, 76, 60, 0.08);
+  border: 1.5px solid rgba(231, 76, 60, 0.25);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  color: #e74c3c;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .modal {
+    max-width: 380px;
+    margin: 60px auto 0;
+  }
+
+  .header {
+    padding: 20px 20px 0;
+  }
+
+  .title {
+    font-size: 19px;
+  }
+
+  .spinArea {
+    padding: 20px;
+  }
+
+  .reelWindow {
+    height: 120px;
+  }
+
+  .reelItem {
+    height: 120px;
+  }
+
+  .reelItemIcon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .lootTable {
+    padding: 0 20px 16px;
+  }
+
+  .fundNotice {
+    padding: 10px 20px 16px;
+  }
+}
