@@ -14,6 +14,7 @@ import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
 import InventoryModal from '../inventory-modal/InventoryModal';
 import YourAccountsModal from '../nav-buttons/YourAccountsModal';
 import OnboardingModal from '../onboarding/OnboardingModal';
+import LootBoxModal from '../loot-box/LootBoxModal';
 import { useSound } from '@/hooks/useSound';
 
 interface NavItem {
@@ -42,6 +43,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
+      { id: 'duels', label: 'Duels', href: '/duels', icon: '/icons/debate-icon.svg', badge: 'New', badgeType: 'highlight' },
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/treasury.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
@@ -84,6 +86,7 @@ const SideNavigation: React.FC = () => {
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -528,6 +531,32 @@ const SideNavigation: React.FC = () => {
                     )}
                   </div>
                 </button>
+                <button
+                  className={styles.lootBoxButton}
+                  onClick={() => {
+                    play('click');
+                    setIsLootBoxOpen(true);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  onMouseEnter={() => play('hover')}
+                  type="button"
+                  title="Loot Box"
+                >
+                  <svg width={isCollapsed ? 22 : 18} height={isCollapsed ? 22 : 18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 8v13H3V8" />
+                    <path d="M1 3h22v5H1z" />
+                    <path d="M12 3v18" />
+                  </svg>
+                  {!isCollapsed && (
+                    <span className={styles.lootBoxLabel}>Loot Box</span>
+                  )}
+                  {!isCollapsed && (
+                    <span className={styles.lootBoxCost}>
+                      <Image src="/icons/shard.svg" alt="" width={12} height={12} />
+                      10
+                    </span>
+                  )}
+                </button>
               </div>
             )}
             </React.Fragment>
@@ -679,6 +708,12 @@ const SideNavigation: React.FC = () => {
         isOpen={isInventoryOpen}
         onClose={() => setIsInventoryOpen(false)}
         shardCount={shardCount}
+      />
+      <LootBoxModal
+        isOpen={isLootBoxOpen}
+        onClose={() => setIsLootBoxOpen(false)}
+        shardCount={shardCount}
+        onShardsSpent={(newCount) => setShardCount(newCount)}
       />
       <ProMembershipModal isOpen={isProModalOpen} onClose={() => setIsProModalOpen(false)} />
       {isYourAccountsModalOpen && (
