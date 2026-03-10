@@ -95,18 +95,26 @@ const MOCK_LEADERBOARD: LeaderboardEntry[] = [
   { rank: 5, name: 'SynapseKid', avatar: 'SK', wins: 29, losses: 18, winRate: 62, streak: 1, earnings: 980 },
 ];
 
-const TOPICS = [
-  'Cognitive Behavioral Therapy',
-  'Neuroplasticity Basics',
-  'Stress Response Systems',
-  'Emotional Intelligence',
-  'Sleep & Memory',
-  'Mindfulness Techniques',
+type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+
+interface Topic {
+  name: string;
+  difficulty: Difficulty;
+}
+
+const TOPICS: Topic[] = [
+  { name: 'Mindfulness Techniques', difficulty: 'beginner' },
+  { name: 'Sleep & Memory', difficulty: 'beginner' },
+  { name: 'Emotional Intelligence', difficulty: 'intermediate' },
+  { name: 'Stress Response Systems', difficulty: 'intermediate' },
+  { name: 'Neuroplasticity Basics', difficulty: 'advanced' },
+  { name: 'Cognitive Behavioral Therapy', difficulty: 'advanced' },
 ];
 
 export default function DuelsPage() {
   const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'history'>('arena');
   const [selectedStake, setSelectedStake] = useState<number>(50);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const { play } = useSound();
 
   const liveDuels = MOCK_DUELS.filter((d) => d.status === 'live');
@@ -128,6 +136,26 @@ export default function DuelsPage() {
                 Challenge another learner to a timed quiz battle. Stake Orbs, test your knowledge, winner takes the pot.
               </p>
             </div>
+            {liveDuels.length > 0 && (
+              <div className={styles.heroLiveBanner}>
+                <span className={styles.heroLiveDot} />
+                <span className={styles.heroLiveText}>{liveDuels.length} Live Now</span>
+                <button
+                  className={styles.heroLiveButton}
+                  onClick={() => {
+                    play('click');
+                    setActiveTab('arena');
+                    setTimeout(() => {
+                      document.getElementById('live-duels-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                  onMouseEnter={() => play('hover')}
+                  type="button"
+                >
+                  Watch
+                </button>
+              </div>
+            )}
             <div className={styles.heroStats}>
               <div className={styles.heroStat}>
                 <span className={styles.heroStatValue}>156</span>
@@ -217,13 +245,16 @@ export default function DuelsPage() {
                       <div className={styles.topicGrid}>
                         {TOPICS.map((topic) => (
                           <button
-                            key={topic}
-                            className={styles.topicChip}
-                            onClick={() => play('click')}
+                            key={topic.name}
+                            className={`${styles.topicChip} ${styles[`topicChip${topic.difficulty.charAt(0).toUpperCase()}${topic.difficulty.slice(1)}`]} ${selectedTopic === topic.name ? styles.topicChipSelected : ''}`}
+                            onClick={() => { play('click'); setSelectedTopic(topic.name); }}
                             onMouseEnter={() => play('hover')}
                             type="button"
                           >
-                            {topic}
+                            <span className={styles.topicName}>{topic.name}</span>
+                            <span className={`${styles.difficultyBadge} ${styles[`difficulty${topic.difficulty.charAt(0).toUpperCase()}${topic.difficulty.slice(1)}`]}`}>
+                              {topic.difficulty}
+                            </span>
                           </button>
                         ))}
                       </div>
@@ -278,7 +309,7 @@ export default function DuelsPage() {
 
                 {/* Live Duels */}
                 {liveDuels.length > 0 && (
-                  <section>
+                  <section id="live-duels-section">
                     <div className={styles.sectionHeader}>
                       <h2 className={styles.sectionTitle}>
                         <span className={styles.liveDot} />
