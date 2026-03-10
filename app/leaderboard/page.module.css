@@ -172,57 +172,12 @@
   background: var(--color-primary);
 }
 
-/* Tab Navigation */
-.tabRow {
-  display: flex;
-  gap: 8px;
-}
-
-.tab {
-  padding: 10px 20px;
-  border-radius: var(--radius-lg);
-  border: 3px solid #1A1D33;
-  background: #ffffff;
-  color: #1A1D33;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 #1A1D33;
-  transition: all 0.15s ease;
-}
-
-.tab:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
-}
-
-.tabActive {
-  background: var(--color-primary);
-  color: #ffffff;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
-}
-
-/* Tab Content */
-.tabContent {
-  animation: tabFadeIn 0.25s ease;
-}
-
-@keyframes tabFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* Podium — Top 3 */
 .podium {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
   align-items: end;
-  margin-bottom: 24px;
 }
 
 .podiumCard {
@@ -418,233 +373,61 @@
   border: 2px solid;
 }
 
-/* Stake Section */
-.stakeSection {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.stakeCard {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: var(--radius-xl);
-  padding: 28px;
-  box-shadow: 4px 4px 0 #1A1D33;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.stakeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.stakeTitle {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: #1A1D33;
-  font-family: var(--font-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.stakeMeta {
-  font-size: 11px;
-  font-weight: 700;
-  color: #666666;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--font-primary);
-  padding: 6px 12px;
-  background: rgba(26, 29, 51, 0.06);
-  border-radius: var(--radius-md);
-  border: 2px solid rgba(26, 29, 51, 0.12);
-}
-
-.stakeDesc {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #666666;
-  font-family: var(--font-primary);
-  max-width: 640px;
-}
-
-.stakeInputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 8px;
-  border-top: 2px solid rgba(26, 29, 51, 0.08);
-}
-
-.stakeLabel {
-  font-size: 12px;
-  font-weight: 700;
-  color: #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--font-primary);
-}
-
-.stakeInputRow {
-  display: flex;
-  gap: 12px;
-}
-
-.stakeInputWrapper {
-  flex: 1;
+/* How Payouts Work — toggle button */
+.payoutToggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  border: 3px solid #1A1D33;
-  border-radius: var(--radius-lg);
+  padding: 12px 18px;
   background: #ffffff;
-}
-
-.stakeInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 18px;
-  font-weight: 700;
-  font-family: var(--font-primary);
-  color: #1A1D33;
-  background: transparent;
-  min-width: 0;
-}
-
-.stakeInput::placeholder {
-  color: #cccccc;
-}
-
-.stakeInput:disabled {
-  opacity: 0.4;
-}
-
-.stakeUnit {
-  font-size: 12px;
-  font-weight: 700;
-  color: #999999;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--font-primary);
-}
-
-.stakeButton {
-  padding: 12px 24px;
-  background: var(--color-primary);
-  color: #ffffff;
   border: 3px solid #1A1D33;
   border-radius: var(--radius-lg);
+  box-shadow: 3px 3px 0 #1A1D33;
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 #1A1D33;
-  transition: all 0.15s ease;
-  white-space: nowrap;
+  align-self: flex-start;
 }
 
-.stakeButton:hover:not(:disabled) {
+.payoutToggle:hover {
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 #1A1D33;
 }
 
-.stakeButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.payoutToggle svg:first-child {
+  flex-shrink: 0;
 }
 
-.stakeHint {
-  font-size: 12px;
-  color: #999999;
-  font-family: var(--font-primary);
-  font-style: italic;
+.chevron {
+  transition: transform 0.2s ease;
 }
 
-/* Stake Info Grid */
-.stakeInfoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.chevronOpen {
+  transform: rotate(180deg);
 }
 
-.stakeInfoCard {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: var(--radius-xl);
-  padding: 24px;
-  box-shadow: 4px 4px 0 #1A1D33;
-}
-
-.stakeInfoTitle {
-  margin: 0 0 12px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1A1D33;
-  font-family: var(--font-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.stakeSteps {
-  margin: 0;
-  padding: 0 0 0 20px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: #666666;
-  font-family: var(--font-primary);
-}
-
-.stakeSteps li::marker {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.stakeFactors {
-  margin: 0;
-  padding: 0 0 0 20px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: #666666;
-  font-family: var(--font-primary);
-  list-style: none;
-}
-
-.stakeFactors li {
-  position: relative;
-  padding-left: 4px;
-}
-
-.stakeFactors li::before {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 10px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-tertiary);
-}
-
-.stakeFactors li strong {
-  color: #1A1D33;
-}
-
-/* Payout Tiers */
-.tiersSection {
+/* Payout Info Panel */
+.payoutPanel {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  animation: panelSlideIn 0.25s ease;
+}
+
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tiersGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .tierCard {
@@ -673,19 +456,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 28px;
-  min-width: 110px;
+  padding: 16px 24px;
+  min-width: 100px;
   border-right: 2px solid rgba(26, 29, 51, 0.1);
 }
 
 .tierPayout {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   font-family: var(--font-primary);
 }
 
 .tierName {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -694,15 +477,15 @@
 
 .tierRight {
   flex: 1;
-  padding: 20px 24px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .tierRange {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #1A1D33;
   font-family: var(--font-primary);
@@ -793,52 +576,25 @@
     box-shadow: 3px 3px 0 #1A1D33;
   }
 
-  .stakeInfoGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .stakeInputRow {
-    flex-direction: column;
-  }
-
-  .stakeCard {
-    padding: 20px;
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
-  .stakeInfoCard {
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
   .tierCard {
     box-shadow: 3px 3px 0 #1A1D33;
   }
 
   .tierLeft {
     min-width: 80px;
-    padding: 16px;
+    padding: 12px 16px;
   }
 
   .tierPayout {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .tierRight {
-    padding: 16px;
+    padding: 12px 16px;
   }
 
   .pageTitle {
     font-size: 22px;
-  }
-
-  .tabRow {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .tab {
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .content {

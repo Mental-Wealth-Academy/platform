@@ -44,10 +44,10 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 function getRankDisplay(rank: number) {
-  if (rank === 1) return { emoji: '', label: '1st' };
-  if (rank === 2) return { emoji: '', label: '2nd' };
-  if (rank === 3) return { emoji: '', label: '3rd' };
-  return { emoji: '', label: `${rank}th` };
+  if (rank === 1) return '1st';
+  if (rank === 2) return '2nd';
+  if (rank === 3) return '3rd';
+  return `${rank}th`;
 }
 
 function getInitials(username: string) {
@@ -56,10 +56,9 @@ function getInitials(username: string) {
 
 export default function LeaderboardPage() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'rankings' | 'stakes' | 'tiers'>('rankings');
+  const [showPayoutInfo, setShowPayoutInfo] = useState(false);
   const { play } = useSound();
 
-  // Mock season data
   const seasonNumber = 3;
   const currentWeek = 8;
   const totalWeeks = 12;
@@ -81,12 +80,12 @@ export default function LeaderboardPage() {
             <div className={styles.seasonBadge}>Season {seasonNumber}</div>
             <h1 className={styles.pageTitle}>Leaderboard</h1>
             <p className={styles.pageSubtitle}>
-              Lock Orbs into the prize pool at the start of each 12-week cohort.
-              Final rankings determine your payout tier.
+              Seasonal rankings for the current 12-week cohort.
+              Climb the standings to earn your share of the prize pool.
             </p>
           </div>
 
-          {/* Season Stats Row */}
+          {/* Stats Row */}
           <div className={styles.statsRow}>
             <div className={styles.statCard}>
               <span className={styles.statValue}>{totalPool.toLocaleString()}</span>
@@ -126,192 +125,116 @@ export default function LeaderboardPage() {
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className={styles.tabRow}>
-            <button
-              className={`${styles.tab} ${activeTab === 'rankings' ? styles.tabActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('rankings'); }}
-              onMouseEnter={() => play('hover')}
-              type="button"
-            >
-              Rankings
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'stakes' ? styles.tabActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('stakes'); }}
-              onMouseEnter={() => play('hover')}
-              type="button"
-            >
-              Stake Orbs
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'tiers' ? styles.tabActive : ''}`}
-              onClick={() => { play('click'); setActiveTab('tiers'); }}
-              onMouseEnter={() => play('hover')}
-              type="button"
-            >
-              Payout Tiers
-            </button>
+          {/* Podium — Top 3 */}
+          <div className={styles.podium}>
+            {[MOCK_LEADERBOARD[1], MOCK_LEADERBOARD[0], MOCK_LEADERBOARD[2]].map((entry, i) => {
+              const isFirst = i === 1;
+              return (
+                <div
+                  key={entry.rank}
+                  className={`${styles.podiumCard} ${isFirst ? styles.podiumFirst : ''}`}
+                  onMouseEnter={() => play('hover')}
+                >
+                  <div className={styles.podiumRank} style={{ color: TIER_COLORS[entry.tier] }}>
+                    {getRankDisplay(entry.rank)}
+                  </div>
+                  <div
+                    className={styles.podiumAvatar}
+                    style={{ borderColor: TIER_COLORS[entry.tier] }}
+                  >
+                    {getInitials(entry.username)}
+                  </div>
+                  <span className={styles.podiumName}>{entry.username}</span>
+                  <span className={styles.podiumXp}>{entry.weeklyXp.toLocaleString()} XP</span>
+                  <div className={styles.podiumStake}>
+                    <Image src="/icons/shard.svg" alt="Orbs" width={14} height={14} />
+                    <span>{entry.orbsStaked.toLocaleString()}</span>
+                  </div>
+                  <span className={styles.podiumStreak}>{entry.streakWeeks}wk streak</span>
+                </div>
+              );
+            })}
           </div>
 
-          {/* Tab Content */}
-          <div className={styles.tabContent}>
-            {activeTab === 'rankings' && (
-              <>
-                {/* Podium — Top 3 */}
-                <div className={styles.podium}>
-                  {[MOCK_LEADERBOARD[1], MOCK_LEADERBOARD[0], MOCK_LEADERBOARD[2]].map((entry, i) => {
-                    const isFirst = i === 1;
-                    return (
-                      <div
-                        key={entry.rank}
-                        className={`${styles.podiumCard} ${isFirst ? styles.podiumFirst : ''}`}
-                        onMouseEnter={() => play('hover')}
-                      >
-                        <div className={styles.podiumRank} style={{ color: TIER_COLORS[entry.tier] }}>
-                          {getRankDisplay(entry.rank).label}
-                        </div>
-                        <div
-                          className={styles.podiumAvatar}
-                          style={{ borderColor: TIER_COLORS[entry.tier] }}
-                        >
-                          {getInitials(entry.username)}
-                        </div>
-                        <span className={styles.podiumName}>{entry.username}</span>
-                        <span className={styles.podiumXp}>{entry.weeklyXp.toLocaleString()} XP</span>
-                        <div className={styles.podiumStake}>
-                          <Image src="/icons/shard.svg" alt="Orbs" width={14} height={14} />
-                          <span>{entry.orbsStaked.toLocaleString()}</span>
-                        </div>
-                        <span className={styles.podiumStreak}>{entry.streakWeeks}wk streak</span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Full Rankings Table */}
-                <div className={styles.rankingsTable}>
-                  <div className={styles.tableHeader}>
-                    <span className={styles.colRank}>Rank</span>
-                    <span className={styles.colUser}>Learner</span>
-                    <span className={styles.colXp}>XP</span>
-                    <span className={styles.colStake}>Staked</span>
-                    <span className={styles.colStreak}>Streak</span>
-                    <span className={styles.colTier}>Tier</span>
-                  </div>
-                  {MOCK_LEADERBOARD.map((entry) => (
-                    <div
-                      key={entry.rank}
-                      className={styles.tableRow}
-                      onMouseEnter={() => play('hover')}
-                    >
-                      <span className={styles.colRank}>
-                        <span className={styles.rankNumber}>{entry.rank}</span>
-                      </span>
-                      <span className={styles.colUser}>
-                        <div
-                          className={styles.tableAvatar}
-                          style={{ borderColor: TIER_COLORS[entry.tier] }}
-                        >
-                          {getInitials(entry.username)}
-                        </div>
-                        <span className={styles.tableUsername}>{entry.username}</span>
-                      </span>
-                      <span className={styles.colXp}>{entry.weeklyXp.toLocaleString()}</span>
-                      <span className={styles.colStake}>
-                        <Image src="/icons/shard.svg" alt="Orbs" width={12} height={12} />
-                        {entry.orbsStaked.toLocaleString()}
-                      </span>
-                      <span className={styles.colStreak}>{entry.streakWeeks}w</span>
-                      <span className={styles.colTier}>
-                        <span
-                          className={styles.tierBadge}
-                          style={{
-                            background: `${TIER_COLORS[entry.tier]}20`,
-                            color: TIER_COLORS[entry.tier],
-                            borderColor: TIER_COLORS[entry.tier],
-                          }}
-                        >
-                          {entry.tier}
-                        </span>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {activeTab === 'stakes' && (
-              <div className={styles.stakeSection}>
-                <div className={styles.stakeCard}>
-                  <div className={styles.stakeHeader}>
-                    <h2 className={styles.stakeTitle}>Lock Orbs</h2>
-                    <span className={styles.stakeMeta}>Available at season start</span>
-                  </div>
-                  <p className={styles.stakeDesc}>
-                    At the beginning of each 12-week cohort, you can optionally lock Orbs into the
-                    communal prize pool. Your final ranking determines which payout tier you fall into.
-                    Azura tracks progress and distributes rewards via Chainlink CRE at season end.
-                  </p>
-                  <div className={styles.stakeInputGroup}>
-                    <label className={styles.stakeLabel}>Amount to stake</label>
-                    <div className={styles.stakeInputRow}>
-                      <div className={styles.stakeInputWrapper}>
-                        <Image src="/icons/shard.svg" alt="Orbs" width={16} height={16} />
-                        <input
-                          type="number"
-                          className={styles.stakeInput}
-                          placeholder="0"
-                          min={0}
-                          disabled
-                        />
-                        <span className={styles.stakeUnit}>ORBS</span>
-                      </div>
-                      <button
-                        className={styles.stakeButton}
-                        disabled
-                        type="button"
-                      >
-                        Season Locked
-                      </button>
-                    </div>
-                    <span className={styles.stakeHint}>
-                      Staking opens at the start of Season {seasonNumber + 1}. Current season is in progress.
-                    </span>
-                  </div>
-                </div>
-
-                <div className={styles.stakeInfoGrid}>
-                  <div className={styles.stakeInfoCard}>
-                    <h3 className={styles.stakeInfoTitle}>How it works</h3>
-                    <ol className={styles.stakeSteps}>
-                      <li>Lock Orbs during the first week of a new cohort</li>
-                      <li>Learn, engage, and climb the rankings over 12 weeks</li>
-                      <li>Azura calculates final standings at season end</li>
-                      <li>Prize pool is distributed to payout tiers via CRE</li>
-                    </ol>
-                  </div>
-                  <div className={styles.stakeInfoCard}>
-                    <h3 className={styles.stakeInfoTitle}>What counts</h3>
-                    <ul className={styles.stakeFactors}>
-                      <li><strong>Weekly XP</strong> from completing readings and reflections</li>
-                      <li><strong>Streak</strong> bonus for consecutive active weeks</li>
-                      <li><strong>Community</strong> points from proposals and rewards</li>
-                      <li><strong>Consistency</strong> matters more than cramming</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'tiers' && (
-              <div className={styles.tiersSection}>
-                {PAYOUT_TIERS.map((tier) => (
+          {/* Full Rankings Table */}
+          <div className={styles.rankingsTable}>
+            <div className={styles.tableHeader}>
+              <span className={styles.colRank}>Rank</span>
+              <span className={styles.colUser}>Learner</span>
+              <span className={styles.colXp}>XP</span>
+              <span className={styles.colStake}>Staked</span>
+              <span className={styles.colStreak}>Streak</span>
+              <span className={styles.colTier}>Tier</span>
+            </div>
+            {MOCK_LEADERBOARD.map((entry) => (
+              <div
+                key={entry.rank}
+                className={styles.tableRow}
+                onMouseEnter={() => play('hover')}
+              >
+                <span className={styles.colRank}>
+                  <span className={styles.rankNumber}>{entry.rank}</span>
+                </span>
+                <span className={styles.colUser}>
                   <div
-                    key={tier.label}
-                    className={styles.tierCard}
-                    onMouseEnter={() => play('hover')}
+                    className={styles.tableAvatar}
+                    style={{ borderColor: TIER_COLORS[entry.tier] }}
                   >
+                    {getInitials(entry.username)}
+                  </div>
+                  <span className={styles.tableUsername}>{entry.username}</span>
+                </span>
+                <span className={styles.colXp}>{entry.weeklyXp.toLocaleString()}</span>
+                <span className={styles.colStake}>
+                  <Image src="/icons/shard.svg" alt="Orbs" width={12} height={12} />
+                  {entry.orbsStaked.toLocaleString()}
+                </span>
+                <span className={styles.colStreak}>{entry.streakWeeks}w</span>
+                <span className={styles.colTier}>
+                  <span
+                    className={styles.tierBadge}
+                    style={{
+                      background: `${TIER_COLORS[entry.tier]}20`,
+                      color: TIER_COLORS[entry.tier],
+                      borderColor: TIER_COLORS[entry.tier],
+                    }}
+                  >
+                    {entry.tier}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* How Payouts Work — collapsible info panel */}
+          <button
+            className={styles.payoutToggle}
+            onClick={() => { play('click'); setShowPayoutInfo(!showPayoutInfo); }}
+            onMouseEnter={() => play('hover')}
+            type="button"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <path d="M12 16V12M12 8H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <span>How Payouts Work</span>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={`${styles.chevron} ${showPayoutInfo ? styles.chevronOpen : ''}`}
+            >
+              <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          {showPayoutInfo && (
+            <div className={styles.payoutPanel}>
+              <div className={styles.tiersGrid}>
+                {PAYOUT_TIERS.map((tier) => (
+                  <div key={tier.label} className={styles.tierCard}>
                     <div className={styles.tierAccent} style={{ background: tier.color }} />
                     <div className={styles.tierLeft}>
                       <div className={styles.tierPayout} style={{ color: tier.color }}>
@@ -327,21 +250,21 @@ export default function LeaderboardPage() {
                     </div>
                   </div>
                 ))}
-
-                <div className={styles.tierDisclaimer}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-                    <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-                    <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-                  </svg>
-                  <span>
-                    Distributions are automated by Azura via Chainlink CRE.
-                    All payouts are verifiable on-chain.
-                  </span>
-                </div>
               </div>
-            )}
-          </div>
+
+              <div className={styles.tierDisclaimer}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
+                  <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
+                  <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
+                </svg>
+                <span>
+                  Distributions are automated by Azura via Chainlink CRE.
+                  All payouts are verifiable on-chain.
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
