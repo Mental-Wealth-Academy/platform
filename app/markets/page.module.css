@@ -108,7 +108,7 @@
 /* ── Dashboard Grid ── */
 .grid {
   display: grid;
-  grid-template-columns: 240px 1fr 1fr 260px;
+  grid-template-columns: 260px 1fr 280px;
   grid-template-rows: 1fr;
   gap: 1px;
   background: rgba(255, 255, 255, 0.03);
@@ -251,19 +251,9 @@
   font-size: 12px;
 }
 
-/* ── Center-Left Column (Polymarket) ── */
-.centerLeft {
+/* ── Center Column Wrapper ── */
+.centerColumn {
   grid-column: 2;
-  grid-row: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  background: rgba(255, 255, 255, 0.03);
-}
-
-/* ── Center-Right Column (MWA Markets) ── */
-.centerRight {
-  grid-column: 3;
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -273,7 +263,7 @@
 
 /* ── Right Column Wrapper ── */
 .rightColumn {
-  grid-column: 4;
+  grid-column: 3;
   grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -1107,13 +1097,13 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1400px) {
+@media (max-width: 1200px) {
   .grid {
-    grid-template-columns: 220px 1fr 1fr 240px;
+    grid-template-columns: 220px 1fr 240px;
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1000px) {
   .grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -1131,21 +1121,8 @@
     min-width: 260px;
   }
 
-  .centerLeft {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .centerRight {
-    grid-column: 2;
-    grid-row: auto;
-  }
-
-  .rightColumn {
+  .centerColumn {
     grid-column: 1 / 3;
-    grid-row: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 
   .marketsColumn {
@@ -1161,13 +1138,13 @@
   }
 
   .flowPanel {
-    flex: 1;
-    min-width: 280px;
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .positionsPanel {
-    flex: 1;
-    min-width: 280px;
+    grid-column: 2;
+    grid-row: auto;
   }
 }
 
@@ -1190,30 +1167,16 @@
     min-width: auto;
   }
 
-  .centerLeft {
+  .centerColumn {
     grid-column: 1;
-  }
-
-  .centerRight {
-    grid-column: 1;
-  }
-
-  .rightColumn {
-    grid-column: 1;
-    flex-direction: column;
   }
 
   .marketsColumn {
     grid-column: 1;
   }
 
-  .flowPanel {
-    min-width: auto;
-  }
-
   .positionsPanel {
     grid-column: 1;
-    min-width: auto;
   }
 
   .mwaMarketsList {

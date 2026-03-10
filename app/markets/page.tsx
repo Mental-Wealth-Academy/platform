@@ -930,8 +930,43 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ CENTER-LEFT: Polymarket ════ */}
-          <div className={styles.centerLeft}>
+          {/* ════ CENTER: MWA Markets + Polymarket ════ */}
+          <div className={styles.centerColumn}>
+
+          {/* MWA Markets Header */}
+          <div className={`${styles.panel} ${styles.chartPanel}`}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with ORBS</span>
+              <span className={styles.panelBadge}>$APPLE</span>
+            </div>
+            <div className={styles.mwaStatsRow}>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Total Markets</span>
+                <span className={styles.mwaStatValue}>{mwaMarkets.length}</span>
+              </div>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Total Pool</span>
+                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} ORBS</span>
+              </div>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaStatLabel}>Settlement</span>
+                <span className={styles.mwaStatValue}>Azura AI</span>
+              </div>
+              <div className={styles.mwaStat}>
+                <span className={styles.mwaFeeLabel}>Fees</span>
+                <span className={styles.mwaStatValue}>3-5% → Treasure Chest</span>
+              </div>
+            </div>
+          </div>
+
+          {/* MWA Market Cards */}
+          <div className={`${styles.panel} ${styles.mwaListPanel}`}>
+            <div className={styles.mwaMarketsList}>
+              {mwaMarkets.map((market) => (
+                <MWAMarketCard key={market.id} market={market} onBet={handleMwaBet} />
+              ))}
+            </div>
+          </div>
 
           {/* Trading Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
@@ -1037,68 +1072,7 @@ export default function Markets() {
             </div>
           </div>
 
-          </div>{/* end centerLeft */}
-
-          {/* ════ CENTER-RIGHT: MWA Custom Markets ════ */}
-          <div className={styles.centerRight}>
-
-          {/* MWA Markets Header */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with ORBS</span>
-              <span className={styles.panelBadge}>$APPLE</span>
-            </div>
-            <div className={styles.mwaStatsRow}>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Total Markets</span>
-                <span className={styles.mwaStatValue}>{mwaMarkets.length}</span>
-              </div>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Total Pool</span>
-                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} ORBS</span>
-              </div>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Settlement</span>
-                <span className={styles.mwaStatValue}>Azura AI</span>
-              </div>
-            </div>
-          </div>
-
-          {/* MWA Market Cards */}
-          <div className={`${styles.panel} ${styles.mwaListPanel}`}>
-            <div className={styles.mwaMarketsList}>
-              {mwaMarkets.map((market) => (
-                <MWAMarketCard key={market.id} market={market} onBet={handleMwaBet} />
-              ))}
-            </div>
-          </div>
-
-          {/* MWA Fee Info */}
-          <div className={`${styles.panel} ${styles.mwaFeePanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Fee Structure &middot; Treasure Chest</span>
-            </div>
-            <div className={styles.mwaFeeGrid}>
-              <div className={styles.mwaFeeItem}>
-                <span className={styles.mwaFeeLabel}>Cohort / Retention</span>
-                <span className={styles.mwaFeeValue}>3%</span>
-              </div>
-              <div className={styles.mwaFeeItem}>
-                <span className={styles.mwaFeeLabel}>Governance / Treasury</span>
-                <span className={styles.mwaFeeValue}>5%</span>
-              </div>
-              <div className={styles.mwaFeeItem}>
-                <span className={styles.mwaFeeLabel}>Destination</span>
-                <span className={styles.mwaFeeValue}>Treasure Chest</span>
-              </div>
-              <div className={styles.mwaFeeItem}>
-                <span className={styles.mwaFeeLabel}>Resolver</span>
-                <span className={styles.mwaFeeValue}>Azura</span>
-              </div>
-            </div>
-          </div>
-
-          </div>{/* end centerRight */}
+          </div>{/* end centerColumn */}
 
           {/* ════ RIGHT COLUMN ════ */}
           <div className={styles.rightColumn}>
