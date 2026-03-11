@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
@@ -9,12 +10,10 @@ import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeeklyRead from '@/components/daily-read/DailyRead';
 import DailyReadPopup from '@/components/daily-read/DailyReadPopup';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
-import SeasonTimer from '@/components/season-timer/SeasonTimer';
-import { CalendarDays } from '@/components/calendar-days/CalendarDays';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
-type HomeTab = 'write' | 'read' | 'reflect';
+type ActivityCard = 'daily' | 'weekly' | 'tasks';
 
 interface WeekStatus {
   weekNumber: number;
@@ -22,6 +21,12 @@ interface WeekStatus {
   sealTxHash: string | null;
 }
 
+interface LeaderboardUser {
+  rank: number;
+  username: string;
+  avatarUrl: string | null;
+  shards: number;
+}
 
 const WEEKLY_READINGS = [
   { title: 'Art is a Spiritual Warfare', author: 'By: Jhinova Bay, PhD', description: 'This week initiates your creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
@@ -56,6 +61,8 @@ const WEEK_TITLES = [
   'Epilogue',
 ];
 
+const STREAK_DAYS = ['T', 'W', 'Th', 'F', 'S'];
+
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
@@ -66,15 +73,20 @@ export default function HomePage() {
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<HomeTab>('write');
+  const [shardCount, setShardCount] = useState(0);
+  const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
+  const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
+
+  // Streak: count sealed weeks as a simple proxy
+  const streakCount = weekStatuses.filter(w => w.isSealed).length;
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
   }, []);
 
-  // Fetch season info (universal timer)
   useEffect(() => {
     fetch('/api/season', { cache: 'no-store' })
       .then(res => res.json())
@@ -86,7 +98,6 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  // Check auth first, then fetch week statuses only if authenticated
   useEffect(() => {
     (async () => {
       try {
@@ -95,6 +106,7 @@ export default function HomePage() {
         if (!meData?.user) return;
 
         setIsAuthenticated(true);
+        setShardCount(meData.user.shardCount ?? 0);
         const uname = meData.user.username;
         if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
         const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
@@ -102,10 +114,15 @@ export default function HomePage() {
           const data = await res.json();
           setWeekStatuses(data.weeks);
         }
-      } catch {
-        // Not authenticated — use empty defaults
-      }
+      } catch {}
     })();
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/leaderboard')
+      .then(res => res.json())
+      .then(data => setLeaderboard(data.users ?? []))
+      .catch(() => {});
   }, []);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string) => {
@@ -123,21 +140,14 @@ export default function HomePage() {
     if (tag === 'TEXTAREA' || tag === 'INPUT') play('hover');
   }, [play]);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    const timeOfDay = hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening';
-    if (displayName) return `Good ${timeOfDay}, ${displayName}`;
-    return `Good ${timeOfDay}`;
-  };
-
   const handleWelcomeAuthenticated = useCallback(() => {
-    // Re-fetch auth state after onboarding completes
     (async () => {
       try {
         const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
           setIsAuthenticated(true);
+          setShardCount(meData.user.shardCount ?? 0);
           const uname = meData.user.username;
           if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
@@ -150,76 +160,196 @@ export default function HomePage() {
     })();
   }, []);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    const timeOfDay = hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening';
+    if (displayName) return `Good ${timeOfDay}, ${displayName}`;
+    return `Good ${timeOfDay}`;
+  };
+
+  const weekReading = WEEKLY_READINGS[Math.min(activeWeek, WEEKLY_READINGS.length - 1)];
+  const weekTitle = activeWeek > 0 && activeWeek <= 12 ? WEEK_TITLES[activeWeek] : WEEK_TITLES[0];
+
+  // Avatar color from initial
+  const avatarColor = (name: string) => {
+    const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+  };
+
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
     <DailyReadPopup activeWeek={activeWeek} />
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
-            {/* Greeting + Calendar */}
-            <div className={`${styles.calendarSection} ${isLoaded ? styles.calendarSectionLoaded : ''}`}>
-              <div className={styles.journalHeader}>
-                <span className={styles.courseLabel}>DIVINE WORK</span>
-                <h2 className={styles.courseTitle}>{getGreeting()}</h2>
+        <h2 className={`${styles.greeting} ${isLoaded ? styles.greetingLoaded : ''}`}>{getGreeting()}</h2>
+
+        <div className={styles.twoCol}>
+          {/* ===== LEFT COLUMN ===== */}
+          <div className={`${styles.leftCol} ${isLoaded ? styles.leftColLoaded : ''}`}>
+
+            {/* Streak Card */}
+            <div className={styles.streakCard}>
+              <div className={styles.streakHeader}>
+                <span className={styles.streakNumber}>{streakCount}</span>
+                <Image src="/icons/shard.svg" alt="Shards" width={22} height={22} />
               </div>
-              <CalendarDays />
+              <p className={styles.streakSubtext}>
+                {streakCount === 0 ? 'Complete a week to start a streak' : `${streakCount} week streak`}
+              </p>
+              <div className={styles.streakDays}>
+                {STREAK_DAYS.map((day, i) => {
+                  const completed = i < streakCount;
+                  return (
+                    <div key={day} className={styles.streakDay}>
+                      <div className={`${styles.streakDot} ${completed ? styles.streakDotActive : ''}`}>
+                        {completed && (
+                          <Image src="/icons/shard.svg" alt="" width={16} height={16} />
+                        )}
+                      </div>
+                      <span className={styles.streakDayLabel}>{day}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Season Progress Bar */}
-            <div className={`${styles.seasonRow} ${isLoaded ? styles.seasonRowLoaded : ''}`}>
-              <SeasonTimer
-                activeWeek={activeWeek}
-                weekEndsAt={weekEndsAt}
-                seasonActive={seasonActive}
-              />
+            {/* Premium CTA */}
+            <div className={styles.premiumCard}>
+              <div className={styles.premiumInner}>
+                <div className={styles.premiumText}>
+                  <strong>Unlock all learning with Premium</strong>
+                  <span>to get smarter, faster</span>
+                </div>
+                <Link href="/shop" className={styles.premiumCta}>
+                  Explore Premium
+                </Link>
+              </div>
             </div>
 
-            {/* Activity Pod Grid */}
-            <section className={`${styles.podGrid} ${isLoaded ? styles.podGridLoaded : ''}`}>
-              <div
-                className={`${styles.podCard} ${activeTab === 'write' ? styles.podCardActive : ''}`}
-                onClick={() => { play('click'); setActiveTab('write'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <div className={styles.podIcon}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                  </svg>
+            {/* Mini Leaderboard */}
+            <div
+              className={styles.leagueCard}
+              onClick={() => { play('click'); setShowLeaderboard(true); }}
+            >
+              <div className={styles.leagueHeader}>
+                <Image src="/icons/shard.svg" alt="" width={20} height={20} />
+                <div>
+                  <strong className={styles.leagueTitle}>IVY LEAGUE</strong>
+                  <span className={styles.leagueSub}>
+                    {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
+                  </span>
                 </div>
-                <h3 className={styles.podTitle}>Write</h3>
-                <p className={styles.podDesc}>15-min morning pages to clear your mind</p>
               </div>
-              <div
-                className={`${styles.podCard} ${activeTab === 'read' ? styles.podCardActive : ''}`}
-                onClick={() => { play('click'); setActiveTab('read'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <div className={styles.podIcon}>
-                  <Image src="/icons/bookicon.svg" alt="Read" width={32} height={32} />
-                </div>
-                <h3 className={styles.podTitle}>Read</h3>
-                <p className={styles.podDesc}>Weekly readings to deepen your recovery</p>
+              <div className={styles.leagueList}>
+                {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
+                  { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+                  { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+                  { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+                ]).map(u => (
+                  <div key={u.rank} className={styles.leagueRow}>
+                    <span className={styles.leagueRank}>{u.rank}</span>
+                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
+                      {u.username[0]?.toUpperCase() ?? '?'}
+                    </div>
+                    <span className={styles.leagueName}>{u.username}</span>
+                    <span className={styles.leagueShards}>{u.shards} Shards</span>
+                  </div>
+                ))}
               </div>
-              <div
-                className={`${styles.podCard} ${activeTab === 'reflect' ? styles.podCardActive : ''}`}
-                onClick={() => { play('click'); setActiveTab('reflect'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <div className={styles.podIcon}>
-                  <Image src="/icons/Chapters.svg" alt="Reflect" width={32} height={32} />
-                </div>
-                <h3 className={styles.podTitle}>Reflect</h3>
-                <p className={styles.podDesc}>Journal exercises for each week of the course</p>
-              </div>
-            </section>
+            </div>
+          </div>
 
-            {/* Tab Content */}
-            <div className={styles.tabContent}>
-              {activeTab === 'write' && (
+          {/* ===== RIGHT COLUMN ===== */}
+          <div className={`${styles.rightCol} ${isLoaded ? styles.rightColLoaded : ''}`}>
+
+            {/* Expressive Activity Card */}
+            <div className={styles.activityCard}>
+              {activeCard === 'daily' && (
+                <>
+                  <span className={styles.activityBadge}>DAILY</span>
+                  <h1 className={styles.activityTitle}>Morning Pages</h1>
+                  <p className={styles.activityTopic}>15 minutes of freewriting</p>
+                  <div className={styles.stickerWrap}>
+                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                  </div>
+                  <button
+                    className={styles.activityCta}
+                    onClick={() => {
+                      play('click');
+                      // Scroll to the DailyNotes below
+                      document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Start Writing
+                  </button>
+                </>
+              )}
+
+              {activeCard === 'weekly' && (
+                <>
+                  <span className={styles.activityBadge}>WEEKLY</span>
+                  <h1 className={styles.activityTitle}>{weekReading.title}</h1>
+                  <p className={styles.activityTopic}>{weekTitle}</p>
+                  <div className={styles.stickerWrap}>
+                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                  </div>
+                  <button
+                    className={styles.activityCta}
+                    onClick={() => {
+                      play('click');
+                      setReaderIndex(Math.min(activeWeek, WEEKLY_READINGS.length - 1));
+                      setIsReaderOpen(true);
+                    }}
+                  >
+                    Start Reading
+                  </button>
+                </>
+              )}
+
+              {activeCard === 'tasks' && (
+                <>
+                  <span className={styles.activityBadge}>WEEKLY</span>
+                  <h1 className={styles.activityTitle}>Journal</h1>
+                  <p className={styles.activityTopic}>{weekTitle}</p>
+                  <div className={styles.stickerWrap}>
+                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                  </div>
+                  <button
+                    className={styles.activityCta}
+                    onClick={() => {
+                      play('click');
+                      document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Open Journal
+                  </button>
+                </>
+              )}
+
+              {/* Tab buttons */}
+              <div className={styles.cardTabs}>
+                {(['daily', 'weekly', 'tasks'] as ActivityCard[]).map(tab => (
+                  <button
+                    key={tab}
+                    className={`${styles.cardTab} ${activeCard === tab ? styles.cardTabActive : ''}`}
+                    onClick={() => { play('click'); setActiveCard(tab); }}
+                  >
+                    {tab === 'daily' ? 'Notes' : tab === 'weekly' ? 'Read' : 'Journal'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Embedded content below card */}
+            <div id="activity-content" className={styles.activityContent}>
+              {activeCard === 'daily' && (
                 <DailyNotes enablePersistence={isAuthenticated} />
               )}
 
-              {activeTab === 'read' && (
+              {activeCard === 'weekly' && (
                 <WeeklyRead
                   readings={WEEKLY_READINGS}
                   onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
@@ -227,7 +357,7 @@ export default function HomePage() {
                 />
               )}
 
-              {activeTab === 'reflect' && (
+              {activeCard === 'tasks' && (
                 <div className={styles.journalCards}>
                   {WEEK_TITLES.map((title, i) => {
                     if (i === 0 || i === WEEK_TITLES.length - 1) return null;
@@ -250,19 +380,43 @@ export default function HomePage() {
                 </div>
               )}
             </div>
-
-            {/* Course Banner */}
-            <div className={`${styles.courseBanner} ${isLoaded ? styles.courseIntroLoaded : ''}`}>
-              <Image
-                src="https://i.imgur.com/ckhi8jC.jpeg"
-                alt="Discover Your Ethereal Horizon"
-                width={900}
-                height={240}
-                className={styles.courseBannerImg}
-                unoptimized
-              />
-            </div>
+          </div>
+        </div>
       </main>
+
+      {/* Leaderboard Modal */}
+      {showLeaderboard && (
+        <div className={styles.modalOverlay} onClick={() => setShowLeaderboard(false)}>
+          <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
+            <button className={styles.modalClose} onClick={() => setShowLeaderboard(false)}>&times;</button>
+            <div className={styles.modalHeader}>
+              <Image src="/icons/shard.svg" alt="" width={28} height={28} />
+              <div>
+                <strong className={styles.modalTitle}>IVY LEAGUE</strong>
+                <span className={styles.modalSub}>
+                  {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
+                </span>
+              </div>
+            </div>
+            <div className={styles.modalList}>
+              {leaderboard.map(u => (
+                <div key={u.rank} className={styles.leagueRow}>
+                  <span className={styles.leagueRank}>{u.rank}</span>
+                  <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
+                    {u.username[0]?.toUpperCase() ?? '?'}
+                  </div>
+                  <span className={styles.leagueName}>{u.username}</span>
+                  <span className={styles.leagueShards}>{u.shards} Shards</span>
+                </div>
+              ))}
+              {leaderboard.length === 0 && (
+                <p className={styles.emptyText}>No rankings yet</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <BookReaderModal
         isOpen={isReaderOpen}
         onClose={() => setIsReaderOpen(false)}
