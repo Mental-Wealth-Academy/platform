@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import MintModal from '@/components/mint-modal/MintModal';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -88,6 +88,7 @@ export default function HomePage() {
   const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showMintModal, setShowMintModal] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
   const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false]);
   const { play } = useSound();
@@ -238,9 +239,9 @@ export default function HomePage() {
                   <strong>Unlock all learning with Premium</strong>
                   <span>to get smarter, faster</span>
                 </div>
-                <Link href="/community#angels" className={styles.premiumCta}>
+                <button className={styles.premiumCta} onClick={() => { play('click'); setShowMintModal(true); }}>
                   Explore Premium
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -448,6 +449,7 @@ export default function HomePage() {
         markdownPath={currentReading.markdownPath}
         slug={currentReading.slug}
       />
+      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
     </div>
     </HomeWelcomeFlow>
   );
