@@ -221,7 +221,8 @@
   display: block;
   width: 100%;
   text-align: center;
-  padding: 8px 16px;
+  padding: 14px 16px;
+  margin: 6px 0;
   background: linear-gradient(to right, #44DFE9 0%, #444AE9 70%);
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
