@@ -222,16 +222,20 @@
   width: 100%;
   text-align: center;
   padding: 13px;
-  background: linear-gradient(135deg, #5168FF 0%, #4A7AE8 25%, #3ABFC0 50%, #4E8BD6 75%, #6366F1 100%);
+  background: linear-gradient(to right, #44DFE9 0%, #444AE9 70%);
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 800;
-  border: none;
-  border-radius: 12px;
+  border: 1px solid #000000;
+  border-radius: 16px;
   cursor: pointer;
   text-decoration: none;
   transition: opacity 0.15s ease, transform 0.1s ease;
+  box-shadow:
+    inset 0 -6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 4px 8px rgba(255, 255, 255, 0.25),
+    0 4px 4px rgba(68, 74, 233, 1);
 }
 
 .premiumCta:hover {
