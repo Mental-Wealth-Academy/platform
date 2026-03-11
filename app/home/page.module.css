@@ -221,14 +221,14 @@
   display: block;
   width: 100%;
   text-align: center;
-  padding: 13px;
+  padding: 8px 16px;
   background: linear-gradient(to right, #44DFE9 0%, #444AE9 70%);
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 700;
   border: 1px solid #000000;
-  border-radius: 16px;
+  border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
   transition: opacity 0.15s ease, transform 0.1s ease;
