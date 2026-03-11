@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
   // CRITICAL: Recompute the user's assigned avatars server-side
   // This ensures a client cannot spoof an avatar_id that wasn't assigned to them
-  if (!isAvatarValidForUser(user.id, avatar_id)) {
+  if (!(await isAvatarValidForUser(user.id, avatar_id))) {
     return NextResponse.json(
       { 
         error: 'Invalid avatar selection.',
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   }
 
   // Get the full avatar object
-  const avatar = getAvatarByAvatarId(avatar_id);
+  const avatar = await getAvatarByAvatarId(avatar_id);
   if (!avatar) {
     return NextResponse.json(
       { error: 'Avatar not found.' },

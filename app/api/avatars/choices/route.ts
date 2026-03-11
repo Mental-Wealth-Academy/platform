@@ -36,7 +36,7 @@ export async function GET() {
   try {
     // Get deterministically assigned avatars for this user
     // Uses user.id as the seed - this is stable and unique per user
-    const choices = getAssignedAvatars(user.id);
+    const choices = await getAssignedAvatars(user.id);
 
     return NextResponse.json({
       choices,

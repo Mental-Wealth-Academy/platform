@@ -76,7 +76,7 @@ async function completeProfile() {
 
 
     // Get 5 assigned avatars for this user (deterministic based on user ID)
-    const assignedAvatars = getAssignedAvatars(userId);
+    const assignedAvatars = await getAssignedAvatars(userId);
     console.log(`\nAssigned avatars (5 total):`);
     assignedAvatars.forEach((avatar, index) => {
       console.log(`  ${index + 1}. ${avatar.id} - ${avatar.image_url}`);

@@ -1,17 +1,23 @@
 /**
- * Avatar System with Deterministic Selection (Lil Nouns)
+ * Avatar System with Deterministic Selection
  *
- * Generates unique Lil Noun avatars for each user using:
- * - @nouns/assets for trait data (bodies, accessories, heads, glasses)
- * - @nouns/sdk for SVG rendering (buildSVG)
- * - Deterministic seeded RNG (Mulberry32) for stable assignment
+ * Generates unique avatars for each user from two sources:
+ * - Academic Angels: ERC-721 NFTs (token IDs 1-550) with IPFS metadata
+ *   Contract: 0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F on Base
+ * - Lil Nouns: Procedurally generated via @nouns/assets + @nouns/sdk
  *
- * The same user seed will ALWAYS return the same 5 avatars.
- * No on-chain calls or IPFS needed — everything is computed locally.
+ * Uses deterministic seeded RNG (Mulberry32) for stable assignment.
+ * The same user seed will ALWAYS return the same 6 avatars.
  */
 
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk';
+
+// Academic Angels NFT config
+const ANGELS_CONTRACT = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F';
+const ANGELS_METADATA_BASE = 'https://nftstorage.link/ipfs/QmWag7KqqDs7yyXzzPxg3xS3jWGgZcPRd2YAS7Whd1L6Xd';
+const IPFS_GATEWAY = 'https://nftstorage.link/ipfs/';
+const TOTAL_ANGELS = 550;
 
 // Trait counts from @nouns/assets
 const BODY_COUNT = ImageData.images.bodies.length;
@@ -24,15 +30,14 @@ const BACKGROUND_COLORS = ImageData.bgcolors;
 const AVATARS_PER_USER = 6;
 const NOUNS_PER_USER = 3;
 const ANGELS_PER_USER = 3;
-const TOTAL_ANGELS = 12;
 
 /**
  * Avatar interface representing a single avatar
  */
 export interface Avatar {
-  id: string;           // Unique avatar identifier (e.g., "noun_00_11_042_200_06")
-  image_url: string;    // SVG data URI
-  metadata_url: string; // Empty (no metadata needed)
+  id: string;           // Unique avatar identifier (e.g., "angel_042" or "noun_00_11_042_200_06")
+  image_url: string;    // IPFS gateway URL or SVG data URI
+  metadata_url: string; // IPFS metadata URL (angels) or empty (nouns)
 }
 
 /**
@@ -106,29 +111,82 @@ function seedToId(seed: NounSeed): string {
 }
 
 /**
+ * Converts an ipfs:// URI to an HTTPS gateway URL
+ */
+function ipfsToHttp(ipfsUri: string): string {
+  if (ipfsUri.startsWith('ipfs://')) {
+    return IPFS_GATEWAY + ipfsUri.slice(7);
+  }
+  return ipfsUri;
+}
+
+// In-memory cache for angel metadata (tokenId -> image URL)
+const angelImageCache = new Map<number, string>();
+
+/**
+ * Fetches the image URL for an Academic Angel token from IPFS metadata
+ */
+async function fetchAngelImageUrl(tokenId: number): Promise<string> {
+  const cached = angelImageCache.get(tokenId);
+  if (cached) return cached;
+
+  const metadataUrl = `${ANGELS_METADATA_BASE}/${tokenId}`;
+  const res = await fetch(metadataUrl);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch angel metadata for token ${tokenId}: ${res.statusText}`);
+  }
+  const metadata = await res.json();
+  const imageUrl = ipfsToHttp(metadata.image);
+  angelImageCache.set(tokenId, imageUrl);
+  return imageUrl;
+}
+
+/**
+ * Deterministically picks 3 unique angel token IDs for a user (from 1-550)
+ */
+function pickAngelTokenIds(rng: () => number): number[] {
+  const ids = new Set<number>();
+  while (ids.size < ANGELS_PER_USER) {
+    const id = Math.floor(rng() * TOTAL_ANGELS) + 1; // 1-550
+    ids.add(id);
+  }
+  return Array.from(ids);
+}
+
+/**
  * Gets deterministically assigned avatars for a user.
- * Mix of 3 Academic Angels + 3 Lil Nouns = 6 total.
+ * Mix of 3 Academic Angels (from on-chain NFTs) + 3 Lil Nouns = 6 total.
  *
  * Same user seed always returns the same 6 avatars.
  */
-export function getAssignedAvatars(userSeed: string): Avatar[] {
+export async function getAssignedAvatars(userSeed: string): Promise<Avatar[]> {
   const seed = stringToSeed(userSeed);
   const rng = mulberry32(seed);
 
   const avatars: Avatar[] = [];
 
-  // Pick 3 unique Academic Angels (from 12 total)
-  const angelIndices = new Set<number>();
-  while (angelIndices.size < ANGELS_PER_USER) {
-    const idx = Math.floor(rng() * TOTAL_ANGELS) + 1; // 1-12
-    angelIndices.add(idx);
-  }
-  for (const idx of angelIndices) {
-    const padded = String(idx).padStart(2, '0');
+  // Pick 3 unique Academic Angel token IDs (from 550 total)
+  const angelTokenIds = pickAngelTokenIds(rng);
+
+  // Fetch angel image URLs from IPFS in parallel
+  const angelImages = await Promise.all(
+    angelTokenIds.map(async (tokenId) => {
+      try {
+        const imageUrl = await fetchAngelImageUrl(tokenId);
+        return { tokenId, imageUrl };
+      } catch (err) {
+        console.error(`Failed to fetch angel #${tokenId}, using metadata URL as fallback:`, err);
+        return { tokenId, imageUrl: `${ANGELS_METADATA_BASE}/${tokenId}` };
+      }
+    })
+  );
+
+  for (const { tokenId, imageUrl } of angelImages) {
+    const padded = String(tokenId).padStart(3, '0');
     avatars.push({
       id: `angel_${padded}`,
-      image_url: `/anbel${padded}.png`,
-      metadata_url: '',
+      image_url: imageUrl,
+      metadata_url: `${ANGELS_METADATA_BASE}/${tokenId}`,
     });
   }
 
@@ -156,35 +214,42 @@ export function getAssignedAvatars(userSeed: string): Avatar[] {
 /**
  * Validates that an avatar ID is in the user's assigned set
  */
-export function isAvatarValidForUser(userSeed: string, avatarId: string): boolean {
-  const assignedAvatars = getAssignedAvatars(userSeed);
+export async function isAvatarValidForUser(userSeed: string, avatarId: string): Promise<boolean> {
+  const assignedAvatars = await getAssignedAvatars(userSeed);
   return assignedAvatars.some(avatar => avatar.id === avatarId);
 }
 
 /**
- * Gets a single avatar by its ID (e.g., "noun_00_11_042_200_06" or "angel_03")
+ * Gets a single avatar by its ID (e.g., "noun_00_11_042_200_06" or "angel_042")
  */
-export function getAvatarByAvatarId(avatarId: string): Avatar | null {
-  // Academic Angel format
-  const angelMatch = avatarId.match(/^angel_(\d{2})$/);
+export async function getAvatarByAvatarId(avatarId: string): Promise<Avatar | null> {
+  // Academic Angel format: angel_NNN (3-digit, 1-550)
+  const angelMatch = avatarId.match(/^angel_(\d{2,3})$/);
   if (angelMatch) {
-    const num = parseInt(angelMatch[1], 10);
-    if (num < 1 || num > TOTAL_ANGELS) return null;
-    return {
-      id: avatarId,
-      image_url: `/anbel${angelMatch[1]}.png`,
-      metadata_url: '',
-    };
+    const tokenId = parseInt(angelMatch[1], 10);
+    if (tokenId < 1 || tokenId > TOTAL_ANGELS) return null;
+    try {
+      const imageUrl = await fetchAngelImageUrl(tokenId);
+      return {
+        id: avatarId,
+        image_url: imageUrl,
+        metadata_url: `${ANGELS_METADATA_BASE}/${tokenId}`,
+      };
+    } catch (err) {
+      console.error(`Failed to fetch angel avatar ${avatarId}:`, err);
+      return null;
+    }
   }
 
+  // Lil Noun format
   const match = avatarId.match(/^noun_(\d{2})_(\d{2})_(\d{3})_(\d{3})_(\d{2})$/);
   if (!match) {
-    // Legacy IPFS avatar format — return null to trigger re-selection
+    // Legacy format — return null to trigger re-selection
     if (avatarId.startsWith('avatar_')) return null;
     return null;
   }
 
-  const seed: NounSeed = {
+  const nounSeed: NounSeed = {
     background: parseInt(match[1], 10),
     body: parseInt(match[2], 10),
     accessory: parseInt(match[3], 10),
@@ -193,17 +258,17 @@ export function getAvatarByAvatarId(avatarId: string): Avatar | null {
   };
 
   // Validate ranges
-  if (seed.background >= BACKGROUND_COLORS.length ||
-      seed.body >= BODY_COUNT ||
-      seed.accessory >= ACCESSORY_COUNT ||
-      seed.head >= HEAD_COUNT ||
-      seed.glasses >= GLASSES_COUNT) {
+  if (nounSeed.background >= BACKGROUND_COLORS.length ||
+      nounSeed.body >= BODY_COUNT ||
+      nounSeed.accessory >= ACCESSORY_COUNT ||
+      nounSeed.head >= HEAD_COUNT ||
+      nounSeed.glasses >= GLASSES_COUNT) {
     return null;
   }
 
   return {
     id: avatarId,
-    image_url: buildAvatarSvgDataUri(seed),
+    image_url: buildAvatarSvgDataUri(nounSeed),
     metadata_url: '',
   };
 }
@@ -217,4 +282,6 @@ export const AVATAR_CONFIG = {
   HEAD_COUNT,
   GLASSES_COUNT,
   AVATARS_PER_USER,
+  TOTAL_ANGELS,
+  ANGELS_CONTRACT,
 } as const;

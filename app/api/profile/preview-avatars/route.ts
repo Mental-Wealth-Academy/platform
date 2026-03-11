@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
   try {
     // Get deterministically assigned avatars for this seed
-    const choices = getAssignedAvatars(seed);
+    const choices = await getAssignedAvatars(seed);
 
     return NextResponse.json({
       choices,

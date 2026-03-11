@@ -129,10 +129,10 @@ export async function POST(request: Request) {
     if (avatar_id) {
       // Validate avatar is in assigned choices for this user
       // Skip validation if user already has a profile (allowing updates)
-      if (!hasExistingProfile && !isAvatarValidForUser(userId, avatar_id)) {
+      if (!hasExistingProfile && !(await isAvatarValidForUser(userId, avatar_id))) {
         // Since this is a new user, we need to get their choices based on the new ID
         // and check if the avatar is valid
-        const assignedAvatars = getAssignedAvatars(userId);
+        const assignedAvatars = await getAssignedAvatars(userId);
         const validIds = assignedAvatars.map(a => a.id);
         
         return NextResponse.json(
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
       // If user has existing profile, we can update directly without strict validation
       if (hasExistingProfile) {
         // For existing profiles, try to get avatar but allow updating even if not in assigned choices
-        avatar = getAvatarByAvatarId(avatar_id);
+        avatar = await getAvatarByAvatarId(avatar_id);
         if (!avatar) {
           // If avatar_id is invalid, still allow update but log it
           console.warn(`Avatar ${avatar_id} not found for existing profile update`);
@@ -159,7 +159,7 @@ export async function POST(request: Request) {
         }
       } else {
         // For new profiles, avatar must be valid
-        avatar = getAvatarByAvatarId(avatar_id);
+        avatar = await getAvatarByAvatarId(avatar_id);
         if (!avatar) {
           return NextResponse.json(
             { error: 'Avatar not found.' },
@@ -185,8 +185,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get all 5 assigned avatars for this user
-    const assignedAvatars = getAssignedAvatars(userId);
+    // Get all 6 assigned avatars for this user
+    const assignedAvatars = await getAssignedAvatars(userId);
     
     // Update the user profile and store all avatar choices
     const WELCOME_SHARDS = hasExistingProfile ? undefined : 10; // Don't reset shards for existing profiles
@@ -231,8 +231,8 @@ export async function POST(request: Request) {
 
       // Store all 5 avatar choices for this user (only if not existing profile or if we want to refresh)
       if (!hasExistingProfile) {
-        const assignedAvatars = getAssignedAvatars(userId);
-        for (const assignedAvatar of assignedAvatars) {
+        const assignedAvatarsForDb = await getAssignedAvatars(userId);
+        for (const assignedAvatar of assignedAvatarsForDb) {
           await sqlQueryWithClient(
             client,
             `INSERT INTO user_avatars (id, user_id, avatar_id, avatar_url, is_selected)
