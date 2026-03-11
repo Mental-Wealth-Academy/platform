@@ -55,13 +55,6 @@ export default function LeaderboardPage() {
   const [showPayoutInfo, setShowPayoutInfo] = useState(false);
   const { play } = useSound();
 
-  const seasonNumber = 3;
-  const currentWeek = 8;
-  const totalWeeks = 12;
-  const totalPool = 24600;
-  const totalStakers = 47;
-  const seasonEnd = 'Apr 28, 2026';
-
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -73,52 +66,12 @@ export default function LeaderboardPage() {
         <div className={styles.content}>
           {/* Season Header */}
           <div className={`${styles.seasonHeader} ${isLoaded ? styles.loaded : ''}`}>
-            <div className={styles.seasonBadge}>Season {seasonNumber}</div>
+            <div className={styles.seasonBadge}>Season 1</div>
             <h1 className={styles.pageTitle}>Leaderboard</h1>
             <p className={styles.pageSubtitle}>
               Seasonal rankings for the current 12-week cohort.
               Climb the standings to earn your share of the prize pool.
             </p>
-          </div>
-
-          {/* Stats Row */}
-          <div className={styles.statsRow}>
-            <div className={styles.statCard}>
-              <span className={styles.statValue}>{totalPool.toLocaleString()}</span>
-              <span className={styles.statLabel}>Shards in Pool</span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statValue}>{totalStakers}</span>
-              <span className={styles.statLabel}>Stakers</span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statValue}>Wk {currentWeek}/{totalWeeks}</span>
-              <span className={styles.statLabel}>Progress</span>
-            </div>
-            <div className={styles.statCard}>
-              <span className={styles.statValue}>{seasonEnd}</span>
-              <span className={styles.statLabel}>Season Ends</span>
-            </div>
-          </div>
-
-          {/* Season Progress Bar */}
-          <div className={styles.progressSection}>
-            <div className={styles.progressBar}>
-              <div
-                className={styles.progressFill}
-                style={{ width: `${(currentWeek / totalWeeks) * 100}%` }}
-              />
-            </div>
-            <div className={styles.progressLabels}>
-              {Array.from({ length: totalWeeks }, (_, i) => (
-                <span
-                  key={i}
-                  className={`${styles.weekDot} ${i < currentWeek ? styles.weekDotActive : ''} ${i === currentWeek - 1 ? styles.weekDotCurrent : ''}`}
-                >
-                  {i + 1}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* Podium — Top 3 */}

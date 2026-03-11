@@ -71,107 +71,6 @@
   font-family: var(--font-primary);
 }
 
-/* Stats Row */
-.statsRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.statCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 16px 12px;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: var(--radius-xl);
-  box-shadow: 4px 4px 0 #1A1D33;
-  transition: all 0.15s ease;
-}
-
-.statCard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
-}
-
-.statValue {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1A1D33;
-  font-family: var(--font-primary);
-}
-
-.statLabel {
-  font-size: 11px;
-  font-weight: 700;
-  color: #666666;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--font-primary);
-}
-
-/* Progress Bar */
-.progressSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background: rgba(26, 29, 51, 0.08);
-  border-radius: 4px;
-  overflow: hidden;
-  border: 2px solid #1A1D33;
-}
-
-.progressFill {
-  height: 100%;
-  background: var(--gradient-primary);
-  border-radius: 2px;
-  transition: width 0.6s ease;
-}
-
-.progressLabels {
-  display: flex;
-  justify-content: space-between;
-}
-
-.weekDot {
-  font-size: 10px;
-  font-weight: 600;
-  color: #999999;
-  font-family: var(--font-primary);
-  width: 20px;
-  text-align: center;
-}
-
-.weekDotActive {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.weekDotCurrent {
-  color: var(--color-primary);
-  font-weight: 700;
-  position: relative;
-}
-
-.weekDotCurrent::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-primary);
-}
-
 /* Podium — Top 3 */
 .podium {
   display: grid;
@@ -526,18 +425,6 @@
 }
 
 @media (max-width: 768px) {
-  .statsRow {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .statCard {
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
-  .statValue {
-    font-size: 16px;
-  }
-
   .podium {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -596,27 +483,6 @@
 }
 
 @media (max-width: 480px) {
-  .statsRow {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .statCard {
-    padding: 12px 8px;
-  }
-
-  .statValue {
-    font-size: 14px;
-  }
-
-  .statLabel {
-    font-size: 10px;
-  }
-
-  .progressLabels {
-    display: none;
-  }
-
   .tableHeader,
   .tableRow {
     grid-template-columns: 36px 1fr 60px;
