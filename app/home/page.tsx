@@ -61,7 +61,18 @@ const WEEK_TITLES = [
   'Epilogue',
 ];
 
-const STREAK_DAYS = ['T', 'W', 'Th', 'F', 'S'];
+// Labels for the 5-day streak display (last 5 days, dynamically computed)
+function getStreakDayLabels(): string[] {
+  const labels: string[] = [];
+  const dayNames = ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'];
+  const today = new Date();
+  for (let i = 4; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    labels.push(dayNames[d.getDay()]);
+  }
+  return labels;
+}
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -77,11 +88,11 @@ export default function HomePage() {
   const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [streakCount, setStreakCount] = useState(0);
+  const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false]);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
-
-  // Streak: count sealed weeks as a simple proxy
-  const streakCount = weekStatuses.filter(w => w.isSealed).length;
+  const streakLabels = getStreakDayLabels();
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -122,6 +133,13 @@ export default function HomePage() {
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => setLeaderboard(data.users ?? []))
+      .catch(() => {});
+    fetch('/api/daily-notes/streak', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        setStreakCount(data.streak ?? 0);
+        if (Array.isArray(data.completedDays)) setStreakDays(data.completedDays);
+      })
       .catch(() => {});
   }, []);
 
@@ -197,22 +215,19 @@ export default function HomePage() {
                 <Image src="/icons/shard.svg" alt="Shards" width={22} height={22} />
               </div>
               <p className={styles.streakSubtext}>
-                {streakCount === 0 ? 'Complete a week to start a streak' : `${streakCount} week streak`}
+                {streakCount === 0 ? 'Write daily to start a streak' : `${streakCount} day streak`}
               </p>
               <div className={styles.streakDays}>
-                {STREAK_DAYS.map((day, i) => {
-                  const completed = i < streakCount;
-                  return (
-                    <div key={day} className={styles.streakDay}>
-                      <div className={`${styles.streakDot} ${completed ? styles.streakDotActive : ''}`}>
-                        {completed && (
-                          <Image src="/icons/shard.svg" alt="" width={16} height={16} />
-                        )}
-                      </div>
-                      <span className={styles.streakDayLabel}>{day}</span>
+                {streakLabels.map((day, i) => (
+                  <div key={`${day}-${i}`} className={styles.streakDay}>
+                    <div className={`${styles.streakDot} ${streakDays[i] ? styles.streakDotActive : ''}`}>
+                      {streakDays[i] && (
+                        <Image src="/icons/shard.svg" alt="" width={16} height={16} />
+                      )}
                     </div>
-                  );
-                })}
+                    <span className={styles.streakDayLabel}>{day}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -251,9 +266,13 @@ export default function HomePage() {
                 ]).map(u => (
                   <div key={u.rank} className={styles.leagueRow}>
                     <span className={styles.leagueRank}>{u.rank}</span>
-                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
-                      {u.username[0]?.toUpperCase() ?? '?'}
-                    </div>
+                    {u.avatarUrl ? (
+                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
+                    ) : (
+                      <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
+                        {u.username[0]?.toUpperCase() ?? '?'}
+                      </div>
+                    )}
                     <span className={styles.leagueName}>{u.username}</span>
                     <span className={styles.leagueShards}>{u.shards} Shards</span>
                   </div>
@@ -402,9 +421,13 @@ export default function HomePage() {
               {leaderboard.map(u => (
                 <div key={u.rank} className={styles.leagueRow}>
                   <span className={styles.leagueRank}>{u.rank}</span>
-                  <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
-                    {u.username[0]?.toUpperCase() ?? '?'}
-                  </div>
+                  {u.avatarUrl ? (
+                    <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
+                  ) : (
+                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
+                      {u.username[0]?.toUpperCase() ?? '?'}
+                    </div>
+                  )}
                   <span className={styles.leagueName}>{u.username}</span>
                   <span className={styles.leagueShards}>{u.shards} Shards</span>
                 </div>

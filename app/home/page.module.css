@@ -280,6 +280,15 @@
   flex-shrink: 0;
 }
 
+.leagueAvatarImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+}
+
 .leagueName {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
