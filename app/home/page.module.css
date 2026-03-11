@@ -222,7 +222,7 @@
   width: 100%;
   text-align: center;
   padding: 13px;
-  background: linear-gradient(135deg, #5168FF, #3ABFC0, #6366F1);
+  background: linear-gradient(135deg, #5168FF 0%, #4A7AE8 25%, #3ABFC0 50%, #4E8BD6 75%, #6366F1 100%);
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 15px;
@@ -231,7 +231,7 @@
   border-radius: 12px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 1);
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
@@ -405,6 +405,10 @@
 }
 
 .activityCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   padding: 14px;
   background: var(--color-primary, #5168FF);

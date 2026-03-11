@@ -303,6 +303,7 @@ export default function HomePage() {
                       document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
+                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
                     Start Writing
                   </button>
                 </>
@@ -324,6 +325,7 @@ export default function HomePage() {
                       setIsReaderOpen(true);
                     }}
                   >
+                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
                     Start Reading
                   </button>
                 </>
@@ -344,6 +346,7 @@ export default function HomePage() {
                       document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
+                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
                     Open Journal
                   </button>
                 </>
