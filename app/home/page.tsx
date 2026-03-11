@@ -14,6 +14,8 @@ import { CalendarDays } from '@/components/calendar-days/CalendarDays';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
+type HomeTab = 'write' | 'read' | 'reflect';
+
 interface WeekStatus {
   weekNumber: number;
   isSealed: boolean;
@@ -64,6 +66,7 @@ export default function HomePage() {
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<HomeTab>('write');
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
 
@@ -153,17 +156,7 @@ export default function HomePage() {
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
-            {/* Aquarium Pill */}
-            <div className={`${styles.heroPill} ${isLoaded ? styles.heroPillLoaded : ''}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://i.imgur.com/ACKcust.gif"
-                alt="Aquarium"
-                className={styles.heroPillGif}
-              />
-            </div>
-
-            {/* Weekly Calendar */}
+            {/* Greeting + Calendar */}
             <div className={`${styles.calendarSection} ${isLoaded ? styles.calendarSectionLoaded : ''}`}>
               <div className={styles.journalHeader}>
                 <span className={styles.courseLabel}>DIVINE WORK</span>
@@ -172,42 +165,91 @@ export default function HomePage() {
               <CalendarDays />
             </div>
 
-            {/* Journal Section */}
-            <div className={`${styles.journalSection} ${isLoaded ? styles.journalSectionLoaded : ''}`}>
-              <div className={styles.journalCards}>
-                <SeasonTimer
-                  activeWeek={activeWeek}
-                  weekEndsAt={weekEndsAt}
-                  seasonActive={seasonActive}
-                />
+            {/* Season Progress Bar */}
+            <div className={`${styles.seasonRow} ${isLoaded ? styles.seasonRowLoaded : ''}`}>
+              <SeasonTimer
+                activeWeek={activeWeek}
+                weekEndsAt={weekEndsAt}
+                seasonActive={seasonActive}
+              />
+            </div>
+
+            {/* Activity Pod Grid */}
+            <section className={`${styles.podGrid} ${isLoaded ? styles.podGridLoaded : ''}`}>
+              <div
+                className={`${styles.podCard} ${activeTab === 'write' ? styles.podCardActive : ''}`}
+                onClick={() => { play('click'); setActiveTab('write'); }}
+                onMouseEnter={() => play('hover')}
+              >
+                <div className={styles.podIcon}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                  </svg>
+                </div>
+                <h3 className={styles.podTitle}>Write</h3>
+                <p className={styles.podDesc}>15-min morning pages to clear your mind</p>
+              </div>
+              <div
+                className={`${styles.podCard} ${activeTab === 'read' ? styles.podCardActive : ''}`}
+                onClick={() => { play('click'); setActiveTab('read'); }}
+                onMouseEnter={() => play('hover')}
+              >
+                <div className={styles.podIcon}>
+                  <Image src="/icons/bookicon.svg" alt="Read" width={32} height={32} />
+                </div>
+                <h3 className={styles.podTitle}>Read</h3>
+                <p className={styles.podDesc}>Weekly readings to deepen your recovery</p>
+              </div>
+              <div
+                className={`${styles.podCard} ${activeTab === 'reflect' ? styles.podCardActive : ''}`}
+                onClick={() => { play('click'); setActiveTab('reflect'); }}
+                onMouseEnter={() => play('hover')}
+              >
+                <div className={styles.podIcon}>
+                  <Image src="/icons/Chapters.svg" alt="Reflect" width={32} height={32} />
+                </div>
+                <h3 className={styles.podTitle}>Reflect</h3>
+                <p className={styles.podDesc}>Journal exercises for each week of the course</p>
+              </div>
+            </section>
+
+            {/* Tab Content */}
+            <div className={styles.tabContent}>
+              {activeTab === 'write' && (
+                <DailyNotes enablePersistence={isAuthenticated} />
+              )}
+
+              {activeTab === 'read' && (
                 <WeeklyRead
                   readings={WEEKLY_READINGS}
                   onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
                   activeWeek={activeWeek}
                 />
-                <DailyNotes enablePersistence={isAuthenticated} />
-                <hr className={styles.sectionDivider} />
-                {WEEK_TITLES.map((title, i) => {
-                  if (i === 0 || i === WEEK_TITLES.length - 1) return null;
-                  const status = getWeekStatus(i);
-                  const isLocked = i > activeWeek;
-                  return (
-                    <AccordionJournalCard
-                      key={i}
-                      weekNumber={i}
-                      weekTitle={title}
-                      initialIsSealed={status?.isSealed}
-                      initialSealTxHash={status?.sealTxHash}
-                      onSealComplete={handleSealComplete}
-                      enablePersistence={isAuthenticated}
-                      isLocked={isLocked}
-                      weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+              )}
 
+              {activeTab === 'reflect' && (
+                <div className={styles.journalCards}>
+                  {WEEK_TITLES.map((title, i) => {
+                    if (i === 0 || i === WEEK_TITLES.length - 1) return null;
+                    const status = getWeekStatus(i);
+                    const isLocked = i > activeWeek;
+                    return (
+                      <AccordionJournalCard
+                        key={i}
+                        weekNumber={i}
+                        weekTitle={title}
+                        initialIsSealed={status?.isSealed}
+                        initialSealTxHash={status?.sealTxHash}
+                        onSealComplete={handleSealComplete}
+                        enablePersistence={isAuthenticated}
+                        isLocked={isLocked}
+                        weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
             {/* Course Banner */}
             <div className={`${styles.courseBanner} ${isLoaded ? styles.courseIntroLoaded : ''}`}>

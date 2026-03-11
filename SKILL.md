@@ -362,6 +362,66 @@ For quests and progress indicators:
 
 ---
 
+## Mobile-First Page Architecture (REQUIRED)
+
+Every page MUST follow this Duolingo-inspired, mobile-first information architecture. The `/community` page is the gold standard — study it before building any new page.
+
+### Pod Grid Navigation Pattern
+
+Instead of long vertical scrolls, organize page content into **tappable pod cards** that switch tab content below. This is the core UX pattern for MWA.
+
+```
+┌─────────────────────────────────────┐
+│  Greeting / Context Header          │
+│  (label + title, optional calendar) │
+├─────────────────────────────────────┤
+│  Stats / Progress Row (optional)    │
+├───────────┬───────────┬─────────────┤
+│  Pod 1    │  Pod 2    │  Pod 3      │  ← tappable, active = blue
+│  (icon)   │  (icon)   │  (icon)     │
+│  Title    │  Title    │  Title      │
+│  Desc     │  Desc     │  Desc       │
+├───────────┴───────────┴─────────────┤
+│  Tab Content (switches per pod)     │
+│  Single-purpose, focused content    │
+└─────────────────────────────────────┘
+```
+
+**Rules:**
+- Max 3 pods per page (cognitive load)
+- Active pod: `background: var(--color-primary)`, white text, 5px bottom border
+- Inactive pod: white background, dark text, 3px border
+- On mobile (≤480px): pods stack vertically as horizontal row cards (icon left, text right)
+- Pod grid uses `grid-template-columns: repeat(3, 1fr)` with 12px gap
+- Tab content animates in with `fadeIn 0.25s ease`
+- Each pod card has brutalist shadow: `4px 4px 0 #1A1D33`, hover lifts to `6px 6px 0`
+
+### Content Density
+
+- **Above the fold:** Greeting, progress indicator, pod grid — everything needed to navigate
+- **Below the fold:** Tab content for the selected pod only (not all content at once)
+- **No infinite scroll pages** — if content is long (e.g., 12 journal weeks), put it behind a pod tab
+- **Max content width:** 900px for focused pages, 1180px for data-heavy pages
+
+### Mobile Breakpoints
+
+```css
+/* Small mobile (≤480px): pods stack vertically, compact padding */
+/* Tablet (≤900px): sidebar collapses, top bar navigation */
+/* Desktop (≥1024px): sidebar visible, generous spacing */
+```
+
+### What Makes a Great MWA Page
+
+1. **Instant clarity** — User knows where they are and what to do within 2 seconds
+2. **Pod navigation** — 3 tappable cards organize all features without scrolling
+3. **Stats at a glance** — Key progress/metrics visible before any interaction
+4. **Single CTA per view** — Each tab has one primary action
+5. **Brutalist visual identity** — Bold borders, offset shadows, uppercase labels
+6. **Sound feedback** — `play('click')` on pod tap, `play('hover')` on hover
+
+---
+
 ## Navigation Context
 
 Screens need grounding. A voting proposal floating in space feels like a component demo, not a platform.
@@ -370,25 +430,16 @@ Screens need grounding. A voting proposal floating in space feels like a compone
 
 **Persistent Sidebar** (same background as main content, separated by subtle border):
 - Mental Wealth Academy logo (top)
-- Workshops
-- Library
-- Forum
-- Quests
-- Voting
-- Treasury
-- Profile (bottom)
+- Home, Community, Rankings, PvP Arena, Shop, Research, Treasury
 
-**Top Bar**:
-- Breadcrumbs or page title
-- Search (for library, forum)
-- Notifications
-- Wallet connection status
-- User avatar with dropdown
+**Top Bar (mobile)**:
+- Replaces sidebar on ≤900px
+- Logo + hamburger menu
 
 **Location Indicators**:
 - Active nav state (Academy Blue with subtle background)
 - Breadcrumbs for nested sections
-- Page title (Space Grotesk, 32px, semibold)
+- Page title (Space Grotesk, 22-24px, bold)
 
 ---
 
@@ -498,12 +549,15 @@ Mental Wealth Academy supports dark mode for focus and premium feel.
 - Large border radius (16px+) on small elements like buttons
 - Asymmetric padding without clear reason
 - Pure white cards on colored backgrounds
-- Thick borders (2px+) for decoration
 - Excessive spacing (margins > 48px between sections)
 - Spring/bouncy animations (this isn't iOS)
 - Gradients for decoration (only Futuristic Floss gradient, intentionally)
 - Multiple accent colors in one interface (Academy Blue is primary, Growth Green is secondary—that's it)
 - Mixing native form elements with custom UI
+- **Long vertical scrolls** — use pod grid tabs to organize content into focused sections
+- **Showing everything at once** — hide complexity behind tabs, reveal on interaction
+- **Decorative hero elements** that don't communicate value (e.g., animated GIFs with no purpose)
+- **Desktop-first layouts** — always start with mobile (≤480px), scale up
 
 ### Always Question
 
