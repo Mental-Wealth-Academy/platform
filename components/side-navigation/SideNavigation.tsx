@@ -44,8 +44,7 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
       { id: 'duels', label: 'PvP Arena', href: '/duels', icon: '/icons/duels.svg', badge: 'New', badgeType: 'highlight' },
-      { id: 'leaderboard', label: 'Rankings', href: '/leaderboard', icon: '/icons/leaderboard.svg' },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/treasury.svg' },
+      { id: 'leaderboard', label: 'Leaderboard', href: '/leaderboard', icon: '/icons/leaderboard.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
   },
@@ -55,6 +54,7 @@ const navSections: NavSection[] = [
     badge: 'BETA',
     badgeType: 'pro',
     items: [
+      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/treasury.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'guidance', label: 'Guidance', href: '/guidance', icon: '/icons/guidance.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/dna.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
