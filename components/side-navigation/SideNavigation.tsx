@@ -54,9 +54,7 @@ const navSections: NavSection[] = [
     badgeType: 'pro',
     items: [
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'guidance', label: 'Guidance', href: '/guidance', icon: '/icons/guidance.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'genetics', label: 'Genetics', href: '/genetics', icon: '/icons/dna.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },

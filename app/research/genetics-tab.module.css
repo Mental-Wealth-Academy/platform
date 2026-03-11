@@ -1,15 +1,8 @@
-.pageLayout {
-  margin-left: var(--sidebar-width, 265px);
-  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
 .content {
   max-width: 1180px;
   width: 100%;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 0 0 64px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -330,13 +323,8 @@
 
 /* Responsive */
 @media (max-width: 900px) {
-  .pageLayout {
-    margin-left: 0;
-    padding-top: 66px;
-  }
-
   .content {
-    padding: 24px 16px;
+    padding: 0 16px 48px;
     gap: 20px;
   }
 

@@ -1,7 +1,6 @@
 .main {
   min-height: 100vh;
-  margin-left: var(--sidebar-width, 265px);
-  padding: 0 24px 40px;
+  padding: 0 0 40px;
   background: #F4F5FE;
 }
 
@@ -411,8 +410,7 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .main {
-    margin-left: 0;
-    padding: 60px 12px 40px;
+    padding: 0 12px 40px;
   }
 
   .header {

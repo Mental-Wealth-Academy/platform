@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useSound } from '@/hooks/useSound';
-import styles from './page.module.css';
+import styles from './guidance.module.css';
 
 // ── Canvas Data ──
 
@@ -29,7 +28,7 @@ const EMPTY_CANVAS: CanvasData = {
 
 // ── Component ──
 
-export default function GuidancePage() {
+export default function GuidanceTab() {
   const [canvas, setCanvas] = useState<CanvasData>(EMPTY_CANVAS);
   const [toast, setToast] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -115,8 +114,6 @@ export default function GuidancePage() {
 
   return (
     <div className={styles.main} onFocus={handleFocus}>
-      <SideNavigation />
-
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
