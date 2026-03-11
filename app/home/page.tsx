@@ -236,8 +236,8 @@ export default function HomePage() {
             <div className={styles.premiumCard}>
               <div className={styles.premiumInner}>
                 <div className={styles.premiumText}>
-                  <strong>Unlock all learning with Premium</strong>
-                  <span>to get smarter, faster</span>
+                  <strong>Unlock a lifetime membership</strong>
+                  <span>shared-resources, assets, and more</span>
                 </div>
                 <button className={styles.premiumCta} onClick={() => { play('click'); setShowMintModal(true); }}>
                   Explore Premium
