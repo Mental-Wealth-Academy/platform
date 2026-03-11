@@ -43,8 +43,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/Home Icon.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
-      { id: 'duels', label: 'PvP Arena', href: '/duels', icon: '/icons/duels.svg', badge: 'New', badgeType: 'highlight' },
-      { id: 'leaderboard', label: 'Leaderboard', href: '/leaderboard', icon: '/icons/leaderboard.svg' },
+      { id: 'duels', label: 'Discussion', href: '/duels', icon: '/icons/duels.svg', badge: 'New', badgeType: 'highlight' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
   },
