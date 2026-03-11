@@ -236,24 +236,6 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
                 </div>
               ) : (
                 <>
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>Select Option</label>
-                    <select
-                      value={selectedList?.id || ''}
-                      onChange={(e) => {
-                        const list = mintLists.find((l) => l.id === e.target.value)
-                        setSelectedList(list || null)
-                      }}
-                      className={styles.select}
-                    >
-                      {mintLists.map((list) => (
-                        <option key={list.id} value={list.id}>
-                          {list.name} - {list.token_price} {list.currency_symbol}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
                   {selectedList && (
                     <div className={styles.infoCard}>
                       <div className={styles.infoRow}>
