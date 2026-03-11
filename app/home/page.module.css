@@ -70,7 +70,7 @@
 /* Streak Card */
 .streakCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.14);
   border-radius: 16px;
   padding: 20px;
 }
@@ -91,17 +91,14 @@
 }
 
 .streakSubtext {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(26, 29, 51, 0.5);
-  margin: 0 0 16px 0;
+  display: none;
 }
 
 .streakDays {
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  margin-top: 16px;
 }
 
 .streakDay {
@@ -116,7 +113,8 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #F0F0F5;
+  background: #F5F5F8;
+  border: 2px solid #D4D4DC;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,44 +122,78 @@
 }
 
 .streakDotActive {
-  background: var(--color-primary, #5168FF);
+  background: #F5A623;
+  border-color: #C8841A;
 }
 
 .streakDayLabel {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 13px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.45);
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+}
+
+.streakDotActive + .streakDayLabel,
+.streakDay:has(.streakDotActive) .streakDayLabel {
+  font-weight: 800;
+  color: #1A1D33;
 }
 
 /* Premium CTA Card */
 .premiumCard {
   border-radius: 16px;
-  padding: 2px;
-  background:
-    radial-gradient(ellipse at 30% 50%, rgba(81, 104, 255, 0.15), transparent 60%),
-    radial-gradient(ellipse at 80% 30%, rgba(245, 166, 35, 0.12), transparent 50%),
-    #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.14);
   position: relative;
   overflow: hidden;
+  background: #FEFEFE;
+}
+
+/* 3 pastel blurred circles */
+.premiumCard::before,
+.premiumCard::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
 }
 
 .premiumCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  border-radius: 16px;
+  width: 140px;
+  height: 140px;
+  top: -30px;
+  left: -20px;
+  background: rgba(167, 139, 250, 0.3);
+}
+
+.premiumCard::after {
+  width: 120px;
+  height: 120px;
+  bottom: -20px;
+  right: -10px;
+  background: rgba(251, 191, 36, 0.25);
 }
 
 .premiumInner {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 14px;
-  padding: 20px;
   position: relative;
   z-index: 1;
+  padding: 20px;
+}
+
+/* Third circle via box-shadow on inner */
+.premiumInner::before {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  right: 30%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: rgba(110, 231, 183, 0.25);
+  filter: blur(36px);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .premiumText {
@@ -189,27 +221,32 @@
   display: block;
   width: 100%;
   text-align: center;
-  padding: 12px;
-  background: linear-gradient(135deg, #F5A623, #E8873A);
+  padding: 13px;
+  background: linear-gradient(135deg, #5168FF, #3ABFC0, #6366F1);
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   text-decoration: none;
-  transition: opacity 0.15s ease;
+  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.18);
+  transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
 .premiumCta:hover {
-  opacity: 0.9;
+  opacity: 0.93;
+}
+
+.premiumCta:active {
+  transform: scale(0.98);
 }
 
 /* League / Leaderboard Card */
 .leagueCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.14);
   border-radius: 16px;
   padding: 16px 20px;
   cursor: pointer;
@@ -316,7 +353,7 @@
 
 .activityCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid rgba(26, 29, 51, 0.14);
   border-radius: 20px;
   padding: 28px 24px 20px;
   text-align: center;
