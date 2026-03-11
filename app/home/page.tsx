@@ -238,7 +238,7 @@ export default function HomePage() {
                   <strong>Unlock all learning with Premium</strong>
                   <span>to get smarter, faster</span>
                 </div>
-                <Link href="/shop" className={styles.premiumCta}>
+                <Link href="/community#angels" className={styles.premiumCta}>
                   Explore Premium
                 </Link>
               </div>

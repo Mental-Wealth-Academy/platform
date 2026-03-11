@@ -142,6 +142,7 @@
     radial-gradient(ellipse at 30% 50%, rgba(81, 104, 255, 0.15), transparent 60%),
     radial-gradient(ellipse at 80% 30%, rgba(245, 166, 35, 0.12), transparent 50%),
     #FFFFFF;
+  border: 1px solid rgba(26, 29, 51, 0.08);
   position: relative;
   overflow: hidden;
 }

@@ -12,7 +12,7 @@ export default function AngelMintSection({ onOpenMintModal }: AngelMintSectionPr
   const { play } = useSound()
   return (
     <>
-      <section className={styles.angelSection}>
+      <section id="angels" className={styles.angelSection}>
         <div className={styles.container}>
           {/* Scrolling Images Section */}
           <div className={styles.scrollingImagesContainer}>
