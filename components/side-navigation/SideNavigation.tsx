@@ -42,7 +42,7 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/home.svg' },
-      { id: 'community', label: 'Community', href: '/community', icon: '/icons/governance.svg' },
+      { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
       { id: 'duels', label: 'Discussion', href: '/duels', icon: '/icons/discussion.svg', badge: 'New', badgeType: 'highlight' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
