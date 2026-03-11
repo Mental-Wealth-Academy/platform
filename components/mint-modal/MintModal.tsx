@@ -198,13 +198,6 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
         </button>
 
         <div className={styles.content}>
-          {/* Header */}
-          <div className={styles.header}>
-            <h2 className={styles.title}>
-              Buy Your Angel
-            </h2>
-          </div>
-
           {/* NFT Preview */}
           <div className={styles.nftPreview}>
             <div className={styles.nftImageContainer}>
@@ -216,6 +209,7 @@ export default function MintModal({ isOpen, onClose }: MintModalProps) {
               />
             </div>
           </div>
+          <p className={styles.oneTimeBadge}>One-time purchase — yours forever</p>
 
           {!isConnected ? (
             <div>

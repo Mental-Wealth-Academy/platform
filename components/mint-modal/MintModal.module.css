@@ -1,4 +1,4 @@
-/* Mint Modal Styles - Brutalist Flat Design */
+/* Mint Modal Styles */
 
 .overlay {
   position: fixed;
@@ -15,12 +15,12 @@
 .modal {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   max-height: calc(100vh - var(--space-8));
   background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 6px 6px 0 #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 16px 48px rgba(26, 29, 51, 0.2);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -28,32 +28,28 @@
 
 .closeButton {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 14px;
+  right: 14px;
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 2px;
+  background: rgba(26, 29, 51, 0.06);
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   color: #1A1D33;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   line-height: 1;
   padding: 0;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
   z-index: 10;
-  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .closeButton:hover {
-  background: var(--color-accent);
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
+  background: rgba(26, 29, 51, 0.12);
 }
 
 .content {
@@ -64,38 +60,19 @@
   overflow-y: auto;
 }
 
-.header {
-  background: var(--color-primary);
-  margin: -24px -24px 0 -24px;
-  padding: 20px 24px;
-  border-bottom: 3px solid #1A1D33;
-}
-
-.title {
-  font-family: var(--font-primary);
-  font-size: 18px;
-  font-weight: 700;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0;
-}
-
 /* NFT Preview Image */
 .nftPreview {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 8px 0 0;
 }
 
 .nftImageContainer {
-  width: 180px;
-  height: 180px;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 4px 4px 0 #1A1D33;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
@@ -105,6 +82,15 @@
   object-fit: cover;
 }
 
+.oneTimeBadge {
+  text-align: center;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.5);
+  margin: 0;
+}
+
 .message {
   font-family: var(--font-primary);
   font-size: 14px;
@@ -112,17 +98,16 @@
   text-align: center;
   margin: 16px 0;
   padding: 16px;
-  background: #f5f5f5;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  background: #f8f8fa;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 12px;
 }
 
 .errorMessage {
-  background: rgba(186, 26, 26, 0.1);
-  border: 3px solid #BA1A1A;
-  border-radius: 4px;
+  background: rgba(186, 26, 26, 0.06);
+  border: 1px solid rgba(186, 26, 26, 0.2);
+  border-radius: 12px;
   padding: 12px 16px;
-  box-shadow: 3px 3px 0 #BA1A1A;
 }
 
 .errorText {
@@ -142,7 +127,7 @@
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 700;
-  color: #1A1D33;
+  color: rgba(26, 29, 51, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
@@ -152,15 +137,14 @@
   width: 100%;
   padding: 12px 16px;
   background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.14);
+  border-radius: 12px;
   color: #1A1D33;
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 3px 3px 0 #1A1D33;
+  transition: border-color 0.15s ease;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231A1D33' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -169,16 +153,14 @@
 
 .select:focus {
   outline: none;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  border-color: var(--color-primary);
 }
 
 .infoCard {
-  background: rgba(81, 104, 255, 0.08);
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
+  background: rgba(81, 104, 255, 0.05);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 12px;
   padding: 16px;
-  box-shadow: 3px 3px 0 #1A1D33;
 }
 
 .infoRow {
@@ -209,31 +191,30 @@
 .mintButton {
   width: 100%;
   padding: 14px 24px;
-  background: var(--color-tertiary);
+  background: var(--color-primary);
   color: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border: none;
+  border-radius: 14px;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 3px 3px 0 #1A1D33;
-  margin-top: 8px;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  box-shadow: inset 0 -3px 0px rgba(0, 0, 0, 1);
+  margin-top: 4px;
 }
 
 .mintButton:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  opacity: 0.93;
+}
+
+.mintButton:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .mintButton:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  transform: none !important;
-  box-shadow: 2px 2px 0 #1A1D33 !important;
 }
 
 .loadingContainer {
@@ -245,7 +226,7 @@
   display: inline-block;
   width: 40px;
   height: 40px;
-  border: 4px solid #1A1D33;
+  border: 3px solid rgba(26, 29, 51, 0.1);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -276,9 +257,7 @@
   height: 64px;
   margin: 0 auto 16px;
   background: var(--color-tertiary);
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,8 +269,6 @@
   font-size: 18px;
   font-weight: 700;
   color: #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   margin: 0 0 8px 0;
 }
 
@@ -310,17 +287,13 @@
   color: var(--color-primary);
   text-decoration: none;
   padding: 8px 16px;
-  border: 2px solid var(--color-primary);
-  border-radius: 4px;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 var(--color-primary);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  border-radius: 10px;
+  transition: background 0.15s ease;
 }
 
 .transactionLink:hover {
-  background: var(--color-primary);
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--color-primary);
+  background: rgba(81, 104, 255, 0.06);
 }
 
 .closeButtonSecondary {
@@ -328,22 +301,17 @@
   padding: 12px 24px;
   background: #ffffff;
   color: #1A1D33;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border: 1px solid rgba(26, 29, 51, 0.14);
+  border-radius: 12px;
   font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 3px 3px 0 #1A1D33;
+  transition: background 0.15s ease;
 }
 
 .closeButtonSecondary:hover {
-  background: #f0f0f0;
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  background: #f8f8fa;
 }
 
 /* Responsive */
@@ -352,34 +320,18 @@
     padding: 12px;
   }
 
-  .modal {
-    box-shadow: 4px 4px 0 #1A1D33;
-  }
-
   .content {
     padding: 20px 16px;
-  }
-
-  .header {
-    margin: -20px -16px 0 -16px;
-    padding: 16px;
-  }
-
-  .title {
-    font-size: 15px;
   }
 
   .closeButton {
     top: 12px;
     right: 12px;
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
   }
 
   .nftImageContainer {
-    width: 140px;
-    height: 140px;
+    width: 200px;
+    height: 200px;
   }
 
   .select {
@@ -389,6 +341,6 @@
 
   .mintButton {
     padding: 12px 20px;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
