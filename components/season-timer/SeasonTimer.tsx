@@ -9,18 +9,22 @@ interface SeasonTimerProps {
   seasonActive: boolean;
 }
 
-function formatCountdown(ms: number): string {
-  if (ms <= 0) return '00:00:00:00';
-  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-  return `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+function formatCountdown(ms: number): { d: string; h: string; m: string; s: string } {
+  if (ms <= 0) return { d: '00', h: '00', m: '00', s: '00' };
+  const d = Math.floor(ms / (1000 * 60 * 60 * 24));
+  const h = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((ms % (1000 * 60)) / 1000);
+  return {
+    d: d.toString().padStart(2, '0'),
+    h: h.toString().padStart(2, '0'),
+    m: m.toString().padStart(2, '0'),
+    s: s.toString().padStart(2, '0'),
+  };
 }
 
 export default function SeasonTimer({ activeWeek, weekEndsAt, seasonActive }: SeasonTimerProps) {
-  const [countdown, setCountdown] = useState('');
-  const [labels] = useState(['DAYS', 'HRS', 'MIN', 'SEC']);
+  const [time, setTime] = useState({ d: '--', h: '--', m: '--', s: '--' });
 
   useEffect(() => {
     if (!weekEndsAt) return;
@@ -28,7 +32,7 @@ export default function SeasonTimer({ activeWeek, weekEndsAt, seasonActive }: Se
 
     const tick = () => {
       const remaining = endTime - Date.now();
-      setCountdown(formatCountdown(Math.max(0, remaining)));
+      setTime(formatCountdown(Math.max(0, remaining)));
     };
 
     tick();
@@ -38,45 +42,25 @@ export default function SeasonTimer({ activeWeek, weekEndsAt, seasonActive }: Se
 
   if (!seasonActive || activeWeek <= 0) return null;
 
-  const parts = countdown.split(':');
   const progress = ((activeWeek) / 12) * 100;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <span className={styles.seasonLabel}>SEASON 1</span>
-          <span className={styles.weekBadge}>Week {activeWeek} of 12</span>
+    <div className={styles.card}>
+      <div className={styles.left}>
+        <div className={styles.topRow}>
+          <span className={styles.weekLabel}>Week {activeWeek}</span>
+          <span className={styles.ofTotal}>of 12</span>
         </div>
-        <div className={styles.headerRight}>
-          <span className={styles.nextLabel}>Next week unlocks in</span>
+        <div className={styles.progressTrack}>
+          <div className={styles.progressFill} style={{ width: `${progress}%` }} />
         </div>
       </div>
-
-      <div className={styles.body}>
-        <div className={styles.progressSection}>
-          <div className={styles.progressTrack}>
-            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-          </div>
-          <div className={styles.weekMarkers}>
-            {Array.from({ length: 12 }, (_, i) => (
-              <div
-                key={i}
-                className={`${styles.weekDot} ${i + 1 <= activeWeek ? styles.weekDotActive : ''}`}
-                title={`Week ${i + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.countdown}>
-          {parts.map((part, i) => (
-            <div key={i} className={styles.countdownSegment}>
-              <span className={styles.countdownValue}>{part}</span>
-              <span className={styles.countdownLabel}>{labels[i]}</span>
-            </div>
-          ))}
-        </div>
+      <div className={styles.countdown}>
+        <span className={styles.time}>{time.d}<small>d</small></span>
+        <span className={styles.sep}>:</span>
+        <span className={styles.time}>{time.h}<small>h</small></span>
+        <span className={styles.sep}>:</span>
+        <span className={styles.time}>{time.m}<small>m</small></span>
       </div>
     </div>
   );

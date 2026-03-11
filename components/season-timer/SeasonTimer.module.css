@@ -1,81 +1,49 @@
-/* Season Timer */
+/* Season Timer — compact single-row card */
 
-.container {
-  width: 100%;
+.card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 18px;
   background: #FFFFFF;
-  border: 3px solid #1A1D33;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 4px 4px 0 #1A1D33;
+  border: 1.5px solid rgba(26, 29, 51, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.06);
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 2px solid rgba(26, 29, 51, 0.08);
-}
-
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.seasonLabel {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-primary, #5168FF);
-}
-
-.weekBadge {
-  display: inline-block;
-  padding: 3px 10px;
-  background: var(--color-primary, #5168FF);
-  color: #FFFFFF;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 12px;
-  border: 1.5px solid #1A1D33;
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-}
-
-.nextLabel {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.body {
-  padding: 16px 20px 18px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.progressSection {
+.left {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.weekLabel {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+}
+
+.ofTotal {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.4);
 }
 
 .progressTrack {
-  height: 6px;
-  background: #E0E1EE;
+  height: 5px;
+  background: #ECEDF5;
   border-radius: 3px;
   overflow: hidden;
-  border: 1px solid rgba(26, 29, 51, 0.1);
 }
 
 .progressFill {
@@ -85,99 +53,49 @@
   transition: width 0.4s ease;
 }
 
-.weekMarkers {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  padding: 0 1px;
-}
-
-.weekDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #E0E1EE;
-  border: 1.5px solid #CCC;
-  transition: all 0.2s ease;
-}
-
-.weekDotActive {
-  background: var(--color-primary, #5168FF);
-  border-color: #1A1D33;
-}
-
+/* Countdown */
 .countdown {
   display: flex;
-  gap: 8px;
+  align-items: baseline;
+  gap: 2px;
   flex-shrink: 0;
 }
 
-.countdownSegment {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 40px;
-}
-
-.countdownValue {
+.time {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 22px;
-  font-weight: 700;
-  color: #1A1D33;
-  line-height: 1;
-}
-
-.countdownLabel {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 8px;
+  font-size: 15px;
   font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
+  color: #1A1D33;
+  font-variant-numeric: tabular-nums;
+}
+
+.time small {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+  margin-left: 1px;
+}
+
+.sep {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.2);
+  margin: 0 1px;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .container {
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
-  .body {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .countdown {
-    gap: 12px;
-  }
-
-  .countdownValue {
-    font-size: 20px;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
-  }
-}
-
 @media (max-width: 480px) {
-  .weekMarkers {
-    gap: 2px;
+  .card {
+    padding: 12px 14px;
+    gap: 14px;
   }
 
-  .weekDot {
-    width: 6px;
-    height: 6px;
+  .weekLabel {
+    font-size: 14px;
   }
 
-  .countdownValue {
-    font-size: 18px;
-  }
-
-  .countdownSegment {
-    min-width: 34px;
+  .time {
+    font-size: 13px;
   }
 }
