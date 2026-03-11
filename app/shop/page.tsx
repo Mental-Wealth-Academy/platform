@@ -18,6 +18,7 @@ export default function ShopPage() {
               { alt: 'Magazine', src: 'https://i.imgur.com/57ahVVX.png', preview: 'https://i.imgur.com/yImR5DJ.png', borderless: false },
               { alt: 'Item 2', src: 'https://i.imgur.com/TPujE2j.png', preview: 'https://i.imgur.com/yUCxnDX.png', borderless: false },
               { alt: 'T-Shirt', src: 'https://i.imgur.com/S3AMvJA.png', preview: 'https://i.imgur.com/fO2vF5f.png', borderless: true },
+              { alt: 'Angel Investor', src: '/images/angel-investing.png', preview: '/images/angel-investing.png', borderless: false },
             ].map((item) => (
               <div
                 key={item.alt}
