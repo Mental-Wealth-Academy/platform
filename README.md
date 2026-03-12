@@ -4,7 +4,7 @@
 
 # Mental Wealth Academy
 
-**Decentralized Education, Alternative Digital Academia For Humans Evolving Through Collectively Owned Cyberspace.**
+**Decentralized Education, Micro-University For Humans & Machines Evolving Through Collectively Owned Cyberspace.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
