@@ -59,7 +59,7 @@ export const SwarmsSection = () => {
         {/* Title */}
         <p className={styles.swarmsEyebrow}>Benefits</p>
         <h2 className={styles.swarmsTitle}>
-          Transparent governance
+          Shared-infrastructure and resources for positive wealth-building habits
         </h2>
 
         {/* Portfolio Button */}

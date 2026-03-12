@@ -38,7 +38,7 @@ function WeeklyFlowPanel() {
       </div>
       <div className={styles.taskCard}>
         <div className={styles.taskHeader}>
-          <span className={styles.taskTitle}>Pattern Recognition Game</span>
+          <span className={styles.taskTitle}>Discuss and Debate</span>
           <span className={styles.weekBadge}>Week 4</span>
         </div>
         <p className={styles.taskDesc}>Spot cognitive distortions in real scenarios. You sharpen your self-awareness and earn points while you play.</p>
@@ -90,9 +90,9 @@ export const FeaturesSection: React.FC = () => {
     <section className={styles.featuresSection}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Your Dashboard</p>
+          <p className={styles.eyebrow}>Your Course</p>
           <h2 className={styles.title}>
-            Your course, your pace
+            Seasonal Creative Writing
           </h2>
           <p className={styles.description}>
             Tackle 12-weeks completely at your own pace, weeks are sealed as you complete them, fully private, and unlocked with prizes after course completion.
