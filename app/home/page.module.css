@@ -453,7 +453,7 @@
 .cardTab {
   padding: 6px 16px;
   background: transparent;
-  border: 2px solid #1A1D33;
+  border: 1.5px solid rgba(26, 29, 51, 0.1);
   border-radius: 10px;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
@@ -461,18 +461,17 @@
   color: rgba(26, 29, 51, 0.5);
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .cardTab:hover {
+  border-color: rgba(81, 104, 255, 0.3);
   color: #1A1D33;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
 }
 
 .cardTabActive {
-  background: #1A1D33;
-  color: #FFFFFF;
+  border-color: var(--color-primary, #5168FF);
+  background: rgba(81, 104, 255, 0.06);
+  color: var(--color-primary, #5168FF);
 }
 
 /* Activity embedded content */

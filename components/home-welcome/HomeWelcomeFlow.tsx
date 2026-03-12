@@ -245,7 +245,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           </div>
 
           <div className={styles.welcomeIcon}>
-            <Image src="/icons/wallet-key.svg" alt="Wallet" width={40} height={40} />
+            <Image src="/icons/family.svg" alt="Family" width={44} height={44} />
           </div>
 
           <h2 className={styles.welcomeTitle}>Welcome to Mental Wealth Academy</h2>
@@ -266,9 +266,10 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
             ) : (
               <>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
-                  <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
-                  <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
                 Connect Family Wallet
               </>
@@ -290,9 +291,9 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
             </button>
           )}
 
-          <p className={styles.footnote}>
-            {isMiniApp ? 'Your Farcaster identity — no extra steps' : 'Base network \u00b7 Powered by WalletConnect'}
-          </p>
+          {isMiniApp && (
+            <p className={styles.footnote}>Your Farcaster identity — no extra steps</p>
+          )}
         </div>
       </div>
     </>
