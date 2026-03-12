@@ -11,8 +11,6 @@
 [![Chainlink CRE](https://img.shields.io/badge/Chainlink-CRE-375BD2?style=for-the-badge&logo=chainlink&logoColor=white)](https://chain.link/)
 [![Base](https://img.shields.io/badge/Base-Mainnet-0052FF?style=for-the-badge)](https://base.org/)
 
-[`/community`](#community) · [`/markets`](#markets) · [`Governance Contract`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d)
-
 </div>
 
 ---
@@ -31,15 +29,14 @@ https://github.com/user-attachments/assets/e111f509-1f39-4009-8c8e-b8beef6165a0
 
 
 
-## Live Pages
+## What's The Most Advanced Stuff
 
 ### `/community`
 
 The community governance hub. Members submit funding proposals, vote on-chain, and interact with **Azura** -- our AI governance agent.
 
-- **Private Governance Calls** -- Azura reviews every proposal through the ElizaOS API, scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos). Reviews are delivered on-chain via CRE workflow, making AI scoring tamper-proof.
+- **Private Governance Calls** -- Azura reviews every proposal through the ElizaOS API, scoring across 6 dimensions (clarity, impact, feasibility, budget, ingenuity, chaos). Reviews are delivered on-chain via CRE workflow DON, making AI scoring tamper-proof.
 - **On-chain Voting** -- Token-weighted community votes with a 50% threshold. Azura's approval level (1-4) determines her voting weight (10%-40%). Level 0 kills the proposal outright.
-- **Automated Execution** -- Passed proposals are executed by the CRE DON, transferring USDC to recipients without human intervention.
 
 ### `/markets`
 
@@ -48,7 +45,7 @@ The autonomous trading dashboard powered by a **CRE DON calling Polymarket**.
 - **Bayesian Market Scanner** -- A CRE cron workflow runs every 30 minutes, using Anthropic Claude to identify mispriced prediction markets through expected value analysis, base rate estimation, and Bayes' theorem.
 - **Quarter-Kelly Sizing** -- Conservative position sizing caps risk at 5% of the trading treasury per position.
 - **Live Orderbooks** -- Real-time CLOB data from Polymarket displayed alongside the DON's active positions and trade history.
-- **Governance Path** -- Trade proposals can also flow through community governance on `/community`, giving the DAO direct control over trading decisions.
+- **Governance Path** -- Trade proposals can also flow through community governance on `/community`, giving the DAO direct input on trading decisions.
 
 ---
 
