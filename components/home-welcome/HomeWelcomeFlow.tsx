@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { useModal } from 'connectkit';
+import { sdk } from '@farcaster/miniapp-sdk';
 import styles from './HomeWelcomeFlow.module.css';
 
 interface HomeWelcomeFlowProps {
@@ -16,6 +17,9 @@ interface HomeWelcomeFlowProps {
  * 1. Shows a wallet connect prompt
  * 2. After wallet connects, authenticates the user
  * 3. Reveals the home page (SideNavigation handles onboarding modal)
+ *
+ * In mini-app context, waits for useBaseKitAutoSignin (in MiniAppProvider) to
+ * complete auto-signin before showing any wallet connect overlay.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const { address, isConnected } = useAccount();
@@ -23,11 +27,44 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
   const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'connecting' | 'ready'>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMiniApp, setIsMiniApp] = useState(false);
   const processedRef = useRef<string | null>(null);
 
   // Check if user is already authenticated on mount
   useEffect(() => {
     (async () => {
+      try {
+        // Check if we're in a mini-app context — if so, useBaseKitAutoSignin
+        // in MiniAppProvider is handling auth, so don't show wallet overlay yet
+        const inMiniApp = await sdk.isInMiniApp();
+        if (inMiniApp) {
+          setIsMiniApp(true);
+        }
+
+        const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const data = await res.json().catch(() => ({ user: null }));
+        if (data?.user) {
+          setAuthState('ready');
+          const hasUsername = data.user.username && !data.user.username.startsWith('user_');
+          if (hasUsername) {
+            onAuthenticated?.();
+          }
+        } else if (inMiniApp) {
+          // In mini-app: stay in 'checking' state — useBaseKitAutoSignin will
+          // dispatch 'profileUpdated' when it finishes, which we listen for below
+          setAuthState('checking');
+        } else {
+          setAuthState('needs-wallet');
+        }
+      } catch {
+        setAuthState('needs-wallet');
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Listen for profileUpdated event (dispatched by useBaseKitAutoSignin on success)
+  useEffect(() => {
+    const handleProfileUpdated = async () => {
       try {
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
@@ -37,14 +74,27 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           if (hasUsername) {
             onAuthenticated?.();
           }
-        } else {
-          setAuthState('needs-wallet');
         }
       } catch {
+        // ignore
+      }
+    };
+
+    window.addEventListener('profileUpdated', handleProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', handleProfileUpdated);
+  }, [onAuthenticated]);
+
+  // Fallback: if mini-app auto-signin hasn't completed after 5s, show wallet overlay
+  useEffect(() => {
+    if (!isMiniApp || authState !== 'checking') return;
+    const timeout = setTimeout(() => {
+      if (authState === 'checking') {
+        console.warn('[HomeWelcomeFlow] Mini-app auto-signin timed out, falling back to wallet connect');
         setAuthState('needs-wallet');
       }
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [isMiniApp, authState]);
 
   // When wallet connects, authenticate the user
   useEffect(() => {
