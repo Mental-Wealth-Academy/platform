@@ -124,14 +124,14 @@ export async function POST(request: Request) {
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
     // Enforce sequential: all prior weeks must be sealed
-    if (weekNumber > 0) {
+    if (weekNumber > 1) {
       const priorUnsealedRows = await sqlQuery<Array<{ cnt: string }>>(
         `SELECT COUNT(*) as cnt FROM ethereal_progress
-         WHERE user_id = :userId AND week_number < :weekNumber AND is_sealed = true`,
+         WHERE user_id = :userId AND week_number >= 1 AND week_number < :weekNumber AND is_sealed = true`,
         { userId: user.id, weekNumber }
       );
       const sealedPriorCount = parseInt(priorUnsealedRows[0]?.cnt || '0', 10);
-      if (sealedPriorCount < weekNumber) {
+      if (sealedPriorCount < weekNumber - 1) {
         return NextResponse.json(
           { error: 'All prior weeks must be sealed first.' },
           { status: 400 }
@@ -177,6 +177,12 @@ export async function POST(request: Request) {
        SET is_sealed = true, seal_tx_hash = :txHash, seal_content_hash = :contentHash, updated_at = CURRENT_TIMESTAMP
        WHERE user_id = :userId AND week_number = :weekNumber`,
       { txHash, contentHash, userId: user.id, weekNumber }
+    );
+
+    // Award 700 shards for sealing a week
+    await sqlQuery(
+      `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId`,
+      { userId: user.id }
     );
 
     // Check pathway completion (week 13 = final)

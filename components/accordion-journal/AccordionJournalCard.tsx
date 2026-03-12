@@ -1150,7 +1150,7 @@ export default function AccordionJournalCard({
                     }
                   </p>
                   <p className={styles.sealPromptDesc}>
-                    Azura will verify and create an on-chain attestation. Earn $DAEMON rewards.
+                    Azura will verify and create an on-chain attestation. Earn Shard rewards.
                   </p>
                 </div>
               </div>
@@ -1211,7 +1211,7 @@ export default function AccordionJournalCard({
                     </div>
                     <div className={styles.sealSummaryItem}>
                       <span className={styles.sealSummaryLabel}>Reward</span>
-                      <span className={styles.sealSummaryValue}>+10 $DAEMON</span>
+                      <span className={styles.sealSummaryValue}>+700 Shards</span>
                     </div>
                   </div>
                 </>
@@ -1246,7 +1246,7 @@ export default function AccordionJournalCard({
                     Your creative journey for Week {weekNumber} is now permanently attested on Base.
                   </p>
                   <div className={styles.sealReward}>
-                    <span>+10 $DAEMON earned</span>
+                    <span>+700 Shards earned</span>
                   </div>
                 </div>
               )}
