@@ -11,8 +11,14 @@ interface BaseKitAutoSigninState {
 }
 
 /**
- * Hook to detect BaseKit mini-app context and auto-sign in users
- * Returns the wallet address if available and handles auto-signin
+ * Hook to detect BaseKit mini-app context and auto-sign in users.
+ *
+ * Primary path: uses sdk.context to get the user's FID, then calls
+ * /api/auth/farcaster-signin which looks up their verified ETH address
+ * via Neynar and creates/signs in the account with their Farcaster pfp.
+ *
+ * Fallback path: if context is unavailable, tries the old
+ * eth_requestAccounts → wallet-signup flow.
  */
 export function useBaseKitAutoSignin(): BaseKitAutoSigninState {
   const [state, setState] = useState<BaseKitAutoSigninState>({
@@ -29,22 +35,17 @@ export function useBaseKitAutoSignin(): BaseKitAutoSigninState {
     const checkAndSignIn = async () => {
       try {
         // First, check if user already has a valid session
-        // This prevents infinite reload loops
         try {
           const meResponse = await fetch('/api/me', {
             cache: 'no-store',
             credentials: 'include',
           });
           const meData = await meResponse.json();
-          
+
           if (meData.user) {
-            // User is already authenticated, no need to sign in
             console.log('[BaseKit] User already authenticated:', meData.user.username);
             if (isMounted) {
-              setState(prev => ({ 
-                ...prev, 
-                isBaseKit: false, // Not in mini-app sign-in flow
-              }));
+              setState(prev => ({ ...prev, isBaseKit: false }));
             }
             return;
           }
@@ -54,7 +55,7 @@ export function useBaseKitAutoSignin(): BaseKitAutoSigninState {
 
         // Check if we're in a mini-app context
         const isInMiniApp = await sdk.isInMiniApp();
-        
+
         if (!isInMiniApp) {
           if (isMounted) {
             setState(prev => ({ ...prev, isBaseKit: false }));
@@ -66,92 +67,103 @@ export function useBaseKitAutoSignin(): BaseKitAutoSigninState {
           setState(prev => ({ ...prev, isBaseKit: true }));
         }
 
-        // Get the Ethereum provider
-        const provider = await sdk.wallet.getEthereumProvider();
-        
-        if (!provider || !provider.request) {
-          console.warn('[BaseKit] Ethereum provider not available');
-          return;
+        if (hasAttemptedSignIn.current) return;
+        hasAttemptedSignIn.current = true;
+
+        if (isMounted) {
+          setState(prev => ({ ...prev, isSigningIn: true }));
         }
 
-        // Request accounts (this may prompt user if not already connected)
-        let accounts: string[] = [];
+        // Primary path: use SDK context to get FID and sign in via Neynar
+        let signedIn = false;
         try {
-          const requestedAccounts = await provider.request({ method: 'eth_requestAccounts' });
-          accounts = Array.isArray(requestedAccounts) ? [...requestedAccounts] : [];
-        } catch (error) {
-          console.warn('[BaseKit] Failed to request accounts:', error);
-          // Try eth_accounts as fallback (won't prompt)
-          try {
-            const fallbackAccounts = await provider.request({ method: 'eth_accounts' });
-            accounts = Array.isArray(fallbackAccounts) ? [...fallbackAccounts] : [];
-          } catch (fallbackError) {
-            console.warn('[BaseKit] Failed to get accounts:', fallbackError);
-            return;
+          const context = (sdk as any).context;
+          const fid = context?.user?.fid;
+
+          if (fid) {
+            console.log('[BaseKit] Got FID from context:', fid);
+            const response = await fetch('/api/auth/farcaster-signin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                fid,
+                username: context.user.username || undefined,
+                pfpUrl: context.user.pfpUrl || context.user.pfp_url || undefined,
+              }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              console.log('[BaseKit] Farcaster signin successful:', data);
+              signedIn = true;
+
+              if (isMounted) {
+                setState(prev => ({
+                  ...prev,
+                  walletAddress: null,
+                  isSigningIn: false,
+                }));
+                window.dispatchEvent(new Event('profileUpdated'));
+              }
+              return;
+            }
+            console.warn('[BaseKit] Farcaster signin failed, trying wallet fallback');
           }
+        } catch (err) {
+          console.warn('[BaseKit] SDK context not available, trying wallet fallback:', err);
         }
 
-        if (!Array.isArray(accounts) || accounts.length === 0) {
-          console.warn('[BaseKit] No accounts available');
-          return;
-        }
-
-        const walletAddress = accounts[0];
-        
-        if (!isMounted) return;
-
-        setState(prev => ({ 
-          ...prev, 
-          walletAddress,
-        }));
-
-        // Auto-sign in if we haven't already attempted
-        if (!hasAttemptedSignIn.current && walletAddress) {
-          hasAttemptedSignIn.current = true;
-          
-          if (isMounted) {
-            setState(prev => ({ ...prev, isSigningIn: true }));
-          }
-
+        // Fallback path: get wallet via Ethereum provider
+        if (!signedIn) {
           try {
-            // Call wallet-signup endpoint which will create account or sign in existing user
+            const provider = await sdk.wallet.getEthereumProvider();
+            if (!provider || !provider.request) {
+              throw new Error('Ethereum provider not available');
+            }
+
+            let accounts: string[] = [];
+            try {
+              const requested = await provider.request({ method: 'eth_requestAccounts' });
+              accounts = Array.isArray(requested) ? [...requested] : [];
+            } catch {
+              const fallback = await provider.request({ method: 'eth_accounts' });
+              accounts = Array.isArray(fallback) ? [...fallback] : [];
+            }
+
+            if (!accounts.length) throw new Error('No accounts available');
+
+            const walletAddress = accounts[0];
+            if (!isMounted) return;
+
+            setState(prev => ({ ...prev, walletAddress }));
+
             const response = await fetch('/api/auth/wallet-signup', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              credentials: 'include', // Important for session cookies
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
               body: JSON.stringify({ walletAddress }),
             });
 
             const data = await response.json();
-
             if (!isMounted) return;
 
             if (response.ok) {
-              console.log('[BaseKit] Auto-signin successful:', data);
-              // Session cookie is now set - no need to reload
-              // Just update state to indicate sign-in is complete
-              setState(prev => ({ 
-                ...prev, 
-                isSigningIn: false,
-              }));
-              
-              // Dispatch event to notify other components that user is now signed in
+              console.log('[BaseKit] Wallet auto-signin successful:', data);
+              setState(prev => ({ ...prev, isSigningIn: false }));
               window.dispatchEvent(new Event('profileUpdated'));
             } else {
-              console.error('[BaseKit] Auto-signin failed:', data);
-              setState(prev => ({ 
-                ...prev, 
+              setState(prev => ({
+                ...prev,
                 isSigningIn: false,
                 signInError: data.error || 'Failed to sign in',
               }));
             }
           } catch (error) {
-            console.error('[BaseKit] Auto-signin error:', error);
+            console.error('[BaseKit] Wallet fallback failed:', error);
             if (isMounted) {
-              setState(prev => ({ 
-                ...prev, 
+              setState(prev => ({
+                ...prev,
                 isSigningIn: false,
                 signInError: error instanceof Error ? error.message : 'Failed to sign in',
               }));

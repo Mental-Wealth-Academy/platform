@@ -163,6 +163,43 @@
   to { transform: rotate(360deg); }
 }
 
+/* Farcaster button */
+.farcasterButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  margin-top: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #855DCD;
+  border: 2px solid #1A1D33;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 #1A1D33;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+}
+
+.farcasterButton:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.farcasterButton:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1A1D33;
+}
+
+.farcasterButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* Footnote */
 .footnote {
   font-family: 'IBM Plex Mono', monospace;
@@ -211,5 +248,10 @@
   .connectButton {
     font-size: 13px;
     padding: 14px 20px;
+  }
+
+  .farcasterButton {
+    font-size: 13px;
+    padding: 12px 20px;
   }
 }
