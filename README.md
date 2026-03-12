@@ -19,7 +19,7 @@
 
 ## What This Is
 
-A micro-journaling and micro-learning platform where a governance system AI agent (Azura) scores funding proposals, the community votes on-chain, and **Chainlink CRE workflows automate the entire pipeline** from review to autonomous market trading -- no centralized server required.
+A learning app with a transparent treasury where an AI Agent (Azura) scores funding proposals, community uses **Chainlink CRE workflows + ElizaOS to automate the pipeline** from review to autonomous executions -- min beaurocratic pressure required.
 
 **Governance:** [`0x2cbb90a761ba64014b811be342b8ef01b471992d`](https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d) (Base Mainnet)
 
