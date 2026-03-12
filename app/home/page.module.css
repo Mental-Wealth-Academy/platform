@@ -70,9 +70,10 @@
 /* Streak Card */
 .streakCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.14);
+  border: 3px solid #1A1D33;
   border-radius: 16px;
   padding: 20px;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .streakHeader {
@@ -142,11 +143,12 @@
 /* Premium CTA Card */
 .premiumCard {
   border-radius: 16px;
-  border: 1px solid rgba(26, 29, 51, 0.14);
+  border: 3px solid #1A1D33;
   position: relative;
   overflow: hidden;
   background: #FEFEFE;
   margin: 12px 0;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 /* 3 pastel blurred circles */
@@ -250,15 +252,17 @@
 /* League / Leaderboard Card */
 .leagueCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.14);
+  border: 3px solid #1A1D33;
   border-radius: 16px;
   padding: 16px 20px;
   cursor: pointer;
-  transition: box-shadow 0.15s ease;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .leagueCard:hover {
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.1);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
 }
 
 .leagueHeader {
@@ -357,13 +361,14 @@
 
 .activityCard {
   background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.14);
+  border: 3px solid #1A1D33;
   border-radius: 20px;
   padding: 28px 24px 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .activityBadge {
@@ -415,24 +420,27 @@
   gap: 8px;
   width: 100%;
   padding: 14px;
-  background: var(--color-primary, #5168FF);
+  background: #000000;
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  border: 1px solid #000000;
+  border: 3px solid #1A1D33;
   border-radius: 14px;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
   margin-bottom: 16px;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .activityCta:hover {
-  opacity: 0.92;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
 }
 
 .activityCta:active {
-  transform: scale(0.98);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 /* Tab buttons under CTA */
@@ -445,7 +453,7 @@
 .cardTab {
   padding: 6px 16px;
   background: transparent;
-  border: 1.5px solid rgba(26, 29, 51, 0.1);
+  border: 2px solid #1A1D33;
   border-radius: 10px;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
@@ -453,17 +461,18 @@
   color: rgba(26, 29, 51, 0.5);
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .cardTab:hover {
-  border-color: rgba(81, 104, 255, 0.3);
   color: #1A1D33;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
 }
 
 .cardTabActive {
-  border-color: var(--color-primary, #5168FF);
-  background: rgba(81, 104, 255, 0.06);
-  color: var(--color-primary, #5168FF);
+  background: #1A1D33;
+  color: #FFFFFF;
 }
 
 /* Activity embedded content */
@@ -504,6 +513,7 @@
 
 .modalCard {
   background: #FFFFFF;
+  border: 3px solid #1A1D33;
   border-radius: 20px;
   padding: 28px 24px;
   width: 90%;
@@ -512,6 +522,7 @@
   overflow-y: auto;
   position: relative;
   animation: modalSlideIn 0.25s ease;
+  box-shadow: 6px 6px 0 #1A1D33;
 }
 
 @keyframes modalSlideIn {
@@ -645,5 +656,16 @@
   .streakDot {
     width: 38px;
     height: 38px;
+  }
+
+  .streakCard,
+  .premiumCard,
+  .leagueCard,
+  .activityCard {
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .activityCta {
+    box-shadow: 3px 3px 0 #1A1D33;
   }
 }

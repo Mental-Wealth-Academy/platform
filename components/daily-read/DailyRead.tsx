@@ -38,7 +38,7 @@ const READING_COLORS = [
 
 export default function WeeklyRead({ readings, onReadClick, activeWeek }: WeeklyReadProps) {
   const { play } = useSound();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const isExpanded = true;
   const [readingIndex, setReadingIndex] = useState(0);
   const currentReading = readings[readingIndex];
   const readingColor = READING_COLORS[readingIndex] || READING_COLORS[0];
@@ -47,12 +47,7 @@ export default function WeeklyRead({ readings, onReadClick, activeWeek }: Weekly
 
   return (
     <div className={styles.card} style={{ '--week-color': readingColor } as React.CSSProperties}>
-      <button
-        type="button"
-        className={styles.cardButton}
-        onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
-        onMouseEnter={() => play('hover')}
-      >
+      <div className={styles.cardButton}>
         <div className={styles.cardLeft}>
           <div className={styles.icon}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -67,14 +62,8 @@ export default function WeeklyRead({ readings, onReadClick, activeWeek }: Weekly
         </div>
         <div className={styles.cardRight}>
           <span className={styles.counter}>{readingIndex + 1}/{readings.length}</span>
-          <svg
-            className={`${styles.chevron} ${isExpanded ? styles.chevronRotated : ''}`}
-            width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
         </div>
-      </button>
+      </div>
 
       {isExpanded && (
         <div className={styles.expandedContent}>

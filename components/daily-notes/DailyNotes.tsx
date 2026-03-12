@@ -30,7 +30,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
   const [timerSeconds, setTimerSeconds] = useState(900);
   const [timerText, setTimerText] = useState('');
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const isExpanded = true;
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
@@ -232,11 +232,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
         style={{ '--week-color': weekColor } as React.CSSProperties}
         onMouseEnter={() => play('hum')}
       >
-        <button
-          type="button"
-          className={styles.cardButton}
-          onClick={() => { play(isExpanded ? 'toggle-off' : 'toggle-on'); setIsExpanded(!isExpanded); }}
-        >
+        <div className={styles.cardButton}>
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -273,34 +269,8 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
                 );
               })}
             </div>
-            <svg
-              className={`${styles.chevron} ${isExpanded ? styles.chevronRotated : ''}`}
-              width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
           </div>
-        </button>
-
-        {!isExpanded && (
-          <div className={styles.startSection}>
-            <button
-              type="button"
-              className={`${styles.startBtn} ${!canStart ? styles.startBtnDisabled : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (canStart) { play('click'); startTimer(availableDayIndex); }
-              }}
-              onMouseEnter={() => { if (canStart) play('hover'); }}
-              disabled={!canStart}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-              {canStart ? `Start Day ${availableDayIndex + 1}` : weekComplete ? 'Week Complete' : todayDone ? 'Done for Today' : !isWeekUnlocked ? 'Locked' : 'Return Tomorrow'}
-            </button>
-          </div>
-        )}
+        </div>
 
         {isExpanded && (
           <div className={styles.expandedContent}>

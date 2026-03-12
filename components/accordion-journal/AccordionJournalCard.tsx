@@ -987,6 +987,12 @@ export default function AccordionJournalCard({
         </div>
 
         <div className={styles.cardFaceRight}>
+          {!isSealed && !isLocked && (
+            <span className={styles.shardBadge} title="Earn 700 shards for sealing this week">
+              <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
+              +700
+            </span>
+          )}
           {/* Progress Ring */}
           <div className={`${styles.progressRing} ${isSealed ? styles.progressRingSealed : ''}`}>
             <svg className={styles.progressSvg} viewBox="0 0 36 36">
