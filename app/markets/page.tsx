@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import styles from './page.module.css';
+import { useSound } from '@/hooks/useSound';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics, AppleTokenStats } from '@/lib/market-api';
 
 // ── Helpers ──
@@ -276,6 +277,7 @@ const MWA_CATEGORY_COLORS: Record<string, string> = {
 function MWAMarketCard({ market, onBet }: { market: MWAMarket; onBet: (id: string, side: 'YES' | 'NO', amount: number) => void }) {
   const [betAmount, setBetAmount] = useState('');
   const [placing, setPlacing] = useState(false);
+  const { play } = useSound();
   const yesPct = Math.round(market.yesProbability * 100);
   const noPct = 100 - yesPct;
   const daysLeft = Math.max(0, Math.ceil((new Date(market.endDate).getTime() - Date.now()) / 86400000));
@@ -324,14 +326,16 @@ function MWAMarketCard({ market, onBet }: { market: MWAMarket; onBet: (id: strin
         />
         <button
           className={`${styles.mwaBetBtn} ${styles.mwaBetYes}`}
-          onClick={() => handleBet('YES')}
+          onClick={() => { play('click'); handleBet('YES'); }}
+          onMouseEnter={() => play('hover')}
           disabled={placing || !betAmount || market.status !== 'OPEN'}
         >
           Yes
         </button>
         <button
           className={`${styles.mwaBetBtn} ${styles.mwaBetNo}`}
-          onClick={() => handleBet('NO')}
+          onClick={() => { play('click'); handleBet('NO'); }}
+          onMouseEnter={() => play('hover')}
           disabled={placing || !betAmount || market.status !== 'OPEN'}
         >
           No
@@ -447,16 +451,18 @@ function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
 
 function WalletAddress({ address }: { address: string }) {
   const [copied, setCopied] = useState(false);
+  const { play } = useSound();
   const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   const copy = () => {
+    play('click');
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   return (
-    <button className={styles.walletAddress} onClick={copy} title={address}>
+    <button className={styles.walletAddress} onClick={copy} onMouseEnter={() => play('hover')} title={address}>
       <span className={styles.walletLabel}>Polygon</span>
       <span className={styles.walletAddr}>{short}</span>
       <span className={styles.walletCopy}>{copied ? '✓' : '⧉'}</span>
@@ -479,7 +485,8 @@ export default function Markets() {
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
-  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('polymarkets');
+  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('academy');
+  const { play } = useSound();
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -722,7 +729,8 @@ export default function Markets() {
             <button
               key={tab}
               className={`${styles.viewTab} ${marketTab === tab ? styles.viewTabActive : ''}`}
-              onClick={() => setMarketTab(tab)}
+              onClick={() => { play('click'); setMarketTab(tab); }}
+              onMouseEnter={() => play('hover')}
             >
               {tab === 'academy' ? 'Academy' : tab === 'polymarkets' ? 'Polymarkets' : tab === 'wealth' ? 'Wealth' : 'Azura'}
             </button>
