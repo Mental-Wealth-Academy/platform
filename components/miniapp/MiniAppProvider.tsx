@@ -1,17 +1,13 @@
 'use client';
 
-import { useEffect, ReactNode, useLayoutEffect } from 'react';
+import { ReactNode, useLayoutEffect } from 'react';
 import { sdk } from '@farcaster/miniapp-sdk';
-import { useBaseKitAutoSignin } from './useBaseKitAutoSignin';
 
 interface MiniAppProviderProps {
   children: ReactNode;
 }
 
 export function MiniAppProvider({ children }: MiniAppProviderProps) {
-  // Auto-sign in BaseKit users
-  const { isBaseKit, walletAddress, isSigningIn } = useBaseKitAutoSignin();
-
   // Use useLayoutEffect to call ready() synchronously before paint
   // This ensures the splash screen is hidden as early as possible
   useLayoutEffect(() => {

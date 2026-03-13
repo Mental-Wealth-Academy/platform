@@ -14,7 +14,6 @@ import Surveys from '@/components/survey/Surveys';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import { useBaseKitAutoSignin } from '@/components/miniapp/useBaseKitAutoSignin';
 import {
   CalendarDaysSkeleton,
   DashboardSkeleton,
@@ -25,7 +24,6 @@ import styles from './page.module.css';
 
 export default function Home() {
   const { isConnected, address } = useAccount();
-  const { isBaseKit } = useBaseKitAutoSignin();
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [me, setMe] = useState<{ avatarUrl: string | null; username?: string | null; shardCount?: number; eventReservations?: string[] } | null>(null);
@@ -127,9 +125,7 @@ export default function Home() {
               const hasUsername = userProfile.username &&
                 !userProfile.username.startsWith('user_');
               const needsOnboarding = !hasUsername;
-              const isBaseKitUserWithCompleteProfile = isBaseKit && !needsOnboarding;
-
-              if (needsOnboarding && !isBaseKitUserWithCompleteProfile) {
+              if (needsOnboarding) {
                 setShowOnboarding(true);
               } else if (!data.user.avatarUrl) {
                 setShowAvatarModal(true);
@@ -150,7 +146,7 @@ export default function Home() {
     };
 
     fetchUserData();
-  }, [isBaseKit]);
+  }, []);
 
   // Listen for profile updates
   useEffect(() => {
