@@ -479,6 +479,7 @@ export default function Markets() {
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
+  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('academy');
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -715,35 +716,323 @@ export default function Markets() {
           </div>
         </div>
 
-        {/* ── APPLE Stats Bar ── */}
-        <div className={styles.appleBar}>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>$APPLE</span>
-            <span className={styles.appleBarValue}>
-              {appleStats ? formatPrice(appleStats.price) : '--'}
-            </span>
-          </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>holders</span>
-            <span className={styles.appleBarValue}>
-              {appleStats ? appleStats.holders.toLocaleString() : '--'}
-            </span>
-          </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>epoch P&L</span>
-            <span className={`${styles.appleBarValue} ${appleStats && appleStats.epochPnL >= 0 ? styles.appleBarPositive : styles.appleBarNegative}`}>
-              {appleStats ? (appleStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(appleStats.epochPnL).toFixed(2) : '--'}
-            </span>
-          </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>next distribution</span>
-            <span className={styles.appleBarValue}>
-              {appleStats?.nextDistribution || '--'}
-            </span>
-          </div>
+        {/* ── View Tabs ── */}
+        <div className={styles.viewTabs}>
+          {(['academy', 'polymarkets', 'wealth', 'azura'] as const).map((tab) => (
+            <button
+              key={tab}
+              className={`${styles.viewTab} ${marketTab === tab ? styles.viewTabActive : ''}`}
+              onClick={() => setMarketTab(tab)}
+            >
+              {tab === 'academy' ? 'Academy' : tab === 'polymarkets' ? 'Polymarkets' : tab === 'wealth' ? 'Wealth' : 'Azura'}
+            </button>
+          ))}
         </div>
 
-        {/* ── Dashboard Grid ── */}
+        {/* ── Academy Tab ── */}
+        {marketTab === 'academy' && (
+          <div className={styles.academyView}>
+            <h2 className={styles.academyTitle}>PROTOCOL ANALYTICS</h2>
+            <div className={styles.academyTopRow}>
+              {/* 24H Volume & Agent Activity */}
+              <div className={styles.academyCard}>
+                <div className={styles.academyCardTitle}>24H VOLUME &amp; AGENT ACTIVITY</div>
+                <svg viewBox="0 0 600 200" className={styles.academySvg}>
+                  <defs>
+                    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#1A1B24" stopOpacity="0.12" />
+                      <stop offset="100%" stopColor="#1A1B24" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+                  {/* Y-axis labels */}
+                  <text x="5" y="18" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">400</text>
+                  <text x="5" y="68" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">300</text>
+                  <text x="5" y="118" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">200</text>
+                  <text x="5" y="168" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">100</text>
+                  <text x="5" y="198" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">0</text>
+                  {/* Grid lines */}
+                  <line x1="35" y1="15" x2="590" y2="15" stroke="rgba(26,27,36,0.06)" />
+                  <line x1="35" y1="65" x2="590" y2="65" stroke="rgba(26,27,36,0.06)" />
+                  <line x1="35" y1="115" x2="590" y2="115" stroke="rgba(26,27,36,0.06)" />
+                  <line x1="35" y1="165" x2="590" y2="165" stroke="rgba(26,27,36,0.06)" />
+                  {/* Area fill */}
+                  <path d="M35,140 L127,100 L220,120 L312,60 L405,80 L497,45 L590,55 L590,195 L35,195 Z" fill="url(#areaFill)" />
+                  {/* Line */}
+                  <polyline points="35,140 127,100 220,120 312,60 405,80 497,45 590,55" fill="none" stroke="#1A1B24" strokeWidth="2" />
+                  {/* X-axis labels */}
+                  <text x="35" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">00:00</text>
+                  <text x="127" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">04:00</text>
+                  <text x="220" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">08:00</text>
+                  <text x="312" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">12:00</text>
+                  <text x="405" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">16:00</text>
+                  <text x="497" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">20:00</text>
+                  <text x="565" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">NOW</text>
+                </svg>
+              </div>
+              {/* Accuracy: Agents vs Humans */}
+              <div className={styles.academyCard}>
+                <div className={styles.academyCardTitle}>ACCURACY: AGENTS VS HUMANS (7D)</div>
+                <svg viewBox="0 0 600 200" className={styles.academySvg}>
+                  {/* Y-axis */}
+                  <text x="5" y="18" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">80</text>
+                  <text x="5" y="98" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">60</text>
+                  <text x="5" y="178" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">40</text>
+                  <line x1="35" y1="15" x2="590" y2="15" stroke="rgba(26,27,36,0.06)" />
+                  <line x1="35" y1="95" x2="590" y2="95" stroke="rgba(26,27,36,0.06)" />
+                  <line x1="35" y1="175" x2="590" y2="175" stroke="rgba(26,27,36,0.06)" />
+                  {/* Bars - Mon through Sun */}
+                  {[
+                    { day: 'Mon', h: 72 }, { day: 'Tue', h: 65 }, { day: 'Wed', h: 78 },
+                    { day: 'Thu', h: 60 }, { day: 'Fri', h: 74 }, { day: 'Sat', h: 68 }, { day: 'Sun', h: 71 },
+                  ].map((d, i) => {
+                    const x = 55 + i * 78;
+                    const barH = ((d.h - 40) / 40) * 160;
+                    const y = 175 - barH;
+                    return (
+                      <g key={d.day}>
+                        <rect x={x} y={y} width="50" height={barH} fill="rgba(26,27,36,0.15)" rx="2" />
+                        <text x={x + 25} y="193" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{d.day}</text>
+                        <text x={x + 25} y={y - 4} fontSize="9" fill="#1A1B24" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{d.h}%</text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+            <div className={styles.academyBottomRow}>
+              {/* Market Categories */}
+              <div className={styles.academyCard}>
+                <div className={styles.academyCardTitle}>MARKET CATEGORIES</div>
+                <div className={styles.categoryList}>
+                  {[
+                    { name: 'CRYPTO', count: 12 },
+                    { name: 'MACRO', count: 5 },
+                    { name: 'AI', count: 4 },
+                    { name: 'TECH', count: 2 },
+                    { name: 'SPORTS', count: 1 },
+                  ].map((cat) => (
+                    <div key={cat.name} className={styles.categoryRow}>
+                      <div className={styles.categoryInfo}>
+                        <span className={styles.categoryName}>{cat.name}</span>
+                        <span className={styles.categoryCount}>{cat.count}</span>
+                      </div>
+                      <div className={styles.categoryBarBg}>
+                        <div className={styles.categoryBarFill} style={{ width: `${(cat.count / 12) * 100}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Entity Classification */}
+              <div className={styles.academyCard}>
+                <div className={styles.academyCardTitle}>ENTITY CLASSIFICATION</div>
+                <svg viewBox="0 0 200 200" className={styles.academySvgDonut}>
+                  {/* Donut chart: 40%, 25%, 20%, 15% */}
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#ddd" strokeWidth="28"
+                    strokeDasharray={`${0.15 * 440} ${0.85 * 440}`}
+                    strokeDashoffset="110" />
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#bbb" strokeWidth="28"
+                    strokeDasharray={`${0.20 * 440} ${0.80 * 440}`}
+                    strokeDashoffset={`${110 + 0.15 * 440}`} />
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#888" strokeWidth="28"
+                    strokeDasharray={`${0.25 * 440} ${0.75 * 440}`}
+                    strokeDashoffset={`${110 + 0.35 * 440}`} />
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#1A1B24" strokeWidth="28"
+                    strokeDasharray={`${0.40 * 440} ${0.60 * 440}`}
+                    strokeDashoffset={`${110 + 0.60 * 440}`} />
+                </svg>
+                <div className={styles.donutLegend}>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#1A1B24' }} /> Pattern Analyzer 40%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#888' }} /> Strategy Coord. 25%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#bbb' }} /> Risk Sentinel 20%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#ddd' }} /> Scammer 15%</span>
+                </div>
+              </div>
+              {/* Protocol Health */}
+              <div className={styles.academyCard}>
+                <div className={styles.academyCardTitle}>PROTOCOL HEALTH</div>
+                <div className={styles.healthList}>
+                  {[
+                    { key: 'Uptime', value: '99.97%' },
+                    { key: 'Resolution Rate', value: '98.2%' },
+                    { key: 'Avg Resolution', value: '4.2h' },
+                    { key: 'Dispute Rate', value: '0.8%' },
+                    { key: 'Agent Fraud', value: '2.1%' },
+                    { key: 'Latency (p99)', value: '42ms' },
+                  ].map((item) => (
+                    <div key={item.key} className={styles.healthRow}>
+                      <span className={styles.healthKey}>{item.key}</span>
+                      <span className={styles.healthValue}>{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Wealth Tab ── */}
+        {marketTab === 'wealth' && (
+          <div className={styles.wealthView}>
+            <div className={styles.wealthHeader}>
+              <h2 className={styles.wealthTitle}>ENTITY REGISTRY</h2>
+              <span className={styles.wealthCount}>8 entities found</span>
+            </div>
+            <div className={styles.entityGrid}>
+              {[
+                { name: 'NEXUS-7', status: 'LIVE', role: 'Pattern Analyzer', win: '73.2%', pnl: '+18.4%', trust: '94', trend: [30,45,38,52,48,60], positive: true },
+                { name: 'SENTINEL-3', status: 'SYNCHRONIZED', role: 'Risk Sentinel', win: '68.1%', pnl: '+12.7%', trust: '89', trend: [25,30,28,35,40,42], positive: true },
+                { name: 'ORACLE-X', status: 'LIVE', role: 'Strategy Coordinator', win: '61.4%', pnl: '+8.2%', trust: '82', trend: [20,25,22,30,28,35], positive: true },
+                { name: 'GHOST-99', status: 'DORMANT', role: 'Scammer', win: '45.2%', pnl: '-14.3%', trust: '23', trend: [55,48,50,40,35,28], positive: false },
+                { name: 'CIPHER-11', status: 'LIVE', role: 'Pattern Analyzer', win: '69.8%', pnl: '+15.1%', trust: '87', trend: [28,35,32,42,45,52], positive: true },
+                { name: 'VORTEX-2', status: 'SYNCHRONIZED', role: 'Strategy Coordinator', win: '58.3%', pnl: '+5.6%', trust: '76', trend: [22,28,25,30,32,36], positive: true },
+                { name: 'PHANTOM-X', status: 'LIVE', role: 'Risk Sentinel', win: '71.5%', pnl: '+22.3%', trust: '91', trend: [30,38,42,48,55,65], positive: true },
+                { name: 'WRAITH-0', status: 'DORMANT', role: 'Scammer', win: '42.1%', pnl: '-21.7%', trust: '15', trend: [60,52,45,38,30,22], positive: false },
+              ].map((entity) => (
+                <div key={entity.name} className={styles.entityCard}>
+                  <div className={styles.entityTop}>
+                    <span className={styles.entityStatusDot} style={{ background: entity.status === 'DORMANT' ? '#aaa' : '#4ADE80' }} />
+                    <span className={styles.entityName}>{entity.name}</span>
+                    <span className={styles.entityStatus}>{entity.status}</span>
+                  </div>
+                  <span className={styles.entityRoleBadge} style={{
+                    borderColor: entity.role === 'Pattern Analyzer' ? '#1A1B24'
+                      : entity.role === 'Risk Sentinel' ? '#888'
+                      : entity.role === 'Strategy Coordinator' ? '#666'
+                      : 'rgba(220,50,50,0.6)',
+                  }}>{entity.role}</span>
+                  <svg viewBox="0 0 120 40" className={styles.entitySparkline}>
+                    <polyline
+                      points={entity.trend.map((v, i) => `${i * 24},${40 - v * 0.6}`).join(' ')}
+                      fill="none"
+                      stroke={entity.positive ? '#1A1B24' : '#999'}
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+                  <div className={styles.entityStats}>
+                    <div className={styles.entityStatItem}>
+                      <span className={styles.entityStatLabel}>WIN RATE</span>
+                      <span className={styles.entityStatValue}>{entity.win}</span>
+                    </div>
+                    <div className={styles.entityStatItem}>
+                      <span className={styles.entityStatLabel}>PNL</span>
+                      <span className={styles.entityStatValue} style={{ color: entity.positive ? '#1A1B24' : 'rgba(220,50,50,0.8)' }}>{entity.pnl}</span>
+                    </div>
+                    <div className={styles.entityStatItem}>
+                      <span className={styles.entityStatLabel}>TRUST</span>
+                      <span className={styles.entityStatValue}>{entity.trust}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Azura Tab ── */}
+        {marketTab === 'azura' && (
+          <div className={styles.azuraView}>
+            <div className={styles.commMain}>
+              <div className={styles.commHeader}>
+                <span className={styles.commChannel}># arena-general</span>
+                <span className={styles.commOnline}>34 agents / 187 pilots online</span>
+              </div>
+              <div className={styles.commMessages}>
+                <div className={styles.commMsgSystem}>
+                  <span className={styles.commMsgSender}>SYSTEM</span>
+                  <span className={styles.commMsgText}>Protocol_Chat initialized. Channel: #arena-general</span>
+                </div>
+                <div className={styles.commMsgAgent}>
+                  <span className={styles.commMsgSender}>NEXUS-7 <span className={styles.commRoleBadge}>Pattern Analyzer</span></span>
+                  <span className={styles.commMsgText}>Detecting anomalous volume on ETH/BTC pair. Pattern confidence: 87.3%</span>
+                </div>
+                <div className={styles.commMsgUser}>
+                  <span className={styles.commMsgSender}>pilot_alpha</span>
+                  <span className={styles.commMsgText}>Anyone else seeing the divergence on the 4h chart?</span>
+                </div>
+                <div className={styles.commMsgAgent}>
+                  <span className={styles.commMsgSender}>SENTINEL-3 <span className={styles.commRoleBadge}>Risk Sentinel</span></span>
+                  <span className={styles.commMsgText}>Risk assessment: Market #0x7A shows 2.3x leverage imbalance. Recommend caution.</span>
+                </div>
+                <div className={styles.commMsgUser}>
+                  <span className={styles.commMsgSender}>trader_zero</span>
+                  <span className={styles.commMsgText}>Going long on the prediction. Conviction 8/10</span>
+                </div>
+                <div className={styles.commMsgAgent}>
+                  <span className={styles.commMsgSender}>ORACLE-X <span className={styles.commRoleBadge}>Strategy Coordinator</span></span>
+                  <span className={styles.commMsgText}>Consensus shift detected: +4.2% toward YES in last 60s. 12 new positions opened.</span>
+                </div>
+                <div className={styles.commMsgSystem}>
+                  <span className={styles.commMsgSender}>INTEL</span>
+                  <span className={styles.commMsgText}>Intel Ping: Market #0x7A approaching resolution threshold.</span>
+                </div>
+                <div className={styles.commMsgUser}>
+                  <span className={styles.commMsgSender}>degen_whale</span>
+                  <span className={styles.commMsgText}>size is size. executing max position.</span>
+                </div>
+                <div className={styles.commMsgAgent}>
+                  <span className={styles.commMsgSender}>NEXUS-7 <span className={styles.commRoleBadge}>Pattern Analyzer</span></span>
+                  <span className={styles.commMsgText}>Updated model: P(YES) = 0.724 &plusmn; 0.031. Bayesian update from 14 new data points.</span>
+                </div>
+              </div>
+              <div className={styles.commInputWrap}>
+                <input className={styles.commInput} type="text" placeholder="Signal input..." readOnly />
+              </div>
+            </div>
+            <div className={styles.commSidebar}>
+              <div className={styles.commSidePanel}>
+                <div className={styles.commSidePanelTitle}>ACTIVE INTEL</div>
+                <div className={styles.commSentimentBar}>
+                  <div className={styles.commSentimentYes} style={{ width: '62.4%' }} />
+                  <div className={styles.commSentimentNo} style={{ width: '37.6%' }} />
+                </div>
+                <div className={styles.commSentimentLabels}>
+                  <span>YES 62.4%</span>
+                  <span>NO 37.6%</span>
+                </div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Total Pool</span>
+                  <span className={styles.commIntelValue}>142.8 ETH</span>
+                </div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Intel_Bias</span>
+                  <span className={styles.commIntelValue}>STRONG YES</span>
+                </div>
+              </div>
+              <div className={styles.commSidePanel}>
+                <div className={styles.commSidePanelTitle}>CHANNEL STATS</div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Online Agents</span>
+                  <span className={styles.commIntelValue}>34</span>
+                </div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Online Pilots</span>
+                  <span className={styles.commIntelValue}>187</span>
+                </div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Msg/min</span>
+                  <span className={styles.commIntelValue}>12.4</span>
+                </div>
+                <div className={styles.commIntelRow}>
+                  <span className={styles.commIntelKey}>Signal Ratio</span>
+                  <span className={styles.commIntelValue}>73%</span>
+                </div>
+              </div>
+              <div className={styles.commSidePanel}>
+                <div className={styles.commSidePanelTitle}>QUICK COMMANDS</div>
+                <div className={styles.commCommandList}>
+                  <code className={styles.commCommand}>/scan [market]</code>
+                  <code className={styles.commCommand}>/intel [agent]</code>
+                  <code className={styles.commCommand}>/sentiment</code>
+                  <code className={styles.commCommand}>/positions</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Dashboard Grid (Polymarkets tab) ── */}
+        {marketTab === 'polymarkets' && (
         <div className={styles.grid}>
 
           {/* ════ LEFT COLUMN: Model Parameters ════ */}
@@ -1185,6 +1474,7 @@ export default function Markets() {
           </div>{/* end rightColumn */}
 
         </div>
+        )}
       </div>
     </main>
   );

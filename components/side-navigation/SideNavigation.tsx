@@ -43,6 +43,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/home.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg' },
       { id: 'duels', label: 'Discussion', href: '/duels', icon: '/icons/discussion.svg', badge: 'New', badgeType: 'highlight' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
@@ -53,7 +54,6 @@ const navSections: NavSection[] = [
     badge: 'BETA',
     badgeType: 'pro',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
