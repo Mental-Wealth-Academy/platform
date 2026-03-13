@@ -19,12 +19,13 @@ export async function GET() {
     return NextResponse.json({ user: null, dbConfigured: true });
   }
 
-  // Get shard count from database
-  const shardRows = await sqlQuery<Array<{ shard_count: number }>>(
-    `SELECT shard_count FROM users WHERE id = :id LIMIT 1`,
+  // Get shard count and onboarding status from database
+  const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null }>>(
+    `SELECT shard_count, selected_avatar_id FROM users WHERE id = :id LIMIT 1`,
     { id: user.id }
   );
-  const shardCount = shardRows[0]?.shard_count ?? 0;
+  const shardCount = userRows[0]?.shard_count ?? 0;
+  const onboardingComplete = !!userRows[0]?.selected_avatar_id;
 
   // Get event reservations (event slugs)
   const reservationRows = await sqlQuery<Array<{ slug: string }>>(
@@ -42,6 +43,7 @@ export async function GET() {
       username: user.username,
       avatarUrl: user.avatarUrl,
       shardCount,
+      onboardingComplete,
       eventReservations,
       createdAt: user.createdAt,
     },

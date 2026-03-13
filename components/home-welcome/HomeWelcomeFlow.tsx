@@ -35,12 +35,11 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
-          const hasUsername = data.user.username && !data.user.username.startsWith('user_');
-          if (hasUsername) {
+          if (data.user.onboardingComplete) {
             setAuthState('ready');
             onAuthenticated?.();
           } else {
-            // User exists but hasn't completed onboarding (temp username)
+            // User exists but hasn't selected avatar/username yet
             setAuthState('needs-onboarding');
           }
           return;
@@ -117,9 +116,12 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         const meData = await meRes.json().catch(() => ({ user: null }));
 
         if (meData?.user) {
-          setAuthState('ready');
-          const hasUsername = meData.user.username && !meData.user.username.startsWith('user_');
-          if (hasUsername) onAuthenticated?.();
+          if (meData.user.onboardingComplete) {
+            setAuthState('ready');
+            onAuthenticated?.();
+          } else {
+            setAuthState('needs-onboarding');
+          }
         } else {
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
