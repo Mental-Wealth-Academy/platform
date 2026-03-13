@@ -479,7 +479,7 @@ export default function Markets() {
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
-  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('academy');
+  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('polymarkets');
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -737,65 +737,57 @@ export default function Markets() {
               {/* 24H Volume & Agent Activity */}
               <div className={styles.academyCard}>
                 <div className={styles.academyCardTitle}>24H VOLUME &amp; AGENT ACTIVITY</div>
-                <svg viewBox="0 0 600 200" className={styles.academySvg}>
-                  <defs>
-                    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#1A1B24" stopOpacity="0.12" />
-                      <stop offset="100%" stopColor="#1A1B24" stopOpacity="0.02" />
-                    </linearGradient>
-                  </defs>
-                  {/* Y-axis labels */}
-                  <text x="5" y="18" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">400</text>
-                  <text x="5" y="68" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">300</text>
-                  <text x="5" y="118" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">200</text>
-                  <text x="5" y="168" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">100</text>
-                  <text x="5" y="198" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">0</text>
+                <svg className={styles.academySvg} viewBox="0 0 600 200" preserveAspectRatio="none">
                   {/* Grid lines */}
-                  <line x1="35" y1="15" x2="590" y2="15" stroke="rgba(26,27,36,0.06)" />
-                  <line x1="35" y1="65" x2="590" y2="65" stroke="rgba(26,27,36,0.06)" />
-                  <line x1="35" y1="115" x2="590" y2="115" stroke="rgba(26,27,36,0.06)" />
-                  <line x1="35" y1="165" x2="590" y2="165" stroke="rgba(26,27,36,0.06)" />
+                  {[0,50,100,150,200].map(y => (
+                    <line key={y} x1="0" y1={y} x2="600" y2={y} stroke="rgba(26,27,36,0.06)" strokeWidth="1" />
+                  ))}
                   {/* Area fill */}
-                  <path d="M35,140 L127,100 L220,120 L312,60 L405,80 L497,45 L590,55 L590,195 L35,195 Z" fill="url(#areaFill)" />
-                  {/* Line */}
-                  <polyline points="35,140 127,100 220,120 312,60 405,80 497,45 590,55" fill="none" stroke="#1A1B24" strokeWidth="2" />
+                  <path
+                    d="M0,180 C50,170 100,140 150,120 C200,100 250,60 300,50 C350,40 400,70 450,45 C500,20 550,30 600,10 L600,200 L0,200 Z"
+                    fill="rgba(81,104,255,0.1)"
+                  />
+                  {/* Main line */}
+                  <path
+                    d="M0,180 C50,170 100,140 150,120 C200,100 250,60 300,50 C350,40 400,70 450,45 C500,20 550,30 600,10"
+                    fill="none"
+                    stroke="var(--color-primary, #5168FF)"
+                    strokeWidth="2.5"
+                    className={styles.animatedLine}
+                  />
+                  {/* Data points */}
+                  {[[0,180],[150,120],[300,50],[450,45],[600,10]].map(([cx,cy], i) => (
+                    <circle key={i} cx={cx} cy={cy} r="4" fill="#fff" stroke="var(--color-primary, #5168FF)" strokeWidth="2" className={styles.animatedDot} style={{animationDelay: `${i * 0.15}s`}} />
+                  ))}
                   {/* X-axis labels */}
-                  <text x="35" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">00:00</text>
-                  <text x="127" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">04:00</text>
-                  <text x="220" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">08:00</text>
-                  <text x="312" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">12:00</text>
-                  <text x="405" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">16:00</text>
-                  <text x="497" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">20:00</text>
-                  <text x="565" y="195" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">NOW</text>
+                  {['00:00','04:00','08:00','12:00','16:00','20:00','NOW'].map((label, i) => (
+                    <text key={i} x={i * 100} y="198" fill="rgba(26,27,36,0.35)" fontSize="9" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{label}</text>
+                  ))}
                 </svg>
               </div>
               {/* Accuracy: Agents vs Humans */}
               <div className={styles.academyCard}>
                 <div className={styles.academyCardTitle}>ACCURACY: AGENTS VS HUMANS (7D)</div>
-                <svg viewBox="0 0 600 200" className={styles.academySvg}>
-                  {/* Y-axis */}
-                  <text x="5" y="18" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">80</text>
-                  <text x="5" y="98" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">60</text>
-                  <text x="5" y="178" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)">40</text>
-                  <line x1="35" y1="15" x2="590" y2="15" stroke="rgba(26,27,36,0.06)" />
-                  <line x1="35" y1="95" x2="590" y2="95" stroke="rgba(26,27,36,0.06)" />
-                  <line x1="35" y1="175" x2="590" y2="175" stroke="rgba(26,27,36,0.06)" />
-                  {/* Bars - Mon through Sun */}
+                <svg className={styles.academySvg} viewBox="0 0 400 180" preserveAspectRatio="none">
+                  {/* Grid */}
+                  {[0,45,90,135,180].map(y => (
+                    <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="rgba(26,27,36,0.06)" strokeWidth="1" />
+                  ))}
+                  {/* Bars */}
                   {[
-                    { day: 'Mon', h: 72 }, { day: 'Tue', h: 65 }, { day: 'Wed', h: 78 },
-                    { day: 'Thu', h: 60 }, { day: 'Fri', h: 74 }, { day: 'Sat', h: 68 }, { day: 'Sun', h: 71 },
-                  ].map((d, i) => {
-                    const x = 55 + i * 78;
-                    const barH = ((d.h - 40) / 40) * 160;
-                    const y = 175 - barH;
-                    return (
-                      <g key={d.day}>
-                        <rect x={x} y={y} width="50" height={barH} fill="rgba(26,27,36,0.15)" rx="2" />
-                        <text x={x + 25} y="193" fontSize="10" fill="rgba(26,27,36,0.4)" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{d.day}</text>
-                        <text x={x + 25} y={y - 4} fontSize="9" fill="#1A1B24" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{d.h}%</text>
-                      </g>
-                    );
-                  })}
+                    { x: 30, h: 120, label: 'Mon' },
+                    { x: 85, h: 100, label: 'Tue' },
+                    { x: 140, h: 130, label: 'Wed' },
+                    { x: 195, h: 140, label: 'Thu' },
+                    { x: 250, h: 135, label: 'Fri' },
+                    { x: 305, h: 110, label: 'Sat' },
+                    { x: 360, h: 125, label: 'Sun' },
+                  ].map((bar, i) => (
+                    <g key={i}>
+                      <rect x={bar.x - 18} y={180 - bar.h} width="36" height={bar.h} fill="var(--color-primary, #5168FF)" rx="2" className={styles.animatedBar} style={{animationDelay: `${i * 0.08}s`}} />
+                      <text x={bar.x} y="176" fill="rgba(26,27,36,0.35)" fontSize="9" fontFamily="var(--font-button)" textAnchor="middle">{bar.label}</text>
+                    </g>
+                  ))}
                 </svg>
               </div>
             </div>
@@ -828,24 +820,24 @@ export default function Markets() {
                 <div className={styles.academyCardTitle}>ENTITY CLASSIFICATION</div>
                 <svg viewBox="0 0 200 200" className={styles.academySvgDonut}>
                   {/* Donut chart: 40%, 25%, 20%, 15% */}
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#ddd" strokeWidth="28"
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#50599B" strokeWidth="28"
                     strokeDasharray={`${0.15 * 440} ${0.85 * 440}`}
                     strokeDashoffset="110" />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#bbb" strokeWidth="28"
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#FF7729" strokeWidth="28"
                     strokeDasharray={`${0.20 * 440} ${0.80 * 440}`}
                     strokeDashoffset={`${110 + 0.15 * 440}`} />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#888" strokeWidth="28"
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#74C465" strokeWidth="28"
                     strokeDasharray={`${0.25 * 440} ${0.75 * 440}`}
                     strokeDashoffset={`${110 + 0.35 * 440}`} />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#1A1B24" strokeWidth="28"
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#5168FF" strokeWidth="28"
                     strokeDasharray={`${0.40 * 440} ${0.60 * 440}`}
                     strokeDashoffset={`${110 + 0.60 * 440}`} />
                 </svg>
                 <div className={styles.donutLegend}>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#1A1B24' }} /> Pattern Analyzer 40%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#888' }} /> Strategy Coord. 25%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#bbb' }} /> Risk Sentinel 20%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#ddd' }} /> Scammer 15%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#5168FF' }} /> Pattern Analyzer 40%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#74C465' }} /> Strategy Coord. 25%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#FF7729' }} /> Risk Sentinel 20%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#50599B' }} /> Scammer 15%</span>
                 </div>
               </div>
               {/* Protocol Health */}
@@ -891,21 +883,25 @@ export default function Markets() {
               ].map((entity) => (
                 <div key={entity.name} className={styles.entityCard}>
                   <div className={styles.entityTop}>
-                    <span className={styles.entityStatusDot} style={{ background: entity.status === 'DORMANT' ? '#aaa' : '#4ADE80' }} />
+                    <span className={styles.entityStatusDot} style={{ background: entity.status === 'DORMANT' ? '#aaa' : 'var(--color-tertiary, #74C465)' }} />
                     <span className={styles.entityName}>{entity.name}</span>
                     <span className={styles.entityStatus}>{entity.status}</span>
                   </div>
                   <span className={styles.entityRoleBadge} style={{
-                    borderColor: entity.role === 'Pattern Analyzer' ? '#1A1B24'
-                      : entity.role === 'Risk Sentinel' ? '#888'
-                      : entity.role === 'Strategy Coordinator' ? '#666'
-                      : 'rgba(220,50,50,0.6)',
+                    borderColor: entity.role === 'Pattern Analyzer' ? 'var(--color-primary, #5168FF)'
+                      : entity.role === 'Risk Sentinel' ? 'var(--color-accent, #FF7729)'
+                      : entity.role === 'Strategy Coordinator' ? 'var(--color-tertiary, #74C465)'
+                      : '#dc3232',
+                    color: entity.role === 'Pattern Analyzer' ? 'var(--color-primary, #5168FF)'
+                      : entity.role === 'Risk Sentinel' ? 'var(--color-accent, #FF7729)'
+                      : entity.role === 'Strategy Coordinator' ? 'var(--color-tertiary, #74C465)'
+                      : '#dc3232',
                   }}>{entity.role}</span>
                   <svg viewBox="0 0 120 40" className={styles.entitySparkline}>
                     <polyline
                       points={entity.trend.map((v, i) => `${i * 24},${40 - v * 0.6}`).join(' ')}
                       fill="none"
-                      stroke={entity.positive ? '#1A1B24' : '#999'}
+                      stroke={entity.positive ? 'var(--color-tertiary, #74C465)' : 'var(--color-accent, #FF7729)'}
                       strokeWidth="1.5"
                     />
                   </svg>
@@ -916,7 +912,7 @@ export default function Markets() {
                     </div>
                     <div className={styles.entityStatItem}>
                       <span className={styles.entityStatLabel}>PNL</span>
-                      <span className={styles.entityStatValue} style={{ color: entity.positive ? '#1A1B24' : 'rgba(220,50,50,0.8)' }}>{entity.pnl}</span>
+                      <span className={styles.entityStatValue} style={{ color: entity.positive ? 'var(--color-tertiary, #74C465)' : 'var(--color-accent, #FF7729)' }}>{entity.pnl}</span>
                     </div>
                     <div className={styles.entityStatItem}>
                       <span className={styles.entityStatLabel}>TRUST</span>
