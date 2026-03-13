@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useLayoutEffect } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useRef } from 'react';
 import { sdk } from '@farcaster/miniapp-sdk';
 
 interface MiniAppProviderProps {
@@ -8,23 +8,58 @@ interface MiniAppProviderProps {
 }
 
 export function MiniAppProvider({ children }: MiniAppProviderProps) {
-  // Use useLayoutEffect to call ready() synchronously before paint
-  // This ensures the splash screen is hidden as early as possible
+  const hasAttempted = useRef(false);
+
+  // Hide splash screen ASAP
   useLayoutEffect(() => {
-    // Call ready() immediately to hide the splash screen
-    // This must be called as soon as the app is ready to be displayed
-    const readyPromise = sdk.actions.ready();
-    
-    // Await the promise to ensure it completes
+    sdk.actions.ready().catch(() => {});
+  }, []);
+
+  // Auto-sign in mini-app users via Farcaster SDK context
+  useEffect(() => {
+    if (hasAttempted.current) return;
+    hasAttempted.current = true;
+
     (async () => {
       try {
-        await readyPromise;
-      } catch (error) {
-        // Silently fail if not in mini app context (expected behavior)
-        // Only log in development for debugging
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[MiniApp] SDK ready() called (may fail if not in mini app context):', error);
+        const inMiniApp = await sdk.isInMiniApp();
+        if (!inMiniApp) return;
+
+        // Already authenticated?
+        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const meData = await meRes.json().catch(() => ({ user: null }));
+        if (meData?.user) {
+          window.dispatchEvent(new Event('profileUpdated'));
+          return;
         }
+
+        // Get FID from SDK context (it's a Promise)
+        const context = await sdk.context;
+        const fid = context?.user?.fid;
+        if (!fid) {
+          console.error('[MiniApp] No FID in SDK context');
+          return;
+        }
+
+        const res = await fetch('/api/auth/farcaster-signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            fid,
+            username: context.user.username || undefined,
+            pfpUrl: context.user.pfpUrl || (context.user as any).pfp_url || undefined,
+          }),
+        });
+
+        if (res.ok) {
+          console.log('[MiniApp] Auto-signed in via Farcaster');
+          window.dispatchEvent(new Event('profileUpdated'));
+        } else {
+          console.error('[MiniApp] Farcaster auto-signin failed:', res.status);
+        }
+      } catch (err) {
+        console.error('[MiniApp] Auto-signin error:', err);
       }
     })();
   }, []);
