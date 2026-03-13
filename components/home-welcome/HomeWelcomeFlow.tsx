@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { useModal } from 'connectkit';
 import { sdk } from '@farcaster/miniapp-sdk';
+import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './HomeWelcomeFlow.module.css';
 
 interface HomeWelcomeFlowProps {
@@ -14,14 +15,14 @@ interface HomeWelcomeFlowProps {
 
 /**
  * Wraps the home page content.
- * - Mini-app: auto-signs in via Farcaster SDK context (no overlay).
+ * - Mini-app: auto-signs in via Farcaster SDK context, shows onboarding for new users.
  * - Browser: shows wallet connect overlay for unauthenticated users.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const { address, isConnected } = useAccount();
   const { setOpen: openConnectModal } = useModal();
 
-  const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'connecting' | 'ready'>('checking');
+  const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'needs-onboarding' | 'connecting' | 'ready'>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
   const processedRef = useRef<string | null>(null);
   const farcasterAttempted = useRef(false);
@@ -34,9 +35,14 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
-          setAuthState('ready');
           const hasUsername = data.user.username && !data.user.username.startsWith('user_');
-          if (hasUsername) onAuthenticated?.();
+          if (hasUsername) {
+            setAuthState('ready');
+            onAuthenticated?.();
+          } else {
+            // User exists but hasn't completed onboarding (temp username)
+            setAuthState('needs-onboarding');
+          }
           return;
         }
 
@@ -72,10 +78,18 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         });
 
         if (signInRes.ok) {
-          console.log('[MiniApp] Auto-signin successful');
-          setAuthState('ready');
+          const signInData = await signInRes.json().catch(() => ({}));
+          console.log('[MiniApp] Auto-signin successful, existing:', signInData.existing);
           window.dispatchEvent(new Event('profileUpdated'));
-          onAuthenticated?.();
+
+          if (signInData.existing) {
+            // Returning user — go straight to home
+            setAuthState('ready');
+            onAuthenticated?.();
+          } else {
+            // New user — show avatar + username onboarding
+            setAuthState('needs-onboarding');
+          }
         } else {
           console.error('[MiniApp] Auto-signin failed:', signInRes.status);
           setAuthState('needs-wallet');
@@ -136,6 +150,31 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
     setAuthState('connecting');
     openConnectModal(true);
   }, [openConnectModal]);
+
+  const handleOnboardingComplete = useCallback((username: string) => {
+    console.log('[HomeWelcomeFlow] Onboarding complete:', username);
+    setAuthState('ready');
+    window.dispatchEvent(new Event('profileUpdated'));
+    onAuthenticated?.();
+  }, [onAuthenticated]);
+
+  // Needs onboarding — show children with OnboardingModal overlay
+  if (authState === 'needs-onboarding') {
+    return (
+      <>
+        {children}
+        <OnboardingModal
+          isOpen={true}
+          onClose={() => {
+            // Allow dismissing but still mark as ready
+            setAuthState('ready');
+            onAuthenticated?.();
+          }}
+          onComplete={handleOnboardingComplete}
+        />
+      </>
+    );
+  }
 
   // Checking or ready — show children (no overlay)
   if (authState === 'ready' || authState === 'checking' || isConnected) {

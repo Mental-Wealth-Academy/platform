@@ -20,6 +20,16 @@ interface OnboardingModalProps {
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
   const { address } = useAccount();
   const [step, setStep] = useState<'avatar' | 'details'>('avatar');
+  const [hasSession, setHasSession] = useState(false);
+
+  // Check if user has an active session (e.g. Farcaster mini-app users)
+  useEffect(() => {
+    if (!isOpen) return;
+    fetch('/api/me', { credentials: 'include', cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => { if (data?.user) setHasSession(true); })
+      .catch(() => {});
+  }, [isOpen]);
 
   // Avatar state
   const [avatars, setAvatars] = useState<Avatar[]>([]);
@@ -187,7 +197,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setError('You must be at least 18 years old to create an account');
       return;
     }
-    if (!address) {
+    if (!address && !hasSession) {
       setError('Wallet not connected. Please connect your wallet first.');
       return;
     }
