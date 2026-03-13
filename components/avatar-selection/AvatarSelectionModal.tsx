@@ -31,7 +31,6 @@ const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
     setIsFetching(true);
     setError(null);
     try {
-      // Use session-based auth - no wallet signature needed
       const response = await fetch('/api/avatars/choices', {
         credentials: 'include',
       });

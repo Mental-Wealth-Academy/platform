@@ -1,8 +1,8 @@
 /**
  * GET /api/avatars/choices
- * 
- * Returns exactly 5 deterministically assigned avatars for the authenticated user.
- * These avatars are derived from the user's ID and remain stable across sessions.
+ *
+ * Returns 6 deterministically assigned Noun avatars for the authenticated user.
+ * All avatars are generated locally — no network calls, instant response.
  */
 
 import { NextResponse } from 'next/server';
@@ -34,13 +34,10 @@ export async function GET() {
   }
 
   try {
-    // Get deterministically assigned avatars for this user
-    // Uses user.id as the seed - this is stable and unique per user
-    const choices = await getAssignedAvatars(user.id);
+    const choices = getAssignedAvatars(user.id);
 
     return NextResponse.json({
       choices,
-      // Include user's current avatar if they have one selected
       currentAvatar: user.avatarUrl || null,
     });
   } catch (error) {
@@ -51,4 +48,3 @@ export async function GET() {
     );
   }
 }
-

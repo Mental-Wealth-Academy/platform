@@ -1267,9 +1267,9 @@
     padding: 2px 4px;
   }
 
-  /* Account Menu - positioned below on mobile */
+  /* Account Menu - fixed positioning applied via JS to escape sidenav overflow clipping */
   .accountMenu {
-    top: calc(100% + 8px);
+    z-index: 1100;
   }
 
   /* Login Gate Modal - stack vertically on mobile */

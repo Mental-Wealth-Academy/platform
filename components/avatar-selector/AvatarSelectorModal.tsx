@@ -28,7 +28,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
       try {
         const response = await fetch('/api/avatars/choices', { cache: 'no-store' });
         const data = await response.json();
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to load avatars');
         }
@@ -106,7 +106,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
           ) : (
             <>
               <p className={styles.description}>
-                Choose one of your 5 unique avatars
+                Choose one of your unique avatars
               </p>
               <div className={styles.avatarGrid}>
                 {avatars.map((avatar) => (

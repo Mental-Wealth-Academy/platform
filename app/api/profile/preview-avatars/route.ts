@@ -1,12 +1,9 @@
 /**
  * POST /api/profile/preview-avatars
- * 
- * Returns 5 deterministically assigned avatars for a NEW user during onboarding.
+ *
+ * Returns 6 deterministically assigned Noun avatars for a NEW user during onboarding.
  * This endpoint does NOT require authentication as it's used during signup.
- * 
- * The client provides a temporary seed (can be email, wallet, or random string)
- * that will later be used to create the account.
- * 
+ *
  * Body:
  * { seed: string }
  */
@@ -44,12 +41,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Get deterministically assigned avatars for this seed
-    const choices = await getAssignedAvatars(seed);
+    const choices = getAssignedAvatars(seed);
 
     return NextResponse.json({
       choices,
-      seed, // Echo back the seed for the client to use when creating profile
+      seed,
     });
   } catch (error) {
     console.error('Error generating avatar preview:', error);
@@ -59,4 +55,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

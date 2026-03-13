@@ -88,8 +88,10 @@ const SideNavigation: React.FC = () => {
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
+  const accountButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const [accountMenuStyle, setAccountMenuStyle] = useState<React.CSSProperties>({});
 
   // Load collapsed state from localStorage and sync CSS variable
   useEffect(() => {
@@ -225,6 +227,21 @@ const SideNavigation: React.FC = () => {
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
   }, []);
+
+  // Position account menu above the button on mobile (fixed positioning to escape overflow)
+  useEffect(() => {
+    if (isAccountMenuOpen && accountButtonRef.current && window.innerWidth <= 900) {
+      const rect = accountButtonRef.current.getBoundingClientRect();
+      setAccountMenuStyle({
+        position: 'fixed',
+        bottom: window.innerHeight - rect.top + 8,
+        left: rect.left,
+        width: rect.width,
+      });
+    } else {
+      setAccountMenuStyle({});
+    }
+  }, [isAccountMenuOpen]);
 
   // Close account menu when clicking outside
   useEffect(() => {
@@ -581,6 +598,7 @@ const SideNavigation: React.FC = () => {
           {(isConnected && address) || (username && !username.startsWith('user_')) ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
+                ref={accountButtonRef}
                 className={styles.accountButton}
                 onClick={() => {
                   play('click');
@@ -611,7 +629,7 @@ const SideNavigation: React.FC = () => {
               </button>
 
               {isAccountMenuOpen && (
-                <div className={styles.accountMenu}>
+                <div className={styles.accountMenu} style={accountMenuStyle}>
                   <Link
                     href="/voting"
                     className={styles.accountMenuItem}
