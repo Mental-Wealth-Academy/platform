@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       {
         headers: {
           accept: 'application/json',
-          api_key: neynarApiKey,
+          'x-api-key': neynarApiKey,
         },
       }
     );

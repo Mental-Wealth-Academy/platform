@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       method: 'GET',
       headers: {
         'accept': 'application/json',
-        'api_key': neynarApiKey,
+        'x-api-key': neynarApiKey,
       },
     });
 
