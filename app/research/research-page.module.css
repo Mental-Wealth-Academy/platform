@@ -8,52 +8,47 @@
 /* ── Tab Bar ── */
 .tabBar {
   display: flex;
-  gap: 0;
-  padding: 16px 24px 0;
+  gap: 4px;
+  padding: 20px 24px 0;
   background: #F4F5FE;
+  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
 }
 
 .tabButton {
-  padding: 12px 28px;
-  border: 2px solid #1A1D33;
-  border-bottom: none;
-  border-radius: 12px 12px 0 0;
+  padding: 10px 24px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
   font-family: var(--font-button);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #999999;
-  background: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+  color: rgba(26, 29, 51, 0.4);
+  background: transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   position: relative;
-  top: 2px;
-  margin-right: -2px;
-  box-shadow: 2px -2px 0 rgba(26, 29, 51, 0.06);
 }
 
 .tabButton:hover {
-  color: #1A1D33;
-  background: rgba(255, 255, 255, 0.8);
+  color: rgba(26, 29, 51, 0.7);
 }
 
 .tabButtonActive {
-  color: #ffffff;
-  background: var(--color-primary);
-  border-color: #1A1D33;
-  box-shadow: 3px -3px 0 #1A1D33;
-  z-index: 1;
+  color: var(--color-primary, #5168FF);
+  border-bottom-color: var(--color-primary, #5168FF);
+  font-weight: 700;
 }
 
 .tabButtonActive:hover {
-  color: #ffffff;
-  background: var(--color-primary);
+  color: var(--color-primary, #5168FF);
 }
 
 /* ── Tab Content ── */
 .tabContent {
   min-height: calc(100vh - 60px);
+  padding: 0 24px;
 }
 
 /* ── Responsive ── */
@@ -64,7 +59,7 @@
   }
 
   .tabBar {
-    padding: 12px 12px 0;
+    padding: 16px 16px 0;
   }
 
   .tabButton {
@@ -73,5 +68,9 @@
     padding: 10px 12px;
     font-size: 11px;
     letter-spacing: 0.04em;
+  }
+
+  .tabContent {
+    padding: 0 16px;
   }
 }
