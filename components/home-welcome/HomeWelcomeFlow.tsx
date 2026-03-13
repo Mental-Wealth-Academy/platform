@@ -14,7 +14,7 @@ interface HomeWelcomeFlowProps {
 
 /**
  * Wraps the home page content.
- * - Mini-app: no overlay — MiniAppProvider auto-signs in via Farcaster SDK context.
+ * - Mini-app: auto-signs in via Farcaster SDK context (no overlay).
  * - Browser: shows wallet connect overlay for unauthenticated users.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
@@ -23,54 +23,72 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
   const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'connecting' | 'ready'>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isMiniApp, setIsMiniApp] = useState(false);
   const processedRef = useRef<string | null>(null);
+  const farcasterAttempted = useRef(false);
 
-  // Check auth state on mount
+  // On mount: detect context and auto-sign in
   useEffect(() => {
     (async () => {
       try {
-        const inMiniApp = await sdk.isInMiniApp();
-        if (inMiniApp) {
-          setIsMiniApp(true);
-          // Mini-app users are auto-signed in by MiniAppProvider — skip overlay
-          setAuthState('ready');
-          return;
-        }
-
+        // Already have a session?
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
           setAuthState('ready');
           const hasUsername = data.user.username && !data.user.username.startsWith('user_');
-          if (hasUsername) {
-            onAuthenticated?.();
-          }
+          if (hasUsername) onAuthenticated?.();
+          return;
+        }
+
+        // Check if we're in a Farcaster mini-app
+        const inMiniApp = await sdk.isInMiniApp();
+        if (!inMiniApp) {
+          setAuthState('needs-wallet');
+          return;
+        }
+
+        // Mini-app: auto-sign in via SDK context
+        if (farcasterAttempted.current) return;
+        farcasterAttempted.current = true;
+
+        const context = await sdk.context;
+        const fid = context?.user?.fid;
+        if (!fid) {
+          console.error('[MiniApp] No FID in SDK context');
+          setAuthState('needs-wallet');
+          return;
+        }
+
+        console.log('[MiniApp] Auto-signing in with FID:', fid);
+        const signInRes = await fetch('/api/auth/farcaster-signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            fid,
+            username: context.user.username || undefined,
+            pfpUrl: context.user.pfpUrl || (context.user as any).pfp_url || undefined,
+          }),
+        });
+
+        if (signInRes.ok) {
+          console.log('[MiniApp] Auto-signin successful');
+          setAuthState('ready');
+          window.dispatchEvent(new Event('profileUpdated'));
+          onAuthenticated?.();
         } else {
+          console.error('[MiniApp] Auto-signin failed:', signInRes.status);
           setAuthState('needs-wallet');
         }
-      } catch {
+      } catch (err) {
+        console.error('[HomeWelcomeFlow] Auth check error:', err);
         setAuthState('needs-wallet');
       }
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Listen for profileUpdated (dispatched by MiniAppProvider after auto-signin)
+  // Browser flow: when wallet connects, authenticate
   useEffect(() => {
-    if (!isMiniApp) return;
-
-    const handleProfileUpdated = () => {
-      setAuthState('ready');
-      onAuthenticated?.();
-    };
-
-    window.addEventListener('profileUpdated', handleProfileUpdated);
-    return () => window.removeEventListener('profileUpdated', handleProfileUpdated);
-  }, [isMiniApp, onAuthenticated]);
-
-  // When wallet connects (browser flow), authenticate the user
-  useEffect(() => {
-    if (isMiniApp) return;
     if (!isConnected || !address || authState === 'ready' || authState === 'checking') return;
     if (processedRef.current === address || isProcessing) return;
     if (!/^0x[a-fA-F0-9]{40}$/.test(address)) return;
@@ -87,9 +105,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         if (meData?.user) {
           setAuthState('ready');
           const hasUsername = meData.user.username && !meData.user.username.startsWith('user_');
-          if (hasUsername) {
-            onAuthenticated?.();
-          }
+          if (hasUsername) onAuthenticated?.();
         } else {
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
@@ -114,19 +130,14 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         setIsProcessing(false);
       }
     })();
-  }, [isMiniApp, isConnected, address, authState, isProcessing, onAuthenticated]);
+  }, [isConnected, address, authState, isProcessing, onAuthenticated]);
 
   const handleConnectClick = useCallback(() => {
     setAuthState('connecting');
     openConnectModal(true);
   }, [openConnectModal]);
 
-  // Mini-app: always render children (no overlay ever)
-  if (isMiniApp) {
-    return <>{children}</>;
-  }
-
-  // Browser: authenticated or checking
+  // Checking or ready — show children (no overlay)
   if (authState === 'ready' || authState === 'checking' || isConnected) {
     return <>{children}</>;
   }
@@ -137,7 +148,6 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
       {children}
       <div className={styles.overlay}>
         <div className={styles.welcomeCard}>
-          {/* Scrolling angel preview */}
           <div className={styles.angelScroll}>
             <div className={styles.angelTrack}>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (

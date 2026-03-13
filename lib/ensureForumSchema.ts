@@ -161,7 +161,7 @@ async function _ensureForumSchemaImpl() {
     }
   }
 
-  // Make privy_user_id nullable (legacy field)
+  // Legacy: privy_user_id column kept nullable for backwards compat
   try {
     await sqlQuery(`
       ALTER TABLE users

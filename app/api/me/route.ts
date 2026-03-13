@@ -65,7 +65,7 @@ export async function PUT(request: Request) {
   }
   await ensureForumSchema();
 
-  // Get our internal user record (works for both Privy and email/password auth)
+  // Get current user from session cookie or wallet auth
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
     return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
