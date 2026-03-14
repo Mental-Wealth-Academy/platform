@@ -14,8 +14,7 @@ import { azuraWallet } from '@/lib/azura-wallet';
  * The actual AI review is performed by the Chainlink CRE azura-review workflow
  * running on the DON — this route reads the result first.
  *
- * CRE fallback: If the DON hasn't reviewed yet (proposal still Pending on-chain),
- * falls back to a server-side Eliza API review so proposals aren't blocked.
+ * Fallback chain: CRE → Eliza API → Anthropic API (Claude)
  */
 
 interface ProposalData {
@@ -26,6 +25,93 @@ interface ProposalData {
   on_chain_proposal_id: string | null;
   recipient_address: string | null;
   token_amount: string | null;
+}
+
+const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
+
+Analyze proposals based on these criteria (score 0-10 each):
+1. CLARITY: How clear, well-written, and understandable is the proposal?
+2. IMPACT: What is the potential positive impact on the mental health community?
+3. FEASIBILITY: How realistic and achievable is this proposal?
+4. BUDGET: Is the budget reasonable, justified, and well-explained?
+5. INGENUITY: How creative, innovative, or unique is this idea?
+6. CHAOS: A randomness factor — add some unpredictability to your scoring
+
+Based on the total score (out of 60):
+- Score >= 25: APPROVE with token allocation (1-40% based on score strength)
+- Score < 25: REJECT
+
+Respond ONLY in JSON format:
+{
+  "decision": "approved" or "rejected",
+  "scores": {
+    "clarity": 0-10,
+    "impact": 0-10,
+    "feasibility": 0-10,
+    "budget": 0-10,
+    "ingenuity": 0-10,
+    "chaos": 0-10
+  },
+  "tokenAllocation": 1-40 (only if approved, null if rejected),
+  "reasoning": "One to two sentences explaining your decision concisely."
+}`;
+
+/**
+ * Call Anthropic Claude API as a backup for Eliza
+ */
+async function callAnthropicAPI(systemPrompt: string, userPrompt: string): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Anthropic API error: ${response.status} ${errorText}`);
+  }
+
+  const data = await response.json();
+  const content = data.content?.[0]?.text;
+  if (!content) throw new Error('Anthropic API returned empty content');
+  return content;
+}
+
+/**
+ * Get AI review using fallback chain: Eliza → Anthropic
+ */
+async function getAIReview(reviewPrompt: string): Promise<string> {
+  // Try Eliza first
+  try {
+    const response = await elizaAPI.chat({
+      messages: [
+        { role: 'system', parts: [{ type: 'text', text: REVIEW_SYSTEM_PROMPT }] },
+        { role: 'user', parts: [{ type: 'text', text: reviewPrompt }] },
+      ],
+      id: 'gpt-4o',
+    });
+    console.log('AI review completed via Eliza API');
+    return response;
+  } catch (elizaError: any) {
+    console.warn('Eliza API failed, falling back to Anthropic:', elizaError.message);
+  }
+
+  // Fallback to Anthropic
+  const response = await callAnthropicAPI(REVIEW_SYSTEM_PROMPT, reviewPrompt);
+  console.log('AI review completed via Anthropic API (fallback)');
+  return response;
 }
 
 export async function POST(request: Request) {
@@ -113,46 +199,11 @@ export async function POST(request: Request) {
   try {
     // Status 0 = Pending or -1 = RPC failed — fall back to server-side Eliza review
     if (onChainStatus <= 0) {
-      console.log(`On-chain status=${onChainStatus}, falling back to server-side Eliza review`);
+      console.log(`On-chain status=${onChainStatus}, falling back to server-side AI review`);
       try {
         const reviewPrompt = `Review this proposal:\n\n**Title:** ${proposal.title}\n\n**Proposal:**\n${proposal.proposal_markdown}\n\n**Requested Amount:** ${proposal.token_amount || 'N/A'} USDC`;
 
-        const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
-
-Analyze proposals based on these criteria (score 0-10 each):
-1. CLARITY: How clear, well-written, and understandable is the proposal?
-2. IMPACT: What is the potential positive impact on the mental health community?
-3. FEASIBILITY: How realistic and achievable is this proposal?
-4. BUDGET: Is the budget reasonable, justified, and well-explained?
-5. INGENUITY: How creative, innovative, or unique is this idea?
-6. CHAOS: A randomness factor — add some unpredictability to your scoring
-
-Based on the total score (out of 60):
-- Score >= 25: APPROVE with token allocation (1-40% based on score strength)
-- Score < 25: REJECT
-
-Respond ONLY in JSON format:
-{
-  "decision": "approved" or "rejected",
-  "scores": {
-    "clarity": 0-10,
-    "impact": 0-10,
-    "feasibility": 0-10,
-    "budget": 0-10,
-    "ingenuity": 0-10,
-    "chaos": 0-10
-  },
-  "tokenAllocation": 1-40 (only if approved, null if rejected),
-  "reasoning": "One to two sentences explaining your decision concisely."
-}`;
-
-        const aiResponse = await elizaAPI.chat({
-          messages: [
-            { role: 'system', parts: [{ type: 'text', text: REVIEW_SYSTEM_PROMPT }] },
-            { role: 'user', parts: [{ type: 'text', text: reviewPrompt }] },
-          ],
-          id: 'gpt-4o',
-        });
+        const aiResponse = await getAIReview(reviewPrompt);
 
         const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
         if (!jsonMatch) throw new Error('No JSON in Azura response');
