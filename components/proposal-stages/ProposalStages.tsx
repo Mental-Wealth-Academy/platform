@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Skull } from '@phosphor-icons/react';
 import styles from './ProposalStages.module.css';
 
 type Stage1Variant = 'waiting' | 'analyzing' | 'approved' | 'rejected';
@@ -21,156 +20,128 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   stage1,
   stage2,
   stage3,
-  azuraReasoning,
-  tokenAllocation,
 }) => {
-  const getStage1Status = () => {
+  const getStage1Label = () => {
     switch (stage1) {
-      case 'waiting':
-        return 'Waiting for review...';
-      case 'analyzing':
-        return 'Analyzing proposal...';
-      case 'approved':
-        return 'Approved by Azura';
-      case 'rejected':
-        return 'Killed by Azura';
-      default:
-        return 'Unknown';
+      case 'waiting': return 'Waiting...';
+      case 'analyzing': return 'Analyzing...';
+      case 'approved': return 'Approved.';
+      case 'rejected': return 'Rejected.';
+      default: return 'Unknown';
     }
   };
 
-  const getStage2Status = () => {
+  const getStage2Label = () => {
     switch (stage2) {
-      case 'waiting':
-        return 'Awaiting vote';
-      case 'processing':
-        return 'Processing...';
+      case 'waiting': return 'Awaiting';
+      case 'processing': return 'Processing...';
       case 'success':
-        return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Vote ended' : 'Community voting open';
-      case 'failed':
-        return 'Vote failed';
-      default:
-        return 'Unknown';
+        return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Vote ended' : 'Voting';
+      case 'failed': return 'Failed';
+      default: return 'Unknown';
     }
   };
 
-  const getStage3Status = () => {
+  const getStage3Label = () => {
     switch (stage3) {
-      case 'waiting':
-        return 'Pending';
-      case 'active':
-        return 'Pending';
-      case 'completed':
-        return 'Approved';
-      case 'defeated':
-        return 'Defeated';
-      case 'expired':
-        return 'Expired';
-      default:
-        return 'Unknown';
+      case 'waiting': return 'Pending';
+      case 'active': return 'Active';
+      case 'completed': return 'Approved';
+      case 'defeated': return 'Defeated';
+      case 'expired': return 'Expired';
+      default: return 'Unknown';
     }
   };
+
+  const getStage1Image = () => {
+    switch (stage1) {
+      case 'approved': return '/uploads/HappyEmote.png';
+      case 'rejected': return '/uploads/SadEmote.png';
+      case 'analyzing': return '/uploads/ConfusedEmote.png';
+      default: return '/uploads/ConfusedEmote.png';
+    }
+  };
+
+  const getStage2Image = () => {
+    if (stage2 === 'success') return '/uploads/HappyEmote.png';
+    if (stage2 === 'failed') return '/uploads/PainEmote.png';
+    return '/uploads/ConfusedEmote.png';
+  };
+
+  const getStage3Image = () => {
+    if (stage3 === 'completed') return '/uploads/HappyEmote.png';
+    if (stage3 === 'defeated' || stage3 === 'expired') return '/uploads/SadEmote.png';
+    return '/uploads/ConfusedEmote.png';
+  };
+
+  const isStage1Done = stage1 === 'approved' || stage1 === 'rejected';
+  const isStage2Done = stage2 === 'success' || stage2 === 'failed';
 
   return (
     <div className={styles.container}>
       {/* Stage 1: Azura Review */}
-      <div className={`${styles.stage} ${styles.stage1} ${styles[stage1]}`}>
-        <div className={styles.stageIcon}>
-          {stage1 === 'approved' || stage1 === 'rejected' || stage1 === 'analyzing' ? (
-            <Image
-              src="/uploads/HappyEmote.png"
-              alt="Azura"
-              width={40}
-              height={40}
-              className={styles.azuraAvatar}
-              unoptimized
-            />
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/>
-              <circle cx="8" cy="6" r="1" fill="currentColor"/>
-              <circle cx="16" cy="6" r="1" fill="currentColor"/>
-            </svg>
-          )}
-          {(azuraReasoning && (stage1 === 'approved' || stage1 === 'rejected')) && (
-            <div className={styles.tooltip}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                <path d="M12 16V12M12 8H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              <div className={styles.tooltipContent}>
-                {azuraReasoning}
-                {tokenAllocation && stage1 === 'approved' && (
-                  <div className={styles.tokenAllocation}>
-                    Token Allocation: {tokenAllocation}%
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+      <div className={`${styles.stage} ${styles[stage1]}`}>
+        <div className={styles.imageWrap}>
+          <Image
+            src={getStage1Image()}
+            alt="Azura"
+            width={100}
+            height={100}
+            className={styles.stageImage}
+            unoptimized
+          />
         </div>
-        <div className={styles.stageContent}>
-          <h4 className={styles.stageName}>Azura</h4>
-          <p className={styles.stageStatus}>{getStage1Status()}</p>
-        </div>
+        <p className={styles.stageLabel}>
+          Stage 1: {getStage1Label()}
+        </p>
       </div>
 
-      <div className={`${styles.divider} ${stage1 === 'approved' ? styles.active : ''}`} />
-
-      {/* Stage 2: Blockchain Transaction */}
-      <div className={`${styles.stage} ${styles.stage2} ${styles[stage2]}`}>
-        <div className={styles.stageIcon}>
-          {stage2 === 'success' ? (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
-            </svg>
-          ) : stage2 === 'failed' ? (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          ) : stage2 === 'processing' ? (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-              <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-              <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-              <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-              <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-              <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
-            </svg>
-          )}
-        </div>
-        <div className={styles.stageContent}>
-          <h4 className={styles.stageName}>Vote</h4>
-          <p className={styles.stageStatus}>{getStage2Status()}</p>
-        </div>
+      {/* Arrow 1 */}
+      <div className={`${styles.arrow} ${isStage1Done ? styles.arrowActive : ''}`}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </div>
 
-      <div className={`${styles.divider} ${stage2 === 'success' ? styles.active : ''}`} />
+      {/* Stage 2: Vote */}
+      <div className={`${styles.stage} ${styles[stage2]}`}>
+        <div className={styles.imageWrap}>
+          <Image
+            src={getStage2Image()}
+            alt="Vote"
+            width={100}
+            height={100}
+            className={styles.stageImage}
+            unoptimized
+          />
+        </div>
+        <p className={styles.stageLabel}>
+          Stage 2: {getStage2Label()}
+        </p>
+      </div>
 
-      {/* Stage 3: Success */}
-      <div className={`${styles.stage} ${styles.stage3} ${styles[stage3]}`}>
-        <div className={styles.stageIcon}>
-          {stage3 === 'completed' ? (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          ) : stage3 === 'defeated' || stage3 === 'expired' ? (
-            <Skull size={20} weight="duotone" />
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
-              <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          )}
+      {/* Arrow 2 */}
+      <div className={`${styles.arrow} ${isStage2Done ? styles.arrowActive : ''}`}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+
+      {/* Stage 3: Outcome */}
+      <div className={`${styles.stage} ${styles[stage3]}`}>
+        <div className={styles.imageWrap}>
+          <Image
+            src={getStage3Image()}
+            alt="Outcome"
+            width={100}
+            height={100}
+            className={styles.stageImage}
+            unoptimized
+          />
         </div>
-        <div className={styles.stageContent}>
-          <h4 className={styles.stageName}>Outcome</h4>
-          <p className={styles.stageStatus}>{getStage3Status()}</p>
-        </div>
+        <p className={styles.stageLabel}>
+          Stage 3: {getStage3Label()}
+        </p>
       </div>
     </div>
   );

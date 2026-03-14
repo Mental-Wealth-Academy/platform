@@ -180,10 +180,14 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <p className={styles.eyebrow}>Proposal</p>
             <h3 className={styles.title}>{title}</h3>
           </div>
-          <div className={`${styles.statusBadge} ${styles[getStatusClass()]}`}>
-            <span className={styles.statusDot} />
-            {getStatusLabel()}
-          </div>
+          <Image
+            src="/icons/shard.svg"
+            alt="Shard"
+            width={44}
+            height={44}
+            className={`${styles.headerGem} ${styles[`gem_${getStatusClass()}`]}`}
+            unoptimized
+          />
         </div>
         <div className={styles.meta}>
           {showAvatar && (
@@ -218,25 +222,28 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      {review && (review.reasoning || (review.tokenAllocation && review.decision === 'approved')) && (
-        <div className={styles.preview}>
-          {review.tokenAllocation && review.decision === 'approved' && (
-            <div className={styles.allocationBadge}>
-              <span className={styles.allocationIcon}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                  <path d="M12 2L15 8.5L22 9.5L17 14.5L18 21.5L12 18.5L6 21.5L7 14.5L2 9.5L9 8.5L12 2Z" fill="currentColor"/>
-                </svg>
-              </span>
-              <span className={styles.allocationLabel}>Azura&apos;s Allocation</span>
-              <span className={styles.allocationValue}>{review.tokenAllocation}%</span>
-            </div>
-          )}
+      {review && review.decision === 'approved' && review.tokenAllocation && (
+        <div className={styles.tokenSection}>
+          <div className={styles.tokenHeader}>
+            <Image src="/icons/shard.svg" alt="Shard" width={20} height={20} unoptimized />
+            <span className={styles.tokenAmount}>{review.tokenAllocation} $ACADEMY</span>
+          </div>
+          <div className={styles.tokenBarTrack}>
+            <div
+              className={styles.tokenBarFill}
+              style={{ width: `${Math.min(100, (review.tokenAllocation / 40) * 100)}%` }}
+            />
+          </div>
           {review.reasoning && (
-            <>
-              <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
-              <p className={styles.previewText}>{review.reasoning}</p>
-            </>
+            <p className={styles.tokenDescription}>{review.reasoning}</p>
           )}
+        </div>
+      )}
+
+      {review && review.reasoning && !(review.decision === 'approved' && review.tokenAllocation) && (
+        <div className={styles.preview}>
+          <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
+          <p className={styles.previewText}>{review.reasoning}</p>
         </div>
       )}
 

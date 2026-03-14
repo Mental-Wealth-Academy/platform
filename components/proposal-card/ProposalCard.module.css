@@ -55,74 +55,33 @@
   line-height: 1.3;
 }
 
-.statusBadge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+.headerGem {
   flex-shrink: 0;
-  font-family: var(--font-primary);
-  border: 2px solid rgba(81, 104, 255, 0.2);
+  filter: drop-shadow(0 2px 4px rgba(81, 104, 255, 0.2));
+  transition: filter 0.2s ease;
 }
 
-.statusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
-  flex-shrink: 0;
+.gem_approved {
+  filter: drop-shadow(0 2px 8px rgba(76, 175, 80, 0.4));
 }
 
-.statusBadge.pending {
-  background: rgba(80, 89, 155, 0.15);
-  color: #50599B;
+.gem_rejected {
+  filter: drop-shadow(0 2px 8px rgba(186, 26, 26, 0.3));
+  opacity: 0.6;
 }
 
-.statusBadge.pending .statusDot {
-  background: #50599B;
-  animation: pulse 2s ease-in-out infinite;
+.gem_active {
+  filter: drop-shadow(0 2px 8px rgba(81, 104, 255, 0.5));
 }
 
-.statusBadge.approved {
-  background: rgba(116, 196, 101, 0.15);
-  color: #4CAF50;
+.gem_pending {
+  filter: drop-shadow(0 2px 6px rgba(139, 92, 246, 0.3));
+  animation: gemPulse 2s ease-in-out infinite;
 }
 
-.statusBadge.approved .statusDot {
-  background: #74C465;
-}
-
-.statusBadge.rejected {
-  background: rgba(186, 26, 26, 0.15);
-  color: #BA1A1A;
-}
-
-.statusBadge.rejected .statusDot {
-  background: #BA1A1A;
-}
-
-.statusBadge.active {
-  background: rgba(81, 104, 255, 0.15);
-  color: var(--color-primary);
-}
-
-.statusBadge.active .statusDot {
-  background: var(--color-primary);
-}
-
-.statusBadge.expired {
-  background: rgba(107, 114, 128, 0.15);
-  color: #6B7280;
-  border-color: rgba(107, 114, 128, 0.3);
-}
-
-.statusBadge.expired .statusDot {
-  background: #6B7280;
+.gem_expired {
+  filter: grayscale(0.6) drop-shadow(0 2px 4px rgba(107, 114, 128, 0.2));
+  opacity: 0.5;
 }
 
 .meta {
@@ -239,40 +198,52 @@
   color: var(--color-secondary);
 }
 
-.allocationBadge {
+.tokenSection {
+  padding: 16px 24px;
+  border-bottom: 2px solid rgba(81, 104, 255, 0.08);
+  background: rgba(81, 104, 255, 0.02);
+  border: 2px solid rgba(81, 104, 255, 0.1);
+  border-radius: var(--radius-lg);
+  margin: 0 16px 0;
+}
+
+.tokenHeader {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(76, 175, 80, 0.06));
-  border: 2px solid rgba(76, 175, 80, 0.25);
-  border-radius: var(--radius-md);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-.allocationIcon {
-  color: #4CAF50;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.allocationLabel {
-  font-size: 12px;
-  font-weight: 700;
-  font-family: var(--font-primary);
-  color: #4CAF50;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  flex: 1;
-}
-
-.allocationValue {
-  font-size: 20px;
+.tokenAmount {
+  font-size: 16px;
   font-weight: 800;
   font-family: var(--font-primary);
-  color: #4CAF50;
-  letter-spacing: -0.02em;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+}
+
+.tokenBarTrack {
+  width: 100%;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: rgba(81, 104, 255, 0.1);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.tokenBarFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, #4CAF50, #81C784, #E040FB);
+  transition: width 0.6s ease;
+}
+
+.tokenDescription {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: var(--font-primary);
+  color: var(--color-secondary);
+  margin: 0;
 }
 
 .previewLabel {
@@ -349,12 +320,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes gemPulse {
+  0%, 100% { filter: drop-shadow(0 2px 6px rgba(139, 92, 246, 0.3)); }
+  50% { filter: drop-shadow(0 2px 12px rgba(139, 92, 246, 0.6)); }
 }
 
 @media (max-width: 768px) {
@@ -376,16 +348,9 @@
     font-size: 15px;
   }
 
-  .statusBadge {
-    padding: 4px 8px;
-    font-size: 9px;
-    gap: 4px;
-    border-width: 1.5px;
-  }
-
-  .statusDot {
-    width: 6px;
-    height: 6px;
+  .headerGem {
+    width: 36px;
+    height: 36px;
   }
 
   .meta {
@@ -402,7 +367,12 @@
     padding: 12px 16px;
   }
 
-  .previewText {
+  .tokenSection {
+    margin: 0 12px;
+    padding: 12px 16px;
+  }
+
+  .tokenDescription {
     display: none;
   }
 
