@@ -39,7 +39,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   // Details state
   const [username, setUsername] = useState('');
-  const [birthday, setBirthday] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
@@ -49,44 +48,9 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
   const usernameRegex = useMemo(() => /^[a-zA-Z0-9_]{5,32}$/, []);
   const isUsernameValid = usernameRegex.test(username);
 
-  const maxDate = useMemo(() => {
-    const today = new Date();
-    const max = new Date(today);
-    max.setFullYear(today.getFullYear() - 18);
-    return max.toISOString().split('T')[0];
-  }, []);
-
-  const minDate = useMemo(() => {
-    const today = new Date();
-    const min = new Date(today);
-    min.setFullYear(today.getFullYear() - 120);
-    return min.toISOString().split('T')[0];
-  }, []);
-
-  const isBirthdayValid = useMemo(() => {
-    if (!birthday) return false;
-    const birthDate = new Date(birthday);
-    if (isNaN(birthDate.getTime())) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    birthDate.setHours(0, 0, 0, 0);
-    if (birthDate > today) return false;
-    const minDateObj = new Date(minDate);
-    if (birthDate < minDateObj) return false;
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
-    let exactAge = age;
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-      exactAge = age - 1;
-    }
-    return exactAge >= 18;
-  }, [birthday, minDate]);
-
   const isFormValid =
     isUsernameValid &&
-    usernameAvailable !== false &&
-    isBirthdayValid;
+    usernameAvailable !== false;
 
   // Fetch avatars
   useEffect(() => {
@@ -172,7 +136,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setStep('avatar');
       setSelectedAvatarId(null);
       setUsername('');
-      setBirthday('');
       setError(null);
       setUsernameAvailable(null);
     }
@@ -189,14 +152,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setError('This username is already taken');
       return;
     }
-    if (!birthday) {
-      setError('Please enter your birthday');
-      return;
-    }
-    if (!isBirthdayValid) {
-      setError('You must be at least 18 years old to create an account');
-      return;
-    }
     if (!address && !hasSession) {
       setError('Wallet not connected. Please connect your wallet first.');
       return;
@@ -210,7 +165,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
         credentials: 'include',
         body: JSON.stringify({
           username,
-          birthday,
           avatar_id: selectedAvatarId || undefined,
         }),
       });
@@ -392,54 +346,6 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                 </p>
               </div>
 
-              <div className={styles.inputGroup}>
-                <label htmlFor="onboarding-birthday" className={styles.inputLabel}>Birthday</label>
-                <input
-                  id="onboarding-birthday"
-                  name="birthday"
-                  type="date"
-                  value={birthday}
-                  onChange={(e) => {
-                    setBirthday(e.target.value);
-                    if (error && error.includes('birthday')) setError(null);
-                  }}
-                  onBlur={(e) => {
-                    const selectedDate = e.target.value;
-                    if (selectedDate) {
-                      const birthDate = new Date(selectedDate);
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      birthDate.setHours(0, 0, 0, 0);
-                      if (isNaN(birthDate.getTime())) {
-                        setError('Please enter a valid birthday');
-                        setBirthday('');
-                      } else if (birthDate > today) {
-                        setError('Birthday cannot be in the future');
-                        setBirthday('');
-                      } else {
-                        const age = today.getFullYear() - birthDate.getFullYear();
-                        const monthDiff = today.getMonth() - birthDate.getMonth();
-                        const dayDiff = today.getDate() - birthDate.getDate();
-                        let exactAge = age;
-                        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-                          exactAge = age - 1;
-                        }
-                        if (exactAge < 18 || selectedDate > maxDate) {
-                          setError('You must be at least 18 years old to create an account');
-                          setBirthday('');
-                        }
-                      }
-                    }
-                  }}
-                  className={styles.input}
-                  min={minDate}
-                  max={maxDate}
-                  autoComplete="bday"
-                />
-                <p className={styles.inputHint}>
-                  You must be at least 18 years old
-                </p>
-              </div>
             </div>
 
             {error && <p className={styles.error}>{error}</p>}

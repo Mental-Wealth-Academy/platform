@@ -25,8 +25,8 @@ export function setSessionCookie(response: NextResponse, token: string) {
     name: SESSION_COOKIE_NAME,
     value: token,
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    secure: true,
     path: '/',
     maxAge: SESSION_DAYS * 24 * 60 * 60,
   });
