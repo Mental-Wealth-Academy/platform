@@ -218,10 +218,25 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      {review?.reasoning && (
+      {review && (review.reasoning || (review.tokenAllocation && review.decision === 'approved')) && (
         <div className={styles.preview}>
-          <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
-          <p className={styles.previewText}>{review.reasoning}</p>
+          {review.tokenAllocation && review.decision === 'approved' && (
+            <div className={styles.allocationBadge}>
+              <span className={styles.allocationIcon}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                  <path d="M12 2L15 8.5L22 9.5L17 14.5L18 21.5L12 18.5L6 21.5L7 14.5L2 9.5L9 8.5L12 2Z" fill="currentColor"/>
+                </svg>
+              </span>
+              <span className={styles.allocationLabel}>Azura&apos;s Allocation</span>
+              <span className={styles.allocationValue}>{review.tokenAllocation}%</span>
+            </div>
+          )}
+          {review.reasoning && (
+            <>
+              <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
+              <p className={styles.previewText}>{review.reasoning}</p>
+            </>
+          )}
         </div>
       )}
 
