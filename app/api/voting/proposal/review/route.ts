@@ -240,11 +240,16 @@ Respond ONLY in JSON format:
         });
       } catch (fallbackError: any) {
         console.error('Server-side Eliza fallback failed:', fallbackError);
+        // Mark proposal as expired so it doesn't block the user forever
+        await sqlQuery(
+          `UPDATE proposals SET status = 'expired' WHERE id = :proposalId AND status = 'pending_review'`,
+          { proposalId: proposal.id }
+        );
         return NextResponse.json({
-          ok: true,
-          pending: true,
-          message: 'Awaiting Chainlink CRE review. Server-side fallback also failed.',
-          source: 'cre',
+          ok: false,
+          expired: true,
+          message: 'Both CRE and server-side review failed. Proposal marked as expired — user can resubmit.',
+          source: 'none',
         });
       }
     }
