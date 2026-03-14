@@ -120,26 +120,20 @@ export async function POST(request: Request) {
     wallet: walletAddress,
   });
 
-  // Rate limiting: Check if user has submitted a proposal in the last 7 days
+  // Rate limiting: Block if user has an active (in-progress) proposal
   try {
-    const recentProposals = await sqlQuery<Array<{ created_at: string }>>(
-      `SELECT created_at FROM proposals 
-       WHERE user_id = :userId 
-       AND created_at > NOW() - INTERVAL '7 days'
-       ORDER BY created_at DESC 
+    const activeProposals = await sqlQuery<Array<{ id: string; status: string }>>(
+      `SELECT id, status FROM proposals
+       WHERE user_id = :userId
+       AND status IN ('pending_review', 'active', 'approved')
        LIMIT 1`,
       { userId: user.id }
     );
 
-    if (recentProposals.length > 0) {
-      const lastSubmission = new Date(recentProposals[0].created_at);
-      const nextAllowed = new Date(lastSubmission.getTime() + 7 * 24 * 60 * 60 * 1000);
-      const daysRemaining = Math.ceil((nextAllowed.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
-      
+    if (activeProposals.length > 0) {
       return NextResponse.json(
-        { 
-          error: `You can only submit one proposal per week. Please wait ${daysRemaining} more day(s).`,
-          nextAllowedDate: nextAllowed.toISOString()
+        {
+          error: `You already have an active proposal (status: ${activeProposals[0].status}). Please wait until it is resolved before submitting another.`,
         },
         { status: 429 }
       );
