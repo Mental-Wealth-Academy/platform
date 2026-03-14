@@ -181,7 +181,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <h3 className={styles.title}>{title}</h3>
           </div>
           <Image
-            src="/icons/shard.svg"
+            src="/icons/academybadge.png"
             alt="Shard"
             width={44}
             height={44}
@@ -225,7 +225,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       {review && review.decision === 'approved' && review.tokenAllocation && (
         <div className={styles.tokenSection}>
           <div className={styles.tokenHeader}>
-            <Image src="/icons/shard.svg" alt="Shard" width={20} height={20} unoptimized />
+            <Image src="/icons/academybadge.png" alt="Shard" width={20} height={20} unoptimized />
             <span className={styles.tokenAmount}>{review.tokenAllocation} $ACADEMY</span>
           </div>
           <div className={styles.tokenBarTrack}>
