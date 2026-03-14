@@ -5,7 +5,6 @@ import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { providers, Contract } from 'ethers';
 import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
 import { elizaAPI } from '@/lib/eliza-api';
-import { azuraWallet } from '@/lib/azura-wallet';
 
 /**
  * POST /api/voting/proposal/review
@@ -235,43 +234,24 @@ export async function POST(request: Request) {
           : 0;
 
         try {
-          await azuraWallet.initialize();
-          const azuraAddress = await azuraWallet.getWalletAddress();
-          console.log(`Calling azuraReview(${proposal.on_chain_proposal_id}, ${onChainLevel}) from ${azuraAddress}`);
+          const azuraPrivateKey = process.env.AZURA_PRIVATE_KEY;
+          if (!azuraPrivateKey) throw new Error('AZURA_PRIVATE_KEY not configured');
 
-          // Use CDP SDK to call azuraReview on the contract
-          const { Wallet } = await import('@coinbase/coinbase-sdk');
-          const walletId = process.env.AZURA_WALLET_ID;
-          const walletSeed = process.env.AZURA_WALLET_SEED;
+          const { providers: ethProviders, Wallet: EthWallet, Contract: EthContract } = await import('ethers');
+          const ethProvider = new ethProviders.JsonRpcProvider(rpcUrl);
+          const signer = new EthWallet(azuraPrivateKey, ethProvider);
+          const reviewContract = new EthContract(
+            contractAddress,
+            ['function azuraReview(uint256 _proposalId, uint256 _level) external'],
+            signer
+          );
 
-          if (walletId && walletSeed) {
-            const wallet = await Wallet.import({ walletId, seed: walletSeed });
-            const addr = await wallet.getDefaultAddress();
-            const invocation = await addr.invokeContract({
-              contractAddress,
-              method: 'azuraReview',
-              args: {
-                _proposalId: proposal.on_chain_proposal_id!,
-                _level: onChainLevel.toString(),
-              },
-              abi: [
-                {
-                  name: 'azuraReview',
-                  type: 'function',
-                  stateMutability: 'nonpayable',
-                  inputs: [
-                    { name: '_proposalId', type: 'uint256' },
-                    { name: '_level', type: 'uint256' },
-                  ],
-                  outputs: [],
-                },
-              ],
-            });
-            await invocation.wait();
-            console.log(`On-chain azuraReview TX: ${invocation.getTransactionHash()}`);
-          }
+          console.log(`Calling azuraReview(${proposal.on_chain_proposal_id}, ${onChainLevel}) from ${signer.address}`);
+          const tx = await reviewContract.azuraReview(proposal.on_chain_proposal_id!, onChainLevel);
+          const receipt = await tx.wait();
+          console.log(`On-chain azuraReview TX: ${receipt.transactionHash} (block ${receipt.blockNumber})`);
         } catch (onChainError: any) {
-          console.error('Failed to call azuraReview on-chain:', onChainError);
+          console.error('Failed to call azuraReview on-chain:', onChainError.message);
           // Non-fatal: DB review is stored, on-chain can be retried
         }
 
