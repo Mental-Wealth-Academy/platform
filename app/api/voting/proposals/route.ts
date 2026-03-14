@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface ProposalWithReview {
   id: string;
   user_id: string;
