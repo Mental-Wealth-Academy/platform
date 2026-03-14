@@ -121,7 +121,17 @@ export async function POST(request: Request) {
   });
 
   // Rate limiting: Block if user has an active (in-progress) proposal
+  // Exclude stale pending_review proposals older than 24h (review failed/never happened)
   try {
+    // First, clean up stale pending_review proposals (older than 24h with no review)
+    await sqlQuery(
+      `UPDATE proposals SET status = 'expired'
+       WHERE user_id = :userId
+       AND status = 'pending_review'
+       AND created_at < NOW() - INTERVAL '24 hours'`,
+      { userId: user.id }
+    );
+
     const activeProposals = await sqlQuery<Array<{ id: string; status: string }>>(
       `SELECT id, status FROM proposals
        WHERE user_id = :userId
