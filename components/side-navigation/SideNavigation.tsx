@@ -344,7 +344,7 @@ const SideNavigation: React.FC = () => {
       {/* Mobile Top Bar */}
       <div className={styles.mobileTopBar}>
         <Link href="/home" className={styles.mobileLogoLink}>
-          <span className={styles.mobileLogo}>MWA</span>
+          <span className={styles.mobileLogo}>Mental Wealth Academy</span>
         </Link>
         <button
           ref={hamburgerRef}
