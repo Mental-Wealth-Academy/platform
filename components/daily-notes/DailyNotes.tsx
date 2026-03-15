@@ -19,7 +19,20 @@ interface DailyNotesProps {
   enablePersistence?: boolean;
 }
 
-const PRIMARY_COLOR = '#5168FF';
+const WEEK_COLORS = [
+  '#5168FF', // Week 1 — indigo
+  '#7C3AED', // Week 2 — violet
+  '#2563EB', // Week 3 — blue
+  '#0891B2', // Week 4 — cyan
+  '#059669', // Week 5 — emerald
+  '#16A34A', // Week 6 — green
+  '#65A30D', // Week 7 — lime
+  '#CA8A04', // Week 8 — yellow
+  '#EA580C', // Week 9 — orange
+  '#DC2626', // Week 10 — red
+  '#DB2777', // Week 11 — pink
+  '#9333EA', // Week 12 — purple
+];
 
 export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
   const { play } = useSound();
@@ -40,7 +53,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
-  const weekColor = PRIMARY_COLOR;
+  const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
 
   const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
 
