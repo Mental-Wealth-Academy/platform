@@ -518,6 +518,7 @@
   border-bottom: none;
   border-radius: 16px 16px 0 0;
   overflow: hidden;
+  box-shadow: 4px 0 0 #1A1D33;
 }
 
 .cardTab {
@@ -705,8 +706,8 @@
   /* Mobile order: streak (1) → tabs (2) → activity card (3) → activity content (4) → premium (5) → league (6) */
   /* Mobile order: streak → tabs → activity card → content → premium → league */
   .streakCard { order: 1; width: 100%; }
-  .cardTabs { order: 2; width: 100%; margin-top: 16px; box-shadow: 4px 0 0 #1A1D33; }
-  .activityCard { order: 3; width: 100%; }
+  .cardTabs { order: 2; width: 100%; margin-top: 16px; }
+  .activityCard { order: 3; width: 100%; margin-top: -3px; }
   .activityContent { order: 4; width: 100%; margin-top: 16px; }
   .premiumCard { order: 5; width: 100%; margin: 16px 0 0; }
   .leagueCard { order: 6; width: 100%; margin-top: 16px; }
@@ -744,6 +745,10 @@
 
   .cardTabs {
     box-shadow: 3px 0 0 #1A1D33;
+  }
+
+  .activityCard {
+    margin-top: -3px;
   }
 
   .activityCta {
