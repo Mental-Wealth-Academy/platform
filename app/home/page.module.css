@@ -71,7 +71,8 @@
   background: #FFFFFF;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 3px solid #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
 }
 
 .streakTop {
@@ -703,12 +704,12 @@
 
   /* Mobile order: streak (1) → tabs (2) → activity card (3) → activity content (4) → premium (5) → league (6) */
   /* Mobile order: streak → tabs → activity card → content → premium → league */
-  .streakCard { order: 1; }
-  .cardTabs { order: 2; margin-bottom: -16px; }
-  .activityCard { order: 3; }
-  .activityContent { order: 4; margin-top: 0; }
-  .premiumCard { order: 5; margin: 0; }
-  .leagueCard { order: 6; }
+  .streakCard { order: 1; width: 100%; }
+  .cardTabs { order: 2; width: 100%; margin-bottom: -3px; }
+  .activityCard { order: 3; width: 100%; }
+  .activityContent { order: 4; width: 100%; margin-top: 0; }
+  .premiumCard { order: 5; width: 100%; margin: 0; }
+  .leagueCard { order: 6; width: 100%; }
 }
 
 @media (max-width: 600px) {
@@ -734,6 +735,7 @@
     height: 120px;
   }
 
+  .streakCard,
   .premiumCard,
   .leagueCard,
   .activityCard {
