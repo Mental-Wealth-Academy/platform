@@ -705,7 +705,7 @@
   /* Mobile order: streak (1) → tabs (2) → activity card (3) → activity content (4) → premium (5) → league (6) */
   /* Mobile order: streak → tabs → activity card → content → premium → league */
   .streakCard { order: 1; width: 100%; }
-  .cardTabs { order: 2; width: 100%; margin-bottom: -3px; }
+  .cardTabs { order: 2; width: 100%; margin-bottom: -16px; box-shadow: none; }
   .activityCard { order: 3; width: 100%; }
   .activityContent { order: 4; width: 100%; margin-top: 0; }
   .premiumCard { order: 5; width: 100%; margin: 0; }
