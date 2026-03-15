@@ -198,6 +198,7 @@ body {
 }
 
 body {
+  padding-top: 32px;
   font-family: var(--font-primary);
   background-color: #000000;
   background-image: url('https://i.imgur.com/Vy2e9Ej.png');
@@ -213,6 +214,10 @@ body {
 
 /* Prevent auto-zoom on input focus in mobile WebViews */
 @media (max-width: 900px) {
+  body {
+    padding-top: 0;
+  }
+
   input, textarea, select {
     font-size: 16px !important;
   }
