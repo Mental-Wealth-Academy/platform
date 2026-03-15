@@ -61,18 +61,6 @@ const WEEK_TITLES = [
   'Epilogue',
 ];
 
-// Labels for the 5-day streak display (last 5 days, dynamically computed)
-function getStreakDayLabels(): string[] {
-  const labels: string[] = [];
-  const dayNames = ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'];
-  const today = new Date();
-  for (let i = 4; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    labels.push(dayNames[d.getDay()]);
-  }
-  return labels;
-}
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -90,10 +78,8 @@ export default function HomePage() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
-  const [streakDays, setStreakDays] = useState<boolean[]>([false, false, false, false, false]);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
-  const streakLabels = getStreakDayLabels();
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -139,7 +125,6 @@ export default function HomePage() {
       .then(res => res.json())
       .then(data => {
         setStreakCount(data.streak ?? 0);
-        if (Array.isArray(data.completedDays)) setStreakDays(data.completedDays);
       })
       .catch(() => {});
   }, []);
@@ -209,27 +194,46 @@ export default function HomePage() {
           {/* ===== LEFT COLUMN ===== */}
           <div className={`${styles.leftCol} ${isLoaded ? styles.leftColLoaded : ''}`}>
 
-            {/* Streak Card */}
+            {/* Streak & Growth Card */}
             <div className={styles.streakCard}>
-              <div className={styles.streakHeader}>
-                <span className={styles.streakNumber}>{streakCount}</span>
-                <Image src="/icons/shard.svg" alt="Shards" width={22} height={22} />
-              </div>
-              <p className={styles.streakSubtext}>
-                {streakCount === 0 ? 'Write daily to start a streak' : `${streakCount} day streak`}
-              </p>
-              <div className={styles.streakDays}>
-                {streakLabels.map((day, i) => (
-                  <div key={`${day}-${i}`} className={styles.streakDay}>
-                    <div className={`${styles.streakDot} ${streakDays[i] ? styles.streakDotActive : ''}`}>
-                      {streakDays[i] && (
-                        <Image src="/icons/shard.svg" alt="" width={16} height={16} />
-                      )}
-                    </div>
-                    <span className={styles.streakDayLabel}>{day}</span>
+              <div className={styles.streakTop}>
+                <div className={styles.streakLeft}>
+                  <span className={styles.streakLabel}>Streak</span>
+                  <div className={styles.streakValueRow}>
+                    <span className={styles.streakFlame}>🔥</span>
+                    <span className={styles.streakNumber}>{streakCount}</span>
                   </div>
-                ))}
+                  <span className={styles.streakUnit}>{streakCount === 1 ? 'day' : 'days'}</span>
+                </div>
+                <div className={styles.streakDivider} />
+                <div className={styles.streakRight}>
+                  <span className={styles.growthTitle}>Your growth this week</span>
+                  <div className={styles.growthStats}>
+                    <div className={styles.growthStat}>
+                      <span className={styles.growthValue} style={{ color: '#3B9E5F' }}>{shardCount}</span>
+                      <span className={styles.growthLabel}>key points</span>
+                    </div>
+                    <div className={styles.growthStat}>
+                      <span className={styles.growthValue} style={{ color: '#D4852E' }}>--</span>
+                      <span className={styles.growthLabel}>minutes</span>
+                    </div>
+                    <div className={styles.growthStat}>
+                      <span className={styles.growthValue} style={{ color: '#3B9E5F' }}>--</span>
+                      <span className={styles.growthLabel}>insights</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <button
+                className={styles.dailyMissionBtn}
+                onClick={() => {
+                  play('click');
+                  document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                YOUR DAILY MISSION
+                <span className={styles.dailyMissionArrow}>›</span>
+              </button>
             </div>
 
             {/* Premium CTA */}
@@ -285,6 +289,19 @@ export default function HomePage() {
           {/* ===== RIGHT COLUMN ===== */}
           <div className={`${styles.rightCol} ${isLoaded ? styles.rightColLoaded : ''}`}>
 
+            {/* Tab buttons */}
+            <div className={styles.cardTabs}>
+              {(['daily', 'weekly', 'tasks'] as ActivityCard[]).map(tab => (
+                <button
+                  key={tab}
+                  className={`${styles.cardTab} ${activeCard === tab ? styles.cardTabActive : ''}`}
+                  onClick={() => { play('click'); setActiveCard(tab); }}
+                >
+                  {tab === 'daily' ? 'Notes' : tab === 'weekly' ? 'Read' : 'Journal'}
+                </button>
+              ))}
+            </div>
+
             {/* Expressive Activity Card */}
             <div className={styles.activityCard}>
               {activeCard === 'daily' && (
@@ -299,7 +316,6 @@ export default function HomePage() {
                     className={styles.activityCta}
                     onClick={() => {
                       play('click');
-                      // Scroll to the DailyNotes below
                       document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
@@ -351,19 +367,6 @@ export default function HomePage() {
                   </button>
                 </>
               )}
-
-              {/* Tab buttons */}
-              <div className={styles.cardTabs}>
-                {(['daily', 'weekly', 'tasks'] as ActivityCard[]).map(tab => (
-                  <button
-                    key={tab}
-                    className={`${styles.cardTab} ${activeCard === tab ? styles.cardTabActive : ''}`}
-                    onClick={() => { play('click'); setActiveCard(tab); }}
-                  >
-                    {tab === 'daily' ? 'Notes' : tab === 'weekly' ? 'Read' : 'Journal'}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Embedded content below card */}
