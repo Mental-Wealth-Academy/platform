@@ -4,13 +4,13 @@
   left: 0;
   right: 0;
   height: 32px;
-  background: #1A1D33;
+  background: var(--color-background, #FBF8FF);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: 0 20px;
   z-index: 200;
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1.5px solid rgba(26, 29, 51, 0.08);
 }
 
 .links {
@@ -23,7 +23,7 @@
   font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(26, 29, 51, 0.5);
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -31,11 +31,11 @@
 }
 
 .link:hover {
-  color: #ffffff;
+  color: #1A1D33;
 }
 
 .active {
-  color: #ffffff;
+  color: #1A1D33;
 }
 
 .joinLink {

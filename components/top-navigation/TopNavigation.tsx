@@ -23,12 +23,9 @@ const TopNavigation: React.FC = () => {
         >
           Join
         </Link>
-        <Link
-          href="/chapters"
-          className={`${styles.link} ${pathname === '/chapters' ? styles.active : ''}`}
-        >
+        <span className={styles.link}>
           Tools
-        </Link>
+        </span>
       </div>
     </nav>
   );

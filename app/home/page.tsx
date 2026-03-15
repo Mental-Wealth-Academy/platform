@@ -310,7 +310,7 @@ export default function HomePage() {
                   <h1 className={styles.activityTitle}>Morning Pages</h1>
                   <p className={styles.activityTopic}>15 minutes of freewriting</p>
                   <div className={styles.stickerWrap}>
-                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                    <Image src="/icons/axolotl-notes.svg" alt="Axolotl Notes" width={160} height={160} className={styles.sticker} />
                   </div>
                   <button
                     className={styles.activityCta}
@@ -331,7 +331,7 @@ export default function HomePage() {
                   <h1 className={styles.activityTitle}>{weekReading.title}</h1>
                   <p className={styles.activityTopic}>{weekTitle}</p>
                   <div className={styles.stickerWrap}>
-                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                    <Image src="/icons/axolotl-read.svg" alt="Axolotl Read" width={160} height={160} className={styles.sticker} />
                   </div>
                   <button
                     className={styles.activityCta}
@@ -353,7 +353,7 @@ export default function HomePage() {
                   <h1 className={styles.activityTitle}>Journal</h1>
                   <p className={styles.activityTopic}>{weekTitle}</p>
                   <div className={styles.stickerWrap}>
-                    <Image src="/azura-sticker.png" alt="Azura" width={160} height={160} className={styles.sticker} unoptimized />
+                    <Image src="/icons/axolotl-journal.svg" alt="Axolotl Journal" width={160} height={160} className={styles.sticker} />
                   </div>
                   <button
                     className={styles.activityCta}
