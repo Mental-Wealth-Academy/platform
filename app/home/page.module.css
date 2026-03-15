@@ -688,20 +688,27 @@
   }
 
   .twoCol {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .leftCol {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .leftCol,
+  .rightCol,
+  .leftColLoaded,
+  .rightColLoaded {
+    display: contents;
+    animation: none;
   }
 
-  /* Streak takes full width on tablet */
-  .streakCard {
-    grid-column: 1 / -1;
-  }
+  /* Mobile order: streak (1) → tabs (2) → activity card (3) → activity content (4) → premium (5) → league (6) */
+  /* Mobile order: streak → tabs → activity card → content → premium → league */
+  .streakCard { order: 1; }
+  .cardTabs { order: 2; margin-bottom: -16px; }
+  .activityCard { order: 3; }
+  .activityContent { order: 4; margin-top: 0; }
+  .premiumCard { order: 5; margin: 0; }
+  .leagueCard { order: 6; }
 }
 
 @media (max-width: 600px) {
