@@ -36,7 +36,6 @@
   width: 48px;
   height: 48px;
   animation: spinAndScale 1.2s ease-in-out;
-  filter: brightness(0) invert(1);
 }
 
 .shardText {

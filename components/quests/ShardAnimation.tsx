@@ -88,8 +88,8 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
       <div className={styles.shardBubble}>
         <div className={styles.shardIconContainer}>
           <Image
-            src="/icons/Coin Poly.svg"
-            alt="Daemon"
+            src="/icons/shard.svg"
+            alt="Shard"
             width={48}
             height={48}
             className={styles.shardIcon}
