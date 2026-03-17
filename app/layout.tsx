@@ -1,6 +1,36 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono } from 'next/font/google';
 import '@/styles/globals.css';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+});
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-space-mono',
+  display: 'swap',
+});
+
 import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provider';
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
@@ -59,7 +89,7 @@ export default function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable}`} suppressHydrationWarning>
       <head>
         <meta
           name="viewport"
