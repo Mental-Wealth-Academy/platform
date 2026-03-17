@@ -45,11 +45,11 @@ const LandingPage = () => {
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
 
-      {/* Swarms Section - Server rendered */}
-      <SwarmsSection />
-
       {/* Testimonial Section - Server rendered */}
       <TestimonialSection />
+
+      {/* Swarms Section - Server rendered */}
+      <SwarmsSection />
 
       {/* FAQ Section - Client component for accordion */}
       <FAQSection />
