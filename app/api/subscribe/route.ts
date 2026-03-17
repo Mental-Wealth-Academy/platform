@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 // Mailchimp API configuration
 const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || '';
@@ -14,6 +15,18 @@ const apiKey = MAILCHIMP_API_KEY.includes('-') ? MAILCHIMP_API_KEY.split('-')[0]
 const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID || process.env.MAILCHIMP_AUDIENCE_ID || 'YOUR_LIST_ID_HERE';
 
 export async function POST(request: NextRequest) {
+  const rlResult = checkRateLimit({
+    max: 10,
+    windowMs: 60 * 1000,
+    identifier: `subscribe:${getClientIdentifier(request)}`,
+  });
+  if (!rlResult.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: getRateLimitHeaders(rlResult) }
+    );
+  }
+
   try {
     // Check if API key is configured
     if (!MAILCHIMP_API_KEY) {

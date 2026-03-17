@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { providers, Contract } from 'ethers';
 import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
@@ -214,19 +214,6 @@ export async function POST(request: Request) {
         const reasoning = azuraResult.reasoning || 'Reviewed by Azura server-side fallback.';
 
         const reviewId = uuidv4();
-        await sqlQuery(
-          `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
-           VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
-           ON CONFLICT (proposal_id) DO NOTHING`,
-          {
-            id: reviewId,
-            proposalId: proposal.id,
-            decision,
-            reasoning,
-            tokenAllocation,
-            scores: JSON.stringify(scores),
-          }
-        );
 
         // Call azuraReview() on-chain to transition proposal to Active (or Rejected)
         const onChainLevel = decision === 'approved'
@@ -255,11 +242,30 @@ export async function POST(request: Request) {
           // Non-fatal: DB review is stored, on-chain can be retried
         }
 
+        // Insert review and update proposal status atomically
         const newStatus = decision === 'approved' ? 'approved' : 'rejected';
-        await sqlQuery(
-          `UPDATE proposals SET status = :status WHERE id = :proposalId`,
-          { status: newStatus, proposalId: proposal.id }
-        );
+        await withTransaction(async (client) => {
+          await sqlQueryWithClient(
+            client,
+            `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
+             VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
+             ON CONFLICT (proposal_id) DO NOTHING`,
+            {
+              id: reviewId,
+              proposalId: proposal.id,
+              decision,
+              reasoning,
+              tokenAllocation,
+              scores: JSON.stringify(scores),
+            }
+          );
+
+          await sqlQueryWithClient(
+            client,
+            `UPDATE proposals SET status = :status WHERE id = :proposalId`,
+            { status: newStatus, proposalId: proposal.id }
+          );
+        });
 
         return NextResponse.json({
           ok: true,
@@ -291,28 +297,31 @@ export async function POST(request: Request) {
     const decision = azuraApproved ? 'approved' : 'rejected';
     const tokenAllocation = azuraApproved ? azuraLevel * 10 : null;
 
-    // Store review in DB
+    // Store review and update proposal status atomically
     const reviewId = uuidv4();
-    await sqlQuery(
-      `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
-       VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
-       ON CONFLICT (proposal_id) DO NOTHING`,
-      {
-        id: reviewId,
-        proposalId: proposal.id,
-        decision,
-        reasoning: 'Reviewed by Chainlink CRE decentralized workflow.',
-        tokenAllocation,
-        scores: JSON.stringify({ clarity: 0, impact: 0, feasibility: 0, budget: 0, ingenuity: 0, chaos: 0 }),
-      }
-    );
-
-    // Update proposal status
     const newStatus = azuraApproved ? 'active' : 'rejected';
-    await sqlQuery(
-      `UPDATE proposals SET status = :status WHERE id = :proposalId`,
-      { status: newStatus, proposalId: proposal.id }
-    );
+    await withTransaction(async (client) => {
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO proposal_reviews (id, proposal_id, decision, reasoning, token_allocation_percentage, scores)
+         VALUES (:id, :proposalId, :decision, :reasoning, :tokenAllocation, :scores)
+         ON CONFLICT (proposal_id) DO NOTHING`,
+        {
+          id: reviewId,
+          proposalId: proposal.id,
+          decision,
+          reasoning: 'Reviewed by Chainlink CRE decentralized workflow.',
+          tokenAllocation,
+          scores: JSON.stringify({ clarity: 0, impact: 0, feasibility: 0, budget: 0, ingenuity: 0, chaos: 0 }),
+        }
+      );
+
+      await sqlQueryWithClient(
+        client,
+        `UPDATE proposals SET status = :status WHERE id = :proposalId`,
+        { status: newStatus, proposalId: proposal.id }
+      );
+    });
 
     return NextResponse.json({
       ok: true,

@@ -45,6 +45,12 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     /// @notice Proposal counter
     uint256 public proposalCount;
 
+    /// @notice Minimum voting period (1 hour)
+    uint256 public constant MIN_VOTING_PERIOD = 1 hours;
+
+    /// @notice Maximum voting period (30 days)
+    uint256 public constant MAX_VOTING_PERIOD = 30 days;
+
     /// @notice Chainlink CRE KeystoneForwarder address (delivers DON-signed reports)
     address public keystoneForwarder;
 
@@ -143,6 +149,11 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         address indexed cancelledBy
     );
 
+    event EmergencyWithdraw(address indexed to, uint256 amount);
+    event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
+    event AzuraAgentUpdated(address indexed oldAgent, address indexed newAgent);
+    event AdminUpdated(address indexed admin, bool status);
+
     // ============================================================================
     // ERRORS
     // ============================================================================
@@ -234,6 +245,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         if (_usdcAmount == 0) revert InvalidAmount();
         if (_usdcAmount > usdcToken.balanceOf(address(this))) revert InvalidAmount();
         if (bytes(_title).length == 0) revert InvalidProposal();
+        require(_votingPeriod >= MIN_VOTING_PERIOD && _votingPeriod <= MAX_VOTING_PERIOD, "Voting period out of bounds");
         
         proposalCount++;
         uint256 proposalId = proposalCount;
@@ -466,7 +478,10 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      * @param _forwarder Address of the KeystoneForwarder on this chain
      */
     function setKeystoneForwarder(address _forwarder) external onlyOwner {
+        require(_forwarder != address(0), "Invalid forwarder address");
+        address oldForwarder = keystoneForwarder;
         keystoneForwarder = _forwarder;
+        emit KeystoneForwarderUpdated(oldForwarder, _forwarder);
     }
 
     /**
@@ -490,6 +505,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      */
     function setAdmin(address _admin, bool _status) external onlyOwner {
         isAdmin[_admin] = _status;
+        emit AdminUpdated(_admin, _status);
     }
     
     /**
@@ -498,7 +514,9 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      */
     function setAzuraAgent(address _newAzura) external onlyOwner {
         if (_newAzura == address(0)) revert InvalidProposal();
+        address oldAgent = azuraAgent;
         azuraAgent = _newAzura;
+        emit AzuraAgentUpdated(oldAgent, _newAzura);
     }
     
     /**
@@ -508,6 +526,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     function emergencyWithdraw(uint256 _amount) external onlyOwner {
         bool success = usdcToken.transfer(owner(), _amount);
         if (!success) revert TransferFailed();
+        emit EmergencyWithdraw(owner(), _amount);
     }
     
     // ============================================================================

@@ -58,6 +58,9 @@ contract AzuraMarketTrader is Ownable, ReentrancyGuard {
         uint256 usdcAmount
     );
 
+    event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
+    event PredictionMarketUpdated(address indexed oldMarket, address indexed newMarket);
+
     // ============================================================================
     // ERRORS
     // ============================================================================
@@ -164,7 +167,12 @@ contract AzuraMarketTrader is Ownable, ReentrancyGuard {
      * @param _market Address of the prediction market contract
      */
     function setPredictionMarket(address _market) external onlyOwner {
+        address oldMarket = predictionMarket;
+        if (predictionMarket != address(0)) {
+            usdcToken.approve(predictionMarket, 0);
+        }
         predictionMarket = _market;
+        emit PredictionMarketUpdated(oldMarket, _market);
     }
 
     /**
@@ -172,7 +180,10 @@ contract AzuraMarketTrader is Ownable, ReentrancyGuard {
      * @param _forwarder Address of the KeystoneForwarder
      */
     function setKeystoneForwarder(address _forwarder) external onlyOwner {
+        require(_forwarder != address(0), "Invalid forwarder address");
+        address oldForwarder = keystoneForwarder;
         keystoneForwarder = _forwarder;
+        emit KeystoneForwarderUpdated(oldForwarder, _forwarder);
     }
 
     /**

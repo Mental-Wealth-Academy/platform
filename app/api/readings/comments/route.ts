@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -85,6 +86,18 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const rlResult = checkRateLimit({
+    max: 10,
+    windowMs: 60 * 1000,
+    identifier: `reading-comments:${getClientIdentifier(request)}`,
+  });
+  if (!rlResult.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: getRateLimitHeaders(rlResult) }
+    );
+  }
+
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }

@@ -709,6 +709,99 @@ contract AzuraKillStreakTest is Test {
     // GAS OPTIMIZATION TESTS
     // ============================================================================
 
+    // ============================================================================
+    // SECURITY FIX TESTS
+    // ============================================================================
+
+    event EmergencyWithdraw(address indexed to, uint256 amount);
+    event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
+    event AzuraAgentUpdated(address indexed oldAgent, address indexed newAgent);
+    event AdminUpdated(address indexed admin, bool status);
+
+    function test_RevertWhen_SetKeystoneForwarderZeroAddress() public {
+        vm.expectRevert("Invalid forwarder address");
+        governance.setKeystoneForwarder(address(0));
+    }
+
+    function test_RevertWhen_VotingPeriodTooShort() public {
+        vm.prank(proposer);
+        vm.expectRevert("Voting period out of bounds");
+        governance.createProposal(
+            recipient,
+            USDC_AMOUNT,
+            "Test",
+            "Description",
+            30 minutes // less than MIN_VOTING_PERIOD (1 hour)
+        );
+    }
+
+    function test_RevertWhen_VotingPeriodTooLong() public {
+        vm.prank(proposer);
+        vm.expectRevert("Voting period out of bounds");
+        governance.createProposal(
+            recipient,
+            USDC_AMOUNT,
+            "Test",
+            "Description",
+            31 days // more than MAX_VOTING_PERIOD (30 days)
+        );
+    }
+
+    function test_VotingPeriodMinBound() public {
+        vm.prank(proposer);
+        uint256 proposalId = governance.createProposal(
+            recipient,
+            USDC_AMOUNT,
+            "Min Period",
+            "Exactly 1 hour",
+            1 hours
+        );
+        assertEq(proposalId, 1);
+    }
+
+    function test_VotingPeriodMaxBound() public {
+        vm.prank(proposer);
+        uint256 proposalId = governance.createProposal(
+            recipient,
+            USDC_AMOUNT,
+            "Max Period",
+            "Exactly 30 days",
+            30 days
+        );
+        assertEq(proposalId, 1);
+    }
+
+    function test_EmitKeystoneForwarderUpdated() public {
+        vm.expectEmit(true, true, false, false);
+        emit KeystoneForwarderUpdated(address(0), forwarder);
+        governance.setKeystoneForwarder(forwarder);
+    }
+
+    function test_EmitAzuraAgentUpdated() public {
+        address newAzura = makeAddr("newAzura");
+        vm.expectEmit(true, true, false, false);
+        emit AzuraAgentUpdated(azuraAgent, newAzura);
+        governance.setAzuraAgent(newAzura);
+    }
+
+    function test_EmitAdminUpdated() public {
+        address newAdmin = makeAddr("newAdmin");
+        vm.expectEmit(true, false, false, true);
+        emit AdminUpdated(newAdmin, true);
+        governance.setAdmin(newAdmin, true);
+    }
+
+    function test_EmitEmergencyWithdraw() public {
+        uint256 withdrawAmount = 1000 * 1e6;
+        vm.expectEmit(true, false, false, true);
+        emit EmergencyWithdraw(owner, withdrawAmount);
+        governance.emergencyWithdraw(withdrawAmount);
+    }
+
+    // ============================================================================
+    // GAS OPTIMIZATION TESTS
+    // ============================================================================
+
     function test_GasCreateProposal() public {
         vm.prank(proposer);
         uint256 gasBefore = gasleft();

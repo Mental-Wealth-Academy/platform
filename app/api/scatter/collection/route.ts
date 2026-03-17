@@ -48,7 +48,7 @@ export async function GET() {
     return NextResponse.json(
       { 
         success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: 'Failed to fetch collection data.'
       },
       { status: 500 }
     )

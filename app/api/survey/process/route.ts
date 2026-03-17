@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import azuraPersona from '@/lib/Azurapersonality.json'
+import { getCurrentUserFromRequestCookie } from '@/lib/auth'
 
 interface SurveyAnswers {
   surveyId: string
@@ -9,6 +10,14 @@ interface SurveyAnswers {
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getCurrentUserFromRequestCookie()
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required.' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const { surveyId, surveyTitle, answers } = body as SurveyAnswers
 
@@ -46,7 +55,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: 'Failed to process survey.'
       },
       { status: 500 }
     )

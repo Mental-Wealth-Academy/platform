@@ -214,7 +214,7 @@ export async function POST(
     }
 
     return NextResponse.json(
-      { error: error.message || 'Failed to finalize proposal.' },
+      { error: 'Failed to finalize proposal.' },
       { status: 500 }
     );
   }

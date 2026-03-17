@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { v4 as uuidv4 } from 'uuid';
 
 export const runtime = 'nodejs';
@@ -58,10 +58,10 @@ export async function POST(request: Request) {
   const shardsToAward = getQuestShardReward(questId);
 
   try {
-    // Check if quest already completed
+    // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
-      `SELECT id FROM quest_completions 
-       WHERE user_id = :userId AND quest_id = :questId 
+      `SELECT id FROM quest_completions
+       WHERE user_id = :userId AND quest_id = :questId
        LIMIT 1`,
       { userId: user.id, questId }
     );
@@ -70,36 +70,58 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
     }
 
-    // Award shards and record completion
-    await sqlQuery(
-      `UPDATE users 
-       SET shard_count = shard_count + :shards 
-       WHERE id = :id`,
-      { id: user.id, shards: shardsToAward }
-    );
+    // Award shards, record completion, and fetch updated count atomically
+    const { newShardCount, hasLinkedAccount } = await withTransaction(async (client) => {
+      // Re-check inside transaction to prevent race conditions
+      const dupeCheck = await sqlQueryWithClient<Array<{ id: string }>>(
+        client,
+        `SELECT id FROM quest_completions
+         WHERE user_id = :userId AND quest_id = :questId
+         LIMIT 1`,
+        { userId: user.id, questId }
+      );
+      if (dupeCheck.length > 0) {
+        throw new Error('QUEST_ALREADY_COMPLETED');
+      }
 
-    const completionId = uuidv4();
-    await sqlQuery(
-      `INSERT INTO quest_completions (id, user_id, quest_id, shards_awarded)
-       VALUES (:id, :userId, :questId, :shards)`,
-      { id: completionId, userId: user.id, questId, shards: shardsToAward }
-    );
+      await sqlQueryWithClient(
+        client,
+        `UPDATE users
+         SET shard_count = shard_count + :shards
+         WHERE id = :id`,
+        { id: user.id, shards: shardsToAward }
+      );
 
-    // Get updated shard count and check if account is linked
-    const shardRows = await sqlQuery<Array<{ shard_count: number; wallet_address: string | null }>>(
-      `SELECT shard_count, wallet_address FROM users WHERE id = :id LIMIT 1`,
-      { id: user.id }
-    );
-    const newShardCount = shardRows[0]?.shard_count ?? 0;
-    const hasLinkedAccount = !!shardRows[0]?.wallet_address;
+      const completionId = uuidv4();
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO quest_completions (id, user_id, quest_id, shards_awarded)
+         VALUES (:id, :userId, :questId, :shards)`,
+        { id: completionId, userId: user.id, questId, shards: shardsToAward }
+      );
 
-    return NextResponse.json({ 
-      ok: true, 
+      const shardRows = await sqlQueryWithClient<Array<{ shard_count: number; wallet_address: string | null }>>(
+        client,
+        `SELECT shard_count, wallet_address FROM users WHERE id = :id LIMIT 1`,
+        { id: user.id }
+      );
+
+      return {
+        newShardCount: shardRows[0]?.shard_count ?? 0,
+        hasLinkedAccount: !!shardRows[0]?.wallet_address,
+      };
+    });
+
+    return NextResponse.json({
+      ok: true,
       shardsAwarded: shardsToAward,
       newShardCount,
       requiresAccountLinking: !hasLinkedAccount,
     });
   } catch (err: any) {
+    if (err.message === 'QUEST_ALREADY_COMPLETED') {
+      return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
+    }
     console.error('Error completing quest:', err);
     return NextResponse.json({ error: 'Failed to complete quest.' }, { status: 500 });
   }

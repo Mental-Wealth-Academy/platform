@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 
 const PADLET_API_KEY = process.env.PADLET_API;
 const BOARD_ID = 'nru8fi4l8r3tf6f3';
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getCurrentUserFromRequestCookie();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required.' },
+        { status: 401 }
+      );
+    }
+
     if (!PADLET_API_KEY) {
       return NextResponse.json(
         { error: 'Padlet API key not configured' },
@@ -76,7 +85,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error creating Padlet post:', error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

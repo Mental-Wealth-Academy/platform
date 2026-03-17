@@ -254,6 +254,45 @@ contract AzuraMarketTraderTest is Test {
     }
 
     // ============================================================================
+    // SECURITY FIX TESTS
+    // ============================================================================
+
+    event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
+    event PredictionMarketUpdated(address indexed oldMarket, address indexed newMarket);
+
+    function test_RevertWhen_SetKeystoneForwarderZeroAddress() public {
+        vm.expectRevert("Invalid forwarder address");
+        trader.setKeystoneForwarder(address(0));
+    }
+
+    function test_EmitKeystoneForwarderUpdated() public {
+        address newForwarder = makeAddr("newForwarder2");
+        vm.expectEmit(true, true, false, false);
+        emit KeystoneForwarderUpdated(forwarder, newForwarder);
+        trader.setKeystoneForwarder(newForwarder);
+    }
+
+    function test_EmitPredictionMarketUpdated() public {
+        address newMarket = makeAddr("newMarket2");
+        vm.expectEmit(true, true, false, false);
+        emit PredictionMarketUpdated(address(market), newMarket);
+        trader.setPredictionMarket(newMarket);
+    }
+
+    function test_SetPredictionMarketResetsApproval() public {
+        // Execute a trade to create a non-zero approval on old market
+        uint256 marketId = market.createMarket("Approval test?");
+        trader.executeTrade(marketId, true, 1000 * 1e6);
+
+        // Change prediction market - old approval should be reset to 0
+        address newMarket = makeAddr("newMarket3");
+        trader.setPredictionMarket(newMarket);
+
+        // Verify old market allowance is 0
+        assertEq(usdc.allowance(address(trader), address(market)), 0);
+    }
+
+    // ============================================================================
     // MOCK PREDICTION MARKET TESTS
     // ============================================================================
 

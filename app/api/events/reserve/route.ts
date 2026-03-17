@@ -2,11 +2,24 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureEventsSchema } from '@/lib/ensureEventsSchema';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
+  const rlResult = checkRateLimit({
+    max: 10,
+    windowMs: 60 * 1000,
+    identifier: `events-reserve:${getClientIdentifier(request)}`,
+  });
+  if (!rlResult.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: getRateLimitHeaders(rlResult) }
+    );
+  }
+
   if (!isDbConfigured()) {
     return NextResponse.json(
       { error: 'Database is not configured on the server.' },

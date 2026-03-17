@@ -3,6 +3,7 @@ import path from 'path';
 import { mkdir, writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,6 +32,18 @@ function extForMime(mime: string) {
 }
 
 export async function POST(request: Request) {
+  const rlResult = checkRateLimit({
+    max: 5,
+    windowMs: 60 * 1000,
+    identifier: `upload:${getClientIdentifier(request)}`,
+  });
+  if (!rlResult.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: getRateLimitHeaders(rlResult) }
+    );
+  }
+
   // SECURITY: Require authentication
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {

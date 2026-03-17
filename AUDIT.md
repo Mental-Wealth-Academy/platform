@@ -217,44 +217,48 @@
 
 ---
 
-## Actions Taken During This Audit
+## Actions Taken
 
+### Commit 8bee7632 (2026-03-17)
 1. Created `CLAUDE.md` — authoritative project reference
 2. Created `.env.example` — documents all 54 env vars
 3. Fixed `.gitignore` — added `.cre_build_tmp.*` pattern
 4. Created this `AUDIT.md` — full findings and recommendations
+5. **FIXED** Client-controlled shards — server-side `QUEST_REWARDS` map, client value ignored
+6. **FIXED** Wallet signup — requires cryptographic signature proof via `verifyWalletSignature()`
+7. **FIXED** Farcaster signin — IP rate limiting (5/min), SIWF TODO documented
+8. **FIXED** `proposals.status` CHECK constraint — expanded to include all 9 statuses + migration SQL
+9. **FIXED** CDP webhook SQL — `ORDER BY` in `UPDATE` → subquery, `blockchain_tx_hash` → `transaction_hash`
+10. **FIXED** CDP webhook timing attack — `===` → `crypto.timingSafeEqual()`
 
-## Recommended Fix Order
+### Commit 2 (2026-03-17)
+11. **FIXED** Transaction safety — quest completion, loot box spin, proposal review, ethereal progress, avatar selection all wrapped in `withTransaction()`
+12. **FIXED** Loot box race condition — replaced SELECT+UPDATE with atomic `UPDATE ... WHERE shard_count >= :cost RETURNING`
+13. **FIXED** Auth on Padlet posts + survey processing — now require `getCurrentUserFromRequestCookie()`
+14. **FIXED** Rate limiting — added to events/reserve (10/min), readings/comments (10/min), loot-box/spin (3/min), upload (5/min), subscribe (10/min)
+15. **FIXED** Error message leakage — removed `error.message` from responses in padlet/posts, survey/process, scatter/collection, proposal finalize
+16. **FIXED** Smart contracts — zero-address check on `setKeystoneForwarder` (both contracts)
+17. **FIXED** Smart contracts — USDC approval reset in `setPredictionMarket` (AzuraMarketTrader)
+18. **FIXED** Smart contracts — min/max voting period bounds: 1 hour to 30 days (AzuraKillStreak)
+19. **FIXED** Smart contracts — added events: `EmergencyWithdraw`, `KeystoneForwarderUpdated`, `AzuraAgentUpdated`, `AdminUpdated`, `PredictionMarketUpdated`
+20. **FIXED** Smart contracts — 13 new tests (83 total, up from 70)
+21. **FIXED** Cleanup — removed 8 unused component directories, 2 unused lib files
+22. **FIXED** Cleanup — removed 4 unused npm packages (`@coinbase/onchainkit`, `@polymarket/order-utils`, `infobox-parser`, `@types/intro.js`)
+23. **FIXED** Cleanup — `git rm --cached` Foundry broadcast files
+24. **FIXED** Cleanup — `npm audit fix` resolved 14 vulnerabilities
 
-### Week 1: Critical security
-1. Fix client-controlled shards (`/api/quests/complete`)
-2. Add wallet signature verification (`/api/auth/wallet-signup`)
-3. Add Farcaster FID verification (`/api/auth/farcaster-signin`)
-4. Fix `proposals.status` CHECK constraint
-5. Fix CDP webhook SQL (ORDER BY in UPDATE + wrong column name)
+## Remaining Work
 
-### Week 2: Data integrity
-6. Wrap quest completion, loot box spin, proposal review, ethereal progress, avatar selection in transactions
-7. Add `crypto.timingSafeEqual()` for webhook signature
-8. Add rate limiting to write endpoints
-9. Add auth to Padlet and survey routes
+### Still open
+1. Implement SIWF (Sign In With Farcaster) — requires client-side `sdk.actions.signIn()` + server verification
+2. Add `cancelProposal` status guard — prevent cancelling already-rejected proposals
+3. Add pool error handler to `lib/db.ts`
+4. Move `ensure*Schema` DDL to deploy-time migrations (remove from API hot paths)
+5. Create proper numbered migration system with tracking table
+6. Compress large images in `public/` (8.8 MB hero, 5.9 MB azura404)
+7. Move file uploads to cloud storage (S3/R2)
 
-### Week 3: Smart contracts
-10. Add zero-address check to `setKeystoneForwarder`
-11. Reset USDC approval in `setPredictionMarket`
-12. Add min/max voting period bounds
-13. Add missing events to admin functions
-14. Write missing tests
-
-### Week 4: Cleanup
-15. Remove unused dependencies
-16. Remove dead components and lib files
-17. `git rm --cached` broadcast files
-18. Compress large images
-19. Run `npm audit fix`
-
-### Medium-term
-20. Migrate Next.js 14 → 15, React 18 → 19
-21. Migrate ethers v5 → v6
-22. Move to proper migration system (numbered files + tracking table)
-23. Move file uploads to cloud storage (S3/R2)
+### Medium-term upgrades
+8. Migrate Next.js 14 → 15, React 18 → 19
+9. Migrate ethers v5 → v6 (resolves elliptic vulnerability)
+10. Upgrade wagmi 2 → 3, @react-three/fiber 8 → 9

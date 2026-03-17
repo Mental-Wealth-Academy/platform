@@ -9,7 +9,7 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { isAvatarValidForUser, getAvatarByAvatarId } from '@/lib/avatars';
 
 export const runtime = 'nodejs';
@@ -92,29 +92,32 @@ export async function POST(request: Request) {
       // The profile creation should have set the username already
     }
 
-    // Persist the selected avatar to the database
-    await sqlQuery(
-      `UPDATE users 
-       SET avatar_url = :avatarUrl, 
-           selected_avatar_id = :avatarId 
-       WHERE id = :userId`,
-      { 
-        avatarUrl: avatar.image_url, 
-        avatarId: avatar_id,
-        userId: user.id 
-      }
-    );
+    // Persist the selected avatar to both tables atomically
+    await withTransaction(async (client) => {
+      await sqlQueryWithClient(
+        client,
+        `UPDATE users
+         SET avatar_url = :avatarUrl,
+             selected_avatar_id = :avatarId
+         WHERE id = :userId`,
+        {
+          avatarUrl: avatar.image_url,
+          avatarId: avatar_id,
+          userId: user.id
+        }
+      );
 
-    // Update user_avatars table to mark this avatar as selected
-    await sqlQuery(
-      `UPDATE user_avatars 
-       SET is_selected = CASE 
-         WHEN avatar_id = :avatarId THEN true 
-         ELSE false 
-       END
-       WHERE user_id = :userId`,
-      { avatarId: avatar_id, userId: user.id }
-    );
+      await sqlQueryWithClient(
+        client,
+        `UPDATE user_avatars
+         SET is_selected = CASE
+           WHEN avatar_id = :avatarId THEN true
+           ELSE false
+         END
+         WHERE user_id = :userId`,
+        { avatarId: avatar_id, userId: user.id }
+      );
+    });
 
     return NextResponse.json({
       ok: true,

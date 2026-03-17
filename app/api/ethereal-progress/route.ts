@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
-import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
 import { sealWeekOnChain, PATHWAY_CONTRACT_ADDRESS } from '@/lib/pathway-contract';
 import { getSeasonInfo } from '@/lib/season';
@@ -143,17 +143,8 @@ export async function POST(request: Request) {
     const contentString = JSON.stringify({ weekNumber, progressData, userId: user.id });
     const contentHash = createHash('sha256').update(contentString).digest('hex');
 
-    // Upsert progress data first
-    await sqlQuery(
-      `INSERT INTO ethereal_progress (id, user_id, week_number, progress_data)
-       VALUES (gen_random_uuid()::text, :userId, :weekNumber, :progressData::jsonb)
-       ON CONFLICT (user_id, week_number)
-       DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP
-       WHERE ethereal_progress.is_sealed = false`,
-      { userId: user.id, weekNumber, progressData: JSON.stringify(progressData) }
-    );
-
-    // Call contract to seal on-chain (if contract is configured)
+    // Call contract to seal on-chain first (if contract is configured)
+    // This is done outside the transaction since it's an external call
     let txHash: string | null = null;
     if (PATHWAY_CONTRACT_ADDRESS && process.env.PATHWAY_OWNER_PRIVATE_KEY) {
       try {
@@ -171,33 +162,51 @@ export async function POST(request: Request) {
       txHash = `0x${contentHash.slice(0, 64)}`;
     }
 
-    // Update DB with seal data
-    await sqlQuery(
-      `UPDATE ethereal_progress
-       SET is_sealed = true, seal_tx_hash = :txHash, seal_content_hash = :contentHash, updated_at = CURRENT_TIMESTAMP
-       WHERE user_id = :userId AND week_number = :weekNumber`,
-      { txHash, contentHash, userId: user.id, weekNumber }
-    );
+    // Upsert progress, mark sealed, and award shards atomically
+    const pathwayCompleted = await withTransaction(async (client) => {
+      // Upsert progress data
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO ethereal_progress (id, user_id, week_number, progress_data)
+         VALUES (gen_random_uuid()::text, :userId, :weekNumber, :progressData::jsonb)
+         ON CONFLICT (user_id, week_number)
+         DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP
+         WHERE ethereal_progress.is_sealed = false`,
+        { userId: user.id, weekNumber, progressData: JSON.stringify(progressData) }
+      );
 
-    // Award 700 shards for sealing a week
-    await sqlQuery(
-      `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId`,
-      { userId: user.id }
-    );
+      // Update DB with seal data
+      await sqlQueryWithClient(
+        client,
+        `UPDATE ethereal_progress
+         SET is_sealed = true, seal_tx_hash = :txHash, seal_content_hash = :contentHash, updated_at = CURRENT_TIMESTAMP
+         WHERE user_id = :userId AND week_number = :weekNumber`,
+        { txHash, contentHash, userId: user.id, weekNumber }
+      );
 
-    // Check pathway completion (week 13 = final)
-    let pathwayCompleted = false;
-    if (weekNumber === 13) {
-      const countRows = await sqlQuery<Array<{ cnt: string }>>(
-        `SELECT COUNT(*) as cnt FROM ethereal_progress
-         WHERE user_id = :userId AND is_sealed = true`,
+      // Award 700 shards for sealing a week
+      await sqlQueryWithClient(
+        client,
+        `UPDATE users SET shard_count = COALESCE(shard_count, 0) + 700 WHERE id = :userId`,
         { userId: user.id }
       );
-      const totalSealed = parseInt(countRows[0]?.cnt || '0', 10);
-      if (totalSealed === 14) {
-        pathwayCompleted = true;
+
+      // Check pathway completion (week 13 = final)
+      let completed = false;
+      if (weekNumber === 13) {
+        const countRows = await sqlQueryWithClient<Array<{ cnt: string }>>(
+          client,
+          `SELECT COUNT(*) as cnt FROM ethereal_progress
+           WHERE user_id = :userId AND is_sealed = true`,
+          { userId: user.id }
+        );
+        const totalSealed = parseInt(countRows[0]?.cnt || '0', 10);
+        if (totalSealed === 14) {
+          completed = true;
+        }
       }
-    }
+      return completed;
+    });
 
     return NextResponse.json({
       ok: true,
