@@ -1,0 +1,146 @@
+.section {
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+  padding: 48px 36px;
+  box-sizing: border-box;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Floating angel images */
+.floatingAngel {
+  position: absolute;
+  z-index: 1;
+  animation: float 4s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.angelImg {
+  border-radius: 50%;
+  background: rgba(240, 240, 245, 0.8);
+  padding: 4px;
+  object-fit: contain;
+}
+
+/* Center content */
+.centerContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+.headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: #1A1D33;
+  margin: 0;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+}
+
+.description {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1D33;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 520px;
+}
+
+/* Video card */
+.videoCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 12px 24px 12px 12px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 2px solid rgba(26, 29, 51, 0.08);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.videoCard:hover {
+  border-color: rgba(26, 29, 51, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.videoThumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1A1D33 0%, #2D3156 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.videoText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.videoTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1A1D33;
+}
+
+.videoTitle strong {
+  font-weight: 800;
+}
+
+.videoSub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.45);
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 16px;
+    min-height: 300px;
+  }
+
+  .floatingAngel {
+    opacity: 0.5;
+  }
+
+  .angelImg {
+    max-width: 48px;
+    max-height: 48px;
+  }
+
+  .headline {
+    font-size: 28px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+}

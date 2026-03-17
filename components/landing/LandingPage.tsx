@@ -11,6 +11,7 @@ import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
 import { AcademicAngels } from './AcademicAngels';
+import TheseAreAngels from './TheseAreAngels';
 import styles from './LandingPage.module.css';
 
 // Server Component - Static content is server-rendered for fast LCP
@@ -31,6 +32,9 @@ const LandingPage = () => {
 
       {/* Academic Angels — Scatter mint */}
       <AcademicAngels />
+
+      {/* These are Angels — floating images section */}
+      <TheseAreAngels />
 
       {/* Features Section - Server rendered */}
       <FeaturesSection />
