@@ -48,7 +48,7 @@ export default function TheseAreAngels() {
       <div className={styles.centerContent}>
         <h2 className={styles.headline}>These are Angels</h2>
         <p className={styles.description}>
-          Angels are unique digital art pieces. Each unlocks your digital game piece inside the world of Mental Wealth Academy. A community-governed brand.
+          Angels are unique digital art pieces. Each unlocks your digital game piece inside the world of Mental Wealth Academy.
         </p>
 
         {/* Video card */}
