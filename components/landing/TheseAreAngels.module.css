@@ -6,7 +6,7 @@
   box-sizing: border-box;
   z-index: 2;
   overflow: hidden;
-  background: #F4F5FE;
+  background: rgba(244, 245, 254, 0.80);
 }
 
 /* Floating angel images */
