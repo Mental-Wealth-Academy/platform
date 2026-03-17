@@ -27,7 +27,7 @@ export const HeroSection: React.FC = () => {
           <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
           <h2 className={styles.heroSubheadline}>Micro-University For Communal Wealth</h2>
           <p className={styles.heroSubtext}>
-            We refuse to let lazy people or the government steal our achievements, we believe that everyone should only work for their own happiness and not be forced to serve others.
+            A gamified MMO where you play the role of an Academic Angel, sent to study at the Academia a new type of world, where the government does control our achievements, where everyone works for their own happiness and isn't forced to serve others.
           </p>
           <button
             type="button"
