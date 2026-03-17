@@ -2,21 +2,26 @@
   position: relative;
   width: 100%;
   margin: 12px 0;
+  padding: 0 36px;
   z-index: 2;
+  box-sizing: border-box;
 }
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+  align-items: center;
   background: rgba(230, 232, 250, 0.55);
   border-radius: 24px;
-  padding: 36px;
+  padding: 28px 36px;
   backdrop-filter: blur(12px);
 }
 
 /* Left — GIF card */
 .imageCard {
+  width: 240px;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,7 +29,7 @@
   border-radius: 16px;
   border: 2px solid rgba(26, 29, 51, 0.06);
   overflow: hidden;
-  aspect-ratio: 1;
+  flex-shrink: 0;
 }
 
 .gif {
@@ -38,12 +43,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
+  gap: 10px;
 }
 
 .title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: #1A1D33;
   margin: 0;
@@ -52,10 +57,10 @@
 
 .subtitle {
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.5);
-  margin: -8px 0 4px;
+  margin: -4px 0 0;
 }
 
 /* Price */
@@ -68,12 +73,12 @@
 .priceBlock {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .priceLabel {
   font-family: 'Poppins', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.45);
   text-transform: uppercase;
@@ -82,7 +87,7 @@
 
 .priceValue {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #1A1D33;
 }
@@ -90,17 +95,17 @@
 /* Mint list selector */
 .listSelector {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .listOption {
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 20px;
   border: 2px solid rgba(26, 29, 51, 0.12);
   background: transparent;
   font-family: 'Poppins', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.6);
   cursor: pointer;
@@ -122,16 +127,16 @@
 .quantityRow {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .qtyBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: 2px solid #1A1D33;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(26, 29, 51, 0.15);
   background: #FFFFFF;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   color: #1A1D33;
   cursor: pointer;
@@ -139,31 +144,24 @@
   align-items: center;
   justify-content: center;
   transition: all 0.1s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .qtyBtn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.qtyBtn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  border-color: #5168FF;
+  color: #5168FF;
 }
 
 .qtyBtn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
-  transform: none;
 }
 
 .qtyValue {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: #1A1D33;
-  min-width: 24px;
+  min-width: 20px;
   text-align: center;
 }
 
@@ -172,20 +170,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 8px 0;
   border-top: 1px solid rgba(26, 29, 51, 0.08);
 }
 
 .totalLabel {
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.5);
 }
 
 .totalValue {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #1A1D33;
 }
@@ -193,29 +191,24 @@
 /* Mint button */
 .mintBtn {
   width: 100%;
-  padding: 16px;
+  padding: 12px;
   background: #1A1D33;
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  border: 3px solid #1A1D33;
-  border-radius: 14px;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 4px 4px 0 rgba(26, 29, 51, 0.3);
 }
 
 .mintBtn:hover {
   background: #5168FF;
-  border-color: #1A1D33;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(26, 29, 51, 0.3);
 }
 
 .mintBtn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 rgba(26, 29, 51, 0.3);
+  transform: scale(0.98);
 }
 
 .mintBtn:disabled {
@@ -229,23 +222,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px;
+  gap: 6px;
+  padding: 12px;
   background: rgba(72, 187, 120, 0.1);
-  border-radius: 14px;
+  border-radius: 12px;
   border: 2px solid rgba(72, 187, 120, 0.3);
 }
 
 .successText {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: #38A169;
 }
 
 .txLink {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: #5168FF;
   text-decoration: none;
@@ -258,7 +251,7 @@
 /* Error */
 .error {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   color: #E53E3E;
   margin: 0;
   text-align: center;
@@ -267,7 +260,7 @@
 /* Scatter link */
 .scatterLink {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: #5168FF;
   text-align: center;
@@ -282,26 +275,26 @@
 /* Responsive */
 @media (max-width: 768px) {
   .section {
-    padding: 32px 16px;
+    padding: 0 16px;
   }
 
   .container {
     grid-template-columns: 1fr;
     padding: 20px;
-    gap: 24px;
+    gap: 20px;
   }
 
   .imageCard {
-    max-width: 400px;
+    width: 180px;
+    height: 180px;
     margin: 0 auto;
-    width: 100%;
   }
 
   .title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .priceValue {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
