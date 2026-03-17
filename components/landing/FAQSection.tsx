@@ -54,7 +54,7 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 );
 
 export const FAQSection = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
   const { play } = useSound();
 
   const toggle = (index: number) => {
