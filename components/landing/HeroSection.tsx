@@ -24,9 +24,10 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>A <span className={styles.heroHighlight}>Micro-University</span><br /> For Intellectual Refreshment</h1>
+          <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
+          <h2 className={styles.heroSubheadline}>Micro-University For Communal Wealth</h2>
           <p className={styles.heroSubtext}>
-            MWA is a gamified micro-university where you tackle 12 weeks of self-reflection through notes, games, and activities.
+            We refuse to let lazy people or the government steal our achievements, we believe that everyone should only work for their own happiness and not be forced to serve others.
           </p>
           <button
             type="button"
@@ -40,7 +41,7 @@ export const HeroSection: React.FC = () => {
         </div>
       </div>
       <Image
-        src="https://i.imgur.com/HFjHyUZ.png"
+        src="https://i.imgur.com/cFzSBbq.png"
         alt="Hero illustration"
         width={400}
         height={400}

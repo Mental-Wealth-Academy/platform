@@ -8,6 +8,8 @@ import styles from './TopNavigation.module.css';
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
 
+  if (pathname === '/') return null;
+
   return (
     <nav className={styles.topNav}>
       <div className={styles.links}>
