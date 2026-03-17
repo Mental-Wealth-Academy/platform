@@ -9,9 +9,10 @@
 
 .container {
   display: grid;
-  grid-template-columns: minmax(120px, 21%) 1fr;
+  grid-template-columns: minmax(120px, 21%) auto;
   gap: 64px;
   align-items: center;
+  justify-content: center;
   background: rgba(230, 232, 250, 0.55);
   border-radius: 24px;
   padding: 28px 36px;
