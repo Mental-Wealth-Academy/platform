@@ -22,33 +22,11 @@ export const LandingScene: React.FC = () => {
 
   return (
     <div className={styles.canvas}>
-      {/* SVG filter for liquid glass distortion */}
-      <svg className={styles.svgFilters} aria-hidden="true">
-        <defs>
-          <filter id="liquid-glass">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.015"
-              numOctaves="3"
-              seed="2"
-              result="noise"
-            />
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="noise"
-              scale="12"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
       {showScene && (
         <Suspense fallback={null}>
           <Scene />
         </Suspense>
       )}
-      <div className={styles.liquidGlassOverlay} />
     </div>
   );
 };
