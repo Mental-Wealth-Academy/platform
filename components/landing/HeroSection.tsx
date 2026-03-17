@@ -35,7 +35,7 @@ export const HeroSection: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
-            Start Now
+            Free Yourself
           </button>
 
         </div>

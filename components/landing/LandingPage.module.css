@@ -74,7 +74,9 @@
   right: -8px;
   top: -4px;
   bottom: -4px;
-  background: rgba(81, 104, 255, 0.2);
+  background: rgba(81, 104, 255, 0.45);
+  backdrop-filter: blur(0.2px);
+  -webkit-backdrop-filter: blur(0.2px);
   border: 2px solid var(--color-primary);
   border-radius: 4px;
   z-index: -1;
