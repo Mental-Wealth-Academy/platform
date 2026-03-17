@@ -141,6 +141,26 @@ export const AcademicAngels: React.FC = () => {
 
         {/* Right — Mint panel */}
         <div className={styles.mintPanel}>
+          <div className={styles.quantityRow}>
+            <button
+              className={styles.qtyBtn}
+              onClick={() => { play('click'); setQuantity(Math.max(1, quantity - 1)); }}
+              disabled={quantity <= 1}
+            >
+              &minus;
+            </button>
+            <span className={styles.qtyValue}>{quantity}</span>
+            <button
+              className={styles.qtyBtn}
+              onClick={() => {
+                play('click');
+                setQuantity(Math.min(selectedList?.wallet_limit || 10, quantity + 1));
+              }}
+            >
+              +
+            </button>
+          </div>
+
           <h2 className={styles.title}>Academic Angels</h2>
           <p className={styles.subtitle}>by Mental Wealth Academy</p>
 
@@ -166,26 +186,6 @@ export const AcademicAngels: React.FC = () => {
               ))}
             </div>
           )}
-
-          <div className={styles.quantityRow}>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => { play('click'); setQuantity(Math.max(1, quantity - 1)); }}
-              disabled={quantity <= 1}
-            >
-              &minus;
-            </button>
-            <span className={styles.qtyValue}>{quantity}</span>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => {
-                play('click');
-                setQuantity(Math.min(selectedList?.wallet_limit || 10, quantity + 1));
-              }}
-            >
-              +
-            </button>
-          </div>
 
           <div className={styles.totalRow}>
             <span className={styles.totalLabel}>Total</span>
@@ -219,7 +219,7 @@ export const AcademicAngels: React.FC = () => {
           {error && <p className={styles.error}>{error}</p>}
 
           <a
-            href={`https://scatter.art/${SCATTER_COLLECTION_SLUG}`}
+            href="https://www.scatter.art/collection/academic-angels"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.scatterLink}
