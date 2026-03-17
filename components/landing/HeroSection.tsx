@@ -27,7 +27,7 @@ export const HeroSection: React.FC = () => {
           <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
           <h2 className={styles.heroSubheadline}>Micro-University For Collaborative Wealth</h2>
           <p className={styles.heroSubtext}>
-            A gamified MMO where you play the role of an Academic Angel, sent to study at the Academia a new type of world, where the government does control our achievements, where everyone works for their own happiness and isn&apos;t forced to serve others.
+            Marge had tried to rally the troops but had no humanitarian underbelly, or spiritual cause, merely a roundabout criticism with no clear redirect outside the self towards a higher spiritual ceiling, is nothing more than pseudo-feudalism wrapped in an appeal to subjective nostalgia only to return to the discourse it sought to condemn through it&apos;s flowery effeminate poetry.
           </p>
           <button
             type="button"
