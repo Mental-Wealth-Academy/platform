@@ -10,7 +10,7 @@
 .container {
   display: grid;
   grid-template-columns: minmax(120px, 21%) auto;
-  gap: 64px;
+  gap: 88px;
   align-items: center;
   justify-content: center;
   background: rgba(230, 232, 250, 0.55);
@@ -43,7 +43,8 @@
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  max-width: 480px;
+  max-width: 540px;
+  min-width: 420px;
 }
 
 .title {
