@@ -59,7 +59,7 @@ export default function TheseAreAngels() {
             </svg>
           </div>
           <div className={styles.videoText}>
-            <span className={styles.videoTitle}><strong>This is</strong> Azura AI</span>
+            <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>
             <span className={styles.videoSub}>Watch the video</span>
           </div>
         </div>
