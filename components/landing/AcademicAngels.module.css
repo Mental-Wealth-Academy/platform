@@ -9,7 +9,7 @@
 
 .container {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: minmax(160px, 30%) 1fr;
   gap: 40px;
   align-items: center;
   background: rgba(230, 232, 250, 0.55);
@@ -20,8 +20,6 @@
 
 /* Left — GIF card */
 .imageCard {
-  width: 240px;
-  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +27,7 @@
   border-radius: 16px;
   border: 2px solid rgba(26, 29, 51, 0.06);
   overflow: hidden;
-  flex-shrink: 0;
+  aspect-ratio: 1;
 }
 
 .gif {
@@ -285,9 +283,9 @@
   }
 
   .imageCard {
-    width: 180px;
-    height: 180px;
+    max-width: 240px;
     margin: 0 auto;
+    width: 100%;
   }
 
   .title {
