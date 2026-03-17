@@ -7,6 +7,31 @@ import { v4 as uuidv4 } from 'uuid';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// Server-side quest reward definitions — client values are IGNORED
+const QUEST_REWARDS: Record<string, number> = {
+  'twitter-follow-quest': 10,
+  'daily-checkin': 5,
+  'first-proposal': 50,
+  'first-vote': 25,
+  'connect-wallet': 10,
+  'complete-profile': 15,
+  'first-reading': 20,
+  'first-journal': 20,
+};
+
+// Daily notes quests follow pattern: daily-notes-w{week}-d{day}
+function getQuestShardReward(questId: string): number {
+  if (QUEST_REWARDS[questId] !== undefined) {
+    return QUEST_REWARDS[questId];
+  }
+  // Daily notes quests: daily-notes-w1-d1, daily-notes-w2-d3, etc.
+  if (/^daily-notes-w\d+-d\d+$/.test(questId)) {
+    return 100;
+  }
+  // Generic quest reward fallback (capped at safe default)
+  return 10;
+}
+
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json(
@@ -24,15 +49,13 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const questId = body?.questId;
-  const shardsToAward = body?.shards ?? 0;
 
   if (!questId || typeof questId !== 'string') {
     return NextResponse.json({ error: 'Quest ID is required.' }, { status: 400 });
   }
 
-  if (typeof shardsToAward !== 'number' || shardsToAward < 0) {
-    return NextResponse.json({ error: 'Invalid shard amount.' }, { status: 400 });
-  }
+  // SECURITY: Shard reward determined server-side, client value ignored
+  const shardsToAward = getQuestShardReward(questId);
 
   try {
     // Check if quest already completed

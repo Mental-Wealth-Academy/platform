@@ -86,8 +86,14 @@ async function verifyWebhookSignature(
     
     const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, data);
     const expectedSignature = Buffer.from(signatureBuffer).toString('hex');
-    
-    return signature === expectedSignature;
+
+    // SECURITY: Use constant-time comparison to prevent timing attacks
+    if (signature.length !== expectedSignature.length) return false;
+    const { timingSafeEqual } = await import('crypto');
+    return timingSafeEqual(
+      Buffer.from(signature, 'utf8'),
+      Buffer.from(expectedSignature, 'utf8')
+    );
   } catch (error) {
     console.error('Error verifying webhook signature:', error);
     return false;
@@ -145,12 +151,15 @@ async function handleProposalCreated(event: CDPWebhookEvent): Promise<void> {
   
   // Update proposal status in database to track on-chain state
   await sqlQuery(
-    `UPDATE proposals 
-     SET status = 'on_chain_pending', 
+    `UPDATE proposals
+     SET status = 'on_chain_pending',
          updated_at = CURRENT_TIMESTAMP
-     WHERE wallet_address = :proposer
-     ORDER BY created_at DESC
-     LIMIT 1`,
+     WHERE id = (
+       SELECT id FROM proposals
+       WHERE LOWER(wallet_address) = LOWER(:proposer)
+       ORDER BY created_at DESC
+       LIMIT 1
+     )`,
     { proposer }
   );
 }
@@ -215,25 +224,28 @@ async function handleProposalExecuted(event: CDPWebhookEvent): Promise<void> {
   
   // Update proposal status to executed
   await sqlQuery(
-    `UPDATE proposals 
+    `UPDATE proposals
      SET status = 'executed',
          updated_at = CURRENT_TIMESTAMP
-     WHERE status = 'on_chain_active'
-     ORDER BY created_at DESC 
-     LIMIT 1`,
+     WHERE id = (
+       SELECT id FROM proposals
+       WHERE status = 'on_chain_active'
+       ORDER BY created_at DESC
+       LIMIT 1
+     )`,
     {}
   );
-  
+
   // Record transaction if we have the proposal in our database
   await sqlQuery(
-    `UPDATE proposal_transactions 
+    `UPDATE proposal_transactions
      SET transaction_status = 'confirmed',
-         blockchain_tx_hash = :txHash,
+         transaction_hash = :txHash,
          confirmed_at = CURRENT_TIMESTAMP
      WHERE proposal_id IN (
-       SELECT id FROM proposals 
-       WHERE status = 'executed' 
-       ORDER BY updated_at DESC 
+       SELECT id FROM proposals
+       WHERE status = 'executed'
+       ORDER BY updated_at DESC
        LIMIT 1
      )`,
     { txHash: event.transactionHash }
@@ -249,12 +261,15 @@ async function handleProposalRejected(event: CDPWebhookEvent): Promise<void> {
   console.log(`❌ Proposal #${proposalId} rejected`);
   
   await sqlQuery(
-    `UPDATE proposals 
+    `UPDATE proposals
      SET status = 'rejected',
          updated_at = CURRENT_TIMESTAMP
-     WHERE status IN ('on_chain_pending', 'on_chain_active')
-     ORDER BY created_at DESC 
-     LIMIT 1`,
+     WHERE id = (
+       SELECT id FROM proposals
+       WHERE status IN ('on_chain_pending', 'on_chain_active')
+       ORDER BY created_at DESC
+       LIMIT 1
+     )`,
     {}
   );
 }

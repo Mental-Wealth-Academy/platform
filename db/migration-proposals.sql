@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS proposals (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT valid_status CHECK (status IN ('pending_review', 'approved', 'rejected', 'active', 'completed'))
+  CONSTRAINT valid_status CHECK (status IN ('pending_review', 'approved', 'rejected', 'active', 'completed', 'expired', 'on_chain_pending', 'on_chain_active', 'executed'))
 );
 
 -- Proposal reviews table - Stores Azura's analysis and decisions

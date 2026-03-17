@@ -41,6 +41,7 @@ next-env.d.ts
 # CRE workflow temp build artifacts
 cre-workflows/*/tmp.js
 cre-workflows/*/tmp.wasm
+cre-workflows/*/.cre_build_tmp.*
 
 # Security - additional sensitive files
 *.pem

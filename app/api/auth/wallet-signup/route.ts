@@ -30,27 +30,42 @@ export async function POST(request: Request) {
       }
     }
 
-    // Get wallet address from request body first, then fallback to Authorization header
+    // SECURITY: Wallet address must be verified via signed message (Authorization header)
+    // or via signature in the request body. Never trust a bare address from the client.
     let walletAddress: string | null = null;
 
-    try {
-      const body = await request.json();
-      if (body?.walletAddress && typeof body.walletAddress === 'string') {
-        walletAddress = body.walletAddress;
-      }
-    } catch {
-      // Request body might be empty or not JSON - fallback to header
-    }
+    // Try Authorization header first (signed: address:signature:timestamp)
+    walletAddress = await getWalletAddressFromRequest();
 
-    // Fallback to Authorization header if not in body
+    // Fallback: accept body with signature proof
     if (!walletAddress) {
-      walletAddress = await getWalletAddressFromRequest();
+      try {
+        const body = await request.json();
+        if (body?.walletAddress && body?.signature && body?.timestamp) {
+          const { verifyWalletSignature } = await import('@/lib/wallet-auth');
+          const address = body.walletAddress;
+          const timestamp = String(body.timestamp);
+          const now = Date.now();
+          const fiveMinutes = 5 * 60 * 1000;
+          const timestampNum = parseInt(timestamp, 10);
+
+          if (!isNaN(timestampNum) && Math.abs(now - timestampNum) <= fiveMinutes) {
+            const message = `Sign in to Mental Wealth Academy\n\nWallet: ${address}\nTimestamp: ${timestamp}`;
+            const isValid = await verifyWalletSignature(message, body.signature, address);
+            if (isValid) {
+              walletAddress = address.toLowerCase();
+            }
+          }
+        }
+      } catch {
+        // Request body might be empty or not JSON
+      }
     }
 
     if (!walletAddress) {
       return NextResponse.json(
-        { error: 'Wallet address is required. Please ensure your wallet is connected.' },
-        { status: 400 }
+        { error: 'Wallet signature required. Please sign the message in your wallet.' },
+        { status: 401 }
       );
     }
 

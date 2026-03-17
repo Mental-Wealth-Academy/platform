@@ -7,15 +7,50 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// Simple IP-based rate limiter for Farcaster signin (max 5 attempts per minute)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 5;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
 /**
  * POST /api/auth/farcaster-signin
  *
  * Accepts a Farcaster FID from the mini-app SDK context, looks up the user's
  * verified ETH address and profile via Neynar, then creates or signs in the
  * account — pre-filling the avatar from the Farcaster pfp.
+ *
+ * SECURITY: The FID is cross-verified against Neynar's API to ensure it maps
+ * to a real Farcaster user. Rate-limited to prevent enumeration. The client-
+ * provided username/pfpUrl are treated as hints only — Neynar data takes
+ * precedence for wallet address resolution.
+ *
+ * TODO: Implement SIWF (Sign In With Farcaster) for cryptographic FID proof.
+ * Currently relies on the mini-app SDK context being client-only, which is
+ * not a cryptographic guarantee. Use sdk.actions.signIn() on the client and
+ * verify the signed message here.
  */
 export async function POST(request: Request) {
   try {
+    // Rate limit by IP
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || 'unknown';
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 });
+    }
+
     if (!isDbConfigured()) {
       return NextResponse.json({ error: 'Database is not configured.' }, { status: 503 });
     }
