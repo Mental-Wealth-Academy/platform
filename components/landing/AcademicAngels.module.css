@@ -9,8 +9,8 @@
 
 .container {
   display: grid;
-  grid-template-columns: minmax(160px, 30%) 1fr;
-  gap: 40px;
+  grid-template-columns: minmax(120px, 21%) 1fr;
+  gap: 64px;
   align-items: center;
   background: rgba(230, 232, 250, 0.55);
   border-radius: 24px;
@@ -42,6 +42,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 10px;
+  max-width: 480px;
 }
 
 .title {
@@ -125,16 +126,16 @@
 .quantityRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .qtyBtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid rgba(26, 29, 51, 0.15);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 2px solid #1A1D33;
   background: #FFFFFF;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   color: #1A1D33;
   cursor: pointer;
@@ -142,24 +143,31 @@
   align-items: center;
   justify-content: center;
   transition: all 0.1s ease;
+  box-shadow: 2px 2px 0 #1A1D33;
 }
 
 .qtyBtn:hover {
-  border-color: #5168FF;
-  color: #5168FF;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.qtyBtn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
 }
 
 .qtyBtn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+  transform: none;
 }
 
 .qtyValue {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: #1A1D33;
-  min-width: 20px;
+  min-width: 24px;
   text-align: center;
 }
 
@@ -189,24 +197,31 @@
 /* Mint button */
 .mintBtn {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: #1A1D33;
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 14px;
   font-weight: 700;
-  border: none;
-  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 3px solid #1A1D33;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 4px 4px 0 rgba(26, 29, 51, 0.3);
 }
 
 .mintBtn:hover {
   background: #5168FF;
+  border-color: #1A1D33;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(26, 29, 51, 0.3);
 }
 
 .mintBtn:active {
-  transform: scale(0.98);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(26, 29, 51, 0.3);
 }
 
 .mintBtn:disabled {
@@ -252,7 +267,6 @@
   font-size: 12px;
   color: #E53E3E;
   margin: 0;
-  text-align: center;
 }
 
 /* Scatter link */
@@ -261,7 +275,6 @@
   font-size: 12px;
   font-weight: 500;
   color: #5168FF;
-  text-align: center;
   text-decoration: none;
   transition: opacity 0.15s;
 }
@@ -283,9 +296,13 @@
   }
 
   .imageCard {
-    max-width: 240px;
+    max-width: 200px;
     margin: 0 auto;
     width: 100%;
+  }
+
+  .mintPanel {
+    max-width: none;
   }
 
   .title {
