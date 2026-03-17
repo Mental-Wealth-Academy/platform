@@ -27,7 +27,7 @@ export const HeroSection: React.FC = () => {
           <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
           <h2 className={styles.heroSubheadline}>Micro-University For Collaborative Wealth</h2>
           <p className={styles.heroSubtext}>
-            A gamified MMO where you play the role of an Academic Angel, studying at the Academia, a world where government doesn&apos;t control progress and everyone works for their own happiness.
+            A gamified MMO where you play the role of an Academic Angel, studying at the Academia in a world where everyone works for their own happiness.
           </p>
           <button
             type="button"
