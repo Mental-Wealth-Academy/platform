@@ -52,11 +52,11 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
     // Brand colors - 6 colors for 6 faces
     ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) }, // Primary: #5168FF (rgb(81, 104, 255))
-    ucolor2: { value: new THREE.Vector3(1.0, 0.722, 0.0) }, // Warm amber: #FFB800 (rgb(255, 184, 0))
+    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) }, // Orange: #FF851B (rgb(255, 133, 27))
     ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) }, // Pinkish red: #E84057 (rgb(232, 64, 87))
     ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) }, // White: rgb(255, 255, 255)
-    ucolor5: { value: new THREE.Vector3(0.118, 0.047, 0.224) }, // Dark purple: #1E0C39 (rgb(30, 12, 57))
-    ucolor6: { value: new THREE.Vector3(1.0, 0.522, 0.106) }, // Orange: #FF851B (rgb(255, 133, 27))
+    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) }, // Medium grey: #66666E (rgb(102, 102, 110))
+    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) }, // Green: #4CAF50 (rgb(76, 175, 80))
     asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
