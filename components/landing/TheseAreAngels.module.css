@@ -63,7 +63,7 @@
   align-items: center;
   gap: 14px;
   margin-top: 16px;
-  padding: 14px 120px 14px 14px;
+  padding: 14px 64px 14px 14px;
   background: #FFFFFF;
   border-radius: 16px;
   border: 2px solid rgba(26, 29, 51, 0.08);
@@ -77,7 +77,7 @@
 }
 
 .videoThumb {
-  width: 48px;
+  width: 64px;
   height: 48px;
   border-radius: 12px;
   background: linear-gradient(135deg, #1A1D33 0%, #2D3156 100%);
