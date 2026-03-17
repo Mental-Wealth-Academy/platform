@@ -49,7 +49,7 @@
 }
 
 .description {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-ibm-plex-mono);
   font-size: 14px;
   font-weight: 500;
   color: #1A1D33;
@@ -95,7 +95,7 @@
 }
 
 .videoTitle {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 15px;
   font-weight: 500;
   color: #1A1D33;
@@ -106,7 +106,7 @@
 }
 
 .videoSub {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.45);

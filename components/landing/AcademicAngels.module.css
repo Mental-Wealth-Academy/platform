@@ -58,7 +58,7 @@
 }
 
 .subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.5);
@@ -79,7 +79,7 @@
 }
 
 .priceLabel {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.45);
@@ -88,7 +88,7 @@
 }
 
 .priceValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 20px;
   font-weight: 700;
   color: #1A1D33;
@@ -106,7 +106,7 @@
   border-radius: 20px;
   border: 2px solid rgba(26, 29, 51, 0.12);
   background: transparent;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.6);
@@ -166,7 +166,7 @@
 }
 
 .qtyValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 20px;
   font-weight: 700;
   color: #1A1D33;
@@ -184,14 +184,14 @@
 }
 
 .totalLabel {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   color: rgba(26, 29, 51, 0.5);
 }
 
 .totalValue {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 16px;
   font-weight: 700;
   color: #1A1D33;
@@ -203,7 +203,7 @@
   padding: 14px;
   background: #1A1D33;
   color: #FFFFFF;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -246,14 +246,14 @@
 }
 
 .successText {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   font-weight: 700;
   color: #38A169;
 }
 
 .txLink {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
   color: #5168FF;
@@ -266,7 +266,7 @@
 
 /* Error */
 .error {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   color: #E53E3E;
   margin: 0;
@@ -274,7 +274,7 @@
 
 /* Scatter link */
 .scatterLink {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
   color: #5168FF;
