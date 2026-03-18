@@ -8,7 +8,7 @@ import styles from './TopNavigation.module.css';
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
 
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/learn') return null;
 
   return (
     <nav className={styles.topNav}>
