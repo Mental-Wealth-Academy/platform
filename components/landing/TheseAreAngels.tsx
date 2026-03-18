@@ -72,7 +72,7 @@ export default function TheseAreAngels() {
         <div className={styles.videoCard} onClick={openVideo} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && openVideo()}>
           <div className={styles.videoThumb}>
             <Image
-              src="/azura-thumb.webp"
+              src="https://i.imgur.com/awTTvxR.jpeg"
               alt="Azura AI"
               width={64}
               height={48}
