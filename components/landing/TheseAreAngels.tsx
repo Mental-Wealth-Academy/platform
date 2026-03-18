@@ -71,9 +71,14 @@ export default function TheseAreAngels() {
         {/* Video card */}
         <div className={styles.videoCard} onClick={openVideo} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && openVideo()}>
           <div className={styles.videoThumb}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            <Image
+              src="/azura-thumb.webp"
+              alt="Azura AI"
+              width={64}
+              height={48}
+              className={styles.thumbImg}
+              unoptimized
+            />
           </div>
           <div className={styles.videoText}>
             <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>

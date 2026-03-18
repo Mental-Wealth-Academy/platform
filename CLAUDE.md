@@ -1,6 +1,6 @@
 # Mental Wealth Academy
 
-A decentralized micro-university on Base Mainnet. Education, governance, AI review, and autonomous treasury management — all on-chain.
+A decentralized micro-university. Education, governance, AI review, and autonomous treasury management — all on-chain.
 
 ## Tech Stack
 
