@@ -170,16 +170,16 @@
   width: 2px;
   height: 24px;
 }
-.cornerTL { top: -1px; left: -1px; }
+.cornerTL { top: 6px; left: 6px; }
 .cornerTL::before { top: 0; left: 0; }
 .cornerTL::after  { top: 0; left: 0; }
-.cornerTR { top: -1px; right: -1px; }
+.cornerTR { top: 6px; right: 6px; }
 .cornerTR::before { top: 0; right: 0; }
 .cornerTR::after  { top: 0; right: 0; }
-.cornerBL { bottom: -1px; left: -1px; }
+.cornerBL { bottom: 6px; left: 6px; }
 .cornerBL::before { bottom: 0; left: 0; }
 .cornerBL::after  { bottom: 0; left: 0; }
-.cornerBR { bottom: -1px; right: -1px; }
+.cornerBR { bottom: 6px; right: 6px; }
 .cornerBR::before { bottom: 0; right: 0; }
 .cornerBR::after  { bottom: 0; right: 0; }
 
