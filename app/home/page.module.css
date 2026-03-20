@@ -315,6 +315,68 @@
   transform: scale(0.98);
 }
 
+/* Workshop Card */
+.workshopCard {
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.workshopCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary, #5168FF), #E85D3A, #62BE8F);
+}
+
+.workshopCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1A1D33;
+}
+
+.workshopCardInner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workshopCardTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1D33;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.workshopCardSub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.45);
+}
+
+.workshopCardArrow {
+  font-size: 24px;
+  color: rgba(26, 29, 51, 0.3);
+  font-weight: 300;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 /* League / Leaderboard Card */
 .leagueCard {
   background: #FFFFFF;
@@ -703,14 +765,14 @@
     animation: none;
   }
 
-  /* Mobile order: streak (1) → tabs (2) → activity card (3) → activity content (4) → premium (5) → league (6) */
-  /* Mobile order: streak → tabs → activity card → content → premium → league */
+  /* Mobile order: streak → tabs → activity card → content → workshop → premium → league */
   .streakCard { order: 1; width: 100%; }
   .cardTabs { order: 2; width: 100%; margin-top: 16px; }
   .activityCard { order: 3; width: 100%; margin-top: -3px; }
   .activityContent { order: 4; width: 100%; margin-top: 16px; }
-  .premiumCard { order: 5; width: 100%; margin: 16px 0 0; }
-  .leagueCard { order: 6; width: 100%; margin-top: 16px; }
+  .workshopCard { order: 5; width: 100%; margin-top: 16px; }
+  .premiumCard { order: 6; width: 100%; margin: 16px 0 0; }
+  .leagueCard { order: 7; width: 100%; margin-top: 16px; }
 }
 
 @media (max-width: 600px) {
@@ -739,6 +801,7 @@
   .streakCard,
   .premiumCard,
   .leagueCard,
+  .workshopCard,
   .activityCard {
     box-shadow: 3px 3px 0 #1A1D33;
   }

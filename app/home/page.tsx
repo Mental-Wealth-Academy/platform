@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import MintModal from '@/components/mint-modal/MintModal';
+import WorkshopModal from '@/components/workshop-modal/WorkshopModal';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -77,6 +78,7 @@ export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
+  const [showWorkshop, setShowWorkshop] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
@@ -247,6 +249,18 @@ export default function HomePage() {
                   Explore Premium
                 </button>
               </div>
+            </div>
+
+            {/* Workshop Card */}
+            <div
+              className={styles.workshopCard}
+              onClick={() => { play('click'); setShowWorkshop(true); }}
+            >
+              <div className={styles.workshopCardInner}>
+                <strong className={styles.workshopCardTitle}>Workshops</strong>
+                <span className={styles.workshopCardSub}>Join a live session with the community</span>
+              </div>
+              <span className={styles.workshopCardArrow}>&#8250;</span>
             </div>
 
             {/* Mini Leaderboard */}
@@ -456,6 +470,7 @@ export default function HomePage() {
         slug={currentReading.slug}
       />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
+      <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
     </div>
     </HomeWelcomeFlow>
   );
