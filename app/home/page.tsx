@@ -74,7 +74,7 @@ export default function HomePage() {
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [shardCount, setShardCount] = useState(0);
-  const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
+  const [activeCard, setActiveCard] = useState<ActivityCard>('tasks');
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
@@ -230,7 +230,8 @@ export default function HomePage() {
                 className={styles.dailyMissionBtn}
                 onClick={() => {
                   play('click');
-                  document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+                  setActiveCard('daily');
+                  setTimeout(() => document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' }), 50);
                 }}
               >
                 YOUR DAILY MISSION
@@ -305,7 +306,7 @@ export default function HomePage() {
 
             {/* Tab buttons */}
             <div className={styles.cardTabs}>
-              {(['daily', 'weekly', 'tasks'] as ActivityCard[]).map(tab => (
+              {(['tasks', 'weekly', 'daily'] as ActivityCard[]).map(tab => (
                 <button
                   key={tab}
                   className={`${styles.cardTab} ${activeCard === tab ? styles.cardTabActive : ''}`}

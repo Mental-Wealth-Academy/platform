@@ -17,15 +17,15 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
   const [toAmount, setToAmount] = useState('')
   const [isReversed, setIsReversed] = useState(false)
 
-  const RATE = 100 // 1 POINTS = 100 POWER
+  const RATE = 100 // 1 USDC = 100 SHARDS
 
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
 
-  const fromToken = isReversed ? 'POWER' : 'POINTS'
-  const toToken = isReversed ? 'POINTS' : 'POWER'
+  const fromToken = isReversed ? 'SHARDS' : 'USDC'
+  const toToken = isReversed ? 'USDC' : 'SHARDS'
   const fromBalance = '0.00'
   const toBalance = '0.00'
 
@@ -138,7 +138,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
           <div className={styles.rateRow}>
             <span className={styles.rateLabel}>Rate</span>
             <span className={styles.rateValue}>
-              1 POINT = 100 POWER
+              1 USDC = 100 SHARDS
             </span>
           </div>
 
