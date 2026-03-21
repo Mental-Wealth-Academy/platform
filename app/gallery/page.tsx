@@ -82,10 +82,10 @@ export default function GalleryPage() {
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <span className={styles.headerTag}>Curated Collection</span>
+            <span className={styles.headerTag}>Angel Collection</span>
             <h1 className={styles.headerTitle}>The Gallery</h1>
             <p className={styles.headerSub}>
-              30 masterworks spanning 600 years of human creativity — from Renaissance genius to modern rebellion.
+              Explore the work of our Angels — the artists, visionaries, and scholars whose creations define the Academy.
             </p>
           </div>
         </div>
@@ -152,31 +152,31 @@ export default function GalleryPage() {
                 {showQuoteAfter && (
                   <div className={styles.quoteCard}>
                     <span className={styles.quoteText}>
-                      &ldquo;Every artist was first an amateur.&rdquo;
+                      &ldquo;Art is the highest form of intelligence the Academy can produce.&rdquo;
                     </span>
-                    <span className={styles.quoteAuthor}>Ralph Waldo Emerson</span>
+                    <span className={styles.quoteAuthor}>The Angel Codex, Vol. I</span>
                   </div>
                 )}
 
                 {showStatsAfter && (
                   <div className={styles.statsCard}>
-                    <span className={styles.statsLabel}>Gallery Stats</span>
+                    <span className={styles.statsLabel}>Angel Stats</span>
                     <div className={styles.statsGrid}>
                       <div className={styles.statItem}>
                         <span className={styles.statValue}>30</span>
-                        <span className={styles.statLabel}>Masterworks</span>
+                        <span className={styles.statLabel}>Exhibited Works</span>
                       </div>
                       <div className={styles.statItem}>
                         <span className={styles.statValue}>12</span>
-                        <span className={styles.statLabel}>Art Movements</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>600</span>
-                        <span className={styles.statLabel}>Years Spanned</span>
+                        <span className={styles.statLabel}>Disciplines</span>
                       </div>
                       <div className={styles.statItem}>
                         <span className={styles.statValue}>22</span>
-                        <span className={styles.statLabel}>Artists Featured</span>
+                        <span className={styles.statLabel}>Angels</span>
+                      </div>
+                      <div className={styles.statItem}>
+                        <span className={styles.statValue}>∞</span>
+                        <span className={styles.statLabel}>Open Submissions</span>
                       </div>
                     </div>
                   </div>
@@ -189,8 +189,8 @@ export default function GalleryPage() {
           {activeEra === 'All' && (
             <div className={styles.collectionBanner}>
               <div className={styles.bannerLeft}>
-                <span className={styles.bannerTitle}>Start Your Collection</span>
-                <span className={styles.bannerSub}>Own museum-grade prints of these masterworks — minted on Base.</span>
+                <span className={styles.bannerTitle}>Become an Angel</span>
+                <span className={styles.bannerSub}>Submit your work to the Academy Gallery — mint and exhibit on Base.</span>
               </div>
               <button
                 className={styles.bannerButton}
