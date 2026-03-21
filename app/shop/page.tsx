@@ -291,7 +291,7 @@ export default function ShopPage() {
           {filtered.map((item, i) => {
             const isHero = item.size === 'hero';
             const showLoreAfter = i === 3 && activeCategory === 'All';
-            const showStatsAfter = i === 7 && activeCategory === 'All';
+            const showStatsAfter = false;
 
             return (
               <ItemGroup key={item.id}>
@@ -341,29 +341,6 @@ export default function ShopPage() {
                   </div>
                 )}
 
-                {showStatsAfter && (
-                  <div className={styles.statsCard}>
-                    <span className={styles.statsLabel}>Store Stats</span>
-                    <div className={styles.statsGrid}>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>16</span>
-                        <span className={styles.statLabel}>Items Available</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>6</span>
-                        <span className={styles.statLabel}>Categories</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>5</span>
-                        <span className={styles.statLabel}>Limited Drops</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>2</span>
-                        <span className={styles.statLabel}>Free Items</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </ItemGroup>
             );
           })}

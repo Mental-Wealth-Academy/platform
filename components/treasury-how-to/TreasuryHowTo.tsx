@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './TreasuryHowTo.module.css';
 
 export function HowToButton() {
@@ -10,7 +11,10 @@ export function HowToButton() {
       <button className={styles.howToButton} onClick={() => setOpen(true)}>
         How It Works
       </button>
-      {open && <TreasuryHowToModal onClose={() => setOpen(false)} />}
+      {open && createPortal(
+        <TreasuryHowToModal onClose={() => setOpen(false)} />,
+        document.body
+      )}
     </>
   );
 }
