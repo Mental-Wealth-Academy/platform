@@ -1,4 +1,4 @@
-/* ── Light Brutalist Theme for Markets Page ── */
+/* ── Milky Futuristic Theme for Markets Page ── */
 
 .main {
   min-height: 100vh;
@@ -22,9 +22,10 @@
   align-items: center;
   gap: 28px;
   padding: 12px 24px;
-  background: #ffffff;
-  border-bottom: 3px solid #1A1D33;
-  box-shadow: 0 2px 0 rgba(26,27,36,0.05);
+  background: rgba(244, 245, 254, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
   font-family: var(--font-button);
   font-size: 11px;
   color: rgba(26,27,36,0.5);
@@ -58,8 +59,8 @@
   display: flex;
   gap: 0;
   padding: 0;
-  background: #fff;
-  border-bottom: 3px solid #1A1D33;
+  background: rgba(244, 245, 254, 0.4);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .viewTab {
@@ -69,11 +70,11 @@
   text-transform: uppercase;
   padding: 14px 24px;
   border: none;
-  border-right: 3px solid #1A1D33;
-  background: #ffffff;
+  border-right: 1px solid rgba(81, 104, 255, 0.08);
+  background: transparent;
   color: rgba(26,27,36,0.4);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .viewTab:hover {
@@ -82,8 +83,9 @@
 }
 
 .viewTabActive {
-  background: var(--color-primary, #5168FF);
-  color: #ffffff;
+  background: rgba(81, 104, 255, 0.1);
+  color: var(--color-primary, #5168FF);
+  border-bottom: 2px solid var(--color-primary, #5168FF);
 }
 
 /* ── Position Status ── */
@@ -110,9 +112,12 @@
 
 /* ── Panel Base ── */
 .panel {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  box-shadow: 3px 3px 0 #1A1D33;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.06);
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
@@ -141,10 +146,10 @@
   font-family: var(--font-button);
   font-size: 9px;
   padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  background: rgba(81,104,255,0.1);
+  border-radius: 100px;
+  background: rgba(81,104,255,0.08);
   color: var(--color-primary, #5168FF);
-  border: 2px solid var(--color-primary, #5168FF);
+  border: 1px solid rgba(81, 104, 255, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -160,9 +165,12 @@
 }
 
 .modelPanel {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  box-shadow: 3px 3px 0 #1A1D33;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.06);
   padding: 20px;
   flex: 1;
 }
@@ -224,9 +232,9 @@
   gap: 8px;
   margin-top: 8px;
   padding: 8px 12px;
-  background: rgba(116,196,101,0.08);
-  border: 2px solid rgba(116,196,101,0.2);
-  border-radius: var(--radius-sm);
+  background: rgba(81,104,255,0.06);
+  border: 1px solid rgba(81,104,255,0.15);
+  border-radius: 8px;
 }
 
 .signalLabel {
@@ -239,7 +247,7 @@
   font-family: var(--font-button);
   font-size: 12px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
 }
 
 .signalSkip {
@@ -280,12 +288,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed rgba(26,27,36,0.1);
-  border-radius: var(--radius-md);
+  border: 1px dashed rgba(81, 104, 255, 0.15);
+  border-radius: 8px;
   min-height: 160px;
   position: relative;
   overflow: hidden;
-  background: rgba(26,27,36,0.02);
+  background: rgba(244, 245, 254, 0.3);
 }
 
 .chartLine {
@@ -331,14 +339,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: #ffffff;
-  border: 2px solid rgba(26,27,36,0.1);
-  transition: all 0.15s ease;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
 }
 
 .marketRow:hover {
-  border-color: var(--color-primary, #5168FF);
-  box-shadow: 2px 2px 0 rgba(81,104,255,0.15);
+  border-color: rgba(81, 104, 255, 0.25);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.1);
 }
 
 .marketSymbol {
@@ -412,7 +423,7 @@
 }
 
 .logTrade {
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
 }
 
 .logSkip {
@@ -440,7 +451,7 @@
 }
 
 .flowBullish {
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
 }
 
 .flowBearish {
@@ -461,7 +472,7 @@
 }
 
 .flowBuy {
-  background: var(--color-tertiary, #74C465);
+  background: var(--color-primary, #5168FF);
   transition: width 0.3s ease;
 }
 
@@ -516,7 +527,7 @@
   margin-top: 8px;
   margin-bottom: 6px;
   padding-top: 8px;
-  border-top: 2px solid rgba(26,27,36,0.08);
+  border-top: 1px solid rgba(81, 104, 255, 0.08);
 }
 
 .flowTrades {
@@ -545,8 +556,8 @@
 }
 
 .flowTradeBuy {
-  background: rgba(116,196,101,0.1);
-  color: var(--color-tertiary, #74C465);
+  background: rgba(81,104,255,0.1);
+  color: var(--color-primary, #5168FF);
 }
 
 .flowTradeSell {
@@ -604,7 +615,7 @@
 }
 
 .positionLong {
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
 }
 
 .positionShort {
@@ -624,7 +635,7 @@
 }
 
 .positionPnlPositive {
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
 }
 
 .positionPnlNegative {
@@ -639,9 +650,10 @@
   letter-spacing: 0.15em;
   color: rgba(26,27,36,0.4);
   padding: 6px 14px;
-  border: 2px solid rgba(26,27,36,0.1);
-  border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(81, 104, 255, 0.15);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(4px);
   z-index: 2;
 }
 
@@ -666,7 +678,7 @@
 
 /* ── 24h Change Colors ── */
 .changePositive {
-  color: var(--color-tertiary, #74C465);
+  color: var(--color-primary, #5168FF);
   font-weight: var(--font-weight-semibold);
   font-size: 11px;
 }
@@ -721,17 +733,17 @@
   gap: 6px;
   margin-top: 6px;
   padding: 4px 10px;
-  background: rgba(26,27,36,0.03);
-  border: 2px solid rgba(26,27,36,0.1);
-  border-radius: 6px;
+  background: rgba(244, 245, 254, 0.5);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 8px;
   cursor: pointer;
   font-family: var(--font-button);
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .walletAddress:hover {
-  background: rgba(26,27,36,0.05);
-  border-color: var(--color-primary, #5168FF);
+  background: rgba(81, 104, 255, 0.06);
+  border-color: rgba(81, 104, 255, 0.25);
 }
 
 .walletLabel {
@@ -785,7 +797,7 @@
   letter-spacing: 0.12em;
   color: var(--color-primary, #5168FF);
   padding: 6px 0 4px;
-  border-bottom: 2px solid rgba(81,104,255,0.15);
+  border-bottom: 1px solid rgba(81,104,255,0.12);
   margin-bottom: 2px;
 }
 
@@ -794,9 +806,9 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px 14px;
-  border: 2px solid rgba(26,27,36,0.1);
-  border-radius: var(--radius-sm);
-  background: rgba(26,27,36,0.02);
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(244, 245, 254, 0.3);
 }
 
 .polyQuestion {
@@ -825,7 +837,7 @@
 }
 
 .polyYes {
-  background: var(--color-tertiary, #74C465);
+  background: var(--color-primary, #5168FF);
   transition: width 0.3s ease;
 }
 
@@ -839,8 +851,8 @@
   font-family: var(--font-button);
   font-size: 9px;
   padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  background: rgba(26,27,36,0.04);
+  border-radius: 100px;
+  background: rgba(244, 245, 254, 0.5);
   color: rgba(26,27,36,0.4);
   white-space: nowrap;
 }
@@ -892,15 +904,17 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
-  border: 2px solid rgba(81,104,255,0.15);
-  border-radius: var(--radius-sm);
-  background: rgba(81,104,255,0.03);
-  transition: border-color 0.15s ease, background 0.15s ease;
+  border: 1px solid rgba(81,104,255,0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
 }
 
 .mwaCard:hover {
-  border-color: rgba(81,104,255,0.3);
-  background: rgba(81,104,255,0.06);
+  border-color: rgba(81,104,255,0.25);
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.08);
 }
 
 .mwaCardHeader {
@@ -915,9 +929,9 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.1em;
   padding: 2px 8px;
-  border-radius: 3px;
+  border-radius: 100px;
   border: 1px solid;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .mwaExpiry {
@@ -985,15 +999,15 @@
 
 .mwaBetInput {
   flex: 1;
-  background: rgba(26,27,36,0.03);
-  border: 2px solid rgba(26,27,36,0.12);
-  border-radius: 4px;
+  background: rgba(244, 245, 254, 0.5);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 8px;
   padding: 6px 10px;
   font-family: var(--font-button);
   font-size: 11px;
   color: #1A1B24;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.2s ease;
   min-width: 0;
 }
 
@@ -1017,10 +1031,10 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.06em;
   padding: 6px 14px;
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   text-transform: uppercase;
 }
 
@@ -1031,24 +1045,24 @@
 
 .mwaBetYes {
   background: rgba(81,104,255,0.08);
-  border-color: rgba(81,104,255,0.25);
+  border-color: rgba(81,104,255,0.2);
   color: var(--color-primary, #5168FF);
 }
 
 .mwaBetYes:not(:disabled):hover {
   background: rgba(81,104,255,0.15);
-  border-color: rgba(81,104,255,0.4);
+  border-color: rgba(81,104,255,0.35);
 }
 
 .mwaBetNo {
   background: rgba(255,119,41,0.08);
-  border-color: rgba(255,119,41,0.25);
+  border-color: rgba(255,119,41,0.2);
   color: var(--color-accent, #FF7729);
 }
 
 .mwaBetNo:not(:disabled):hover {
   background: rgba(255,119,41,0.2);
-  border-color: rgba(255,119,41,0.4);
+  border-color: rgba(255,119,41,0.35);
 }
 
 .mwaResolver {
@@ -1128,16 +1142,20 @@
 }
 
 .academyCard {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  box-shadow: 3px 3px 0 #1A1D33;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.06);
   padding: 24px;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .academyCard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  border-color: rgba(81, 104, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(81, 104, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .academyCardTitle {
@@ -1204,6 +1222,24 @@
   align-items: baseline;
 }
 
+.categoryNameWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.categoryIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid;
+  background: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
 .categoryName {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 11px;
@@ -1227,7 +1263,7 @@
 
 .categoryBarFill {
   height: 100%;
-  background: var(--color-primary, #5168FF);
+  background: linear-gradient(90deg, #5168FF, #a78bfa);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -1297,19 +1333,23 @@
 }
 
 .entityCard {
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  box-shadow: 3px 3px 0 #1A1D33;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.06);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .entityCard:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  border-color: rgba(81, 104, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(81, 104, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .entityTop {
@@ -1348,7 +1388,8 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 3px 8px;
-  border: 1.5px solid;
+  border: 1px solid rgba(81, 104, 255, 0.15);
+  border-radius: 100px;
   color: rgba(26,27,36,0.6);
   align-self: flex-start;
 }
@@ -1400,7 +1441,7 @@
 .commMain {
   display: flex;
   flex-direction: column;
-  border-right: 3px solid #1A1D33;
+  border-right: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .commHeader {
@@ -1408,7 +1449,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  border-bottom: 3px solid #1A1D33;
+  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .commChannel {
@@ -1441,12 +1482,12 @@
   flex-direction: column;
   gap: 2px;
   padding: 10px 14px;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .commMsgSystem {
-  background: rgba(26,27,36,0.04);
-  border-left: 3px solid var(--color-primary, #5168FF);
+  background: rgba(244, 245, 254, 0.5);
+  border-left: 2px solid var(--color-primary, #5168FF);
 }
 
 .commMsgAgent {
@@ -1484,19 +1525,20 @@
 
 .commInputWrap {
   padding: 12px 24px;
-  border-top: 3px solid #1A1D33;
+  border-top: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .commInput {
   width: 100%;
   padding: 10px 14px;
-  border: 3px solid #1A1D33;
-  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 12px;
   color: #1A1B24;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .commInput::placeholder {
@@ -1505,19 +1547,19 @@
 
 .commInput:focus {
   border-color: var(--color-primary, #5168FF);
-  box-shadow: 3px 3px 0 rgba(81,104,255,0.15);
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.1);
 }
 
 .commSidebar {
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .commSidePanel {
   padding: 20px;
-  border-bottom: 3px solid #1A1D33;
+  border-bottom: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .commSidePanelTitle {
@@ -1587,7 +1629,8 @@
   color: rgba(26,27,36,0.6);
   padding: 4px 8px;
   background: rgba(81,104,255,0.04);
-  border: 2px solid rgba(26,27,36,0.1);
+  border: 1px solid rgba(81, 104, 255, 0.1);
+  border-radius: 6px;
 }
 
 /* ── Chart Animations ── */
@@ -1727,7 +1770,7 @@
 
   .commMain {
     border-right: none;
-    border-bottom: 3px solid #1A1D33;
+    border-bottom: 1px solid rgba(81, 104, 255, 0.1);
   }
 
   .commMessages {

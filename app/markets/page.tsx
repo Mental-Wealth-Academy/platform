@@ -480,12 +480,12 @@ export default function Markets() {
   const [appleStats, setAppleStats] = useState<AppleTokenStats | null>(null);
   const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
   const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
-  const [mwaMarkets, setMwaMarkets] = useState<MWAMarket[]>(SEED_MWA_MARKETS);
+  // MWA markets removed
   const [priceError, setPriceError] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
-  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'wealth' | 'azura'>('academy');
+  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'azura'>('academy');
   const { play } = useSound();
 
   const fetchPrices = useCallback(async () => {
@@ -551,23 +551,6 @@ export default function Markets() {
       if (data.logs) setExecutionLogs(data.logs);
       if (data.positions) setLivePositions(data.positions);
     } catch { /* silent */ }
-  }, []);
-
-  // Handle MWA market bet (optimistic local update)
-  const handleMwaBet = useCallback((id: string, side: 'YES' | 'NO', amount: number) => {
-    setMwaMarkets(prev => prev.map(m => {
-      if (m.id !== id) return m;
-      const newYesPool = side === 'YES' ? m.yesPool + amount : m.yesPool;
-      const newNoPool = side === 'NO' ? m.noPool + amount : m.noPool;
-      const newTotal = newYesPool + newNoPool;
-      return {
-        ...m,
-        yesPool: newYesPool,
-        noPool: newNoPool,
-        totalPool: newTotal,
-        yesProbability: newYesPool / newTotal,
-      };
-    }));
   }, []);
 
   useEffect(() => {
@@ -725,14 +708,14 @@ export default function Markets() {
 
         {/* ── View Tabs ── */}
         <div className={styles.viewTabs}>
-          {(['academy', 'polymarkets', 'wealth', 'azura'] as const).map((tab) => (
+          {(['academy', 'polymarkets', 'azura'] as const).map((tab) => (
             <button
               key={tab}
               className={`${styles.viewTab} ${marketTab === tab ? styles.viewTabActive : ''}`}
               onClick={() => { play('click'); setMarketTab(tab); }}
               onMouseEnter={() => play('hover')}
             >
-              {tab === 'academy' ? 'Academy' : tab === 'polymarkets' ? 'Polymarkets' : tab === 'wealth' ? 'Wealth' : 'Azura'}
+              {tab === 'academy' ? 'Academy' : tab === 'polymarkets' ? 'Polymarkets' : 'Azura'}
             </button>
           ))}
         </div>
@@ -793,7 +776,7 @@ export default function Markets() {
                   ].map((bar, i) => (
                     <g key={i}>
                       <rect x={bar.x - 18} y={180 - bar.h} width="36" height={bar.h} fill="var(--color-primary, #5168FF)" rx="2" className={styles.animatedBar} style={{animationDelay: `${i * 0.08}s`}} />
-                      <text x={bar.x} y="176" fill="rgba(26,27,36,0.35)" fontSize="9" fontFamily="var(--font-button)" textAnchor="middle">{bar.label}</text>
+                      <text x={bar.x} y="176" fill="#ffffff" fontSize="9" fontFamily="var(--font-button)" textAnchor="middle">{bar.label}</text>
                     </g>
                   ))}
                 </svg>
@@ -805,15 +788,38 @@ export default function Markets() {
                 <div className={styles.academyCardTitle}>MARKET CATEGORIES</div>
                 <div className={styles.categoryList}>
                   {[
-                    { name: 'CRYPTO', count: 12 },
-                    { name: 'MACRO', count: 5 },
-                    { name: 'AI', count: 4 },
-                    { name: 'TECH', count: 2 },
-                    { name: 'SPORTS', count: 1 },
+                    { name: 'CRYPTO', count: 12, color: '#5168FF', icon: (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" /><path d="M9.5 8h5l-1.5 4h-2L9.5 8z" /><path d="M10 16h4" />
+                      </svg>
+                    )},
+                    { name: 'MACRO', count: 5, color: '#5168FF', icon: (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                    )},
+                    { name: 'AI', count: 4, color: '#a78bfa', icon: (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="4" y="4" width="16" height="16" rx="2" /><circle cx="9" cy="10" r="1.5" fill="currentColor" /><circle cx="15" cy="10" r="1.5" fill="currentColor" /><path d="M9 15h6" />
+                      </svg>
+                    )},
+                    { name: 'TECH', count: 2, color: '#FF7729', icon: (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /><line x1="14" y1="4" x2="10" y2="20" />
+                      </svg>
+                    )},
+                    { name: 'SPORTS', count: 1, color: '#E8556D', icon: (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" /><path d="M12 2v20" /><path d="M2 12h20" /><path d="M4.93 4.93l14.14 14.14" /><path d="M19.07 4.93L4.93 19.07" />
+                      </svg>
+                    )},
                   ].map((cat) => (
                     <div key={cat.name} className={styles.categoryRow}>
                       <div className={styles.categoryInfo}>
-                        <span className={styles.categoryName}>{cat.name}</span>
+                        <span className={styles.categoryNameWithIcon}>
+                          <span className={styles.categoryIcon} style={{ color: cat.color, borderColor: cat.color }}>{cat.icon}</span>
+                          <span className={styles.categoryName}>{cat.name}</span>
+                        </span>
                         <span className={styles.categoryCount}>{cat.count}</span>
                       </div>
                       <div className={styles.categoryBarBg}>
@@ -834,7 +840,7 @@ export default function Markets() {
                   <circle cx="100" cy="100" r="70" fill="none" stroke="#FF7729" strokeWidth="28"
                     strokeDasharray={`${0.20 * 440} ${0.80 * 440}`}
                     strokeDashoffset={`${110 + 0.15 * 440}`} />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#74C465" strokeWidth="28"
+                  <circle cx="100" cy="100" r="70" fill="none" stroke="#a78bfa" strokeWidth="28"
                     strokeDasharray={`${0.25 * 440} ${0.75 * 440}`}
                     strokeDashoffset={`${110 + 0.35 * 440}`} />
                   <circle cx="100" cy="100" r="70" fill="none" stroke="#5168FF" strokeWidth="28"
@@ -843,7 +849,7 @@ export default function Markets() {
                 </svg>
                 <div className={styles.donutLegend}>
                   <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#5168FF' }} /> Pattern Analyzer 40%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#74C465' }} /> Strategy Coord. 25%</span>
+                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#a78bfa' }} /> Strategy Coord. 25%</span>
                   <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#FF7729' }} /> Risk Sentinel 20%</span>
                   <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#50599B' }} /> Scammer 15%</span>
                 </div>
@@ -867,68 +873,6 @@ export default function Markets() {
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Wealth Tab ── */}
-        {marketTab === 'wealth' && (
-          <div className={styles.wealthView}>
-            <div className={styles.wealthHeader}>
-              <h2 className={styles.wealthTitle}>ENTITY REGISTRY</h2>
-              <span className={styles.wealthCount}>8 entities found</span>
-            </div>
-            <div className={styles.entityGrid}>
-              {[
-                { name: 'NEXUS-7', status: 'LIVE', role: 'Pattern Analyzer', win: '73.2%', pnl: '+18.4%', trust: '94', trend: [30,45,38,52,48,60], positive: true },
-                { name: 'SENTINEL-3', status: 'SYNCHRONIZED', role: 'Risk Sentinel', win: '68.1%', pnl: '+12.7%', trust: '89', trend: [25,30,28,35,40,42], positive: true },
-                { name: 'ORACLE-X', status: 'LIVE', role: 'Strategy Coordinator', win: '61.4%', pnl: '+8.2%', trust: '82', trend: [20,25,22,30,28,35], positive: true },
-                { name: 'GHOST-99', status: 'DORMANT', role: 'Scammer', win: '45.2%', pnl: '-14.3%', trust: '23', trend: [55,48,50,40,35,28], positive: false },
-                { name: 'CIPHER-11', status: 'LIVE', role: 'Pattern Analyzer', win: '69.8%', pnl: '+15.1%', trust: '87', trend: [28,35,32,42,45,52], positive: true },
-                { name: 'VORTEX-2', status: 'SYNCHRONIZED', role: 'Strategy Coordinator', win: '58.3%', pnl: '+5.6%', trust: '76', trend: [22,28,25,30,32,36], positive: true },
-                { name: 'PHANTOM-X', status: 'LIVE', role: 'Risk Sentinel', win: '71.5%', pnl: '+22.3%', trust: '91', trend: [30,38,42,48,55,65], positive: true },
-                { name: 'WRAITH-0', status: 'DORMANT', role: 'Scammer', win: '42.1%', pnl: '-21.7%', trust: '15', trend: [60,52,45,38,30,22], positive: false },
-              ].map((entity) => (
-                <div key={entity.name} className={styles.entityCard}>
-                  <div className={styles.entityTop}>
-                    <span className={styles.entityStatusDot} style={{ background: entity.status === 'DORMANT' ? '#aaa' : 'var(--color-tertiary, #74C465)' }} />
-                    <span className={styles.entityName}>{entity.name}</span>
-                    <span className={styles.entityStatus}>{entity.status}</span>
-                  </div>
-                  <span className={styles.entityRoleBadge} style={{
-                    borderColor: entity.role === 'Pattern Analyzer' ? 'var(--color-primary, #5168FF)'
-                      : entity.role === 'Risk Sentinel' ? 'var(--color-accent, #FF7729)'
-                      : entity.role === 'Strategy Coordinator' ? 'var(--color-tertiary, #74C465)'
-                      : '#dc3232',
-                    color: entity.role === 'Pattern Analyzer' ? 'var(--color-primary, #5168FF)'
-                      : entity.role === 'Risk Sentinel' ? 'var(--color-accent, #FF7729)'
-                      : entity.role === 'Strategy Coordinator' ? 'var(--color-tertiary, #74C465)'
-                      : '#dc3232',
-                  }}>{entity.role}</span>
-                  <svg viewBox="0 0 120 40" className={styles.entitySparkline}>
-                    <polyline
-                      points={entity.trend.map((v, i) => `${i * 24},${40 - v * 0.6}`).join(' ')}
-                      fill="none"
-                      stroke={entity.positive ? 'var(--color-tertiary, #74C465)' : 'var(--color-accent, #FF7729)'}
-                      strokeWidth="1.5"
-                    />
-                  </svg>
-                  <div className={styles.entityStats}>
-                    <div className={styles.entityStatItem}>
-                      <span className={styles.entityStatLabel}>WIN RATE</span>
-                      <span className={styles.entityStatValue}>{entity.win}</span>
-                    </div>
-                    <div className={styles.entityStatItem}>
-                      <span className={styles.entityStatLabel}>PNL</span>
-                      <span className={styles.entityStatValue} style={{ color: entity.positive ? 'var(--color-tertiary, #74C465)' : 'var(--color-accent, #FF7729)' }}>{entity.pnl}</span>
-                    </div>
-                    <div className={styles.entityStatItem}>
-                      <span className={styles.entityStatLabel}>TRUST</span>
-                      <span className={styles.entityStatValue}>{entity.trust}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         )}
@@ -1223,43 +1167,8 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ CENTER: MWA Markets + Polymarket ════ */}
+          {/* ════ CENTER: Polymarket ════ */}
           <div className={styles.centerColumn}>
-
-          {/* MWA Markets Header */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>MWA Prediction Markets &middot; Bet with SHARDS</span>
-              <span className={styles.panelBadge}>$APPLE</span>
-            </div>
-            <div className={styles.mwaStatsRow}>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Total Markets</span>
-                <span className={styles.mwaStatValue}>{mwaMarkets.length}</span>
-              </div>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Total Pool</span>
-                <span className={styles.mwaStatValue}>{mwaMarkets.reduce((s, m) => s + m.totalPool, 0).toLocaleString()} SHARDS</span>
-              </div>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaStatLabel}>Settlement</span>
-                <span className={styles.mwaStatValue}>Azura AI</span>
-              </div>
-              <div className={styles.mwaStat}>
-                <span className={styles.mwaFeeLabel}>Fees</span>
-                <span className={styles.mwaStatValue}>3-5% → Treasure Chest</span>
-              </div>
-            </div>
-          </div>
-
-          {/* MWA Market Cards */}
-          <div className={`${styles.panel} ${styles.mwaListPanel}`}>
-            <div className={styles.mwaMarketsList}>
-              {mwaMarkets.map((market) => (
-                <MWAMarketCard key={market.id} market={market} onBet={handleMwaBet} />
-              ))}
-            </div>
-          </div>
 
           {/* Trading Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
@@ -1286,7 +1195,7 @@ export default function Markets() {
                   )}
                   <WalletAddress address="0xcc4c93b6f74ce22e00874bce3fabe439a2572990" />
                   <TickerLine stroke="var(--color-primary)" />
-                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
+                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
                 </>
               )}

@@ -131,26 +131,63 @@
   letter-spacing: 0.05em;
 }
 
-.azuraPower .container {
+/* Voting Power Section */
+.votingPowerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.votingPowerValue {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.votingBar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: visible;
+}
+
+.votingBarFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa
+  );
+}
+
+.votingBarIndicator {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.votingPowerDesc {
+  font-family: var(--font-primary);
   font-size: 11px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 1.4;
   margin: 0;
-}
-
-.azuraPower .gemIcon {
-  filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.3));
-  opacity: 0.7;
-}
-
-.azuraPower .gemIcon svg {
-  opacity: 0.8;
-}
-
-.azuraPower .amount {
-  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: unset;
-  background-clip: unset;
 }
 
 .viewWalletButton {
@@ -215,5 +252,13 @@
   .viewWalletButton {
     width: 100%;
     justify-content: center;
+  }
+
+  .votingPowerValue {
+    font-size: 22px;
+  }
+
+  .votingPowerDesc {
+    font-size: 10px;
   }
 }

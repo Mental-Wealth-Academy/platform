@@ -222,7 +222,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
           <h2 className={styles.welcomeTitle}>Welcome to Mental Wealth Academy</h2>
           <p className={styles.welcomeDesc}>
-            Connect your family wallet to begin your journey. Your wallet is your identity — no passwords, no emails.
+            Connect your family wallet to begin your journey. One shared wallet for the whole family, simple and secure.
           </p>
 
           <button

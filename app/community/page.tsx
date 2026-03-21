@@ -233,7 +233,7 @@ export default function VotingPage() {
                       type="button"
                     >
                       <div className={styles.exchangeBg}><CyberpunkDataViz /></div>
-                      <span className={styles.exchangeLabel}>Exchange Shards</span>
+                      <span className={styles.exchangeLabel}>Exchange Data</span>
                       <span className={styles.exchangePrice}>Price: 0.033</span>
                       <span className={styles.exchangeAddress}>0x84939...EA6F</span>
                     </button>

@@ -84,6 +84,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
 }) => {
   const { play } = useSound();
   const [copied, setCopied] = useState(false);
+  const votingPower = 40;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(walletAddress);
@@ -105,7 +106,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
         <div className={styles.azuraInfo}>
           <h4 className={styles.azuraName}>
             Azura
-            <span className={styles.aiTag}>Guardian</span>
+            <span className={styles.aiTag}>Voting Power</span>
             <button
               className={styles.copyButton}
               onClick={() => { play('click'); handleCopy(); }}
@@ -127,7 +128,16 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
           </h4>
         </div>
       </div>
-      <SoulGemDisplay amount={soulGems} label="Voting Power (40%)" />
+      <div className={styles.votingPowerSection}>
+        <span className={styles.votingPowerValue}>{votingPower}%</span>
+        <div className={styles.votingBar}>
+          <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
+          <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
+        </div>
+        <p className={styles.votingPowerDesc}>
+          Azura&apos;s voting power is currently at {votingPower}%, which is similar to yesterday about this time.
+        </p>
+      </div>
     </div>
   );
 };

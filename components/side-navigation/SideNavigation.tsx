@@ -41,10 +41,9 @@ const navSections: NavSection[] = [
     id: 'main',
     label: '',
     items: [
-      { id: 'voting', label: 'Home', href: '/home', icon: '/icons/home.svg' },
+      { id: 'voting', label: 'Earn Data', href: '/home', icon: '/icons/home.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg' },
-      { id: 'duels', label: 'Discussion', href: '/duels', icon: '/icons/discussion.svg', badge: 'New', badgeType: 'highlight' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
   },
@@ -108,6 +107,13 @@ const SideNavigation: React.FC = () => {
     localStorage.setItem('sideNavCollapsed', String(next));
     document.documentElement.style.setProperty('--sidebar-width', next ? '72px' : '265px');
   };
+
+  // Listen for toggle from TopNavigation menu button
+  useEffect(() => {
+    const handler = () => toggleCollapsed();
+    window.addEventListener('toggleSidebar', handler);
+    return () => window.removeEventListener('toggleSidebar', handler);
+  });
 
   const { data: proTokenBalance } = useReadContract({
     address: PRO_TOKEN_ADDRESS,
@@ -369,18 +375,8 @@ const SideNavigation: React.FC = () => {
         className={`${styles.sideNav} ${isMobileMenuOpen ? styles.sideNavOpen : ''} ${isCollapsed ? styles.sideNavCollapsed : ''}`}
         ref={mobileMenuRef}
       >
-        {/* Header */}
+        {/* Header (mobile close only) */}
         <div className={styles.header}>
-          <span className={styles.logoText}>{isCollapsed ? 'MWA' : 'Mental Wealth Academy'}</span>
-          <button
-            className={styles.collapseButton}
-            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            onClick={toggleCollapsed}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
           <button
             className={styles.closeMenuButton}
             aria-label="Close menu"
@@ -510,22 +506,6 @@ const SideNavigation: React.FC = () => {
                         <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
                           {item.badge}
                         </span>
-                      )}
-                      {item.id === 'shop' && (
-                        <button
-                          className={styles.lootDot}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            play('click');
-                            setIsLootBoxOpen(true);
-                            setIsMobileMenuOpen(false);
-                          }}
-                          onMouseEnter={() => play('hover')}
-                          title="Loot Box"
-                          type="button"
-                          aria-label="Open Loot Box"
-                        />
                       )}
                     </Link>
                   )
