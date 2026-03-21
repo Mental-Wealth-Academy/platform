@@ -42,6 +42,7 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Earn Data', href: '/home', icon: '/icons/home.svg' },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/gallery.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
