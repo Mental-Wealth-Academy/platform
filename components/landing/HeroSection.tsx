@@ -27,7 +27,7 @@ export const HeroSection: React.FC = () => {
           <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
           <h2 className={styles.heroSubheadline}>A <span className={styles.highlighter}>Micro-University</span> For Collaborative Wealth</h2>
           <p className={styles.heroSubtext}>
-            An operational record of Angel-units awaken inside an Academic living simulation authored by a Quantum AI whose motives remain unclassified.
+            A gamified MMO where you play the role of an Academic Angel, studying at the Academia in a world where everyone works for their own happiness.
           </p>
           <button
             type="button"
@@ -35,7 +35,7 @@ export const HeroSection: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
-            PRESS START
+            Free Yourself
           </button>
 
         </div>
