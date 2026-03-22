@@ -5,7 +5,7 @@
   padding: 36px 12px 0;
   z-index: 2;
   box-sizing: border-box;
-  background: #F4F5FE;
+  background: #F8F7FF;
 }
 
 .container {
@@ -14,7 +14,7 @@
   gap: 88px;
   align-items: center;
   justify-content: center;
-  background: rgba(230, 232, 250, 0.55);
+  background: rgba(241, 239, 255, 0.55);
   border-radius: 24px;
   padding: 28px 36px;
   backdrop-filter: blur(12px);

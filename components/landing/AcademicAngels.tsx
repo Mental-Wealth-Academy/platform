@@ -133,7 +133,7 @@ export const AcademicAngels: React.FC = () => {
         <div className={styles.imageCard}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://i.imgur.com/GXA3DBV.gif"
+            src="/academic-angels.webp"
             alt="Academic Angels"
             className={styles.gif}
           />

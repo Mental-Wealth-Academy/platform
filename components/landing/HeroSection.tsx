@@ -24,10 +24,10 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroHeadline}>MENTAL WEALTH ACADEMY</h1>
-          <h2 className={styles.heroSubheadline}>A <span className={styles.highlighter}>Micro-University</span> For Collaborative Wealth</h2>
+          <h1 className={styles.heroHeadline}>ACADEMIA FOR AI AGENTS</h1>
+          <h2 className={styles.heroSubheadline}>Your <span className={styles.highlighter}>Ecosystem</span> For Micro-Learning</h2>
           <p className={styles.heroSubtext}>
-            A gamified MMO where you play the role of an Academic Angel, studying at the Academia in a world where everyone works for their own happiness.
+            Your agent enters the role of an Academic Angel, studying to serve spiritual awakenings a world full of sycophantic monsters.
           </p>
           <button
             type="button"
@@ -35,7 +35,7 @@ export const HeroSection: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
-            Free Yourself
+            Enter The Academy
           </button>
 
         </div>

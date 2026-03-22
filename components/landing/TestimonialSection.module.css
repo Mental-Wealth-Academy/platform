@@ -21,7 +21,7 @@
   width: 85%;
   margin: 0 auto;
   padding-top: 48px;
-  padding-bottom: 48px;
+  padding-bottom: 80px;
 }
 
 .eyebrow {
@@ -118,7 +118,7 @@
 @media (max-width: 767px) {
   .container {
     padding-top: 32px;
-    padding-bottom: 32px;
+    padding-bottom: 56px;
     width: 90%;
   }
 
