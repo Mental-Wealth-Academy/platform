@@ -161,7 +161,7 @@ const CubesScene = memo(() => {
     let y = baseY + (Math.random() - 0.5) * visibleHeight * 0.3;
 
     // Push cubes out of center dead zone so hero text stays readable
-    const deadZoneX = visibleWidth * 0.32;
+    const deadZoneX = visibleWidth * 0.42;
     const deadZoneY = visibleHeight * 0.30;
     if (Math.abs(x) < deadZoneX && Math.abs(y) < deadZoneY) {
       // Push to nearest edge
