@@ -157,8 +157,20 @@ const CubesScene = memo(() => {
     const baseY = (gridY - 0.5) * visibleHeight * 0.8; // Use 80% of visible height
     
     // Add random offset to break grid pattern and reach edges
-    const x = baseX + (Math.random() - 0.5) * visibleWidth * 0.3;
-    const y = baseY + (Math.random() - 0.5) * visibleHeight * 0.3;
+    let x = baseX + (Math.random() - 0.5) * visibleWidth * 0.3;
+    let y = baseY + (Math.random() - 0.5) * visibleHeight * 0.3;
+
+    // Push cubes out of center dead zone so hero text stays readable
+    const deadZoneX = visibleWidth * 0.22;
+    const deadZoneY = visibleHeight * 0.22;
+    if (Math.abs(x) < deadZoneX && Math.abs(y) < deadZoneY) {
+      // Push to nearest edge
+      if (Math.abs(x) / deadZoneX < Math.abs(y) / deadZoneY) {
+        y = y >= 0 ? deadZoneY + Math.random() * 2 : -deadZoneY - Math.random() * 2;
+      } else {
+        x = x >= 0 ? deadZoneX + Math.random() * 2 : -deadZoneX - Math.random() * 2;
+      }
+    }
     // Depth spread
     const z = (Math.random() - 0.5) * 8;
     
