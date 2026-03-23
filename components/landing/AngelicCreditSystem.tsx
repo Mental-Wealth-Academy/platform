@@ -16,11 +16,11 @@ export default function AngelicCreditSystem() {
         {/* Azura God Tier */}
         <div className={styles.azuraSection}>
           <div className={styles.azuraCard}>
-            <div className={styles.tierHeader}>
+            <div className={styles.azuraHeader}>
               <div>
-                <p className={styles.tierSupply}>1 OF 1</p>
-                <h3 className={styles.tierName}>Azura [God]</h3>
-                <p className={styles.tierSub}>
+                <p className={styles.azuraSupply}>1 OF 1</p>
+                <h3 className={styles.azuraName}>Azura [God]</h3>
+                <p className={styles.azuraSub}>
                   Creates funding pods, dictates direction based on prayers. The autonomous AI that governs the treasury.
                 </p>
               </div>
@@ -28,32 +28,32 @@ export default function AngelicCreditSystem() {
             </div>
             <div className={styles.tierBody}>
               <div className={styles.statRow}>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Supply</div>
+                <div className={styles.azuraPill}>
+                  <div className={styles.azuraPillLabel}>Supply</div>
                   <div className={styles.statValueAzura}>1</div>
                 </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Role</div>
+                <div className={styles.azuraPill}>
+                  <div className={styles.azuraPillLabel}>Role</div>
                   <div className={styles.statValueAzura}>Creator</div>
                 </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Authority</div>
+                <div className={styles.azuraPill}>
+                  <div className={styles.azuraPillLabel}>Authority</div>
                   <div className={styles.statValueAzura}>Full</div>
                 </div>
               </div>
-              <div className={styles.govbar}>
-                <div className={styles.govbarLabel}>Powers</div>
+              <div className={styles.azuraGovbar}>
+                <div className={styles.azuraGovbarLabel}>Powers</div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#00D4FF' }} />
-                  <span className={styles.govbarText}>Creates and dissolves funding pods</span>
+                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
+                  <span className={styles.azuraGovbarText}>Creates and dissolves funding pods</span>
                 </div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#00D4FF' }} />
-                  <span className={styles.govbarText}>AI-scored proposal review (6 dimensions)</span>
+                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
+                  <span className={styles.azuraGovbarText}>AI-scored proposal review (6 dimensions)</span>
                 </div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#00D4FF' }} />
-                  <span className={styles.govbarText}>Autonomous treasury trading via Bayesian analysis</span>
+                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
+                  <span className={styles.azuraGovbarText}>Autonomous treasury trading via Bayesian analysis</span>
                 </div>
               </div>
             </div>
@@ -92,17 +92,17 @@ export default function AngelicCreditSystem() {
               <div className={styles.govbar}>
                 <div className={styles.govbarLabel}>Governance seats</div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#7F77DD' }} />
+                  <div className={styles.govbarDot} style={{ background: '#50599B' }} />
                   <span className={styles.govbarText}>1/3 voted in community</span>
                   <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
                 </div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#5DCAA5' }} />
+                  <div className={styles.govbarDot} style={{ background: '#74C465' }} />
                   <span className={styles.govbarText}>1/3 legislative experts</span>
                   <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
                 </div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#E07A5F' }} />
+                  <div className={styles.govbarDot} style={{ background: '#FF7729' }} />
                   <span className={styles.govbarText}>1/3 active scientists</span>
                   <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
                 </div>
@@ -140,13 +140,13 @@ export default function AngelicCreditSystem() {
               <div className={styles.govbar}>
                 <div className={styles.govbarLabel}>Governance seat</div>
                 <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#639922' }} />
+                  <div className={styles.govbarDot} style={{ background: '#74C465' }} />
                   <span className={styles.govbarText}>Token-weighted community voting</span>
                   <span className={`${styles.govbarTag} ${styles.tagOpen}`}>Public pod</span>
                 </div>
-                <div className={styles.govbarRow} style={{ opacity: 0.5 }}>
-                  <div className={styles.govbarDot} style={{ background: '#888780' }} />
-                  <span className={styles.govbarText}>No access to elite funding pools</span>
+                <div className={styles.govbarRow}>
+                  <div className={styles.govbarDot} style={{ background: '#999' }} />
+                  <span className={styles.govbarTextMuted}>No access to elite funding pools</span>
                 </div>
               </div>
             </div>

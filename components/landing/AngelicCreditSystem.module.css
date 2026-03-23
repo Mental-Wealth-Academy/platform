@@ -5,17 +5,18 @@
 }
 
 .wrap {
-  background: var(--color-background);
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 27, 36, 0.08);
   border-radius: 16px;
   overflow: hidden;
   font-family: var(--font-primary);
 }
 
-/* Header */
+/* ── Header ── */
 .header {
   text-align: center;
   padding: 2.5rem 1.5rem 2rem;
-  border-bottom: 0.5px solid rgba(26, 27, 36, 0.12);
+  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
   margin-bottom: 2rem;
 }
 
@@ -24,13 +25,13 @@
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-secondary);
   margin: 0 0 0.5rem;
 }
 
 .title {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-text-dark);
   margin: 0 0 0.4rem;
   letter-spacing: -0.02em;
@@ -39,19 +40,20 @@
 
 .subtitle {
   font-size: 13px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.7;
   margin: 0;
   font-weight: 400;
 }
 
-/* Azura God Section */
+/* ── Azura God Card ── */
 .azuraSection {
   padding: 0 1.5rem 2rem;
 }
 
 .azuraCard {
   background: var(--color-text-dark);
-  border: 0.5px solid var(--color-primary-muted);
+  border: 1px solid var(--color-primary-muted);
   border-radius: 12px;
   overflow: hidden;
   transition: border-color 0.2s;
@@ -61,7 +63,7 @@
   border-color: var(--color-primary);
 }
 
-.azuraCard .tierHeader {
+.azuraHeader {
   padding: 1.25rem 1.25rem 0.75rem;
   display: flex;
   align-items: flex-start;
@@ -69,44 +71,80 @@
   gap: 8px;
 }
 
-.azuraCard .tierSupply {
+.azuraSupply {
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-button);
+  font-weight: 700;
 }
 
-.azuraCard .tierName {
-  color: var(--color-text-light);
+.azuraName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-secondary);
 }
 
-.azuraCard .tierSub {
-  color: rgba(255, 255, 255, 0.6);
+.azuraSub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 1rem;
+  line-height: 1.5;
 }
 
-.azuraCard .statPill {
+.azuraPill {
+  flex: 1;
   background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 10px 8px;
+  min-width: 0;
 }
 
-.azuraCard .statLabel {
+.azuraPillLabel {
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-button);
+  margin-bottom: 3px;
 }
 
-.azuraCard .govbar {
-  border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+.azuraGovbar {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+  margin-top: 4px;
 }
 
-.azuraCard .govbarLabel {
+.azuraGovbarLabel {
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-button);
+  margin-bottom: 8px;
 }
 
-.azuraCard .govbarText {
-  color: rgba(255, 255, 255, 0.7);
+.azuraGovbarText {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
 }
 
 .badgeAzura {
   background: var(--color-primary);
-  color: var(--color-text-light);
+  color: #FFFFFF;
 }
 
-/* Tiers Grid */
+.statValueAzura {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: var(--font-secondary);
+}
+
+/* ── Tier Cards Grid ── */
 .tiers {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -115,15 +153,15 @@
 }
 
 .tierCard {
-  background: var(--color-text-light);
-  border: 0.5px solid rgba(26, 27, 36, 0.12);
+  background: var(--color-background);
+  border: 1px solid rgba(26, 27, 36, 0.08);
   border-radius: 12px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
 
 .tierCard:hover {
-  border-color: rgba(26, 27, 36, 0.22);
+  border-color: rgba(26, 27, 36, 0.2);
 }
 
 .tierHeader {
@@ -147,24 +185,25 @@
 
 .badgeElite {
   background: var(--color-secondary);
-  color: #CDD1FF;
+  color: #FFFFFF;
 }
 
 .badgeCommon {
   background: var(--color-tertiary);
-  color: #E8F5E4;
+  color: #FFFFFF;
 }
 
 .tierSupply {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.5;
   font-family: var(--font-button);
   font-weight: 700;
 }
 
 .tierName {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-text-dark);
   margin: 0 0 0.2rem;
   letter-spacing: -0.02em;
@@ -173,7 +212,8 @@
 
 .tierSub {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.6;
   margin: 0 0 1rem;
   line-height: 1.5;
 }
@@ -182,7 +222,7 @@
   padding: 0 1.25rem 1.25rem;
 }
 
-/* Stat Pills */
+/* ── Stat Pills ── */
 .statRow {
   display: flex;
   gap: 10px;
@@ -191,7 +231,7 @@
 
 .statPill {
   flex: 1;
-  background: var(--color-background);
+  background: #FFFFFF;
   border-radius: 8px;
   padding: 10px 10px 8px;
   min-width: 0;
@@ -199,7 +239,8 @@
 
 .statLabel {
   font-size: 10px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.45;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-family: var(--font-button);
@@ -213,11 +254,6 @@
   font-family: var(--font-secondary);
 }
 
-.statValueAzura {
-  composes: statValue;
-  color: var(--color-primary);
-}
-
 .statValuePurple {
   composes: statValue;
   color: var(--color-secondary);
@@ -225,19 +261,20 @@
 
 .statValueGreen {
   composes: statValue;
-  color: var(--color-tertiary);
+  color: var(--color-tertiary-hover);
 }
 
-/* Governance Bar */
+/* ── Governance Bar ── */
 .govbar {
-  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+  border-top: 1px solid rgba(26, 27, 36, 0.08);
   padding-top: 12px;
   margin-top: 4px;
 }
 
 .govbarLabel {
   font-size: 10px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.5;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-family: var(--font-button);
@@ -260,7 +297,15 @@
 
 .govbarText {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.7;
+  line-height: 1.4;
+}
+
+.govbarTextMuted {
+  font-size: 11px;
+  color: var(--color-text-dark);
+  opacity: 0.35;
   line-height: 1.4;
 }
 
@@ -274,19 +319,19 @@
 }
 
 .tagGated {
-  background: rgba(80, 89, 155, 0.12);
+  background: rgba(80, 89, 155, 0.1);
   color: var(--color-secondary);
 }
 
 .tagOpen {
-  background: rgba(116, 196, 101, 0.12);
+  background: rgba(116, 196, 101, 0.1);
   color: var(--color-tertiary-hover);
 }
 
-/* Council */
+/* ── Council ── */
 .council {
   padding: 1.5rem;
-  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+  border-top: 1px solid rgba(26, 27, 36, 0.08);
 }
 
 .councilEyebrow {
@@ -294,7 +339,8 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.5;
   margin: 0 0 1rem;
 }
 
@@ -345,7 +391,7 @@
 }
 
 .fracTeal {
-  color: var(--color-tertiary);
+  color: var(--color-tertiary-hover);
 }
 
 .fracCoral {
@@ -362,14 +408,15 @@
 
 .councilDesc {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.6;
   line-height: 1.4;
 }
 
-/* Footer */
+/* ── Footer ── */
 .footer {
   padding: 1rem 1.5rem 1.5rem;
-  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+  border-top: 1px solid rgba(26, 27, 36, 0.08);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -389,12 +436,13 @@
 
 .footerText {
   font-size: 11px;
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
+  opacity: 0.45;
   line-height: 1.5;
   font-family: var(--font-button);
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 520px) {
   .tiers {
     grid-template-columns: 1fr;
