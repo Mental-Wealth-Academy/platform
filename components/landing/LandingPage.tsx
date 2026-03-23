@@ -12,7 +12,6 @@ import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
 import { RotatingTextSection } from './RotatingTextSection';
 import { AcademicAngels } from './AcademicAngels';
-import TheseAreAngels from './TheseAreAngels';
 import AngelicCreditSystem from './AngelicCreditSystem';
 import styles from './LandingPage.module.css';
 
@@ -37,9 +36,6 @@ const LandingPage = () => {
 
       {/* Academic Angels — Scatter mint */}
       <AcademicAngels />
-
-      {/* These are Angels — floating images section */}
-      <TheseAreAngels />
 
       {/* Angelic Credit System — two-tier governance explainer */}
       <AngelicCreditSystem />

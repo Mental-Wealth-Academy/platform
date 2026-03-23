@@ -3,14 +3,32 @@
   position: relative;
   width: 100%;
   padding: 80px 24px;
-  background: var(--color-background);
+  background: rgba(244, 245, 254, 0.80);
   z-index: 1;
+  overflow: hidden;
 }
 
 .container {
+  position: relative;
+  z-index: 2;
   max-width: 1180px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* ── Floating Angels ── */
+.floatingAngel {
+  position: absolute;
+  z-index: 1;
+  animation: float 4s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.angelImg {
+  border-radius: 50%;
+  background: rgba(240, 240, 245, 0.8);
+  padding: 4px;
+  object-fit: contain;
 }
 
 /* ── Header ── */
@@ -131,6 +149,14 @@
   line-height: 1.6;
 }
 
+.azuraBottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .azuraStats {
   display: flex;
   align-items: center;
@@ -193,9 +219,22 @@
 
 .tierTop {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.tierTop > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tierAvatarImg {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .badgeElite {
@@ -326,16 +365,6 @@
   letter-spacing: 0.02em;
 }
 
-/* Angel avatar inside tier info */
-.tierAngelAvatar {
-  margin-top: 16px;
-}
-
-.angelAvatarImg {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
 /* Tier visual (right side) */
 .tierVisual {
   position: relative;
@@ -433,8 +462,228 @@
   letter-spacing: 0.02em;
 }
 
+/* ── Video Card (inside Azura card) ── */
+.videoCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 24px 10px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.videoCard:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(81, 104, 255, 0.4);
+}
+
+.videoThumb {
+  width: 56px;
+  height: 40px;
+  border-radius: 8px;
+  background: #0d0e1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.videoText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.videoTitle {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+.videoTitle strong {
+  font-weight: 700;
+}
+
+.videoSub {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Video Modal ── */
+.videoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(20, 24, 50, 0.92) 0%, rgba(5, 5, 12, 0.96) 100%);
+  backdrop-filter: blur(24px);
+  animation: fadeIn 0.3s ease;
+}
+
+.videoModal {
+  position: relative;
+  width: 92vw;
+  max-width: 900px;
+  border: 1px solid rgba(81, 104, 255, 0.25);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #0e1025 0%, #080a16 100%);
+  overflow: hidden;
+  animation: modalSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    0 0 60px rgba(81, 104, 255, 0.12),
+    0 0 120px rgba(81, 104, 255, 0.06),
+    0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+.cornerAccent {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+.cornerAccent::before,
+.cornerAccent::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, #5168FF, #7b8fff);
+}
+.cornerAccent::before { width: 24px; height: 2px; }
+.cornerAccent::after  { width: 2px; height: 24px; }
+.cornerTL { top: 6px; left: 6px; }
+.cornerTL::before { top: 0; left: 0; }
+.cornerTL::after  { top: 0; left: 0; }
+.cornerTR { top: 6px; right: 6px; }
+.cornerTR::before { top: 0; right: 0; }
+.cornerTR::after  { top: 0; right: 0; }
+.cornerBL { bottom: 6px; left: 6px; }
+.cornerBL::before { bottom: 0; left: 0; }
+.cornerBL::after  { bottom: 0; left: 0; }
+.cornerBR { bottom: 6px; right: 6px; }
+.cornerBR::before { bottom: 0; right: 0; }
+.cornerBR::after  { bottom: 0; right: 0; }
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.08) 0%, rgba(81, 104, 255, 0.03) 100%);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.15);
+}
+
+.modalHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5168FF;
+  box-shadow: 0 0 8px rgba(81, 104, 255, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.modalLabel {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(81, 104, 255, 0.5);
+}
+
+.videoEmbed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #000;
+}
+
+.videoEmbed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ── Keyframes ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
+  .floatingAngel {
+    opacity: 0.5;
+  }
+
+  .floatingAngel .angelImg {
+    max-width: 48px;
+    max-height: 48px;
+  }
+
+  .azuraBottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .tierSection {
     grid-template-columns: 1fr;
   }
