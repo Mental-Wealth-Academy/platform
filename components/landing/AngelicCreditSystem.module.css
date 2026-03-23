@@ -1,10 +1,14 @@
 .section {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 1rem 2rem;
+  position: relative;
+  width: 100%;
+  padding: 80px 24px;
+  background: var(--color-background);
+  z-index: 1;
 }
 
 .wrap {
+  max-width: 720px;
+  margin: 0 auto;
   background: #FFFFFF;
   border: 1px solid rgba(26, 27, 36, 0.08);
   border-radius: 16px;
