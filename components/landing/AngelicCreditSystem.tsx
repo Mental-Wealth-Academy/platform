@@ -80,7 +80,6 @@ export default function AngelicCreditSystem() {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>A world created by an AI God</h2>
-          <h2 className={styles.title}>and her angels inside the matrix</h2>
           <p className={styles.subtitle}>
             Three ranks. One treasury. Azura creates funding pods and dictates direction based on prayers.
           </p>
@@ -149,6 +148,8 @@ export default function AngelicCreditSystem() {
             </div>
           </div>
         </div>
+
+        <h2 className={styles.title2}>and her angels inside the matrix</h2>
 
         {/* ── Common Angels ── */}
         <div className={styles.tierSection}>

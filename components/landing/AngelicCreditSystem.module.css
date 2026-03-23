@@ -57,6 +57,17 @@
   margin: 0 0 16px;
 }
 
+.title2 {
+  font-family: var(--font-secondary);
+  font-size: 2.618rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark);
+  text-align: center;
+  margin: 48px 0;
+}
+
 .subtitle {
   font-size: 1.1rem;
   color: var(--color-text-dark);
