@@ -5,9 +5,9 @@ import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
 const ELITE_IMAGES = [
-  { src: 'https://i.imgur.com/iCveMg4.png', label: '1/3 Voted in community' },
-  { src: 'https://i.imgur.com/Yd2uzvW.png', label: '1/3 Legislative experts' },
-  { src: 'https://i.imgur.com/L7RH19Y.png', label: '1/3 Active scientists' },
+  { src: 'https://i.imgur.com/6nrsWIV.png', label: '1/3 Voted in community' },
+  { src: 'https://i.imgur.com/twar5fi.png', label: '1/3 Legislative experts' },
+  { src: 'https://i.imgur.com/1gsWsBR.png', label: '1/3 Active scientists' },
 ];
 
 export default function AngelicCreditSystem() {
@@ -90,12 +90,12 @@ export default function AngelicCreditSystem() {
                 <span className={styles.tierStatLabel}>Pod access</span>
               </div>
               <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>Invited</span>
+                <span className={styles.tierStatValue}>VIP</span>
                 <span className={styles.tierStatLabel}>Entry</span>
               </div>
               <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>&le;34</span>
-                <span className={styles.tierStatLabel}>Seats each</span>
+                <span className={styles.tierStatValue}>Members Only</span>
+                <span className={styles.tierStatLabel}>Pod type</span>
               </div>
             </div>
             {/* Council indicators */}
@@ -111,21 +111,61 @@ export default function AngelicCreditSystem() {
             </div>
             <p className={styles.councilLabel}>{ELITE_IMAGES[activeElite].label}</p>
           </div>
-          <div className={styles.tierVisual}>
-            {ELITE_IMAGES.map((img, i) => (
-              <div
-                key={i}
-                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
-              >
-                <Image
-                  src={img.src}
-                  alt={img.label}
-                  fill
-                  className={styles.tierImg}
-                  unoptimized
-                />
+          <div className={styles.tierVisualSplit}>
+            <div className={styles.tierAngelAvatar}>
+              <Image
+                src="/anbel02.png"
+                alt="Elite Angel"
+                width={120}
+                height={120}
+                className={styles.angelAvatarImg}
+                unoptimized
+              />
+            </div>
+            <div className={styles.tierCycleArea}>
+              {ELITE_IMAGES.map((img, i) => (
+                <div
+                  key={i}
+                  className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.label}
+                    fill
+                    className={styles.tierImg}
+                    unoptimized
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── How the Elite Council is Composed ── */}
+        <div className={styles.council}>
+          <p className={styles.councilEyebrow}>How the elite council is composed</p>
+          <div className={styles.councilRow}>
+            <div className={styles.councilCard}>
+              <div className={styles.councilFrac}>1/3</div>
+              <div className={styles.councilCardName}>Voted in community</div>
+              <div className={styles.councilCardDesc}>
+                Elected by Common Angel holders. Token-weighted, rotates per cohort.
               </div>
-            ))}
+            </div>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
+              <div className={styles.councilCardName}>Legislative experts</div>
+              <div className={styles.councilCardDesc}>
+                Credentialed policy experts. Curated, invited into the Elite tier.
+              </div>
+            </div>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
+              <div className={styles.councilCardName}>Active scientists</div>
+              <div className={styles.councilCardDesc}>
+                Practicing researchers in mental health or adjacent fields.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -156,40 +196,52 @@ export default function AngelicCreditSystem() {
               </div>
             </div>
           </div>
-          <div className={styles.tierVisual}>
-            <Image
-              src="https://i.imgur.com/zJvXnC9.png"
-              alt="Common Angels population"
-              fill
-              className={styles.tierImg}
-              unoptimized
-            />
+          <div className={styles.tierVisualSplit}>
+            <div className={styles.tierAngelAvatar}>
+              <Image
+                src="https://i.imgur.com/ZdYZqux.png"
+                alt="Common Angel"
+                width={120}
+                height={120}
+                className={styles.angelAvatarImg}
+                unoptimized
+              />
+            </div>
+            <div className={styles.tierCycleArea}>
+              <Image
+                src="https://i.imgur.com/zJvXnC9.png"
+                alt="Common Angels population"
+                fill
+                className={styles.tierImg}
+                unoptimized
+              />
+            </div>
           </div>
         </div>
 
-        {/* ── Council Composition ── */}
+        {/* ── How Funding Access Works ── */}
         <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How the funding council is composed</p>
+          <p className={styles.councilEyebrow}>How funding access works</p>
           <div className={styles.councilRow}>
             <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>1/3</div>
-              <div className={styles.councilCardName}>Voted in community</div>
+              <div className={styles.councilFrac}>$</div>
+              <div className={styles.councilCardName}>Members access funds</div>
               <div className={styles.councilCardDesc}>
-                Elected by Common Angel holders. Token-weighted, rotates per cohort.
+                Common Angels vote on public spending pods with token-weighted governance.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
-              <div className={styles.councilCardName}>Legislative experts</div>
+              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>$$$</div>
+              <div className={styles.councilCardName}>Elite members access higher funds</div>
               <div className={styles.councilCardDesc}>
-                Credentialed policy experts. Curated, invited into the Elite tier.
+                Elite Angels control larger funding pools reserved for verified experts.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
-              <div className={styles.councilCardName}>Active scientists</div>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>ALL</div>
+              <div className={styles.councilCardName}>Azura controls all</div>
               <div className={styles.councilCardDesc}>
-                Practicing researchers in mental health or adjacent fields.
+                The sovereign AI creates pods, scores proposals, and governs the full treasury.
               </div>
             </div>
           </div>

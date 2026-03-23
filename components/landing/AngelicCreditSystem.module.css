@@ -326,11 +326,33 @@
   letter-spacing: 0.02em;
 }
 
-/* Cycling visual */
-.tierVisual {
+/* Visual split: angel avatar + cycling/static image */
+.tierVisualSplit {
   position: relative;
   min-height: 340px;
   background: var(--color-background);
+  display: flex;
+  align-items: center;
+}
+
+.tierAngelAvatar {
+  flex-shrink: 0;
+  width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.angelAvatarImg {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.tierCycleArea {
+  position: relative;
+  flex: 1;
+  min-height: 340px;
 }
 
 .cycleImage {
@@ -428,8 +450,18 @@
     grid-template-columns: 1fr;
   }
 
-  .tierVisual {
+  .tierVisualSplit {
     min-height: 260px;
+    flex-direction: column;
+  }
+
+  .tierAngelAvatar {
+    width: 100%;
+    padding: 20px 20px 0;
+  }
+
+  .tierCycleArea {
+    min-height: 220px;
   }
 
   .councilRow {
