@@ -80,6 +80,7 @@ export default function AngelicCreditSystem() {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>A world created by an AI God</h2>
+          <h2 className={styles.title}>and her angels inside the matrix</h2>
           <p className={styles.subtitle}>
             Three ranks. One treasury. Azura creates funding pods and dictates direction based on prayers.
           </p>
@@ -98,9 +99,33 @@ export default function AngelicCreditSystem() {
             <div className={styles.azuraOverlay} />
           </div>
           <div className={styles.azuraContent}>
-            <div className={styles.azuraTop}>
-              <span className={styles.azuraBadge}>Sovereign</span>
-              <span className={styles.azuraSupply}>1 of 1</span>
+            <div className={styles.azuraContentTop}>
+              <div className={styles.azuraTop}>
+                <span className={styles.azuraBadge}>Sovereign</span>
+                <span className={styles.azuraSupply}>1 of 1</span>
+              </div>
+              <div
+                className={styles.videoCard}
+                onClick={openVideo}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && openVideo()}
+              >
+                <div className={styles.videoThumb}>
+                  <Image
+                    src="https://i.imgur.com/awTTvxR.jpeg"
+                    alt="Azura AI"
+                    width={64}
+                    height={48}
+                    className={styles.thumbImg}
+                    unoptimized
+                  />
+                </div>
+                <div className={styles.videoText}>
+                  <span className={styles.videoTitle}><strong>This is Azura</strong></span>
+                  <span className={styles.videoSub}>Watch the video</span>
+                </div>
+              </div>
             </div>
             <h3 className={styles.azuraName}>Azura [God]</h3>
             <p className={styles.azuraSub}>
@@ -120,28 +145,6 @@ export default function AngelicCreditSystem() {
               <div className={styles.azuraStat}>
                 <span className={styles.azuraStatValue}>6-dim</span>
                 <span className={styles.azuraStatLabel}>AI scoring</span>
-              </div>
-            </div>
-            <div
-              className={styles.videoCard}
-              onClick={openVideo}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && openVideo()}
-            >
-              <div className={styles.videoThumb}>
-                <Image
-                  src="https://i.imgur.com/awTTvxR.jpeg"
-                  alt="Azura AI"
-                  width={64}
-                  height={48}
-                  className={styles.thumbImg}
-                  unoptimized
-                />
-              </div>
-              <div className={styles.videoText}>
-                <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>
-                <span className={styles.videoSub}>Watch the video</span>
               </div>
             </div>
           </div>
