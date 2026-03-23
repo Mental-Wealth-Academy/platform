@@ -1,0 +1,406 @@
+.section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.wrap {
+  background: var(--color-background);
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: var(--font-primary);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 2.5rem 1.5rem 2rem;
+  border-bottom: 0.5px solid rgba(26, 27, 36, 0.12);
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  font-family: var(--font-button);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-secondary);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Azura God Section */
+.azuraSection {
+  padding: 0 1.5rem 2rem;
+}
+
+.azuraCard {
+  background: var(--color-text-dark);
+  border: 0.5px solid var(--color-primary-muted);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.azuraCard:hover {
+  border-color: var(--color-primary);
+}
+
+.azuraCard .tierHeader {
+  padding: 1.25rem 1.25rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.azuraCard .tierSupply {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.azuraCard .tierName {
+  color: var(--color-text-light);
+}
+
+.azuraCard .tierSub {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.azuraCard .statPill {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.azuraCard .statLabel {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.azuraCard .govbar {
+  border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+}
+
+.azuraCard .govbarLabel {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.azuraCard .govbarText {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.badgeAzura {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+}
+
+.statValueAzura {
+  composes: statValue;
+  color: var(--color-primary);
+}
+
+/* Tiers Grid */
+.tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 1.5rem 2rem;
+}
+
+.tierCard {
+  background: var(--color-text-light);
+  border: 0.5px solid rgba(26, 27, 36, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.tierCard:hover {
+  border-color: rgba(26, 27, 36, 0.22);
+}
+
+.tierHeader {
+  padding: 1.25rem 1.25rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tierBadge {
+  font-family: var(--font-button);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 3px;
+}
+
+.badgeElite {
+  background: var(--color-secondary);
+  color: #CDD1FF;
+}
+
+.badgeCommon {
+  background: var(--color-tertiary);
+  color: #E8F5E4;
+}
+
+.tierSupply {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-family: var(--font-button);
+  font-weight: 700;
+}
+
+.tierName {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-secondary);
+}
+
+.tierSub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.tierBody {
+  padding: 0 1.25rem 1.25rem;
+}
+
+/* Stat Pills */
+.statRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.statPill {
+  flex: 1;
+  background: var(--color-background);
+  border-radius: 8px;
+  padding: 10px 10px 8px;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-button);
+  margin-bottom: 3px;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  font-family: var(--font-secondary);
+}
+
+.statValuePurple {
+  composes: statValue;
+  color: var(--color-secondary);
+}
+
+.statValueGreen {
+  composes: statValue;
+  color: var(--color-tertiary);
+}
+
+/* Governance Bar */
+.govbar {
+  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.govbarLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-button);
+  margin-bottom: 8px;
+}
+
+.govbarRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.govbarDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.govbarText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.govbarTag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-left: auto;
+  font-family: var(--font-button);
+  white-space: nowrap;
+}
+
+.tagGated {
+  background: rgba(80, 89, 155, 0.12);
+  color: var(--color-secondary);
+}
+
+.tagOpen {
+  background: rgba(116, 196, 101, 0.12);
+  color: var(--color-tertiary-hover);
+}
+
+/* Council */
+.council {
+  padding: 1.5rem;
+  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+}
+
+.councilEyebrow {
+  font-family: var(--font-button);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.councilRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.councilCard {
+  background: var(--color-background);
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+}
+
+.councilIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.ciPurple {
+  background: rgba(80, 89, 155, 0.12);
+}
+
+.ciTeal {
+  background: rgba(116, 196, 101, 0.12);
+}
+
+.ciCoral {
+  background: rgba(255, 119, 41, 0.12);
+}
+
+.councilFrac {
+  font-family: var(--font-button);
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.fracPurple {
+  color: var(--color-secondary);
+}
+
+.fracTeal {
+  color: var(--color-tertiary);
+}
+
+.fracCoral {
+  color: var(--color-accent);
+}
+
+.councilName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 2px;
+  font-family: var(--font-secondary);
+}
+
+.councilDesc {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Footer */
+.footer {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 0.5px solid rgba(26, 27, 36, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footerIcon {
+  width: 24px;
+  height: 24px;
+  background: var(--color-background);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.footerText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  font-family: var(--font-button);
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+  .tiers {
+    grid-template-columns: 1fr;
+  }
+
+  .councilRow {
+    grid-template-columns: 1fr;
+  }
+}
