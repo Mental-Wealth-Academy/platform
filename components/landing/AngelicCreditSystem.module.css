@@ -106,11 +106,6 @@
   color: var(--color-text-light);
 }
 
-.statValueAzura {
-  composes: statValue;
-  color: var(--color-primary);
-}
-
 /* Tiers Grid */
 .tiers {
   display: grid;
@@ -216,6 +211,11 @@
   font-weight: 700;
   color: var(--color-text-dark);
   font-family: var(--font-secondary);
+}
+
+.statValueAzura {
+  composes: statValue;
+  color: var(--color-primary);
 }
 
 .statValuePurple {
