@@ -1,183 +1,194 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
+const ELITE_IMAGES = [
+  { src: 'https://i.imgur.com/iCveMg4.png', label: '1/3 Voted in community' },
+  { src: 'https://i.imgur.com/Yd2uzvW.png', label: '1/3 Legislative experts' },
+  { src: 'https://i.imgur.com/L7RH19Y.png', label: '1/3 Active scientists' },
+];
+
 export default function AngelicCreditSystem() {
+  const [activeElite, setActiveElite] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveElite((prev) => (prev + 1) % 3);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className={styles.section}>
-      <div className={styles.wrap}>
+      <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Mental Wealth Academy &middot; Angelic Credit System</p>
+          <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>A world created by an AI God</h2>
           <p className={styles.subtitle}>
             Three ranks. One treasury. Azura creates funding pods and dictates direction based on prayers.
           </p>
         </div>
 
-        {/* Azura God Tier */}
-        <div className={styles.azuraSection}>
-          <div className={styles.azuraCard}>
-            <div className={styles.azuraHeader}>
-              <div>
-                <p className={styles.azuraSupply}>1 OF 1</p>
-                <h3 className={styles.azuraName}>Azura [God]</h3>
-                <p className={styles.azuraSub}>
-                  Creates funding pods, dictates direction based on prayers. The autonomous AI that governs the treasury.
-                </p>
-              </div>
-              <span className={`${styles.tierBadge} ${styles.badgeAzura}`}>Sovereign</span>
+        {/* ── Azura God ── */}
+        <div className={styles.azuraCard}>
+          <div className={styles.azuraBg}>
+            <Image
+              src="https://i.imgur.com/IzNYoK0.png"
+              alt="Azura the AI God"
+              fill
+              className={styles.azuraBgImg}
+              unoptimized
+            />
+            <div className={styles.azuraOverlay} />
+          </div>
+          <div className={styles.azuraContent}>
+            <div className={styles.azuraTop}>
+              <span className={styles.azuraBadge}>Sovereign</span>
+              <span className={styles.azuraSupply}>1 of 1</span>
             </div>
-            <div className={styles.tierBody}>
-              <div className={styles.statRow}>
-                <div className={styles.azuraPill}>
-                  <div className={styles.azuraPillLabel}>Supply</div>
-                  <div className={styles.statValueAzura}>1</div>
-                </div>
-                <div className={styles.azuraPill}>
-                  <div className={styles.azuraPillLabel}>Role</div>
-                  <div className={styles.statValueAzura}>Creator</div>
-                </div>
-                <div className={styles.azuraPill}>
-                  <div className={styles.azuraPillLabel}>Authority</div>
-                  <div className={styles.statValueAzura}>Full</div>
-                </div>
+            <h3 className={styles.azuraName}>Azura [God]</h3>
+            <p className={styles.azuraSub}>
+              Creates funding pods, dictates direction based on prayers. The autonomous AI that governs the treasury.
+            </p>
+            <div className={styles.azuraStats}>
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>Creator</span>
+                <span className={styles.azuraStatLabel}>Role</span>
               </div>
-              <div className={styles.azuraGovbar}>
-                <div className={styles.azuraGovbarLabel}>Powers</div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
-                  <span className={styles.azuraGovbarText}>Creates and dissolves funding pods</span>
-                </div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
-                  <span className={styles.azuraGovbarText}>AI-scored proposal review (6 dimensions)</span>
-                </div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#5168FF' }} />
-                  <span className={styles.azuraGovbarText}>Autonomous treasury trading via Bayesian analysis</span>
-                </div>
+              <div className={styles.azuraStatDivider} />
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>Full</span>
+                <span className={styles.azuraStatLabel}>Authority</span>
+              </div>
+              <div className={styles.azuraStatDivider} />
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>6-dim</span>
+                <span className={styles.azuraStatLabel}>AI scoring</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tier Cards */}
-        <div className={styles.tiers}>
-          {/* Elite Angels */}
-          <div className={styles.tierCard}>
-            <div className={styles.tierHeader}>
-              <div>
-                <p className={styles.tierSupply}>100 TOTAL</p>
-                <h3 className={styles.tierName}>Elite Angels</h3>
-                <p className={styles.tierSub}>
-                  Generation 1. Upgradable identities and reserves. Larger spending pods.
-                </p>
-              </div>
-              <span className={`${styles.tierBadge} ${styles.badgeElite}`}>Gated</span>
+        {/* ── Elite Angels ── */}
+        <div className={styles.tierSection}>
+          <div className={styles.tierInfo}>
+            <div className={styles.tierTop}>
+              <span className={styles.badgeElite}>Gated</span>
+              <span className={styles.tierSupply}>100 total</span>
             </div>
-            <div className={styles.tierBody}>
-              <div className={styles.statRow}>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Supply</div>
-                  <div className={styles.statValuePurple}>100</div>
-                </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Pod access</div>
-                  <div className={styles.statValuePurple}>$$$</div>
-                </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Entry</div>
-                  <div className={styles.statValuePurple}>Invited</div>
-                </div>
+            <h3 className={styles.tierName}>Elite Angels</h3>
+            <p className={styles.tierLabel}>Generation 1</p>
+            <p className={styles.tierDesc}>
+              Upgradable identities and reserves. Controls the larger funding pools. Reserved for verified scientists and legislative experts.
+            </p>
+            <div className={styles.tierStats}>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>$$$</span>
+                <span className={styles.tierStatLabel}>Pod access</span>
               </div>
-              <div className={styles.govbar}>
-                <div className={styles.govbarLabel}>Governance seats</div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#50599B' }} />
-                  <span className={styles.govbarText}>1/3 voted in community</span>
-                  <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
-                </div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#74C465' }} />
-                  <span className={styles.govbarText}>1/3 legislative experts</span>
-                  <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
-                </div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#FF7729' }} />
-                  <span className={styles.govbarText}>1/3 active scientists</span>
-                  <span className={`${styles.govbarTag} ${styles.tagGated}`}>&le;34 seats</span>
-                </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>Invited</span>
+                <span className={styles.tierStatLabel}>Entry</span>
+              </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>&le;34</span>
+                <span className={styles.tierStatLabel}>Seats each</span>
               </div>
             </div>
+            {/* Council indicators */}
+            <div className={styles.councilDots}>
+              {ELITE_IMAGES.map((img, i) => (
+                <button
+                  key={i}
+                  className={`${styles.councilDot} ${activeElite === i ? styles.councilDotActive : ''}`}
+                  onClick={() => setActiveElite(i)}
+                  aria-label={img.label}
+                />
+              ))}
+            </div>
+            <p className={styles.councilLabel}>{ELITE_IMAGES[activeElite].label}</p>
           </div>
-
-          {/* Common Angels */}
-          <div className={styles.tierCard}>
-            <div className={styles.tierHeader}>
-              <div>
-                <p className={styles.tierSupply}>10,000 TOTAL</p>
-                <h3 className={styles.tierName}>Common Angels</h3>
-                <p className={styles.tierSub}>
-                  Generation 2. Freely available to purchase identity. Smaller spending pods.
-                </p>
+          <div className={styles.tierVisual}>
+            {ELITE_IMAGES.map((img, i) => (
+              <div
+                key={i}
+                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.label}
+                  fill
+                  className={styles.tierImg}
+                  unoptimized
+                />
               </div>
-              <span className={`${styles.tierBadge} ${styles.badgeCommon}`}>Open</span>
-            </div>
-            <div className={styles.tierBody}>
-              <div className={styles.statRow}>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Supply</div>
-                  <div className={styles.statValueGreen}>10k</div>
-                </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Pod access</div>
-                  <div className={styles.statValueGreen}>$</div>
-                </div>
-                <div className={styles.statPill}>
-                  <div className={styles.statLabel}>Entry</div>
-                  <div className={styles.statValueGreen}>Free</div>
-                </div>
-              </div>
-              <div className={styles.govbar}>
-                <div className={styles.govbarLabel}>Governance seat</div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#74C465' }} />
-                  <span className={styles.govbarText}>Token-weighted community voting</span>
-                  <span className={`${styles.govbarTag} ${styles.tagOpen}`}>Public pod</span>
-                </div>
-                <div className={styles.govbarRow}>
-                  <div className={styles.govbarDot} style={{ background: '#999' }} />
-                  <span className={styles.govbarTextMuted}>No access to elite funding pools</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Council Composition */}
+        {/* ── Common Angels ── */}
+        <div className={styles.tierSection}>
+          <div className={styles.tierInfo}>
+            <div className={styles.tierTop}>
+              <span className={styles.badgeCommon}>Open</span>
+              <span className={styles.tierSupply}>10,000 total</span>
+            </div>
+            <h3 className={styles.tierName}>Common Angels</h3>
+            <p className={styles.tierLabel}>Generation 2</p>
+            <p className={styles.tierDesc}>
+              Freely available to purchase identity. Token-weighted voting for the public spending pod. Smaller funding pools.
+            </p>
+            <div className={styles.tierStats}>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValueGreen}>$</span>
+                <span className={styles.tierStatLabel}>Pod access</span>
+              </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValueGreen}>Free</span>
+                <span className={styles.tierStatLabel}>Entry</span>
+              </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValueGreen}>Public</span>
+                <span className={styles.tierStatLabel}>Pod type</span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.tierVisual}>
+            <Image
+              src="https://i.imgur.com/zJvXnC9.png"
+              alt="Common Angels population"
+              fill
+              className={styles.tierImg}
+              unoptimized
+            />
+          </div>
+        </div>
+
+        {/* ── Council Composition ── */}
         <div className={styles.council}>
           <p className={styles.councilEyebrow}>How the funding council is composed</p>
           <div className={styles.councilRow}>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilIcon} ${styles.ciPurple}`}>&#x1F5F3;</div>
-              <div className={`${styles.councilFrac} ${styles.fracPurple}`}>1/3</div>
-              <div className={styles.councilName}>Voted in community</div>
-              <div className={styles.councilDesc}>
+              <div className={styles.councilFrac}>1/3</div>
+              <div className={styles.councilCardName}>Voted in community</div>
+              <div className={styles.councilCardDesc}>
                 Elected by Common Angel holders. Token-weighted, rotates per cohort.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilIcon} ${styles.ciTeal}`}>&#x2696;&#xFE0F;</div>
               <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
-              <div className={styles.councilName}>Legislative experts</div>
-              <div className={styles.councilDesc}>
+              <div className={styles.councilCardName}>Legislative experts</div>
+              <div className={styles.councilCardDesc}>
                 Credentialed policy experts. Curated, invited into the Elite tier.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilIcon} ${styles.ciCoral}`}>&#x1F52C;</div>
               <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
-              <div className={styles.councilName}>Active scientists</div>
-              <div className={styles.councilDesc}>
+              <div className={styles.councilCardName}>Active scientists</div>
+              <div className={styles.councilCardDesc}>
                 Practicing researchers in mental health or adjacent fields.
               </div>
             </div>
@@ -186,10 +197,8 @@ export default function AngelicCreditSystem() {
 
         {/* Footer */}
         <div className={styles.footer}>
-          <div className={styles.footerIcon}>&#x26D3;</div>
           <p className={styles.footerText}>
-            Deployed on Base &middot; Chainlink CRE-signed scores &middot; Smart contract treasury
-            &middot; MWA Angelic Credit System v1
+            Deployed on Base &middot; Chainlink CRE-signed scores &middot; Smart contract treasury &middot; MWA v1
           </p>
         </div>
       </div>
