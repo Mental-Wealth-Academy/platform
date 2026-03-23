@@ -149,14 +149,6 @@
   line-height: 1.6;
 }
 
-.azuraBottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
 .azuraStats {
   display: flex;
   align-items: center;
@@ -165,7 +157,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 16px 0;
-  max-width: 420px;
+  margin-bottom: 16px;
 }
 
 .azuraStat {
@@ -298,7 +290,7 @@
 
 .tierStats {
   display: flex;
-  gap: 16px;
+  justify-content: space-between;
   margin-bottom: 16px;
 }
 
@@ -332,39 +324,6 @@
 }
 
 /* Cycling dots */
-.councilDots {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.councilDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-text-dark);
-  opacity: 0.15;
-  cursor: pointer;
-  padding: 0;
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.councilDotActive {
-  opacity: 0.8;
-  transform: scale(1.3);
-  background: var(--color-primary);
-}
-
-.councilLabel {
-  font-family: var(--font-button);
-  font-size: 11px;
-  color: var(--color-text-dark);
-  opacity: 0.5;
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
 /* Tier visual (right side) */
 .tierVisual {
   position: relative;
@@ -473,7 +432,8 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.15s ease;
-  flex-shrink: 0;
+  align-self: flex-end;
+  width: fit-content;
 }
 
 .videoCard:hover {
@@ -679,10 +639,7 @@
     max-height: 48px;
   }
 
-  .azuraBottom {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+
 
   .tierSection {
     grid-template-columns: 1fr;

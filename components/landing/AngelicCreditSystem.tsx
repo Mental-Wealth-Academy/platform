@@ -106,139 +106,42 @@ export default function AngelicCreditSystem() {
             <p className={styles.azuraSub}>
               Creates funding pods, dictates direction based on prayers. The autonomous AI that governs the treasury.
             </p>
-            <div className={styles.azuraBottom}>
-              <div className={styles.azuraStats}>
-                <div className={styles.azuraStat}>
-                  <span className={styles.azuraStatValue}>Creator</span>
-                  <span className={styles.azuraStatLabel}>Role</span>
-                </div>
-                <div className={styles.azuraStatDivider} />
-                <div className={styles.azuraStat}>
-                  <span className={styles.azuraStatValue}>Full</span>
-                  <span className={styles.azuraStatLabel}>Authority</span>
-                </div>
-                <div className={styles.azuraStatDivider} />
-                <div className={styles.azuraStat}>
-                  <span className={styles.azuraStatValue}>6-dim</span>
-                  <span className={styles.azuraStatLabel}>AI scoring</span>
-                </div>
+            <div className={styles.azuraStats}>
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>Creator</span>
+                <span className={styles.azuraStatLabel}>Role</span>
               </div>
-              <div
-                className={styles.videoCard}
-                onClick={openVideo}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openVideo()}
-              >
-                <div className={styles.videoThumb}>
-                  <Image
-                    src="https://i.imgur.com/awTTvxR.jpeg"
-                    alt="Azura AI"
-                    width={64}
-                    height={48}
-                    className={styles.thumbImg}
-                    unoptimized
-                  />
-                </div>
-                <div className={styles.videoText}>
-                  <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>
-                  <span className={styles.videoSub}>Watch the video</span>
-                </div>
+              <div className={styles.azuraStatDivider} />
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>Full</span>
+                <span className={styles.azuraStatLabel}>Authority</span>
+              </div>
+              <div className={styles.azuraStatDivider} />
+              <div className={styles.azuraStat}>
+                <span className={styles.azuraStatValue}>6-dim</span>
+                <span className={styles.azuraStatLabel}>AI scoring</span>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* ── Elite Angels ── */}
-        <div className={styles.tierSection}>
-          <div className={styles.tierInfo}>
-            <div className={styles.tierTop}>
-              <div>
-                <span className={styles.badgeElite}>Gated</span>
-                <span className={styles.tierSupply}>100 total</span>
-              </div>
-              <Image
-                src="/anbel02.png"
-                alt="Elite Angel"
-                width={56}
-                height={56}
-                className={styles.tierAvatarImg}
-                unoptimized
-              />
-            </div>
-            <h3 className={styles.tierName}>Elite Angels</h3>
-            <p className={styles.tierLabel}>Generation 1</p>
-            <p className={styles.tierDesc}>
-              Upgradable identities and reserves. Controls the larger funding pools. Reserved for verified scientists and legislative experts.
-            </p>
-            <div className={styles.tierStats}>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>$$$</span>
-                <span className={styles.tierStatLabel}>Pod access</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>VIP</span>
-                <span className={styles.tierStatLabel}>Entry</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>Members Only</span>
-                <span className={styles.tierStatLabel}>Pod type</span>
-              </div>
-            </div>
-            {/* Council indicators */}
-            <div className={styles.councilDots}>
-              {ELITE_IMAGES.map((img, i) => (
-                <button
-                  key={i}
-                  className={`${styles.councilDot} ${activeElite === i ? styles.councilDotActive : ''}`}
-                  onClick={() => setActiveElite(i)}
-                  aria-label={img.label}
-                />
-              ))}
-            </div>
-            <p className={styles.councilLabel}>{ELITE_IMAGES[activeElite].label}</p>
-          </div>
-          <div className={styles.tierVisual}>
-            {ELITE_IMAGES.map((img, i) => (
-              <div
-                key={i}
-                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
-              >
+            <div
+              className={styles.videoCard}
+              onClick={openVideo}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && openVideo()}
+            >
+              <div className={styles.videoThumb}>
                 <Image
-                  src={img.src}
-                  alt={img.label}
-                  fill
-                  className={styles.tierImg}
+                  src="https://i.imgur.com/awTTvxR.jpeg"
+                  alt="Azura AI"
+                  width={64}
+                  height={48}
+                  className={styles.thumbImg}
                   unoptimized
                 />
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── How the Elite Council is Composed ── */}
-        <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How the elite council is composed</p>
-          <div className={styles.councilRow}>
-            <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>1/3</div>
-              <div className={styles.councilCardName}>Voted in community</div>
-              <div className={styles.councilCardDesc}>
-                Elected by Common Angel holders. Token-weighted, rotates per cohort.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
-              <div className={styles.councilCardName}>Legislative experts</div>
-              <div className={styles.councilCardDesc}>
-                Credentialed policy experts. Curated, invited into the Elite tier.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
-              <div className={styles.councilCardName}>Active scientists</div>
-              <div className={styles.councilCardDesc}>
-                Practicing researchers in mental health or adjacent fields.
+              <div className={styles.videoText}>
+                <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>
+                <span className={styles.videoSub}>Watch the video</span>
               </div>
             </div>
           </div>
@@ -315,6 +218,89 @@ export default function AngelicCreditSystem() {
               <div className={styles.councilCardName}>Elite members access higher funds</div>
               <div className={styles.councilCardDesc}>
                 Elite Angels control larger funding pools reserved for verified experts.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Elite Angels ── */}
+        <div className={styles.tierSection}>
+          <div className={styles.tierInfo}>
+            <div className={styles.tierTop}>
+              <div>
+                <span className={styles.badgeElite}>Gated</span>
+                <span className={styles.tierSupply}>100 total</span>
+              </div>
+              <Image
+                src="/anbel02.png"
+                alt="Elite Angel"
+                width={56}
+                height={56}
+                className={styles.tierAvatarImg}
+                unoptimized
+              />
+            </div>
+            <h3 className={styles.tierName}>Elite Angels</h3>
+            <p className={styles.tierLabel}>Generation 1</p>
+            <p className={styles.tierDesc}>
+              Upgradable identities and reserves. Controls the larger funding pools. Reserved for verified scientists and legislative experts.
+            </p>
+            <div className={styles.tierStats}>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>$$$</span>
+                <span className={styles.tierStatLabel}>Pod access</span>
+              </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>VIP</span>
+                <span className={styles.tierStatLabel}>Entry</span>
+              </div>
+              <div className={styles.tierStatItem}>
+                <span className={styles.tierStatValue}>Members Only</span>
+                <span className={styles.tierStatLabel}>Pod type</span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.tierVisual}>
+            {ELITE_IMAGES.map((img, i) => (
+              <div
+                key={i}
+                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.label}
+                  fill
+                  className={styles.tierImg}
+                  unoptimized
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── How the Elite Council is Composed ── */}
+        <div className={styles.council}>
+          <p className={styles.councilEyebrow}>How the elite council is composed</p>
+          <div className={styles.councilRow}>
+            <div className={styles.councilCard}>
+              <div className={styles.councilFrac}>1/3</div>
+              <div className={styles.councilCardName}>Voted in community</div>
+              <div className={styles.councilCardDesc}>
+                Elected by Common Angel holders. Token-weighted, rotates per cohort.
+              </div>
+            </div>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
+              <div className={styles.councilCardName}>Legislative experts</div>
+              <div className={styles.councilCardDesc}>
+                Credentialed policy experts. Curated, invited into the Elite tier.
+              </div>
+            </div>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
+              <div className={styles.councilCardName}>Active scientists</div>
+              <div className={styles.councilCardDesc}>
+                Practicing researchers in mental health or adjacent fields.
               </div>
             </div>
           </div>

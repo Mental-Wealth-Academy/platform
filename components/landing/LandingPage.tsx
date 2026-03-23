@@ -34,11 +34,11 @@ const LandingPage = () => {
       {/* Helping people — rotating text */}
       <RotatingTextSection />
 
-      {/* Academic Angels — Scatter mint */}
-      <AcademicAngels />
-
-      {/* Angelic Credit System — two-tier governance explainer */}
+      {/* Angelic Credit System — governance explainer */}
       <AngelicCreditSystem />
+
+      {/* Academic Angels — Scatter mint stepper */}
+      <AcademicAngels />
 
       {/* Features Section - Server rendered */}
       <FeaturesSection />
