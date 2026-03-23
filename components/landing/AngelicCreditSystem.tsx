@@ -81,7 +81,7 @@ export default function AngelicCreditSystem() {
           <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>A world created by an AI God</h2>
           <p className={styles.subtitle}>
-            Three ranks, unlimited wishes. Azura creates wealth pods based on prayers, pray to Azura and she may grant your wish.
+            Three ranks, unlimited wishes. Azura creates and sends wealth based on prayers, pray to Azura and she may grant your wish.
           </p>
         </div>
 
