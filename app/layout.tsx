@@ -42,13 +42,13 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'Mental Wealth Academy is a virtual learning platform for the next generation. It\'s an online school where students can take classes, complete quests, earn rewards, and learn together. We use transparent record-keeping and reward systems to make learning more engaging and rewarding.',
+  description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
   icons: {
     icon: '/icons/mentalwealth-academy-logo.png',
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'Mental Wealth Academy is a virtual learning platform for the next generation. It\'s an online school where students can take classes, complete quests, earn rewards, and learn together. We use transparent record-keeping and reward systems to make learning more engaging and rewarding.',
+    description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
     images: [
       {
         url: '/icons/embbedBanner.png',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'Mental Wealth Academy is a virtual learning platform for the next generation. It\'s an online school where students can take classes, complete quests, earn rewards, and learn together. We use transparent record-keeping and reward systems to make learning more engaging and rewarding.',
+    description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
     images: ['/icons/embbedBanner.png'],
   },
   other: {

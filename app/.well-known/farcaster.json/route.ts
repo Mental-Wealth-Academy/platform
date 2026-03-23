@@ -16,7 +16,7 @@ export async function GET() {
       splashBackgroundColor: "#000000",
       webhookUrl: `${URL}/api/webhook`,
       subtitle: "Next Gen Micro-University",
-      description: "Mental Wealth Academy is a virtual learning platform for the next generation. Learn, complete quests, earn rewards on-chain.",
+      description: "A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.",
       screenshotUrls: [
         `${URL}/icons/embbedBanner.png`
       ],
@@ -25,7 +25,7 @@ export async function GET() {
       heroImageUrl: `${URL}/icons/embbedBanner.png`,
       tagline: "Learn and Earn Together",
       ogTitle: "Mental Wealth Academy",
-      ogDescription: "Virtual learning platform for the next generation with blockchain rewards",
+      ogDescription: "A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.",
       ogImageUrl: `${URL}/icons/embbedBanner.png`,
       noindex: false
     }
