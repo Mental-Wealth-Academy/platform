@@ -10,6 +10,7 @@ import { SwarmsSection } from './SwarmsSection';
 import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
+import { RotatingTextSection } from './RotatingTextSection';
 import { AcademicAngels } from './AcademicAngels';
 import TheseAreAngels from './TheseAreAngels';
 import AngelicCreditSystem from './AngelicCreditSystem';
@@ -30,6 +31,9 @@ const LandingPage = () => {
 
       {/* Company Logos Section */}
       <CompanyLogos />
+
+      {/* Helping people — rotating text */}
+      <RotatingTextSection />
 
       {/* Academic Angels — Scatter mint */}
       <AcademicAngels />

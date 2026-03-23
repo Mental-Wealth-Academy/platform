@@ -4,22 +4,22 @@ import styles from './TestimonialSection.module.css';
 
 const testimonials = [
   {
-    quote: 'The peer connections I made here changed my perspective entirely. I found a support system I didn\'t know I needed.',
+    quote: 'The weekly flows and peer sessions helped me reclaim my agency. I went from burnt out to building something meaningful — this community actually gets it.',
     name: 'Jordan K.',
-    title: 'Undergraduate, Howard University',
-    avatar: 'https://i.pravatar.cc/150?img=12',
+    title: 'Common Angel, Cohort 2',
+    avatar: '/anbel03.png',
   },
   {
-    quote: 'Mental Wealth Academy helped me build connections and network at a time where I was uncertain, the passive weekly sessions were fun and low-stress to keep up with. This community actually gets it.',
+    quote: 'Mental Wealth Academy gave me a space to connect, reflect, and grow on-chain. The governance felt real — my vote actually shaped where funding went. I\'ve never seen anything like this.',
     name: 'Maya T.',
-    title: 'Graduate Student, Temple University',
-    avatar: 'https://i.pravatar.cc/150?img=47',
+    title: 'Elite Angel, Generation 1',
+    avatar: '/anbel07.png',
   },
   {
-    quote: 'The gamified quests kept me engaged when traditional learning felt draining. I actually looked forward to every session.',
+    quote: 'The gamified quests kept me engaged when traditional support felt draining. Earning tokens for journaling and showing up? That\'s the kind of incentive design that works.',
     name: 'Aisha R.',
-    title: 'PhD Candidate, MIT',
-    avatar: 'https://i.pravatar.cc/150?img=45',
+    title: 'Common Angel, Cohort 1',
+    avatar: '/anbel10.png',
   },
 ];
 
@@ -27,7 +27,7 @@ export const TestimonialSection: React.FC = () => {
   return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <div className={styles.eyebrow}>Hear what our students have to say</div>
+        <div className={styles.eyebrow}>Hear what academy members have to say</div>
         <div className={styles.grid}>
           {testimonials.map((t, i) => (
             <div key={i} className={`${styles.card} ${i === 1 ? styles.cardFeatured : ''}`}>
