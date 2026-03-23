@@ -92,7 +92,7 @@ export const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Course</p>
           <h2 className={styles.title}>
-            Seasonal Creative Writing
+            Study to Earn Shards, Convert To Wealth
           </h2>
           <p className={styles.description}>
             Tackle 12-weeks completely at your own pace, weeks are sealed as you complete them, fully private, and unlocked with prizes after course completion.

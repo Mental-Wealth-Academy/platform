@@ -85,6 +85,7 @@
   margin-bottom: 32px;
   min-height: 360px;
   display: flex;
+  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
   align-items: flex-end;
 }
 
@@ -217,6 +218,7 @@
   background: #FFFFFF;
   border: 1px solid rgba(26, 27, 36, 0.08);
   border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
   overflow: hidden;
   margin-bottom: 32px;
   min-height: 340px;
@@ -394,6 +396,7 @@
   border: 1px solid rgba(26, 27, 36, 0.08);
   border-radius: 16px;
   padding: 28px 24px;
+  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
 }
 
 .councilFrac {
