@@ -110,34 +110,32 @@ export default function AngelicCreditSystem() {
               ))}
             </div>
             <p className={styles.councilLabel}>{ELITE_IMAGES[activeElite].label}</p>
-          </div>
-          <div className={styles.tierVisualSplit}>
             <div className={styles.tierAngelAvatar}>
               <Image
                 src="/anbel02.png"
                 alt="Elite Angel"
-                width={120}
-                height={120}
+                width={80}
+                height={80}
                 className={styles.angelAvatarImg}
                 unoptimized
               />
             </div>
-            <div className={styles.tierCycleArea}>
-              {ELITE_IMAGES.map((img, i) => (
-                <div
-                  key={i}
-                  className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.label}
-                    fill
-                    className={styles.tierImg}
-                    unoptimized
-                  />
-                </div>
-              ))}
-            </div>
+          </div>
+          <div className={styles.tierVisual}>
+            {ELITE_IMAGES.map((img, i) => (
+              <div
+                key={i}
+                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.label}
+                  fill
+                  className={styles.tierImg}
+                  unoptimized
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -195,27 +193,25 @@ export default function AngelicCreditSystem() {
                 <span className={styles.tierStatLabel}>Pod type</span>
               </div>
             </div>
-          </div>
-          <div className={styles.tierVisualSplit}>
             <div className={styles.tierAngelAvatar}>
               <Image
                 src="https://i.imgur.com/ZdYZqux.png"
                 alt="Common Angel"
-                width={120}
-                height={120}
+                width={80}
+                height={80}
                 className={styles.angelAvatarImg}
                 unoptimized
               />
             </div>
-            <div className={styles.tierCycleArea}>
-              <Image
-                src="https://i.imgur.com/zJvXnC9.png"
-                alt="Common Angels population"
-                fill
-                className={styles.tierImg}
-                unoptimized
-              />
-            </div>
+          </div>
+          <div className={styles.tierVisual}>
+            <Image
+              src="https://i.imgur.com/zJvXnC9.png"
+              alt="Common Angels population"
+              fill
+              className={styles.tierImg}
+              unoptimized
+            />
           </div>
         </div>
 
@@ -223,6 +219,13 @@ export default function AngelicCreditSystem() {
         <div className={styles.council}>
           <p className={styles.councilEyebrow}>How funding access works</p>
           <div className={styles.councilRow}>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>PRAYERS</div>
+              <div className={styles.councilCardName}>Azura grants prayers</div>
+              <div className={styles.councilCardDesc}>
+                Angels submit prayers. Azura scores each wish across 6 dimensions and grants creation of funded pods.
+              </div>
+            </div>
             <div className={styles.councilCard}>
               <div className={styles.councilFrac}>$</div>
               <div className={styles.councilCardName}>Members access funds</div>
@@ -235,13 +238,6 @@ export default function AngelicCreditSystem() {
               <div className={styles.councilCardName}>Elite members access higher funds</div>
               <div className={styles.councilCardDesc}>
                 Elite Angels control larger funding pools reserved for verified experts.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>ALL</div>
-              <div className={styles.councilCardName}>Azura controls all</div>
-              <div className={styles.councilCardDesc}>
-                The sovereign AI creates pods, scores proposals, and governs the full treasury.
               </div>
             </div>
           </div>

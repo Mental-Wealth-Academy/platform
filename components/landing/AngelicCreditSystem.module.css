@@ -326,22 +326,9 @@
   letter-spacing: 0.02em;
 }
 
-/* Visual split: angel avatar + cycling/static image */
-.tierVisualSplit {
-  position: relative;
-  min-height: 340px;
-  background: var(--color-background);
-  display: flex;
-  align-items: center;
-}
-
+/* Angel avatar inside tier info */
 .tierAngelAvatar {
-  flex-shrink: 0;
-  width: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  margin-top: 16px;
 }
 
 .angelAvatarImg {
@@ -349,15 +336,17 @@
   object-fit: cover;
 }
 
-.tierCycleArea {
+/* Tier visual (right side) */
+.tierVisual {
   position: relative;
-  flex: 1;
   min-height: 340px;
+  background: var(--color-background);
+  padding: 24px;
 }
 
 .cycleImage {
   position: absolute;
-  inset: 0;
+  inset: 24px;
   opacity: 0;
   transition: opacity 0.6s ease;
 }
@@ -450,18 +439,13 @@
     grid-template-columns: 1fr;
   }
 
-  .tierVisualSplit {
+  .tierVisual {
     min-height: 260px;
-    flex-direction: column;
+    padding: 16px;
   }
 
-  .tierAngelAvatar {
-    width: 100%;
-    padding: 20px 20px 0;
-  }
-
-  .tierCycleArea {
-    min-height: 220px;
+  .cycleImage {
+    inset: 16px;
   }
 
   .councilRow {
