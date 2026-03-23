@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { WagmiProvider, createConfig, http, createStorage } from "wagmi";
+import { injected } from "wagmi/connectors";
 import { base } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
@@ -46,6 +47,20 @@ function getWagmiConfig() {
     // Override storage to prevent auto-reconnect
     wagmiConfig = createConfig({
       ...defaultConfig,
+      connectors: [
+        ...defaultConfig.connectors ?? [],
+        // Phantom wallet (EVM mode) — appears as a named option in the modal
+        injected({
+          target: {
+            id: 'phantom',
+            name: 'Phantom',
+            icon: 'https://phantom.com/img/phantom-icon-purple.svg',
+            provider: typeof window !== 'undefined'
+              ? (window as unknown as Record<string, any>).phantom?.ethereum
+              : undefined,
+          },
+        }),
+      ],
       storage: createStorage({ storage: noopStorage }),
       ssr: true,
     });
