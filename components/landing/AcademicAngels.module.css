@@ -8,6 +8,15 @@
   background: #E8E5F5;
 }
 
+.sectionHeading {
+  text-align: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1d33;
+  margin: 0 0 8px;
+}
+
 .container {
   display: grid;
   grid-template-columns: minmax(120px, 21%) auto;

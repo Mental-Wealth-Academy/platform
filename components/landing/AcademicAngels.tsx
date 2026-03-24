@@ -128,6 +128,7 @@ export const AcademicAngels: React.FC = () => {
 
   return (
     <section className={styles.section}>
+      <h2 className={styles.sectionHeading}>One Membership, Lifetime Benefits</h2>
       <div className={styles.container}>
         {/* Left — GIF */}
         <div className={styles.imageCard}>
