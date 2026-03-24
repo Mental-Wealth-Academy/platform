@@ -1589,6 +1589,8 @@
   padding: 0 4px;
   overflow: visible;
   box-sizing: content-box;
+  height: 50px;
+  --rotating-tz: 60px;
 }
 
 .rotatingTextInner {
@@ -1637,16 +1639,23 @@
   .rotatingTextHeading {
     flex-wrap: nowrap;
     font-size: 0.85rem;
-    gap: 0.3em;
+    gap: 0.2em;
     line-height: 1.3;
   }
 
   .rotatingTextLines {
-    gap: 0.25rem;
+    gap: 0;
+  }
+
+  .rotatingTextWrapper {
+    height: 1.3em !important;
+    --rotating-tz: 16px;
+    margin-top: 0;
   }
 
   .rotatingTextStaticLine {
     font-size: 0.85rem;
+    margin-top: 0.1em;
   }
 
   .rotatingTextStatic,

@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './TestimonialSection.module.css';
 
@@ -24,13 +26,27 @@ const testimonials = [
 ];
 
 export const TestimonialSection: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
         <div className={styles.eyebrow}>Hear what academy members have to say</div>
         <div className={styles.grid}>
           {testimonials.map((t, i) => (
-            <div key={i} className={`${styles.card} ${i === 1 ? styles.cardFeatured : ''}`}>
+            <div key={i} className={`${styles.card} ${i === 1 ? styles.cardFeatured : ''}`} style={{ transitionDelay: `${i * 0.12}s` }}>
               <blockquote className={styles.quote}>
                 &ldquo;{t.quote}&rdquo;
               </blockquote>

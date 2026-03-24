@@ -1,8 +1,25 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
 import styles from './FeaturesSection.module.css';
 
 export const FeaturesSection: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className={styles.featuresSection}>
+    <section ref={sectionRef} className={`${styles.featuresSection} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Course</p>

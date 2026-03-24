@@ -16,7 +16,16 @@
 .header {
   text-align: left;
   margin-bottom: 48px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
+
+.sectionVisible .header {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 /* ── Eyebrow ─────────────────────────────────────── */
 .eyebrow {
@@ -56,6 +65,15 @@
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition-delay: 0.08s;
+}
+
+.sectionVisible .dashboard {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ── Tab Bar ─────────────────────────────────────── */
@@ -534,6 +552,27 @@
   background: #ffffff;
   border: 1px solid rgba(26, 29, 51, 0.1);
   border-radius: 12px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sectionVisible .rainbowWrap .taskCard {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+.sectionVisible .panel > .taskCard:nth-child(2) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.22s;
+}
+
+.sectionVisible .panel > .taskCard:nth-child(3) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.34s;
 }
 
 .taskHeader {

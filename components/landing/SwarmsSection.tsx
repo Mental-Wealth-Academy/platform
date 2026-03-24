@@ -166,17 +166,6 @@ export const SwarmsSection = () => {
         </div>
       </div>
 
-      {/* MWA Logo - bottom right */}
-      <div className={styles.sectionLogo}>
-        <Image
-          src="/icons/mwa-logo-horizontal.png"
-          alt="Mental Wealth Academy"
-          width={140}
-          height={51}
-          className={styles.sectionLogoImg}
-        />
-      </div>
-
       <PortfolioModal isOpen={portfolioOpen} onClose={() => setPortfolioOpen(false)} />
     </section>
   );

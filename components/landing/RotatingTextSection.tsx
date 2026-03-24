@@ -91,7 +91,6 @@ export const RotatingTextSection: React.FC = () => {
             className={styles.rotatingTextWrapper}
             style={{
               width: currentWidth > 0 ? `${currentWidth}px` : 'auto',
-              height: '50px',
               perspective: '1000px',
               overflow: 'visible',
               display: 'inline-block',
@@ -119,7 +118,7 @@ export const RotatingTextSection: React.FC = () => {
                     }}
                     className={styles.rotatingTextItem}
                     style={{
-                      transform: `translateX(-50%) rotateX(${itemRotation}deg) translateZ(60px)`,
+                      transform: `translateX(-50%) rotateX(${itemRotation}deg) translateZ(var(--rotating-tz, 60px))`,
                       backfaceVisibility: 'hidden',
                       width: 'auto',
                       left: '50%',
