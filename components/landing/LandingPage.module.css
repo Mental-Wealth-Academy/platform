@@ -227,6 +227,16 @@
   pointer-events: none;
 }
 
+.canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/azurabeauty.png') center / cover no-repeat;
+  opacity: 0.6;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .cardsContainer {
   position: absolute;
   top: 50vh;
