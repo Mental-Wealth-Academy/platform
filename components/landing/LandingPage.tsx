@@ -40,6 +40,9 @@ const LandingPage = () => {
       {/* Academic Angels — Scatter mint stepper */}
       <AcademicAngels />
 
+      {/* Testimonial Section - Server rendered */}
+      <TestimonialSection />
+
       {/* Features Section - Server rendered */}
       <FeaturesSection />
 
@@ -48,9 +51,6 @@ const LandingPage = () => {
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
-
-      {/* Testimonial Section - Server rendered */}
-      <TestimonialSection />
 
       {/* Swarms Section - Server rendered */}
       <SwarmsSection />

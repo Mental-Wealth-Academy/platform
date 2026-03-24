@@ -36,13 +36,6 @@ function WeeklyFlowPanel() {
           </div>
         </div>
       </div>
-      <div className={styles.taskCard}>
-        <div className={styles.taskHeader}>
-          <span className={styles.taskTitle}>Discuss and Debate</span>
-          <span className={styles.weekBadge}>Week 4</span>
-        </div>
-        <p className={styles.taskDesc}>Spot cognitive distortions in real scenarios. You sharpen your self-awareness and earn points while you play.</p>
-      </div>
     </div>
   );
 }
@@ -92,7 +85,7 @@ export const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Course</p>
           <h2 className={styles.title}>
-            Study to Earn Shards, Convert To Wealth
+            Study to Earn Shards, Convert To&nbsp;Wealth
           </h2>
           <p className={styles.description}>
             Tackle 12-weeks completely at your own pace, weeks are sealed as you complete them, fully private, and unlocked with prizes after course completion.

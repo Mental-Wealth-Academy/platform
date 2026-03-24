@@ -511,10 +511,19 @@
 }
 
 .taskCard {
+  position: relative;
   padding: 20px;
   background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
+  border: 2px solid transparent;
   border-radius: 12px;
+  background-clip: padding-box;
+}
+
+.taskCard:first-of-type {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d) border-box;
 }
 
 .taskHeader {

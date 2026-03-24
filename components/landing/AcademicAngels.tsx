@@ -133,7 +133,7 @@ export const AcademicAngels: React.FC = () => {
         <div className={styles.imageCard}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/academic-angels.webp"
+            src="https://i.imgur.com/crsFZLd.png"
             alt="Academic Angels"
             className={styles.gif}
           />
@@ -162,7 +162,7 @@ export const AcademicAngels: React.FC = () => {
           </div>
 
           <h2 className={styles.title}>Academic Angels</h2>
-          <p className={styles.subtitle}>by Mental Wealth Academy</p>
+          <p className={styles.subtitle}>by Jhinova Bay, PhD</p>
 
           <div className={styles.priceRow}>
             <div className={styles.priceBlock}>
