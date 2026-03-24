@@ -18,21 +18,23 @@ function WeeklyFlowPanel() {
         <span className={styles.miniTab}>Games</span>
         <span className={styles.miniTab}>Activities</span>
       </div>
-      <div className={styles.taskCard}>
-        <div className={styles.taskHeader}>
-          <span className={styles.taskTitle}>Morning Pages</span>
-          <span className={styles.weekBadge}>Week 4</span>
-        </div>
-        <p className={styles.taskDesc}>You write for 15 minutes. No prompts, no pressure — just you and the page. Your entry stays private unless you choose to share it.</p>
-        <div className={styles.checklistProgress}>
-          <div className={styles.checkItem}>
-            <span className={styles.checkDone}>&#10003;</span> Write your entry
+      <div className={styles.rainbowWrap}>
+        <div className={styles.taskCard}>
+          <div className={styles.taskHeader}>
+            <span className={styles.taskTitle}>Morning Pages</span>
+            <span className={styles.weekBadge}>Week</span>
           </div>
-          <div className={styles.checkItem}>
-            <span className={styles.checkDone}>&#10003;</span> Tag your mood
-          </div>
-          <div className={styles.checkItem}>
-            <span className={styles.checkPending}>&#9675;</span> Get Azura&apos;s feedback
+          <p className={styles.taskDesc}>You write for 15 minutes. No prompts, no pressure — just you and the page. Your entry stays private unless you choose to share it.</p>
+          <div className={styles.checklistProgress}>
+            <div className={styles.checkItem}>
+              <span className={styles.checkDone}>&#10003;</span> Write your entry
+            </div>
+            <div className={styles.checkItem}>
+              <span className={styles.checkDone}>&#10003;</span> Tag your mood
+            </div>
+            <div className={styles.checkItem}>
+              <span className={styles.checkPending}>&#9675;</span> Get Azura&apos;s feedback
+            </div>
           </div>
         </div>
       </div>
@@ -88,7 +90,7 @@ export const FeaturesSection: React.FC = () => {
             Study Daily, Earn Wealth
           </h2>
           <p className={styles.description}>
-            Tackle 12-weeks of intensive study, a spiritual chiropracticing that massages the soul, pays you in gold, and transforms you towards self-actualization. All hail the ethereal horizon!
+            Tackle 12-weeks of intensive study, a spiritual chiropracticing that massages the soul, pays you in gold, and transforms you towards self-actualization.
           </p>
         </div>
 

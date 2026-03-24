@@ -510,20 +510,31 @@
   border-color: var(--color-primary, #5168FF);
 }
 
-.taskCard {
+.rainbowWrap {
   position: relative;
-  padding: 20px;
-  background: #ffffff;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background-clip: padding-box;
+  border-radius: 14px;
+  padding: 2px;
+  background: conic-gradient(from var(--rainbow-angle, 0deg), #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d, #ff6b6b);
+  animation: rainbowSpin 4s linear infinite;
 }
 
-.taskCard:first-of-type {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d) border-box;
+@property --rainbow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rainbowSpin {
+  to {
+    --rainbow-angle: 360deg;
+  }
+}
+
+.taskCard {
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 12px;
 }
 
 .taskHeader {
