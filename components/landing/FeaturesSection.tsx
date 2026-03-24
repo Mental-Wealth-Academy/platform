@@ -85,10 +85,10 @@ export const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Course</p>
           <h2 className={styles.title}>
-            Study to Earn Shards, Convert To&nbsp;Wealth
+            Study Daily, Earn Wealth
           </h2>
           <p className={styles.description}>
-            Tackle 12-weeks completely at your own pace, weeks are sealed as you complete them, fully private, and unlocked with prizes after course completion.
+            Tackle 12-weeks of intensive study, a spiritual chiropracticing that massages the soul, pays you in gold, and transforms you towards self-actualization. All hail the ethereal horizon!
           </p>
         </div>
 
