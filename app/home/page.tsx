@@ -80,6 +80,7 @@ export default function HomePage() {
   const [showMintModal, setShowMintModal] = useState(false);
   const [showWorkshop, setShowWorkshop] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
+  const [showInlineDailyNote, setShowInlineDailyNote] = useState(false);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
 
@@ -230,13 +231,17 @@ export default function HomePage() {
                 className={styles.dailyMissionBtn}
                 onClick={() => {
                   play('click');
-                  setActiveCard('daily');
-                  setTimeout(() => document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' }), 50);
+                  setShowInlineDailyNote(prev => !prev);
                 }}
               >
-                YOUR DAILY MISSION
-                <span className={styles.dailyMissionArrow}>›</span>
+                Morning Pages
+                <span className={styles.dailyMissionArrow}>{showInlineDailyNote ? '‹' : '›'}</span>
               </button>
+              {showInlineDailyNote && (
+                <div className={styles.inlineDailyNote}>
+                  <DailyNotes enablePersistence={isAuthenticated} />
+                </div>
+              )}
             </div>
 
             {/* Premium CTA */}

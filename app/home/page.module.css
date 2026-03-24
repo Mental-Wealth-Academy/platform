@@ -206,6 +206,14 @@
   opacity: 0.8;
 }
 
+.inlineDailyNote {
+  padding: 16px;
+  background: #0D0F1A;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0 0 16px 16px;
+  margin-top: -8px;
+}
+
 /* Premium CTA Card */
 .premiumCard {
   border-radius: 16px;
