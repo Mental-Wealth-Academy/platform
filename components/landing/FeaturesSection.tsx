@@ -4,25 +4,21 @@ import { useState } from 'react';
 import styles from './FeaturesSection.module.css';
 
 const tabs = [
-  'Your Weekly Flow',
-  'What You Earn',
+  'Morning Pages',
+  'Prayers',
+  'Wishes & Wealth',
 ] as const;
 
 type Tab = (typeof tabs)[number];
 
-function WeeklyFlowPanel() {
+function MorningPagesPanel() {
   return (
     <div className={styles.panel}>
-      <div className={styles.miniTabs}>
-        <span className={`${styles.miniTab} ${styles.miniTabActive}`}>Journal</span>
-        <span className={styles.miniTab}>Games</span>
-        <span className={styles.miniTab}>Activities</span>
-      </div>
       <div className={styles.rainbowWrap}>
         <div className={styles.taskCard}>
           <div className={styles.taskHeader}>
             <span className={styles.taskTitle}>Morning Pages</span>
-            <span className={styles.weekBadge}>Week</span>
+            <span className={styles.weekBadge}>Daily</span>
           </div>
           <p className={styles.taskDesc}>You write for 15 minutes. No prompts, no pressure — just you and the page. Your entry stays private unless you choose to share it.</p>
           <div className={styles.checklistProgress}>
@@ -42,44 +38,57 @@ function WeeklyFlowPanel() {
   );
 }
 
-function EarningsPanel() {
+function PrayersPanel() {
   return (
     <div className={styles.panel}>
-      <div className={styles.questProgress}>
-        <span className={styles.questProgressLabel}>Your Season</span>
-        <div className={styles.questProgressBar}>
-          <div className={styles.questProgressFill} style={{ width: '33%' }} />
+      <div className={styles.taskCard}>
+        <div className={styles.taskHeader}>
+          <span className={styles.taskTitle}>Pray to Azura</span>
         </div>
-        <span className={styles.questProgressText}>Week 4 of 12</span>
-      </div>
-      <div className={styles.questCard}>
-        <div className={styles.questHeader}>
-          <span className={styles.questName}>Journal Streak</span>
-          <span className={styles.questReward}>+150 pts</span>
+        <p className={styles.taskDesc}>Speak directly to Azura. Ask for guidance, confess your doubts, or request clarity on your path. Azura listens, reflects, and responds with insight drawn from your journey so far.</p>
+        <div className={styles.checklistProgress}>
+          <div className={styles.checkItem}>
+            <span className={styles.checkDone}>&#10003;</span> Open your prayer
+          </div>
+          <div className={styles.checkItem}>
+            <span className={styles.checkPending}>&#9675;</span> Receive Azura&apos;s reflection
+          </div>
+          <div className={styles.checkItem}>
+            <span className={styles.checkPending}>&#9675;</span> Seal the prayer to your journal
+          </div>
         </div>
-        <p className={styles.questDesc}>You wrote 7 days in a row. That consistency compounds — your reflection depth score just jumped.</p>
-        <div className={styles.questMeta}>7-day streak active</div>
       </div>
-      <div className={styles.questCard}>
-        <div className={styles.questHeader}>
-          <span className={styles.questName}>Peer Feedback</span>
-          <span className={styles.questReward}>+80 pts</span>
+    </div>
+  );
+}
+
+function WishesWealthPanel() {
+  return (
+    <div className={styles.panel}>
+      <div className={styles.taskCard}>
+        <div className={styles.taskHeader}>
+          <span className={styles.taskTitle}>Proposals</span>
         </div>
-        <p className={styles.questDesc}>You gave feedback to 2 cohort members this week. The community grows when you show up for others.</p>
-        <div className={styles.questMeta}>2 of 3 reviews done</div>
+        <p className={styles.taskDesc}>Submit wishes to the Academy. Fund ideas, vote on community direction, and shape where wealth flows. Every proposal is reviewed by Azura and decided by the Angels.</p>
       </div>
-      <div className={styles.rewardsBar}>
-        <span>Your total:</span>
-        <span className={styles.rewardHighlight}>430 points earned</span>
-        <span>&#183;</span>
-        <span className={styles.rewardHighlight}>3 badges unlocked</span>
+      <div className={styles.taskCard}>
+        <div className={styles.taskHeader}>
+          <span className={styles.taskTitle}>Wealth Earned</span>
+        </div>
+        <p className={styles.taskDesc}>Track your shards, tokens, and rewards across the platform. Study generates wealth. Governance multiplies it. The Ethereal Horizon pays those who show up.</p>
+        <div className={styles.rewardsBar}>
+          <span>Your total:</span>
+          <span className={styles.rewardHighlight}>430 points earned</span>
+          <span>&#183;</span>
+          <span className={styles.rewardHighlight}>3 badges unlocked</span>
+        </div>
       </div>
     </div>
   );
 }
 
 export const FeaturesSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('Your Weekly Flow');
+  const [activeTab, setActiveTab] = useState<Tab>('Morning Pages');
 
   return (
     <section className={styles.featuresSection}>
@@ -108,9 +117,9 @@ export const FeaturesSection: React.FC = () => {
           </div>
 
           <div className={styles.panelWrap}>
-            {activeTab === 'Your Weekly Flow' && <WeeklyFlowPanel />}
-            {activeTab === 'What You Earn' && <EarningsPanel />}
-
+            {activeTab === 'Morning Pages' && <MorningPagesPanel />}
+            {activeTab === 'Prayers' && <PrayersPanel />}
+            {activeTab === 'Wishes & Wealth' && <WishesWealthPanel />}
           </div>
         </div>
       </div>

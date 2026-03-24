@@ -108,7 +108,6 @@
 
 /* ── Panel ────────────────────────────────────────── */
 .panelWrap {
-  min-height: 480px;
   padding: 32px;
 }
 
@@ -736,7 +735,7 @@
 
   .panelWrap {
     padding: 20px 16px;
-    min-height: 420px;
+    min-height: auto;
   }
 
   .statsRow {
