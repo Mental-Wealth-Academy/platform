@@ -8,6 +8,33 @@
   background: #FBF8FF;
 }
 
+/* ── Scroll Animations ── */
+.sectionHeading,
+.container {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sectionVisible .sectionHeading { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.sectionVisible .container { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+
+.imageCard {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sectionVisible .imageCard { opacity: 1; transform: translateX(0); transition-delay: 0.2s; }
+
+.mintPanel {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sectionVisible .mintPanel { opacity: 1; transform: translateX(0); transition-delay: 0.25s; }
+
 .sectionHeading {
   text-align: center;
   font-family: 'Space Grotesk', sans-serif;

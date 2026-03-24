@@ -31,6 +31,31 @@
   object-fit: contain;
 }
 
+/* ── Scroll Animations ── */
+.header,
+.azuraCard,
+.council,
+.tierSection {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sectionVisible .header { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.sectionVisible .azuraCard { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.sectionVisible .council { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+.sectionVisible .tierSection { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+
+.councilCard {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.sectionVisible .councilCard:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.25s; }
+.sectionVisible .councilCard:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+.sectionVisible .councilCard:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+
 /* ── Header ── */
 .header {
   text-align: center;

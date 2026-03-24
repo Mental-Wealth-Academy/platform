@@ -140,10 +140,10 @@
      ============================================ */
   /* Durations */
   --duration-instant: 50ms;
-  --duration-fast: 150ms;
+  --duration-fast: 200ms;
   --duration-normal: 300ms;
   --duration-slow: 500ms;
-  --duration-slower: 700ms;
+  --duration-slower: 500ms;
   
   /* Easing Curves */
   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);

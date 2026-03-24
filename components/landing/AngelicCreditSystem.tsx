@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
@@ -30,6 +30,19 @@ const YOUTUBE_VIDEO_ID = 'JccxSJ3twmM';
 export default function AngelicCreditSystem() {
   const [activeElite, setActiveElite] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const openVideo = useCallback(() => setShowVideo(true), []);
   const closeVideo = useCallback(() => setShowVideo(false), []);
@@ -51,7 +64,7 @@ export default function AngelicCreditSystem() {
   }, [showVideo, closeVideo]);
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       {/* Floating angel images */}
       {FLOATING_ANGELS.map((angel, i) => (
         <div

@@ -50,7 +50,7 @@
   font-weight: 700;
   color: #1A1D33;
   text-decoration: none;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .backLink:hover {
@@ -58,21 +58,99 @@
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
-/* Content */
-.content {
+/* Page Layout: Sidenav + Content */
+.pageLayout {
   position: relative;
   z-index: 10;
-  max-width: 720px;
+  display: flex;
+  gap: 40px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 80px 24px 80px;
+  padding: 80px 24px;
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .contentLoaded {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Side Navigation */
+.sideNav {
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.sideNavList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sideNavItem {
+  margin-bottom: 4px;
+}
+
+.sideNavLink {
+  display: block;
+  padding: 6px 12px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.45);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sideNavLink:hover {
+  color: rgba(26, 29, 51, 0.75);
+  background: rgba(26, 29, 51, 0.04);
+}
+
+.sideNavLinkActive {
+  color: var(--color-primary, #5168FF);
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.sideNavSubList {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 16px;
+}
+
+.sideNavSubItem {
+  margin-bottom: 2px;
+}
+
+.sideNavSubLink {
+  display: block;
+  padding: 4px 12px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.38);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sideNavSubLink:hover {
+  color: rgba(26, 29, 51, 0.65);
+  background: rgba(26, 29, 51, 0.04);
+}
+
+/* Content */
+.content {
+  flex: 1;
+  max-width: none;
+  padding: 0;
+  margin: 0;
 }
 
 /* Hero */
@@ -164,6 +242,7 @@
   color: #1A1D33;
   margin: 24px 0 12px;
   line-height: 1.3;
+  scroll-margin-top: 100px;
 }
 
 .cardBody ul {
@@ -210,7 +289,7 @@
   font-weight: 700;
   text-decoration: none;
   box-shadow: 4px 4px 0 #1A1D33;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   letter-spacing: 0.02em;
 }
 
@@ -226,7 +305,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .content {
+  .sideNav {
+    display: none;
+  }
+
+  .pageLayout {
     padding: 72px 16px 60px;
   }
 

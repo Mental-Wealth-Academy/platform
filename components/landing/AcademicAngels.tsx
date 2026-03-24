@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   SCATTER_COLLECTION_SLUG,
   getEligibleInviteLists,
@@ -12,7 +12,20 @@ import styles from './AcademicAngels.module.css';
 
 export const AcademicAngels: React.FC = () => {
   const { play } = useSound();
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const [mintLists, setMintLists] = useState<MintList[]>([]);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const [selectedList, setSelectedList] = useState<MintList | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -125,7 +138,7 @@ export const AcademicAngels: React.FC = () => {
   };
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <h2 className={styles.sectionHeading}>One Membership, Lifetime Benefits</h2>
       <div className={styles.container}>
         {/* Left — GIF */}
