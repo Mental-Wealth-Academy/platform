@@ -215,8 +215,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
-  background: #FFFFFF;
-  border: 1px solid rgba(26, 27, 36, 0.08);
+  background: #1A1D33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
   overflow: hidden;
@@ -259,7 +259,7 @@
   text-transform: uppercase;
   padding: 4px 12px;
   border-radius: 4px;
-  background: var(--color-secondary);
+  background: #E8456B;
   color: #FFFFFF;
 }
 
@@ -278,7 +278,7 @@
 .tierSupply {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-text-dark);
+  color: rgba(255, 255, 255, 0.6);
   opacity: 0.4;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -288,7 +288,7 @@
   font-family: var(--font-secondary);
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text-dark);
+  color: #FFFFFF;
   margin: 0 0 4px;
   letter-spacing: -0.02em;
 }
@@ -304,8 +304,7 @@
 
 .tierDesc {
   font-size: 0.9rem;
-  color: var(--color-text-dark);
-  opacity: 0.6;
+  color: rgba(255, 255, 255, 0.6);
   margin: 0 0 20px;
   line-height: 1.6;
 }
@@ -339,8 +338,7 @@
 .tierStatLabel {
   font-family: var(--font-button);
   font-size: 10px;
-  color: var(--color-text-dark);
-  opacity: 0.4;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -350,7 +348,7 @@
 .tierVisual {
   position: relative;
   min-height: 340px;
-  background: var(--color-background);
+  background: rgba(255, 255, 255, 0.05);
   padding: 24px;
 }
 
@@ -363,6 +361,11 @@
 
 .cycleImageActive {
   opacity: 1;
+}
+
+.tierImgInset {
+  position: absolute;
+  inset: 24px;
 }
 
 .tierImg {

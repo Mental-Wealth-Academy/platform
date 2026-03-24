@@ -7,7 +7,7 @@ export const RotatingTextSection: React.FC = () => {
   const texts = useMemo(() => [
     'reclaim their agency',
     'reshape their future',
-    'own their mental wealth'
+    'evolve and grow'
   ], []);
   const [step, setStep] = useState(0);
   const currentIndex = step % texts.length;
@@ -86,7 +86,7 @@ export const RotatingTextSection: React.FC = () => {
     <div className={styles.rotatingTextContainer}>
       <div className={styles.rotatingTextLines}>
         <h3 className={styles.rotatingTextHeading}>
-          <span className={styles.rotatingTextStatic}>Helping people</span>
+          <span className={styles.rotatingTextStatic}>Helping humans</span>
           <div
             className={styles.rotatingTextWrapper}
             style={{

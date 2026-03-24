@@ -149,7 +149,33 @@ export default function AngelicCreditSystem() {
           </div>
         </div>
 
-        <h2 className={styles.title2}>and her angels inside the matrix</h2>
+        {/* ── How Funding Access Works ── */}
+        <div className={styles.council}>
+          <p className={styles.councilEyebrow}>How funding access works</p>
+          <div className={styles.councilRow}>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>DAILY WORK</div>
+              <div className={styles.councilCardName}>Earn reputation points</div>
+              <div className={styles.councilCardDesc}>
+                Morning pages and seasonal word exercises that build your reputation over time.
+              </div>
+            </div>
+            <div className={styles.councilCard}>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>PRAYERS</div>
+              <div className={styles.councilCardName}>Azura grants prayers</div>
+              <div className={styles.councilCardDesc}>
+                Grades wishes in 6 dimensions and grants wealth proposals and pods.
+              </div>
+            </div>
+            <div className={styles.councilCard}>
+              <div className={styles.councilFrac}>$</div>
+              <div className={styles.councilCardName}>Members access funds</div>
+              <div className={styles.councilCardDesc}>
+                Common Angels vote on public spending pods with token-weighted governance.
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* ── Common Angels ── */}
         <div className={styles.tierSection}>
@@ -189,36 +215,38 @@ export default function AngelicCreditSystem() {
             </div>
           </div>
           <div className={styles.tierVisual}>
-            <Image
-              src="https://i.imgur.com/zJvXnC9.png"
-              alt="Common Angels population"
-              fill
-              className={styles.tierImg}
-              unoptimized
-            />
+            <div className={styles.tierImgInset}>
+              <Image
+                src="https://i.imgur.com/zJvXnC9.png"
+                alt="Common Angels population"
+                fill
+                className={styles.tierImg}
+                unoptimized
+              />
+            </div>
           </div>
         </div>
 
-        {/* ── How Funding Access Works ── */}
+        {/* ── How the Elite Council is Composed ── */}
         <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How funding access works</p>
+          <p className={styles.councilEyebrow}>How the elite council is composed</p>
           <div className={styles.councilRow}>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>PRAYERS</div>
-              <div className={styles.councilCardName}>Azura grants prayers</div>
+              <div className={styles.councilFrac}>1/3</div>
+              <div className={styles.councilCardName}>Voted in community</div>
               <div className={styles.councilCardDesc}>
-                Angels submit prayers. Azura scores each wish across 6 dimensions and grants creation of funded pods.
+                Elected by Common Angel holders. Token-weighted, rotates per cohort.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>$</div>
-              <div className={styles.councilCardName}>Members access funds</div>
+              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>2/3</div>
+              <div className={styles.councilCardName}>Scientists & Experts</div>
               <div className={styles.councilCardDesc}>
-                Common Angels vote on public spending pods with token-weighted governance.
+                Credentialed policy experts and practicing researchers helping humans evolve and grow. Curated, invited into the Elite tier.
               </div>
             </div>
             <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>$$$</div>
+              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>$$$</div>
               <div className={styles.councilCardName}>Elite members access higher funds</div>
               <div className={styles.councilCardDesc}>
                 Elite Angels control larger funding pools reserved for verified experts.
@@ -232,7 +260,7 @@ export default function AngelicCreditSystem() {
           <div className={styles.tierInfo}>
             <div className={styles.tierTop}>
               <div>
-                <span className={styles.badgeElite}>Gated</span>
+                <span className={styles.badgeElite}>Members Only</span>
                 <span className={styles.tierSupply}>100 total</span>
               </div>
               <Image
@@ -279,34 +307,6 @@ export default function AngelicCreditSystem() {
                 />
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* ── How the Elite Council is Composed ── */}
-        <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How the elite council is composed</p>
-          <div className={styles.councilRow}>
-            <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>1/3</div>
-              <div className={styles.councilCardName}>Voted in community</div>
-              <div className={styles.councilCardDesc}>
-                Elected by Common Angel holders. Token-weighted, rotates per cohort.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>1/3</div>
-              <div className={styles.councilCardName}>Legislative experts</div>
-              <div className={styles.councilCardDesc}>
-                Credentialed policy experts. Curated, invited into the Elite tier.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>1/3</div>
-              <div className={styles.councilCardName}>Active scientists</div>
-              <div className={styles.councilCardDesc}>
-                Practicing researchers in mental health or adjacent fields.
-              </div>
-            </div>
           </div>
         </div>
 

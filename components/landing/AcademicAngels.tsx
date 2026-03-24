@@ -56,9 +56,7 @@ export const AcademicAngels: React.FC = () => {
     return price < 1 ? price.toFixed(4) : price.toFixed(2);
   }, []);
 
-  const totalPrice = selectedList
-    ? (parseFloat(selectedList.token_price) / Math.pow(10, selectedList.decimals) * quantity).toFixed(4)
-    : '0';
+  const totalPrice = (0.05 * quantity).toFixed(4);
 
   const handleMint = async () => {
     if (!selectedList || !collectionAddress) return;
@@ -142,34 +140,12 @@ export const AcademicAngels: React.FC = () => {
 
         {/* Right — Mint panel */}
         <div className={styles.mintPanel}>
-          <div className={styles.quantityRow}>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => { play('click'); setQuantity(Math.max(1, quantity - 1)); }}
-              disabled={quantity <= 1}
-            >
-              &minus;
-            </button>
-            <span className={styles.qtyValue}>{quantity}</span>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => {
-                play('click');
-                setQuantity(Math.min(selectedList?.wallet_limit || 10, quantity + 1));
-              }}
-            >
-              +
-            </button>
-          </div>
-
           <h2 className={styles.title}>Academic Angels</h2>
-          <p className={styles.subtitle}>by Jhinova Bay, PhD</p>
-
           <div className={styles.priceRow}>
             <div className={styles.priceBlock}>
               <span className={styles.priceLabel}>Price</span>
               <span className={styles.priceValue}>
-                {loading ? '...' : selectedList ? `${formatPrice(selectedList)} ${selectedList.currency_symbol}` : 'Free'}
+                0.05 ETH
               </span>
             </div>
           </div>
@@ -191,6 +167,26 @@ export const AcademicAngels: React.FC = () => {
           <div className={styles.totalRow}>
             <span className={styles.totalLabel}>Total</span>
             <span className={styles.totalValue}>{totalPrice} {selectedList?.currency_symbol || 'ETH'}</span>
+          </div>
+
+          <div className={styles.quantityRow}>
+            <button
+              className={styles.qtyBtn}
+              onClick={() => { play('click'); setQuantity(Math.max(1, quantity - 1)); }}
+              disabled={quantity <= 1}
+            >
+              &minus;
+            </button>
+            <span className={styles.qtyValue}>{quantity}</span>
+            <button
+              className={styles.qtyBtn}
+              onClick={() => {
+                play('click');
+                setQuantity(Math.min(selectedList?.wallet_limit || 10, quantity + 1));
+              }}
+            >
+              +
+            </button>
           </div>
 
           {success ? (

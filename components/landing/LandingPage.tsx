@@ -10,7 +10,6 @@ import { SwarmsSection } from './SwarmsSection';
 import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
-import { RotatingTextSection } from './RotatingTextSection';
 import { AcademicAngels } from './AcademicAngels';
 import AngelicCreditSystem from './AngelicCreditSystem';
 import styles from './LandingPage.module.css';
@@ -31,11 +30,11 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
-      {/* Helping people — rotating text */}
-      <RotatingTextSection />
+      {/* Features Section - Server rendered */}
+      <FeaturesSection />
 
-      {/* Angelic Credit System — governance explainer */}
-      <AngelicCreditSystem />
+      {/* Key Figures Section - Server rendered */}
+      <KeyFiguresSection />
 
       {/* Academic Angels — Scatter mint stepper */}
       <AcademicAngels />
@@ -43,11 +42,8 @@ const LandingPage = () => {
       {/* Testimonial Section - Server rendered */}
       <TestimonialSection />
 
-      {/* Features Section - Server rendered */}
-      <FeaturesSection />
-
-      {/* Key Figures Section - Server rendered */}
-      <KeyFiguresSection />
+      {/* Angelic Credit System — governance explainer */}
+      <AngelicCreditSystem />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
