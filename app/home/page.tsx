@@ -238,8 +238,11 @@ export default function HomePage() {
                 <span className={styles.dailyMissionArrow}>{showInlineDailyNote ? '‹' : '›'}</span>
               </button>
               {showInlineDailyNote && (
-                <div className={styles.inlineDailyNote}>
-                  <DailyNotes enablePersistence={isAuthenticated} />
+                <div className={styles.dailyNoteOverlay} onClick={() => setShowInlineDailyNote(false)}>
+                  <div className={styles.dailyNoteModal} onClick={(e) => e.stopPropagation()}>
+                    <button className={styles.dailyNoteClose} onClick={() => setShowInlineDailyNote(false)}>✕</button>
+                    <DailyNotes enablePersistence={isAuthenticated} />
+                  </div>
                 </div>
               )}
             </div>
