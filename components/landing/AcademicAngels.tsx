@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   SCATTER_COLLECTION_SLUG,
   getEligibleInviteLists,
@@ -13,6 +14,7 @@ import styles from './AcademicAngels.module.css';
 export const AcademicAngels: React.FC = () => {
   const { play } = useSound();
   const [isVisible, setIsVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const [mintLists, setMintLists] = useState<MintList[]>([]);
 
@@ -26,6 +28,7 @@ export const AcademicAngels: React.FC = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
   const [selectedList, setSelectedList] = useState<MintList | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -56,7 +59,7 @@ export const AcademicAngels: React.FC = () => {
           setSelectedList(lists[0]);
         }
       } catch {
-        // Silent fail — section still shows with GIF
+        // Silent fail — section still shows
       } finally {
         setLoading(false);
       }
@@ -86,7 +89,6 @@ export const AcademicAngels: React.FC = () => {
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const minterAddress = accounts[0];
 
-      // Switch to correct chain
       try {
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
@@ -137,107 +139,95 @@ export const AcademicAngels: React.FC = () => {
     }
   };
 
+  const openModal = () => {
+    play('click');
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    play('click');
+    setShowModal(false);
+  };
+
+  useEffect(() => {
+    if (!showModal) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeModal();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showModal]);
+
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <h2 className={styles.sectionHeading}>One Membership, Lifetime Benefits</h2>
-      <div className={styles.container}>
-        {/* Left — GIF */}
-        <div className={styles.imageCard}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://i.imgur.com/crsFZLd.png"
-            alt="Academic Angels"
-            className={styles.gif}
-          />
-        </div>
 
-        {/* Right — Mint panel */}
-        <div className={styles.mintPanel}>
-          <h2 className={styles.title}>Academic Angels</h2>
-          <div className={styles.priceRow}>
-            <div className={styles.priceBlock}>
-              <span className={styles.priceLabel}>Price</span>
-              <span className={styles.priceValue}>
-                0.05 ETH
-              </span>
+      <button
+        type="button"
+        className={styles.purchaseBtn}
+        onClick={openModal}
+        onMouseEnter={() => play('hover')}
+      >
+        Purchase Membership
+      </button>
+
+      {/* ── Purchase Modal (portaled to body) ── */}
+      {showModal && createPortal(
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Purchase Membership</h3>
+              <button className={styles.modalClose} onClick={closeModal} aria-label="Close">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
             </div>
-          </div>
 
-          {mintLists.length > 1 && (
-            <div className={styles.listSelector}>
-              {mintLists.map((list) => (
+            <div className={styles.modalBody}>
+              <span className={styles.price}>$90</span>
+              <span className={styles.priceNote}>One-time membership</span>
+
+              <div className={styles.divider} />
+
+              <ul className={styles.benefitsList}>
+                <li className={styles.benefitItem}>Join a creative community awakening minds through art, science, and spirit</li>
+                <li className={styles.benefitItem}>Access funding pools for research, projects, and real-world impact</li>
+                <li className={styles.benefitItem}>Lifetime entry to every course, cohort, and seasonal programme</li>
+              </ul>
+
+              <div className={styles.divider} />
+
+              {success ? (
+                <div className={styles.successBlock}>
+                  <span className={styles.successText}>Welcome to the Academy.</span>
+                  {txHash && (
+                    <a
+                      href={`https://basescan.org/tx/${txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.txLink}
+                    >
+                      View receipt
+                    </a>
+                  )}
+                </div>
+              ) : (
                 <button
-                  key={list.id}
-                  className={`${styles.listOption} ${selectedList?.id === list.id ? styles.listOptionActive : ''}`}
-                  onClick={() => { play('click'); setSelectedList(list); }}
+                  className={styles.mintBtn}
+                  onClick={handleMint}
+                  disabled={minting || loading}
                 >
-                  {list.name}
+                  {minting ? 'Processing...' : 'Confirm Purchase'}
                 </button>
-              ))}
-            </div>
-          )}
-
-          <div className={styles.totalRow}>
-            <span className={styles.totalLabel}>Total</span>
-            <span className={styles.totalValue}>{totalPrice} {selectedList?.currency_symbol || 'ETH'}</span>
-          </div>
-
-          <div className={styles.quantityRow}>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => { play('click'); setQuantity(Math.max(1, quantity - 1)); }}
-              disabled={quantity <= 1}
-            >
-              &minus;
-            </button>
-            <span className={styles.qtyValue}>{quantity}</span>
-            <button
-              className={styles.qtyBtn}
-              onClick={() => {
-                play('click');
-                setQuantity(Math.min(selectedList?.wallet_limit || 10, quantity + 1));
-              }}
-            >
-              +
-            </button>
-          </div>
-
-          {success ? (
-            <div className={styles.successBlock}>
-              <span className={styles.successText}>Purchase Successful!</span>
-              {txHash && (
-                <a
-                  href={`https://basescan.org/tx/${txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.txLink}
-                >
-                  View on BaseScan
-                </a>
               )}
+
+              {error && <p className={styles.error}>{error}</p>}
             </div>
-          ) : (
-            <button
-              className={styles.mintBtn}
-              onClick={handleMint}
-              disabled={minting || loading}
-            >
-              {minting ? 'Purchasing...' : 'Purchase'}
-            </button>
-          )}
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <a
-            href="https://www.scatter.art/collection/academic-angels"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.scatterLink}
-          >
-            View on Scatter
-          </a>
-        </div>
-      </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </section>
   );
 };

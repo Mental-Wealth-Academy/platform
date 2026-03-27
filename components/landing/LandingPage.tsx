@@ -30,6 +30,9 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
+      {/* Testimonial Section */}
+      <TestimonialSection />
+
       {/* Features Section - Server rendered */}
       <FeaturesSection />
 
@@ -38,9 +41,6 @@ const LandingPage = () => {
 
       {/* Academic Angels — Scatter mint stepper */}
       <AcademicAngels />
-
-      {/* Testimonial Section - Server rendered */}
-      <TestimonialSection />
 
       {/* Angelic Credit System — governance explainer */}
       <AngelicCreditSystem />
