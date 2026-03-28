@@ -2,60 +2,157 @@
   position: relative;
   width: 100%;
   margin: 0;
-  padding: 0 12px;
+  padding: 80px 24px;
   z-index: 2;
   box-sizing: border-box;
   background: #FBF8FF;
 }
 
+.sectionInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 /* ── Scroll Animations ── */
 .sectionHeading,
-.purchaseBtn {
+.sectionSubheading,
+.benefitCard,
+.ctaRow {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .sectionVisible .sectionHeading { opacity: 1; transform: translateY(0); transition-delay: 0s; }
-.sectionVisible .purchaseBtn { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+.sectionVisible .sectionSubheading { opacity: 1; transform: translateY(0); transition-delay: 0.06s; }
+.sectionVisible .benefitCard { opacity: 1; transform: translateY(0); }
+.sectionVisible .ctaRow { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
 
 .sectionHeading {
   text-align: center;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: #1a1d33;
   margin: 0;
-  padding: 36px 0;
+  letter-spacing: -0.02em;
+}
+
+.sectionSubheading {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.55);
+  margin: 12px auto 0;
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+/* ── Benefits Grid ── */
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.benefitCard {
+  position: relative;
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(26, 29, 51, 0.06);
+  border-radius: 16px;
+  padding: 40px 32px 36px;
+  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.benefitCard:hover {
+  border-color: rgba(81, 104, 255, 0.18);
+  box-shadow: 0 12px 40px rgba(81, 104, 255, 0.07);
+}
+
+.benefitNumber {
+  position: absolute;
+  top: -8px;
+  right: 16px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: rgba(81, 104, 255, 0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.benefitTitle {
+  position: relative;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1d33;
+  margin: 0 0 10px;
+}
+
+.benefitDescription {
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.55);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── CTA Row ── */
+.ctaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+.ctaPrice {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1d33;
+  letter-spacing: -0.02em;
+}
+
+.ctaPriceLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+  margin-right: 16px;
 }
 
 /* ── Purchase Button ── */
 .purchaseBtn {
-  display: block;
-  margin: 0 auto;
-  padding: 18px 48px;
+  padding: 16px 40px;
   background: #5168FF;
   color: #FFFFFF;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 3px solid #1A1D33;
+  border: 2px solid #5168FF;
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(26, 29, 51, 0.3);
+  transition: all 0.2s ease;
 }
 
 .purchaseBtn:hover {
   background: #3d51e0;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(26, 29, 51, 0.3);
+  border-color: #3d51e0;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
 }
 
 .purchaseBtn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 rgba(26, 29, 51, 0.3);
+  transform: scale(0.98);
 }
 
 /* ── Modal ── */
@@ -133,7 +230,6 @@
   flex-direction: column;
 }
 
-/* Price — top of modal body */
 .price {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 36px;
@@ -157,7 +253,6 @@
   margin: 16px 0;
 }
 
-/* Benefits */
 .benefitsList {
   list-style: none;
   margin: 0;
@@ -188,7 +283,6 @@
   background: #5168FF;
 }
 
-/* Confirm button */
 .mintBtn {
   width: 100%;
   padding: 15px;
@@ -219,7 +313,6 @@
   cursor: not-allowed;
 }
 
-/* Success */
 .successBlock {
   display: flex;
   flex-direction: column;
@@ -259,15 +352,40 @@
   text-align: center;
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .section {
-    padding: 0 16px;
+    padding: 56px 20px;
+  }
+
+  .sectionHeading {
+    font-size: 1.75rem;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .benefitCard {
+    padding: 24px 20px;
+  }
+
+  .ctaRow {
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 36px;
+  }
+
+  .ctaPriceLabel {
+    margin-right: 0;
+    margin-bottom: 12px;
   }
 
   .purchaseBtn {
-    padding: 16px 32px;
-    font-size: 15px;
+    width: 100%;
+    text-align: center;
   }
 
   .modal {

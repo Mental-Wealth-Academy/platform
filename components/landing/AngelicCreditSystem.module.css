@@ -110,7 +110,7 @@
   margin-bottom: 32px;
   min-height: 360px;
   display: flex;
-  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   align-items: flex-end;
 }
 
@@ -122,17 +122,13 @@
 .azuraBgImg {
   object-fit: cover;
   object-position: center top;
+  transform: scaleX(-1);
 }
 
 .azuraOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(10, 10, 20, 0.95) 0%,
-    rgba(10, 10, 20, 0.7) 40%,
-    rgba(10, 10, 20, 0.2) 100%
-  );
+  display: none;
 }
 
 .azuraContent {
@@ -173,7 +169,7 @@
 .azuraSupply {
   font-family: var(--font-button);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -182,14 +178,14 @@
   font-family: var(--font-secondary);
   font-size: 2rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #000000;
   margin: 0 0 8px;
   letter-spacing: -0.02em;
 }
 
 .azuraSub {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(0, 0, 0, 0.6);
   margin: 0 0 24px;
   max-width: 520px;
   line-height: 1.6;
@@ -199,8 +195,8 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border: none;
   border-radius: 12px;
   padding: 16px 0;
   margin-bottom: 16px;
@@ -218,13 +214,13 @@
   font-family: var(--font-secondary);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 .azuraStatLabel {
   font-family: var(--font-button);
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.45);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -232,7 +228,7 @@
 .azuraStatDivider {
   width: 1px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 /* ── Tier Sections (Elite + Common) ── */
@@ -474,20 +470,24 @@
 
 /* ── Video Card (inside Azura card) ── */
 .videoCard {
+  position: absolute;
+  top: 40px;
+  right: 40px;
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 10px 24px 10px 10px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.06);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
+  z-index: 2;
 }
 
 .videoCard:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.1);
   border-color: rgba(81, 104, 255, 0.4);
 }
 
@@ -520,7 +520,7 @@
   font-family: var(--font-secondary);
   font-size: 13px;
   font-weight: 500;
-  color: #FFFFFF;
+  color: #000000;
 }
 
 .videoTitle strong {
@@ -530,7 +530,7 @@
 .videoSub {
   font-family: var(--font-primary);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.5);
 }
 
 /* ── Video Modal ── */

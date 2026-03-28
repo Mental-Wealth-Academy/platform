@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import MobileOnboarding from '../mobile-onboarding/MobileOnboarding';
 import { useSound } from '@/hooks/useSound';
@@ -41,14 +40,6 @@ export const HeroSection: React.FC = () => {
 
         </div>
       </div>
-      <Image
-        src="https://i.imgur.com/cFzSBbq.png"
-        alt="Hero illustration"
-        width={400}
-        height={400}
-        className={styles.heroImage}
-        priority
-      />
 
       {showOnboarding && (
         <MobileOnboarding onComplete={handleOnboardingComplete} />

@@ -39,11 +39,11 @@ const LandingPage = () => {
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
 
-      {/* Academic Angels — Scatter mint stepper */}
-      <AcademicAngels />
-
       {/* Angelic Credit System — governance explainer */}
       <AngelicCreditSystem />
+
+      {/* Academic Angels — Membership benefits + mint */}
+      <AcademicAngels />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
