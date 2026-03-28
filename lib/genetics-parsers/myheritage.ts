@@ -106,4 +106,5 @@ export class ParserMyHeritage implements DNAParser {
   }
 }
 
-export default new ParserMyHeritage();
+const parserMyHeritage = new ParserMyHeritage();
+export default parserMyHeritage;

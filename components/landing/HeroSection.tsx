@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import MobileOnboarding from '../mobile-onboarding/MobileOnboarding';
 import { useSound } from '@/hooks/useSound';
@@ -23,7 +24,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <img src="/images/starform.png" alt="" className={styles.heroStarform} />
+          <Image src="/images/starform.png" alt="" width={200} height={200} className={styles.heroStarform} />
           <h1 className={styles.heroHeadline}>EVANGELIC <em>SPIRITUALITY</em></h1>
           <h2 className={styles.heroSubheadline}>A Micro-University in Cyberspace</h2>
           <p className={styles.heroSubtext}>

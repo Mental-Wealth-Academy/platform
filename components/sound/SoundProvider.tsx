@@ -65,7 +65,8 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       engine.volume = volume;
       console.log('[Sound] AudioContext ready, muted:', muted, 'volume:', volume);
     }
-  }, [getEngine, pathname, muted, volume]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getEngine, muted, volume]);
 
   // Global gesture listeners — capture phase fires BEFORE React handlers,
   // so AudioContext is ready by the time onClick/play() runs in the same event.

@@ -92,4 +92,5 @@ export class Parser23andMe implements DNAParser {
   }
 }
 
-export default new Parser23andMe();
+const parser23andMe = new Parser23andMe();
+export default parser23andMe;

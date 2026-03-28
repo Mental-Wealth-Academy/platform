@@ -107,7 +107,7 @@ export const SwarmsSection = () => {
             <div className={styles.swarmsFeatureBlock}>
               <div className={styles.swarmsFeatureHeader}>
                 <div className={styles.swarmsFeatureIcon}>
-                  <img src="/icons/atom-icon.svg" alt="Academic Foundation" width={35} height={35} />
+                  <Image src="/icons/atom-icon.svg" alt="Academic Foundation" width={35} height={35} />
                 </div>
                 <h3 className={styles.swarmsFeatureTitle}>Community Public Goods</h3>
               </div>
@@ -121,7 +121,7 @@ export const SwarmsSection = () => {
             <div className={styles.swarmsFeatureBlock}>
               <div className={styles.swarmsFeatureHeader}>
                 <div className={styles.swarmsFeatureIcon}>
-                  <img src="/icons/refreshment-icon.svg" alt="Intellectual Refreshment" width={35} height={35} />
+                  <Image src="/icons/refreshment-icon.svg" alt="Intellectual Refreshment" width={35} height={35} />
                 </div>
                 <h3 className={styles.swarmsFeatureTitle}>Intellectual Refreshment</h3>
               </div>
@@ -135,7 +135,7 @@ export const SwarmsSection = () => {
             <div className={styles.swarmsFeatureBlock}>
               <div className={styles.swarmsFeatureHeader}>
                 <div className={styles.swarmsFeatureIcon}>
-                  <img src="/icons/debate-icon.svg" alt="Oracle Network" width={35} height={35} />
+                  <Image src="/icons/debate-icon.svg" alt="Oracle Network" width={35} height={35} />
                 </div>
                 <h3 className={styles.swarmsFeatureTitle}>Gamified Social Network</h3>
               </div>

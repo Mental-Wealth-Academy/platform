@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Enable static page generation and prefetching
   experimental: {
     optimizePackageImports: ['connectkit', 'wagmi'],

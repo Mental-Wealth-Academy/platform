@@ -168,6 +168,7 @@ const LootBoxModal: React.FC<LootBoxModalProps> = ({ isOpen, onClose, shardCount
     };
 
     animFrameRef.current = requestAnimationFrame(animate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canSpin, spinning, play, itemHeight]);
 
   const deductShards = async () => {

@@ -124,4 +124,5 @@ export class ParserFTDNA implements DNAParser {
   }
 }
 
-export default new ParserFTDNA();
+const parserFTDNA = new ParserFTDNA();
+export default parserFTDNA;
