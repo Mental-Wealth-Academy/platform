@@ -40,20 +40,29 @@
 /* Title */
 .swarmsTitle {
   font-family: var(--font-secondary);
-  font-size: 2rem;
+  font-size: 1.618rem;
   line-height: 1.2;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.02em;
   color: var(--color-text-dark);
-  margin: 0 0 32px 0;
+  margin: 0 0 24px 0;
   max-width: 986px;
 }
 
 @media (min-width: 768px) {
   .swarmsTitle {
-    font-size: 3rem;
-    margin-bottom: 40px;
+    font-size: 2.25rem;
+    margin-bottom: 32px;
   }
+}
+
+/* Action Row */
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
 }
 
 /* Portfolio Button */
@@ -65,7 +74,7 @@
   background-color: #5168FF;
   border: 2px solid #62BE8F;
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -88,7 +97,7 @@
   display: flex;
   align-items: center;
   gap: 0;
-  margin-bottom: 48px;
+  margin-bottom: 0;
 }
 
 .walletAvatar {
@@ -156,8 +165,8 @@
 
 @media (min-width: 1024px) {
   .swarmsContentGrid {
-    grid-template-columns: minmax(0, 860px) 1fr;
-    gap: 60px;
+    grid-template-columns: minmax(0, 580px) 1fr;
+    gap: 48px;
   }
 }
 
@@ -175,14 +184,14 @@
 }
 
 .swarmsFeatureBlock {
-  padding: 24px 0;
+  padding: 16px 0;
 }
 
 .swarmsFeatureHeader {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .swarmsFeatureIcon {
@@ -221,15 +230,15 @@
   .swarmsDiamonds {
     display: block;
     position: relative;
-    min-height: 500px;
+    min-height: 400px;
   }
 }
 
 .diamondsImg {
   position: absolute;
-  top: -160px;
-  right: -300px;
-  width: 640px;
+  top: -80px;
+  right: 24px;
+  width: 440px;
   height: auto;
   object-fit: contain;
 }

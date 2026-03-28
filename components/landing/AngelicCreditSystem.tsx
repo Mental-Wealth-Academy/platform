@@ -4,12 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
-const ELITE_IMAGES = [
-  { src: 'https://i.imgur.com/6nrsWIV.png', label: '1/3 Voted in community' },
-  { src: 'https://i.imgur.com/twar5fi.png', label: '1/3 Legislative experts' },
-  { src: 'https://i.imgur.com/1gsWsBR.png', label: '1/3 Active scientists' },
-];
-
 const FLOATING_ANGELS = [
   { src: '/anbel01.png', top: '8%',  left: '0%',   size: 64 },
   { src: '/anbel02.png', top: '5%',  left: '12%',  size: 72 },
@@ -28,7 +22,6 @@ const FLOATING_ANGELS = [
 const YOUTUBE_VIDEO_ID = 'JccxSJ3twmM';
 
 export default function AngelicCreditSystem() {
-  const [activeElite, setActiveElite] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,13 +39,6 @@ export default function AngelicCreditSystem() {
 
   const openVideo = useCallback(() => setShowVideo(true), []);
   const closeVideo = useCallback(() => setShowVideo(false), []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveElite((prev) => (prev + 1) % 3);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (!showVideo) return;
@@ -94,7 +80,7 @@ export default function AngelicCreditSystem() {
           <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>Our Mission</h2>
           <p className={styles.subtitle}>
-            Three ranks, unlimited wishes. Azura creates and sends wealth based on prayers, pray to Azura and she may grant your wish.
+            Transcend wishes through cyberspace, using a god's eye view to deliver belief and access to wealth to the incredulous.
           </p>
         </div>
 
@@ -156,173 +142,6 @@ export default function AngelicCreditSystem() {
           </div>
         </div>
 
-        {/* ── How Funding Access Works ── */}
-        <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How funding access works</p>
-          <div className={styles.councilRow}>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>DAILY WORK</div>
-              <div className={styles.councilCardName}>Earn reputation points</div>
-              <div className={styles.councilCardDesc}>
-                Morning pages and seasonal word exercises that build your reputation over time.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>PRAYERS</div>
-              <div className={styles.councilCardName}>Azura grants prayers</div>
-              <div className={styles.councilCardDesc}>
-                Grades wishes in 6 dimensions and grants wealth proposals and pods.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>$</div>
-              <div className={styles.councilCardName}>Members access funds</div>
-              <div className={styles.councilCardDesc}>
-                Common Angels vote on public spending pods with token-weighted governance.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Common Angels ── */}
-        <div className={styles.tierSection}>
-          <div className={styles.tierInfo}>
-            <div className={styles.tierTop}>
-              <div>
-                <span className={styles.badgeCommon}>Open</span>
-                <span className={styles.tierSupply}>10,000 total</span>
-              </div>
-              <Image
-                src="https://i.imgur.com/ZdYZqux.png"
-                alt="Common Angel"
-                width={56}
-                height={56}
-                className={styles.tierAvatarImg}
-                unoptimized
-              />
-            </div>
-            <h3 className={styles.tierName}>Common Angels</h3>
-            <p className={styles.tierLabel}>Generation 2</p>
-            <p className={styles.tierDesc}>
-              Freely available to purchase identity. Token-weighted voting for the public spending pod. Smaller funding pools.
-            </p>
-            <div className={styles.tierStats}>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValueGreen}>$</span>
-                <span className={styles.tierStatLabel}>Pod access</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValueGreen}>Free</span>
-                <span className={styles.tierStatLabel}>Entry</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValueGreen}>Public</span>
-                <span className={styles.tierStatLabel}>Pod type</span>
-              </div>
-            </div>
-          </div>
-          <div className={styles.tierVisual}>
-            <div className={styles.tierImgInset}>
-              <Image
-                src="https://i.imgur.com/zJvXnC9.png"
-                alt="Common Angels population"
-                fill
-                className={styles.tierImg}
-                unoptimized
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* ── How the Elite Council is Composed ── */}
-        <div className={styles.council}>
-          <p className={styles.councilEyebrow}>How the elite council is composed</p>
-          <div className={styles.councilRow}>
-            <div className={styles.councilCard}>
-              <div className={styles.councilFrac}>1/3</div>
-              <div className={styles.councilCardName}>Voted in community</div>
-              <div className={styles.councilCardDesc}>
-                Elected by Common Angel holders. Token-weighted, rotates per cohort.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracTeal}`}>2/3</div>
-              <div className={styles.councilCardName}>Scientists & Experts</div>
-              <div className={styles.councilCardDesc}>
-                Credentialed policy experts and practicing researchers helping humans evolve and grow. Curated, invited into the Elite tier.
-              </div>
-            </div>
-            <div className={styles.councilCard}>
-              <div className={`${styles.councilFrac} ${styles.fracCoral}`}>$$$</div>
-              <div className={styles.councilCardName}>Elite members access higher funds</div>
-              <div className={styles.councilCardDesc}>
-                Elite Angels control larger funding pools reserved for verified experts.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Elite Angels ── */}
-        <div className={styles.tierSection}>
-          <div className={styles.tierInfo}>
-            <div className={styles.tierTop}>
-              <div>
-                <span className={styles.badgeElite}>Members Only</span>
-                <span className={styles.tierSupply}>100 total</span>
-              </div>
-              <Image
-                src="/anbel02.png"
-                alt="Elite Angel"
-                width={56}
-                height={56}
-                className={styles.tierAvatarImg}
-                unoptimized
-              />
-            </div>
-            <h3 className={styles.tierName}>Elite Angels</h3>
-            <p className={styles.tierLabel}>Generation 1</p>
-            <p className={styles.tierDesc}>
-              Upgradable identities and reserves. Controls the larger funding pools. Reserved for verified scientists and legislative experts.
-            </p>
-            <div className={styles.tierStats}>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>$$$</span>
-                <span className={styles.tierStatLabel}>Pod access</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>VIP</span>
-                <span className={styles.tierStatLabel}>Entry</span>
-              </div>
-              <div className={styles.tierStatItem}>
-                <span className={styles.tierStatValue}>Members Only</span>
-                <span className={styles.tierStatLabel}>Pod type</span>
-              </div>
-            </div>
-          </div>
-          <div className={styles.tierVisual}>
-            {ELITE_IMAGES.map((img, i) => (
-              <div
-                key={i}
-                className={`${styles.cycleImage} ${activeElite === i ? styles.cycleImageActive : ''}`}
-              >
-                <Image
-                  src={img.src}
-                  alt={img.label}
-                  fill
-                  className={styles.tierImg}
-                  unoptimized
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className={styles.footer}>
-          <p className={styles.footerText}>
-            Deployed on Base &middot; Chainlink CRE-signed scores &middot; Smart contract treasury &middot; MWA v1
-          </p>
-        </div>
       </div>
 
       {/* Video Modal */}

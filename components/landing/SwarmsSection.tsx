@@ -62,7 +62,8 @@ export const SwarmsSection = () => {
           Wealth, Community, & Purpose
         </h2>
 
-        {/* Portfolio Button */}
+        {/* Portfolio + Wallet Row */}
+        <div className={styles.actionRow}>
         <button
           className={styles.portfolioButton}
           onClick={() => setPortfolioOpen(true)}
@@ -72,7 +73,6 @@ export const SwarmsSection = () => {
           <PieChartIcon />
         </button>
 
-        {/* Wallet Address */}
         <div className={styles.walletGroup}>
           <div className={styles.walletAvatar}>
             <Image
@@ -95,6 +95,7 @@ export const SwarmsSection = () => {
               </button>
             </div>
           </div>
+        </div>
         </div>
 
         {/* Content Grid  */}

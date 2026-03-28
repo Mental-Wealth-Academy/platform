@@ -42,14 +42,14 @@ const LandingPage = () => {
       {/* Angelic Credit System — governance explainer */}
       <AngelicCreditSystem />
 
-      {/* Academic Angels — Membership benefits + mint */}
-      <AcademicAngels />
+      {/* Swarms Section - Server rendered */}
+      <SwarmsSection />
 
       {/* Pattern Background Section - Contains client component for animation */}
       <PatternTextSection />
 
-      {/* Swarms Section - Server rendered */}
-      <SwarmsSection />
+      {/* Academic Angels — Membership benefits + mint */}
+      <AcademicAngels />
 
       {/* FAQ Section - Client component for accordion */}
       <FAQSection />
