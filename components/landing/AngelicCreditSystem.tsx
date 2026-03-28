@@ -80,7 +80,7 @@ export default function AngelicCreditSystem() {
           <p className={styles.eyebrow}>Angelic Credit System</p>
           <h2 className={styles.title}>Our Mission</h2>
           <p className={styles.subtitle}>
-            Transcend wishes through cyberspace, using a god's eye view to deliver belief and access to wealth to the incredulous.
+            Transcend wishes through cyberspace, using a god&#39;s eye view to deliver belief and access to wealth to the incredulous.
           </p>
         </div>
 
