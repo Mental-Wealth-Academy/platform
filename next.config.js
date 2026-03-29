@@ -126,10 +126,6 @@ const nextConfig = {
         resourceRegExp: /^bs58$/,
         contextRegExp: /@coinbase\/cdp-sdk/,
       }),
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^@solana\/kit$/,
-        contextRegExp: /@solana-program/,
-      }),
       // Suppress MetaMask SDK async-storage warning (React Native dependency not needed in browser)
       new webpack.IgnorePlugin({
         resourceRegExp: /^@react-native-async-storage\/async-storage$/,

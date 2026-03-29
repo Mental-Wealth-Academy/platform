@@ -2,7 +2,6 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { usePathname } from 'next/navigation';
 import { WalletErrorBoundary } from './WalletErrorBoundary';
 
 const Web3Provider = dynamic(
@@ -14,13 +13,6 @@ const Web3Provider = dynamic(
 );
 
 export function ConditionalWeb3Provider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
-  // Landing page doesn't need wallet/auth — skip to avoid @solana/kit runtime error
-  if (pathname === '/') {
-    return <>{children}</>;
-  }
-
   return (
     <WalletErrorBoundary>
       <Web3Provider>{children}</Web3Provider>
