@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
+
 import MintModal from '@/components/mint-modal/MintModal';
 import WorkshopModal from '@/components/workshop-modal/WorkshopModal';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
@@ -80,7 +80,6 @@ export default function HomePage() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [showWorkshop, setShowWorkshop] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
@@ -195,7 +194,7 @@ export default function HomePage() {
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
     <DailyReadPopup activeWeek={activeWeek} />
     <div className={styles.pageLayout}>
-      <SideNavigation externalMobileOpen={mobileMenuOpen} onExternalMobileClose={() => setMobileMenuOpen(false)} />
+      <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
 
         {/* ===== TOP ACADEMICS LEADERBOARD ===== */}
@@ -395,7 +394,7 @@ export default function HomePage() {
       />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
       <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
-      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} />
+
     </div>
     </HomeWelcomeFlow>
   );

@@ -6,17 +6,20 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './MobileBottomNav.module.css';
 
-interface MobileBottomNavProps {
-  onMenuOpen: () => void;
-}
-
-export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onMenuOpen }) => {
+export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
+
+  // Hide on landing page
+  if (pathname === '/') return null;
+
+  const handleMenuOpen = () => {
+    window.dispatchEvent(new Event('toggleSidebar'));
+  };
 
   return (
     <nav className={styles.nav}>
       {/* Menu */}
-      <button type="button" className={styles.tab} onClick={onMenuOpen} aria-label="Menu">
+      <button type="button" className={styles.tab} onClick={handleMenuOpen} aria-label="Menu">
         <svg className={styles.icon} width="22" height="22" viewBox="0 0 22 22" fill="none">
           <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
         </svg>

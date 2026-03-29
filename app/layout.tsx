@@ -35,6 +35,7 @@ import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provid
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
 import TopNavigation from '@/components/top-navigation/TopNavigation';
+import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -171,6 +172,7 @@ export default function RootLayout({
             <ConditionalWeb3Provider>
               <TopNavigation />
               {children}
+              <MobileBottomNav />
             </ConditionalWeb3Provider>
           </SoundProvider>
         </MiniAppProvider>
