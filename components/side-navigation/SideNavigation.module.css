@@ -1343,3 +1343,50 @@
     font-size: 14px;
   }
 }
+
+/* ── Slide text hover animation ── */
+.slideTextWrap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.2em;
+  vertical-align: middle;
+}
+
+.slideText {
+  display: block;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.slideTextClone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+}
+
+.shardsCounter:hover .slideText {
+  transform: translateY(-100%);
+}
+
+.shardsCounter:hover .slideTextClone {
+  transform: translateY(0);
+}
+
+.accountButton:hover .slideText {
+  transform: translateY(-100%);
+}
+
+.accountButton:hover .slideTextClone {
+  transform: translateY(0);
+}
+
+.connectWalletButton:hover .slideText {
+  transform: translateY(-100%);
+}
+
+.connectWalletButton:hover .slideTextClone {
+  transform: translateY(0);
+}

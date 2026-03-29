@@ -578,7 +578,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 <>
                   <span className={styles.shardsLabel}>Inventory:</span>
                   <span className={styles.shardsValue}>
-                    {shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}
+                    <span className={styles.slideTextWrap}>
+                      <span className={styles.slideText}>{shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}</span>
+                      <span className={`${styles.slideText} ${styles.slideTextClone}`}>{shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}</span>
+                    </span>
                   </span>
                 </>
               )}
@@ -614,25 +617,27 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 )}
                 {!isCollapsed && (
                   <span className={styles.accountUsername}>
-                    {username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}
+                    <span className={styles.slideTextWrap}>
+                      <span className={styles.slideText}>{username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}</span>
+                      <span className={`${styles.slideText} ${styles.slideTextClone}`}>{username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}</span>
+                    </span>
                   </span>
                 )}
               </button>
 
               {isAccountMenuOpen && (
                 <div className={styles.accountMenu} style={accountMenuStyle}>
-                  <Link
-                    href="/voting"
+                  <button
                     className={styles.accountMenuItem}
                     onClick={() => {
-                      play('navigation');
+                      play('click');
                       setIsAccountMenuOpen(false);
-                      setIsMobileMenuOpen(false);
+                      setIsInventoryOpen(true);
                     }}
                     onMouseEnter={() => play('hover')}
                   >
                     <span className={styles.accountMenuLabel}>PROFILE</span>
-                  </Link>
+                  </button>
                   <button
                     className={styles.accountMenuItem}
                     onClick={() => {
@@ -686,7 +691,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 <Image src="/icons/plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
               ) : (
                 <>
-                  <span>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
+                  <span className={styles.slideTextWrap}>
+                    <span className={styles.slideText}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
+                    <span className={`${styles.slideText} ${styles.slideTextClone}`}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
+                  </span>
                   <Image src="/icons/plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
                 </>
               )}
