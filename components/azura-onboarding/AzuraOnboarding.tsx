@@ -179,7 +179,7 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
   return (
     <div className={styles.card}>
       <Image
-        src="/images/starform.png"
+        src="https://i.imgur.com/VhmwZEG.png"
         alt=""
         width={180}
         height={180}
