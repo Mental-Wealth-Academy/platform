@@ -721,6 +721,65 @@
   color: var(--color-primary, #5168FF);
 }
 
+/* ── CTA Row ────────────────────────────────────── */
+.ctaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 48px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition-delay: 0.16s;
+}
+
+.sectionVisible .ctaRow {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ctaPrice {
+  font-family: var(--font-secondary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1d33;
+  letter-spacing: -0.02em;
+}
+
+.ctaPriceLabel {
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.4);
+  margin-right: 16px;
+}
+
+.purchaseBtn {
+  padding: 16px 40px;
+  background: #5168FF;
+  color: #FFFFFF;
+  font-family: var(--font-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #5168FF;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.purchaseBtn:hover {
+  background: #3d51e0;
+  border-color: #3d51e0;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+}
+
+.purchaseBtn:active {
+  transform: scale(0.98);
+}
+
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 768px) {
   .featuresSection {
@@ -765,5 +824,20 @@
   .rewardsBar {
     font-size: 10px;
     gap: 6px;
+  }
+
+  .ctaRow {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ctaPriceLabel {
+    margin-right: 0;
+  }
+
+  .purchaseBtn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px 32px;
   }
 }
