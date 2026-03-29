@@ -220,8 +220,8 @@
   box-shadow: 0 6px 16px rgba(81, 104, 255, 0.4);
 }
 
-/* Mobile — hidden, bottom nav replaces it */
-@media (max-width: 768px) {
+/* Tablet & mobile — hidden, bottom nav replaces it */
+@media (max-width: 1024px) {
   .header {
     display: none;
   }
