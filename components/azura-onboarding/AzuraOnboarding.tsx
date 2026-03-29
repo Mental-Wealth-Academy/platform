@@ -33,22 +33,22 @@ const STEPS: Record<string, DialogueStep> = {
   },
   card: {
     type: 'message',
-    text: "ahh, the ang3ls are handing out business cards again. they only give th0se to people they believe in. you must've made an impression.",
+    text: "the ang3ls gave you a card? they only hand th0se to people they believe in.",
     emotion: 'happy',
   },
   friend: {
     type: 'message',
-    text: "a mess3nger brought you here... that's how the best ones arrive. word of m0uth is the oldest signal -- someone saw something in y0u.",
+    text: "a mess3nger brought you here... someone saw s0mething in you.",
     emotion: 'happy',
   },
   manifested: {
     type: 'message',
-    text: "you manif3sted a pathway... incredible. that takes a l0t of potential. the universe doesn't open d00rs for everyone -- only those ready to walk thr0ugh.",
+    text: "you manif3sted a pathway... the universe only opens d00rs for those ready to walk through.",
     emotion: 'happy',
   },
   final: {
     type: 'message',
-    text: "DeSci to0ls, daily rituals, a Better You. do the m0rning work -- everything else follows.",
+    text: "DeSci to0ls, daily rituals, a Better You. Do the daily w0rk, the new you follows.",
     emotion: 'happy',
   },
 };
@@ -203,7 +203,7 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
             />
           </div>
           <span className={styles.avatarName}>Blue</span>
-          <span className={styles.avatarRole}>Principle</span>
+          <span className={styles.avatarRole}>AI Co-Pilot</span>
         </div>
 
         <div className={styles.speechBubble}>
