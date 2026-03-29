@@ -15,6 +15,7 @@ import InventoryModal from '../inventory-modal/InventoryModal';
 import YourAccountsModal from '../nav-buttons/YourAccountsModal';
 import OnboardingModal from '../onboarding/OnboardingModal';
 import LootBoxModal from '../loot-box/LootBoxModal';
+import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import { useSound } from '@/hooks/useSound';
 
 interface NavItem {
@@ -72,7 +73,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login, logout: privyLogout } = usePrivy();
+  const { login, logout: privyLogout, getAccessToken } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -159,10 +160,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         return;
       }
 
-      // No session yet - create account with wallet address
+      // No session yet - create account with Privy auth
+      const authHeaders = await getPrivyAuthHeaders(getAccessToken);
       const signupResponse = await fetch('/api/auth/wallet-signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         credentials: 'include',
         body: JSON.stringify({ walletAddress }),
       });

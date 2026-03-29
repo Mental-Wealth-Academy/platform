@@ -22,31 +22,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // Get wallet address from Privy token or legacy signature
-    let walletAddress = await getWalletAddressFromRequest();
-
-    // Fallback: accept body with wallet address + signature proof (legacy)
-    if (!walletAddress) {
-      try {
-        const body = await request.json();
-        if (body?.walletAddress && body?.signature && body?.timestamp) {
-          const { verifyWalletSignature } = await import('@/lib/wallet-auth');
-          const address = body.walletAddress;
-          const timestamp = String(body.timestamp);
-          const now = Date.now();
-          const fiveMinutes = 5 * 60 * 1000;
-          const timestampNum = parseInt(timestamp, 10);
-
-          if (!isNaN(timestampNum) && Math.abs(now - timestampNum) <= fiveMinutes) {
-            const message = `Sign in to Mental Wealth Academy\n\nWallet: ${address}\nTimestamp: ${timestamp}`;
-            const isValid = await verifyWalletSignature(message, body.signature, address);
-            if (isValid) walletAddress = address.toLowerCase();
-          }
-        }
-      } catch {
-        // Body might be empty or not JSON
-      }
-    }
+    // Get wallet address from Privy token (Authorization header)
+    const walletAddress = await getWalletAddressFromRequest();
 
     if (!walletAddress) {
       return NextResponse.json(

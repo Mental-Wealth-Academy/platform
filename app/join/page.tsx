@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { sdk } from '@farcaster/miniapp-sdk';
+import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import AzuraOnboarding from '@/components/azura-onboarding/AzuraOnboarding';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './page.module.css';
@@ -14,7 +15,7 @@ type JoinState = 'checking' | 'intro' | 'sign-in' | 'connecting' | 'needs-onboar
 export default function JoinPage() {
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login } = usePrivy();
+  const { login, getAccessToken } = usePrivy();
 
   const [state, setState] = useState<JoinState>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -97,9 +98,10 @@ export default function JoinPage() {
             setState('needs-onboarding');
           }
         } else {
+          const authHeaders = await getPrivyAuthHeaders(getAccessToken);
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...authHeaders },
             credentials: 'include',
             body: JSON.stringify({ walletAddress: address }),
           });
@@ -107,15 +109,13 @@ export default function JoinPage() {
           if (signupRes.ok) {
             setState('needs-onboarding');
           } else {
-            console.error('Wallet signup failed');
-            setState('sign-in');
-            processedRef.current = null;
+            console.error('Wallet signup failed:', signupRes.status);
+            setState('intro');
           }
         }
       } catch (err) {
         console.error('Auth flow error:', err);
-        setState('sign-in');
-        processedRef.current = null;
+        setState('intro');
       } finally {
         setIsProcessing(false);
       }
