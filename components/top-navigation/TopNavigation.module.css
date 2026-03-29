@@ -220,11 +220,10 @@
   box-shadow: 0 6px 16px rgba(81, 104, 255, 0.4);
 }
 
-/* Mobile */
+/* Mobile — hidden, bottom nav replaces it */
 @media (max-width: 768px) {
   .header {
-    height: 56px;
-    padding: 0 14px;
+    display: none;
   }
 
   .menuButton {
