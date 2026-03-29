@@ -256,11 +256,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div>
               <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                All Daily Prayers Are Private For You.
+                All entries are encrypted.
               </span>
             </div>
           </div>
@@ -269,7 +265,6 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
               +100
             </span>
-            <span className={styles.counter}>{totalCompleted}/84</span>
             <div className={styles.dayDots}>
               {Array.from({ length: 7 }, (_, i) => {
                 const done = morningPages.find(e => e.day === i + 1);

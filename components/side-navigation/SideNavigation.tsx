@@ -122,9 +122,20 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     document.documentElement.style.setProperty('--sidebar-width', next ? '72px' : '265px');
   };
 
-  // Listen for toggle from TopNavigation menu button
+  // Listen for toggle from TopNavigation / MobileBottomNav menu button
   useEffect(() => {
-    const handler = () => toggleCollapsed();
+    const handler = () => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        setIsMobileMenuOpenInternal(prev => {
+          const next = !prev;
+          if (!next && onExternalMobileClose) onExternalMobileClose();
+          return next;
+        });
+      } else {
+        toggleCollapsed();
+      }
+    };
     window.addEventListener('toggleSidebar', handler);
     return () => window.removeEventListener('toggleSidebar', handler);
   });
