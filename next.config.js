@@ -119,19 +119,6 @@ const nextConfig = {
       tls: false
     };
 
-    // Replace Solana packages with lightweight stubs (EVM-only project)
-    // Privy statically imports these but we never use Solana features
-    if (!isServer) {
-      const path = require('path');
-      const stubDir = path.resolve(__dirname, 'lib/stubs');
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@solana/kit': path.join(stubDir, 'solana-kit.mjs'),
-        '@solana-program/system': path.join(stubDir, 'solana-program-system.mjs'),
-        '@solana-program/token': path.join(stubDir, 'solana-program-token.mjs'),
-        '@solana-program/memo': path.join(stubDir, 'solana-program-memo.mjs'),
-      };
-    }
 
     // Ignore optional Solana/Coinbase dependencies that aren't needed for Ethereum-only
     config.plugins.push(
