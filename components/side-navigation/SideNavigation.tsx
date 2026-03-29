@@ -72,7 +72,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login, logout: privyLogout } = usePrivy();
+  const { login, logout: privyLogout, authenticated } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -188,16 +188,16 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     }
   };
 
-  // Auto-create session when wallet connects
+  // Auto-create session when wallet connects (only if Privy says authenticated)
   useEffect(() => {
-    if (!isConnected || !address) return;
+    if (!authenticated || !isConnected || !address) return;
     if (username && !username.startsWith('user_')) return; // Already fully logged in
     if (sessionCreatedForRef.current === address) return;
 
     const timer = setTimeout(() => createSessionForWallet(address), 500);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, username]);
+  }, [authenticated, isConnected, address, username]);
 
   // Reset session tracking when wallet disconnects
   useEffect(() => {
@@ -329,13 +329,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const handleSignOut = async () => {
     setIsAccountMenuOpen(false);
 
-    try {
-      await privyLogout();
-      await fetch('/api/auth/logout', { method: 'POST' });
-    } catch (err) {
-      console.error('Failed to logout:', err);
-    }
+    // Clear server session + Privy cookies first (always runs)
+    try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (err) { console.error('Server logout failed:', err); }
+    // Then disconnect Privy client state
+    try { await privyLogout(); } catch (err) { console.error('Privy logout failed:', err); }
 
+    sessionCreatedForRef.current = null;
     setShardCount(null);
     setUsername(null);
     setAvatarUrl(null);

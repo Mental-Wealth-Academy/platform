@@ -34,5 +34,18 @@ export async function POST() {
     path: '/',
     maxAge: 0,
   });
+  // Clear Privy cookies so server-side auth doesn't persist after logout
+  response.cookies.set({
+    name: 'privy-token',
+    value: '',
+    path: '/',
+    maxAge: 0,
+  });
+  response.cookies.set({
+    name: 'privy-refresh-token',
+    value: '',
+    path: '/',
+    maxAge: 0,
+  });
   return response;
 }
