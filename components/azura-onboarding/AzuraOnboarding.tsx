@@ -23,7 +23,7 @@ const STEPS: Record<string, DialogueStep> = {
   },
   howDidYouGetHere: {
     type: 'choice',
-    text: "oh!! i'm Azura -- your AI c0-pil0t. Welcome to Mental Wealth Academy, a micro-university in cyberspace. remind me... how did you get here?",
+    text: "Welcome to your gateway to a new, refreshing y0u. how did you find us?",
     emotion: 'happy',
     choices: [
       { label: 'I got a card', nextKey: 'card' },
@@ -48,7 +48,7 @@ const STEPS: Record<string, DialogueStep> = {
   },
   final: {
     type: 'message',
-    text: "MWA offers a pleth0ra of DeSci Tools, Mental Health Patterns, & more. do your daily pray3rs to yourself and gain p0ints and reputation -- then y0u'll rise in ranking.",
+    text: "DeSci to0ls, daily rituals, a Better You. do the m0rning work -- everything else follows.",
     emotion: 'happy',
   },
 };
@@ -202,8 +202,8 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
               unoptimized
             />
           </div>
-          <span className={styles.avatarName}>Azura</span>
-          <span className={styles.avatarRole}>AI Co-pilot</span>
+          <span className={styles.avatarName}>Blue</span>
+          <span className={styles.avatarRole}>Principle</span>
         </div>
 
         <div className={styles.speechBubble}>
