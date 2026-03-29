@@ -47,19 +47,19 @@ const WEEKLY_READINGS = [
 ];
 
 const WEEK_TITLES = [
-  'Introduction: Reading',
-  'Recovering a Sense of Safety',
-  'Recovering a Sense of Identity',
-  'Recovering a Sense of Power',
-  'Recovering a Sense of Integrity',
-  'Recovering a Sense of Possibility',
-  'Recovering a Sense of Abundance',
-  'Recovering a Sense of Connection',
-  'Recovering a Sense of Strength',
-  'Recovering a Sense of Compassion',
-  'Recovering a Sense of Self-Protection',
-  'Recovering a Sense of Autonomy',
-  'Recovering a Sense of Faith',
+  'Introduction',
+  'Safety',
+  'Identity',
+  'Power',
+  'Integrity',
+  'Possibility',
+  'Abundance',
+  'Connection',
+  'Strength',
+  'Compassion',
+  'Protection',
+  'Autonomy',
+  'Faith',
   'Epilogue',
 ];
 
