@@ -105,6 +105,7 @@
 /* ── Azura God Card ── */
 .azuraCard {
   position: relative;
+  z-index: 3;
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 32px;
