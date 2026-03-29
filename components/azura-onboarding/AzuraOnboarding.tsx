@@ -10,17 +10,11 @@ type DialogueStep =
   | { type: 'message'; text: string; emotion: AzuraEmotion }
   | { type: 'choice'; text: string; emotion: AzuraEmotion; choices: { label: string; nextKey: string }[] };
 
-// Step 0: intro glitch greeting
-// Step 1: "how did you get here?" with 3 choices
-// Step 2a/2b/2c: follow-up based on choice
-// Step 3: final message about DeSci tools & prayers
+// Step 0: "how did you get here?" with 3 choices
+// Step 1a/1b/1c: follow-up based on choice
+// Step 2: final message about DeSci tools & daily work
 
 const STEPS: Record<string, DialogueStep> = {
-  intro: {
-    type: 'message',
-    text: "h3y... can y0u hear me? is th1s thing on??",
-    emotion: 'confused',
-  },
   howDidYouGetHere: {
     type: 'choice',
     text: "Welcome to your gateway to a new, refreshing y0u. how did you find us?",
@@ -53,8 +47,8 @@ const STEPS: Record<string, DialogueStep> = {
   },
 };
 
-const STEP_ORDER = ['intro', 'howDidYouGetHere', '__choice__', 'final'];
-const TOTAL_DOTS = 4;
+const STEP_ORDER = ['howDidYouGetHere', '__choice__', 'final'];
+const TOTAL_DOTS = 3;
 
 interface AzuraOnboardingProps {
   onComplete: () => void;
@@ -68,7 +62,7 @@ const emotionImages: Record<AzuraEmotion, string> = {
 };
 
 export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
-  const [stepKey, setStepKey] = useState('intro');
+  const [stepKey, setStepKey] = useState('howDidYouGetHere');
   const [stepIndex, setStepIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -171,8 +165,8 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
 
   const handleChoice = (nextKey: string) => {
     setShowChoices(false);
-    // The choice response is step index 2 (the __choice__ slot)
-    setStepIndex(2);
+    // The choice response is step index 1 (the __choice__ slot)
+    setStepIndex(1);
     setStepKey(nextKey);
   };
 
