@@ -10,34 +10,68 @@ import AzuraOnboarding from '@/components/azura-onboarding/AzuraOnboarding';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './page.module.css';
 
-type JoinState = 'checking' | 'intro' | 'sign-in' | 'connecting' | 'needs-onboarding' | 'done';
+type JoinState = 'loading' | 'intro' | 'sign-in' | 'needs-onboarding' | 'done';
 
 export default function JoinPage() {
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login, getAccessToken } = usePrivy();
+  const { login, getAccessToken, ready, authenticated } = usePrivy();
 
-  const [state, setState] = useState<JoinState>('checking');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const processedRef = useRef<string | null>(null);
+  const [state, setState] = useState<JoinState>('loading');
+  const signupAttempted = useRef(false);
   const farcasterAttempted = useRef(false);
 
-  // On mount: check if already authenticated
+  // Ensure session exists for an authenticated wallet, then route accordingly
+  const ensureSessionAndRoute = useCallback(async (walletAddress: string) => {
+    try {
+      const authHeaders = await getPrivyAuthHeaders(getAccessToken);
+      const signupRes = await fetch('/api/auth/wallet-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
+        credentials: 'include',
+        body: JSON.stringify({ walletAddress }),
+      });
+
+      if (!signupRes.ok) {
+        console.error('Wallet signup failed:', signupRes.status);
+        return false;
+      }
+
+      // Session created — check onboarding status
+      const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+      const meData = await meRes.json().catch(() => ({ user: null }));
+
+      if (meData?.user?.onboardingComplete) {
+        router.replace('/home');
+      } else {
+        setState('needs-onboarding');
+      }
+      return true;
+    } catch (err) {
+      console.error('Session creation error:', err);
+      return false;
+    }
+  }, [getAccessToken, router]);
+
+  // Primary auth check — runs once Privy is ready
   useEffect(() => {
+    if (!ready) return;
+
     (async () => {
       try {
+        // 1. Check for an existing server session
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
           if (data.user.onboardingComplete) {
             router.replace('/home');
-            return;
+          } else {
+            setState('needs-onboarding');
           }
-          setState('needs-onboarding');
           return;
         }
 
-        // Check for Farcaster mini-app auto-sign-in
+        // 2. Farcaster mini-app auto-sign-in
         const inMiniApp = await sdk.isInMiniApp();
         if (inMiniApp && !farcasterAttempted.current) {
           farcasterAttempted.current = true;
@@ -59,68 +93,40 @@ export default function JoinPage() {
               window.dispatchEvent(new Event('profileUpdated'));
               if (signInData.existing) {
                 router.replace('/home');
-                return;
+              } else {
+                setState('needs-onboarding');
               }
-              setState('needs-onboarding');
               return;
             }
           }
         }
 
-        // Show Azura intro for new users
+        // 3. Already Privy-authenticated with a wallet — create session directly (skip intro)
+        if (authenticated && address) {
+          signupAttempted.current = true;
+          const ok = await ensureSessionAndRoute(address);
+          if (ok) return;
+          // If signup failed, fall through to intro
+        }
+
+        // 4. Not authenticated — show intro for new users
         setState('intro');
       } catch (err) {
         console.error('[JoinPage] Auth check error:', err);
         setState('intro');
       }
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When wallet connects after Privy login, create account
+  // Handle wallet becoming available after Privy login (user went through intro → sign-in)
   useEffect(() => {
-    if (!isConnected || !address || state === 'done' || state === 'checking' || state === 'intro') return;
-    if (processedRef.current === address || isProcessing) return;
-    if (!/^0x[a-fA-F0-9]{40}$/.test(address)) return;
+    if (!isConnected || !address) return;
+    if (state !== 'sign-in') return;
+    if (signupAttempted.current) return;
+    signupAttempted.current = true;
 
-    (async () => {
-      if (processedRef.current === address || isProcessing) return;
-      processedRef.current = address;
-      setIsProcessing(true);
-
-      try {
-        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
-        const meData = await meRes.json().catch(() => ({ user: null }));
-
-        if (meData?.user) {
-          if (meData.user.onboardingComplete) {
-            router.replace('/home');
-          } else {
-            setState('needs-onboarding');
-          }
-        } else {
-          const authHeaders = await getPrivyAuthHeaders(getAccessToken);
-          const signupRes = await fetch('/api/auth/wallet-signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeaders },
-            credentials: 'include',
-            body: JSON.stringify({ walletAddress: address }),
-          });
-
-          if (signupRes.ok) {
-            setState('needs-onboarding');
-          } else {
-            console.error('Wallet signup failed:', signupRes.status);
-            setState('intro');
-          }
-        }
-      } catch (err) {
-        console.error('Auth flow error:', err);
-        setState('intro');
-      } finally {
-        setIsProcessing(false);
-      }
-    })();
-  }, [isConnected, address, state, isProcessing, router]);
+    ensureSessionAndRoute(address);
+  }, [isConnected, address, state, ensureSessionAndRoute]);
 
   const handleIntroComplete = useCallback(() => {
     setState('sign-in');
@@ -133,12 +139,10 @@ export default function JoinPage() {
     router.replace('/home');
   }, [router]);
 
-  // Checking — blank
-  if (state === 'checking' || state === 'done') {
+  if (state === 'loading' || state === 'done') {
     return <div className={styles.page} />;
   }
 
-  // Azura intro dialogue
   if (state === 'intro') {
     return (
       <div className={styles.page}>
@@ -147,7 +151,6 @@ export default function JoinPage() {
     );
   }
 
-  // Onboarding modal (avatar + username)
   if (state === 'needs-onboarding') {
     return (
       <div className={styles.page}>
@@ -162,7 +165,7 @@ export default function JoinPage() {
     );
   }
 
-  // sign-in / connecting — Privy modal is open, show waiting state
+  // sign-in state — Privy modal is open, waiting for wallet
   return (
     <div className={styles.page}>
       <div className={styles.waitingCard}>

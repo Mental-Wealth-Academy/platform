@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import { sdk } from '@farcaster/miniapp-sdk';
+import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 interface HomeWelcomeFlowProps {
@@ -14,20 +16,23 @@ interface HomeWelcomeFlowProps {
 /**
  * Wraps the home page content.
  * - Mini-app: auto-signs in via Farcaster SDK context, shows onboarding for new users.
- * - Browser: redirects unauthenticated users to /join.
+ * - Browser with Privy session: auto-creates server session if missing.
+ * - Browser without any auth: redirects to /join.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const router = useRouter();
   const { address, isConnected } = useAccount();
+  const { ready, authenticated, getAccessToken } = usePrivy();
 
   const [authState, setAuthState] = useState<'checking' | 'needs-onboarding' | 'ready'>('checking');
   const farcasterAttempted = useRef(false);
 
-  // On mount: detect context and auto-sign in
   useEffect(() => {
+    if (!ready) return;
+
     (async () => {
       try {
-        // Already have a session?
+        // 1. Check existing server session
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
@@ -40,68 +45,75 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           return;
         }
 
-        // Check if we're in a Farcaster mini-app
+        // 2. Farcaster mini-app auto-sign-in
         const inMiniApp = await sdk.isInMiniApp();
-        if (!inMiniApp) {
-          // Browser user without session — send to /join
-          router.replace('/join');
-          return;
-        }
-
-        // Mini-app: auto-sign in via SDK context
-        if (farcasterAttempted.current) return;
-        farcasterAttempted.current = true;
-
-        const context = await sdk.context;
-        const fid = context?.user?.fid;
-        if (!fid) {
-          console.error('[MiniApp] No FID in SDK context');
-          router.replace('/join');
-          return;
-        }
-
-        console.log('[MiniApp] Auto-signing in with FID:', fid);
-        const signInRes = await fetch('/api/auth/farcaster-signin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            fid,
-            username: context.user.username || undefined,
-            pfpUrl: context.user.pfpUrl || (context.user as any).pfp_url || undefined,
-          }),
-        });
-
-        if (signInRes.ok) {
-          const signInData = await signInRes.json().catch(() => ({}));
-          console.log('[MiniApp] Auto-signin successful, existing:', signInData.existing);
-          window.dispatchEvent(new Event('profileUpdated'));
-
-          if (signInData.existing) {
-            setAuthState('ready');
-            onAuthenticated?.();
-          } else {
-            setAuthState('needs-onboarding');
+        if (inMiniApp && !farcasterAttempted.current) {
+          farcasterAttempted.current = true;
+          const context = await sdk.context;
+          const fid = context?.user?.fid;
+          if (fid) {
+            const signInRes = await fetch('/api/auth/farcaster-signin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                fid,
+                username: context.user.username || undefined,
+                pfpUrl: context.user.pfpUrl || (context.user as any).pfp_url || undefined,
+              }),
+            });
+            if (signInRes.ok) {
+              const signInData = await signInRes.json().catch(() => ({}));
+              window.dispatchEvent(new Event('profileUpdated'));
+              if (signInData.existing) {
+                setAuthState('ready');
+                onAuthenticated?.();
+              } else {
+                setAuthState('needs-onboarding');
+              }
+              return;
+            }
           }
-        } else {
-          console.error('[MiniApp] Auto-signin failed:', signInRes.status);
-          router.replace('/join');
         }
+
+        // 3. Privy-authenticated with wallet — create server session automatically
+        if (authenticated && address) {
+          const authHeaders = await getPrivyAuthHeaders(getAccessToken);
+          const signupRes = await fetch('/api/auth/wallet-signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeaders },
+            credentials: 'include',
+            body: JSON.stringify({ walletAddress: address }),
+          });
+
+          if (signupRes.ok) {
+            const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+            const meData = await meRes.json().catch(() => ({ user: null }));
+            if (meData?.user?.onboardingComplete) {
+              setAuthState('ready');
+              onAuthenticated?.();
+            } else {
+              setAuthState('needs-onboarding');
+            }
+            return;
+          }
+        }
+
+        // 4. No auth at all — send to /join
+        router.replace('/join');
       } catch (err) {
         console.error('[HomeWelcomeFlow] Auth check error:', err);
         router.replace('/join');
       }
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOnboardingComplete = useCallback((username: string) => {
-    console.log('[HomeWelcomeFlow] Onboarding complete:', username);
     setAuthState('ready');
     window.dispatchEvent(new Event('profileUpdated'));
     onAuthenticated?.();
   }, [onAuthenticated]);
 
-  // Needs onboarding — show children with OnboardingModal overlay
   if (authState === 'needs-onboarding') {
     return (
       <>
@@ -116,11 +128,6 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
         />
       </>
     );
-  }
-
-  // Checking or ready — show children
-  if (authState === 'ready' || authState === 'checking' || isConnected) {
-    return <>{children}</>;
   }
 
   return <>{children}</>;
