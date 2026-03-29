@@ -149,6 +149,9 @@ const nextConfig = {
         resourceRegExp: /^@farcaster\/mini-app-solana$/,
       }),
       new webpack.IgnorePlugin({
+        resourceRegExp: /^@solana\/kit$/,
+      }),
+      new webpack.IgnorePlugin({
         resourceRegExp: /^@solana\/web3\.js$/,
         contextRegExp: /@privy-io/,
       })
