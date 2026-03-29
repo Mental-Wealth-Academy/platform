@@ -962,19 +962,21 @@ export default function AccordionJournalCard({
         disabled={isSealed || isLocked}
       >
         <div className={styles.cardFaceLeft}>
-          <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''} ${isLocked ? styles.weekBadgeLocked : ''}`}>
-            {isSealed ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{marginRight: 4, verticalAlign: -1}}><path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/><path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/><path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/></svg>Sealed</>) : isLocked ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4, verticalAlign: -1}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</>) : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
-          </div>
-          {saveStatus !== 'idle' && !isSealed && !isLocked && (
-            <span className={styles.saveIndicator}>
-              {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
-            </span>
-          )}
-          {countdown && !isSealed && !isLocked && (
-            <span className={styles.countdownBadge}>{countdown}</span>
-          )}
-          <div className={styles.cardTitleGroup}>
+          <div className={styles.cardBadgeRow}>
+            <div className={`${styles.weekBadge} ${isSealed ? styles.weekBadgeSealed : ''} ${isLocked ? styles.weekBadgeLocked : ''}`}>
+              {isSealed ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{marginRight: 4, verticalAlign: -1}}><path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/><path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/><path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/></svg>Sealed</>) : isLocked ? (<><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4, verticalAlign: -1}}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</>) : weekNumber === 0 ? 'Intro' : weekNumber === 13 ? 'End' : `Week ${weekNumber}`}
+            </div>
             <h3 className={styles.cardTitle}>{weekTitle}</h3>
+            {saveStatus !== 'idle' && !isSealed && !isLocked && (
+              <span className={styles.saveIndicator}>
+                {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
+              </span>
+            )}
+            {countdown && !isSealed && !isLocked && (
+              <span className={styles.countdownBadge}>{countdown}</span>
+            )}
+          </div>
+          <div className={styles.cardTitleGroup}>
             <p className={styles.cardSubtitle}>
               {isLocked
                 ? 'This week hasn\u2019t started yet'

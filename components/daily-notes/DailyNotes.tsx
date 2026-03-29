@@ -254,13 +254,13 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
               </svg>
             </div>
             <div>
-              <span className={styles.label}>Daily Notes</span>
+              <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
-                All daily journals are encrypted.
+                All Daily Prayers Are Private For You.
               </span>
             </div>
           </div>
@@ -349,7 +349,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div className={styles.modalHeader}>
               <span className={styles.modalDayBadge}>Week {currentWeek} — Day {(activeDayIndex ?? 0) + 1} of 7</span>
               <h3 className={styles.modalTitle}>Morning Pages</h3>
-              <p className={styles.modalSubtitle}>Write freely for 15 minutes. Your notes are encrypted.</p>
+              <p className={styles.modalSubtitle}>Write freely for 15 minutes every morning. These will be your rituals to summon your higher self, morning pages clear your mind and unlock your creative self.</p>
             </div>
 
             <div className={styles.timerDisplay}>

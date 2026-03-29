@@ -58,8 +58,14 @@
 
 .cardFaceLeft {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardBadgeRow {
+  display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
 }
 
 .weekBadge {
