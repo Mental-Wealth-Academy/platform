@@ -220,7 +220,7 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-                <span className={styles.podiumName}>{u.username.length > 6 ? u.username.slice(0, 6) : u.username}</span>
+                <span className={styles.podiumName}>{u.username}</span>
                 <span className={styles.podiumShards}>{u.shards}</span>
               </div>
             ))}
@@ -236,10 +236,10 @@ export default function HomePage() {
             className={styles.altarButton}
             onClick={handleCircleClick}
             onMouseEnter={() => play('hover')}
-            aria-label="Start Morning Pages"
+            aria-label="Start Morning Prayers"
           >
             <Image src="/icons/altar.svg" alt="" width={180} height={180} className={styles.altarImage} />
-            <span className={styles.circleLabel}>Morning Pages</span>
+            <span className={styles.circleLabel}>Morning Prayers</span>
           </button>
 
           <div className={styles.streakRow}>
@@ -395,7 +395,7 @@ export default function HomePage() {
       />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
       <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
-      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} onCenterPress={handleCircleClick} />
+      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} />
     </div>
     </HomeWelcomeFlow>
   );

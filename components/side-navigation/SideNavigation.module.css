@@ -1112,21 +1112,9 @@
 /* ==================== MOBILE STYLES ==================== */
 
 @media (max-width: 900px) {
-  /* Mobile Top Bar - Always visible on mobile */
+  /* Mobile Top Bar - Hidden, replaced by bottom nav */
   .mobileTopBar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    padding: 0 16px;
-    background: #ffffff;
-    border-bottom: 1.5px solid rgba(26, 29, 51, 0.08);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    z-index: 1000;
+    display: none;
   }
 
   .mobileLogoLink {
@@ -1324,8 +1312,7 @@
 /* Extra small screens */
 @media (max-width: 400px) {
   .mobileTopBar {
-    padding: 0 12px;
-    height: 56px;
+    display: none;
   }
 
   .hamburgerButton {

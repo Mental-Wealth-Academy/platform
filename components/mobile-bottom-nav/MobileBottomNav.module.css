@@ -74,29 +74,34 @@
   line-height: 1;
 }
 
-/* ── Center altar ── */
+/* ── Center star ── */
 .centerTab {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex: 1;
   height: 100%;
-  background: none;
-  border: none;
-  cursor: pointer;
+  text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
 
-.altarIcon {
-  width: 44px;
-  height: 44px;
+.centerBubble {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #1a1d33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   bottom: 16px;
+  box-shadow:
+    0 4px 16px rgba(26, 29, 51, 0.2),
+    0 0 0 4px #FBF8FF;
   transition: transform 0.2s ease;
 }
 
-.centerTab:active .altarIcon {
-  transform: scale(0.93);
+.centerTab:active .centerBubble {
+  transform: scale(0.95);
 }
