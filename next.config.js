@@ -126,10 +126,10 @@ const nextConfig = {
       const stubDir = path.resolve(__dirname, 'lib/stubs');
       config.resolve.alias = {
         ...config.resolve.alias,
-        '@solana/kit': path.join(stubDir, 'solana-kit.js'),
-        '@solana-program/system': path.join(stubDir, 'solana-program-system.js'),
-        '@solana-program/token': path.join(stubDir, 'solana-program-token.js'),
-        '@solana-program/memo': path.join(stubDir, 'solana-program-memo.js'),
+        '@solana/kit': path.join(stubDir, 'solana-kit.mjs'),
+        '@solana-program/system': path.join(stubDir, 'solana-program-system.mjs'),
+        '@solana-program/token': path.join(stubDir, 'solana-program-token.mjs'),
+        '@solana-program/memo': path.join(stubDir, 'solana-program-memo.mjs'),
       };
     }
 

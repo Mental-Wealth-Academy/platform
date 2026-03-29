@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
@@ -144,8 +145,8 @@ export default function AngelicCreditSystem() {
 
       </div>
 
-      {/* Video Modal */}
-      {showVideo && (
+      {/* Video Modal — portaled to body to escape stacking context */}
+      {showVideo && createPortal(
         <div className={styles.videoOverlay} onClick={closeVideo}>
           <div className={styles.videoModal} onClick={(e) => e.stopPropagation()}>
             <span className={`${styles.cornerAccent} ${styles.cornerTL}`} />
@@ -172,7 +173,8 @@ export default function AngelicCreditSystem() {
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
