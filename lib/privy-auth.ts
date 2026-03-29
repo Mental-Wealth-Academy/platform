@@ -14,17 +14,29 @@ function getPrivyClient(): PrivyClient {
   return privyClient;
 }
 
+// Cache Privy userId → wallet address to avoid repeated API calls.
+// Privy's verifyAuthToken is local JWT verification (fast), but getUser
+// is a network call. This cache keeps wallet lookups fast after the first hit.
+const walletCache = new Map<string, { wallet: string; expiresAt: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 /**
- * Verifies a Privy access token from the Authorization header and returns
- * the user's wallet address (embedded or linked).
+ * Verifies a raw Privy access token and returns the user's wallet address.
+ * Results are cached by Privy userId for 5 minutes.
  */
-export async function getWalletFromPrivyToken(authHeader: string | null): Promise<string | null> {
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  const token = authHeader.substring(7);
+export async function getWalletFromPrivyToken(token: string): Promise<string | null> {
+  if (!token) return null;
 
   try {
     const client = getPrivyClient();
     const { userId } = await client.verifyAuthToken(token);
+
+    // Check cache
+    const cached = walletCache.get(userId);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.wallet;
+    }
+
     const user = await client.getUser(userId);
 
     // Find the user's wallet — prefer embedded, fallback to linked
@@ -37,7 +49,12 @@ export async function getWalletFromPrivyToken(authHeader: string | null): Promis
     const wallet = embeddedWallet || linkedWallet;
 
     if (!wallet || !('address' in wallet)) return null;
-    return (wallet as any).address.toLowerCase();
+    const address = (wallet as any).address.toLowerCase();
+
+    // Cache the result
+    walletCache.set(userId, { wallet: address, expiresAt: Date.now() + CACHE_TTL });
+
+    return address;
   } catch (error) {
     console.warn('[Privy Auth] Token verification failed:', error);
     return null;

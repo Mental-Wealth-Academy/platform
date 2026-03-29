@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { sdk } from '@farcaster/miniapp-sdk';
-import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 interface HomeWelcomeFlowProps {
@@ -15,14 +13,14 @@ interface HomeWelcomeFlowProps {
 
 /**
  * Wraps the home page content.
- * - Mini-app: auto-signs in via Farcaster SDK context, shows onboarding for new users.
- * - Browser with Privy session: auto-creates server session if missing.
- * - Browser without any auth: redirects to /join.
+ * - Checks server session (which now also reads Privy cookie on the server).
+ * - Mini-app: auto-signs in via Farcaster SDK context.
+ * - Privy-authenticated: auto-creates server session via wallet-signup.
+ * - No auth: redirects to /join.
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const router = useRouter();
-  const { address, isConnected } = useAccount();
-  const { ready, authenticated, getAccessToken } = usePrivy();
+  const { ready, authenticated } = usePrivy();
 
   const [authState, setAuthState] = useState<'checking' | 'needs-onboarding' | 'ready'>('checking');
   const farcasterAttempted = useRef(false);
@@ -32,7 +30,7 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
     (async () => {
       try {
-        // 1. Check existing server session
+        // 1. Check existing server session (also reads Privy cookie on server)
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
@@ -76,14 +74,11 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           }
         }
 
-        // 3. Privy-authenticated with wallet — create server session automatically
-        if (authenticated && address) {
-          const authHeaders = await getPrivyAuthHeaders(getAccessToken);
+        // 3. Privy-authenticated — create server session automatically
+        if (authenticated) {
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeaders },
             credentials: 'include',
-            body: JSON.stringify({ walletAddress: address }),
           });
 
           if (signupRes.ok) {

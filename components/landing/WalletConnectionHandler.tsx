@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
-import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import styles from './WalletConnectionHandler.module.css';
 
 interface WalletConnectionHandlerProps {
@@ -12,20 +10,18 @@ interface WalletConnectionHandlerProps {
 }
 
 export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Connect Wallet' }: WalletConnectionHandlerProps) {
-  const { ready, authenticated, login, getAccessToken } = usePrivy();
-  const { address } = useAccount();
+  const { ready, authenticated, login } = usePrivy();
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processedAddress, setProcessedAddress] = useState<string | null>(null);
-  const processingRef = useRef<string | null>(null);
+  const processedRef = useRef(false);
 
-  const handleWalletConnection = useCallback(async (walletAddress: string) => {
-    if (processingRef.current === walletAddress || isProcessing) return;
-    processingRef.current = walletAddress;
+  const handleConnection = useCallback(async () => {
+    if (processedRef.current || isProcessing) return;
+    processedRef.current = true;
     setIsProcessing(true);
 
     try {
-      // Check if user exists
+      // Check if user already exists (server reads Privy cookie automatically)
       const meResponse = await fetch('/api/me', { credentials: 'include' });
       if (meResponse.status >= 500) {
         alert('Server error. Please try again later.');
@@ -39,13 +35,10 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
         return;
       }
 
-      // Create account with Privy auth
-      const headers = await getPrivyAuthHeaders(getAccessToken);
+      // Create account — server reads Privy cookie for wallet auth
       const signupResponse = await fetch('/api/auth/wallet-signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...headers },
         credentials: 'include',
-        body: JSON.stringify({ walletAddress }),
       });
 
       if (signupResponse.ok) {
@@ -53,21 +46,21 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
       } else {
         const errorData = await signupResponse.json().catch(() => ({}));
         alert(errorData.error || 'Failed to create account. Please try again.');
+        processedRef.current = false;
       }
     } catch (error) {
       alert(`An error occurred. Please try again.\n\nError: ${error instanceof Error ? error.message : String(error)}`);
+      processedRef.current = false;
     } finally {
       setIsProcessing(false);
-      processingRef.current = null;
     }
-  }, [isProcessing, getAccessToken]);
+  }, [isProcessing]);
 
-  // When authenticated with a wallet, process the connection
+  // When authenticated via Privy, process the connection
   useEffect(() => {
-    if (!authenticated || !address || processedAddress === address) return;
-    setProcessedAddress(address);
-    handleWalletConnection(address);
-  }, [authenticated, address, processedAddress, handleWalletConnection]);
+    if (!authenticated || processedRef.current) return;
+    handleConnection();
+  }, [authenticated, handleConnection]);
 
   const handleClick = () => {
     if (!ready || isProcessing) return;

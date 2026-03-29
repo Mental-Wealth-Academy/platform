@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
 import { sqlQuery } from './db';
 import { getWalletAddressFromRequest } from './wallet-auth';
@@ -16,7 +17,7 @@ export type CurrentUser = {
 };
 
 export async function getSessionTokenFromCookies() {
-  const cookieStore = await import('next/headers').then(m => m.cookies());
+  const cookieStore = await cookies();
   return cookieStore.get('session_token')?.value || cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
 }
 
@@ -25,8 +26,8 @@ export function setSessionCookie(response: NextResponse, token: string) {
     name: SESSION_COOKIE_NAME,
     value: token,
     httpOnly: true,
-    sameSite: 'none',
-    secure: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
     path: '/',
     maxAge: SESSION_DAYS * 24 * 60 * 60,
   });
@@ -49,11 +50,19 @@ export async function createSessionForUser(userId: string) {
 }
 
 /**
- * Gets the current user via wallet address authentication or session cookie.
- * Tries wallet auth header first, then falls back to session cookie.
+ * Gets the current user from the request.
+ *
+ * Auth chain (first match wins):
+ *   1. Privy JWT in Authorization header
+ *   2. Privy auth cookie (privy-token)
+ *   3. Legacy signed wallet header
+ *   4. Server session cookie (mwa_session)
+ *
+ * Steps 1-3 are handled by getWalletAddressFromRequest() and look up
+ * the user by wallet address. Step 4 joins through the sessions table.
  */
 export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | null> {
-  // Try wallet auth header first
+  // Try wallet auth (Privy JWT header, Privy cookie, or legacy signature)
   try {
     const walletAddress = await getWalletAddressFromRequest();
     if (walletAddress) {
@@ -87,7 +96,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
       }
     }
   } catch (error) {
-    console.warn('Wallet auth failed, trying session cookie:', error);
+    console.warn('Wallet/Privy auth failed, trying session cookie:', error);
   }
 
   // Fallback to session cookie

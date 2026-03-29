@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { sdk } from '@farcaster/miniapp-sdk';
-import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import AzuraOnboarding from '@/components/azura-onboarding/AzuraOnboarding';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './page.module.css';
@@ -14,26 +12,27 @@ type JoinState = 'loading' | 'intro' | 'sign-in' | 'needs-onboarding' | 'done';
 
 export default function JoinPage() {
   const router = useRouter();
-  const { address, isConnected } = useAccount();
-  const { login, getAccessToken, ready, authenticated } = usePrivy();
+  const { login, ready, authenticated } = usePrivy();
 
   const [state, setState] = useState<JoinState>('loading');
-  const signupAttempted = useRef(false);
   const farcasterAttempted = useRef(false);
+  const signupAttempted = useRef(false);
 
-  // Ensure session exists for an authenticated wallet, then route accordingly
-  const ensureSessionAndRoute = useCallback(async (walletAddress: string) => {
+  // Create server-side account/session using Privy cookie auth.
+  // The backend reads the privy-token cookie automatically — no explicit headers needed.
+  const createAccountAndRoute = useCallback(async () => {
+    if (signupAttempted.current) return false;
+    signupAttempted.current = true;
+
     try {
-      const authHeaders = await getPrivyAuthHeaders(getAccessToken);
       const signupRes = await fetch('/api/auth/wallet-signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders },
         credentials: 'include',
-        body: JSON.stringify({ walletAddress }),
       });
 
       if (!signupRes.ok) {
         console.error('Wallet signup failed:', signupRes.status);
+        signupAttempted.current = false;
         return false;
       }
 
@@ -48,18 +47,19 @@ export default function JoinPage() {
       }
       return true;
     } catch (err) {
-      console.error('Session creation error:', err);
+      console.error('Account creation error:', err);
+      signupAttempted.current = false;
       return false;
     }
-  }, [getAccessToken, router]);
+  }, [router]);
 
-  // Primary auth check — runs once Privy is ready
+  // Primary auth check — runs once Privy SDK is ready
   useEffect(() => {
     if (!ready) return;
 
     (async () => {
       try {
-        // 1. Check for an existing server session
+        // 1. Check for existing server session (also reads Privy cookie on server)
         const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const data = await res.json().catch(() => ({ user: null }));
         if (data?.user) {
@@ -101,12 +101,10 @@ export default function JoinPage() {
           }
         }
 
-        // 3. Already Privy-authenticated with a wallet — create session directly (skip intro)
-        if (authenticated && address) {
-          signupAttempted.current = true;
-          const ok = await ensureSessionAndRoute(address);
+        // 3. Already Privy-authenticated — create account directly (skip intro)
+        if (authenticated) {
+          const ok = await createAccountAndRoute();
           if (ok) return;
-          // If signup failed, fall through to intro
         }
 
         // 4. Not authenticated — show intro for new users
@@ -118,15 +116,11 @@ export default function JoinPage() {
     })();
   }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle wallet becoming available after Privy login (user went through intro → sign-in)
+  // After Privy login completes (user went through intro → sign-in), create account
   useEffect(() => {
-    if (!isConnected || !address) return;
-    if (state !== 'sign-in') return;
-    if (signupAttempted.current) return;
-    signupAttempted.current = true;
-
-    ensureSessionAndRoute(address);
-  }, [isConnected, address, state, ensureSessionAndRoute]);
+    if (state !== 'sign-in' || !authenticated) return;
+    createAccountAndRoute();
+  }, [state, authenticated, createAccountAndRoute]);
 
   const handleIntroComplete = useCallback(() => {
     setState('sign-in');
@@ -165,7 +159,7 @@ export default function JoinPage() {
     );
   }
 
-  // sign-in state — Privy modal is open, waiting for wallet
+  // sign-in state — Privy modal is open, waiting for auth
   return (
     <div className={styles.page}>
       <div className={styles.waitingCard}>
