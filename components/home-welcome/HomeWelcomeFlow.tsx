@@ -16,7 +16,7 @@ interface HomeWelcomeFlowProps {
  * - Checks server session (which now also reads Privy cookie on the server).
  * - Mini-app: auto-signs in via Farcaster SDK context.
  * - Privy-authenticated: auto-creates server session via wallet-signup.
- * - No auth: redirects to /join.
+ * - No auth: renders page content (no redirect).
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const router = useRouter();
@@ -94,11 +94,11 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           }
         }
 
-        // 4. No auth at all — send to landing
-        router.replace('/');
+        // 4. No auth — still render the page (let individual components handle auth)
+        setAuthState('ready');
       } catch (err) {
         console.error('[HomeWelcomeFlow] Auth check error:', err);
-        router.replace('/');
+        setAuthState('ready');
       }
     })();
   }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps
