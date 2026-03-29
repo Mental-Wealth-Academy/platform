@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
-import { createSessionForUser, setSessionCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 
 export const runtime = 'nodejs';
@@ -136,17 +135,7 @@ export async function POST(request: Request) {
         }
       }
 
-      // Clear old sessions and create new one
-      try {
-        await sqlQuery(`DELETE FROM sessions WHERE user_id = :userId`, { userId });
-      } catch (err) {
-        console.warn('Failed to clear existing sessions:', err);
-      }
-
-      const session = await createSessionForUser(userId);
-      const response = NextResponse.json({ ok: true, userId, existing: true });
-      setSessionCookie(response, session.token);
-      return response;
+      return NextResponse.json({ ok: true, userId, existing: true });
     }
 
     // Create new user with wallet address + Farcaster profile data
@@ -181,10 +170,7 @@ export async function POST(request: Request) {
       }
     );
 
-    const session = await createSessionForUser(userId);
-    const response = NextResponse.json({ ok: true, userId, existing: false, username });
-    setSessionCookie(response, session.token);
-    return response;
+    return NextResponse.json({ ok: true, userId, existing: false, username });
   } catch (err: any) {
     console.error('Farcaster signin error:', err);
 

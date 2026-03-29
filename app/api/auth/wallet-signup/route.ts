@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
-import { createSessionForUser, setSessionCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 
@@ -22,7 +21,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Get wallet address from Privy token (Authorization header)
     const walletAddress = await getWalletAddressFromRequest();
 
     if (!walletAddress) {
@@ -43,17 +41,7 @@ export async function POST(request: Request) {
     );
 
     if (existingUser.length > 0) {
-      const userId = existingUser[0].id;
-      try {
-        await sqlQuery(`DELETE FROM sessions WHERE user_id = :userId`, { userId });
-      } catch (err) {
-        console.warn('Failed to clear existing sessions:', err);
-      }
-
-      const session = await createSessionForUser(userId);
-      const response = NextResponse.json({ ok: true, userId, existing: true });
-      setSessionCookie(response, session.token);
-      return response;
+      return NextResponse.json({ ok: true, userId: existingUser[0].id, existing: true });
     }
 
     // Create new user
@@ -65,10 +53,7 @@ export async function POST(request: Request) {
       { id: userId, walletAddress: walletAddress.toLowerCase(), username: tempUsername }
     );
 
-    const session = await createSessionForUser(userId);
-    const response = NextResponse.json({ ok: true, userId, existing: false });
-    setSessionCookie(response, session.token);
-    return response;
+    return NextResponse.json({ ok: true, userId, existing: false });
   } catch (err: any) {
     console.error('Wallet signup error:', err);
 

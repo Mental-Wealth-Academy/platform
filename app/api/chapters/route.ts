@@ -1,32 +1,8 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getChaptersWithProgress, unlockFirstChapter } from '@/lib/library-queries';
 import { AZURA_DIALOGUES } from '@/lib/library-seed-data';
-
-interface User {
-  id: string;
-  username: string;
-  wallet_address: string;
-  shard_count: number;
-}
-
-async function getUserFromSession(): Promise<User | null> {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('session_token')?.value || cookieStore.get('mwa_session')?.value;
-
-  if (!sessionToken) return null;
-
-  const rows = await sqlQuery<User[]>(
-    `SELECT u.id, u.username, u.wallet_address, u.shard_count
-     FROM users u
-     JOIN sessions s ON s.user_id = u.id
-     WHERE s.token = $1 AND s.expires_at > NOW()`,
-    [sessionToken]
-  );
-
-  return rows[0] || null;
-}
 
 export async function GET() {
   try {
@@ -34,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
     }
 
-    const user = await getUserFromSession();
+    const user = await getCurrentUserFromRequestCookie();
 
     // If user is logged in, get their progress
     if (user) {

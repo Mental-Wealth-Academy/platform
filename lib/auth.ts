@@ -1,11 +1,5 @@
-import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { v4 as uuidv4 } from 'uuid';
-import { sqlQuery } from './db';
 import { getWalletAddressFromRequest } from './wallet-auth';
-
-const SESSION_COOKIE_NAME = 'mwa_session';
-const SESSION_DAYS = 30;
+import { sqlQuery } from './db';
 
 export type CurrentUser = {
   id: string;
@@ -16,93 +10,16 @@ export type CurrentUser = {
   shardCount: number;
 };
 
-export async function getSessionTokenFromCookies() {
-  const cookieStore = await cookies();
-  return cookieStore.get('session_token')?.value || cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
-}
-
-export function setSessionCookie(response: NextResponse, token: string) {
-  response.cookies.set({
-    name: SESSION_COOKIE_NAME,
-    value: token,
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: SESSION_DAYS * 24 * 60 * 60,
-  });
-}
-
-export async function createSessionForUser(userId: string) {
-  const sessionId = uuidv4();
-  const token = uuidv4();
-
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + SESSION_DAYS);
-
-  await sqlQuery(
-    `INSERT INTO sessions (id, user_id, token, expires_at)
-     VALUES (:id, :userId, :token, :expiresAt)`,
-    { id: sessionId, userId, token, expiresAt }
-  );
-
-  return { token, expiresAt };
-}
-
 /**
  * Gets the current user from the request.
  *
- * Auth chain (first match wins):
- *   1. Privy JWT in Authorization header
- *   2. Privy auth cookie (privy-token)
- *   3. Legacy signed wallet header
- *   4. Server session cookie (mwa_session)
- *
- * Steps 1-3 are handled by getWalletAddressFromRequest() and look up
- * the user by wallet address. Step 4 joins through the sessions table.
+ * Auth: Privy JWT (Authorization header) or Privy cookie (privy-token).
+ * Both resolved by getWalletAddressFromRequest() → user looked up by wallet.
  */
 export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | null> {
-  // Try wallet auth (Privy JWT header, Privy cookie, or legacy signature)
   try {
     const walletAddress = await getWalletAddressFromRequest();
-    if (walletAddress) {
-      const rows = await sqlQuery<
-        Array<{
-          id: string;
-          username: string;
-          avatar_url: string | null;
-          created_at: string;
-          wallet_address: string;
-          shard_count: number;
-        }>
-      >(
-        `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count
-         FROM users u
-         WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
-         LIMIT 1`,
-        { walletAddress }
-      );
-
-      const user = rows[0];
-      if (user) {
-        return {
-          id: user.id,
-          username: user.username,
-          avatarUrl: user.avatar_url,
-          createdAt: user.created_at,
-          walletAddress: user.wallet_address,
-          shardCount: user.shard_count,
-        };
-      }
-    }
-  } catch (error) {
-    console.warn('Wallet/Privy auth failed, trying session cookie:', error);
-  }
-
-  // Fallback to session cookie
-  try {
-    const token = await getSessionTokenFromCookies();
-    if (!token) return null;
+    if (!walletAddress) return null;
 
     const rows = await sqlQuery<
       Array<{
@@ -116,10 +33,9 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
     >(
       `SELECT u.id, u.username, u.avatar_url, u.created_at, u.wallet_address, u.shard_count
        FROM users u
-       JOIN sessions s ON s.user_id = u.id
-       WHERE s.token = :token AND s.expires_at > NOW()
+       WHERE LOWER(u.wallet_address) = LOWER(:walletAddress)
        LIMIT 1`,
-      { token }
+      { walletAddress }
     );
 
     const user = rows[0];
@@ -134,7 +50,7 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
       shardCount: user.shard_count,
     };
   } catch (error) {
-    console.warn('Session cookie auth failed:', error);
+    console.warn('Auth failed:', error);
     return null;
   }
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import {
   createWriting,
   getWritingByPrompt,
@@ -13,30 +13,6 @@ import {
   awardShardsForUnseal,
 } from '@/lib/library-queries';
 
-interface User {
-  id: string;
-  username: string;
-  wallet_address: string;
-  shard_count: number;
-}
-
-async function getUserFromSession(): Promise<User | null> {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('session_token')?.value || cookieStore.get('mwa_session')?.value;
-
-  if (!sessionToken) return null;
-
-  const rows = await sqlQuery<User[]>(
-    `SELECT u.id, u.username, u.wallet_address, u.shard_count
-     FROM users u
-     JOIN sessions s ON s.user_id = u.id
-     WHERE s.token = $1 AND s.expires_at > NOW()`,
-    [sessionToken]
-  );
-
-  return rows[0] || null;
-}
-
 // GET - Fetch user's writings
 export async function GET(request: Request) {
   try {
@@ -44,7 +20,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
     }
 
-    const user = await getUserFromSession();
+    const user = await getCurrentUserFromRequestCookie();
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -78,7 +54,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
     }
 
-    const user = await getUserFromSession();
+    const user = await getCurrentUserFromRequestCookie();
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
