@@ -982,7 +982,7 @@ export default function AccordionJournalCard({
                 ? 'This week hasn\u2019t started yet'
                 : isSealed
                 ? 'Verified by Azura and sealed on Base'
-                : `${completedCount} of ${totalSections} activities completed`
+                : ''
               }
             </p>
           </div>
