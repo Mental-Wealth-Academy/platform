@@ -1,0 +1,320 @@
+/* AzuraOnboarding — brutalist landing-style card */
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border: 3px solid #1A1D33;
+  border-radius: 12px;
+  box-shadow: 6px 6px 0 #1A1D33;
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: cardDrop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardDrop {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Star logo above heading */
+.starLogo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  animation: starPulse 3s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.06); opacity: 0.85; }
+}
+
+/* Hero heading */
+.heroHeading {
+  font-family: 'Space Grotesk', var(--font-secondary), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 28px;
+  line-height: 1.3;
+}
+
+.heroHeading em {
+  font-style: italic;
+  color: var(--color-primary, #5168FF);
+}
+
+/* Dialogue row — avatar + speech bubble */
+.dialogueRow {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+/* Avatar column */
+.avatarColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.avatarFrame {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-primary, #5168FF);
+  border: 3px solid #1A1D33;
+  box-shadow: 3px 3px 0 #1A1D33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.avatarName {
+  font-family: var(--font-primary, 'Poppins'), sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: #1A1D33;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.avatarRole {
+  font-family: var(--font-primary, 'Poppins'), sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Speech bubble */
+.speechBubble {
+  flex: 1;
+  min-height: 80px;
+  background: rgba(81, 104, 255, 0.06);
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  padding: 14px 18px;
+  position: relative;
+}
+
+.speechBubble::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid rgba(81, 104, 255, 0.06);
+}
+
+.speechBubble::after {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 18px;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 12px solid #1A1D33;
+  z-index: -1;
+}
+
+.messageText {
+  font-family: 'IBM Plex Mono', var(--font-ibm-plex-mono), monospace;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #1A1D33;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Blinking cursor */
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background-color: var(--color-primary, #5168FF);
+  margin-left: 2px;
+  animation: blink 0.8s infinite;
+  vertical-align: baseline;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: 42px;
+  gap: 10px;
+}
+
+.skipBtn {
+  font-family: var(--font-primary, 'Poppins'), sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 2px solid #1A1D33;
+  box-shadow: 2px 2px 0 #1A1D33;
+  background: #ffffff;
+  color: #1A1D33;
+}
+
+.skipBtn:hover {
+  background: #f5f5f5;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.continueBtn {
+  font-family: 'IBM Plex Mono', var(--font-ibm-plex-mono), monospace;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 2px solid #1A1D33;
+  box-shadow: 3px 3px 0 #1A1D33;
+  background: var(--color-primary, #5168FF);
+  color: #ffffff;
+  animation: btnIn 0.25s ease;
+}
+
+@keyframes btnIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.continueBtn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.continueBtn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
+
+/* Progress dots */
+.dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(26, 29, 51, 0.15);
+  transition: all 0.3s ease;
+}
+
+.dotActive {
+  background: var(--color-primary, #5168FF);
+  transform: scale(1.3);
+}
+
+.dotDone {
+  background: rgba(81, 104, 255, 0.4);
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .card {
+    padding: 24px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1A1D33;
+  }
+
+  .starLogo {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 8px;
+  }
+
+  .heroHeading {
+    font-size: 17px;
+    margin-bottom: 20px;
+  }
+
+  .dialogueRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .avatarColumn {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .avatarFrame {
+    width: 48px;
+    height: 48px;
+    box-shadow: 2px 2px 0 #1A1D33;
+  }
+
+  .speechBubble::before,
+  .speechBubble::after {
+    left: 20px;
+    top: -10px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: none;
+    border-bottom: 10px solid rgba(81, 104, 255, 0.06);
+  }
+
+  .speechBubble::after {
+    border-bottom: 12px solid #1A1D33;
+    top: -12px;
+    left: 18px;
+  }
+
+  .messageText {
+    font-size: 12px;
+  }
+}

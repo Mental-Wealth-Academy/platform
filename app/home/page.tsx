@@ -200,29 +200,30 @@ export default function HomePage() {
 
         {/* ===== TOP ACADEMICS LEADERBOARD ===== */}
         <div
-          className={styles.topLeaderboardWrap}
+          className={styles.topLeaderboard}
           onClick={() => { play('click'); setShowLeaderboard(true); }}
         >
-          <div className={styles.topLeaderboard}>
-            <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
-            <div className={styles.topLeaderboardList}>
-              {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
-                { rank: 1, username: '---', avatarUrl: null, shards: 0 },
-                { rank: 2, username: '---', avatarUrl: null, shards: 0 },
-                { rank: 3, username: '---', avatarUrl: null, shards: 0 },
-              ]).map(u => (
-                <div key={u.rank} className={styles.topLeaderboardItem}>
-                  <span className={styles.topLeaderboardRank}>{u.rank}</span>
+          <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
+          <div className={styles.topLeaderboardPodium}>
+            {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
+              { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+              { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+              { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+            ]).map(u => (
+              <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
+                <div className={styles.podiumAvatarRing}>
                   {u.avatarUrl ? (
-                    <img src={u.avatarUrl} alt={u.username} className={styles.topLeaderboardAvatarImg} />
+                    <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
                   ) : (
-                    <div className={styles.topLeaderboardAvatar} style={{ background: avatarColor(u.username) }}>
+                    <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
                       {u.username[0]?.toUpperCase() ?? '?'}
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
+                <span className={styles.podiumName}>{u.username.length > 6 ? u.username.slice(0, 6) : u.username}</span>
+                <span className={styles.podiumShards}>{u.shards}</span>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './LandingHeader.module.css';
 import { useSound } from '@/hooks/useSound';
 
@@ -16,6 +18,9 @@ export const LandingHeader: React.FC = () => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const { play } = useSound();
   const toolsRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { login, authenticated } = usePrivy();
+  const loginTriggered = useRef(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -23,6 +28,14 @@ export const LandingHeader: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // After Privy login succeeds on landing, redirect to /home
+  useEffect(() => {
+    if (authenticated && loginTriggered.current) {
+      loginTriggered.current = false;
+      router.push('/home');
+    }
+  }, [authenticated, router]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -38,11 +51,12 @@ export const LandingHeader: React.FC = () => {
   }, [toolsOpen]);
 
   const handleLogin = () => {
-    window.location.href = '/home';
+    loginTriggered.current = true;
+    login();
   };
 
   const handleJoinNow = () => {
-    window.location.href = '/home';
+    router.push('/join');
   };
 
   return (

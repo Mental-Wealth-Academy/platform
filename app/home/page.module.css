@@ -235,75 +235,72 @@
   background: rgba(26, 29, 51, 0.08);
 }
 
-/* Top leaderboard — rainbow pill */
-@property --rainbow-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes rainbowSpin {
-  to {
-    --rainbow-angle: 360deg;
-  }
-}
-
-.topLeaderboardWrap {
-  border-radius: 999px;
-  padding: 2px;
-  background: conic-gradient(from var(--rainbow-angle, 0deg), #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d, #ff6b6b);
-  animation: rainbowSpin 4s linear infinite;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-
+/* ── Top Leaderboard ── */
 .topLeaderboard {
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-radius: 16px;
+  padding: 14px 20px 16px;
+  cursor: pointer;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #ffffff;
-  border-radius: 999px;
-  padding: 8px 16px 8px 20px;
+  gap: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.topLeaderboard:hover {
+  border-color: rgba(81, 104, 255, 0.15);
 }
 
 .topLeaderboardTitle {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 11px;
   font-weight: 700;
-  color: rgba(26, 29, 51, 0.45);
+  color: rgba(26, 29, 51, 0.4);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
-.topLeaderboardList {
+.topLeaderboardPodium {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.podiumSlot {
   display: flex;
   align-items: center;
   gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.topLeaderboardList::-webkit-scrollbar {
-  display: none;
+.podiumFirst { order: 1; }
+.podiumSecond { order: 2; }
+.podiumThird { order: 3; }
+
+/* Avatar rings — gold / silver / bronze */
+.podiumAvatarRing {
+  border-radius: 50%;
+  padding: 2px;
+  background: rgba(26, 29, 51, 0.08);
 }
 
-.topLeaderboardItem {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
+.podiumFirst .podiumAvatarRing {
+  padding: 2px;
+  background: #D4A843;
 }
 
-.topLeaderboardRank {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.3);
+.podiumSecond .podiumAvatarRing {
+  background: #b0b8c9;
 }
 
-.topLeaderboardAvatar {
+.podiumThird .podiumAvatarRing {
+  background: #c47a3a;
+}
+
+.podiumAvatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -314,15 +311,34 @@
   font-size: 11px;
   font-weight: 700;
   color: #FFFFFF;
-  flex-shrink: 0;
 }
 
-.topLeaderboardAvatarImg {
+.podiumAvatarImg {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
+  display: block;
+}
+
+.podiumName {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #1a1d33;
+  line-height: 1;
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podiumShards {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.3);
+  line-height: 1;
 }
 
 /* League card (modal rows) */

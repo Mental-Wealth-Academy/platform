@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 
@@ -15,9 +16,12 @@ const TOOLS_ITEMS = [
 
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [toolsOpen, setToolsOpen] = useState(false);
   const { play } = useSound();
   const toolsRef = useRef<HTMLDivElement>(null);
+  const { login, authenticated } = usePrivy();
+  const loginTriggered = useRef(false);
 
   useEffect(() => {
     if (!toolsOpen) return;
@@ -31,6 +35,14 @@ const TopNavigation: React.FC = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, [toolsOpen]);
 
+  // After Privy login succeeds, redirect to /home
+  useEffect(() => {
+    if (authenticated && loginTriggered.current) {
+      loginTriggered.current = false;
+      router.push('/home');
+    }
+  }, [authenticated, router]);
+
   if (pathname === '/' || pathname === '/learn') return null;
 
   const handleMenuToggle = () => {
@@ -38,11 +50,12 @@ const TopNavigation: React.FC = () => {
   };
 
   const handleLogin = () => {
-    window.location.href = '/home';
+    loginTriggered.current = true;
+    login();
   };
 
   const handleJoinNow = () => {
-    window.location.href = '/home';
+    router.push('/join');
   };
 
   return (
