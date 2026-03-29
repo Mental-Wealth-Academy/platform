@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './SideNavigation.module.css';
 import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';

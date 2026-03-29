@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import styles from './CreateAccountButton.module.css';
 
@@ -22,8 +23,7 @@ async function uploadIfPresent(file: File | null) {
 
 const CreateAccountButton: React.FC = () => {
   const { ready, authenticated, login, logout, getAccessToken } = usePrivy();
-  const { wallets } = useWallets();
-  const address = wallets[0]?.address;
+  const { address } = useAccount();
 
   const [me, setMe] = useState<MeResponse['user']>(null);
   const [open, setOpen] = useState(false);

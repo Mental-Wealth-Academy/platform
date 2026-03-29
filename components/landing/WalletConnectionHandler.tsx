@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import styles from './WalletConnectionHandler.module.css';
 
@@ -12,13 +13,11 @@ interface WalletConnectionHandlerProps {
 
 export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Connect Wallet' }: WalletConnectionHandlerProps) {
   const { ready, authenticated, login, getAccessToken } = usePrivy();
-  const { wallets } = useWallets();
+  const { address } = useAccount();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedAddress, setProcessedAddress] = useState<string | null>(null);
   const processingRef = useRef<string | null>(null);
-
-  const address = wallets[0]?.address;
 
   const handleWalletConnection = useCallback(async (walletAddress: string) => {
     if (processingRef.current === walletAddress || isProcessing) return;
