@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useAccount } from 'wagmi';
-import { ConnectKitButton } from 'connectkit';
+import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
 import { providers } from 'ethers';
 import { createProposalOnChain } from '@/lib/azura-contract';
@@ -22,6 +22,7 @@ interface SubmitProposalModalProps {
 const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const { play } = useSound();
   const { address, isConnected, connector } = useAccount();
+  const { login } = usePrivy();
   const [title, setTitle] = useState('');
   const [proposal, setProposal] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
@@ -277,26 +278,21 @@ const SubmitProposalModal: React.FC<SubmitProposalModalProps> = ({ isOpen, onClo
                 </span>
               </div>
             </div>
-            <ConnectKitButton.Custom>
-              {({ isConnected, isConnecting, show, address }) => (
-                isConnected ? (
-                  <div className={styles.connectedBadge}>
-                    <span className={styles.connectedDot} />
-                    <span>{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-                  </div>
-                ) : (
-                  <button
-                    className={styles.connectButton}
-                    onClick={() => { play('click'); show?.(); }}
-                    onMouseEnter={() => play('hover')}
-                    disabled={isConnecting}
-                    type="button"
-                  >
-                    {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-                  </button>
-                )
-              )}
-            </ConnectKitButton.Custom>
+            {isConnected && address ? (
+              <div className={styles.connectedBadge}>
+                <span className={styles.connectedDot} />
+                <span>{address.slice(0, 6)}...{address.slice(-4)}</span>
+              </div>
+            ) : (
+              <button
+                className={styles.connectButton}
+                onClick={() => { play('click'); login(); }}
+                onMouseEnter={() => play('hover')}
+                type="button"
+              >
+                Connect Wallet
+              </button>
+            )}
           </div>
 
           {/* Title Input */}

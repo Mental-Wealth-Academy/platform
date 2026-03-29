@@ -1,73 +1,36 @@
 /**
- * Helper function to create wallet authentication headers
- * This should be used in client components that need to make authenticated API calls
- * 
- * @param address - The wallet address
- * @param signMessageAsync - Function to sign a message (from wagmi's useSignMessage hook)
+ * Helper to get auth headers for authenticated API calls.
+ * With Privy, we use the Privy access token instead of manual wallet signatures.
+ *
+ * @param getAccessToken - Function from usePrivy() or getAccessToken from @privy-io/react-auth
  * @returns Promise with Authorization header
- * 
- * @example
- * ```tsx
- * import { useAccount, useSignMessage } from 'wagmi';
- * import { getWalletAuthHeaders } from '@/lib/wallet-api';
- * 
- * const { address } = useAccount();
- * const { signMessageAsync } = useSignMessage();
- * 
- * const headers = await getWalletAuthHeaders(address, signMessageAsync);
- * ```
  */
-export async function getWalletAuthHeaders(
-  address: string | undefined,
-  signMessageAsync?: any // wagmi v2 SignMessageMutateAsync type
+export async function getPrivyAuthHeaders(
+  getAccessToken: () => Promise<string | null>
 ): Promise<HeadersInit> {
-  if (!address) {
-    return {};
-  }
-
-  // If no signMessageAsync function provided, use legacy format (development only)
-  if (!signMessageAsync) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[Wallet Auth] Using legacy format without signature - update to use signMessageAsync');
-      return {
-        'Authorization': `Bearer ${address}`,
-      };
-    }
-    // In production, require signature
-    throw new Error('Signature required for wallet authentication');
-  }
-
-  // Create signed authentication token
-  try {
-    const timestamp = Date.now().toString();
-    const message = `Sign in to Mental Wealth Academy\n\nWallet: ${address}\nTimestamp: ${timestamp}`;
-    
-    // Call wagmi's signMessageAsync with proper parameters
-    const signature = await signMessageAsync({ message });
-    const token = `${address}:${signature}:${timestamp}`;
-    
-    return {
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    console.error('[Wallet Auth] Failed to sign message:', error);
-    throw new Error('Failed to create authentication token');
-  }
+  const token = await getAccessToken();
+  if (!token) return {};
+  return {
+    'Authorization': `Bearer ${token}`,
+  };
 }
 
 /**
- * Legacy function for backward compatibility
- * @deprecated Use getWalletAuthHeaders with signMessage instead
+ * @deprecated Use getPrivyAuthHeaders instead. Kept for backward compatibility during migration.
  */
-export function getWalletAuthHeadersLegacy(address: string | undefined): HeadersInit {
-  if (!address) {
-    return {};
+export async function getWalletAuthHeaders(
+  address: string | undefined,
+  signMessageAsync?: any
+): Promise<HeadersInit> {
+  if (!address) return {};
+  if (!signMessageAsync) {
+    if (process.env.NODE_ENV === 'development') {
+      return { 'Authorization': `Bearer ${address}` };
+    }
+    throw new Error('Signature required for wallet authentication');
   }
-  if (process.env.NODE_ENV !== 'development') {
-    console.error('[Wallet Auth] Legacy auth not supported in production');
-    return {};
-  }
-  return {
-    'Authorization': `Bearer ${address}`,
-  };
+  const timestamp = Date.now().toString();
+  const message = `Sign in to Mental Wealth Academy\n\nWallet: ${address}\nTimestamp: ${timestamp}`;
+  const signature = await signMessageAsync({ message });
+  return { 'Authorization': `Bearer ${address}:${signature}:${timestamp}` };
 }

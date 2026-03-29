@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import YourAccountsModal from '@/components/nav-buttons/YourAccountsModal';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
@@ -84,7 +85,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isConnected, address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { logout: privyLogout } = usePrivy();
   // Removed isMobileMenuOpen - bottom nav is always visible on mobile
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
@@ -199,10 +200,8 @@ const Navbar: React.FC = () => {
   const handleSignOut = async () => {
     setIsProfileDropdownOpen(false);
     
-    // Disconnect wallet if connected
-    if (isConnected) {
-      disconnect();
-    }
+    // Disconnect via Privy
+    try { await privyLogout(); } catch {}
     
     // Clear session
     try {

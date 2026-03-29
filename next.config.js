@@ -141,9 +141,16 @@ const nextConfig = {
         contextRegExp: /@metamask\/sdk/,
       }),
       // Suppress pino-pretty warning - it's an optional dev dependency for pino logging
-      // Not needed in production builds, especially for pages that don't use Web3
       new webpack.IgnorePlugin({
         resourceRegExp: /^pino-pretty$/,
+      }),
+      // Privy optional Solana/Farcaster dependencies not needed for EVM-only
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^@farcaster\/mini-app-solana$/,
+      }),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^@solana\/web3\.js$/,
+        contextRegExp: /@privy-io/,
       })
     );
     

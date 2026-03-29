@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
-import { useModal } from 'connectkit';
+import { usePrivy } from '@privy-io/react-auth';
 import { sdk } from '@farcaster/miniapp-sdk';
 import OnboardingModal from '@/components/onboarding/OnboardingModal';
 import styles from './HomeWelcomeFlow.module.css';
@@ -20,7 +20,7 @@ interface HomeWelcomeFlowProps {
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const { address, isConnected } = useAccount();
-  const { setOpen: openConnectModal } = useModal();
+  const { login } = usePrivy();
 
   const [authState, setAuthState] = useState<'checking' | 'needs-wallet' | 'needs-onboarding' | 'connecting' | 'ready'>('checking');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -150,8 +150,8 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
   const handleConnectClick = useCallback(() => {
     setAuthState('connecting');
-    openConnectModal(true);
-  }, [openConnectModal]);
+    login();
+  }, [login]);
 
   const handleOnboardingComplete = useCallback((username: string) => {
     console.log('[HomeWelcomeFlow] Onboarding complete:', username);
@@ -216,13 +216,9 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
             </div>
           </div>
 
-          <div className={styles.welcomeIcon}>
-            <Image src="/icons/family.svg" alt="Family" width={44} height={44} />
-          </div>
-
           <h2 className={styles.welcomeTitle}>Welcome to Mental Wealth Academy</h2>
           <p className={styles.welcomeDesc}>
-            Connect your family wallet to begin your journey. One shared wallet for the whole family, simple and secure.
+            Sign in to begin your journey. Connect a wallet, use your email, or sign in with Farcaster.
           </p>
 
           <button
@@ -238,12 +234,11 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
             ) : (
               <>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                  <polyline points="10 17 15 12 10 7"/>
+                  <line x1="15" y1="12" x2="3" y2="12"/>
                 </svg>
-                Connect Family Wallet
+                Sign In
               </>
             )}
           </button>

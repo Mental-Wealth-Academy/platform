@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { useAccount, useDisconnect, useConnect } from 'wagmi';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import styles from './WalletConnectionHandler.module.css';
 
 interface WalletConnectionHandlerProps {
@@ -9,254 +10,69 @@ interface WalletConnectionHandlerProps {
   buttonText?: string;
 }
 
-/**
- * Handles wallet connection, user authentication, and account creation.
- * This component manages the full flow from wallet connection to onboarding.
- */
 export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Connect Wallet' }: WalletConnectionHandlerProps) {
-  const { address, isConnected, connector } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { connect, connectors } = useConnect();
-  
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
+  const { wallets } = useWallets();
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedAddress, setProcessedAddress] = useState<string | null>(null);
-  const [hasTriggeredOnboarding, setHasTriggeredOnboarding] = useState(false);
-  const [hasAccount, setHasAccount] = useState<boolean | null>(null); // null = checking, true/false = known
-  const processingRef = useRef<string | null>(null); // Track which address is currently being processed
+  const processingRef = useRef<string | null>(null);
 
-  // Handle wallet connection and user check/creation
-  useEffect(() => {
-    // Don't process if not connected, already processing, no address, or already processed
-    if (!isConnected) {
-      return;
-    }
-    
-    if (isProcessing) {
-      return;
-    }
-    
-    if (!address) {
-      return;
-    }
-    
-    if (processedAddress === address) {
-      return;
-    }
-    
-    if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-      return;
-    }
-    
-    if (processingRef.current === address) {
-      return;
-    }
-    
-    // Wait for connection to be fully established before processing
-    (async () => {
-      // Double-check we're not already processing (race condition protection)
-      if (isProcessing || processedAddress === address || processingRef.current === address) {
-        return;
-      }
-      
-      // Wait for wallet to fully initialize after connection
-      const delay = 500;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Verify wallet is still connected and address is still available after wait
-      if (!isConnected || !address || processedAddress === address) {
-        return;
-      }
-      
-      // Final validation before processing
-      if (address && /^0x[a-fA-F0-9]{40}$/.test(address) && processedAddress !== address && !isProcessing) {
-        handleWalletConnection(address);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, isProcessing, processedAddress]);
+  const address = wallets[0]?.address;
 
-  // Check if user has an account on mount
-  useEffect(() => {
-    const checkAccount = async () => {
-      try {
-        const response = await fetch('/api/me', {
-          credentials: 'include',
-        });
-        const data = await response.json().catch(() => ({ user: null }));
-        setHasAccount(!!data.user);
-      } catch (error) {
-        console.error('Failed to check account:', error);
-        setHasAccount(false);
-      }
-    };
-    checkAccount();
-
-    const handleLogin = () => {
-      setTimeout(checkAccount, 500);
-    };
-    window.addEventListener('userLoggedIn', handleLogin);
-    
-    return () => {
-      window.removeEventListener('userLoggedIn', handleLogin);
-    };
-  }, []);
-
-  // Reset processed address when wallet disconnects
-  useEffect(() => {
-    if (!isConnected) {
-      setProcessedAddress(null);
-      setHasTriggeredOnboarding(false);
-      setIsProcessing(false);
-      processingRef.current = null;
-    }
-  }, [isConnected]);
-
-  // Listen for profile updates to re-check if profile is now complete
-  useEffect(() => {
-    const handleProfileUpdate = async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (isConnected && address && !isProcessing) {
-        setProcessedAddress(null);
-        setTimeout(() => {
-          if (address) {
-            handleWalletConnection(address);
-          }
-        }, 100);
-      }
-    };
-
-    window.addEventListener('profileUpdated', handleProfileUpdate);
-    return () => window.removeEventListener('profileUpdated', handleProfileUpdate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, isProcessing]);
-
-  const handleWalletConnection = async (walletAddress: string) => {
-    // Prevent duplicate processing
-    if (processingRef.current === walletAddress || isProcessing) {
-      return;
-    }
-    
-    // Mark as processing immediately to prevent duplicate calls
+  const handleWalletConnection = useCallback(async (walletAddress: string) => {
+    if (processingRef.current === walletAddress || isProcessing) return;
     processingRef.current = walletAddress;
     setIsProcessing(true);
-    
-    // Validate wallet address format before proceeding
-    if (!walletAddress || !/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
-      processingRef.current = null;
-      setIsProcessing(false);
-      if (isConnected) {
-        // Retry once if address not available yet
-        const currentAddress = address;
-        setTimeout(() => {
-          if (currentAddress && /^0x[a-fA-F0-9]{40}$/.test(currentAddress) && currentAddress !== processedAddress) {
-            handleWalletConnection(currentAddress);
-          } else {
-            alert('Wallet address not available. Please disconnect and reconnect your wallet.');
-          }
-        }, 1000);
-      } else {
-        alert('Invalid wallet address. Please reconnect your wallet.');
-      }
-      return;
-    }
-    
-    setProcessedAddress(walletAddress);
-    
+
     try {
-      // Check if user exists with this wallet address (no signature required)
-      const meResponse = await fetch('/api/me', {
-        credentials: 'include',
-      });
-      
-      // Handle server errors (5xx) - don't proceed with signup, show error
+      // Check if user exists
+      const meResponse = await fetch('/api/me', { credentials: 'include' });
       if (meResponse.status >= 500) {
-        alert('Server error. Please try again later. If this persists, the database may not be configured.');
-        processingRef.current = null;
-        setIsProcessing(false);
+        alert('Server error. Please try again later.');
         return;
       }
-      
+
       const meData = await meResponse.json().catch(() => ({ user: null }));
-      
+
       if (meData.user) {
-        // User exists - check profile completeness
-        const hasUsername = meData.user.username && !meData.user.username.startsWith('user_');
-        const profileResponse = await fetch('/api/profile', {
-          credentials: 'include',
-        });
-        
-        // Only username is required for complete profile - birthday/gender are optional
-        const hasCompleteProfile = hasUsername;
-        console.log('Profile completeness check:', { hasUsername, hasCompleteProfile });
-        
-        // User exists - redirect to home page
+        window.location.replace('/home');
+        return;
+      }
+
+      // Create account with Privy auth
+      const headers = await getPrivyAuthHeaders(getAccessToken);
+      const signupResponse = await fetch('/api/auth/wallet-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        credentials: 'include',
+        body: JSON.stringify({ walletAddress }),
+      });
+
+      if (signupResponse.ok) {
         window.location.replace('/home');
       } else {
-        // User doesn't exist - create account with wallet address
-        
-        const signupResponse = await fetch('/api/auth/wallet-signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            walletAddress: walletAddress,
-          }),
-        });
-        
-        if (signupResponse.ok) {
-          // Verify account was actually created
-          const verifyResponse = await fetch('/api/me', {
-            credentials: 'include',
-          });
-          const verifyData = await verifyResponse.json().catch(() => ({ user: null }));
-          
-          if (verifyData.user) {
-            window.location.replace('/home');
-          } else {
-            processingRef.current = null;
-            alert('Account creation may have failed. Please disconnect and reconnect your wallet to try again.');
-          }
-        } else {
-          processingRef.current = null;
-          let errorMessage = 'Failed to create account. Please disconnect and reconnect your wallet to try again.';
-          try {
-            const errorData = await signupResponse.json();
-            errorMessage = errorData.error || errorMessage;
-          } catch (parseError) {
-            try {
-              const text = await signupResponse.text();
-              errorMessage = `Failed to create account (${signupResponse.status}): ${text.substring(0, 200)}`;
-            } catch (e) {
-              errorMessage = `Failed to create account (${signupResponse.status} ${signupResponse.statusText})`;
-            }
-          }
-          
-          alert(errorMessage);
-        }
+        const errorData = await signupResponse.json().catch(() => ({}));
+        alert(errorData.error || 'Failed to create account. Please try again.');
       }
     } catch (error) {
-      processingRef.current = null;
-      const errorMessage = `An error occurred. Please disconnect your wallet and try again.\n\nError: ${error instanceof Error ? error.message : String(error)}`;
-      alert(errorMessage);
+      alert(`An error occurred. Please try again.\n\nError: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setIsProcessing(false);
       processingRef.current = null;
     }
-  };
+  }, [isProcessing, getAccessToken]);
 
-  const handleConnectClick = () => {
-    if (hasAccount === null) {
-      return;
-    }
+  // When authenticated with a wallet, process the connection
+  useEffect(() => {
+    if (!authenticated || !address || processedAddress === address) return;
+    setProcessedAddress(address);
+    handleWalletConnection(address);
+  }, [authenticated, address, processedAddress, handleWalletConnection]);
 
-    // Connect with WalletConnect
-    const walletConnector = connectors[0];
-    if (walletConnector) {
-      connect({ connector: walletConnector });
-    }
+  const handleClick = () => {
+    if (!ready || isProcessing) return;
+    login();
   };
 
   return (
@@ -264,10 +80,10 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
       <button
         type="button"
         className={styles.connectWallet}
-        onClick={handleConnectClick}
-        disabled={isProcessing || hasAccount === null}
+        onClick={handleClick}
+        disabled={isProcessing || !ready}
       >
-        {isProcessing ? 'Processing...' : hasAccount === null ? 'Checking...' : buttonText}
+        {isProcessing ? 'Processing...' : !ready ? 'Loading...' : buttonText}
       </button>
     </div>
   );

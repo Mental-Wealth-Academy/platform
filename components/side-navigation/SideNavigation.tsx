@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAccount, useDisconnect, useReadContract } from 'wagmi';
-import { useModal } from 'connectkit';
+import { useAccount, useReadContract } from 'wagmi';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import styles from './SideNavigation.module.css';
 import AzuraChat from '../azura-chat/AzuraChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
@@ -63,12 +63,16 @@ const navSections: NavSection[] = [
 const PRO_TOKEN_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F' as const;
 const BALANCE_OF_ABI = [{ type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] }] as const;
 
-const SideNavigation: React.FC = () => {
+interface SideNavigationProps {
+  externalMobileOpen?: boolean;
+  onExternalMobileClose?: () => void;
+}
+
+const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onExternalMobileClose }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { setOpen: openConnectModal } = useModal();
+  const { login, logout: privyLogout } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -76,7 +80,16 @@ const SideNavigation: React.FC = () => {
   const [isAvatarSelectorOpen, setIsAvatarSelectorOpen] = useState(false);
   const [isUsernameChangeModalOpen, setIsUsernameChangeModalOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpenInternal] = useState(false);
+
+  const setIsMobileMenuOpen = (open: boolean) => {
+    setIsMobileMenuOpenInternal(open);
+    if (!open && onExternalMobileClose) onExternalMobileClose();
+  };
+
+  useEffect(() => {
+    if (externalMobileOpen) setIsMobileMenuOpenInternal(true);
+  }, [externalMobileOpen]);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [adminExpanded, setAdminExpanded] = useState(true);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
@@ -318,11 +331,8 @@ const SideNavigation: React.FC = () => {
   const handleSignOut = async () => {
     setIsAccountMenuOpen(false);
 
-    if (isConnected) {
-      disconnect();
-    }
-
     try {
+      await privyLogout();
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (err) {
       console.error('Failed to logout:', err);
@@ -665,7 +675,7 @@ const SideNavigation: React.FC = () => {
               className={styles.connectWalletButton}
               onClick={() => {
                 play('click');
-                openConnectModal(true);
+                login();
                 setIsMobileMenuOpen(false);
               }}
               onMouseEnter={() => play('hover')}

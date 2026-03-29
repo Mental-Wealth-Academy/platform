@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useAccount, useDisconnect, useSignMessage, useConnect } from 'wagmi';
-import { getWalletAuthHeaders } from '@/lib/wallet-api';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { getPrivyAuthHeaders } from '@/lib/wallet-api';
 import styles from './CreateAccountButton.module.css';
 
 type MeResponse = { user: { id: string; username: string; avatarUrl: string | null } | null };
@@ -21,10 +21,10 @@ async function uploadIfPresent(file: File | null) {
 }
 
 const CreateAccountButton: React.FC = () => {
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { signMessageAsync } = useSignMessage();
-  const { connect, connectors } = useConnect();
+  const { ready, authenticated, login, logout, getAccessToken } = usePrivy();
+  const { wallets } = useWallets();
+  const address = wallets[0]?.address;
+
   const [me, setMe] = useState<MeResponse['user']>(null);
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState('');
@@ -43,22 +43,13 @@ const CreateAccountButton: React.FC = () => {
     refreshMe().catch(() => {});
   }, []);
 
-  // Refresh user data when wallet connects
   useEffect(() => {
-    if (isConnected) {
-      refreshMe().catch(() => {});
-    }
-  }, [isConnected]);
-
-  const handleConnectWallet = () => {
-    const connector = connectors[0];
-    if (connector) connect({ connector });
-  };
+    if (authenticated) refreshMe().catch(() => {});
+  }, [authenticated]);
 
   async function handleSave() {
-    if (!isConnected || !address) {
-      // Connect wallet
-      handleConnectWallet();
+    if (!authenticated || !address) {
+      login();
       return;
     }
 
@@ -66,35 +57,21 @@ const CreateAccountButton: React.FC = () => {
     setSaving(true);
     try {
       const uploaded = await uploadIfPresent(avatarFile);
+      const headers = await getPrivyAuthHeaders(getAccessToken);
 
       if (!me) {
-        // New account creation via wallet
         const res = await fetch('/api/auth/wallet-signup', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(await getWalletAuthHeaders(address, signMessageAsync)),
-          },
-          body: JSON.stringify({
-            walletAddress: address,
-            username,
-            avatarUrl: uploaded?.url ?? null,
-          }),
+          headers: { 'Content-Type': 'application/json', ...headers },
+          body: JSON.stringify({ walletAddress: address, username, avatarUrl: uploaded?.url ?? null }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || 'Signup failed');
       } else {
-        // Profile update
         const res = await fetch('/api/me', {
           method: 'PUT',
-          headers: { 
-            'Content-Type': 'application/json',
-            ...(await getWalletAuthHeaders(address, signMessageAsync)),
-          },
-          body: JSON.stringify({
-            username,
-            avatarUrl: uploaded?.url ?? me.avatarUrl,
-          }),
+          headers: { 'Content-Type': 'application/json', ...headers },
+          body: JSON.stringify({ username, avatarUrl: uploaded?.url ?? me.avatarUrl }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || 'Update failed');
@@ -111,9 +88,7 @@ const CreateAccountButton: React.FC = () => {
   }
 
   async function handleLogout() {
-    // Disconnect wallet
-    disconnect();
-    // Also clear our session
+    await logout();
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
     setMe(null);
     setUsername('');
@@ -122,37 +97,12 @@ const CreateAccountButton: React.FC = () => {
   }
 
   const handleOpen = () => {
-    if (!isConnected) {
-      // Connect wallet
-      handleConnectWallet();
+    if (!authenticated) {
+      login();
       return;
     }
     setOpen(true);
-  }
-
-  async function handleGoogleSignup() {
-    setError(null);
-    // TODO: Implement Google OAuth flow
-    // For now, redirect to Google OAuth endpoint when it's implemented
-    try {
-      // This will be implemented when Google OAuth backend is ready
-      const response = await fetch('/api/auth/google/initiate', {
-        method: 'GET',
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.authUrl) {
-          window.location.href = data.authUrl;
-        }
-      } else {
-        setError('Google sign-up is not yet available. Please connect your wallet to create an account.');
-      }
-    } catch (e: any) {
-      setError('Google sign-up is not yet available. Please connect your wallet to create an account.');
-    }
-  }
+  };
 
   return (
     <>
@@ -178,7 +128,7 @@ const CreateAccountButton: React.FC = () => {
             <div className={styles.modalHeader}>
               <div className={styles.modalTitle}>{me ? 'Edit profile' : 'Create account'}</div>
               <button className={styles.modalClose} type="button" onClick={() => setOpen(false)}>
-                ×
+                x
               </button>
             </div>
 
@@ -202,28 +152,6 @@ const CreateAccountButton: React.FC = () => {
                 />
               </label>
               {error && <div className={styles.error}>{error}</div>}
-              
-              {!me && (
-                <div className={styles.googleSignupContainer}>
-                  <div className={styles.divider}>
-                    <span className={styles.dividerText}>or</span>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.googleButton}
-                    onClick={handleGoogleSignup}
-                    disabled={saving}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17.64 9.20454C17.64 8.56636 17.5827 7.95272 17.4764 7.36363H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H15.9564C17.4382 14.5227 18.3409 12.5545 18.3409 9.20454H17.64Z" fill="#4285F4"/>
-                      <path d="M9 18C11.43 18 13.467 17.1941 14.9564 15.8195L11.0477 13.5613C10.2418 14.1013 9.21091 14.4204 9 14.4204C6.65455 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/>
-                      <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40681 3.78409 7.83 3.96409 7.29V4.95818H0.957273C0.347727 6.17318 0 7.54772 0 9C0 10.4523 0.347727 11.8268 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
-                      <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65455 3.57955 9 3.57955Z" fill="#EA4335"/>
-                    </svg>
-                    Sign up with Google
-                  </button>
-                </div>
-              )}
             </div>
 
             <div className={styles.modalActions}>
@@ -236,7 +164,7 @@ const CreateAccountButton: React.FC = () => {
                 Cancel
               </button>
               <button className={styles.primaryButton} type="button" onClick={handleSave} disabled={saving}>
-                {saving ? 'Saving…' : 'Save'}
+                {saving ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>
@@ -247,4 +175,3 @@ const CreateAccountButton: React.FC = () => {
 };
 
 export default CreateAccountButton;
-

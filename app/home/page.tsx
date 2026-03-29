@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import MintModal from '@/components/mint-modal/MintModal';
 import WorkshopModal from '@/components/workshop-modal/WorkshopModal';
 import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
@@ -74,13 +75,13 @@ export default function HomePage() {
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [shardCount, setShardCount] = useState(0);
-  const [activeCard, setActiveCard] = useState<ActivityCard>('tasks');
+  const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showMintModal, setShowMintModal] = useState(false);
   const [showWorkshop, setShowWorkshop] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
-  const [showInlineDailyNote, setShowInlineDailyNote] = useState(false);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
 
@@ -177,7 +178,6 @@ export default function HomePage() {
   const weekReading = WEEKLY_READINGS[Math.min(activeWeek, WEEKLY_READINGS.length - 1)];
   const weekTitle = activeWeek > 0 && activeWeek <= 12 ? WEEK_TITLES[activeWeek] : WEEK_TITLES[0];
 
-  // Avatar color from initial
   const avatarColor = (name: string) => {
     const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
     let hash = 0;
@@ -185,250 +185,183 @@ export default function HomePage() {
     return colors[Math.abs(hash) % colors.length];
   };
 
+  const handleCircleClick = () => {
+    play('click');
+    if (activeCard !== 'daily') setActiveCard('daily');
+    document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
     <DailyReadPopup activeWeek={activeWeek} />
     <div className={styles.pageLayout}>
-      <SideNavigation />
+      <SideNavigation externalMobileOpen={mobileMenuOpen} onExternalMobileClose={() => setMobileMenuOpen(false)} />
       <main className={styles.content} onFocus={handleFocus}>
-        <h2 className={`${styles.greeting} ${isLoaded ? styles.greetingLoaded : ''}`}>{getGreeting()}</h2>
 
-        <div className={styles.twoCol}>
-          {/* ===== LEFT COLUMN ===== */}
-          <div className={`${styles.leftCol} ${isLoaded ? styles.leftColLoaded : ''}`}>
+        {/* ===== MORNING PAGES HERO ===== */}
+        <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
+          <p className={styles.greeting}>{getGreeting()}</p>
 
-            {/* Streak & Growth Card */}
-            <div className={styles.streakCard}>
-              <div className={styles.streakTop}>
-                <div className={styles.streakLeft}>
-                  <span className={styles.streakLabel}>Streak</span>
-                  <div className={styles.streakValueRow}>
-                    <span className={styles.streakFlame}>🔥</span>
-                    <span className={styles.streakNumber}>{streakCount}</span>
-                  </div>
-                  <span className={styles.streakUnit}>{streakCount === 1 ? 'day' : 'days'}</span>
-                </div>
-                <div className={styles.streakDivider} />
-                <div className={styles.streakRight}>
-                  <span className={styles.growthTitle}>Your growth this week</span>
-                  <div className={styles.growthStats}>
-                    <div className={styles.growthStat}>
-                      <span className={styles.growthValue} style={{ color: '#3B9E5F' }}>{shardCount}</span>
-                      <span className={styles.growthLabel}>key points</span>
-                    </div>
-                    <div className={styles.growthStat}>
-                      <span className={styles.growthValue} style={{ color: '#D4852E' }}>--</span>
-                      <span className={styles.growthLabel}>minutes</span>
-                    </div>
-                    <div className={styles.growthStat}>
-                      <span className={styles.growthValue} style={{ color: '#3B9E5F' }}>--</span>
-                      <span className={styles.growthLabel}>insights</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button
-                className={styles.dailyMissionBtn}
-                onClick={() => {
-                  play('click');
-                  setShowInlineDailyNote(prev => !prev);
-                }}
-              >
-                Morning Pages
-                <span className={styles.dailyMissionArrow}>{showInlineDailyNote ? '‹' : '›'}</span>
-              </button>
-              {showInlineDailyNote && (
-                <div className={styles.dailyNoteOverlay} onClick={() => setShowInlineDailyNote(false)}>
-                  <div className={styles.dailyNoteModal} onClick={(e) => e.stopPropagation()}>
-                    <button className={styles.dailyNoteClose} onClick={() => setShowInlineDailyNote(false)}>✕</button>
-                    <DailyNotes enablePersistence={isAuthenticated} />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Premium CTA */}
-            <div className={styles.premiumCard}>
-              <div className={styles.premiumInner}>
-                <div className={styles.premiumText}>
-                  <strong>Unlock a lifetime membership</strong>
-                  <span>shared-resources, assets, and more</span>
-                </div>
-                <button className={styles.premiumCta} onClick={() => { play('click'); setShowMintModal(true); }}>
-                  Explore Premium
-                </button>
-              </div>
-            </div>
-
-            {/* Workshop Card */}
-            <div
-              className={styles.workshopCard}
-              onClick={() => { play('click'); setShowWorkshop(true); }}
+          <button
+            type="button"
+            className={styles.circle}
+            onClick={handleCircleClick}
+            onMouseEnter={() => play('hover')}
+            aria-label="Start Morning Pages"
+          >
+            <svg
+              className={styles.penIcon}
+              width="44"
+              height="44"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <div className={styles.workshopCardInner}>
-                <strong className={styles.workshopCardTitle}>Workshops</strong>
-                <span className={styles.workshopCardSub}>Join a live session with the community</span>
-              </div>
-              <span className={styles.workshopCardArrow}>&#8250;</span>
-            </div>
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            <span className={styles.circleLabel}>Morning Pages</span>
+          </button>
 
-            {/* Mini Leaderboard */}
-            <div
-              className={styles.leagueCard}
-              onClick={() => { play('click'); setShowLeaderboard(true); }}
-            >
-              <div className={styles.leagueHeader}>
-                <Image src="/icons/shard.svg" alt="" width={20} height={20} />
-                <div>
-                  <strong className={styles.leagueTitle}>IVY LEAGUE</strong>
-                  <span className={styles.leagueSub}>
-                    {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.leagueList}>
-                {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
-                  { rank: 1, username: '---', avatarUrl: null, shards: 0 },
-                  { rank: 2, username: '---', avatarUrl: null, shards: 0 },
-                  { rank: 3, username: '---', avatarUrl: null, shards: 0 },
-                ]).map(u => (
-                  <div key={u.rank} className={styles.leagueRow}>
-                    <span className={styles.leagueRank}>{u.rank}</span>
-                    {u.avatarUrl ? (
-                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
-                    ) : (
-                      <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
-                        {u.username[0]?.toUpperCase() ?? '?'}
-                      </div>
-                    )}
-                    <span className={styles.leagueName}>{u.username}</span>
-                    <span className={styles.leagueShards}>{u.shards} Shards</span>
-                  </div>
-                ))}
-              </div>
+          <div className={styles.streakRow}>
+            <span className={styles.streakNumber}>{streakCount}</span>
+            <span className={styles.streakUnit}>{streakCount === 1 ? 'day streak' : 'day streak'}</span>
+          </div>
+        </section>
+
+        {/* ===== SECONDARY NAV ===== */}
+        <div className={styles.secondaryRow}>
+          <button
+            className={`${styles.navPill} ${activeCard === 'daily' ? styles.navPillActive : ''}`}
+            onClick={() => { play('click'); setActiveCard('daily'); }}
+          >
+            Notes
+          </button>
+          <button
+            className={`${styles.navPill} ${activeCard === 'weekly' ? styles.navPillActive : ''}`}
+            onClick={() => { play('click'); setActiveCard('weekly'); }}
+          >
+            Read
+          </button>
+          <button
+            className={`${styles.navPill} ${activeCard === 'tasks' ? styles.navPillActive : ''}`}
+            onClick={() => { play('click'); setActiveCard('tasks'); }}
+          >
+            Journal
+          </button>
+        </div>
+
+        {/* ===== ACTIVITY CONTENT ===== */}
+        <div id="activity-content" className={styles.activityContent}>
+          {activeCard === 'daily' && (
+            <DailyNotes enablePersistence={isAuthenticated} />
+          )}
+
+          {activeCard === 'weekly' && (
+            <WeeklyRead
+              readings={WEEKLY_READINGS}
+              onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
+              activeWeek={activeWeek}
+            />
+          )}
+
+          {activeCard === 'tasks' && (
+            <div className={styles.journalCards}>
+              {WEEK_TITLES.map((title, i) => {
+                if (i === 0 || i === WEEK_TITLES.length - 1) return null;
+                const status = getWeekStatus(i);
+                const isLocked = i > activeWeek;
+                return (
+                  <AccordionJournalCard
+                    key={i}
+                    weekNumber={i}
+                    weekTitle={title}
+                    initialIsSealed={status?.isSealed}
+                    initialSealTxHash={status?.sealTxHash}
+                    onSealComplete={handleSealComplete}
+                    enablePersistence={isAuthenticated}
+                    isLocked={isLocked}
+                    weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* ===== BOTTOM CARDS ===== */}
+        <div className={styles.bottomCards}>
+          {/* Compact growth stats */}
+          <div className={styles.statsCard}>
+            <div className={styles.stat}>
+              <span className={styles.statValue}>{shardCount}</span>
+              <span className={styles.statLabel}>key points</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statValue}>--</span>
+              <span className={styles.statLabel}>minutes</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.stat}>
+              <span className={styles.statValue}>--</span>
+              <span className={styles.statLabel}>insights</span>
             </div>
           </div>
 
-          {/* ===== RIGHT COLUMN ===== */}
-          <div className={`${styles.rightCol} ${isLoaded ? styles.rightColLoaded : ''}`}>
-
-            {/* Tab buttons */}
-            <div className={styles.cardTabs}>
-              {(['tasks', 'weekly', 'daily'] as ActivityCard[]).map(tab => (
-                <button
-                  key={tab}
-                  className={`${styles.cardTab} ${activeCard === tab ? styles.cardTabActive : ''}`}
-                  onClick={() => { play('click'); setActiveCard(tab); }}
-                >
-                  {tab === 'daily' ? 'Notes' : tab === 'weekly' ? 'Read' : 'Journal'}
-                </button>
+          {/* Leaderboard row */}
+          <div
+            className={styles.leagueCard}
+            onClick={() => { play('click'); setShowLeaderboard(true); }}
+          >
+            <div className={styles.leagueHeader}>
+              <Image src="/icons/shard.svg" alt="" width={18} height={18} />
+              <strong className={styles.leagueTitle}>IVY LEAGUE</strong>
+              <span className={styles.leagueSub}>
+                {seasonActive ? `Week ${activeWeek}/12` : 'Season inactive'}
+              </span>
+            </div>
+            <div className={styles.leagueList}>
+              {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
+                { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+              ]).map(u => (
+                <div key={u.rank} className={styles.leagueRow}>
+                  <span className={styles.leagueRank}>{u.rank}</span>
+                  {u.avatarUrl ? (
+                    <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
+                  ) : (
+                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
+                      {u.username[0]?.toUpperCase() ?? '?'}
+                    </div>
+                  )}
+                  <span className={styles.leagueName}>{u.username}</span>
+                  <span className={styles.leagueShards}>{u.shards}</span>
+                </div>
               ))}
             </div>
+          </div>
 
-            {/* Expressive Activity Card */}
-            <div className={styles.activityCard}>
-              {activeCard === 'daily' && (
-                <>
-                  <span className={styles.activityBadge}>DAILY</span>
-                  <h1 className={styles.activityTitle}>Morning Pages</h1>
-                  <p className={styles.activityTopic}>15 minutes of freewriting</p>
-                  <div className={styles.stickerWrap}>
-                    <Image src="/icons/axolotl-notes.svg" alt="Axolotl Notes" width={160} height={160} className={styles.sticker} />
-                  </div>
-                  <button
-                    className={styles.activityCta}
-                    onClick={() => {
-                      play('click');
-                      document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
-                    Start Writing
-                  </button>
-                </>
-              )}
-
-              {activeCard === 'weekly' && (
-                <>
-                  <span className={styles.activityBadge}>WEEKLY</span>
-                  <h1 className={styles.activityTitle}>{weekReading.title}</h1>
-                  <p className={styles.activityTopic}>{weekTitle}</p>
-                  <div className={styles.stickerWrap}>
-                    <Image src="/icons/axolotl-read.svg" alt="Axolotl Read" width={160} height={160} className={styles.sticker} />
-                  </div>
-                  <button
-                    className={styles.activityCta}
-                    onClick={() => {
-                      play('click');
-                      setReaderIndex(Math.min(activeWeek, WEEKLY_READINGS.length - 1));
-                      setIsReaderOpen(true);
-                    }}
-                  >
-                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
-                    Start Reading
-                  </button>
-                </>
-              )}
-
-              {activeCard === 'tasks' && (
-                <>
-                  <span className={styles.activityBadge}>WEEKLY</span>
-                  <h1 className={styles.activityTitle}>Journal</h1>
-                  <p className={styles.activityTopic}>{weekTitle}</p>
-                  <div className={styles.stickerWrap}>
-                    <Image src="/icons/axolotl-journal.svg" alt="Axolotl Journal" width={160} height={160} className={styles.sticker} />
-                  </div>
-                  <button
-                    className={styles.activityCta}
-                    onClick={() => {
-                      play('click');
-                      document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    <Image src="/icons/button-icon.svg" alt="" width={22} height={22} />
-                    Open Journal
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Embedded content below card */}
-            <div id="activity-content" className={styles.activityContent}>
-              {activeCard === 'daily' && (
-                <DailyNotes enablePersistence={isAuthenticated} />
-              )}
-
-              {activeCard === 'weekly' && (
-                <WeeklyRead
-                  readings={WEEKLY_READINGS}
-                  onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
-                  activeWeek={activeWeek}
-                />
-              )}
-
-              {activeCard === 'tasks' && (
-                <div className={styles.journalCards}>
-                  {WEEK_TITLES.map((title, i) => {
-                    if (i === 0 || i === WEEK_TITLES.length - 1) return null;
-                    const status = getWeekStatus(i);
-                    const isLocked = i > activeWeek;
-                    return (
-                      <AccordionJournalCard
-                        key={i}
-                        weekNumber={i}
-                        weekTitle={title}
-                        initialIsSealed={status?.isSealed}
-                        initialSealTxHash={status?.sealTxHash}
-                        onSealComplete={handleSealComplete}
-                        enablePersistence={isAuthenticated}
-                        isLocked={isLocked}
-                        weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+          {/* Quick links */}
+          <div className={styles.quickLinks}>
+            <button
+              className={styles.quickLink}
+              onClick={() => { play('click'); setShowWorkshop(true); }}
+            >
+              <span className={styles.quickLinkText}>Workshops</span>
+              <span className={styles.quickLinkArrow}>&#8250;</span>
+            </button>
+            <button
+              className={styles.quickLink}
+              onClick={() => { play('click'); setShowMintModal(true); }}
+            >
+              <span className={styles.quickLinkText}>Premium</span>
+              <span className={styles.quickLinkArrow}>&#8250;</span>
+            </button>
           </div>
         </div>
       </main>
@@ -480,6 +413,7 @@ export default function HomePage() {
       />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
       <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
+      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} />
     </div>
     </HomeWelcomeFlow>
   );
