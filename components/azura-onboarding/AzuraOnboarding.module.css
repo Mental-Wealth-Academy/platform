@@ -28,10 +28,10 @@
 
 /* Star logo above heading */
 .starLogo {
-  width: 100px;
-  height: 100px;
+  width: 160px;
+  height: 160px;
   object-fit: contain;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   animation: starPulse 3s ease-in-out infinite;
 }
 
@@ -263,6 +263,41 @@
   background: rgba(81, 104, 255, 0.4);
 }
 
+/* Choice buttons */
+.choiceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 16px;
+  animation: btnIn 0.3s ease;
+}
+
+.choiceBtn {
+  width: 100%;
+  padding: 12px 20px;
+  font-family: var(--font-primary, 'Poppins'), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1D33;
+  background: rgba(81, 104, 255, 0.06);
+  border: 1.5px solid rgba(81, 104, 255, 0.25);
+  border-radius: 100px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.choiceBtn:hover {
+  background: rgba(81, 104, 255, 0.12);
+  border-color: var(--color-primary, #5168FF);
+  color: var(--color-primary, #5168FF);
+}
+
+.choiceBtn:active {
+  transform: scale(0.97);
+}
+
 /* Mobile */
 @media (max-width: 520px) {
   .card {
@@ -272,9 +307,9 @@
   }
 
   .starLogo {
-    width: 72px;
-    height: 72px;
-    margin-bottom: 8px;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 10px;
   }
 
   .heroHeading {

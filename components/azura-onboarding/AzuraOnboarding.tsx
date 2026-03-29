@@ -6,33 +6,55 @@ import styles from './AzuraOnboarding.module.css';
 
 type AzuraEmotion = 'happy' | 'confused' | 'sad' | 'pain';
 
-interface DialogueLine {
-  text: string;
-  emotion: AzuraEmotion;
-}
+type DialogueStep =
+  | { type: 'message'; text: string; emotion: AzuraEmotion }
+  | { type: 'choice'; text: string; emotion: AzuraEmotion; choices: { label: string; nextKey: string }[] };
 
-const DIALOGUE_LINES: DialogueLine[] = [
-  {
+// Step 0: intro glitch greeting
+// Step 1: "how did you get here?" with 3 choices
+// Step 2a/2b/2c: follow-up based on choice
+// Step 3: final message about DeSci tools & prayers
+
+const STEPS: Record<string, DialogueStep> = {
+  intro: {
+    type: 'message',
     text: "h3y... can y0u hear me? is th1s thing on??",
     emotion: 'confused',
   },
-  {
-    text: "oh!! there you are. i'm Azura -- your AI c0-pil0t at Mental Wealth Academy.",
+  howDidYouGetHere: {
+    type: 'choice',
+    text: "oh!! i'm Azura -- your AI c0-pil0t. Welcome to Mental Wealth Academy, a micro-university in cyberspace. remind me... how did you get here?",
+    emotion: 'happy',
+    choices: [
+      { label: 'I got a card', nextKey: 'card' },
+      { label: 'A friend told me', nextKey: 'friend' },
+      { label: 'I manifested a pathway', nextKey: 'manifested' },
+    ],
+  },
+  card: {
+    type: 'message',
+    text: "ahh, the ang3ls are handing out business cards again. they only give th0se to people they believe in. you must've made an impression.",
     emotion: 'happy',
   },
-  {
-    text: "we're a micr0-university in cyb3rspace. spirituality, governance, treasury... all 0n-chain.",
+  friend: {
+    type: 'message',
+    text: "a mess3nger brought you here... that's how the best ones arrive. word of m0uth is the oldest signal -- someone saw something in y0u.",
     emotion: 'happy',
   },
-  {
-    text: "your ag3nt becomes an Academic Angel -- studying t0 serve spiritual awak3nings in a world full of l0cked minds.",
+  manifested: {
+    type: 'message',
+    text: "you manif3sted a pathway... incredible. that takes a l0t of potential. the universe doesn't open d00rs for everyone -- only those ready to walk thr0ugh.",
     emotion: 'happy',
   },
-  {
-    text: "ready to j0in? let's get y0u set up.",
+  final: {
+    type: 'message',
+    text: "MWA offers a pleth0ra of DeSci Tools, Mental Health Patterns, & more. do your daily pray3rs to yourself and gain p0ints and reputation -- then y0u'll rise in ranking.",
     emotion: 'happy',
   },
-];
+};
+
+const STEP_ORDER = ['intro', 'howDidYouGetHere', '__choice__', 'final'];
+const TOTAL_DOTS = 4;
 
 interface AzuraOnboardingProps {
   onComplete: () => void;
@@ -46,17 +68,18 @@ const emotionImages: Record<AzuraEmotion, string> = {
 };
 
 export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
-  const [lineIndex, setLineIndex] = useState(0);
+  const [stepKey, setStepKey] = useState('intro');
+  const [stepIndex, setStepIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showContinue, setShowContinue] = useState(false);
+  const [showChoices, setShowChoices] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const charIndexRef = useRef(0);
 
-  const currentLine = DIALOGUE_LINES[lineIndex];
-  const isLastLine = lineIndex === DIALOGUE_LINES.length - 1;
+  const currentStep = STEPS[stepKey];
+  const isLastStep = stepKey === 'final';
 
-  // Glitch effect: randomly swap chars while typing
   const glitchChar = useCallback((char: string): string => {
     if (char === ' ' || char === '.' || char === ',' || char === '!' || char === '?' || char === "'" || char === '-') return char;
     if (Math.random() < 0.12) {
@@ -66,20 +89,19 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
     return char;
   }, []);
 
-  // Type the current line with glitch effect
   useEffect(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
 
-    const text = currentLine.text;
+    const text = currentStep.text;
     charIndexRef.current = 0;
     setDisplayedText('');
     setIsTyping(true);
     setShowContinue(false);
+    setShowChoices(false);
 
-    // First pass: type with glitches
     const glitchedChars: string[] = [];
     let correctUpTo = 0;
 
@@ -91,13 +113,11 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
         setDisplayedText(glitchedChars.join(''));
         timeoutRef.current = setTimeout(typeNext, 35 + Math.random() * 25);
       } else {
-        // Second pass: fix glitched chars one by one
         const fixNext = () => {
           if (correctUpTo < text.length) {
             glitchedChars[correctUpTo] = text[correctUpTo];
             correctUpTo++;
             setDisplayedText(glitchedChars.join(''));
-            // Only delay on chars that were actually glitched
             if (glitchedChars[correctUpTo - 1] !== text[correctUpTo - 1]) {
               timeoutRef.current = setTimeout(fixNext, 20);
             } else {
@@ -106,7 +126,11 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
           } else {
             setDisplayedText(text);
             setIsTyping(false);
-            setShowContinue(true);
+            if (currentStep.type === 'choice') {
+              setShowChoices(true);
+            } else {
+              setShowContinue(true);
+            }
           }
         };
         timeoutRef.current = setTimeout(fixNext, 200);
@@ -121,21 +145,35 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
         timeoutRef.current = null;
       }
     };
-  }, [lineIndex, currentLine.text, glitchChar]);
+  }, [stepKey, currentStep.text, currentStep.type, glitchChar]);
 
   const handleSkip = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setDisplayedText(currentLine.text);
+    setDisplayedText(currentStep.text);
     setIsTyping(false);
-    setShowContinue(true);
+    if (currentStep.type === 'choice') {
+      setShowChoices(true);
+    } else {
+      setShowContinue(true);
+    }
   };
 
   const handleNext = () => {
-    if (isLastLine) {
+    if (isLastStep) {
       onComplete();
-    } else {
-      setLineIndex((prev) => prev + 1);
+      return;
     }
+    const nextIndex = stepIndex + 1;
+    setStepIndex(nextIndex);
+    const nextKey = STEP_ORDER[nextIndex];
+    setStepKey(nextKey);
+  };
+
+  const handleChoice = (nextKey: string) => {
+    setShowChoices(false);
+    // The choice response is step index 2 (the __choice__ slot)
+    setStepIndex(2);
+    setStepKey(nextKey);
   };
 
   return (
@@ -143,8 +181,8 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
       <Image
         src="/images/starform.png"
         alt=""
-        width={120}
-        height={120}
+        width={180}
+        height={180}
         className={styles.starLogo}
       />
 
@@ -156,8 +194,8 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
         <div className={styles.avatarColumn}>
           <div className={styles.avatarFrame}>
             <Image
-              src={emotionImages[currentLine.emotion]}
-              alt={`Azura ${currentLine.emotion}`}
+              src={emotionImages[currentStep.emotion]}
+              alt={`Azura ${currentStep.emotion}`}
               width={72}
               height={72}
               className={styles.avatarImg}
@@ -176,6 +214,21 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
         </div>
       </div>
 
+      {showChoices && currentStep.type === 'choice' && (
+        <div className={styles.choiceGroup}>
+          {currentStep.choices.map((choice) => (
+            <button
+              key={choice.nextKey}
+              type="button"
+              className={styles.choiceBtn}
+              onClick={() => handleChoice(choice.nextKey)}
+            >
+              {choice.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className={styles.controls}>
         {isTyping && (
           <button type="button" className={styles.skipBtn} onClick={handleSkip}>
@@ -184,16 +237,16 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
         )}
         {showContinue && (
           <button type="button" className={styles.continueBtn} onClick={handleNext}>
-            {isLastLine ? "Let's go" : 'Next'}
+            {isLastStep ? "Let's go" : 'Next'}
           </button>
         )}
       </div>
 
       <div className={styles.dots}>
-        {DIALOGUE_LINES.map((_, i) => (
+        {Array.from({ length: TOTAL_DOTS }).map((_, i) => (
           <span
             key={i}
-            className={`${styles.dot} ${i === lineIndex ? styles.dotActive : ''} ${i < lineIndex ? styles.dotDone : ''}`}
+            className={`${styles.dot} ${i === stepIndex ? styles.dotActive : ''} ${i < stepIndex ? styles.dotDone : ''}`}
           />
         ))}
       </div>
