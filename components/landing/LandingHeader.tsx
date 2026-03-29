@@ -125,7 +125,10 @@ export const LandingHeader: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.loginButton}
           >
-            Login
+            <span className={styles.slideWrap}>
+              <span className={styles.slideText}>Login</span>
+              <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
+            </span>
           </button>
           <button
             type="button"
@@ -133,7 +136,10 @@ export const LandingHeader: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.joinButton}
           >
-            Join Now
+            <span className={styles.slideWrap}>
+              <span className={styles.slideText}>Join Now</span>
+              <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>
+            </span>
           </button>
         </nav>
       </div>

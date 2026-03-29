@@ -1017,4 +1017,37 @@
   }
 }
 
+/* ── Slide text hover animation ── */
+.slideWrap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.2em;
+  vertical-align: middle;
+}
 
+.slideText {
+  display: block;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.slideClone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+}
+
+.navButton:hover .slideText,
+.userInfo:hover .slideText,
+.incompleteProfile:hover .slideText {
+  transform: translateY(-100%);
+}
+
+.navButton:hover .slideClone,
+.userInfo:hover .slideClone,
+.incompleteProfile:hover .slideClone {
+  transform: translateY(0);
+}

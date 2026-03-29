@@ -246,25 +246,33 @@ const Navbar: React.FC = () => {
             {/* Home Button */}
             <Link href="/home" className={`${styles.navButton} ${isActive('/home') ? styles.navButtonActive : ''}`}>
               <HomeIcon size={20} className={styles.homeIcon} />
-              <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>Home</span>
+              <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Home</span><span className={`${styles.slideText} ${styles.slideClone}`}>Home</span></span>
+              </span>
             </Link>
 
             {/* Story Button */}
             <Link href="/chapters" className={`${styles.navButton} ${isActive('/chapters') ? styles.navButtonActive : ''}`}>
               <LibraryIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>Story</span>
+              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Story</span><span className={`${styles.slideText} ${styles.slideClone}`}>Story</span></span>
+              </span>
             </Link>
 
             {/* Quests Button */}
             <Link href="/quests" className={`${styles.navButton} ${isActive('/quests') ? styles.navButtonActive : ''}`}>
               <QuestsIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/quests') ? styles.buttonLabelActive : styles.buttonLabel}>Quests</span>
+              <span className={isActive('/quests') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Quests</span><span className={`${styles.slideText} ${styles.slideClone}`}>Quests</span></span>
+              </span>
             </Link>
 
             {/* Proposals Button */}
             <Link href="/voting" className={`${styles.navButton} ${isActive('/voting') ? styles.navButtonActive : ''}`}>
               <VotingIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/voting') ? styles.buttonLabelActive : styles.buttonLabel}>Proposals</span>
+              <span className={isActive('/voting') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Proposals</span><span className={`${styles.slideText} ${styles.slideClone}`}>Proposals</span></span>
+              </span>
             </Link>
           </div>
 
@@ -313,7 +321,9 @@ const Navbar: React.FC = () => {
                       />
                     </div>
                   )}
-                  <span className={styles.username}>@{username}</span>
+                  <span className={styles.username}>
+                    <span className={styles.slideWrap}><span className={styles.slideText}>@{username}</span><span className={`${styles.slideText} ${styles.slideClone}`}>@{username}</span></span>
+                  </span>
                 </button>
                 {isProfileDropdownOpen && (
                   <div className={styles.profileDropdown}>
@@ -418,7 +428,7 @@ const Navbar: React.FC = () => {
                 }}
                 type="button"
               >
-                <span>Complete Profile</span>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Complete Profile</span><span className={`${styles.slideText} ${styles.slideClone}`}>Complete Profile</span></span>
               </button>
             )}
             {/* Show unregistered button if no username (unregistered user) */}
@@ -433,7 +443,7 @@ const Navbar: React.FC = () => {
                 }}
                 type="button"
               >
-                <span>Get Started</span>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Get Started</span><span className={`${styles.slideText} ${styles.slideClone}`}>Get Started</span></span>
               </button>
             )}
           </div>
