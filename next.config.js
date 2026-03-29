@@ -113,11 +113,22 @@ const nextConfig = {
     if (dev) {
       config.cache = false;
     }
-    // ConnectKit webpack config
-    config.resolve.fallback = { 
-      fs: false, 
-      net: false, 
-      tls: false 
+    config.resolve.fallback = {
+      fs: false,
+      net: false,
+      tls: false
+    };
+
+    // Stub out Solana modules that Privy optionally imports (EVM-only project)
+    const emptyModule = require.resolve('./lib/empty-module.js');
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@solana/kit': emptyModule,
+      '@solana/web3.js': emptyModule,
+      '@solana-program/system': emptyModule,
+      '@solana-program/token': emptyModule,
+      '@solana-program/memo': emptyModule,
+      '@farcaster/mini-app-solana': emptyModule,
     };
     
     // Ignore optional Solana/Coinbase dependencies that aren't needed for Ethereum-only
