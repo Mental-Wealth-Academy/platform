@@ -200,27 +200,29 @@ export default function HomePage() {
 
         {/* ===== TOP ACADEMICS LEADERBOARD ===== */}
         <div
-          className={styles.topLeaderboard}
+          className={styles.topLeaderboardWrap}
           onClick={() => { play('click'); setShowLeaderboard(true); }}
         >
-          <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
-          <div className={styles.topLeaderboardList}>
-            {(leaderboard.length > 0 ? leaderboard.slice(0, 5) : [
-              { rank: 1, username: '---', avatarUrl: null, shards: 0 },
-              { rank: 2, username: '---', avatarUrl: null, shards: 0 },
-              { rank: 3, username: '---', avatarUrl: null, shards: 0 },
-            ]).map(u => (
-              <div key={u.rank} className={styles.topLeaderboardItem}>
-                <span className={styles.topLeaderboardRank}>{u.rank}</span>
-                {u.avatarUrl ? (
-                  <img src={u.avatarUrl} alt={u.username} className={styles.topLeaderboardAvatarImg} />
-                ) : (
-                  <div className={styles.topLeaderboardAvatar} style={{ background: avatarColor(u.username) }}>
-                    {u.username[0]?.toUpperCase() ?? '?'}
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className={styles.topLeaderboard}>
+            <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
+            <div className={styles.topLeaderboardList}>
+              {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
+                { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+              ]).map(u => (
+                <div key={u.rank} className={styles.topLeaderboardItem}>
+                  <span className={styles.topLeaderboardRank}>{u.rank}</span>
+                  {u.avatarUrl ? (
+                    <img src={u.avatarUrl} alt={u.username} className={styles.topLeaderboardAvatarImg} />
+                  ) : (
+                    <div className={styles.topLeaderboardAvatar} style={{ background: avatarColor(u.username) }}>
+                      {u.username[0]?.toUpperCase() ?? '?'}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -230,25 +232,12 @@ export default function HomePage() {
 
           <button
             type="button"
-            className={styles.circle}
+            className={styles.altarButton}
             onClick={handleCircleClick}
             onMouseEnter={() => play('hover')}
             aria-label="Start Morning Pages"
           >
-            <svg
-              className={styles.penIcon}
-              width="44"
-              height="44"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
+            <Image src="/icons/altar.svg" alt="" width={180} height={180} className={styles.altarImage} />
             <span className={styles.circleLabel}>Morning Pages</span>
           </button>
 

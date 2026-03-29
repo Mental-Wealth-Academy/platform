@@ -82,6 +82,32 @@
   opacity: 0.95;
 }
 
+/* Altar button */
+.altarButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.3s ease;
+}
+
+.altarButton:hover {
+  transform: scale(1.04);
+}
+
+.altarButton:active {
+  transform: scale(0.97);
+}
+
+.altarImage {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+}
+
 /* Streak below circle */
 .streakRow {
   display: flex;
@@ -209,22 +235,35 @@
   background: rgba(26, 29, 51, 0.08);
 }
 
-/* Top leaderboard — horizontal pill */
+/* Top leaderboard — rainbow pill */
+@property --rainbow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rainbowSpin {
+  to {
+    --rainbow-angle: 360deg;
+  }
+}
+
+.topLeaderboardWrap {
+  border-radius: 999px;
+  padding: 2px;
+  background: conic-gradient(from var(--rainbow-angle, 0deg), #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d, #ff6b6b);
+  animation: rainbowSpin 4s linear infinite;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
 .topLeaderboard {
   display: flex;
   align-items: center;
   gap: 12px;
   background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.06);
   border-radius: 999px;
   padding: 8px 16px 8px 20px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  margin-bottom: 8px;
-}
-
-.topLeaderboard:hover {
-  border-color: rgba(81, 104, 255, 0.15);
 }
 
 .topLeaderboardTitle {
@@ -568,6 +607,11 @@
     height: 52px;
   }
 
+  .altarImage {
+    width: 220px;
+    height: 220px;
+  }
+
   .circleLabel {
     font-size: 17px;
   }
@@ -595,6 +639,11 @@
   .penIcon {
     width: 36px;
     height: 36px;
+  }
+
+  .altarImage {
+    width: 150px;
+    height: 150px;
   }
 
   .circleLabel {
