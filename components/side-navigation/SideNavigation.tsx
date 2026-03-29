@@ -217,8 +217,15 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     }
   }, [isConnected]);
 
-  // Fetch user data
+  // Fetch user data (only when Privy says authenticated)
   useEffect(() => {
+    if (!authenticated) {
+      setShardCount(null);
+      setUsername(null);
+      setAvatarUrl(null);
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
         const response = await fetch('/api/me', {
@@ -255,7 +262,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       window.removeEventListener('shardsUpdated', handleShardsUpdate);
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, []);
+  }, [authenticated]);
 
   // Position account menu above the button on mobile (fixed positioning to escape overflow)
   useEffect(() => {

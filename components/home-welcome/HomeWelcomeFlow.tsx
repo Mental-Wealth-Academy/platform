@@ -30,17 +30,19 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
     (async () => {
       try {
-        // 1. Check existing server session (also reads Privy cookie on server)
-        const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
-        const data = await res.json().catch(() => ({ user: null }));
-        if (data?.user) {
-          if (data.user.onboardingComplete) {
-            setAuthState('ready');
-            onAuthenticated?.();
-          } else {
-            setAuthState('needs-onboarding');
+        // 1. If Privy says authenticated, check existing user via server
+        if (authenticated) {
+          const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+          const data = await res.json().catch(() => ({ user: null }));
+          if (data?.user) {
+            if (data.user.onboardingComplete) {
+              setAuthState('ready');
+              onAuthenticated?.();
+            } else {
+              setAuthState('needs-onboarding');
+            }
+            return;
           }
-          return;
         }
 
         // 2. Farcaster mini-app auto-sign-in
