@@ -56,7 +56,7 @@ export const LandingHeader: React.FC = () => {
   };
 
   const handleJoinNow = () => {
-    router.push('/join');
+    login();
   };
 
   return (

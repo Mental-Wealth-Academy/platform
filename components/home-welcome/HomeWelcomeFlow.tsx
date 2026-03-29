@@ -94,11 +94,11 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
           }
         }
 
-        // 4. No auth at all — send to /join
-        router.replace('/join');
+        // 4. No auth at all — send to landing
+        router.replace('/');
       } catch (err) {
         console.error('[HomeWelcomeFlow] Auth check error:', err);
-        router.replace('/join');
+        router.replace('/');
       }
     })();
   }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps

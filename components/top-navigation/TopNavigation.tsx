@@ -55,7 +55,7 @@ const TopNavigation: React.FC = () => {
   };
 
   const handleJoinNow = () => {
-    router.push('/join');
+    login();
   };
 
   return (
