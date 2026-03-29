@@ -119,18 +119,6 @@ const nextConfig = {
       tls: false
     };
 
-    // Stub out Solana modules that Privy optionally imports (EVM-only project)
-    const emptyModule = require.resolve('./lib/empty-module.js');
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@solana/kit': emptyModule,
-      '@solana/web3.js': emptyModule,
-      '@solana-program/system': emptyModule,
-      '@solana-program/token': emptyModule,
-      '@solana-program/memo': emptyModule,
-      '@farcaster/mini-app-solana': emptyModule,
-    };
-    
     // Ignore optional Solana/Coinbase dependencies that aren't needed for Ethereum-only
     config.plugins.push(
       new webpack.IgnorePlugin({
@@ -155,17 +143,6 @@ const nextConfig = {
       new webpack.IgnorePlugin({
         resourceRegExp: /^pino-pretty$/,
       }),
-      // Privy optional Solana/Farcaster dependencies not needed for EVM-only
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^@farcaster\/mini-app-solana$/,
-      }),
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^@solana\/kit$/,
-      }),
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^@solana\/web3\.js$/,
-        contextRegExp: /@privy-io/,
-      })
     );
     
     if (!isServer) {
