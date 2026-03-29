@@ -209,7 +209,84 @@
   background: rgba(26, 29, 51, 0.08);
 }
 
-/* League card */
+/* Top leaderboard — horizontal pill */
+.topLeaderboard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-radius: 999px;
+  padding: 8px 16px 8px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.topLeaderboard:hover {
+  border-color: rgba(81, 104, 255, 0.15);
+}
+
+.topLeaderboardTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.topLeaderboardList {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.topLeaderboardList::-webkit-scrollbar {
+  display: none;
+}
+
+.topLeaderboardItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.topLeaderboardRank {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.3);
+}
+
+.topLeaderboardAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.topLeaderboardAvatarImg {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* League card (modal rows) */
 .leagueCard {
   background: #ffffff;
   border: 1px solid rgba(26, 29, 51, 0.06);

@@ -198,6 +198,32 @@ export default function HomePage() {
       <SideNavigation externalMobileOpen={mobileMenuOpen} onExternalMobileClose={() => setMobileMenuOpen(false)} />
       <main className={styles.content} onFocus={handleFocus}>
 
+        {/* ===== TOP ACADEMICS LEADERBOARD ===== */}
+        <div
+          className={styles.topLeaderboard}
+          onClick={() => { play('click'); setShowLeaderboard(true); }}
+        >
+          <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
+          <div className={styles.topLeaderboardList}>
+            {(leaderboard.length > 0 ? leaderboard.slice(0, 5) : [
+              { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+              { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+              { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+            ]).map(u => (
+              <div key={u.rank} className={styles.topLeaderboardItem}>
+                <span className={styles.topLeaderboardRank}>{u.rank}</span>
+                {u.avatarUrl ? (
+                  <img src={u.avatarUrl} alt={u.username} className={styles.topLeaderboardAvatarImg} />
+                ) : (
+                  <div className={styles.topLeaderboardAvatar} style={{ background: avatarColor(u.username) }}>
+                    {u.username[0]?.toUpperCase() ?? '?'}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* ===== MORNING PAGES HERO ===== */}
         <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
           <p className={styles.greeting}>{getGreeting()}</p>
@@ -312,40 +338,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Leaderboard row */}
-          <div
-            className={styles.leagueCard}
-            onClick={() => { play('click'); setShowLeaderboard(true); }}
-          >
-            <div className={styles.leagueHeader}>
-              <Image src="/icons/shard.svg" alt="" width={18} height={18} />
-              <strong className={styles.leagueTitle}>IVY LEAGUE</strong>
-              <span className={styles.leagueSub}>
-                {seasonActive ? `Week ${activeWeek}/12` : 'Season inactive'}
-              </span>
-            </div>
-            <div className={styles.leagueList}>
-              {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
-                { rank: 1, username: '---', avatarUrl: null, shards: 0 },
-                { rank: 2, username: '---', avatarUrl: null, shards: 0 },
-                { rank: 3, username: '---', avatarUrl: null, shards: 0 },
-              ]).map(u => (
-                <div key={u.rank} className={styles.leagueRow}>
-                  <span className={styles.leagueRank}>{u.rank}</span>
-                  {u.avatarUrl ? (
-                    <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
-                  ) : (
-                    <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
-                      {u.username[0]?.toUpperCase() ?? '?'}
-                    </div>
-                  )}
-                  <span className={styles.leagueName}>{u.username}</span>
-                  <span className={styles.leagueShards}>{u.shards}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Quick links */}
           <div className={styles.quickLinks}>
             <button
@@ -374,7 +366,7 @@ export default function HomePage() {
             <div className={styles.modalHeader}>
               <Image src="/icons/shard.svg" alt="" width={28} height={28} />
               <div>
-                <strong className={styles.modalTitle}>IVY LEAGUE</strong>
+                <strong className={styles.modalTitle}>TOP ACADEMICS</strong>
                 <span className={styles.modalSub}>
                   {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
                 </span>
@@ -413,7 +405,7 @@ export default function HomePage() {
       />
       <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
       <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
-      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} />
+      <MobileBottomNav onMenuOpen={() => setMobileMenuOpen(true)} onCenterPress={handleCircleClick} />
     </div>
     </HomeWelcomeFlow>
   );
