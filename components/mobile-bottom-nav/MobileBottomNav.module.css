@@ -1,0 +1,110 @@
+.nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 64px;
+  background: #FBF8FF;
+  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 0 4px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -2px 16px rgba(26, 29, 51, 0.04);
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: flex;
+  }
+}
+
+/* ── Regular tabs ── */
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(26, 29, 51, 0.35);
+  transition: color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab:hover,
+.tab:active {
+  color: rgba(26, 29, 51, 0.6);
+}
+
+.tabActive {
+  color: #1a1d33;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.iconImg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+}
+
+.tabActive .iconImg {
+  opacity: 1;
+}
+
+.label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+/* ── Center star tab ── */
+.centerTab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+.centerBubble {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #1a1d33;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 12px;
+  box-shadow: 0 4px 20px rgba(26, 29, 51, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.centerBubble:active {
+  transform: scale(0.95);
+}
+
+.starIcon {
+  width: 28px;
+  height: 28px;
+}
