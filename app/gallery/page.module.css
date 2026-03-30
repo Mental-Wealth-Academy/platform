@@ -674,3 +674,74 @@
     grid-column: span 2;
   }
 }
+
+/* ── Skeleton Loader ── */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.06) 25%, rgba(81, 104, 255, 0.12) 50%, rgba(81, 104, 255, 0.06) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeletonTag {
+  width: 120px;
+  height: 12px;
+  border-radius: var(--radius-full);
+}
+
+.skeletonTitle {
+  width: 200px;
+  height: 28px;
+}
+
+.skeletonSub {
+  width: 320px;
+  height: 14px;
+}
+
+.skeletonPill {
+  width: 80px;
+  height: 30px;
+  border-radius: var(--radius-full);
+}
+
+.skeletonCard {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.skeletonFrame {
+  flex: 1;
+  min-height: 160px;
+  margin: 14px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, rgba(81, 104, 255, 0.06) 25%, rgba(81, 104, 255, 0.12) 50%, rgba(81, 104, 255, 0.06) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonMeta {
+  padding: 0 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skeletonMetaLine {
+  width: 70%;
+  height: 12px;
+}
+
+.skeletonMetaLineShort {
+  width: 40%;
+  height: 10px;
+}

@@ -75,10 +75,46 @@ const sizeMap: Record<string, string> = {
   wide: styles.cardWide,
 };
 
+const SKELETON_SIZES: Painting['size'][] = ['large', 'medium', 'medium', 'small', 'small', 'wide', 'hero', 'medium', 'large', 'small', 'medium', 'wide'];
+
+function GallerySkeleton() {
+  return (
+    <div className={styles.pageLayout}>
+      <SideNavigation />
+      <main className={styles.page}>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <div className={`${styles.skeleton} ${styles.skeletonTag}`} />
+            <div className={`${styles.skeleton} ${styles.skeletonTitle}`} />
+            <div className={`${styles.skeleton} ${styles.skeletonSub}`} />
+          </div>
+        </div>
+        <div className={styles.categories}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={`${styles.skeleton} ${styles.skeletonPill}`} />
+          ))}
+        </div>
+        <div className={styles.bentoGrid}>
+          {SKELETON_SIZES.map((size, i) => (
+            <div key={i} className={`${styles.skeletonCard} ${sizeMap[size]}`}>
+              <div className={styles.skeletonFrame} />
+              <div className={styles.skeletonMeta}>
+                <div className={`${styles.skeleton} ${styles.skeletonMetaLine}`} />
+                <div className={`${styles.skeleton} ${styles.skeletonMetaLineShort}`} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
+
 export default function GalleryPage() {
   const { play } = useSound();
   const [selectedPainting, setSelectedPainting] = useState<Painting | null>(null);
   const [activeEra, setActiveEra] = useState('All');
+  const [loaded, setLoaded] = useState(false);
 
   const filtered = activeEra === 'All' ? paintings : paintings.filter((p) => p.era === activeEra);
 
@@ -90,6 +126,12 @@ export default function GalleryPage() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  if (!loaded) return <GallerySkeleton />;
 
   return (
     <div className={styles.pageLayout}>
