@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -47,6 +48,7 @@ const WEEK_TITLES = [
 ];
 
 export default function HomePage() {
+  const { ready, authenticated, getAccessToken } = usePrivy();
   const [isLoaded, setIsLoaded] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -87,27 +89,38 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (!ready || !authenticated) return;
     (async () => {
       try {
-        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (!meData?.user) return;
         setIsAuthenticated(true);
         const uname = meData.user.username;
         if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
-        const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
+        const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
         if (res.ok) {
           const data = await res.json();
           setWeekStatuses(data.weeks);
         }
       } catch {}
     })();
-  }, []);
+  }, [ready, authenticated, getAccessToken]);
 
   useEffect(() => {
     fetch('/api/leaderboard').then(r => r.json()).then(d => setLeaderboard(d.users ?? [])).catch(() => {});
-    fetch('/api/daily-notes/streak', { credentials: 'include' }).then(r => r.json()).then(d => setStreakCount(d.streak ?? 0)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+    (async () => {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      fetch('/api/daily-notes/streak', { credentials: 'include', headers: authHeaders }).then(r => r.json()).then(d => setStreakCount(d.streak ?? 0)).catch(() => {});
+    })();
+  }, [ready, authenticated, getAccessToken]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string) => {
     setWeekStatuses(prev =>
@@ -125,13 +138,15 @@ export default function HomePage() {
   const handleWelcomeAuthenticated = useCallback(() => {
     (async () => {
       try {
-        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
           setIsAuthenticated(true);
             const uname = meData.user.username;
           if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
-          const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
+          const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
           if (res.ok) {
             const data = await res.json();
             setWeekStatuses(data.weeks);

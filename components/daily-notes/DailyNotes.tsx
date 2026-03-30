@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
@@ -37,6 +38,7 @@ const WEEK_COLORS = [
 
 export default function DailyNotes({ enablePersistence = false, compact = false }: DailyNotesProps) {
   const { play } = useSound();
+  const { getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
@@ -144,15 +146,17 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     // Award shards via API
     if (enablePersistence) {
       try {
-        const meRes = await fetch('/api/me', { cache: 'no-store' });
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const meRes = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers: authHeaders });
         const meData = await meRes.json();
         const startingShards = meData?.user?.shardCount ?? 0;
 
         const questId = `daily-notes-w${currentWeek}-d${activeDayIndex + 1}`;
         const res = await fetch('/api/quests/complete', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
+          headers: { 'Content-Type': 'application/json', ...authHeaders },
           body: JSON.stringify({ questId, shards: 100 }),
         });
         const data = await res.json();
