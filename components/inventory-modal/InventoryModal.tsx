@@ -182,7 +182,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
           <div className={styles.statDivider} />
           <div className={styles.stat}>
             <span className={styles.statValue}>{hasAngel ? '1' : '0'}</span>
-            <span className={styles.statLabel}>NFTs</span>
+            <span className={styles.statLabel}>Angels</span>
           </div>
         </div>
 
