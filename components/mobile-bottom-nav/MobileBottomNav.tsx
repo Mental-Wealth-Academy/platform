@@ -31,7 +31,7 @@ export const MobileBottomNav: React.FC = () => {
       </button>
 
       {/* Dailies */}
-      <Link href="/daily" className={`${styles.tab} ${pathname === '/daily' ? styles.tabActive : ''}`}>
+      <Link href="/home" className={`${styles.tab} ${pathname === '/home' ? styles.tabActive : ''}`}>
         <Image src="/icons/World Icon.svg" alt="" width={22} height={22} className={styles.iconImg} />
         <span className={styles.label}>Dailies</span>
       </Link>
