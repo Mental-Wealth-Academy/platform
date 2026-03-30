@@ -17,6 +17,13 @@ const PRINCIPLES = [
   'Our creative dreams and yearnings come from a divine source. As we move toward our dreams, we move toward our divinity.',
 ];
 
+const WEEK_INTROS: Record<number, { title: string; body: string }> = {
+  5: {
+    title: 'Recovering a Sense of Possibility',
+    body: 'This week you are being asked to examine your payoffs in remaining stuck. You will explore how you curtail your own possibilities by placing limits on the good you can receive. You will examine the cost of settling for appearing good instead of being authentic. You may find yourself thinking about radical changes, no longer ruling out your growth by making others the cause of your constriction.',
+  },
+};
+
 const STORAGE_KEY = 'dailyReadLastSeenWeek';
 
 interface DailyReadPopupProps {
@@ -46,23 +53,29 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
 
   if (!visible) return null;
 
+  const weekIntro = WEEK_INTROS[activeWeek];
+
   return (
     <div className={styles.overlay}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Daily Read {activeWeek}</p>
-          <h2 className={styles.title}>Basic Principles</h2>
+          <p className={styles.eyebrow}>Week {activeWeek}</p>
+          <h2 className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
         </div>
 
         <div className={styles.principlesWrap}>
-          <ol className={styles.principlesList}>
-            {PRINCIPLES.map((text, i) => (
-              <li key={i} className={styles.principleItem}>
-                <span className={styles.principleNumber}>{i + 1}</span>
-                <p className={styles.principleText}>{text}</p>
-              </li>
-            ))}
-          </ol>
+          {weekIntro ? (
+            <p className={styles.weekIntroBody}>{weekIntro.body}</p>
+          ) : (
+            <ol className={styles.principlesList}>
+              {PRINCIPLES.map((text, i) => (
+                <li key={i} className={styles.principleItem}>
+                  <span className={styles.principleNumber}>{i + 1}</span>
+                  <p className={styles.principleText}>{text}</p>
+                </li>
+              ))}
+            </ol>
+          )}
         </div>
 
         <div className={styles.footer}>

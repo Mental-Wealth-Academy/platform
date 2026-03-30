@@ -134,6 +134,16 @@
   margin: 0;
 }
 
+/* Week intro body (non-list weeks) */
+.weekIntroBody {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #1A1D33;
+  line-height: 1.75;
+  margin: 0;
+}
+
 /* Footer */
 .footer {
   padding: 20px 32px 28px;
