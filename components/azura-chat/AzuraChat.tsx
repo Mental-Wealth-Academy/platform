@@ -86,9 +86,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [showLiquidityInput, setShowLiquidityInput] = useState(false);
   const [liquidityTarget, setLiquidityTarget] = useState<LiquidityTarget>('governance');
   const [txPending, setTxPending] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liquidityInputRef = useRef<HTMLInputElement>(null);
@@ -159,18 +160,63 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     if (isOpen) document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
-      // Stop any in-progress speech when chat closes
+      // Stop any in-progress speech/recording when chat closes
       voiceAbortRef.current?.abort();
+      recognitionRef.current?.stop();
     };
   }, [isOpen]);
 
-  const toggleVoice = () => {
-    if (voiceEnabled) {
-      // Turning off — stop current speech
-      voiceAbortRef.current?.abort();
-      setIsSpeaking(false);
+  const startVoiceChat = () => {
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognitionAPI) {
+      addAzuraMessage("Your browser doesn't support voice input. Try Chrome or Edge.");
+      return;
     }
-    setVoiceEnabled((v) => !v);
+
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognitionAPI();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => setIsRecording(true);
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = event.results[0][0].transcript;
+      if (transcript.trim()) {
+        setInputText(transcript.trim());
+        // Auto-send after a short delay so user sees what was transcribed
+        setTimeout(() => {
+          const userMessage: Message = {
+            id: Date.now().toString(),
+            text: transcript.trim(),
+            sender: 'user',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, userMessage]);
+          setInputText('');
+          const response = generateAzuraResponse(transcript.trim());
+          addAzuraMessage(response);
+        }, 300);
+      }
+    };
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      setIsRecording(false);
+      if (event.error === 'not-allowed') {
+        addAzuraMessage("Mic access denied. Check your browser permissions and try again.");
+      }
+    };
+
+    recognition.onend = () => setIsRecording(false);
+
+    recognition.start();
   };
 
   const addAzuraMessage = (text: string, action?: Message['action']) => {
@@ -188,8 +234,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       ]);
       setIsTyping(false);
 
-      // Auto-speak Azura's response when voice is enabled
-      if (voiceEnabled) {
+      // Auto-speak Azura's responses
+      {
         voiceAbortRef.current?.abort();
         const controller = new AbortController();
         voiceAbortRef.current = controller;
@@ -556,23 +602,17 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
             disabled={isTyping}
           />
           <button
-            className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
-            onClick={toggleVoice}
+            className={`${styles.voiceButton} ${isRecording ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
+            onClick={startVoiceChat}
             type="button"
-            aria-label={voiceEnabled ? 'Disable voice' : 'Enable voice'}
+            aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
           >
-            {voiceEnabled ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
-                <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
-                <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            )}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
+              <path d="M19 10v1a7 7 0 01-14 0v-1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="12" y1="18" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
           </button>
           <button
             className={styles.sendButton}

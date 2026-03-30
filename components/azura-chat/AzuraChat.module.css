@@ -518,15 +518,21 @@
 }
 
 .voiceActive {
-  background: rgba(81, 104, 255, 0.15);
-  border-color: rgba(81, 104, 255, 0.4);
-  color: var(--color-primary, #5168FF);
+  background: rgba(255, 59, 48, 0.15);
+  border-color: rgba(255, 59, 48, 0.5);
+  color: #FF3B30;
+  animation: recordPulse 1.5s ease-in-out infinite;
 }
 
 .voiceActive:hover {
-  background: rgba(81, 104, 255, 0.25);
-  border-color: rgba(81, 104, 255, 0.5);
-  color: var(--color-primary, #5168FF);
+  background: rgba(255, 59, 48, 0.25);
+  border-color: rgba(255, 59, 48, 0.6);
+  color: #FF3B30;
+}
+
+@keyframes recordPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 59, 48, 0); }
 }
 
 .voiceSpeaking {
