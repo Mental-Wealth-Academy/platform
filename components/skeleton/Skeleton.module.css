@@ -1357,12 +1357,17 @@
   gap: 24px;
   width: 100%;
   max-width: 1120px;
+  padding: 8px 0;
 }
 
 .marketsHeaderSkeleton {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 16px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
 }
@@ -1395,6 +1400,10 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  padding: 16px 20px;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 14px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
   animation-delay: 0.1s;
@@ -1530,12 +1539,18 @@
   flex-direction: column;
   gap: 24px;
   width: 100%;
+  max-width: 1280px;
+  padding: 8px 0;
 }
 
 .shopHeaderSkeleton {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 16px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
 }
@@ -1563,6 +1578,10 @@
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  padding: 14px 20px;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 14px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
   animation-delay: 0.1s;
