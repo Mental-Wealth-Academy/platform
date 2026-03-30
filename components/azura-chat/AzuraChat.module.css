@@ -467,6 +467,7 @@
 
 .input {
   flex: 1;
+  min-width: 0;
   padding: 10px 16px;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
@@ -608,7 +609,34 @@
   }
 
   .inputArea {
-    padding: 10px 12px 14px;
+    padding: 10px 8px 14px;
+    gap: 6px;
+  }
+
+  .input {
+    min-width: 0;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .voiceButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .voiceButton svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sendButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sendButton svg {
+    width: 16px;
+    height: 16px;
   }
 
   .messageBubble {
