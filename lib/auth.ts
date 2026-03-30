@@ -19,7 +19,10 @@ export type CurrentUser = {
 export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | null> {
   try {
     const walletAddress = await getWalletAddressFromRequest();
-    if (!walletAddress) return null;
+    if (!walletAddress) {
+      console.warn('[Auth] No wallet extracted from request');
+      return null;
+    }
 
     const rows = await sqlQuery<
       Array<{
@@ -39,7 +42,10 @@ export async function getCurrentUserFromRequestCookie(): Promise<CurrentUser | n
     );
 
     const user = rows[0];
-    if (!user) return null;
+    if (!user) {
+      console.warn('[Auth] Wallet extracted but no user row found:', walletAddress.slice(0, 10) + '...');
+      return null;
+    }
 
     return {
       id: user.id,

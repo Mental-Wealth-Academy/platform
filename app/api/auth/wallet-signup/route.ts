@@ -21,23 +21,31 @@ export async function POST(request: Request) {
       }
     }
 
-    const walletAddress = await getWalletAddressFromRequest();
+    const rawWallet = await getWalletAddressFromRequest();
 
-    if (!walletAddress) {
+    if (!rawWallet) {
       return NextResponse.json(
         { error: 'Authentication required. Please sign in with Privy.' },
         { status: 401 }
       );
     }
 
-    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+    // Normalize: trim whitespace, ensure 0x prefix, lowercase
+    const walletAddress = rawWallet.trim().toLowerCase();
+    const normalized = walletAddress.startsWith('0x') ? walletAddress : `0x${walletAddress}`;
+
+    if (!/^0x[a-fA-F0-9]{40}$/.test(normalized)) {
+      console.error('[Wallet Signup] Invalid wallet format. raw:', JSON.stringify(rawWallet), 'length:', rawWallet.length, 'normalized:', normalized.slice(0, 10));
       return NextResponse.json({ error: 'Invalid wallet address format.' }, { status: 400 });
     }
+
+    // Use the normalized address from here on
+    const walletAddressClean = normalized;
 
     // Check if wallet address already exists
     const existingUser = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM users WHERE LOWER(wallet_address) = LOWER(:walletAddress) LIMIT 1`,
-      { walletAddress: walletAddress.toLowerCase() }
+      { walletAddress: walletAddressClean }
     );
 
     if (existingUser.length > 0) {
@@ -50,7 +58,7 @@ export async function POST(request: Request) {
 
     await sqlQuery(
       `INSERT INTO users (id, wallet_address, username) VALUES (:id, :walletAddress, :username)`,
-      { id: userId, walletAddress: walletAddress.toLowerCase(), username: tempUsername }
+      { id: userId, walletAddress: walletAddressClean, username: tempUsername }
     );
 
     return NextResponse.json({ ok: true, userId, existing: false });

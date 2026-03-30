@@ -53,10 +53,12 @@ export async function getWalletFromPrivyToken(token: string): Promise<string | n
 
     if (!wallet || !('address' in wallet)) {
       console.warn('[Privy Auth] User has no wallet linked. userId:', userId,
-        'linkedAccounts:', user.linkedAccounts.map((a: any) => ({ type: a.type, walletClientType: a.walletClientType })));
+        'linkedAccounts:', JSON.stringify(user.linkedAccounts.map((a: any) => ({ type: a.type, walletClientType: a.walletClientType, hasAddress: 'address' in a }))));
       return null;
     }
-    const address = (wallet as any).address.toLowerCase();
+    const rawAddress = (wallet as any).address;
+    const address = typeof rawAddress === 'string' ? rawAddress.trim().toLowerCase() : String(rawAddress).trim().toLowerCase();
+    console.warn('[Privy Auth] Resolved wallet:', address.slice(0, 10) + '...', 'type:', (wallet as any).walletClientType, 'length:', address.length);
 
     // Cache the result
     walletCache.set(userId, { wallet: address, expiresAt: Date.now() + CACHE_TTL });
