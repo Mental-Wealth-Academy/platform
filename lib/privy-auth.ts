@@ -34,20 +34,21 @@ export async function getWalletFromPrivyToken(token: string): Promise<string | n
     const client = getPrivyClient();
     const { userId } = await client.verifyAuthToken(token);
 
-    // Check cache
+    // Check cache — only use if it's an Ethereum address (0x prefix)
     const cached = walletCache.get(userId);
-    if (cached && Date.now() < cached.expiresAt) {
+    if (cached && Date.now() < cached.expiresAt && cached.wallet.startsWith('0x')) {
       return cached.wallet;
     }
 
     const user = await client.getUser(userId);
 
-    // Find the user's wallet — prefer embedded, fallback to linked
+    // Find the user's Ethereum wallet — prefer embedded, fallback to linked
+    // Must filter by chainType to avoid picking up Solana wallets
     const embeddedWallet = user.linkedAccounts.find(
-      (a: any) => a.type === 'wallet' && a.walletClientType === 'privy'
+      (a: any) => a.type === 'wallet' && a.walletClientType === 'privy' && a.chainType === 'ethereum'
     );
     const linkedWallet = user.linkedAccounts.find(
-      (a: any) => a.type === 'wallet'
+      (a: any) => a.type === 'wallet' && a.chainType === 'ethereum'
     );
     const wallet = embeddedWallet || linkedWallet;
 
