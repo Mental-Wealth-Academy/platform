@@ -95,6 +95,37 @@
   border-color: #1A1D33;
 }
 
+/* Compact mode */
+.cardCompact {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cardCompact:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.cardDone {
+  opacity: 0.5;
+}
+
+.cardDone .icon {
+  background: #AAAAAA;
+}
+
+.compactCheck {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #22C55E;
+  color: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 50%;
+}
+
 .chevron {
   transition: transform 0.2s ease;
   color: #1A1D33;

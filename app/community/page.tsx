@@ -226,17 +226,14 @@ export default function VotingPage() {
               <div className={styles.headerContent}>
                 <div className={styles.headerText}>
                   <div className={styles.heroActions}>
-                    <button
-                      className={styles.secondaryCta}
-                      onClick={() => { play('click'); setIsSwapOpen(true); }}
-                      onMouseEnter={() => play('hover')}
-                      type="button"
-                    >
+                    <div className={styles.heroAzura}>
                       <div className={styles.exchangeBg}><CyberpunkDataViz /></div>
-                      <span className={styles.exchangeLabel}>Exchange Data</span>
-                      <span className={styles.exchangePrice}>Price: 0.033</span>
-                      <span className={styles.exchangeAddress}>0x84939...EA6F</span>
-                    </button>
+                      <AzuraPowerIndicator
+                        soulGems="40000"
+                        walletAddress={AZURA_ADDRESS}
+                        governanceTokenAddress={GOV_TOKEN_ADDRESS}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -246,11 +243,16 @@ export default function VotingPage() {
           {/* Stat Cards — side by side */}
           <div className={styles.statCardsRow}>
             <div className={styles.statCardCompact}>
-              <AzuraPowerIndicator
-                soulGems="40000"
-                walletAddress={AZURA_ADDRESS}
-                governanceTokenAddress={GOV_TOKEN_ADDRESS}
-              />
+              <button
+                className={styles.secondaryCta}
+                onClick={() => { play('click'); setIsSwapOpen(true); }}
+                onMouseEnter={() => play('hover')}
+                type="button"
+              >
+                <span className={styles.exchangeLabel}>Exchange Data</span>
+                <span className={styles.exchangePrice}>Price: 0.033</span>
+                <span className={styles.exchangeAddress}>0x84939...EA6F</span>
+              </button>
             </div>
             <div className={styles.statCardCompact}>
               <TreasuryDisplay

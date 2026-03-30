@@ -1,21 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-
-import MintModal from '@/components/mint-modal/MintModal';
-import WorkshopModal from '@/components/workshop-modal/WorkshopModal';
-import AccordionJournalCard from '@/components/accordion-journal/AccordionJournalCard';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
-import WeeklyRead from '@/components/daily-read/DailyRead';
+import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import DailyReadPopup from '@/components/daily-read/DailyReadPopup';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
-
-type ActivityCard = 'daily' | 'weekly' | 'tasks';
 
 interface WeekStatus {
   weekNumber: number;
@@ -47,22 +41,10 @@ const WEEKLY_READINGS = [
 ];
 
 const WEEK_TITLES = [
-  'Introduction',
-  'Safety',
-  'Identity',
-  'Power',
-  'Integrity',
-  'Possibility',
-  'Abundance',
-  'Connection',
-  'Strength',
-  'Compassion',
-  'Protection',
-  'Autonomy',
-  'Faith',
-  'Epilogue',
+  'Introduction', 'Safety', 'Identity', 'Power', 'Integrity',
+  'Possibility', 'Abundance', 'Connection', 'Strength',
+  'Compassion', 'Protection', 'Autonomy', 'Faith', 'Epilogue',
 ];
-
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -71,18 +53,21 @@ export default function HomePage() {
   const [isReaderOpen, setIsReaderOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
+  const [viewWeek, setViewWeek] = useState<number>(1);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
   const [displayName, setDisplayName] = useState<string | null>(null);
-  const [shardCount, setShardCount] = useState(0);
-  const [activeCard, setActiveCard] = useState<ActivityCard>('daily');
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [showMintModal, setShowMintModal] = useState(false);
-  const [showWorkshop, setShowWorkshop] = useState(false);
   const [streakCount, setStreakCount] = useState(0);
+  const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
+
+  // Swipe refs
+  const touchStartX = useRef(0);
+  const touchCurrentX = useRef(0);
+  const isSwiping = useRef(false);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsLoaded(true));
@@ -92,7 +77,9 @@ export default function HomePage() {
     fetch('/api/season', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        setActiveWeek(data.currentWeek ?? 0);
+        const week = data.currentWeek ?? 0;
+        setActiveWeek(week);
+        setViewWeek(Math.max(week, 1));
         setWeekEndsAt(data.weekEndsAt ?? null);
         setSeasonActive(data.seasonActive ?? false);
       })
@@ -105,9 +92,7 @@ export default function HomePage() {
         const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (!meData?.user) return;
-
         setIsAuthenticated(true);
-        setShardCount(meData.user.shardCount ?? 0);
         const uname = meData.user.username;
         if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
         const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
@@ -120,23 +105,13 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/leaderboard')
-      .then(res => res.json())
-      .then(data => setLeaderboard(data.users ?? []))
-      .catch(() => {});
-    fetch('/api/daily-notes/streak', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => {
-        setStreakCount(data.streak ?? 0);
-      })
-      .catch(() => {});
+    fetch('/api/leaderboard').then(r => r.json()).then(d => setLeaderboard(d.users ?? [])).catch(() => {});
+    fetch('/api/daily-notes/streak', { credentials: 'include' }).then(r => r.json()).then(d => setStreakCount(d.streak ?? 0)).catch(() => {});
   }, []);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string) => {
     setWeekStatuses(prev =>
-      prev.map(w =>
-        w.weekNumber === weekNumber ? { ...w, isSealed: true, sealTxHash: txHash } : w
-      )
+      prev.map(w => w.weekNumber === weekNumber ? { ...w, isSealed: true, sealTxHash: txHash } : w)
     );
   }, []);
 
@@ -154,8 +129,7 @@ export default function HomePage() {
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
           setIsAuthenticated(true);
-          setShardCount(meData.user.shardCount ?? 0);
-          const uname = meData.user.username;
+            const uname = meData.user.username;
           if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include' });
           if (res.ok) {
@@ -174,9 +148,6 @@ export default function HomePage() {
     return `Good ${timeOfDay}`;
   };
 
-  const weekReading = WEEKLY_READINGS[Math.min(activeWeek, WEEKLY_READINGS.length - 1)];
-  const weekTitle = activeWeek > 0 && activeWeek <= 12 ? WEEK_TITLES[activeWeek] : WEEK_TITLES[0];
-
   const avatarColor = (name: string) => {
     const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
     let hash = 0;
@@ -184,11 +155,54 @@ export default function HomePage() {
     return colors[Math.abs(hash) % colors.length];
   };
 
-  const handleCircleClick = () => {
-    play('click');
-    if (activeCard !== 'daily') setActiveCard('daily');
-    document.getElementById('activity-content')?.scrollIntoView({ behavior: 'smooth' });
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchCurrentX.current = e.touches[0].clientX;
+    isSwiping.current = true;
   };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isSwiping.current) return;
+    isSwiping.current = false;
+    const diff = touchStartX.current - touchCurrentX.current;
+    const threshold = 60;
+
+    if (diff > threshold && viewWeek < 12) {
+      setSwipeAnim('left');
+      setTimeout(() => {
+        setViewWeek(w => w + 1);
+        setSwipeAnim('none');
+      }, 150);
+      play('click');
+    } else if (diff < -threshold && viewWeek > 1) {
+      setSwipeAnim('right');
+      setTimeout(() => {
+        setViewWeek(w => w - 1);
+        setSwipeAnim('none');
+      }, 150);
+      play('click');
+    }
+  };
+
+  const goToWeek = (dir: 'prev' | 'next') => {
+    if (dir === 'next' && viewWeek < 12) {
+      setSwipeAnim('left');
+      setTimeout(() => { setViewWeek(w => w + 1); setSwipeAnim('none'); }, 150);
+      play('click');
+    } else if (dir === 'prev' && viewWeek > 1) {
+      setSwipeAnim('right');
+      setTimeout(() => { setViewWeek(w => w - 1); setSwipeAnim('none'); }, 150);
+      play('click');
+    }
+  };
+
+  const weekReading = WEEKLY_READINGS[Math.min(viewWeek, WEEKLY_READINGS.length - 1)];
+  const isReadingVideo = weekReading.imageUrl.endsWith('.mp4');
 
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
@@ -226,125 +240,107 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ===== MORNING PAGES HERO ===== */}
+        {/* ===== GREETING + STREAK ===== */}
         <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
           <p className={styles.greeting}>{getGreeting()}</p>
-
-          <button
-            type="button"
-            className={styles.altarButton}
-            onClick={handleCircleClick}
-            onMouseEnter={() => play('hover')}
-            aria-label="Start Morning Prayers"
-          >
-            <Image src="/icons/altar.svg" alt="" width={180} height={180} className={styles.altarImage} />
-            <span className={styles.circleLabel}>Morning Prayers</span>
-          </button>
-
           <div className={styles.streakRow}>
             <span className={styles.streakNumber}>{streakCount}</span>
-            <span className={styles.streakUnit}>{streakCount === 1 ? 'day streak' : 'day streak'}</span>
+            <span className={styles.streakUnit}>day streak</span>
           </div>
         </section>
 
-        {/* ===== SECONDARY NAV ===== */}
-        <div className={styles.secondaryRow}>
+        {/* ===== MORNING PAGE CARD ===== */}
+        <DailyNotes enablePersistence={isAuthenticated} compact />
+
+        {/* ===== WEEK HEADER ===== */}
+        <div className={styles.weekHeader}>
           <button
-            className={`${styles.navPill} ${activeCard === 'daily' ? styles.navPillActive : ''}`}
-            onClick={() => { play('click'); setActiveCard('daily'); }}
+            className={styles.weekArrow}
+            onClick={() => goToWeek('prev')}
+            onMouseEnter={() => play('hover')}
+            disabled={viewWeek <= 1}
+            aria-label="Previous week"
           >
-            Notes
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
           </button>
-          <button
-            className={`${styles.navPill} ${activeCard === 'weekly' ? styles.navPillActive : ''}`}
-            onClick={() => { play('click'); setActiveCard('weekly'); }}
-          >
-            Read
-          </button>
-          <button
-            className={`${styles.navPill} ${activeCard === 'tasks' ? styles.navPillActive : ''}`}
-            onClick={() => { play('click'); setActiveCard('tasks'); }}
-          >
-            Journal
-          </button>
-        </div>
-
-        {/* ===== ACTIVITY CONTENT ===== */}
-        <div id="activity-content" className={styles.activityContent}>
-          {activeCard === 'daily' && (
-            <DailyNotes enablePersistence={isAuthenticated} />
-          )}
-
-          {activeCard === 'weekly' && (
-            <WeeklyRead
-              readings={WEEKLY_READINGS}
-              onReadClick={(index) => { setReaderIndex(index); setIsReaderOpen(true); }}
-              activeWeek={activeWeek}
-            />
-          )}
-
-          {activeCard === 'tasks' && (
-            <div className={styles.journalCards}>
-              {WEEK_TITLES.map((title, i) => {
-                if (i === 0 || i === WEEK_TITLES.length - 1) return null;
-                const status = getWeekStatus(i);
-                const isLocked = i > activeWeek;
-                return (
-                  <AccordionJournalCard
-                    key={i}
-                    weekNumber={i}
-                    weekTitle={title}
-                    initialIsSealed={status?.isSealed}
-                    initialSealTxHash={status?.sealTxHash}
-                    onSealComplete={handleSealComplete}
-                    enablePersistence={isAuthenticated}
-                    isLocked={isLocked}
-                    weekEndsAt={i === activeWeek ? weekEndsAt : undefined}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* ===== BOTTOM CARDS ===== */}
-        <div className={styles.bottomCards}>
-          {/* Compact growth stats */}
-          <div className={styles.statsCard}>
-            <div className={styles.stat}>
-              <span className={styles.statValue}>{shardCount}</span>
-              <span className={styles.statLabel}>key points</span>
-            </div>
-            <div className={styles.statDivider} />
-            <div className={styles.stat}>
-              <span className={styles.statValue}>--</span>
-              <span className={styles.statLabel}>minutes</span>
-            </div>
-            <div className={styles.statDivider} />
-            <div className={styles.stat}>
-              <span className={styles.statValue}>--</span>
-              <span className={styles.statLabel}>insights</span>
-            </div>
+          <div className={styles.weekHeaderCenter}>
+            <span className={styles.weekLabel}>WEEK {viewWeek}</span>
+            <span className={styles.weekTitle}>{WEEK_TITLES[viewWeek]}</span>
           </div>
-
-          {/* Quick links */}
-          <div className={styles.quickLinks}>
-            <button
-              className={styles.quickLink}
-              onClick={() => { play('click'); setShowWorkshop(true); }}
-            >
-              <span className={styles.quickLinkText}>Workshops</span>
-              <span className={styles.quickLinkArrow}>&#8250;</span>
-            </button>
-            <button
-              className={styles.quickLink}
-              onClick={() => { play('click'); setShowMintModal(true); }}
-            >
-              <span className={styles.quickLinkText}>Premium</span>
-              <span className={styles.quickLinkArrow}>&#8250;</span>
-            </button>
-          </div>
+          <button
+            className={styles.weekArrow}
+            onClick={() => goToWeek('next')}
+            onMouseEnter={() => play('hover')}
+            disabled={viewWeek >= 12}
+            aria-label="Next week"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
         </div>
+
+        {/* Week dots */}
+        <div className={styles.weekDots}>
+          {Array.from({ length: 12 }, (_, i) => {
+            const w = i + 1;
+            const status = getWeekStatus(w);
+            return (
+              <button
+                key={w}
+                className={`${styles.weekDot} ${w === viewWeek ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''}`}
+                onClick={() => { play('click'); setViewWeek(w); }}
+                title={`Week ${w}: ${WEEK_TITLES[w]}`}
+              />
+            );
+          })}
+        </div>
+
+        {/* ===== SWIPEABLE WEEK CONTENT ===== */}
+        <div
+          className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Reading Card */}
+          <button
+            type="button"
+            className={styles.readingCard}
+            onClick={() => { play('click'); setReaderIndex(Math.min(viewWeek, WEEKLY_READINGS.length - 1)); setIsReaderOpen(true); }}
+            onMouseEnter={() => play('hover')}
+          >
+            <div className={styles.readingMedia}>
+              {isReadingVideo ? (
+                <video src={weekReading.imageUrl} autoPlay loop muted playsInline className={styles.readingImg} />
+              ) : (
+                <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
+              )}
+            </div>
+            <div className={styles.readingInfo}>
+              <span className={styles.readingCategory}>{weekReading.category}</span>
+              <span className={styles.readingTitle}>{weekReading.title}</span>
+              <span className={styles.readingAuthor}>{weekReading.author}</span>
+            </div>
+            <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+
+          {/* Task Cards */}
+          <WeekTasksView
+            key={viewWeek}
+            weekNumber={viewWeek}
+            enablePersistence={isAuthenticated}
+            isLocked={viewWeek > activeWeek}
+            initialIsSealed={getWeekStatus(viewWeek)?.isSealed}
+            initialSealTxHash={getWeekStatus(viewWeek)?.sealTxHash}
+            onSealComplete={handleSealComplete}
+          />
+        </div>
+
       </main>
 
       {/* Leaderboard Modal */}
@@ -392,8 +388,6 @@ export default function HomePage() {
         markdownPath={currentReading.markdownPath}
         slug={currentReading.slug}
       />
-      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
-      <WorkshopModal isOpen={showWorkshop} onClose={() => setShowWorkshop(false)} />
 
     </div>
     </HomeWelcomeFlow>

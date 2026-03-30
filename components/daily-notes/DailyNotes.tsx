@@ -17,6 +17,7 @@ interface MorningPageEntry {
 
 interface DailyNotesProps {
   enablePersistence?: boolean;
+  compact?: boolean;
 }
 
 const WEEK_COLORS = [
@@ -34,7 +35,7 @@ const WEEK_COLORS = [
   '#9333EA', // Week 12 — purple
 ];
 
-export default function DailyNotes({ enablePersistence = false }: DailyNotesProps) {
+export default function DailyNotes({ enablePersistence = false, compact = false }: DailyNotesProps) {
   const { play } = useSound();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
@@ -238,12 +239,20 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
 
   const canStart = isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
+  const handleCompactClick = () => {
+    if (compact && canStart) {
+      play('click');
+      startTimer(availableDayIndex);
+    }
+  };
+
   return (
     <>
       <div
-        className={styles.card}
+        className={`${styles.card} ${compact ? styles.cardCompact : ''} ${compact && todayDone ? styles.cardDone : ''}`}
         style={{ '--week-color': weekColor } as React.CSSProperties}
         onMouseEnter={() => play('hum')}
+        onClick={handleCompactClick}
       >
         <div className={styles.cardButton}>
           <div className={styles.cardLeft}>
@@ -256,15 +265,23 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
             <div>
               <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
-                All entries are encrypted.
+                {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
               </span>
             </div>
           </div>
           <div className={styles.cardRight}>
-            <span className={styles.shardBadge} title="Earn 100 shards per day completed">
-              <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
-              +100
-            </span>
+            {compact && todayDone ? (
+              <div className={styles.compactCheck}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+            ) : (
+              <span className={styles.shardBadge} title="Earn 100 shards per day completed">
+                <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
+                +100
+              </span>
+            )}
             <div className={styles.dayDots}>
               {Array.from({ length: 7 }, (_, i) => {
                 const done = morningPages.find(e => e.day === i + 1);
@@ -280,7 +297,7 @@ export default function DailyNotes({ enablePersistence = false }: DailyNotesProp
           </div>
         </div>
 
-        {isExpanded && (
+        {!compact && isExpanded && (
           <div className={styles.expandedContent}>
             <p className={styles.instructions}>
               Write freely for 15 minutes each day. Let your thoughts flow without judgment.

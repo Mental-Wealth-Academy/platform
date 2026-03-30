@@ -1,4 +1,4 @@
-/* Home Page — Calm-inspired, Morning Pages focus */
+/* Home Page — Card-based layout with swipe navigation */
 
 .pageLayout {
   margin-left: var(--sidebar-width, 265px);
@@ -15,7 +15,7 @@
 }
 
 /* ============================================ */
-/* MORNING PAGES HERO — 60% of viewport        */
+/* HERO — Greeting + Streak                     */
 /* ============================================ */
 
 .hero {
@@ -23,8 +23,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: auto;
-  padding: 12px 0 0;
+  padding: 12px 0 20px;
   opacity: 0;
   transform: translateY(10px);
 }
@@ -38,82 +37,14 @@
   font-size: 18px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.5);
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
   letter-spacing: -0.01em;
 }
 
-/* The Circle */
-.circle {
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-primary, #5168FF);
-  color: #ffffff;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: breathe 4s ease-in-out infinite;
-  box-shadow: 0 8px 40px rgba(81, 104, 255, 0.2);
-}
-
-.circle:hover {
-  transform: scale(1.04);
-  box-shadow: 0 16px 56px rgba(81, 104, 255, 0.28);
-}
-
-.circle:active {
-  transform: scale(0.97);
-}
-
-.penIcon {
-  opacity: 0.9;
-}
-
-.circleLabel {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  opacity: 0.95;
-}
-
-/* Altar button */
-.altarButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  transition: transform 0.3s ease;
-}
-
-.altarButton:hover {
-  transform: scale(1.04);
-}
-
-.altarButton:active {
-  transform: scale(0.97);
-}
-
-.altarImage {
-  width: 180px;
-  height: 180px;
-  object-fit: contain;
-}
-
-/* Streak below circle */
 .streakRow {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  margin-top: 24px;
 }
 
 .streakNumber {
@@ -132,117 +63,218 @@
 }
 
 /* ============================================ */
-/* SECONDARY NAV — pill tabs                    */
+/* WEEK HEADER — Navigation between weeks       */
 /* ============================================ */
 
-.secondaryRow {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin: 32px 0 24px;
-}
-
-.navPill {
-  padding: 10px 24px;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 100px;
-  background: #ffffff;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.5);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.navPill:hover {
-  border-color: rgba(81, 104, 255, 0.2);
-  color: #1A1D33;
-}
-
-.navPillActive {
-  background: var(--color-primary, #5168FF);
-  border-color: var(--color-primary, #5168FF);
-  color: #ffffff;
-}
-
-/* ============================================ */
-/* ACTIVITY CONTENT                             */
-/* ============================================ */
-
-.activityContent {
-  animation: contentFadeIn 0.25s ease;
-}
-
-@keyframes contentFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.journalCards {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* ============================================ */
-/* BOTTOM CARDS                                 */
-/* ============================================ */
-
-.bottomCards {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Stats row */
-.statsCard {
+.weekHeader {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  border-radius: 16px;
+  justify-content: space-between;
+  margin: 28px 0 8px;
+  padding: 0 4px;
 }
 
-.stat {
+.weekHeaderCenter {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
 }
 
-.statValue {
+.weekLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.weekTitle {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: -0.01em;
+}
+
+.weekArrow {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1A1D33;
+  box-shadow: 3px 3px 0 #1A1D33;
+  transition: all 0.15s ease;
+}
+
+.weekArrow:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1A1D33;
+}
+
+.weekArrow:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1A1D33;
+}
+
+.weekArrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  box-shadow: 2px 2px 0 #CCCCCC;
+}
+
+/* Week Dots */
+.weekDots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.weekDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E0E1EE;
+  border: 2px solid rgba(26, 29, 51, 0.12);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.weekDot:hover {
+  background: rgba(81, 104, 255, 0.3);
+}
+
+.weekDotActive {
+  background: #5168FF;
+  border-color: #1A1D33;
+  transform: scale(1.2);
+}
+
+.weekDotSealed {
+  background: #22C55E;
+  border-color: #166534;
+}
+
+/* ============================================ */
+/* SWIPEABLE WEEK CONTENT                       */
+/* ============================================ */
+
+.weekContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.weekContentSwipeLeft {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.weekContentSwipeRight {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ============================================ */
+/* READING CARD                                 */
+/* ============================================ */
+
+.readingCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 #1A1D33;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.readingCard:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.readingMedia {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid #1A1D33;
+}
+
+.readingImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.readingInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.readingCategory {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.readingTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
   font-weight: 700;
   color: #1A1D33;
   line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.statLabel {
+.readingAuthor {
   font-family: 'Poppins', sans-serif;
   font-size: 11px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.4);
 }
 
-.statDivider {
-  width: 1px;
-  height: 32px;
-  background: rgba(26, 29, 51, 0.08);
+.readingArrow {
+  color: rgba(26, 29, 51, 0.25);
+  flex-shrink: 0;
 }
 
-/* ── Top Leaderboard ── */
+/* ============================================ */
+/* TOP LEADERBOARD                              */
+/* ============================================ */
+
 .topLeaderboard {
   background: #ffffff;
   border: 1px solid rgba(26, 29, 51, 0.06);
   border-radius: 16px;
   padding: 12px 16px;
   cursor: pointer;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -252,9 +284,7 @@
   -ms-overflow-style: none;
 }
 
-.topLeaderboard::-webkit-scrollbar {
-  display: none;
-}
+.topLeaderboard::-webkit-scrollbar { display: none; }
 
 .topLeaderboard:hover {
   border-color: rgba(81, 104, 255, 0.15);
@@ -290,25 +320,15 @@
 .podiumSecond { order: 2; }
 .podiumThird { order: 3; }
 
-/* Avatar rings — gold / silver / bronze */
 .podiumAvatarRing {
   border-radius: 50%;
   padding: 2px;
   background: rgba(26, 29, 51, 0.08);
 }
 
-.podiumFirst .podiumAvatarRing {
-  padding: 2px;
-  background: #D4A843;
-}
-
-.podiumSecond .podiumAvatarRing {
-  background: #b0b8c9;
-}
-
-.podiumThird .podiumAvatarRing {
-  background: #c47a3a;
-}
+.podiumFirst .podiumAvatarRing { padding: 2px; background: #D4A843; }
+.podiumSecond .podiumAvatarRing { background: #b0b8c9; }
+.podiumThird .podiumAvatarRing { background: #c47a3a; }
 
 .podiumAvatar {
   width: 28px;
@@ -348,48 +368,97 @@
   line-height: 1;
 }
 
-/* League card (modal rows) */
-.leagueCard {
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  border-radius: 16px;
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
 
-.leagueCard:hover {
-  border-color: rgba(81, 104, 255, 0.15);
-}
 
-.leagueHeader {
+/* ============================================ */
+/* LEADERBOARD MODAL                            */
+/* ============================================ */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  justify-content: center;
+  z-index: 1000;
+  animation: overlayIn 0.2s ease;
 }
 
-.leagueTitle {
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalCard {
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 90%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideIn 0.25s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: rgba(26, 29, 51, 0.35);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.modalClose:hover { background: rgba(26, 29, 51, 0.05); }
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modalTitle {
+  display: block;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: #1A1D33;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
-.leagueSub {
+.modalSub {
+  display: block;
   font-family: 'Poppins', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
-  color: rgba(26, 29, 51, 0.4);
-  margin-left: auto;
+  color: rgba(26, 29, 51, 0.45);
 }
 
-.leagueList {
+.modalList {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .leagueRow {
@@ -450,135 +519,6 @@
   flex-shrink: 0;
 }
 
-/* Quick links */
-.quickLinks {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.quickLink {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.quickLink:hover {
-  border-color: rgba(81, 104, 255, 0.15);
-}
-
-.quickLinkText {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1A1D33;
-}
-
-.quickLinkArrow {
-  font-size: 20px;
-  color: rgba(26, 29, 51, 0.25);
-  line-height: 1;
-}
-
-/* ============================================ */
-/* LEADERBOARD MODAL                            */
-/* ============================================ */
-
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: overlayIn 0.2s ease;
-}
-
-@keyframes overlayIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modalCard {
-  background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 20px;
-  padding: 28px 24px;
-  width: 90%;
-  max-width: 420px;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-  animation: modalSlideIn 0.25s ease;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-}
-
-@keyframes modalSlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.modalClose {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  width: 32px;
-  height: 32px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: rgba(26, 29, 51, 0.35);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: background 0.15s;
-}
-
-.modalClose:hover {
-  background: rgba(26, 29, 51, 0.05);
-}
-
-.modalHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.modalTitle {
-  display: block;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1A1D33;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.modalSub {
-  display: block;
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(26, 29, 51, 0.45);
-}
-
-.modalList {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .emptyText {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -599,15 +539,6 @@
   }
 }
 
-@keyframes breathe {
-  0%, 100% {
-    box-shadow: 0 8px 40px rgba(81, 104, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 12px 50px rgba(81, 104, 255, 0.28);
-  }
-}
-
 /* ============================================ */
 /* RESPONSIVE                                   */
 /* ============================================ */
@@ -619,71 +550,59 @@
   }
 }
 
-@media (min-width: 768px) {
-  .circle {
-    width: 280px;
-    height: 280px;
-  }
-
-  .penIcon {
-    width: 52px;
-    height: 52px;
-  }
-
-  .altarImage {
-    width: 220px;
-    height: 220px;
-  }
-
-  .circleLabel {
-    font-size: 17px;
-  }
-}
-
 @media (max-width: 480px) {
   .content {
     padding: 20px 16px 88px;
   }
 
   .hero {
-    min-height: auto;
+    padding: 8px 0 16px;
   }
 
   .greeting {
     font-size: 16px;
-    margin-bottom: 12px;
-  }
-
-  .circle {
-    width: 200px;
-    height: 200px;
-  }
-
-  .penIcon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .altarImage {
-    width: 150px;
-    height: 150px;
-  }
-
-  .circleLabel {
-    font-size: 14px;
   }
 
   .streakNumber {
     font-size: 24px;
   }
 
-  .secondaryRow {
-    margin: 24px 0 20px;
+  .weekHeader {
+    margin: 20px 0 6px;
   }
 
-  .navPill {
-    padding: 8px 18px;
-    font-size: 12px;
+  .weekTitle {
+    font-size: 18px;
+  }
+
+  .weekArrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .weekDots {
+    gap: 5px;
+    margin-bottom: 16px;
+  }
+
+  .weekDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .readingCard {
+    padding: 12px 14px;
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .readingMedia {
+    width: 48px;
+    height: 48px;
+  }
+
+  .readingTitle {
+    font-size: 13px;
   }
 
   .quickLinks {

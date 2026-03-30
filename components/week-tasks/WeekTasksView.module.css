@@ -1,0 +1,504 @@
+/* WeekTasksView — Individual task cards for a week */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 0;
+}
+
+.loadingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--week-color, #5168FF);
+  animation: loadPulse 1.2s ease-in-out infinite;
+}
+
+.loadingDot:nth-child(2) { animation-delay: 0.15s; }
+.loadingDot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes loadPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Locked */
+.lockedMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: rgba(26, 29, 51, 0.35);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Save bar */
+.saveBar {
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.4);
+  padding: 4px 0;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Task Card ─── */
+
+.taskCard {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  border-left: 7px solid var(--week-color, #5168FF);
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1A1D33;
+  transition: all 0.2s ease;
+}
+
+.taskCard:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.taskCardDone {
+  border-left-color: #22C55E;
+}
+
+.taskCardDone .taskIcon {
+  background: #22C55E;
+}
+
+.taskCardSealed {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Card Header */
+.taskCardHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.taskCardHeader:hover {
+  background: rgba(26, 29, 51, 0.02);
+}
+
+.taskIcon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--week-color, #5168FF);
+  color: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 10px;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.taskInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.taskTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1A1D33;
+  line-height: 1.2;
+}
+
+.taskPreview {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(26, 29, 51, 0.4);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.taskCheckDone {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #22C55E;
+  color: #FFFFFF;
+  border: 2px solid #1A1D33;
+  border-radius: 50%;
+}
+
+.taskCheckEmpty {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(26, 29, 51, 0.15);
+  border-radius: 50%;
+}
+
+.expandArrow {
+  color: rgba(26, 29, 51, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.expandArrowOpen {
+  transform: rotate(180deg);
+}
+
+/* Card Content (expanded) */
+.taskCardContent {
+  padding: 0 18px 18px;
+  border-top: 2px solid rgba(26, 29, 51, 0.06);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 2000px; }
+}
+
+.taskInstructions {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(26, 29, 51, 0.6);
+  line-height: 1.7;
+  margin: 14px 0;
+}
+
+.taskEditor {
+  margin-bottom: 14px;
+}
+
+/* Mark Complete Button */
+.markDoneBtn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--week-color, #5168FF);
+  background: transparent;
+  border: 2px solid var(--week-color, #5168FF);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.markDoneBtn:hover {
+  background: var(--week-color, #5168FF);
+  color: #FFFFFF;
+}
+
+.markDoneBtnActive {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #FFFFFF;
+}
+
+.markDoneBtnActive:hover {
+  background: #16A34A;
+  border-color: #16A34A;
+}
+
+/* ─── Seal Section ─── */
+
+.sealSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 8px;
+}
+
+.progressInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressText {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.4);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #E8E9F0;
+  border: 2px solid #1A1D33;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: var(--week-color, #5168FF);
+  transition: width 0.3s ease;
+}
+
+.sealBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #AAAAAA;
+  background: #E8E9F0;
+  border: 3px solid #CCCCCC;
+  border-radius: 8px;
+  cursor: not-allowed;
+  box-shadow: 3px 3px 0 #CCCCCC;
+}
+
+.sealBtnReady {
+  color: #FFFFFF;
+  background: var(--week-color, #5168FF);
+  border-color: #1A1D33;
+  box-shadow: 4px 4px 0 #1A1D33;
+  cursor: pointer;
+}
+
+.sealBtnReady:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #1A1D33;
+}
+
+.sealHint {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  color: rgba(26, 29, 51, 0.35);
+}
+
+/* Sealed Banner */
+.sealedBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: #F0FFF4;
+  border: 3px solid #22C55E;
+  border-radius: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #166534;
+}
+
+.sealedHash {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #22C55E;
+  opacity: 0.7;
+}
+
+/* ─── Seal Modal ─── */
+
+.sealModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sealModal {
+  background: #FFFFFF;
+  border: 3px solid #1A1D33;
+  border-radius: 16px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 8px 8px 0 #1A1D33;
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sealModalTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0 0 8px;
+}
+
+.sealModalText {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: rgba(26, 29, 51, 0.6);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.sealModalButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.sealModalCancel {
+  flex: 1;
+  padding: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1A1D33;
+  background: #E8E9F0;
+  border: 2px solid #1A1D33;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.sealModalConfirm {
+  flex: 1;
+  padding: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: var(--week-color, #5168FF);
+  border: 2px solid #1A1D33;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.sealModalProgress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: rgba(26, 29, 51, 0.6);
+}
+
+.sealSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #E8E9F0;
+  border-top-color: var(--week-color, #5168FF);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.sealModalComplete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  text-align: center;
+}
+
+.sealModalComplete h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1D33;
+  margin: 0;
+}
+
+.sealModalComplete p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #22C55E;
+  margin: 0;
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 480px) {
+  .taskCard {
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 #1A1D33;
+  }
+
+  .taskCardHeader {
+    padding: 14px 12px;
+    gap: 10px;
+  }
+
+  .taskIcon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+  }
+
+  .taskTitle {
+    font-size: 14px;
+  }
+
+  .taskCardContent {
+    padding: 0 12px 14px;
+  }
+}
