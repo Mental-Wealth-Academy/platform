@@ -494,6 +494,50 @@
   cursor: not-allowed;
 }
 
+/* Voice toggle button */
+.voiceButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.voiceButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.voiceActive {
+  background: rgba(81, 104, 255, 0.15);
+  border-color: rgba(81, 104, 255, 0.4);
+  color: var(--color-primary, #5168FF);
+}
+
+.voiceActive:hover {
+  background: rgba(81, 104, 255, 0.25);
+  border-color: rgba(81, 104, 255, 0.5);
+  color: var(--color-primary, #5168FF);
+}
+
+.voiceSpeaking {
+  animation: speakPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes speakPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(81, 104, 255, 0.3); }
+  50% { box-shadow: 0 0 0 6px rgba(81, 104, 255, 0); }
+}
+
 .sendButton {
   display: flex;
   align-items: center;

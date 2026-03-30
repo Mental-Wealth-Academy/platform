@@ -6,6 +6,30 @@ import { providers, Contract, utils } from 'ethers';
 import { ensureBaseNetwork } from '@/lib/azura-contract';
 import styles from './AzuraChat.module.css';
 
+// ── Azura Voice TTS ──────────────────────────────────────────
+async function speakAzura(text: string, signal?: AbortSignal): Promise<void> {
+  const res = await fetch('/api/voice/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+    signal,
+  });
+  if (!res.ok) throw new Error('TTS request failed');
+  const { audio } = await res.json();
+  if (!audio) throw new Error('No audio data');
+
+  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: 'audio/mpeg' });
+  const url = URL.createObjectURL(blob);
+
+  return new Promise<void>((resolve, reject) => {
+    const el = new Audio(url);
+    el.onended = () => { URL.revokeObjectURL(url); resolve(); };
+    el.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Audio playback error')); };
+    el.play().catch(reject);
+  });
+}
+
 interface Message {
   id: string;
   text: string;
@@ -62,6 +86,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [showLiquidityInput, setShowLiquidityInput] = useState(false);
   const [liquidityTarget, setLiquidityTarget] = useState<LiquidityTarget>('governance');
   const [txPending, setTxPending] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const voiceAbortRef = useRef<AbortController | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liquidityInputRef = useRef<HTMLInputElement>(null);
@@ -130,8 +157,21 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+      // Stop any in-progress speech when chat closes
+      voiceAbortRef.current?.abort();
+    };
   }, [isOpen]);
+
+  const toggleVoice = () => {
+    if (voiceEnabled) {
+      // Turning off — stop current speech
+      voiceAbortRef.current?.abort();
+      setIsSpeaking(false);
+    }
+    setVoiceEnabled((v) => !v);
+  };
 
   const addAzuraMessage = (text: string, action?: Message['action']) => {
     setIsTyping(true);
@@ -147,6 +187,17 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         },
       ]);
       setIsTyping(false);
+
+      // Auto-speak Azura's response when voice is enabled
+      if (voiceEnabled) {
+        voiceAbortRef.current?.abort();
+        const controller = new AbortController();
+        voiceAbortRef.current = controller;
+        setIsSpeaking(true);
+        speakAzura(text, controller.signal)
+          .catch(() => {/* aborted or failed — silent */})
+          .finally(() => setIsSpeaking(false));
+      }
     }, 800 + Math.random() * 800);
   };
 
@@ -505,14 +556,33 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
             disabled={isTyping}
           />
           <button
+            className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
+            onClick={toggleVoice}
+            type="button"
+            aria-label={voiceEnabled ? 'Disable voice' : 'Enable voice'}
+          >
+            {voiceEnabled ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            )}
+          </button>
+          <button
             className={styles.sendButton}
             onClick={handleSend}
             disabled={!inputText.trim() || isTyping}
             type="button"
             aria-label="Send message"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L12 22M12 2L5 9M12 2L19 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
           </button>
         </div>
