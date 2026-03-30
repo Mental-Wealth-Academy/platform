@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { MarketsPageSkeleton } from '@/components/skeleton/Skeleton';
 import styles from './page.module.css';
 import { useSound } from '@/hooks/useSound';
 import type { CategorizedMarkets, MarketCategory, PolymarketMarket } from '@/lib/market-api';
@@ -629,7 +630,7 @@ export default function Markets() {
         </div>
 
         {/* ── Market Cards ── */}
-        {!polymarkets && !polyError && <div className={styles.loading}>Loading markets...</div>}
+        {!polymarkets && !polyError && <MarketsPageSkeleton />}
         {polyError && !polymarkets && (
           <div className={styles.emptyState}>
             <div className={styles.emptyTitle}>Could not load markets</div>

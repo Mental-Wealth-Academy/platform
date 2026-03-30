@@ -409,6 +409,112 @@ export function LivestreamPageSkeleton() {
   );
 }
 
+// ==================== MARKETS PAGE SKELETONS ====================
+
+export function MarketCardSkeleton() {
+  return (
+    <div className={styles.marketCardSkeleton}>
+      <div className={styles.marketCardHeaderSkeleton}>
+        <div className={`${styles.skeleton} ${styles.marketBadgeSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.marketDateSkeleton}`} />
+      </div>
+      <div className={`${styles.skeleton} ${styles.marketQuestionSkeleton}`} />
+      <div className={`${styles.skeleton} ${styles.marketQuestionLine2Skeleton}`} />
+      <div className={`${styles.skeleton} ${styles.marketProbBarSkeleton}`} />
+      <div className={styles.marketProbLabelsSkeleton}>
+        <div className={`${styles.skeleton} ${styles.marketProbLabelSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.marketProbLabelSkeleton}`} />
+      </div>
+      <div className={`${styles.skeleton} ${styles.marketMetaSkeleton}`} />
+      <div className={styles.marketQuickBetsSkeleton}>
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className={`${styles.skeleton} ${styles.marketQuickBetSkeleton}`} />
+        ))}
+      </div>
+      <div className={`${styles.skeleton} ${styles.marketInputSkeleton}`} />
+      <div className={styles.marketBetBtnsSkeleton}>
+        <div className={`${styles.skeleton} ${styles.marketBetBtnSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.marketBetBtnSkeleton}`} />
+      </div>
+    </div>
+  );
+}
+
+export function MarketsPageSkeleton() {
+  return (
+    <div className={styles.marketsPageSkeleton}>
+      <div className={styles.marketsHeaderSkeleton}>
+        <div className={`${styles.skeleton} ${styles.marketsTitleSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.marketsSubSkeleton}`} />
+        <div className={styles.marketsStatsSkeleton}>
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className={`${styles.skeleton} ${styles.marketsStatCardSkeleton}`} />
+          ))}
+        </div>
+      </div>
+      <div className={styles.marketsFiltersSkeleton}>
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className={`${styles.skeleton} ${styles.marketsFilterSkeleton}`} />
+        ))}
+      </div>
+      <div className={styles.marketsGridSkeleton}>
+        {[...Array(6)].map((_, i) => (
+          <MarketCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ==================== SHOP PAGE SKELETONS ====================
+
+export function ShopProductCardSkeleton({ size = 'medium' }: { size?: string }) {
+  const cls = size === 'hero' ? styles.shopCardHeroSkeleton
+    : size === 'large' ? styles.shopCardLargeSkeleton
+    : size === 'wide' ? styles.shopCardWideSkeleton
+    : size === 'small' ? styles.shopCardSmallSkeleton
+    : styles.shopCardMediumSkeleton;
+
+  return (
+    <div className={`${styles.shopCardSkeleton} ${cls}`}>
+      <div className={`${styles.skeleton} ${styles.shopImageSkeleton}`} />
+      {size !== 'hero' && (
+        <div className={styles.shopCardMetaSkeleton}>
+          <div className={styles.shopCardMetaTextSkeleton}>
+            <div className={`${styles.skeleton} ${styles.shopCardTitleSkeleton}`} />
+            <div className={`${styles.skeleton} ${styles.shopCardSubSkeleton}`} />
+          </div>
+          <div className={`${styles.skeleton} ${styles.shopCardPriceSkeleton}`} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function ShopPageSkeleton() {
+  const sizes = ['hero', 'large', 'medium', 'medium', 'small', 'small', 'wide', 'wide', 'medium', 'medium'];
+  return (
+    <div className={styles.shopPageSkeleton}>
+      <div className={styles.shopHeaderSkeleton}>
+        <div className={`${styles.skeleton} ${styles.shopTagSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.shopTitleSkeleton}`} />
+        <div className={`${styles.skeleton} ${styles.shopSubSkeleton}`} />
+      </div>
+      <div className={styles.shopCategoriesSkeleton}>
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className={`${styles.skeleton} ${styles.shopCategorySkeleton}`} />
+        ))}
+      </div>
+      <div className={`${styles.skeleton} ${styles.shopBannerSkeleton}`} />
+      <div className={styles.shopGridSkeleton}>
+        {sizes.map((s, i) => (
+          <ShopProductCardSkeleton key={i} size={s} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ==================== SURVEYS PAGE SKELETONS ====================
 
 export function SurveyTaskCardSkeleton() {

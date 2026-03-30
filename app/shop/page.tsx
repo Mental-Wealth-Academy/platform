@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { ShopPageSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -229,16 +230,29 @@ export default function ShopPage() {
   const { play } = useSound();
   const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [mounted, setMounted] = useState(false);
 
   const filtered = activeCategory === 'All' ? shopItems : shopItems.filter((i) => i.category === activeCategory);
 
   useEffect(() => {
+    setMounted(true);
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelectedItem(null);
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div className={styles.pageLayout}>
+        <SideNavigation />
+        <main className={styles.page}>
+          <ShopPageSkeleton />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageLayout}>

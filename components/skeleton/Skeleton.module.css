@@ -1349,6 +1349,359 @@
   }
 }
 
+/* ==================== MARKETS PAGE SKELETONS ==================== */
+
+.marketsPageSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1120px;
+}
+
+.marketsHeaderSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.marketsTitleSkeleton {
+  width: 240px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.marketsSubSkeleton {
+  width: 360px;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.marketsStatsSkeleton {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.marketsStatCardSkeleton {
+  width: 160px;
+  height: 64px;
+  border-radius: 12px;
+}
+
+.marketsFiltersSkeleton {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.1s;
+}
+
+.marketsFilterSkeleton {
+  width: 72px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.marketsGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.marketCardSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 14px;
+}
+
+.marketCardHeaderSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.marketBadgeSkeleton {
+  width: 64px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.marketDateSkeleton {
+  width: 52px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.marketQuestionSkeleton {
+  width: 90%;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.marketQuestionLine2Skeleton {
+  width: 60%;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.marketProbBarSkeleton {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.marketProbLabelsSkeleton {
+  display: flex;
+  justify-content: space-between;
+}
+
+.marketProbLabelSkeleton {
+  width: 56px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.marketMetaSkeleton {
+  width: 80px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.marketQuickBetsSkeleton {
+  display: flex;
+  gap: 6px;
+}
+
+.marketQuickBetSkeleton {
+  flex: 1;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.marketInputSkeleton {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.marketBetBtnsSkeleton {
+  display: flex;
+  gap: 8px;
+}
+
+.marketBetBtnSkeleton {
+  flex: 1;
+  height: 48px;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .marketsGridSkeleton {
+    grid-template-columns: 1fr;
+  }
+
+  .marketsStatsSkeleton {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .marketsStatCardSkeleton {
+    width: 120px;
+    height: 56px;
+  }
+}
+
+/* ==================== SHOP PAGE SKELETONS ==================== */
+
+.shopPageSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.shopHeaderSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.shopTagSkeleton {
+  width: 100px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.shopTitleSkeleton {
+  width: 180px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.shopSubSkeleton {
+  width: 80%;
+  max-width: 480px;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.shopCategoriesSkeleton {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.1s;
+}
+
+.shopCategorySkeleton {
+  width: 80px;
+  height: 36px;
+  border-radius: 20px;
+}
+
+.shopBannerSkeleton {
+  width: 100%;
+  height: 72px;
+  border-radius: 14px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.15s;
+}
+
+.shopGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200px;
+  gap: 16px;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.shopCardSkeleton {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.shopImageSkeleton {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: 0;
+}
+
+.shopCardMetaSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  gap: 8px;
+}
+
+.shopCardMetaTextSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shopCardTitleSkeleton {
+  width: 120px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.shopCardSubSkeleton {
+  width: 80px;
+  height: 10px;
+  border-radius: 4px;
+}
+
+.shopCardPriceSkeleton {
+  width: 48px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* Shop card sizes matching the bento grid */
+.shopCardHeroSkeleton {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+
+.shopCardLargeSkeleton {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.shopCardWideSkeleton {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.shopCardMediumSkeleton {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.shopCardSmallSkeleton {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+@media (max-width: 900px) {
+  .shopGridSkeleton {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 180px;
+  }
+
+  .shopCardHeroSkeleton {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .shopCardLargeSkeleton {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .shopCardWideSkeleton {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .shopGridSkeleton {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 200px;
+  }
+
+  .shopCardHeroSkeleton,
+  .shopCardLargeSkeleton,
+  .shopCardWideSkeleton {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
 /* ==================== SURVEYS PAGE SKELETONS ==================== */
 
 .surveysPageSkeleton {
