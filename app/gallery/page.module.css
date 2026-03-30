@@ -1,13 +1,28 @@
 /* Gallery Page — Futuristic Bento Art Gallery */
 
 .pageLayout {
+  position: relative;
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
-  background: var(--color-background);
+  background: transparent;
+}
+
+.bgViz {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.35;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .page {
+  position: relative;
+  z-index: 1;
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
@@ -129,6 +144,18 @@
   grid-row: span 1;
 }
 
+/* ── Rainbow border animation ── */
+@keyframes rainbowRotate {
+  0% { --rainbow-angle: 0deg; }
+  100% { --rainbow-angle: 360deg; }
+}
+
+@property --rainbow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 /* ── Art Card ── */
 .artCard {
   position: relative;
@@ -136,16 +163,35 @@
   overflow: hidden;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(81, 104, 255, 0.1);
-  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease, border-color 0.3s ease;
+  border: 2px solid rgba(81, 104, 255, 0.1);
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease;
   display: flex;
   flex-direction: column;
 }
 
+.artCard::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius-xl) + 2px);
+  background: conic-gradient(
+    from var(--rainbow-angle, 0deg),
+    #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: rainbowRotate 3s linear infinite;
+}
+
 .artCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 48px rgba(81, 104, 255, 0.12);
-  border-color: rgba(81, 104, 255, 0.25);
+  box-shadow: 0 16px 48px rgba(81, 104, 255, 0.15);
+  border-color: transparent;
+}
+
+.artCard:hover::before {
+  opacity: 1;
 }
 
 /* ── Frame ── */
@@ -311,52 +357,6 @@
   text-transform: uppercase;
 }
 
-/* ── Stats Card ── */
-.statsCard {
-  grid-column: span 4;
-  border-radius: var(--radius-xl);
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(81, 104, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.statsLabel {
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.statValue {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
-}
-
-.statLabel {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-}
-
 /* ── Collection Banner ── */
 .collectionBanner {
   grid-column: span 12;
@@ -402,6 +402,7 @@
   cursor: pointer;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-decoration: none;
   transition: background 0.2s, transform 0.15s;
 }
 
@@ -522,6 +523,8 @@
   cursor: pointer;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
   transition: background 0.2s;
 }
 
@@ -578,6 +581,10 @@
     margin-left: 0;
   }
 
+  .bgViz {
+    left: 0;
+  }
+
   .page {
     padding: 72px 16px 60px;
   }
@@ -623,10 +630,6 @@
     grid-column: span 6;
   }
 
-  .statsCard {
-    grid-column: span 6;
-  }
-
   .collectionBanner {
     grid-column: span 6;
     flex-direction: column;
@@ -662,7 +665,6 @@
   .cardLarge,
   .cardWide,
   .quoteCard,
-  .statsCard,
   .collectionBanner {
     grid-column: span 4;
   }
