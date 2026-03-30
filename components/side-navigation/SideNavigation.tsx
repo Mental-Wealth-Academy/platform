@@ -72,7 +72,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login, logout: privyLogout, authenticated } = usePrivy();
+  const { login, logout: privyLogout, authenticated, getAccessToken } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -154,8 +154,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) return;
     setIsCreatingSession(true);
     try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
       // Check if we already have a session
-      const meResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+      const meResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
       const meData = await meResponse.json().catch(() => ({ user: null }));
 
       if (meData.user) {
@@ -170,15 +173,16 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         return;
       }
 
-      // No session yet — server reads Privy cookie automatically
+      // No session yet — pass fresh Privy token for wallet auth
       const signupResponse = await fetch('/api/auth/wallet-signup', {
         method: 'POST',
         credentials: 'include',
+        headers: authHeaders,
       });
 
       if (signupResponse.ok) {
         const signupData = await signupResponse.json().catch(() => ({}));
-        const refreshResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+        const refreshResponse = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const refreshData = await refreshResponse.json().catch(() => ({ user: null }));
         if (refreshData.user) {
           setUsername(refreshData.user.username || null);
@@ -228,9 +232,11 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
     const fetchUserData = async () => {
       try {
+        const token = await getAccessToken();
         const response = await fetch('/api/me', {
           cache: 'no-store',
           credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await response.json();
         if (data?.user) {
