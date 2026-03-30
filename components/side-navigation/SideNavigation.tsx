@@ -440,18 +440,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         className={`${styles.sideNav} ${isMobileMenuOpen ? styles.sideNavOpen : ''} ${isCollapsed ? styles.sideNavCollapsed : ''}`}
         ref={mobileMenuRef}
       >
-        {/* Header (mobile close only) */}
-        <div className={styles.header}>
-          <button
-            className={styles.closeMenuButton}
-            aria-label="Close menu"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
-        </div>
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>

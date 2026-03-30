@@ -55,15 +55,6 @@
   width: 72px;
 }
 
-/* Header - only visible on mobile for close button */
-.header {
-  display: none;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 8px 16px;
-  background: #ffffff;
-  position: relative;
-}
 
 .logoText {
   font-family: var(--font-primary);
@@ -95,27 +86,6 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-.closeMenuButton {
-  display: none;
-  width: 32px;
-  height: 32px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #1A1D33;
-  transition: all 0.15s ease;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.closeMenuButton:hover {
-  background: #1A1D33;
-  color: #ffffff;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
 
 /* Collapse Toggle Button */
 .collapseButton {
@@ -1231,22 +1201,12 @@
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
   }
 
-  /* Show header on mobile for close button */
-  .header {
-    display: flex;
-    padding: 8px 16px;
-  }
-
   .menuButton {
     display: none;
   }
 
   .collapseButton {
     display: none;
-  }
-
-  .closeMenuButton {
-    display: flex;
   }
 
   .navSections {
