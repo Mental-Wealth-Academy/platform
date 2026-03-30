@@ -36,7 +36,7 @@
 .arenaSubtitle {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
-  color: rgba(26, 27, 36, 0.5);
+  color: rgba(26, 27, 36, 0.65);
   margin: 0 0 20px;
 }
 
@@ -71,10 +71,10 @@
 
 .statLabel {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(26, 27, 36, 0.45);
+  color: rgba(26, 27, 36, 0.62);
 }
 
 .statValue {
@@ -92,32 +92,32 @@
 }
 
 .statPositive {
-  color: #22C55E;
+  color: #15803D;
 }
 
 .statNegative {
-  color: #EF4444;
+  color: #B91C1C;
 }
 
 .resetBtn {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 8px 14px;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 10px 16px;
+  border: 1px solid rgba(185, 28, 28, 0.3);
   border-radius: 8px;
   background: transparent;
-  color: rgba(239, 68, 68, 0.6);
+  color: #B91C1C;
   cursor: pointer;
   transition: all 0.15s ease;
   margin-left: auto;
 }
 
 .resetBtn:hover {
-  background: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.35);
-  color: #EF4444;
+  background: rgba(185, 28, 28, 0.06);
+  border-color: rgba(185, 28, 28, 0.5);
+  color: #991B1B;
 }
 
 /* ── Category Filters ── */
@@ -131,20 +131,21 @@
 
 .filterBtn {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 8px 16px;
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  padding: 10px 18px;
+  min-height: 40px;
+  border: 1px solid rgba(81, 104, 255, 0.15);
   border-radius: 20px;
   background: #fff;
-  color: rgba(26, 27, 36, 0.5);
+  color: #50599B;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .filterBtn:hover {
-  background: rgba(81, 104, 255, 0.04);
+  background: rgba(81, 104, 255, 0.06);
   color: #1A1B24;
 }
 
@@ -191,10 +192,10 @@
 
 .categoryBadge {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border: 1px solid;
   border-radius: 4px;
   font-weight: 600;
@@ -202,8 +203,8 @@
 
 .endDate {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  color: rgba(26, 27, 36, 0.4);
+  font-size: 11px;
+  color: rgba(26, 27, 36, 0.62);
 }
 
 .question {
@@ -233,7 +234,7 @@
 }
 
 .probNo {
-  background: rgba(239, 68, 68, 0.5);
+  background: #DC2626;
   border-radius: 0 4px 4px 0;
   transition: width 0.4s ease;
 }
@@ -247,19 +248,19 @@
 }
 
 .probYesLabel {
-  color: var(--color-primary, #5168FF);
+  color: #3B4FCC;
   font-weight: 600;
 }
 
 .probNoLabel {
-  color: rgba(239, 68, 68, 0.7);
+  color: #DC2626;
   font-weight: 600;
 }
 
 .cardMeta {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  color: rgba(26, 27, 36, 0.4);
+  font-size: 11px;
+  color: rgba(26, 27, 36, 0.62);
   margin-bottom: 14px;
 }
 
@@ -278,19 +279,21 @@
 .quickBetBtn {
   flex: 1;
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  padding: 7px 0;
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 0;
+  min-height: 40px;
+  border: 1.5px solid rgba(81, 104, 255, 0.18);
   border-radius: 8px;
-  background: rgba(81, 104, 255, 0.03);
-  color: rgba(26, 27, 36, 0.6);
+  background: rgba(81, 104, 255, 0.04);
+  color: #50599B;
   cursor: pointer;
   transition: all 0.12s ease;
 }
 
 .quickBetBtn:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.25);
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.35);
   color: #1A1B24;
 }
 
@@ -311,9 +314,10 @@
 .customBetInput {
   flex: 1;
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  padding: 8px 10px;
-  border: 1px solid rgba(81, 104, 255, 0.12);
+  font-size: 13px;
+  padding: 10px 12px;
+  min-height: 40px;
+  border: 1.5px solid rgba(81, 104, 255, 0.18);
   border-radius: 8px;
   background: rgba(81, 104, 255, 0.02);
   color: #1A1B24;
@@ -322,7 +326,7 @@
 }
 
 .customBetInput::placeholder {
-  color: rgba(26, 27, 36, 0.3);
+  color: rgba(26, 27, 36, 0.48);
 }
 
 .customBetInput:focus {
@@ -337,10 +341,11 @@
 .betBtn {
   flex: 1;
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 14px 0;
+  min-height: 48px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -348,43 +353,43 @@
 }
 
 .betBtn:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .betYes {
   composes: betBtn;
-  background: var(--color-primary, #5168FF);
+  background: #3B4FCC;
   color: #fff;
 }
 
 .betYes:not(:disabled):hover {
-  background: #3d52e6;
-  box-shadow: 0 2px 10px rgba(81, 104, 255, 0.25);
+  background: #2E3FAF;
+  box-shadow: 0 3px 14px rgba(59, 79, 204, 0.3);
 }
 
 .betNo {
   composes: betBtn;
-  background: rgba(239, 68, 68, 0.85);
+  background: #DC2626;
   color: #fff;
 }
 
 .betNo:not(:disabled):hover {
-  background: rgba(220, 50, 50, 0.95);
-  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+  background: #B91C1C;
+  box-shadow: 0 3px 14px rgba(220, 38, 38, 0.25);
 }
 
 .potentialWin {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  color: rgba(26, 27, 36, 0.4);
+  font-size: 11px;
+  color: rgba(26, 27, 36, 0.62);
   text-align: center;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .potentialWinValue {
-  color: #22C55E;
-  font-weight: 600;
+  color: #15803D;
+  font-weight: 700;
 }
 
 /* Already bet indicator */
@@ -393,13 +398,14 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px;
-  background: rgba(81, 104, 255, 0.04);
-  border: 1px solid rgba(81, 104, 255, 0.1);
+  padding: 14px;
+  background: rgba(59, 79, 204, 0.06);
+  border: 1.5px solid rgba(59, 79, 204, 0.18);
   border-radius: 10px;
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  color: var(--color-primary, #5168FF);
+  font-size: 13px;
+  font-weight: 600;
+  color: #3B4FCC;
 }
 
 /* ── Your Bets Section ── */
@@ -434,24 +440,24 @@
 
 .betSide {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
 .betSideYes {
   composes: betSide;
-  background: rgba(81, 104, 255, 0.1);
-  color: var(--color-primary, #5168FF);
+  background: rgba(59, 79, 204, 0.12);
+  color: #3B4FCC;
 }
 
 .betSideNo {
   composes: betSide;
-  background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
 }
 
 .betQuestion {
@@ -472,8 +478,8 @@
 
 .betPayout {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  color: rgba(26, 27, 36, 0.45);
+  font-size: 11px;
+  color: rgba(26, 27, 36, 0.62);
   flex-shrink: 0;
 }
 
@@ -496,30 +502,30 @@
 
 .betResultBadge {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 3px 8px;
-  border-radius: 4px;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border-radius: 6px;
   flex-shrink: 0;
 }
 
 .betWonBadge {
   composes: betResultBadge;
-  background: rgba(34, 197, 94, 0.12);
-  color: #22C55E;
+  background: rgba(21, 128, 61, 0.1);
+  color: #15803D;
 }
 
 .betLostBadge {
   composes: betResultBadge;
-  background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  background: rgba(185, 28, 28, 0.08);
+  color: #B91C1C;
 }
 
 .noBets {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
-  color: rgba(26, 27, 36, 0.4);
+  color: rgba(26, 27, 36, 0.62);
   text-align: center;
   padding: 32px;
 }
@@ -528,8 +534,8 @@
 
 .loading {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  color: rgba(26, 27, 36, 0.4);
+  font-size: 13px;
+  color: rgba(26, 27, 36, 0.62);
   text-align: center;
   padding: 48px 0;
 }
@@ -550,7 +556,7 @@
 .emptyText {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
-  color: rgba(26, 27, 36, 0.45);
+  color: rgba(26, 27, 36, 0.62);
 }
 
 /* ── Bet Placed Toast ── */

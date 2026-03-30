@@ -215,19 +215,22 @@ export async function fetchPolymarketCrypto(): Promise<PolymarketMarket[]> {
 // ── Curated Polymarket Categories (event-based) ──
 
 const EVENTS_URL =
-  'https://gamma-api.polymarket.com/events?active=true&closed=false&order=volume&ascending=false&limit=50';
+  'https://gamma-api.polymarket.com/events?active=true&closed=false&order=volume&ascending=false&limit=100';
 
 const CATEGORY_ALLOW: Record<MarketCategory, RegExp> = {
-  crypto: /bitcoin|btc|ethereum|eth|solana|sol|xrp|ripple|crypto|stablecoin|defi|web3|cardano|dogecoin|coinbase|microstrategy|megaeth/i,
-  ai: /\bai\b|artificial intelligence|openai|gpt|anthropic|claude|deepseek|llm|machine learning|gemini|chatgpt|frontier model/i,
+  crypto: /bitcoin|btc|ethereum|eth|solana|sol|xrp|ripple|crypto|stablecoin|defi|web3|cardano|dogecoin|coinbase|microstrategy|megaeth|binance|tether|usdc/i,
+  ai: /\bai\b|artificial intelligence|openai|gpt|anthropic|claude|deepseek|llm|machine learning|gemini|chatgpt|frontier model|meta ai|copilot/i,
   sports: /nba|nfl|mlb|nhl|premier league|champions league|super bowl|world cup|ufc|boxing|tennis|grand slam|olympics|formula 1|\bf1\b|world series|playoffs|mvp|championship|serie a|la liga|bundesliga|march madness|stanley cup|australian open/i,
   politics: /president|election|congress|senate|governor|supreme court|legislation|policy|democrat|republican|vote|ballot|cabinet|impeach|approval|parliament|tariff|federal reserve|fed chair|fed rate|treasury secretary|ceasefire|prime minister|coalition/i,
 };
 
+/** Max days until end date to include a market (keeps things fresh). */
+const MAX_DAYS_OUT = 90;
+
 const BLOCKLIST =
   /elon.*tweet|tweet.*count|musk.*post|big brother|love island|reality tv|influencer|celebrity|jersey number|kanye|kardashian|tier list|zodiac|astrology|onlyfans|stranger things|jesus christ|\bgta\b|greenland/i;
 
-const PER_CATEGORY = 3;
+const PER_CATEGORY = 5;
 
 interface GammaEvent {
   title: string;
@@ -236,10 +239,16 @@ interface GammaEvent {
   markets: PolymarketMarket[];
 }
 
-/** Pick the most balanced, highest-volume market from an event. Skips lopsided (>98 or <2). */
+/**
+ * Pick the most balanced, highest-volume market from an event that ends soon.
+ * Skips lopsided (>98 or <2) and markets ending beyond MAX_DAYS_OUT.
+ * Scoring: 40% balance, 25% volume, 35% end-date proximity.
+ */
 function pickBestMarket(mkts: PolymarketMarket[]): PolymarketMarket | null {
   let best: PolymarketMarket | null = null;
   let bestScore = -1;
+  const now = Date.now();
+  const maxMs = MAX_DAYS_OUT * 86_400_000;
 
   for (const m of mkts) {
     let yes: number;
@@ -252,9 +261,14 @@ function pickBestMarket(mkts: PolymarketMarket[]): PolymarketMarket | null {
     // Skip lopsided / settled
     if (yes <= 0.02 || yes >= 0.98) continue;
 
+    // Skip markets ending too far out
+    const endMs = m.endDate ? new Date(m.endDate).getTime() - now : Infinity;
+    if (endMs <= 0 || endMs > maxMs) continue;
+
     const vol = Number(m.volume) || 0;
     const balance = 1 - Math.abs(yes - 0.5) * 2; // 1.0 at 50/50, 0 at edges
-    const score = balance * 0.7 + Math.min(vol / 1e7, 1.0) * 0.3;
+    const proximity = 1 - endMs / maxMs; // 1.0 = ending today, 0.0 = ending at MAX_DAYS_OUT
+    const score = balance * 0.40 + Math.min(vol / 1e7, 1.0) * 0.25 + proximity * 0.35;
     if (score > bestScore) {
       bestScore = score;
       best = m;
