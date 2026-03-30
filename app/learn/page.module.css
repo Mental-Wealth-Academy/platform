@@ -1,7 +1,6 @@
 .page {
   position: relative;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 /* Three.js Background */
@@ -58,14 +57,12 @@
   box-shadow: 4px 4px 0 #1A1D33;
 }
 
-/* Page Layout: Sidenav + Content */
+/* Page Layout: two-column, content centered, nav fixed left of content */
 .pageLayout {
   position: relative;
   z-index: 10;
   display: flex;
-  gap: 40px;
-  max-width: 1100px;
-  margin: 0 auto;
+  justify-content: center;
   padding: 80px 24px;
   opacity: 0;
   transform: translateY(24px);
@@ -77,13 +74,21 @@
   transform: translateY(0);
 }
 
-/* Side Navigation */
+/* Side Navigation — fixed so it never scrolls away */
 .sideNav {
-  position: sticky;
-  top: 100px;
-  align-self: flex-start;
-  width: 220px;
-  flex-shrink: 0;
+  position: fixed;
+  top: 180px;
+  left: max(24px, calc(50% - 380px - 220px));
+  width: 190px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 20;
+}
+
+/* Main content — centered column */
+.content {
+  max-width: 720px;
+  width: 100%;
 }
 
 .sideNavList {
@@ -146,12 +151,7 @@
 }
 
 /* Content */
-.content {
-  flex: 1;
-  max-width: none;
-  padding: 0;
-  margin: 0;
-}
+/* (content sizing handled above) */
 
 /* Hero */
 .heroSection {
@@ -161,6 +161,9 @@
 
 .logo {
   margin-bottom: 16px;
+  width: 180px;
+  height: auto;
+  object-fit: contain;
 }
 
 .heroTagline {
@@ -279,28 +282,41 @@
 
 .ctaButton {
   display: inline-block;
-  padding: 14px 40px;
-  background: var(--color-primary, #5168FF);
+  padding: 16px 48px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(81, 104, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
   font-family: var(--font-primary);
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 4px 4px 0 #1A1D33;
-  transition: all 0.2s ease;
-  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  box-shadow:
+    0 0 40px rgba(81, 104, 255, 0.2),
+    0 0 80px rgba(81, 104, 255, 0.08),
+    inset 0 0 20px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
 }
 
 .ctaButton:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .ctaButton:active {
-  transform: translate(0, 0);
-  box-shadow: 2px 2px 0 #1A1D33;
+  transform: translateY(0);
 }
 
 /* Responsive */

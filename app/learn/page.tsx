@@ -101,62 +101,59 @@ export default function LearnPage() {
         Back
       </a>
 
-      {/* Page Layout: Sidenav + Content */}
-      <div className={`${styles.pageLayout} ${isLoaded ? styles.contentLoaded : ''}`}>
-        {/* Side Navigation */}
-        <nav className={styles.sideNav}>
-          <ul className={styles.sideNavList}>
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href} className={styles.sideNavItem}>
-                <a
-                  href={item.href}
-                  className={`${styles.sideNavLink} ${activeId === item.href.slice(1) ? styles.sideNavLinkActive : ''}`}
-                >
-                  {item.label}
-                </a>
-                {item.subs.length > 0 && (
-                  <ul className={styles.sideNavSubList}>
-                    {item.subs.map((sub) => (
-                      <li key={sub.href} className={styles.sideNavSubItem}>
-                        <a
-                          href={sub.href}
-                          className={`${styles.sideNavSubLink} ${activeId === sub.href.slice(1) ? styles.sideNavLinkActive : ''}`}
-                        >
-                          {sub.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+      {/* Side Navigation — outside pageLayout so transform doesn't break fixed */}
+      <nav className={styles.sideNav}>
+        <ul className={styles.sideNavList}>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.href} className={styles.sideNavItem}>
+              <a
+                href={item.href}
+                className={`${styles.sideNavLink} ${activeId === item.href.slice(1) ? styles.sideNavLinkActive : ''}`}
+              >
+                {item.label}
+              </a>
+              {item.subs.length > 0 && (
+                <ul className={styles.sideNavSubList}>
+                  {item.subs.map((sub) => (
+                    <li key={sub.href} className={styles.sideNavSubItem}>
+                      <a
+                        href={sub.href}
+                        className={`${styles.sideNavSubLink} ${activeId === sub.href.slice(1) ? styles.sideNavLinkActive : ''}`}
+                      >
+                        {sub.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
 
+      {/* Page Layout: Content */}
+      <div className={`${styles.pageLayout} ${isLoaded ? styles.contentLoaded : ''}`}>
         {/* Content */}
         <main className={styles.content}>
           <div className={styles.heroSection}>
             <Image
-              src="/icons/mwa-logo-horizontal.png"
+              src="https://i.imgur.com/VhmwZEG.png"
               alt="Mental Wealth Academy"
               width={180}
-              height={65}
+              height={180}
               className={styles.logo}
               priority
             />
             <p className={styles.heroTagline}>
-              Shared infrastructure for sovereign minds.
+              Changing the future of humanity with the heart of tomorrow.
             </p>
           </div>
 
           {/* What is Wealth? */}
           <section id="wealth" className={styles.card}>
-            <span className={styles.cardLabel}>Philosophy</span>
-            <h2 className={styles.cardTitle}>What is Wealth?</h2>
+            <span className={styles.cardLabel} style={{ textAlign: 'center', display: 'block' }}>Philosophy</span>
+            <h2 className={styles.cardTitle} style={{ textAlign: 'center' }}>What is Wealth?</h2>
             <div className={styles.cardBody}>
-              <p>
-                Wealth isn&apos;t a number in a bank account. It&apos;s the infrastructure around you that gives back.
-              </p>
               <p>
                 Think of it as an oasis. A place where the water doesn&apos;t just sit there; it circulates. It feeds, it grows, it sustains. That&apos;s what we&apos;re building. <strong>Shared infrastructure</strong> that compounds for everyone inside it, not just the person who showed up first.
               </p>
@@ -177,8 +174,8 @@ export default function LearnPage() {
 
           {/* Community DAO */}
           <section id="community" className={styles.card}>
-            <span className={styles.cardLabel}>Governance</span>
-            <h2 className={styles.cardTitle}>Community DAO</h2>
+            <span className={styles.cardLabel} style={{ textAlign: 'center', display: 'block' }}>Governance</span>
+            <h2 className={styles.cardTitle} style={{ textAlign: 'center' }}>Community DAO</h2>
             <div className={styles.cardBody}>
               <p>
                 The DAO isn&apos;t a marketing term we bolted on. It&apos;s how the money actually moves.
@@ -203,8 +200,8 @@ export default function LearnPage() {
 
           {/* Cognitive Benefits */}
           <section id="cognitive" className={styles.card}>
-            <span className={styles.cardLabel}>Science</span>
-            <h2 className={styles.cardTitle}>Cognitive Benefits</h2>
+            <span className={styles.cardLabel} style={{ textAlign: 'center', display: 'block' }}>Science</span>
+            <h2 className={styles.cardTitle} style={{ textAlign: 'center' }}>Cognitive Benefits</h2>
             <div className={styles.cardBody}>
               <p>
                 The 12-week course is built on a simple premise: creative practice rewires your brain. Not metaphorically. Literally.

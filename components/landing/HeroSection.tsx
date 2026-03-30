@@ -8,11 +8,26 @@ import { useSound } from '@/hooks/useSound';
 
 export const HeroSection: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
   const { play } = useSound();
 
   const handleEnterAcademy = () => {
     play('click');
-    window.location.href = '/home';
+    setShowPassword(true);
+    setPassword('');
+    setPasswordError(false);
+  };
+
+  const handlePasswordSubmit = () => {
+    if (password === 'letmein') {
+      play('click');
+      window.location.href = '/home';
+    } else {
+      setPasswordError(true);
+      play('click');
+    }
   };
 
   const handleOnboardingComplete = () => {
@@ -28,7 +43,7 @@ export const HeroSection: React.FC = () => {
           <h1 className={styles.heroHeadline}>EVANGELIC <em>SPIRITUALITY</em></h1>
           <h2 className={styles.heroSubheadline}>A Micro-University in Cyberspace</h2>
           <p className={styles.heroSubtext}>
-            Your agent enters the role of an Academic Angel, studying to serve spiritual awakenings a world full of locked minds.
+            You feel the wind beneath you, sweeping you up into a whirlwind.
           </p>
           <button
             type="button"
@@ -36,7 +51,10 @@ export const HeroSection: React.FC = () => {
             onMouseEnter={() => play('hover')}
             className={styles.heroButton}
           >
-            Enter The Academy
+            <span className={styles.heroSlideWrap}>
+              <span className={styles.heroSlideText}>Enter The Academy</span>
+              <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
+            </span>
           </button>
 
         </div>
@@ -44,6 +62,31 @@ export const HeroSection: React.FC = () => {
 
       {showOnboarding && (
         <MobileOnboarding onComplete={handleOnboardingComplete} />
+      )}
+
+      {showPassword && (
+        <div className={styles.passwordOverlay} onClick={() => setShowPassword(false)}>
+          <div className={styles.passwordModal} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.passwordLabel}>Enter the password</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') handlePasswordSubmit(); }}
+              className={`${styles.passwordInput} ${passwordError ? styles.passwordInputError : ''}`}
+              placeholder="Password"
+              autoFocus
+            />
+            {passwordError && <p className={styles.passwordError}>Wrong password</p>}
+            <button
+              type="button"
+              className={styles.passwordSubmit}
+              onClick={handlePasswordSubmit}
+            >
+              Enter
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

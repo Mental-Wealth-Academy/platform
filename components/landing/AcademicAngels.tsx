@@ -186,11 +186,6 @@ export const AcademicAngels: React.FC = () => {
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.sectionInner}>
-        <h2 className={styles.sectionHeading}><em>One Membership, Lifetime Benefits</em></h2>
-        <p className={styles.sectionSubheading}>
-          Unlock a God's eye view of your life pathway.
-        </p>
-
         <div className={styles.benefitsGrid}>
           {benefits.map((benefit, i) => (
             <div key={i} className={styles.benefitCard} style={{ transitionDelay: `${0.1 + i * 0.1}s` }}>

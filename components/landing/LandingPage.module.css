@@ -75,21 +75,76 @@
 }
 
 .heroButton {
-  background: var(--color-primary);
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  padding: 18px 48px;
+  position: relative;
+  padding: 18px 52px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(81, 104, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 700;
   font-family: var(--font-primary);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 4px 4px 0 #1A1D33;
+  box-shadow:
+    0 0 40px rgba(81, 104, 255, 0.2),
+    0 0 80px rgba(81, 104, 255, 0.08),
+    inset 0 0 20px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: heroFadeUp 0.45s ease-out 0.5s both;
-  position: relative;
+  overflow: hidden;
+}
+
+.heroButton::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.8s ease;
+  pointer-events: none;
+}
+
+.heroButton::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 54px;
+  background: transparent;
+  box-shadow: 0 0 30px rgba(81, 104, 255, 0.15);
+  animation: divinePulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes divinePulse {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 30px rgba(81, 104, 255, 0.12);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 50px rgba(81, 104, 255, 0.25), 0 0 80px rgba(81, 104, 255, 0.08);
+  }
 }
 
 @keyframes heroFadeUp {
@@ -104,19 +159,143 @@
 }
 
 .heroButton:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.heroButton:hover:not(:disabled)::before {
+  left: 125%;
 }
 
 .heroButton:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  transform: translateY(0);
 }
 
 .heroButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Hero button slide text */
+.heroSlideWrap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  height: 1.2em;
+  vertical-align: middle;
+}
+
+.heroSlideText {
+  display: block;
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.heroSlideClone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
+}
+
+.heroButton:hover .heroSlideText {
+  transform: translateY(-100%);
+}
+
+.heroButton:hover .heroSlideClone {
+  transform: translateY(0);
+}
+
+/* Password modal */
+.passwordOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+
+.passwordModal {
+  background: rgba(244, 245, 254, 0.96);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 22px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+}
+
+.passwordLabel {
+  font-family: var(--font-primary);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.passwordInput {
+  width: 100%;
+  padding: 14px 16px;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  color: var(--color-text-dark);
+  background: #ffffff;
+  border: 2px solid rgba(81, 104, 255, 0.2);
+  border-radius: 12px;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.passwordInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.1);
+}
+
+.passwordInputError {
+  border-color: #FF5252;
+}
+
+.passwordInputError:focus {
+  border-color: #FF5252;
+  box-shadow: 0 0 0 4px rgba(255, 82, 82, 0.1);
+}
+
+.passwordError {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: #FF5252;
+  margin: 0;
+}
+
+.passwordSubmit {
+  width: 100%;
+  padding: 14px 24px;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 24px rgba(81, 104, 255, 0.3);
+}
+
+.passwordSubmit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(81, 104, 255, 0.4);
 }
 
 .heroImage {

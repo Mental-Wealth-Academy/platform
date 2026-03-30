@@ -5,10 +5,10 @@ export const KeyFiguresSection: React.FC = () => {
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.figure}>
-          <span className={styles.label}>Up to</span>
+          <span className={styles.label}>Active Members</span>
           <div className={styles.valueRow}>
             <span className={styles.number}>100+</span>
-            <span className={styles.unit}>Cohort</span>
+            <span className={styles.unit}>Believers</span>
           </div>
         </div>
 
