@@ -81,6 +81,9 @@
   justify-content: center;
   flex: 1;
   height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
   position: relative;
