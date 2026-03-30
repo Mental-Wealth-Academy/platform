@@ -79,14 +79,7 @@
   padding: 18px 52px;
   border-radius: 50px;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(81, 104, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--color-primary, #5168FF);
   color: #ffffff;
   font-size: 0.9375rem;
   font-weight: 700;
@@ -94,12 +87,7 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   cursor: pointer;
-  box-shadow:
-    0 0 40px rgba(81, 104, 255, 0.2),
-    0 0 80px rgba(81, 104, 255, 0.08),
-    inset 0 0 20px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(81, 104, 255, 0.25);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: heroFadeUp 0.45s ease-out 0.5s both;
   overflow: hidden;
@@ -131,19 +119,18 @@
   inset: -4px;
   border-radius: 54px;
   background: transparent;
-  box-shadow: 0 0 30px rgba(81, 104, 255, 0.15);
-  animation: divinePulse 3s ease-in-out infinite;
+  display: none;
   pointer-events: none;
 }
 
 @keyframes divinePulse {
   0%, 100% {
-    opacity: 0.4;
-    box-shadow: 0 0 30px rgba(81, 104, 255, 0.12);
+    opacity: 0.3;
+    box-shadow: 0 0 12px rgba(81, 104, 255, 0.06);
   }
   50% {
-    opacity: 1;
-    box-shadow: 0 0 50px rgba(81, 104, 255, 0.25), 0 0 80px rgba(81, 104, 255, 0.08);
+    opacity: 0.6;
+    box-shadow: 0 0 20px rgba(81, 104, 255, 0.1);
   }
 }
 

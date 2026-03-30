@@ -26,7 +26,7 @@ export const HeroSection: React.FC = () => {
       window.location.href = '/home';
     } else {
       setPasswordError(true);
-      play('click');
+      play('error');
     }
   };
 
