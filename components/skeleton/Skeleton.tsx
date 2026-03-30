@@ -412,49 +412,51 @@ export function LivestreamPageSkeleton() {
 // ==================== MARKETS PAGE SKELETONS ====================
 
 export function MarketCardSkeleton() {
+  const s = styles.skeletonMwa;
   return (
     <div className={styles.marketCardSkeleton}>
       <div className={styles.marketCardHeaderSkeleton}>
-        <div className={`${styles.skeleton} ${styles.marketBadgeSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.marketDateSkeleton}`} />
+        <div className={`${s} ${styles.marketBadgeSkeleton}`} />
+        <div className={`${s} ${styles.marketDateSkeleton}`} />
       </div>
-      <div className={`${styles.skeleton} ${styles.marketQuestionSkeleton}`} />
-      <div className={`${styles.skeleton} ${styles.marketQuestionLine2Skeleton}`} />
-      <div className={`${styles.skeleton} ${styles.marketProbBarSkeleton}`} />
+      <div className={`${s} ${styles.marketQuestionSkeleton}`} />
+      <div className={`${s} ${styles.marketQuestionLine2Skeleton}`} />
+      <div className={`${s} ${styles.marketProbBarSkeleton}`} />
       <div className={styles.marketProbLabelsSkeleton}>
-        <div className={`${styles.skeleton} ${styles.marketProbLabelSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.marketProbLabelSkeleton}`} />
+        <div className={`${s} ${styles.marketProbLabelSkeleton}`} />
+        <div className={`${s} ${styles.marketProbLabelSkeleton}`} />
       </div>
-      <div className={`${styles.skeleton} ${styles.marketMetaSkeleton}`} />
+      <div className={`${s} ${styles.marketMetaSkeleton}`} />
       <div className={styles.marketQuickBetsSkeleton}>
         {[...Array(4)].map((_, i) => (
-          <div key={i} className={`${styles.skeleton} ${styles.marketQuickBetSkeleton}`} />
+          <div key={i} className={`${s} ${styles.marketQuickBetSkeleton}`} />
         ))}
       </div>
-      <div className={`${styles.skeleton} ${styles.marketInputSkeleton}`} />
+      <div className={`${s} ${styles.marketInputSkeleton}`} />
       <div className={styles.marketBetBtnsSkeleton}>
-        <div className={`${styles.skeleton} ${styles.marketBetBtnSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.marketBetBtnSkeleton}`} />
+        <div className={`${s} ${styles.marketBetBtnSkeleton}`} />
+        <div className={`${s} ${styles.marketBetBtnSkeleton}`} />
       </div>
     </div>
   );
 }
 
 export function MarketsPageSkeleton() {
+  const s = styles.skeletonMwa;
   return (
     <div className={styles.marketsPageSkeleton}>
       <div className={styles.marketsHeaderSkeleton}>
-        <div className={`${styles.skeleton} ${styles.marketsTitleSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.marketsSubSkeleton}`} />
+        <div className={`${s} ${styles.marketsTitleSkeleton}`} />
+        <div className={`${s} ${styles.marketsSubSkeleton}`} />
         <div className={styles.marketsStatsSkeleton}>
           {[...Array(3)].map((_, i) => (
-            <div key={i} className={`${styles.skeleton} ${styles.marketsStatCardSkeleton}`} />
+            <div key={i} className={`${s} ${styles.marketsStatCardSkeleton}`} />
           ))}
         </div>
       </div>
       <div className={styles.marketsFiltersSkeleton}>
         {[...Array(6)].map((_, i) => (
-          <div key={i} className={`${styles.skeleton} ${styles.marketsFilterSkeleton}`} />
+          <div key={i} className={`${s} ${styles.marketsFilterSkeleton}`} />
         ))}
       </div>
       <div className={styles.marketsGridSkeleton}>
@@ -469,6 +471,7 @@ export function MarketsPageSkeleton() {
 // ==================== SHOP PAGE SKELETONS ====================
 
 export function ShopProductCardSkeleton({ size = 'medium' }: { size?: string }) {
+  const s = styles.skeletonMwa;
   const cls = size === 'hero' ? styles.shopCardHeroSkeleton
     : size === 'large' ? styles.shopCardLargeSkeleton
     : size === 'wide' ? styles.shopCardWideSkeleton
@@ -477,14 +480,14 @@ export function ShopProductCardSkeleton({ size = 'medium' }: { size?: string }) 
 
   return (
     <div className={`${styles.shopCardSkeleton} ${cls}`}>
-      <div className={`${styles.skeleton} ${styles.shopImageSkeleton}`} />
+      <div className={`${s} ${styles.shopImageSkeleton}`} />
       {size !== 'hero' && (
         <div className={styles.shopCardMetaSkeleton}>
           <div className={styles.shopCardMetaTextSkeleton}>
-            <div className={`${styles.skeleton} ${styles.shopCardTitleSkeleton}`} />
-            <div className={`${styles.skeleton} ${styles.shopCardSubSkeleton}`} />
+            <div className={`${s} ${styles.shopCardTitleSkeleton}`} />
+            <div className={`${s} ${styles.shopCardSubSkeleton}`} />
           </div>
-          <div className={`${styles.skeleton} ${styles.shopCardPriceSkeleton}`} />
+          <div className={`${s} ${styles.shopCardPriceSkeleton}`} />
         </div>
       )}
     </div>
@@ -492,23 +495,24 @@ export function ShopProductCardSkeleton({ size = 'medium' }: { size?: string }) 
 }
 
 export function ShopPageSkeleton() {
+  const s = styles.skeletonMwa;
   const sizes = ['hero', 'large', 'medium', 'medium', 'small', 'small', 'wide', 'wide', 'medium', 'medium'];
   return (
     <div className={styles.shopPageSkeleton}>
       <div className={styles.shopHeaderSkeleton}>
-        <div className={`${styles.skeleton} ${styles.shopTagSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.shopTitleSkeleton}`} />
-        <div className={`${styles.skeleton} ${styles.shopSubSkeleton}`} />
+        <div className={`${s} ${styles.shopTagSkeleton}`} />
+        <div className={`${s} ${styles.shopTitleSkeleton}`} />
+        <div className={`${s} ${styles.shopSubSkeleton}`} />
       </div>
       <div className={styles.shopCategoriesSkeleton}>
         {[...Array(5)].map((_, i) => (
-          <div key={i} className={`${styles.skeleton} ${styles.shopCategorySkeleton}`} />
+          <div key={i} className={`${s} ${styles.shopCategorySkeleton}`} />
         ))}
       </div>
-      <div className={`${styles.skeleton} ${styles.shopBannerSkeleton}`} />
+      <div className={`${s} ${styles.shopBannerSkeleton}`} />
       <div className={styles.shopGridSkeleton}>
-        {sizes.map((s, i) => (
-          <ShopProductCardSkeleton key={i} size={s} />
+        {sizes.map((sz, i) => (
+          <ShopProductCardSkeleton key={i} size={sz} />
         ))}
       </div>
     </div>

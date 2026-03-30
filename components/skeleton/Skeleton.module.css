@@ -1351,6 +1351,19 @@
 
 /* ==================== MARKETS PAGE SKELETONS ==================== */
 
+/* Purplish-blue-grey shimmer for market & shop skeletons */
+.skeletonMwa {
+  background: linear-gradient(
+    90deg,
+    rgba(81, 104, 255, 0.07) 25%,
+    rgba(81, 104, 255, 0.03) 50%,
+    rgba(81, 104, 255, 0.07) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
 .marketsPageSkeleton {
   display: flex;
   flex-direction: column;
@@ -1365,8 +1378,8 @@
   flex-direction: column;
   gap: 10px;
   padding: 24px;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
@@ -1401,8 +1414,8 @@
   gap: 8px;
   flex-wrap: wrap;
   padding: 16px 20px;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 14px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
@@ -1429,8 +1442,8 @@
   flex-direction: column;
   gap: 10px;
   padding: 20px;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 14px;
 }
 
@@ -1548,8 +1561,8 @@
   flex-direction: column;
   gap: 10px;
   padding: 24px;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
@@ -1579,8 +1592,8 @@
   gap: 10px;
   flex-wrap: wrap;
   padding: 14px 20px;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 14px;
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
@@ -1615,8 +1628,8 @@
 .shopCardSkeleton {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  background: rgba(244, 245, 254, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   border-radius: 14px;
   overflow: hidden;
 }
