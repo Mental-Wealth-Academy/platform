@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { usePrivy } from '@privy-io/react-auth';
 import { MarketsPageSkeleton } from '@/components/skeleton/Skeleton';
 import styles from './page.module.css';
 import { useSound } from '@/hooks/useSound';
@@ -327,6 +328,8 @@ export default function Markets() {
   const toastTimer = useRef<ReturnType<typeof setTimeout>>();
   const { play } = useSound();
   const [mounted, setMounted] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const { authenticated, ready: privyReady } = usePrivy();
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -335,6 +338,14 @@ export default function Markets() {
     setStats(loadStats());
     setMounted(true);
   }, []);
+
+  // Fetch user avatar
+  useEffect(() => {
+    if (!privyReady || !authenticated) return;
+    fetch('/api/me').then(r => r.ok ? r.json() : null).then(data => {
+      if (data?.user?.avatarUrl) setAvatarUrl(data.user.avatarUrl);
+    }).catch(() => {});
+  }, [privyReady, authenticated]);
 
   // Save to localStorage on changes
   useEffect(() => {
@@ -565,54 +576,7 @@ export default function Markets() {
     <main className={styles.main}>
       <SideNavigation />
       <div className={styles.pageLayout}>
-        {/* ── Arena Header ── */}
-        <div className={styles.arenaHeader}>
-          <h1 className={styles.arenaTitle}>Prediction Arena</h1>
-          <p className={styles.arenaSubtitle}>
-            Bet Shards on real prediction markets. No real money, all the fun.
-          </p>
-
-          <div className={styles.statsRow}>
-            <div className={styles.statCardPrimary}>
-              <Image src="/icons/shard.svg" alt="" width={22} height={22} className={styles.shardIcon} />
-              <div>
-                <div className={styles.statLabel}>Balance</div>
-                <div className={styles.statValue}>{mounted ? balance.toLocaleString() : '...'}</div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div>
-                <div className={styles.statLabel}>Record</div>
-                <div className={styles.statValueSmall}>
-                  {stats.wins}W - {stats.losses}L
-                </div>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <div>
-                <div className={styles.statLabel}>P&L</div>
-                <div
-                  className={`${styles.statValueSmall} ${
-                    pnl >= 0 ? styles.statPositive : styles.statNegative
-                  }`}
-                >
-                  {pnl >= 0 ? '+' : ''}
-                  {mounted ? pnl.toLocaleString() : '0'} ({pnl >= 0 ? '+' : ''}
-                  {mounted ? pnlPct : '0'}%)
-                </div>
-              </div>
-            </div>
-            <button
-              className={styles.resetBtn}
-              onClick={handleReset}
-              onMouseEnter={() => play('hover')}
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-
-        {/* ── Category Filters ── */}
+        {/* ── Category Filters (top) ── */}
         <div className={styles.filters}>
           {(Object.keys(CATEGORY_LABELS) as FilterCategory[]).map((cat) => (
             <button
@@ -627,6 +591,46 @@ export default function Markets() {
               {CATEGORY_LABELS[cat]}
             </button>
           ))}
+        </div>
+
+        {/* ── Compact Stats Bar ── */}
+        <div className={styles.statsBar}>
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt=""
+              width={36}
+              height={36}
+              className={styles.statsAvatar}
+            />
+          ) : (
+            <div className={styles.statsAvatarPlaceholder} />
+          )}
+          <div className={styles.statsGroup}>
+            <div className={styles.statItem}>
+              <Image src="/icons/shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
+              <span className={styles.statValue}>{mounted ? balance.toLocaleString() : '...'}</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statItem}>
+              <span className={styles.statLabel}>Record</span>
+              <span className={styles.statValueSmall}>{stats.wins}W-{stats.losses}L</span>
+            </div>
+            <div className={styles.statDivider} />
+            <div className={styles.statItem}>
+              <span className={styles.statLabel}>P&L</span>
+              <span className={`${styles.statValueSmall} ${pnl >= 0 ? styles.statPositive : styles.statNegative}`}>
+                {pnl >= 0 ? '+' : ''}{mounted ? pnl.toLocaleString() : '0'} ({pnl >= 0 ? '+' : ''}{mounted ? pnlPct : '0'}%)
+              </span>
+            </div>
+          </div>
+          <button
+            className={styles.resetBtn}
+            onClick={handleReset}
+            onMouseEnter={() => play('hover')}
+          >
+            Reset
+          </button>
         </div>
 
         {/* ── Market Cards ── */}
