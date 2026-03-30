@@ -18,7 +18,6 @@ interface Painting {
 }
 
 const paintings: Painting[] = [
-  { title: 'Voting Dashboard For DAO', artist: 'Jhinn Bay', year: '2025', era: 'Product Design', size: 'hero', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWR1cGpzaTRucWtkM2xhbG1iNTVsZXB5Ym5haGdocmYzZ3U3M3h1bDRudHZkMmRnZDZmZmE=', desc: 'Mental Wealth Academy\'s proposal dashboard for library changes, funding and grants for academia & scientific experimentation. Onchain is the future and Academy is empowering those who believe in creating change in the world.', zoraUrl: 'https://zora.co/coin/base:0xbc5060f76357b6dc7df9a689df8308a68db1353f' },
   { title: 'Azura Daemon Model', artist: 'Jhinn Bay', year: '2026', era: 'Concept Art', size: 'large', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWM2cXR3YXc1aWV6a3Zpc2Jnc2g3MjJlazJsZ2ttcDduejd0b2cybHd0cno3cWt0b2l3YWE=', desc: 'The daemon circlet headset contains a magnetizer that attracts and supresses the daemon, a digital beast from another world. The sun necklace is a gift from Azura\'s sun star organization inside Osiris branch.', zoraUrl: 'https://zora.co/coin/base:0x7082385a3e663a441c2dc6d4bf5cfb329dd8e778' },
   { title: 'Decision-Making Models', artist: 'Jhinn Bay', year: '2026', era: 'Product Design', size: 'medium', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWJhc3IydnZ6cjU3NnRqdTVoeHIyMzVmcDdrazdtajdwc2hpb2k3dWFrZjJrbm1pNWF0YnE=', desc: 'Gathering group feedback effortlessly through a transparent system designed for a wide array of governmental models.', zoraUrl: 'https://zora.co/coin/base:0xa89945b39bf7f5923e9d1b389195a9d7d31fed38' },
   { title: 'Soul Keys Design 001', artist: 'Jhinn Bay', year: '2025', era: 'Concept Art', size: 'medium', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWc3c3hyY2JmcnNvaHY3anB3ZDZpYnhycjVoZDJnaGw3a2NzamVuM2FmeWluM2F2eTI0Y2E=', desc: 'Design for a unique digital item that conducts power towards a conduit. Use carefully, and hold it by your side. Something tells you it may be the most important treasure you\'ve ever discovered.', zoraUrl: 'https://zora.co/coin/base:0x5165ac7d9b527b632e1a93ecbab2e34c969a3c14' },
@@ -120,9 +119,6 @@ export default function GalleryPage() {
 
             // Insert quote card after 3rd item
             const showQuoteAfter = i === 2 && activeEra === 'All';
-            // Insert stats after 7th item
-            const showStatsAfter = i === 6 && activeEra === 'All';
-
             return (
               <ArtCardGroup key={painting.title}>
                 <div
@@ -164,29 +160,6 @@ export default function GalleryPage() {
                   </div>
                 )}
 
-                {showStatsAfter && (
-                  <div className={styles.statsCard}>
-                    <span className={styles.statsLabel}>Angel Stats</span>
-                    <div className={styles.statsGrid}>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>36</span>
-                        <span className={styles.statLabel}>Exhibited Works</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>4</span>
-                        <span className={styles.statLabel}>Categories</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>87</span>
-                        <span className={styles.statLabel}>Total Mints</span>
-                      </div>
-                      <div className={styles.statItem}>
-                        <span className={styles.statValue}>Base</span>
-                        <span className={styles.statLabel}>Chain</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </ArtCardGroup>
             );
           })}
