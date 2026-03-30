@@ -1,19 +1,13 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import styles from './page.module.css';
 import { useSound } from '@/hooks/useSound';
-import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics, AppleTokenStats } from '@/lib/market-api';
+import type { CategorizedMarkets, MarketCategory, PolymarketMarket } from '@/lib/market-api';
 
 // ── Helpers ──
-
-function formatPrice(n: number): string {
-  if (n >= 1000) return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (n >= 1) return '$' + n.toFixed(2);
-  return '$' + n.toFixed(4);
-}
 
 function formatVol(raw: number | string | null): string {
   const n = Number(raw);
@@ -22,11 +16,6 @@ function formatVol(raw: number | string | null): string {
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
   if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
   return '$' + n.toFixed(0);
-}
-
-function formatChange(c: number | null): { text: string; positive: boolean } {
-  if (c === null || c === undefined) return { text: '--', positive: true };
-  return { text: (c >= 0 ? '+' : '') + c.toFixed(2) + '%', positive: c >= 0 };
 }
 
 function parseOutcomePrices(raw: string): [number, number] {
@@ -38,167 +27,72 @@ function parseOutcomePrices(raw: string): [number, number] {
   }
 }
 
-function timeAgo(ts: number): string {
-  const s = Math.round((Date.now() - ts) / 1000);
-  if (s < 5) return 'just now';
-  if (s < 60) return s + 's ago';
-  return Math.floor(s / 60) + 'm ago';
+// ── Types ──
+
+type FilterCategory = 'all' | MarketCategory | 'academy';
+
+interface Bet {
+  id: string;
+  marketId: string;
+  question: string;
+  side: 'YES' | 'NO';
+  amount: number;
+  probability: number; // probability at time of bet
+  potentialWin: number;
+  placedAt: number;
+  status: 'active' | 'won' | 'lost';
+  source: 'polymarket' | 'academy';
 }
 
-// ── Model Constants ──
-
-const SIGMA = 0.50;
-const T_EXP = 0.0000095;
-const R_FREE = 0.0433;
-const GAMMA = 0.10;
-const SIGMA_B = 0.328;
-const K_DECAY = 1.50;
-const EDGE_THRESHOLD = 3.0;
-const FALLBACK_MKT_PRICE = 53.78;
-
-// ── Live Trading Log Entry Type ──
-
-interface ExecutionLogEntry {
-  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR';
-  asset?: string;
-  details: string;
-  timestamp: number;
+interface ArenaStats {
+  wins: number;
+  losses: number;
+  totalWagered: number;
+  totalWon: number;
 }
 
-// ── Live Position Type ──
-
-interface LivePosition {
-  asset: string;
-  side: 'BUY' | 'SELL';
-  price: string;
-  size: string;
-  sizeMatched: string;
-  status: string;
-}
-
-// ── Math Helpers ──
-
-/** Abramowitz & Stegun approximation for the standard normal CDF */
-function normalCDF(x: number): number {
-  const a1 = 0.254829592;
-  const a2 = -0.284496736;
-  const a3 = 1.421413741;
-  const a4 = -1.453152027;
-  const a5 = 1.061405429;
-  const p = 0.3275911;
-  const sign = x < 0 ? -1 : 1;
-  const z = Math.abs(x) / Math.SQRT2;
-  const t = 1 / (1 + p * z);
-  const y = 1 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
-  return 0.5 * (1 + sign * y);
-}
-
-/** Find a BTC-related Polymarket question, return Yes price as % */
-function findBtcMarket(markets: CategorizedMarkets | null): number | null {
-  if (!markets) return null;
-  const match = markets.crypto.find(m => /btc|bitcoin/i.test(m.question));
-  if (!match) return null;
-  const [yes] = parseOutcomePrices(match.outcomePrices);
-  return yes > 0 ? yes * 100 : null;
-}
-
-/** Compute OrderFlowMetrics from raw trades */
-function computeFlowMetrics(trades: PolymarketTrade[]): OrderFlowMetrics {
-  let takerBuyCount = 0;
-  let takerSellCount = 0;
-  let takerBuyVolume = 0;
-  let takerSellVolume = 0;
-
-  for (const t of trades) {
-    const size = Number(t.size) || 0;
-    if (t.side === 'BUY') {
-      takerBuyCount++;
-      takerBuyVolume += size;
-    } else {
-      takerSellCount++;
-      takerSellVolume += size;
-    }
-  }
-
-  const totalVolume = takerBuyVolume + takerSellVolume;
-  const takerBuyRatio = totalVolume > 0 ? takerBuyVolume / totalVolume : 0.5;
-  const flowDirection: OrderFlowMetrics['flowDirection'] =
-    takerBuyRatio > 0.55 ? 'BULLISH' : takerBuyRatio < 0.45 ? 'BEARISH' : 'NEUTRAL';
-
-  // Maker edge: interpolate +0.77% to +1.25% based on avg price distance from 50c
-  const avgPrice = trades.length > 0
-    ? trades.reduce((s, t) => s + (Number(t.price) || 0.5), 0) / trades.length
-    : 0.5;
-  const distFrom50 = Math.abs(avgPrice - 0.5);
-  const makerEdgeEstimate = 0.77 + (distFrom50 / 0.5) * (1.25 - 0.77);
-
-  const recentTrades = trades.slice(0, 8).map(t => ({
-    price: t.price,
-    size: t.size,
-    side: t.side,
-    ts: String(t.timestamp),
-  }));
-
-  return {
-    takerBuyCount,
-    takerSellCount,
-    takerBuyVolume,
-    takerSellVolume,
-    totalTrades: trades.length,
-    takerBuyRatio,
-    flowDirection,
-    makerEdgeEstimate,
-    recentTrades,
-  };
-}
-
-function formatTradeTime(ts: string): string {
-  try {
-    const d = new Date(Number(ts) * 1000 || ts);
-    return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  } catch {
-    return '--:--';
-  }
-}
-
-const CATEGORY_LABELS: Record<MarketCategory, string> = {
-  crypto: 'CRYPTO',
-  ai: 'AI',
-  sports: 'SPORTS',
-  politics: 'POLITICS',
-};
-
-// ── MWA Custom Prediction Markets ──
-
-type MWAMarketStatus = 'OPEN' | 'LOCKED' | 'SETTLED';
-
-interface MWAMarket {
+interface AcademyMarket {
   id: string;
   question: string;
-  category: 'COHORT' | 'RETENTION' | 'GOVERNANCE' | 'TREASURY';
-  yesProbability: number; // 0-1 current implied probability
-  totalPool: number;      // total Shards wagered
-  yesPool: number;
-  noPool: number;
+  category: string;
+  yesProbability: number;
+  totalPool: number;
   endDate: string;
-  resolver: string;
-  status: MWAMarketStatus;
-  fee: number;            // % fee to Treasure Chest
 }
 
-const SEED_MWA_MARKETS: MWAMarket[] = [
+// ── Constants ──
+
+const STARTING_BALANCE = 10_000;
+const LS_BALANCE = 'mwa_arena_balance';
+const LS_BETS = 'mwa_arena_bets';
+const LS_STATS = 'mwa_arena_stats';
+const QUICK_AMOUNTS = [100, 250, 500, 1000];
+
+const CATEGORY_COLORS: Record<string, string> = {
+  crypto: '#5168FF',
+  ai: '#A78BFA',
+  sports: '#E8556D',
+  politics: '#FF7729',
+  academy: '#22C55E',
+};
+
+const CATEGORY_LABELS: Record<FilterCategory, string> = {
+  all: 'All',
+  crypto: 'Crypto',
+  ai: 'AI',
+  sports: 'Sports',
+  politics: 'Politics',
+  academy: 'Academy',
+};
+
+const ACADEMY_MARKETS: AcademyMarket[] = [
   {
     id: 'mwa-1',
     question: 'Will Cohort 3 average above 80% completion?',
     category: 'COHORT',
     yesProbability: 0.62,
     totalPool: 14_820,
-    yesPool: 9_188,
-    noPool: 5_632,
     endDate: '2026-04-15',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 3,
   },
   {
     id: 'mwa-2',
@@ -206,12 +100,7 @@ const SEED_MWA_MARKETS: MWAMarket[] = [
     category: 'RETENTION',
     yesProbability: 0.55,
     totalPool: 8_450,
-    yesPool: 4_648,
-    noPool: 3_802,
-    endDate: '2026-03-24',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 3,
+    endDate: '2026-04-07',
   },
   {
     id: 'mwa-3',
@@ -219,25 +108,15 @@ const SEED_MWA_MARKETS: MWAMarket[] = [
     category: 'GOVERNANCE',
     yesProbability: 0.78,
     totalPool: 22_100,
-    yesPool: 17_238,
-    noPool: 4_862,
-    endDate: '2026-03-31',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 5,
+    endDate: '2026-04-14',
   },
   {
     id: 'mwa-4',
-    question: 'Treasury balance > $500 USDC by end of March?',
+    question: 'Treasury balance > $500 USDC by end of April?',
     category: 'TREASURY',
     yesProbability: 0.41,
     totalPool: 6_300,
-    yesPool: 2_583,
-    noPool: 3_717,
-    endDate: '2026-03-31',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 5,
+    endDate: '2026-04-30',
   },
   {
     id: 'mwa-5',
@@ -245,274 +124,224 @@ const SEED_MWA_MARKETS: MWAMarket[] = [
     category: 'COHORT',
     yesProbability: 0.68,
     totalPool: 11_200,
-    yesPool: 7_616,
-    noPool: 3_584,
-    endDate: '2026-03-17',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 3,
+    endDate: '2026-04-07',
   },
   {
     id: 'mwa-6',
-    question: 'Will $APPLE price be above $0.01 by April?',
+    question: 'Will $APPLE price be above $0.01 by May?',
     category: 'TREASURY',
     yesProbability: 0.33,
     totalPool: 19_750,
-    yesPool: 6_518,
-    noPool: 13_232,
-    endDate: '2026-04-01',
-    resolver: 'Azura',
-    status: 'OPEN',
-    fee: 5,
+    endDate: '2026-05-01',
   },
 ];
 
-const MWA_CATEGORY_COLORS: Record<string, string> = {
-  COHORT: '#A78BFA',
-  RETENTION: '#38BDF8',
-  GOVERNANCE: '#FBBF24',
-  TREASURY: '#4ADE80',
-};
+// ── localStorage helpers ──
 
-function MWAMarketCard({ market, onBet }: { market: MWAMarket; onBet: (id: string, side: 'YES' | 'NO', amount: number) => void }) {
-  const [betAmount, setBetAmount] = useState('');
-  const [placing, setPlacing] = useState(false);
-  const { play } = useSound();
-  const yesPct = Math.round(market.yesProbability * 100);
-  const noPct = 100 - yesPct;
-  const daysLeft = Math.max(0, Math.ceil((new Date(market.endDate).getTime() - Date.now()) / 86400000));
-
-  const handleBet = (side: 'YES' | 'NO') => {
-    const amt = parseInt(betAmount);
-    if (!amt || amt <= 0) return;
-    setPlacing(true);
-    onBet(market.id, side, amt);
-    setTimeout(() => {
-      setBetAmount('');
-      setPlacing(false);
-    }, 600);
-  };
-
-  return (
-    <div className={styles.mwaCard}>
-      <div className={styles.mwaCardHeader}>
-        <span className={styles.mwaCategoryBadge} style={{ color: MWA_CATEGORY_COLORS[market.category], borderColor: MWA_CATEGORY_COLORS[market.category] + '33' }}>
-          {market.category}
-        </span>
-        <span className={styles.mwaExpiry}>{daysLeft}d left</span>
-      </div>
-      <div className={styles.mwaQuestion}>{market.question}</div>
-      <div className={styles.mwaProbBar}>
-        <div className={styles.mwaProbYes} style={{ width: `${yesPct}%` }} />
-        <div className={styles.mwaProbNo} style={{ width: `${noPct}%` }} />
-      </div>
-      <div className={styles.mwaProbLabels}>
-        <span className={styles.mwaProbYesLabel}>Yes {yesPct}%</span>
-        <span className={styles.mwaProbNoLabel}>No {noPct}%</span>
-      </div>
-      <div className={styles.mwaPoolInfo}>
-        <span>Pool: {market.totalPool.toLocaleString()} SHARDS</span>
-        <span>Fee: {market.fee}% → Treasure Chest</span>
-      </div>
-      <div className={styles.mwaBetRow}>
-        <input
-          className={styles.mwaBetInput}
-          type="number"
-          placeholder="SHARDS"
-          value={betAmount}
-          onChange={(e) => setBetAmount(e.target.value)}
-          min="1"
-          disabled={placing || market.status !== 'OPEN'}
-        />
-        <button
-          className={`${styles.mwaBetBtn} ${styles.mwaBetYes}`}
-          onClick={() => { play('click'); handleBet('YES'); }}
-          onMouseEnter={() => play('hover')}
-          disabled={placing || !betAmount || market.status !== 'OPEN'}
-        >
-          Yes
-        </button>
-        <button
-          className={`${styles.mwaBetBtn} ${styles.mwaBetNo}`}
-          onClick={() => { play('click'); handleBet('NO'); }}
-          onMouseEnter={() => play('hover')}
-          disabled={placing || !betAmount || market.status !== 'OPEN'}
-        >
-          No
-        </button>
-      </div>
-      <div className={styles.mwaResolver}>
-        settled by <span className={styles.mwaResolverName}>{market.resolver}</span>
-      </div>
-    </div>
-  );
+function loadBalance(): number {
+  if (typeof window === 'undefined') return STARTING_BALANCE;
+  const raw = localStorage.getItem(LS_BALANCE);
+  if (raw === null) return STARTING_BALANCE;
+  const n = Number(raw);
+  return isNaN(n) ? STARTING_BALANCE : n;
 }
 
-// ── Live Ticker Line ──
+function loadBets(): Bet[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(LS_BETS);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
 
-const TICKER_LEN = 80;
-const TICKER_DRIFT = 0.25;   // upward bias per tick
-const TICKER_VOL = 0.6;      // small random noise
+function loadStats(): ArenaStats {
+  if (typeof window === 'undefined') return { wins: 0, losses: 0, totalWagered: 0, totalWon: 0 };
+  try {
+    const raw = localStorage.getItem(LS_STATS);
+    return raw ? JSON.parse(raw) : { wins: 0, losses: 0, totalWagered: 0, totalWon: 0 };
+  } catch {
+    return { wins: 0, losses: 0, totalWagered: 0, totalWon: 0 };
+  }
+}
 
-function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--color-primary)', strokeWidth = 2.5, opacity = 0.8, speed = 300 }: {
-  drift?: number; vol?: number; stroke?: string; strokeWidth?: number; opacity?: number; speed?: number;
+function saveState(balance: number, bets: Bet[], stats: ArenaStats) {
+  localStorage.setItem(LS_BALANCE, String(balance));
+  localStorage.setItem(LS_BETS, JSON.stringify(bets));
+  localStorage.setItem(LS_STATS, JSON.stringify(stats));
+}
+
+// ── Market Card ──
+
+function MarketCard({
+  marketId,
+  question,
+  yesPct,
+  noPct,
+  meta,
+  category,
+  categoryColor,
+  endLabel,
+  balance,
+  existingBet,
+  onBet,
+}: {
+  marketId: string;
+  question: string;
+  yesPct: number;
+  noPct: number;
+  meta: string;
+  category: string;
+  categoryColor: string;
+  endLabel: string;
+  balance: number;
+  existingBet: Bet | undefined;
+  onBet: (marketId: string, question: string, side: 'YES' | 'NO', amount: number, probability: number) => void;
 }) {
-  const buf = useRef<number[]>((() => {
-    const arr: number[] = [];
-    let v = 0;
-    for (let i = 0; i < TICKER_LEN; i++) {
-      v += drift + (Math.random() - 0.5) * vol;
-      arr.push(v);
-    }
-    return arr;
-  })());
-  const [points, setPoints] = useState<string>('');
-
-  useEffect(() => {
-    function tick() {
-      const arr = buf.current as number[];
-      const last = arr[arr.length - 1];
-      arr.push(last + drift + (Math.random() - 0.5) * vol);
-      if (arr.length > TICKER_LEN) arr.shift();
-
-      const min = Math.min(...arr);
-      const max = Math.max(...arr);
-      const range = max - min || 1;
-      const w = 400;
-      const h = 28;
-      const pad = 2;
-
-      const pts = arr
-        .map((v, i) => {
-          const x = (i / (arr.length - 1)) * w;
-          const y = h - pad - ((v - min) / range) * (h - pad * 2);
-          return `${x},${y}`;
-        })
-        .join(' ');
-      setPoints(pts);
-    }
-
-    tick();
-    const id = setInterval(tick, speed);
-    return () => clearInterval(id);
-  }, [drift, vol, speed]);
-
-  if (!points) return null;
-
-  return (
-    <svg className={styles.sparklineSvg} viewBox="0 0 400 28" preserveAspectRatio="none">
-      <polyline
-        points={points}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={strokeWidth}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        opacity={opacity}
-      />
-    </svg>
-  );
-}
-
-// ── Live Market Row (real-time micro-jitter) ──
-
-function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
-  // Jitter scale relative to price magnitude — feels real without drifting
-  const jitterScale = coin.usd >= 1000 ? coin.usd * 0.00003
-    : coin.usd >= 1 ? coin.usd * 0.0002
-    : coin.usd * 0.001;
-
-  // Deterministic-ish jitter seeded by tick so it changes every 300ms
-  const jittered = coin.usd + (Math.sin(tick * 0.7 + coin.symbol.charCodeAt(0)) * 0.5 + (Math.random() - 0.5)) * jitterScale;
-
-  const change = formatChange(coin.usd_24h_change);
-
-  return (
-    <div className={styles.marketRow}>
-      <div>
-        <div className={styles.marketSymbol}>{coin.symbol}</div>
-      </div>
-      <div>
-        <div className={`${styles.marketPrice} ${styles.priceTick}`} key={tick}>
-          {formatPrice(jittered)}
-        </div>
-        <div className={styles.marketMeta}>
-          <span className={change.positive ? styles.changePositive : styles.changeNegative}>
-            {change.text}
-          </span>
-          {' '}vol:{formatVol(coin.usd_24h_vol)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── Wallet Address with Copy ──
-
-function WalletAddress({ address }: { address: string }) {
-  const [copied, setCopied] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState('');
   const { play } = useSound();
-  const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
-  const copy = () => {
+  const amount = selectedAmount ?? (customAmount ? parseInt(customAmount) : 0);
+  const canBet = amount > 0 && amount <= balance && !existingBet;
+
+  const yesProb = yesPct / 100;
+  const noProb = noPct / 100;
+  const yesWin = yesProb > 0 ? Math.round(amount / yesProb) : 0;
+  const noWin = noProb > 0 ? Math.round(amount / noProb) : 0;
+
+  const handleQuickBet = (amt: number) => {
     play('click');
-    navigator.clipboard.writeText(address);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    setSelectedAmount(selectedAmount === amt ? null : amt);
+    setCustomAmount('');
+  };
+
+  const handleCustomChange = (val: string) => {
+    setCustomAmount(val);
+    setSelectedAmount(null);
+  };
+
+  const placeBet = (side: 'YES' | 'NO') => {
+    if (!canBet) return;
+    play('click');
+    const prob = side === 'YES' ? yesProb : noProb;
+    onBet(marketId, question, side, amount, prob);
+    setSelectedAmount(null);
+    setCustomAmount('');
   };
 
   return (
-    <button className={styles.walletAddress} onClick={copy} onMouseEnter={() => play('hover')} title={address}>
-      <span className={styles.walletLabel}>Polygon</span>
-      <span className={styles.walletAddr}>{short}</span>
-      <span className={styles.walletCopy}>{copied ? '✓' : '⧉'}</span>
-    </button>
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <span
+          className={styles.categoryBadge}
+          style={{ color: categoryColor, borderColor: categoryColor + '33' }}
+        >
+          {category}
+        </span>
+        <span className={styles.endDate}>{endLabel}</span>
+      </div>
+      <div className={styles.question}>{question}</div>
+      <div className={styles.probBar}>
+        <div className={styles.probYes} style={{ width: `${yesPct}%` }} />
+        <div className={styles.probNo} style={{ width: `${noPct}%` }} />
+      </div>
+      <div className={styles.probLabels}>
+        <span className={styles.probYesLabel}>Yes {yesPct}%</span>
+        <span className={styles.probNoLabel}>No {noPct}%</span>
+      </div>
+      <div className={styles.cardMeta}>{meta}</div>
+
+      {existingBet ? (
+        <div className={styles.alreadyBet}>
+          You bet {existingBet.amount.toLocaleString()} on {existingBet.side}
+        </div>
+      ) : (
+        <div className={styles.betControls}>
+          <div className={styles.quickBets}>
+            {QUICK_AMOUNTS.map((amt) => (
+              <button
+                key={amt}
+                className={selectedAmount === amt ? styles.quickBetBtnActive : styles.quickBetBtn}
+                onClick={() => handleQuickBet(amt)}
+                onMouseEnter={() => play('hover')}
+                disabled={amt > balance}
+              >
+                {amt >= 1000 ? `${amt / 1000}K` : amt}
+              </button>
+            ))}
+          </div>
+          <div className={styles.customBetRow}>
+            <input
+              className={styles.customBetInput}
+              type="number"
+              placeholder="Custom amount..."
+              value={customAmount}
+              onChange={(e) => handleCustomChange(e.target.value)}
+              min="1"
+              max={balance}
+            />
+          </div>
+          <div className={styles.betActions}>
+            <button
+              className={styles.betYes}
+              disabled={!canBet}
+              onClick={() => placeBet('YES')}
+              onMouseEnter={() => play('hover')}
+            >
+              Bet YES
+            </button>
+            <button
+              className={styles.betNo}
+              disabled={!canBet}
+              onClick={() => placeBet('NO')}
+              onMouseEnter={() => play('hover')}
+            >
+              Bet NO
+            </button>
+          </div>
+          {amount > 0 && canBet && (
+            <div className={styles.potentialWin}>
+              Win <span className={styles.potentialWinValue}>{yesWin.toLocaleString()}</span> (YES) or{' '}
+              <span className={styles.potentialWinValue}>{noWin.toLocaleString()}</span> (NO) Shards
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
 // ── Page ──
 
 export default function Markets() {
-  const [prices, setPrices] = useState<CoinPrice[] | null>(null);
-  const [balance, setBalance] = useState<TreasuryBalance | null>(null);
+  const [balance, setBalance] = useState(STARTING_BALANCE);
+  const [bets, setBets] = useState<Bet[]>([]);
+  const [stats, setStats] = useState<ArenaStats>({ wins: 0, losses: 0, totalWagered: 0, totalWon: 0 });
   const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
-  const [orderFlow, setOrderFlow] = useState<OrderFlowMetrics | null>(null);
-  const [appleStats, setAppleStats] = useState<AppleTokenStats | null>(null);
-  const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
-  const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
-  // MWA markets removed
-  const [priceError, setPriceError] = useState(false);
-  const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
-  const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
-  const [marketTab, setMarketTab] = useState<'academy' | 'polymarkets' | 'azura'>('academy');
+  const [filter, setFilter] = useState<FilterCategory>('all');
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout>>();
   const { play } = useSound();
+  const [mounted, setMounted] = useState(false);
 
-  const fetchPrices = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/prices');
-      if (!res.ok) throw new Error();
-      const data: CoinPrice[] = await res.json();
-      setPrices(data);
-      setPriceError(false);
-      setLastPriceUpdate(Date.now());
-    } catch {
-      setPriceError(true);
-    }
+  // Load from localStorage on mount
+  useEffect(() => {
+    setBalance(loadBalance());
+    setBets(loadBets());
+    setStats(loadStats());
+    setMounted(true);
   }, []);
 
-  const fetchBalance = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/balance');
-      if (!res.ok) throw new Error();
-      const data: TreasuryBalance = await res.json();
-      setBalance(data);
-      setBalanceError(false);
-    } catch {
-      setBalanceError(true);
-    }
-  }, []);
+  // Save to localStorage on changes
+  useEffect(() => {
+    if (!mounted) return;
+    saveState(balance, bets, stats);
+  }, [balance, bets, stats, mounted]);
 
+  // Fetch Polymarket data
   const fetchPoly = useCallback(async () => {
     try {
       const res = await fetch('/api/treasury/polymarket');
@@ -525,870 +354,381 @@ export default function Markets() {
     }
   }, []);
 
-  const fetchTrades = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/trades');
-      if (!res.ok) return;
-      const trades: PolymarketTrade[] = await res.json();
-      if (trades.length > 0) setOrderFlow(computeFlowMetrics(trades));
-    } catch { /* silent */ }
-  }, []);
-
-  const fetchAppleStats = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/apple-stats');
-      if (!res.ok) return;
-      const data: AppleTokenStats = await res.json();
-      setAppleStats(data);
-    } catch { /* silent */ }
-  }, []);
-
-  const fetchExecutionLogs = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/execution-logs');
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data.logs) setExecutionLogs(data.logs);
-      if (data.positions) setLivePositions(data.positions);
-    } catch { /* silent */ }
-  }, []);
-
   useEffect(() => {
-    // Initial fetch
-    fetchPrices();
-    fetchBalance();
     fetchPoly();
+    const interval = setInterval(fetchPoly, 60_000);
+    return () => clearInterval(interval);
+  }, [fetchPoly]);
 
-    // Polling intervals
-    const priceInterval = setInterval(fetchPrices, 30_000);
-    const balanceInterval = setInterval(fetchBalance, 60_000);
-    const polyInterval = setInterval(fetchPoly, 60_000);
+  // Check for market resolutions on each poly update
+  useEffect(() => {
+    if (!polymarkets || !mounted) return;
 
-    return () => {
-      clearInterval(priceInterval);
-      clearInterval(balanceInterval);
-      clearInterval(polyInterval);
+    setBets((prev) => {
+      let changed = false;
+      const updated = prev.map((bet) => {
+        if (bet.status !== 'active') return bet;
+
+        if (bet.source === 'polymarket') {
+          // Find this market in current data and check if resolved
+          const allMarkets: PolymarketMarket[] = [
+            ...(polymarkets.crypto || []),
+            ...(polymarkets.ai || []),
+            ...(polymarkets.sports || []),
+            ...(polymarkets.politics || []),
+          ];
+          const market = allMarkets.find((m) => m.id === bet.marketId);
+          if (!market) return bet;
+
+          const [yesPrice] = parseOutcomePrices(market.outcomePrices);
+          const yesPct = yesPrice * 100;
+
+          // Resolved YES (>95%) or NO (<5%)
+          if (yesPct > 95) {
+            changed = true;
+            const won = bet.side === 'YES';
+            return { ...bet, status: won ? 'won' as const : 'lost' as const };
+          }
+          if (yesPct < 5) {
+            changed = true;
+            const won = bet.side === 'NO';
+            return { ...bet, status: won ? 'won' as const : 'lost' as const };
+          }
+        }
+
+        if (bet.source === 'academy') {
+          const market = ACADEMY_MARKETS.find((m) => m.id === bet.marketId);
+          if (market && new Date(market.endDate).getTime() < Date.now()) {
+            changed = true;
+            // Simulate resolution based on the probability
+            const resolved = Math.random() < market.yesProbability ? 'YES' : 'NO';
+            const won = bet.side === resolved;
+            return { ...bet, status: won ? 'won' as const : 'lost' as const };
+          }
+        }
+
+        return bet;
+      });
+
+      if (!changed) return prev;
+
+      // Update balance and stats for newly resolved bets
+      const newlyResolved = updated.filter(
+        (b, i) => b.status !== 'active' && prev[i].status === 'active'
+      );
+
+      if (newlyResolved.length > 0) {
+        setStats((s) => {
+          const newStats = { ...s };
+          newlyResolved.forEach((b) => {
+            if (b.status === 'won') {
+              newStats.wins++;
+              newStats.totalWon += b.potentialWin;
+            } else {
+              newStats.losses++;
+            }
+          });
+          return newStats;
+        });
+
+        setBalance((bal) => {
+          let newBal = bal;
+          newlyResolved.forEach((b) => {
+            if (b.status === 'won') {
+              newBal += b.potentialWin;
+            }
+          });
+          return newBal;
+        });
+      }
+
+      return updated;
+    });
+  }, [polymarkets, mounted]);
+
+  // Place a bet
+  const handleBet = (
+    marketId: string,
+    question: string,
+    side: 'YES' | 'NO',
+    amount: number,
+    probability: number
+  ) => {
+    if (amount > balance || amount <= 0) return;
+
+    const source = marketId.startsWith('mwa-') ? 'academy' : 'polymarket';
+    const potentialWin = probability > 0 ? Math.round(amount / probability) : 0;
+
+    const bet: Bet = {
+      id: `bet-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      marketId,
+      question,
+      side,
+      amount,
+      probability,
+      potentialWin,
+      placedAt: Date.now(),
+      status: 'active',
+      source: source as 'polymarket' | 'academy',
     };
-  }, [fetchPrices, fetchBalance, fetchPoly]);
 
-  // Fetch trades on mount and poll every 30s
-  useEffect(() => {
-    fetchTrades();
-    const tradesInterval = setInterval(fetchTrades, 30_000);
-    return () => clearInterval(tradesInterval);
-  }, [fetchTrades]);
+    setBalance((b) => b - amount);
+    setBets((prev) => [bet, ...prev]);
+    setStats((s) => ({ ...s, totalWagered: s.totalWagered + amount }));
 
-  // Fetch APPLE stats and execution logs
-  useEffect(() => {
-    fetchAppleStats();
-    fetchExecutionLogs();
-    const appleInterval = setInterval(fetchAppleStats, 60_000);
-    const logsInterval = setInterval(fetchExecutionLogs, 30_000);
-    return () => {
-      clearInterval(appleInterval);
-      clearInterval(logsInterval);
-    };
-  }, [fetchAppleStats, fetchExecutionLogs]);
+    showToast(`Bet ${amount.toLocaleString()} Shards on ${side}!`);
+  };
 
-  // Refresh the "last updated" display
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setTick((n) => n + 1), 5000);
-    return () => clearInterval(t);
-  }, []);
+  const showToast = (msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2000);
+  };
 
-  // Fast tick for live model parameter animation
-  const [modelTick, setModelTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setModelTick((n) => n + 1), 300);
-    return () => clearInterval(t);
-  }, []);
+  const handleReset = () => {
+    play('click');
+    setBalance(STARTING_BALANCE);
+    setBets([]);
+    setStats({ wins: 0, losses: 0, totalWagered: 0, totalWon: 0 });
+  };
 
-  // ── Derived values from live prices + Polymarket ──
-  const derived = useMemo(() => {
-    void modelTick; // trigger recomputation on tick
+  // Build market list
+  const polyList: Array<{
+    id: string;
+    question: string;
+    yesPct: number;
+    noPct: number;
+    meta: string;
+    category: string;
+    categoryColor: string;
+    endLabel: string;
+    source: 'polymarket' | 'academy';
+  }> = [];
 
-    // Micro-noise for live visualization
-    const jitter = (base: number, scale: number) => base + (Math.random() - 0.5) * 2 * scale;
+  if (polymarkets) {
+    (['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).forEach((cat) => {
+      const items = polymarkets[cat];
+      if (!items) return;
+      items.forEach((m) => {
+        const [yes, no] = parseOutcomePrices(m.outcomePrices);
+        const yesPct = Math.round(yes * 100);
+        const noPct = Math.round(no * 100);
+        const endDate = m.endDate ? new Date(m.endDate) : null;
+        const daysLeft = endDate ? Math.max(0, Math.ceil((endDate.getTime() - Date.now()) / 86400000)) : null;
+        polyList.push({
+          id: m.id,
+          question: m.question,
+          yesPct,
+          noPct,
+          meta: `Vol: ${formatVol(m.volume)}`,
+          category: cat.toUpperCase(),
+          categoryColor: CATEGORY_COLORS[cat],
+          endLabel: daysLeft !== null ? `${daysLeft}d left` : '',
+          source: 'polymarket',
+        });
+      });
+    });
+  }
 
-    // Jittered model parameters
-    const sigma = jitter(SIGMA, 0.005);
-    const sigma_b = jitter(SIGMA_B, 0.003);
-    const lambda_jump = jitter(2.46, 0.05);
-    const mu_J = jitter(0.071, 0.003);
-    const q_inv = Math.round(jitter(-1187, 15));
-
-    // Step 1-2: Spot & strike (ATM) with micro-movement
-    const S = jitter(prices?.find(c => c.symbol === 'BTC')?.usd ?? 66235, 8);
-    const K = S;
-
-    // Step 3: d2 (ATM: ln(S/K)=0)
-    const sqrtT = Math.sqrt(T_EXP);
-    const d2 = (R_FREE - 0.5 * sigma * sigma) * T_EXP / (sigma * sqrtT);
-
-    // Step 4-5: N(d2) and C_bin
-    const Nd2 = normalCDF(d2);
-    const C_bin = Math.exp(-R_FREE * T_EXP) * Nd2;
-
-    // Step 6-7: Logit transform
-    const p_t = C_bin;
-    const x_t = Math.log(p_t / (1 - p_t));
-
-    // Step 8: A-S half-spread (using jittered sigma_b)
-    const delta_x = GAMMA * sigma_b * sigma_b * T_EXP / 2 + (1 / GAMMA) * Math.log(1 + GAMMA / K_DECAY);
-
-    // Step 9: Bid/ask probabilities
-    const p_bid = 1 / (1 + Math.exp(-(x_t - delta_x)));
-    const p_ask = 1 / (1 + Math.exp(-(x_t + delta_x)));
-
-    // Step 10-11: Edge detection
-    const model_fair = C_bin * 100;
-    const mkt_price = findBtcMarket(polymarkets) ?? FALLBACK_MKT_PRICE;
-
-    // Step 12-13: Divergence & signal
-    const divergence = model_fair - mkt_price;
-    const signal = Math.abs(divergence) > EDGE_THRESHOLD ? 'TRADE' : 'SKIP';
-
-    // Step 14: Fee
-    const fee = (p_t * (1 - p_t) + 0.0625) * 100;
-
+  const academyList = ACADEMY_MARKETS.map((m) => {
+    const yesPct = Math.round(m.yesProbability * 100);
+    const daysLeft = Math.max(0, Math.ceil((new Date(m.endDate).getTime() - Date.now()) / 86400000));
     return {
-      S, K, d2, Nd2, C_bin, p_t, x_t, delta_x,
-      p_bid, p_ask, model_fair, mkt_price, divergence,
-      signal, fee,
-      sigma, sigma_b, lambda_jump, mu_J, q_inv,
+      id: m.id,
+      question: m.question,
+      yesPct,
+      noPct: 100 - yesPct,
+      meta: `Pool: ${m.totalPool.toLocaleString()} Shards`,
+      category: m.category,
+      categoryColor: CATEGORY_COLORS.academy,
+      endLabel: `${daysLeft}d left`,
+      source: 'academy' as const,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prices, polymarkets, modelTick]);
+  });
+
+  // Apply filter
+  let markets = [...polyList, ...academyList];
+  if (filter === 'academy') {
+    markets = academyList;
+  } else if (filter !== 'all') {
+    markets = polyList.filter((m) => m.category === filter.toUpperCase());
+  }
+
+  const activeBets = bets.filter((b) => b.status === 'active');
+  const resolvedBets = bets.filter((b) => b.status !== 'active').slice(0, 10);
+
+  const pnl = balance - STARTING_BALANCE;
+  const pnlPct = ((pnl / STARTING_BALANCE) * 100).toFixed(1);
 
   return (
     <main className={styles.main}>
       <SideNavigation />
       <div className={styles.pageLayout}>
+        {/* ── Arena Header ── */}
+        <div className={styles.arenaHeader}>
+          <h1 className={styles.arenaTitle}>Prediction Arena</h1>
+          <p className={styles.arenaSubtitle}>
+            Bet Shards on real prediction markets. No real money, all the fun.
+          </p>
 
-        {/* ── Status Bar ── */}
-        <div className={styles.statusBar}>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>exchange</span>
-            <span className={styles.statusHighlight}>POLYMARKET CLOB</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>native</span>
-            <span className={styles.statusHighlight}>MWA SHARDS</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>model</span>
-            <span className={styles.statusHighlight}>BLACK-SCHOLES BINARY</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>chain:</span>
-            <span className={styles.statusValue}>POLYGON + BASE</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>edge_threshold:</span>
-            <span className={styles.statusHighlight}>3%</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>kelly:</span>
-            <span className={styles.statusValue}>0.25x</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>max_position:</span>
-            <span className={styles.statusValue}>5%</span>
-          </div>
-          {lastPriceUpdate > 0 && (
-            <div className={styles.statusItem}>
-              <span className={styles.lastUpdated}>updated {timeAgo(lastPriceUpdate)}</span>
+          <div className={styles.statsRow}>
+            <div className={styles.statCardPrimary}>
+              <Image src="/icons/shard.svg" alt="" width={22} height={22} className={styles.shardIcon} />
+              <div>
+                <div className={styles.statLabel}>Balance</div>
+                <div className={styles.statValue}>{mounted ? balance.toLocaleString() : '...'}</div>
+              </div>
             </div>
-          )}
-          <div className={styles.statusItem}>
-            <HowToButton />
+            <div className={styles.statCard}>
+              <div>
+                <div className={styles.statLabel}>Record</div>
+                <div className={styles.statValueSmall}>
+                  {stats.wins}W - {stats.losses}L
+                </div>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <div>
+                <div className={styles.statLabel}>P&L</div>
+                <div
+                  className={`${styles.statValueSmall} ${
+                    pnl >= 0 ? styles.statPositive : styles.statNegative
+                  }`}
+                >
+                  {pnl >= 0 ? '+' : ''}
+                  {mounted ? pnl.toLocaleString() : '0'} ({pnl >= 0 ? '+' : ''}
+                  {mounted ? pnlPct : '0'}%)
+                </div>
+              </div>
+            </div>
+            <button
+              className={styles.resetBtn}
+              onClick={handleReset}
+              onMouseEnter={() => play('hover')}
+            >
+              Reset
+            </button>
           </div>
         </div>
 
-        {/* ── View Tabs ── */}
-        <div className={styles.viewTabs}>
-          {(['academy', 'polymarkets', 'azura'] as const).map((tab) => (
+        {/* ── Category Filters ── */}
+        <div className={styles.filters}>
+          {(Object.keys(CATEGORY_LABELS) as FilterCategory[]).map((cat) => (
             <button
-              key={tab}
-              className={`${styles.viewTab} ${marketTab === tab ? styles.viewTabActive : ''}`}
-              onClick={() => { play('click'); setMarketTab(tab); }}
+              key={cat}
+              className={filter === cat ? styles.filterBtnActive : styles.filterBtn}
+              onClick={() => {
+                play('click');
+                setFilter(cat);
+              }}
               onMouseEnter={() => play('hover')}
             >
-              {tab === 'academy' ? 'Academy' : tab === 'polymarkets' ? 'Polymarkets' : 'Azura'}
+              {CATEGORY_LABELS[cat]}
             </button>
           ))}
         </div>
 
-        {/* ── Academy Tab ── */}
-        {marketTab === 'academy' && (
-          <div className={styles.academyView}>
-            <h2 className={styles.academyTitle}>PROTOCOL ANALYTICS</h2>
-            <div className={styles.academyTopRow}>
-              {/* 24H Volume & Agent Activity */}
-              <div className={styles.academyCard}>
-                <div className={styles.academyCardTitle}>24H VOLUME &amp; AGENT ACTIVITY</div>
-                <svg className={styles.academySvg} viewBox="0 0 600 200" preserveAspectRatio="none">
-                  {/* Grid lines */}
-                  {[0,50,100,150,200].map(y => (
-                    <line key={y} x1="0" y1={y} x2="600" y2={y} stroke="rgba(26,27,36,0.06)" strokeWidth="1" />
-                  ))}
-                  {/* Area fill */}
-                  <path
-                    d="M0,180 C50,170 100,140 150,120 C200,100 250,60 300,50 C350,40 400,70 450,45 C500,20 550,30 600,10 L600,200 L0,200 Z"
-                    fill="rgba(81,104,255,0.1)"
-                  />
-                  {/* Main line */}
-                  <path
-                    d="M0,180 C50,170 100,140 150,120 C200,100 250,60 300,50 C350,40 400,70 450,45 C500,20 550,30 600,10"
-                    fill="none"
-                    stroke="var(--color-primary, #5168FF)"
-                    strokeWidth="2.5"
-                    className={styles.animatedLine}
-                  />
-                  {/* Data points */}
-                  {[[0,180],[150,120],[300,50],[450,45],[600,10]].map(([cx,cy], i) => (
-                    <circle key={i} cx={cx} cy={cy} r="4" fill="#fff" stroke="var(--color-primary, #5168FF)" strokeWidth="2" className={styles.animatedDot} style={{animationDelay: `${i * 0.15}s`}} />
-                  ))}
-                  {/* X-axis labels */}
-                  {['00:00','04:00','08:00','12:00','16:00','20:00','NOW'].map((label, i) => (
-                    <text key={i} x={i * 100} y="198" fill="rgba(26,27,36,0.35)" fontSize="9" fontFamily="var(--font-button, 'IBM Plex Mono', monospace)" textAnchor="middle">{label}</text>
-                  ))}
-                </svg>
-              </div>
-              {/* Accuracy: Agents vs Humans */}
-              <div className={styles.academyCard}>
-                <div className={styles.academyCardTitle}>ACCURACY: AGENTS VS HUMANS (7D)</div>
-                <svg className={styles.academySvg} viewBox="0 0 400 180" preserveAspectRatio="none">
-                  {/* Grid */}
-                  {[0,45,90,135,180].map(y => (
-                    <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="rgba(26,27,36,0.06)" strokeWidth="1" />
-                  ))}
-                  {/* Bars */}
-                  {[
-                    { x: 30, h: 120, label: 'Mon' },
-                    { x: 85, h: 100, label: 'Tue' },
-                    { x: 140, h: 130, label: 'Wed' },
-                    { x: 195, h: 140, label: 'Thu' },
-                    { x: 250, h: 135, label: 'Fri' },
-                    { x: 305, h: 110, label: 'Sat' },
-                    { x: 360, h: 125, label: 'Sun' },
-                  ].map((bar, i) => (
-                    <g key={i}>
-                      <rect x={bar.x - 18} y={180 - bar.h} width="36" height={bar.h} fill="var(--color-primary, #5168FF)" rx="2" className={styles.animatedBar} style={{animationDelay: `${i * 0.08}s`}} />
-                      <text x={bar.x} y="176" fill="#ffffff" fontSize="9" fontFamily="var(--font-button)" textAnchor="middle">{bar.label}</text>
-                    </g>
-                  ))}
-                </svg>
-              </div>
-            </div>
-            <div className={styles.academyBottomRow}>
-              {/* Market Categories */}
-              <div className={styles.academyCard}>
-                <div className={styles.academyCardTitle}>MARKET CATEGORIES</div>
-                <div className={styles.categoryList}>
-                  {[
-                    { name: 'CRYPTO', count: 12, color: '#5168FF', icon: (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" /><path d="M9.5 8h5l-1.5 4h-2L9.5 8z" /><path d="M10 16h4" />
-                      </svg>
-                    )},
-                    { name: 'MACRO', count: 5, color: '#5168FF', icon: (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                      </svg>
-                    )},
-                    { name: 'AI', count: 4, color: '#a78bfa', icon: (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="4" y="4" width="16" height="16" rx="2" /><circle cx="9" cy="10" r="1.5" fill="currentColor" /><circle cx="15" cy="10" r="1.5" fill="currentColor" /><path d="M9 15h6" />
-                      </svg>
-                    )},
-                    { name: 'TECH', count: 2, color: '#FF7729', icon: (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /><line x1="14" y1="4" x2="10" y2="20" />
-                      </svg>
-                    )},
-                    { name: 'SPORTS', count: 1, color: '#E8556D', icon: (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" /><path d="M12 2v20" /><path d="M2 12h20" /><path d="M4.93 4.93l14.14 14.14" /><path d="M19.07 4.93L4.93 19.07" />
-                      </svg>
-                    )},
-                  ].map((cat) => (
-                    <div key={cat.name} className={styles.categoryRow}>
-                      <div className={styles.categoryInfo}>
-                        <span className={styles.categoryNameWithIcon}>
-                          <span className={styles.categoryIcon} style={{ color: cat.color, borderColor: cat.color }}>{cat.icon}</span>
-                          <span className={styles.categoryName}>{cat.name}</span>
-                        </span>
-                        <span className={styles.categoryCount}>{cat.count}</span>
-                      </div>
-                      <div className={styles.categoryBarBg}>
-                        <div className={styles.categoryBarFill} style={{ width: `${(cat.count / 12) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Entity Classification */}
-              <div className={styles.academyCard}>
-                <div className={styles.academyCardTitle}>ENTITY CLASSIFICATION</div>
-                <svg viewBox="0 0 200 200" className={styles.academySvgDonut}>
-                  {/* Donut chart: 40%, 25%, 20%, 15% */}
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#50599B" strokeWidth="28"
-                    strokeDasharray={`${0.15 * 440} ${0.85 * 440}`}
-                    strokeDashoffset="110" />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#FF7729" strokeWidth="28"
-                    strokeDasharray={`${0.20 * 440} ${0.80 * 440}`}
-                    strokeDashoffset={`${110 + 0.15 * 440}`} />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#a78bfa" strokeWidth="28"
-                    strokeDasharray={`${0.25 * 440} ${0.75 * 440}`}
-                    strokeDashoffset={`${110 + 0.35 * 440}`} />
-                  <circle cx="100" cy="100" r="70" fill="none" stroke="#5168FF" strokeWidth="28"
-                    strokeDasharray={`${0.40 * 440} ${0.60 * 440}`}
-                    strokeDashoffset={`${110 + 0.60 * 440}`} />
-                </svg>
-                <div className={styles.donutLegend}>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#5168FF' }} /> Pattern Analyzer 40%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#a78bfa' }} /> Strategy Coord. 25%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#FF7729' }} /> Risk Sentinel 20%</span>
-                  <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#50599B' }} /> Scammer 15%</span>
-                </div>
-              </div>
-              {/* Protocol Health */}
-              <div className={styles.academyCard}>
-                <div className={styles.academyCardTitle}>PROTOCOL HEALTH</div>
-                <div className={styles.healthList}>
-                  {[
-                    { key: 'Uptime', value: '99.97%' },
-                    { key: 'Resolution Rate', value: '98.2%' },
-                    { key: 'Avg Resolution', value: '4.2h' },
-                    { key: 'Dispute Rate', value: '0.8%' },
-                    { key: 'Agent Fraud', value: '2.1%' },
-                    { key: 'Latency (p99)', value: '42ms' },
-                  ].map((item) => (
-                    <div key={item.key} className={styles.healthRow}>
-                      <span className={styles.healthKey}>{item.key}</span>
-                      <span className={styles.healthValue}>{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+        {/* ── Market Cards ── */}
+        {!polymarkets && !polyError && <div className={styles.loading}>Loading markets...</div>}
+        {polyError && !polymarkets && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyTitle}>Could not load markets</div>
+            <div className={styles.emptyText}>Check your connection and refresh.</div>
           </div>
         )}
 
-        {/* ── Azura Tab ── */}
-        {marketTab === 'azura' && (
-          <div className={styles.azuraView}>
-            <div className={styles.commMain}>
-              <div className={styles.commHeader}>
-                <span className={styles.commChannel}># arena-general</span>
-                <span className={styles.commOnline}>34 agents / 187 pilots online</span>
-              </div>
-              <div className={styles.commMessages}>
-                <div className={styles.commMsgSystem}>
-                  <span className={styles.commMsgSender}>SYSTEM</span>
-                  <span className={styles.commMsgText}>Protocol_Chat initialized. Channel: #arena-general</span>
-                </div>
-                <div className={styles.commMsgAgent}>
-                  <span className={styles.commMsgSender}>NEXUS-7 <span className={styles.commRoleBadge}>Pattern Analyzer</span></span>
-                  <span className={styles.commMsgText}>Detecting anomalous volume on ETH/BTC pair. Pattern confidence: 87.3%</span>
-                </div>
-                <div className={styles.commMsgUser}>
-                  <span className={styles.commMsgSender}>pilot_alpha</span>
-                  <span className={styles.commMsgText}>Anyone else seeing the divergence on the 4h chart?</span>
-                </div>
-                <div className={styles.commMsgAgent}>
-                  <span className={styles.commMsgSender}>SENTINEL-3 <span className={styles.commRoleBadge}>Risk Sentinel</span></span>
-                  <span className={styles.commMsgText}>Risk assessment: Market #0x7A shows 2.3x leverage imbalance. Recommend caution.</span>
-                </div>
-                <div className={styles.commMsgUser}>
-                  <span className={styles.commMsgSender}>trader_zero</span>
-                  <span className={styles.commMsgText}>Going long on the prediction. Conviction 8/10</span>
-                </div>
-                <div className={styles.commMsgAgent}>
-                  <span className={styles.commMsgSender}>ORACLE-X <span className={styles.commRoleBadge}>Strategy Coordinator</span></span>
-                  <span className={styles.commMsgText}>Consensus shift detected: +4.2% toward YES in last 60s. 12 new positions opened.</span>
-                </div>
-                <div className={styles.commMsgSystem}>
-                  <span className={styles.commMsgSender}>INTEL</span>
-                  <span className={styles.commMsgText}>Intel Ping: Market #0x7A approaching resolution threshold.</span>
-                </div>
-                <div className={styles.commMsgUser}>
-                  <span className={styles.commMsgSender}>degen_whale</span>
-                  <span className={styles.commMsgText}>size is size. executing max position.</span>
-                </div>
-                <div className={styles.commMsgAgent}>
-                  <span className={styles.commMsgSender}>NEXUS-7 <span className={styles.commRoleBadge}>Pattern Analyzer</span></span>
-                  <span className={styles.commMsgText}>Updated model: P(YES) = 0.724 &plusmn; 0.031. Bayesian update from 14 new data points.</span>
-                </div>
-              </div>
-              <div className={styles.commInputWrap}>
-                <input className={styles.commInput} type="text" placeholder="Signal input..." readOnly />
-              </div>
-            </div>
-            <div className={styles.commSidebar}>
-              <div className={styles.commSidePanel}>
-                <div className={styles.commSidePanelTitle}>ACTIVE INTEL</div>
-                <div className={styles.commSentimentBar}>
-                  <div className={styles.commSentimentYes} style={{ width: '62.4%' }} />
-                  <div className={styles.commSentimentNo} style={{ width: '37.6%' }} />
-                </div>
-                <div className={styles.commSentimentLabels}>
-                  <span>YES 62.4%</span>
-                  <span>NO 37.6%</span>
-                </div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Total Pool</span>
-                  <span className={styles.commIntelValue}>142.8 ETH</span>
-                </div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Intel_Bias</span>
-                  <span className={styles.commIntelValue}>STRONG YES</span>
-                </div>
-              </div>
-              <div className={styles.commSidePanel}>
-                <div className={styles.commSidePanelTitle}>CHANNEL STATS</div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Online Agents</span>
-                  <span className={styles.commIntelValue}>34</span>
-                </div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Online Pilots</span>
-                  <span className={styles.commIntelValue}>187</span>
-                </div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Msg/min</span>
-                  <span className={styles.commIntelValue}>12.4</span>
-                </div>
-                <div className={styles.commIntelRow}>
-                  <span className={styles.commIntelKey}>Signal Ratio</span>
-                  <span className={styles.commIntelValue}>73%</span>
-                </div>
-              </div>
-              <div className={styles.commSidePanel}>
-                <div className={styles.commSidePanelTitle}>QUICK COMMANDS</div>
-                <div className={styles.commCommandList}>
-                  <code className={styles.commCommand}>/scan [market]</code>
-                  <code className={styles.commCommand}>/intel [agent]</code>
-                  <code className={styles.commCommand}>/sentiment</code>
-                  <code className={styles.commCommand}>/positions</code>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Dashboard Grid (Polymarkets tab) ── */}
-        {marketTab === 'polymarkets' && (
-        <div className={styles.grid}>
-
-          {/* ════ LEFT COLUMN: Model Parameters ════ */}
-          <div className={styles.modelsColumn}>
-
-            {/* Black-Scholes Binary Pricing */}
-            <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// black-scholes binary pricing'}</div>
-              <div className={styles.modelFormula}>
-                C_binary = e^(-rT) &middot; N(d&#x2082;)
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>d&#x2082;</span>
-                <span><span className={styles.paramValue}>{derived.d2.toFixed(6)}</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>N(d&#x2082;)</span>
-                <span><span className={styles.paramValue}>{derived.Nd2.toFixed(5)}</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>C_bin</span>
-                <span><span className={styles.paramValue}>{'$' + derived.C_bin.toFixed(4)}</span></span>
-              </div>
-              <div style={{ marginTop: 10 }}>
-                <div className={styles.modelName}>{'// parameters'}</div>
-                <div className={styles.paramRow}>
-                  <span className={styles.paramKey}>S</span>
-                  <span>
-                    <span className={styles.paramValue}>{'$' + derived.S.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
-                    <span className={styles.paramComment}>{'// spot'}</span>
-                  </span>
-                </div>
-                <div className={styles.paramRow}>
-                  <span className={styles.paramKey}>K</span>
-                  <span>
-                    <span className={styles.paramValue}>{'$' + derived.K.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
-                    <span className={styles.paramComment}>{'// strike'}</span>
-                  </span>
-                </div>
-                <div className={styles.paramRow}>
-                  <span className={styles.paramKey}>&sigma;</span>
-                  <span>
-                    <span className={styles.paramValue}>{(derived.sigma * 100).toFixed(2)}%</span>
-                    <span className={styles.paramComment}>{'// annual IV'}</span>
-                  </span>
-                </div>
-                <div className={styles.paramRow}>
-                  <span className={styles.paramKey}>T</span>
-                  <span>
-                    <span className={styles.paramValue}>0.0000095</span>
-                    <span className={styles.paramComment}>{'// 5min/yr'}</span>
-                  </span>
-                </div>
-                <div className={styles.paramRow}>
-                  <span className={styles.paramKey}>r</span>
-                  <span>
-                    <span className={styles.paramValue}>4.33%</span>
-                    <span className={styles.paramComment}>{'// risk-free'}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Logit Jump-Diffusion */}
-            <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// logit jump-diffusion'}</div>
-              <div className={styles.modelFormula}>
-                x_t = ln(p/(1-p))
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>x_t</span>
-                <span><span className={styles.paramValue}>{derived.x_t.toFixed(4)}</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>p_t</span>
-                <span><span className={styles.paramValue}>{derived.p_t.toFixed(4)}</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>&sigma;_b</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.sigma_b.toFixed(3)}</span>
-                  <span className={styles.paramComment}>{'// belief vol'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>&lambda;_jump</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.lambda_jump.toFixed(2)}</span>
-                  <span className={styles.paramComment}>{'// intensity'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>&mu;_J</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.mu_J.toFixed(3)}</span>
-                  <span className={styles.paramComment}>{'// jump size'}</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Avellaneda-Stoikov Market Making */}
-            <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// avellaneda-stoikov market making'}</div>
-              <div className={styles.modelFormula}>
-                r_x = x_t - q&middot;&gamma;&middot;&sigma;&sup2;_b&middot;(T-t)
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>q_inv</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.q_inv.toLocaleString('en-US').replace(/,/g, ' ')}</span>
-                  <span className={styles.paramComment}>{'// inventory'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>&gamma;</span>
-                <span>
-                  <span className={styles.paramValue}>0.10</span>
-                  <span className={styles.paramComment}>{'// risk aversion'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>k</span>
-                <span>
-                  <span className={styles.paramValue}>1.50</span>
-                  <span className={styles.paramComment}>{'// arrival decay'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>&delta;_x</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.delta_x.toFixed(4)}</span>
-                  <span className={styles.paramComment}>{'// half-spread'}</span>
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>p_bid</span>
-                <span><span className={styles.paramValue}>{(derived.p_bid * 100).toFixed(1)}&cent;</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>p_ask</span>
-                <span><span className={styles.paramValue}>{(derived.p_ask * 100).toFixed(1)}&cent;</span></span>
-              </div>
-            </div>
-
-            {/* Edge Detection Pipeline */}
-            <div className={styles.modelPanel}>
-              <div className={styles.modelName}>{'// edge detection pipeline'}</div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>model_fair</span>
-                <span><span className={styles.paramValue}>{derived.model_fair.toFixed(2)}%</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>mkt_price</span>
-                <span><span className={styles.paramValue}>{derived.mkt_price.toFixed(2)}%</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>divergence</span>
-                <span><span className={styles.paramValue}>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>threshold</span>
-                <span><span className={styles.paramValue}>3.00%</span></span>
-              </div>
-              <div
-                className={styles.signalRow}
-                style={derived.signal === 'SKIP' ? { background: 'rgba(248, 113, 113, 0.06)', borderColor: 'rgba(248, 113, 113, 0.12)' } : undefined}
-              >
-                <span className={styles.signalLabel}>signal</span>
-                <span className={derived.signal === 'TRADE' ? styles.signalValue : styles.signalSkip}>
-                  &rarr; {derived.signal}
-                </span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>kelly_f</span>
-                <span><span className={styles.paramValue}>0.25x</span></span>
-              </div>
-              <div className={styles.paramRow}>
-                <span className={styles.paramKey}>fee</span>
-                <span>
-                  <span className={styles.paramValue}>{derived.fee.toFixed(2)}%</span>
-                  <span className={styles.paramComment}>{'// p(1-p)+0.0625'}</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* ════ CENTER: Polymarket ════ */}
-          <div className={styles.centerColumn}>
-
-          {/* Trading Balance */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Trading Balance &middot; USDC &middot; Polymarket CLOB</span>
-              <span className={styles.panelBadge}>on-chain</span>
-            </div>
-            <div className={styles.chartArea}>
-              {!balance && !balanceError && (
-                <span className={styles.loadingText}>Loading balance...</span>
-              )}
-              {balanceError && !balance && (
-                <span className={styles.errorText}>Failed to load balance</span>
-              )}
-              {balance && (
-                <>
-                  <div className={styles.balanceHero}>${balance.formatted}</div>
-                  <div className={styles.balanceLabel}>Total USDC Balance</div>
-                  {(balance.governance || balance.trader) && (
-                    <div className={styles.balanceBreakdown}>
-                      {balance.governance && <span>Governance: ${balance.governance.formatted}</span>}
-                      {balance.trader && <span>Polymarket: ${balance.trader.formatted}</span>}
-                    </div>
-                  )}
-                  <WalletAddress address="0xcc4c93b6f74ce22e00874bce3fabe439a2572990" />
-                  <TickerLine stroke="var(--color-primary)" />
-                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-primary)" strokeWidth={1.5} opacity={0.5} speed={350} />
-                  <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Polymarket Signal Markets */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Polymarket CLOB &middot; Active Markets</span>
-              <span className={styles.panelBadge}>live</span>
-            </div>
-            {!polymarkets && !polyError && (
-              <span className={styles.loadingText}>Loading markets...</span>
-            )}
-            {polyError && !polymarkets && (
-              <span className={styles.errorText}>Failed to load Polymarket data</span>
-            )}
-            {polymarkets && (
-              <div className={styles.polymarketList}>
-                {(['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map((cat) => {
-                  const items = polymarkets[cat];
-                  if (!items || items.length === 0) return null;
-                  return (
-                    <div key={cat} className={styles.polySection}>
-                      <div className={styles.polySectionLabel}>{CATEGORY_LABELS[cat]}</div>
-                      {items.map((m) => {
-                        const [yes, no] = parseOutcomePrices(m.outcomePrices);
-                        const yesPct = Math.round(yes * 100);
-                        const noPct = Math.round(no * 100);
-                        return (
-                          <div key={m.id} className={styles.polymarketItem}>
-                            <div className={styles.polyQuestion}>{m.question}</div>
-                            <div className={styles.polyBar}>
-                              <div className={styles.polyYes} style={{ width: `${yesPct}%` }} />
-                              <div className={styles.polyNo} style={{ width: `${noPct}%` }} />
-                            </div>
-                            <div className={styles.polyMeta}>
-                              <span>Yes {yesPct}% / No {noPct}%</span>
-                              <span>Vol: {formatVol(m.volume)}</span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Execution Log */}
-          <div className={`${styles.panel} ${styles.logPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>CLOB Execution Log &middot; Bayesian Edge Capture</span>
-              <span className={styles.panelBadge}>live</span>
-            </div>
-            <div className={styles.logEntries}>
-              {executionLogs.length === 0 && (
-                <span className={styles.loadingText}>Waiting for trading cycle...</span>
-              )}
-              {executionLogs.map((log, i) => (
-                <div key={i} className={styles.logEntry}>
-                  <span className={styles.logTime}>{formatTradeTime(String(log.timestamp / 1000))}</span>
-                  <span className={`${styles.logAction} ${
-                    log.action === 'TRADE' ? styles.logTrade
-                    : log.action === 'SKIP' ? styles.logSkip
-                    : log.action === 'ERROR' ? styles.logSkip
-                    : styles.logScan
-                  }`}>{log.action}</span>
-                  <span className={styles.logDetails}>
-                    {log.asset ? `${log.asset} ` : ''}{log.details}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          </div>{/* end centerColumn */}
-
-          {/* ════ RIGHT COLUMN ════ */}
-          <div className={styles.rightColumn}>
-
-          <div className={styles.marketsColumn}>
-            <div className={styles.panel}>
-              <div className={styles.panelTitle}>Live Spot Prices</div>
-            </div>
-            {!prices && !priceError && (
-              <div className={styles.marketRow}>
-                <span className={styles.loadingText}>Loading prices...</span>
-              </div>
-            )}
-            {priceError && !prices && (
-              <div className={styles.marketRow}>
-                <span className={styles.errorText}>Failed to load prices</span>
-              </div>
-            )}
-            {prices && prices.map((coin) => (
-              <LiveMarketRow key={coin.symbol} coin={coin} tick={modelTick} />
+        {markets.length > 0 && (
+          <div className={styles.marketGrid}>
+            {markets.map((m) => (
+              <MarketCard
+                key={m.id}
+                marketId={m.id}
+                question={m.question}
+                yesPct={m.yesPct}
+                noPct={m.noPct}
+                meta={m.meta}
+                category={m.category}
+                categoryColor={m.categoryColor}
+                endLabel={m.endLabel}
+                balance={balance}
+                existingBet={bets.find(
+                  (b) => b.marketId === m.id && b.status === 'active'
+                )}
+                onBet={handleBet}
+              />
             ))}
           </div>
+        )}
 
-          {/* Order Flow · Maker vs Taker */}
-          <div className={`${styles.panel} ${styles.flowPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Order Flow &middot; Maker vs Taker</span>
-              <span className={styles.panelBadge}>live</span>
-            </div>
-            {!orderFlow ? (
-              <span className={styles.loadingText}>Loading flow data...</span>
-            ) : (
-              <>
-                <div className={`${styles.flowDirection} ${
-                  orderFlow.flowDirection === 'BULLISH' ? styles.flowBullish
-                    : orderFlow.flowDirection === 'BEARISH' ? styles.flowBearish
-                    : styles.flowNeutral
-                }`}>
-                  {orderFlow.flowDirection === 'BULLISH' ? '\u2191' : orderFlow.flowDirection === 'BEARISH' ? '\u2193' : '\u2194'}
-                  {' '}{orderFlow.flowDirection}
-                </div>
-                <div className={styles.flowBarWrap}>
-                  <div className={styles.flowBuy} style={{ width: `${Math.round(orderFlow.takerBuyRatio * 100)}%` }} />
-                  <div className={styles.flowSell} style={{ width: `${Math.round((1 - orderFlow.takerBuyRatio) * 100)}%` }} />
-                </div>
-                <div className={styles.flowBarLabels}>
-                  <span>Buy {Math.round(orderFlow.takerBuyRatio * 100)}%</span>
-                  <span>Sell {Math.round((1 - orderFlow.takerBuyRatio) * 100)}%</span>
-                </div>
-                <div className={styles.flowStats}>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Taker Buy Vol</span>
-                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerBuyVolume)}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Taker Sell Vol</span>
-                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerSellVolume)}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Total Trades</span>
-                    <span className={styles.flowStatValue}>{orderFlow.totalTrades}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Maker Edge Est.</span>
-                    <span className={styles.flowStatValue}>+{orderFlow.makerEdgeEstimate.toFixed(2)}%</span>
-                  </div>
-                </div>
-                <div className={styles.flowTradesLabel}>Recent Trades</div>
-                <div className={styles.flowTrades}>
-                  {orderFlow.recentTrades.map((t, i) => (
-                    <div key={i} className={styles.flowTradeRow}>
-                      <span className={`${styles.flowTradeBadge} ${t.side === 'BUY' ? styles.flowTradeBuy : styles.flowTradeSell}`}>
-                        {t.side}
-                      </span>
-                      <span className={styles.flowTradePrice}>{(t.price * 100).toFixed(1)}&cent;</span>
-                      <span className={styles.flowTradeSize}>{formatVol(t.size)}</span>
-                      <span className={styles.flowTradeTime}>{formatTradeTime(t.ts)}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+        {polymarkets && markets.length === 0 && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyTitle}>No markets in this category</div>
+            <div className={styles.emptyText}>Try a different filter.</div>
           </div>
+        )}
 
-          {/* Positions / Kelly Sized */}
-          <div className={`${styles.panel} ${styles.positionsPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>CLOB Positions &middot; Quarter-Kelly</span>
-              <span className={styles.panelBadge}>live</span>
+        {/* ── Active Bets ── */}
+        {activeBets.length > 0 && (
+          <div className={styles.betsSection}>
+            <div className={styles.betsSectionTitle}>
+              Your Bets ({activeBets.length} active)
             </div>
-            <div className={styles.positionsEntries}>
-              {livePositions.length === 0 && (
-                <span className={styles.loadingText}>No open positions</span>
-              )}
-              {livePositions.map((pos, i) => (
-                <div key={i} className={styles.positionRow}>
-                  <span className={styles.positionAsset}>{pos.asset}</span>
-                  <span className={`${styles.positionSide} ${pos.side === 'BUY' ? styles.positionLong : styles.positionShort}`}>
-                    {pos.side === 'BUY' ? 'UP' : 'DN'}
+            <div className={styles.betsList}>
+              {activeBets.map((bet) => (
+                <div key={bet.id} className={styles.betRow}>
+                  <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>
+                    {bet.side}
                   </span>
-                  <span className={styles.positionEntry}>
-                    {Math.round(parseFloat(pos.price) * 100)}&cent; ${pos.sizeMatched || pos.size}
+                  <span className={styles.betQuestion}>{bet.question}</span>
+                  <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
+                  <span className={styles.betPayout}>
+                    wins {bet.potentialWin.toLocaleString()}
                   </span>
-                  <span className={styles.positionStatus}>{pos.status}</span>
                 </div>
               ))}
             </div>
           </div>
+        )}
 
-          </div>{/* end rightColumn */}
+        {/* ── Resolved Bets ── */}
+        {resolvedBets.length > 0 && (
+          <div className={styles.betsSection}>
+            <div className={styles.betsSectionTitle}>Recent Results</div>
+            <div className={styles.betsList}>
+              {resolvedBets.map((bet) => (
+                <div
+                  key={bet.id}
+                  className={bet.status === 'won' ? styles.betWon : styles.betLost}
+                >
+                  <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>
+                    {bet.side}
+                  </span>
+                  <span className={styles.betQuestion}>{bet.question}</span>
+                  <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
+                  <span
+                    className={
+                      bet.status === 'won' ? styles.betWonBadge : styles.betLostBadge
+                    }
+                  >
+                    {bet.status === 'won'
+                      ? `+${bet.potentialWin.toLocaleString()}`
+                      : `-${bet.amount.toLocaleString()}`}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-        </div>
+        {bets.length === 0 && mounted && (
+          <div className={styles.noBets}>
+            No bets yet. Pick a market above and make your first prediction!
+          </div>
         )}
       </div>
+
+      {/* ── Toast ── */}
+      {toast && <div className={styles.toast}>{toast}</div>}
     </main>
   );
 }
