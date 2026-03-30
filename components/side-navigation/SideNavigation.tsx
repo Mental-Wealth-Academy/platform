@@ -756,6 +756,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         isOpen={isInventoryOpen}
         onClose={() => setIsInventoryOpen(false)}
         shardCount={shardCount}
+        username={username}
+        avatarUrl={avatarUrl}
       />
       <LootBoxModal
         isOpen={isLootBoxOpen}

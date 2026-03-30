@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import { providers, Contract } from 'ethers';
 import styles from './InventoryModal.module.css';
 
@@ -9,6 +11,8 @@ interface InventoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   shardCount: number | null;
+  username?: string | null;
+  avatarUrl?: string | null;
 }
 
 const CONTRACT_ADDRESS =
@@ -32,7 +36,7 @@ const KILLSTREAK_ABI = [
 
 function formatBalance(raw: unknown, decimals: number, maxDecimals = 4): string {
   const num = Number(raw) / 10 ** decimals;
-  if (num === 0) return '0';
+  if (num === 0) return '0.00';
   if (num < 0.0001) return '<0.0001';
   return num.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -40,7 +44,12 @@ function formatBalance(raw: unknown, decimals: number, maxDecimals = 4): string 
   });
 }
 
-export default function InventoryModal({ isOpen, onClose, shardCount }: InventoryModalProps) {
+function truncateAddress(addr: string): string {
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+}
+
+export default function InventoryModal({ isOpen, onClose, shardCount, username, avatarUrl }: InventoryModalProps) {
+  const { address } = useAccount();
   const [ethBalance, setEthBalance] = useState<string | null>(null);
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
@@ -60,17 +69,16 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
         setLoading(false);
         return;
       }
-      const address = accounts[0];
+      const addr = accounts[0];
 
-      // Fetch ETH, USDC, voting power in parallel
       const usdc = new Contract(USDC_ADDRESS, ERC20_ABI, provider);
       const killstreak = new Contract(CONTRACT_ADDRESS, KILLSTREAK_ABI, provider);
 
       const [ethRaw, usdcRaw, usdcDecimals, vpRaw] = await Promise.all([
-        provider.getBalance(address),
-        usdc.balanceOf(address),
+        provider.getBalance(addr),
+        usdc.balanceOf(addr),
         usdc.decimals(),
-        killstreak.getVotingPower(address).catch(() => null),
+        killstreak.getVotingPower(addr).catch(() => null),
       ]);
 
       setEthBalance(formatBalance(ethRaw, 18, 4));
@@ -83,7 +91,6 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
         setVotingPower('0');
       }
 
-      // Check Academic Angel NFT via Scatter collection
       try {
         const colRes = await fetch('/api/scatter/collection');
         if (colRes.ok) {
@@ -94,7 +101,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
               ['function balanceOf(address) view returns (uint256)'],
               provider,
             );
-            const nftBal = await nftContract.balanceOf(address);
+            const nftBal = await nftContract.balanceOf(addr);
             setHasAngel(Number(nftBal) > 0);
           } else {
             setHasAngel(false);
@@ -119,106 +126,109 @@ export default function InventoryModal({ isOpen, onClose, shardCount }: Inventor
     }
   }, [isOpen, fetchBalances]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
+
+  const displayName = username && !username.startsWith('user_') ? username : null;
+  const initials = displayName ? displayName.slice(0, 2).toUpperCase() : address ? address.slice(2, 4).toUpperCase() : '??';
 
   return (
     <>
       <div className={styles.overlay} onClick={onClose} />
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Inventory</h2>
-          <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
+        <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Profile Header */}
+        <div className={styles.profileHeader}>
+          <div className={styles.avatarRing}>
+            {avatarUrl ? (
+              <Image src={avatarUrl} alt={displayName || 'Profile'} width={72} height={72} className={styles.avatar} unoptimized />
+            ) : (
+              <div className={styles.avatarFallback}>{initials}</div>
+            )}
+          </div>
+          {displayName && <h2 className={styles.displayName}>@{displayName}</h2>}
+          {address && (
+            <span className={styles.walletAddress}>{truncateAddress(address)}</span>
+          )}
+          {hasAngel && (
+            <span className={styles.badge}>Academic Angel</span>
+          )}
         </div>
 
-        <div className={styles.content}>
+        {/* Stats Row */}
+        <div className={styles.statsRow}>
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{shardCount !== null ? shardCount.toLocaleString() : '0'}</span>
+            <span className={styles.statLabel}>Shards</span>
+          </div>
+          <div className={styles.statDivider} />
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{votingPower ?? '--'}</span>
+            <span className={styles.statLabel}>Votes</span>
+          </div>
+          <div className={styles.statDivider} />
+          <div className={styles.stat}>
+            <span className={styles.statValue}>{hasAngel ? '1' : '0'}</span>
+            <span className={styles.statLabel}>NFTs</span>
+          </div>
+        </div>
+
+        {/* Balances */}
+        <div className={styles.balances}>
+          <span className={styles.sectionLabel}>Balances</span>
           {loading ? (
-            <div className={styles.loading}>Loading balances...</div>
+            <div className={styles.loading}>
+              <div className={styles.loadingDot} />
+              <div className={styles.loadingDot} />
+              <div className={styles.loadingDot} />
+            </div>
           ) : (
-            <>
-              {/* Balances Grid */}
-              <div className={styles.grid}>
-                <div className={styles.item}>
-                  <div className={styles.itemIcon}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <div className={styles.balanceList}>
+              <div className={styles.balanceRow}>
+                <div className={styles.balanceLeft}>
+                  <div className={styles.tokenIcon}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                       <path d="M12 2L6 12l6 10 6-10L12 2z" fill="#627EEA" />
                       <path d="M12 2v8.5L6 12l6-10z" fill="#627EEA" opacity="0.6" />
-                      <path d="M12 2v8.5l6 1.5-6-10z" fill="#627EEA" opacity="0.8" />
                     </svg>
                   </div>
-                  <div className={styles.itemInfo}>
-                    <span className={styles.itemLabel}>ETH</span>
-                    <span className={styles.itemValue}>{ethBalance ?? '--'}</span>
+                  <div className={styles.tokenInfo}>
+                    <span className={styles.tokenName}>Ethereum</span>
+                    <span className={styles.tokenTicker}>ETH</span>
                   </div>
                 </div>
+                <span className={styles.balanceValue}>{ethBalance ?? '0.00'}</span>
+              </div>
 
-                <div className={styles.item}>
-                  <div className={`${styles.itemIcon} ${styles.iconUsdc}`}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <div className={styles.balanceRow}>
+                <div className={styles.balanceLeft}>
+                  <div className={`${styles.tokenIcon} ${styles.tokenUsdc}`}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" fill="#2775CA" />
                       <text x="12" y="16" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
                     </svg>
                   </div>
-                  <div className={styles.itemInfo}>
-                    <span className={styles.itemLabel}>USDC</span>
-                    <span className={styles.itemValue}>{usdcBalance ?? '--'}</span>
+                  <div className={styles.tokenInfo}>
+                    <span className={styles.tokenName}>USD Coin</span>
+                    <span className={styles.tokenTicker}>USDC</span>
                   </div>
                 </div>
-
-                <div className={styles.item}>
-                  <div className={styles.itemIcon}>
-                    <Image src="/icons/Coin Poly.svg" alt="Voting Power" width={24} height={24} />
-                  </div>
-                  <div className={styles.itemInfo}>
-                    <span className={styles.itemLabel}>Voting Power</span>
-                    <span className={styles.itemValue}>{votingPower ?? '--'}</span>
-                  </div>
-                </div>
-
-                <div className={styles.item}>
-                  <div className={styles.itemIcon}>
-                    <Image src="/icons/shard.svg" alt="Shards" width={24} height={24} />
-                  </div>
-                  <div className={styles.itemInfo}>
-                    <span className={styles.itemLabel}>Shards</span>
-                    <span className={styles.itemValue}>{shardCount !== null ? shardCount.toLocaleString() : '0'}</span>
-                  </div>
-                </div>
+                <span className={styles.balanceValue}>{usdcBalance ?? '0.00'}</span>
               </div>
-
-              {/* Eligible Members */}
-              <div className={styles.nftSection}>
-                <div className={styles.nftHeader}>
-                  <span className={styles.nftLabel}>Eligible Members</span>
-                  {hasAngel !== null && (
-                    <span className={hasAngel ? styles.nftOwned : styles.nftNotOwned}>
-                      {hasAngel ? 'Owned' : 'Not Owned'}
-                    </span>
-                  )}
-                </div>
-                <div className={styles.nftRow}>
-                  <div className={styles.nftCard}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://i.imgur.com/GXA3DBV.gif"
-                      alt="Academic Angel"
-                      className={styles.nftImage}
-                    />
-                  </div>
-                  <div className={`${styles.nftCard} ${styles.nftCardNouns}`}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://www.lilnouns.wtf/app-icon.jpeg"
-                      alt="Lil Nouns"
-                      className={styles.nftImage}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
+            </div>
           )}
         </div>
       </div>
