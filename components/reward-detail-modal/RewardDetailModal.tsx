@@ -217,7 +217,10 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
 
     setIsCompleting(true);
     try {
-      const meResponse = await fetch('/api/me', { cache: 'no-store' });
+      const meResponse = await fetch('/api/me', {
+        cache: 'no-store',
+        credentials: 'include',
+      });
       const meData = await meResponse.json();
       const currentStartingShards = meData?.user?.shardCount ?? 0;
       setStartingShards(currentStartingShards);
@@ -225,6 +228,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
       const shardReward = reward.points;
       const response = await fetch('/api/quests/complete', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           questId: reward.id,

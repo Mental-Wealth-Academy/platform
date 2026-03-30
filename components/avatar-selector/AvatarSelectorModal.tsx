@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './AvatarSelectorModal.module.css';
 
 interface Avatar {
@@ -16,6 +17,7 @@ interface AvatarSelectorModalProps {
 }
 
 const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAvatarSelected }) => {
+  const { getAccessToken } = usePrivy();
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [currentAvatar, setCurrentAvatar] = useState<string | null>(null);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
@@ -26,7 +28,12 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
   useEffect(() => {
     const fetchAvatars = async () => {
       try {
-        const response = await fetch('/api/avatars/choices', { cache: 'no-store' });
+        const token = await getAccessToken();
+        const response = await fetch('/api/avatars/choices', {
+          cache: 'no-store',
+          credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         const data = await response.json();
 
         if (!response.ok) {
@@ -45,7 +52,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
     };
 
     fetchAvatars();
-  }, []);
+  }, [getAccessToken]);
 
   const handleSelectAvatar = async () => {
     if (!selectedAvatar) {
@@ -64,9 +71,14 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
     setError(null);
 
     try {
+      const token = await getAccessToken();
       const response = await fetch('/api/avatars/select', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ avatar_id: avatar.id }),
       });
 

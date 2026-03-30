@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './UsernameChangeModal.module.css';
 
 interface UsernameChangeModalProps {
@@ -16,6 +17,7 @@ const UsernameChangeModal: React.FC<UsernameChangeModalProps> = ({
   currentUsername,
   onUsernameChanged 
 }) => {
+  const { getAccessToken } = usePrivy();
   const [newUsername, setNewUsername] = useState(currentUsername);
   const [isValid, setIsValid] = useState(true);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
@@ -138,10 +140,14 @@ const UsernameChangeModal: React.FC<UsernameChangeModalProps> = ({
     setError(null);
 
     try {
+      const token = await getAccessToken();
       const response = await fetch('/api/me', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ username: trimmed }),
       });
 

@@ -205,7 +205,7 @@ const Navbar: React.FC = () => {
     
     // Clear session
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     } catch (err) {
       console.error('Failed to logout:', err);
     }
