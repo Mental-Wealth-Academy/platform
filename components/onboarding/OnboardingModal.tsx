@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './OnboardingModal.module.css';
 
 interface Avatar {
@@ -19,17 +20,25 @@ interface OnboardingModalProps {
 
 const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onComplete }) => {
   const { address } = useAccount();
+  const { getAccessToken } = usePrivy();
   const [step, setStep] = useState<'avatar' | 'details'>('avatar');
   const [hasSession, setHasSession] = useState(false);
 
   // Check if user has an active session (e.g. Farcaster mini-app users)
   useEffect(() => {
     if (!isOpen) return;
-    fetch('/api/me', { credentials: 'include', cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => { if (data?.user) setHasSession(true); })
-      .catch(() => {});
-  }, [isOpen]);
+    (async () => {
+      const token = await getAccessToken();
+      fetch('/api/me', {
+        credentials: 'include',
+        cache: 'no-store',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+        .then(res => res.json())
+        .then(data => { if (data?.user) setHasSession(true); })
+        .catch(() => {});
+    })();
+  }, [isOpen, getAccessToken]);
 
   // Avatar state
   const [avatars, setAvatars] = useState<Avatar[]>([]);
@@ -59,9 +68,11 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setLoadingAvatars(true);
       setAvatarError(null);
       try {
+        const token = await getAccessToken();
         const response = await fetch('/api/avatars/choices', {
           cache: 'no-store',
           credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await response.json();
         if (!response.ok) {
@@ -76,7 +87,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       }
     };
     fetchAvatars();
-  }, [isOpen]);
+  }, [isOpen, getAccessToken]);
 
   // Username check
   const checkUsername = useCallback(async (name: string) => {
@@ -159,10 +170,14 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
     setIsLoading(true);
     try {
+      const token = await getAccessToken();
       const profileResponse = await fetch('/api/profile/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           username,
           avatar_id: selectedAvatarId || undefined,

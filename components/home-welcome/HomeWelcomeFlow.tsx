@@ -20,7 +20,7 @@ interface HomeWelcomeFlowProps {
  */
 export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
   const router = useRouter();
-  const { ready, authenticated } = usePrivy();
+  const { ready, authenticated, getAccessToken } = usePrivy();
 
   const [authState, setAuthState] = useState<'checking' | 'needs-onboarding' | 'ready'>('checking');
   const farcasterAttempted = useRef(false);
@@ -32,7 +32,13 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
       try {
         // 1. If Privy says authenticated, check existing user via server
         if (authenticated) {
-          const res = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+          const token = await getAccessToken();
+          const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+          const res = await fetch('/api/me', {
+            credentials: 'include',
+            cache: 'no-store',
+            headers: authHeaders,
+          });
           const data = await res.json().catch(() => ({ user: null }));
           if (data?.user) {
             if (data.user.onboardingComplete) {
@@ -78,13 +84,20 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
 
         // 3. Privy-authenticated — create server session automatically
         if (authenticated) {
+          const token = await getAccessToken();
+          const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
           const signupRes = await fetch('/api/auth/wallet-signup', {
             method: 'POST',
             credentials: 'include',
+            headers: authHeaders,
           });
 
           if (signupRes.ok) {
-            const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store' });
+            const meRes = await fetch('/api/me', {
+              credentials: 'include',
+              cache: 'no-store',
+              headers: authHeaders,
+            });
             const meData = await meRes.json().catch(() => ({ user: null }));
             if (meData?.user?.onboardingComplete) {
               setAuthState('ready');

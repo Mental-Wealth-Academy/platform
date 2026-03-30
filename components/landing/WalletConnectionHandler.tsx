@@ -10,7 +10,7 @@ interface WalletConnectionHandlerProps {
 }
 
 export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Connect Wallet' }: WalletConnectionHandlerProps) {
-  const { ready, authenticated, login } = usePrivy();
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const processedRef = useRef(false);
@@ -21,8 +21,15 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
     setIsProcessing(true);
 
     try {
-      // Check if user already exists (server reads Privy cookie automatically)
-      const meResponse = await fetch('/api/me', { credentials: 'include' });
+      // Get fresh Privy access token for Authorization header
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+      // Check if user already exists
+      const meResponse = await fetch('/api/me', {
+        credentials: 'include',
+        headers: authHeaders,
+      });
       if (meResponse.status >= 500) {
         alert('Server error. Please try again later.');
         return;
@@ -35,10 +42,11 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
         return;
       }
 
-      // Create account — server reads Privy cookie for wallet auth
+      // Create account with fresh token
       const signupResponse = await fetch('/api/auth/wallet-signup', {
         method: 'POST',
         credentials: 'include',
+        headers: authHeaders,
       });
 
       if (signupResponse.ok) {

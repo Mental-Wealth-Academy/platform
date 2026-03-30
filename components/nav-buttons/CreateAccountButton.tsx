@@ -33,7 +33,12 @@ const CreateAccountButton: React.FC = () => {
   const [saving, setSaving] = useState(false);
 
   async function refreshMe() {
-    const res = await fetch('/api/me', { cache: 'no-store' });
+    const token = await getAccessToken();
+    const res = await fetch('/api/me', {
+      cache: 'no-store',
+      credentials: 'include',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     const data = (await res.json()) as MeResponse;
     setMe(data.user);
     if (data.user) setUsername(data.user.username);

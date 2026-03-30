@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isConnected, address } = useAccount();
-  const { logout: privyLogout } = usePrivy();
+  const { logout: privyLogout, getAccessToken } = usePrivy();
   // Removed isMobileMenuOpen - bottom nav is always visible on mobile
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
@@ -97,14 +97,15 @@ const Navbar: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user data - uses session-based auth (no wallet signature needed)
+  // Fetch user data - uses Privy access token for auth
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Use session-based auth - session cookie is included automatically
-        const response = await fetch('/api/me', { 
+        const token = await getAccessToken();
+        const response = await fetch('/api/me', {
           cache: 'no-store',
           credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await response.json();
         if (data?.user) {
