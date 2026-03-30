@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureEventsSchema } from '@/lib/ensureEventsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 
 export const runtime = 'nodejs';
@@ -16,7 +17,17 @@ export async function GET() {
 
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
-    return NextResponse.json({ user: null, dbConfigured: true });
+    // Return WHY auth failed so the client can act on it
+    const wallet = await getWalletAddressFromRequest();
+    return NextResponse.json({
+      user: null,
+      dbConfigured: true,
+      authDebug: {
+        walletExtracted: !!wallet,
+        walletPrefix: wallet ? wallet.slice(0, 6) : null,
+        userNotFound: !!wallet, // wallet found but no DB row
+      },
+    });
   }
 
   // Get shard count and onboarding status from database

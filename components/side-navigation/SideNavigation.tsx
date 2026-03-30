@@ -72,7 +72,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
-  const { login, logout: privyLogout, authenticated, getAccessToken } = usePrivy();
+  const { login, logout: privyLogout, authenticated, ready, getAccessToken } = usePrivy();
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -203,16 +203,16 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     }
   };
 
-  // Auto-create session when wallet connects (only if Privy says authenticated)
+  // Auto-create session when wallet connects (only if Privy says ready + authenticated)
   useEffect(() => {
-    if (!authenticated || !isConnected || !address) return;
+    if (!ready || !authenticated || !isConnected || !address) return;
     if (username && !username.startsWith('user_')) return; // Already fully logged in
     if (sessionCreatedForRef.current === address) return;
 
     const timer = setTimeout(() => createSessionForWallet(address), 500);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authenticated, isConnected, address, username]);
+  }, [ready, authenticated, isConnected, address, username]);
 
   // Reset session tracking when wallet disconnects
   useEffect(() => {
@@ -221,40 +221,64 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     }
   }, [isConnected]);
 
-  // Fetch user data (only when Privy says authenticated)
+  // Fetch user data (wait for Privy ready + authenticated, retry on failure)
   useEffect(() => {
-    if (!authenticated) {
+    if (!ready || !authenticated) {
       setShardCount(null);
       setUsername(null);
       setAvatarUrl(null);
       return;
     }
 
-    const fetchUserData = async () => {
+    let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout>;
+
+    const fetchUserData = async (attempt = 1) => {
+      if (cancelled) return;
       try {
         const token = await getAccessToken();
+        if (!token && attempt <= 3) {
+          // Privy token not ready yet — retry after delay
+          console.warn('[SideNav] getAccessToken returned null, retry', attempt);
+          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 1500);
+          return;
+        }
         const response = await fetch('/api/me', {
           cache: 'no-store',
           credentials: 'include',
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         const data = await response.json();
+        if (cancelled) return;
         if (data?.user) {
-          if (data.user.shardCount !== undefined) {
-            setShardCount(data.user.shardCount);
-          }
+          if (data.user.shardCount !== undefined) setShardCount(data.user.shardCount);
           setUsername(data.user.username || null);
           setAvatarUrl(data.user.avatarUrl || null);
         } else {
+          // Auth debug info from server
+          if (data?.authDebug) {
+            console.warn('[SideNav] /api/me returned no user.', data.authDebug);
+            // Wallet extracted but no DB row — try creating the account
+            if (data.authDebug.walletExtracted && data.authDebug.userNotFound && attempt <= 2) {
+              console.warn('[SideNav] Wallet found but no user row — calling wallet-signup');
+              await fetch('/api/auth/wallet-signup', {
+                method: 'POST',
+                credentials: 'include',
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+              });
+              retryTimer = setTimeout(() => fetchUserData(attempt + 1), 1000);
+              return;
+            }
+          }
           setShardCount(null);
           setUsername(null);
           setAvatarUrl(null);
         }
       } catch (error) {
-        console.error('Failed to fetch user data:', error);
-        setShardCount(null);
-        setUsername(null);
-        setAvatarUrl(null);
+        console.error('[SideNav] Failed to fetch user data:', error);
+        if (!cancelled && attempt <= 3) {
+          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 1500);
+        }
       }
     };
 
@@ -265,10 +289,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     window.addEventListener('shardsUpdated', handleShardsUpdate);
     window.addEventListener('profileUpdated', handleProfileUpdate);
     return () => {
+      cancelled = true;
+      clearTimeout(retryTimer);
       window.removeEventListener('shardsUpdated', handleShardsUpdate);
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, [authenticated]);
+  }, [ready, authenticated, getAccessToken]);
 
   // Position account menu above the button on mobile (fixed positioning to escape overflow)
   useEffect(() => {

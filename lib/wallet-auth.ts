@@ -21,6 +21,7 @@ export async function getWalletAddressFromRequest(): Promise<string | null> {
       if (token.includes('.')) {
         const wallet = await getWalletFromPrivyToken(token);
         if (wallet) return wallet;
+        console.warn('[Wallet Auth] Authorization header JWT failed to extract wallet');
       }
 
       // Legacy: signed wallet auth — address:signature:timestamp
@@ -47,8 +48,12 @@ export async function getWalletAddressFromRequest(): Promise<string | null> {
     if (privyToken) {
       const wallet = await getWalletFromPrivyToken(privyToken);
       if (wallet) return wallet;
+      console.warn('[Wallet Auth] privy-token cookie JWT failed to extract wallet');
+    } else {
+      console.warn('[Wallet Auth] No privy-token cookie found');
     }
 
+    console.warn('[Wallet Auth] All auth methods failed. authHeader:', authHeader ? 'present' : 'absent', 'privyToken:', privyToken ? 'present' : 'absent');
     return null;
   } catch (error) {
     console.error('getWalletAddressFromRequest error:', error);

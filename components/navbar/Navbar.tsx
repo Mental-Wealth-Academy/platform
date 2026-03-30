@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isConnected, address } = useAccount();
-  const { logout: privyLogout, getAccessToken } = usePrivy();
+  const { logout: privyLogout, getAccessToken, ready, authenticated } = usePrivy();
   // Removed isMobileMenuOpen - bottom nav is always visible on mobile
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
@@ -97,11 +97,19 @@ const Navbar: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user data - uses Privy access token for auth
+  // Fetch user data - wait for Privy ready + authenticated
   useEffect(() => {
-    const fetchUserData = async () => {
+    if (!ready || !authenticated) return;
+
+    let retryTimer: ReturnType<typeof setTimeout>;
+
+    const fetchUserData = async (attempt = 1) => {
       try {
         const token = await getAccessToken();
+        if (!token && attempt <= 3) {
+          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 1500);
+          return;
+        }
         const response = await fetch('/api/me', {
           cache: 'no-store',
           credentials: 'include',
@@ -109,44 +117,35 @@ const Navbar: React.FC = () => {
         });
         const data = await response.json();
         if (data?.user) {
-          if (data.user.shardCount !== undefined) {
-            setShardCount(data.user.shardCount);
-          }
+          if (data.user.shardCount !== undefined) setShardCount(data.user.shardCount);
           setUsername(data.user.username || null);
           setAvatarUrl(data.user.avatarUrl || null);
         } else {
-          // No user data - clear state
           setShardCount(null);
           setUsername(null);
           setAvatarUrl(null);
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error);
-        setShardCount(null);
-        setUsername(null);
-        setAvatarUrl(null);
+        if (attempt <= 3) {
+          retryTimer = setTimeout(() => fetchUserData(attempt + 1), attempt * 1500);
+        }
       }
     };
 
-    // Fetch immediately
     fetchUserData();
 
-    // Listen for shard updates and profile updates
-    const handleShardsUpdate = () => {
-      fetchUserData();
-    };
-    const handleProfileUpdate = () => {
-      fetchUserData();
-    };
-    
+    const handleShardsUpdate = () => fetchUserData();
+    const handleProfileUpdate = () => fetchUserData();
     window.addEventListener('shardsUpdated', handleShardsUpdate);
     window.addEventListener('profileUpdated', handleProfileUpdate);
 
     return () => {
+      clearTimeout(retryTimer);
       window.removeEventListener('shardsUpdated', handleShardsUpdate);
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, []); // Run once on mount - session cookie handles auth
+  }, [ready, authenticated, getAccessToken]);
 
   const isActive = (path: string) => {
     if (path === '/home') {

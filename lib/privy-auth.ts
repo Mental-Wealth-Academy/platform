@@ -25,7 +25,10 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
  * Results are cached by Privy userId for 5 minutes.
  */
 export async function getWalletFromPrivyToken(token: string): Promise<string | null> {
-  if (!token) return null;
+  if (!token) {
+    console.warn('[Privy Auth] No token provided');
+    return null;
+  }
 
   try {
     const client = getPrivyClient();
@@ -48,15 +51,19 @@ export async function getWalletFromPrivyToken(token: string): Promise<string | n
     );
     const wallet = embeddedWallet || linkedWallet;
 
-    if (!wallet || !('address' in wallet)) return null;
+    if (!wallet || !('address' in wallet)) {
+      console.warn('[Privy Auth] User has no wallet linked. userId:', userId,
+        'linkedAccounts:', user.linkedAccounts.map((a: any) => ({ type: a.type, walletClientType: a.walletClientType })));
+      return null;
+    }
     const address = (wallet as any).address.toLowerCase();
 
     // Cache the result
     walletCache.set(userId, { wallet: address, expiresAt: Date.now() + CACHE_TTL });
 
     return address;
-  } catch (error) {
-    console.warn('[Privy Auth] Token verification failed:', error);
+  } catch (error: any) {
+    console.error('[Privy Auth] Token verification failed:', error?.message || error);
     return null;
   }
 }
