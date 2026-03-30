@@ -45,7 +45,7 @@
 }
 
 .tabActive {
-  color: #1a1d33;
+  color: #3B4FCC;
 }
 
 .icon {
@@ -90,14 +90,14 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: #1a1d33;
+  background: linear-gradient(135deg, #5168FF, #3B4FCC);
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   bottom: 16px;
   box-shadow:
-    0 4px 16px rgba(26, 29, 51, 0.2),
+    0 4px 16px rgba(81, 104, 255, 0.3),
     0 0 0 4px #FBF8FF;
   transition: transform 0.2s ease;
 }

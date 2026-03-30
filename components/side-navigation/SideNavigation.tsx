@@ -137,7 +137,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       }
     };
     window.addEventListener('toggleSidebar', handler);
-    return () => window.removeEventListener('toggleSidebar', handler);
+
+    const azuraHandler = () => setIsChatOpen(true);
+    window.addEventListener('toggleAzuraChat', azuraHandler);
+
+    return () => {
+      window.removeEventListener('toggleSidebar', handler);
+      window.removeEventListener('toggleAzuraChat', azuraHandler);
+    };
   });
 
   const { data: proTokenBalance } = useReadContract({
