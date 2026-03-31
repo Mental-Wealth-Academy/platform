@@ -254,7 +254,11 @@ body {
 /* Dark mode body */
 [data-theme="dark"] body {
   background-color: #0D0E16;
-  background-image: none;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px);
+  background-size: auto;
+  background-attachment: scroll;
   color: rgba(227, 225, 238, 0.95);
 }
 

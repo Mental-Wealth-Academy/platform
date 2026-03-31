@@ -820,6 +820,26 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+:global([data-theme="dark"]) .detailBuyButton {
+  background: #FFFFFF;
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .detailBuyButton:hover {
+  background: #6B80FF;
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .bannerButton {
+  background: #FFFFFF;
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .bannerButton:hover {
+  background: #6B80FF;
+  color: #FFFFFF;
+}
+
 :global([data-theme="dark"]) .detailSaveButton {
   border-color: rgba(255, 255, 255, 0.08);
   color: rgba(227, 225, 238, 0.95);

@@ -842,6 +842,26 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
+:global([data-theme="dark"]) .detailMintButton {
+  background: #FFFFFF;
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .detailMintButton:hover {
+  background: #6B80FF;
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .bottomCtaButton {
+  background: #FFFFFF;
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .bottomCtaButton:hover {
+  background: #6B80FF;
+  color: #FFFFFF;
+}
+
 :global([data-theme="dark"]) .detailSaveButton {
   border-color: rgba(255, 255, 255, 0.08);
   color: rgba(227, 225, 238, 0.95);
