@@ -66,6 +66,11 @@ type LiquidityTarget = 'governance' | 'trader';
 const AZURA_EMOTES = {
   default: 'https://i.imgur.com/ExJZFiA.png',
   thinking: 'https://i.imgur.com/4FsFcDO.png',
+  scheming: 'https://i.imgur.com/3FMUm8a.png',
+  thinkingLeft: 'https://i.imgur.com/AjRHt7m.png',
+  thinkingRight: 'https://i.imgur.com/fRfcLdH.png',
+  searching: 'https://i.imgur.com/7RUM8I2.png',
+  blankStare: 'https://i.imgur.com/igYuj37.png',
 } as const;
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
@@ -91,7 +96,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [showLiquidityInput, setShowLiquidityInput] = useState(false);
   const [liquidityTarget, setLiquidityTarget] = useState<LiquidityTarget>('governance');
   const [txPending, setTxPending] = useState(false);
-  const [currentEmote, setCurrentEmote] = useState<keyof typeof AZURA_EMOTES>('default');
+  const [emoteA, setEmoteA] = useState<keyof typeof AZURA_EMOTES>('default');
+  const [emoteB, setEmoteB] = useState<keyof typeof AZURA_EMOTES>('default');
+  const [activeLayer, setActiveLayer] = useState<'a' | 'b'>('a');
   const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -353,11 +360,23 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
+  const switchEmote = useCallback((emote: keyof typeof AZURA_EMOTES) => {
+    setActiveLayer((prev) => {
+      if (prev === 'a') {
+        setEmoteB(emote);
+        return 'b';
+      } else {
+        setEmoteA(emote);
+        return 'a';
+      }
+    });
+  }, []);
+
   const showEmote = useCallback((emote: keyof typeof AZURA_EMOTES, durationMs = 6000) => {
     if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
-    setCurrentEmote(emote);
-    emoteTimerRef.current = setTimeout(() => setCurrentEmote('default'), durationMs);
-  }, []);
+    switchEmote(emote);
+    emoteTimerRef.current = setTimeout(() => switchEmote('default'), durationMs);
+  }, [switchEmote]);
 
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
@@ -489,12 +508,21 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
         <div className={styles.characterSection}>
           <Image
-            src={AZURA_EMOTES[currentEmote]}
-            alt="Azura working at her desk"
+            src={AZURA_EMOTES[emoteA]}
+            alt="Azura"
             fill
             className={styles.characterImage}
+            style={{ opacity: activeLayer === 'a' ? 1 : 0, transition: 'opacity 0.5s ease' }}
             unoptimized
             priority
+          />
+          <Image
+            src={AZURA_EMOTES[emoteB]}
+            alt="Azura"
+            fill
+            className={styles.characterImage}
+            style={{ opacity: activeLayer === 'b' ? 1 : 0, transition: 'opacity 0.5s ease' }}
+            unoptimized
           />
           <div className={styles.characterFade} />
           <div className={styles.characterNameplate}>
