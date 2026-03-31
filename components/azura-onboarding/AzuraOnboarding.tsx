@@ -55,10 +55,10 @@ interface AzuraOnboardingProps {
 }
 
 const emotionImages: Record<AzuraEmotion, string> = {
-  happy: '/uploads/HappyEmote.png',
-  confused: '/uploads/ConfusedEmote.png',
-  sad: '/uploads/SadEmote.png',
-  pain: '/uploads/PainEmote.png',
+  happy: 'https://i.imgur.com/3Y3KrnJ.png',
+  confused: 'https://i.imgur.com/ePrWP7A.png',
+  sad: 'https://i.imgur.com/XIe1jZy.png',
+  pain: 'https://i.imgur.com/ZYpNkse.png',
 };
 
 export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {

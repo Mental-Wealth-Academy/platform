@@ -64,13 +64,13 @@ const USDC_ADDRESS =
 type LiquidityTarget = 'governance' | 'trader';
 
 const AZURA_EMOTES = {
-  default: 'https://i.imgur.com/ExJZFiA.png',
-  thinking: 'https://i.imgur.com/4FsFcDO.png',
-  scheming: 'https://i.imgur.com/3FMUm8a.png',
-  thinkingLeft: 'https://i.imgur.com/AjRHt7m.png',
-  thinkingRight: 'https://i.imgur.com/fRfcLdH.png',
-  searching: 'https://i.imgur.com/7RUM8I2.png',
-  blankStare: 'https://i.imgur.com/igYuj37.png',
+  default: 'https://i.imgur.com/3Y3KrnJ.png',
+  thinking: 'https://i.imgur.com/ePrWP7A.png',
+  scheming: 'https://i.imgur.com/ZYpNkse.png',
+  calculated: 'https://i.imgur.com/XIe1jZy.png',
+  searching: 'https://i.imgur.com/oQtNXoV.png',
+  mentalWealth: 'https://i.imgur.com/Gf6HhzB.png',
+  blankStare: 'https://i.imgur.com/3Y3KrnJ.png',
 } as const;
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
