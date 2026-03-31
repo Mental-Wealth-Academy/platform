@@ -226,7 +226,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <div className={styles.tokenSection}>
           <div className={styles.tokenHeader}>
             <Image src="/icons/academybadge.png" alt="Shard" width={20} height={20} unoptimized />
-            <span className={styles.tokenAmount}>{review.tokenAllocation} $ACADEMY</span>
+            <span className={styles.tokenAmount}>{review.tokenAllocation}%</span>
           </div>
           <div className={styles.tokenBarTrack}>
             <div
