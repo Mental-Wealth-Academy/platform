@@ -63,7 +63,6 @@ export default function WeekTasksView({
   const [sealStep, setSealStep] = useState<'confirm' | 'verifying' | 'signing' | 'complete'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
   const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [isLoading, setIsLoading] = useState(true);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
@@ -114,17 +113,14 @@ export default function WeekTasksView({
     if (!hasLoadedRef.current || isSealed || !enablePersistence) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
-      setSaveStatus('saving');
       try {
-        const res = await fetch('/api/ethereal-progress', {
+        await fetch('/api/ethereal-progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ weekNumber, progressData: collectProgressData() }),
         });
-        if (res.ok) { setSaveStatus('saved'); setTimeout(() => setSaveStatus('idle'), 2000); }
-        else setSaveStatus('idle');
-      } catch { setSaveStatus('idle'); }
+      } catch { /* silent */ }
     }, 1500);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
   }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData]);
@@ -474,13 +470,7 @@ export default function WeekTasksView({
 
   return (
     <div className={styles.container} style={{ '--week-color': weekColor } as React.CSSProperties}>
-      {saveStatus !== 'idle' && (
-        <div className={styles.saveBar}>
-          {saveStatus === 'saving' ? 'Saving...' : 'Saved'}
-        </div>
-      )}
-
-      {journalSections.map(section => {
+{journalSections.map(section => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
         return (
