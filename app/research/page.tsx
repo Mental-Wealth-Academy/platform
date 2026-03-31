@@ -1,6 +1,7 @@
 'use client';
 
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import { useSound } from '@/hooks/useSound';
 import styles from './research-page.module.css';
 
@@ -140,6 +141,7 @@ export default function ResearchPage() {
                 onMouseEnter={() => { if (!isDisabled) play('hover'); }}
                 onClick={() => { if (!isDisabled) play('click'); }}
               >
+                <div className={styles.vizBg}><CyberpunkDataViz /></div>
                 <div
                   className={styles.toolIcon}
                   style={{ backgroundColor: `${tool.color}20`, color: tool.color }}
