@@ -327,7 +327,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     // Prayers
     if (t.includes('prayer') || t.includes('prayers')) {
-      return "Prayers are proposals submitted to the academy. You pour your intention into a proposal, and the community decides if it's worthy. Think of it like... casting a spell. If enough souls align with your vision, the treasury funds it. Every prayer that passes is proof that collective will can move capital.";
+      return "Prayers are your daily rituals. 15 minutes of writing, every day throughout the week. No prompts, no grades — just you and the page. They strengthen your relationship with yourself. Most people run from silence. Prayers teach you to sit in it. Show up consistently and you'll start hearing things you've been ignoring.";
     }
 
     // Polymarket / predictions

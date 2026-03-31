@@ -5,72 +5,123 @@
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* ── Tab Bar ── */
-.tabBar {
-  display: flex;
-  gap: 4px;
-  padding: 20px 24px 0;
-  background: #F4F5FE;
-  border-bottom: 2px solid rgba(26, 29, 51, 0.1);
+/* -- Header -- */
+.header {
+  padding: 40px 24px 8px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.tabButton {
-  padding: 10px 24px;
-  border: none;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
-  font-family: var(--font-button);
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(26, 29, 51, 0.4);
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.tabButton:hover {
-  color: rgba(26, 29, 51, 0.7);
-}
-
-.tabButtonActive {
-  color: var(--color-primary, #5168FF);
-  border-bottom-color: var(--color-primary, #5168FF);
+.headerTitle {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 24px;
   font-weight: 700;
+  color: var(--color-text-dark, #E3E1EE);
+  margin: 0 0 6px;
 }
 
-.tabButtonActive:hover {
-  color: var(--color-primary, #5168FF);
+.headerSub {
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(227, 225, 238, 0.45);
+  margin: 0;
 }
 
-/* ── Tab Content ── */
-.tabContent {
-  min-height: calc(100vh - 60px);
-  padding: 0 24px;
+/* -- Grid -- */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
-/* ── Responsive ── */
+/* -- Card -- */
+.toolCard {
+  background: linear-gradient(135deg, #0D0E16, #1A1B2E, #1E1533, #12131B);
+  border: 1px solid rgba(107, 128, 255, 0.12);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  aspect-ratio: 1 / 1;
+}
+
+.toolCard:hover {
+  border-color: rgba(107, 128, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 24px rgba(81, 104, 255, 0.08);
+}
+
+.toolCardDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* -- Icon -- */
+.toolIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* -- Label -- */
+.toolLabel {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-dark, #E3E1EE);
+}
+
+/* -- Description -- */
+.toolDesc {
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(227, 225, 238, 0.45);
+  line-height: 1.5;
+}
+
+/* -- Arrow -- */
+.toolArrow {
+  margin-top: auto;
+  color: rgba(227, 225, 238, 0.3);
+  align-self: flex-end;
+}
+
+/* -- Responsive -- */
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
     padding-top: 56px;
   }
+}
 
-  .tabBar {
-    padding: 16px 16px 0;
+@media (max-width: 768px) {
+  .toolsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .toolsGrid {
+    grid-template-columns: 1fr;
   }
 
-  .tabButton {
-    flex: 1;
-    text-align: center;
-    padding: 10px 12px;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-  }
-
-  .tabContent {
-    padding: 0 16px;
+  .toolCard {
+    aspect-ratio: auto;
   }
 }

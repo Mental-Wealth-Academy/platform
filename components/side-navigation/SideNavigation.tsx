@@ -42,20 +42,18 @@ const navSections: NavSection[] = [
     label: '',
     items: [
       { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/home.svg' },
-      { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/gallery.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg' },
-      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
     ],
   },
   {
-    id: 'admin',
-    label: 'ADMIN TOOLS',
-    badge: 'BETA',
-    badgeType: 'pro',
+    id: 'network',
+    label: 'THE NETWORK',
     items: [
-      { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'Research', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
+      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
+      { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg' },
+      { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -444,7 +442,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         {/* Navigation Sections */}
         <div className={styles.navSections}>
           {navSections.map((section) => {
-            const isAdmin = section.id === 'admin';
+            const isAdmin = section.id === 'network';
             const isExpanded = isAdmin ? adminExpanded : true;
             return (
             <React.Fragment key={section.id}>

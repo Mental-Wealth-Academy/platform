@@ -883,3 +883,161 @@
     padding: 24px 16px;
   }
 }
+
+/* ─── Dark Mode Overrides ─── */
+
+:global([data-theme="dark"]) .storyBarIcon {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .storyBarName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .storyBarAuthor {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .storyBarOpen {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .storyBarContents {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .storyBarPlus {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .storyBar {
+  background: #16171F;
+}
+
+:global([data-theme="dark"]) .leftColumn {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .storyTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .storyDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sectionNumber {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .sectionMainTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .ctaButton {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .ctaButton:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .sectionSmall {
+  border-left-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sectionSmallTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionSmallDesc {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .ctaButtonBordered {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .ctaButtonBordered:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .lockedSection {
+  border-left-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .lockedTitle {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .lockedDesc {
+  color: rgba(227, 225, 238, 0.25);
+}
+
+:global([data-theme="dark"]) .ctaButtonLocked {
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.25);
+}
+
+:global([data-theme="dark"]) .drawerPanel {
+  background: #16171F;
+  border-left-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .drawerClose {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .drawerSectionNumber {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .drawerTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .drawerBody {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .loadingSpinner {
+  border-color: rgba(255, 255, 255, 0.08);
+  border-top-color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .loadingText {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .errorText {
+  color: #ff6b6b;
+}
+
+:global([data-theme="dark"]) .retryButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 2px 0 rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .retryButton:hover {
+  box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 900px) {
+  :global([data-theme="dark"]) .sectionSmall {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
+
+  :global([data-theme="dark"]) .lockedSection {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
+}
