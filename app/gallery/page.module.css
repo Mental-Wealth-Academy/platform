@@ -293,8 +293,9 @@
   flex-direction: column;
   justify-content: center;
   gap: 16px;
-  background: var(--gradient-primary);
-  color: var(--color-text-light);
+  background: linear-gradient(135deg, #0D0E16 0%, #1A1B2E 40%, #1E1533 70%, #12131B 100%);
+  color: rgba(227, 225, 238, 0.95);
+  border: 1px solid rgba(107, 128, 255, 0.12);
   position: relative;
   overflow: hidden;
 }
@@ -307,7 +308,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(107, 128, 255, 0.06);
 }
 
 .quoteText {
@@ -316,12 +317,13 @@
   font-weight: var(--font-weight-light);
   line-height: 1.5;
   font-style: italic;
+  color: rgba(227, 225, 238, 0.9);
 }
 
 .quoteAuthor {
   font-family: var(--font-button);
   font-size: var(--font-size-xs);
-  opacity: 0.7;
+  color: rgba(107, 128, 255, 0.6);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -770,13 +772,12 @@
 }
 
 :global([data-theme="dark"]) .artCard {
-  background: linear-gradient(135deg, #0D0E16 0%, #1A1B2E 40%, #1E1533 70%, #12131B 100%);
-  border: 1px solid rgba(107, 128, 255, 0.15);
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .artCard:hover {
   border-color: transparent;
-  box-shadow: 0 16px 48px rgba(107, 128, 255, 0.12);
 }
 
 :global([data-theme="dark"]) .frameInner {
@@ -784,8 +785,8 @@
 }
 
 :global([data-theme="dark"]) .collectionBanner {
-  background: linear-gradient(135deg, #0D0E16 0%, #1A1B2E 50%, #12131B 100%);
-  border-color: rgba(107, 128, 255, 0.1);
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .bannerTitle {
@@ -801,8 +802,8 @@
 }
 
 :global([data-theme="dark"]) .detailPanel {
-  background: linear-gradient(135deg, #0D0E16 0%, #1A1B2E 40%, #1E1533 70%, #12131B 100%);
-  border-color: rgba(107, 128, 255, 0.12);
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .detailImageWrap {
@@ -857,8 +858,8 @@
 }
 
 :global([data-theme="dark"]) .skeletonCard {
-  background: linear-gradient(135deg, #0D0E16 0%, #1A1B2E 40%, #1E1533 70%, #12131B 100%);
-  border-color: rgba(107, 128, 255, 0.08);
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .skeleton {
