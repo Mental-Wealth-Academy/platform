@@ -34,6 +34,7 @@ const spaceMono = Space_Mono({
 import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provider';
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import TopNavigation from '@/components/top-navigation/TopNavigation';
 import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -97,6 +98,20 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
         <meta name="base:app_id" content="695b13d2c63ad876c908212a" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('mwa-theme') || 'dark';
+                  if (theme === 'dark' && window.location.pathname !== '/') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
             <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -170,9 +185,11 @@ export default function RootLayout({
         <MiniAppProvider>
           <SoundProvider>
             <ConditionalWeb3Provider>
-              <TopNavigation />
-              {children}
-              <MobileBottomNav />
+              <ThemeProvider>
+                <TopNavigation />
+                {children}
+                <MobileBottomNav />
+              </ThemeProvider>
             </ConditionalWeb3Provider>
           </SoundProvider>
         </MiniAppProvider>

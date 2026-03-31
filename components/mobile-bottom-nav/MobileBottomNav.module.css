@@ -167,3 +167,48 @@
     0 0 0 3px rgba(255, 255, 255, 0.8),
     0 0 0 5px rgba(81, 104, 255, 0.15);
 }
+
+/* ── Dark mode overrides ── */
+
+:global([data-theme="dark"]) .nav {
+  background: linear-gradient(180deg, rgba(13, 14, 22, 0.95) 0%, rgba(16, 17, 25, 0.98) 100%);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 -4px 24px rgba(0, 0, 0, 0.3),
+    0 -1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+:global([data-theme="dark"]) .tab {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .tabActive {
+  color: #8494FF;
+}
+
+:global([data-theme="dark"]) .tabActive::after {
+  background: #6B80FF;
+  box-shadow: 0 0 6px 2px rgba(107, 128, 255, 0.4);
+}
+
+:global([data-theme="dark"]) .iconImg {
+  opacity: 0.3;
+  filter: brightness(2);
+}
+
+:global([data-theme="dark"]) .tabActive .iconImg {
+  opacity: 1;
+  filter: brightness(2) drop-shadow(0 0 4px rgba(107, 128, 255, 0.35));
+}
+
+:global([data-theme="dark"]) .label {
+  color: inherit;
+}
+
+:global([data-theme="dark"]) .centerBubble {
+  box-shadow:
+    0 6px 20px rgba(107, 128, 255, 0.35),
+    0 2px 8px rgba(59, 79, 204, 0.25),
+    0 0 0 3px rgba(13, 14, 22, 0.9),
+    0 0 0 5px rgba(107, 128, 255, 0.2);
+}
