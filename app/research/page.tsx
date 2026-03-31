@@ -1,19 +1,26 @@
 'use client';
 
+import { useState } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import { useSound } from '@/hooks/useSound';
+import GuidanceTab from './GuidanceTab';
+import GeneticsTab from './GeneticsTab';
+import ResearchTab from './ResearchTab';
 import styles from './research-page.module.css';
+
+type ActiveTool = null | 'guidance' | 'genetics' | 'rtooling';
 
 interface Tool {
   id: string;
   label: string;
   desc: string;
-  href: string;
   icon: React.ReactNode;
   color: string;
+  href?: string;
   external?: boolean;
   disabled?: boolean;
+  inlineTool?: ActiveTool;
 }
 
 const tools: Tool[] = [
@@ -21,8 +28,8 @@ const tools: Tool[] = [
     id: 'guidance',
     label: 'Guidance',
     desc: 'AI-powered spiritual and personal development guidance',
-    href: '/research/guidance',
     color: '#5168FF',
+    inlineTool: 'guidance',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -34,8 +41,8 @@ const tools: Tool[] = [
     id: 'genetics',
     label: 'Genetics',
     desc: 'Explore your genetic blueprint and ancestral data',
-    href: '/research/genetics',
     color: '#9724A6',
+    inlineTool: 'genetics',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M2 15c6.667-6 13.333 0 20-6" />
@@ -54,8 +61,8 @@ const tools: Tool[] = [
     id: 'rtooling',
     label: 'R-Tooling',
     desc: 'Statistical analysis and research methodology tools',
-    href: '/research/statistics',
     color: '#50599B',
+    inlineTool: 'rtooling',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <line x1="18" y1="20" x2="18" y2="10" />
@@ -100,7 +107,6 @@ const tools: Tool[] = [
     id: 'coming',
     label: 'Coming Soon',
     desc: 'More tools are being forged in the ethereal plane',
-    href: '#',
     color: '#666',
     disabled: true,
     icon: (
@@ -114,6 +120,44 @@ const tools: Tool[] = [
 
 export default function ResearchPage() {
   const { play } = useSound();
+  const [activeTool, setActiveTool] = useState<ActiveTool>(null);
+
+  const handleCardClick = (tool: Tool) => {
+    if (tool.disabled) return;
+    play('click');
+    if (tool.inlineTool) {
+      setActiveTool(tool.inlineTool);
+    }
+  };
+
+  // Render inline tool view
+  if (activeTool) {
+    return (
+      <>
+        <SideNavigation />
+        <main className={styles.pageLayout}>
+          <div className={styles.toolHeader}>
+            <button
+              className={styles.backButton}
+              onClick={() => { play('click'); setActiveTool(null); }}
+              onMouseEnter={() => play('hover')}
+              type="button"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              DeSci Tools
+            </button>
+          </div>
+          <div className={styles.toolContent}>
+            {activeTool === 'guidance' && <GuidanceTab />}
+            {activeTool === 'genetics' && <GeneticsTab />}
+            {activeTool === 'rtooling' && <ResearchTab />}
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -131,15 +175,44 @@ export default function ResearchPage() {
             const isDisabled = tool.disabled;
             const isExternal = tool.external;
 
+            if (isExternal) {
+              return (
+                <a
+                  key={tool.id}
+                  href={tool.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.toolCard}
+                  onMouseEnter={() => play('hover')}
+                  onClick={() => play('click')}
+                >
+                  <div className={styles.vizBg}><CyberpunkDataViz /></div>
+                  <div
+                    className={styles.toolIcon}
+                    style={{ backgroundColor: `${tool.color}20`, color: tool.color }}
+                  >
+                    {tool.icon}
+                  </div>
+                  <span className={styles.toolLabel}>{tool.label}</span>
+                  <span className={styles.toolDesc}>{tool.desc}</span>
+                  <span className={styles.toolArrow}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <polyline points="15 3 21 3 21 9" />
+                      <line x1="10" y1="14" x2="21" y2="3" />
+                    </svg>
+                  </span>
+                </a>
+              );
+            }
+
             return (
-              <a
+              <button
                 key={tool.id}
-                href={isDisabled ? undefined : tool.href}
-                target={isExternal ? '_blank' : undefined}
-                rel={isExternal ? 'noopener noreferrer' : undefined}
                 className={`${styles.toolCard} ${isDisabled ? styles.toolCardDisabled : ''}`}
                 onMouseEnter={() => { if (!isDisabled) play('hover'); }}
-                onClick={() => { if (!isDisabled) play('click'); }}
+                onClick={() => handleCardClick(tool)}
+                type="button"
               >
                 <div className={styles.vizBg}><CyberpunkDataViz /></div>
                 <div
@@ -152,20 +225,12 @@ export default function ResearchPage() {
                 <span className={styles.toolDesc}>{tool.desc}</span>
                 {!isDisabled && (
                   <span className={styles.toolArrow}>
-                    {isExternal ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" y1="14" x2="21" y2="3" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    )}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
                   </span>
                 )}
-              </a>
+              </button>
             );
           })}
         </div>

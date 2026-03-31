@@ -204,6 +204,47 @@
   z-index: 2;
 }
 
+/* -- Tool inline view (back button + content) -- */
+.toolHeader {
+  padding: 20px 24px 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(227, 225, 238, 0.7);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.backButton:hover {
+  background: rgba(107, 128, 255, 0.1);
+  border-color: rgba(107, 128, 255, 0.25);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+.toolContent {
+  min-height: calc(100vh - 80px);
+}
+
+/* Also make button cards look like buttons not links */
+button.toolCard {
+  text-align: left;
+  font: inherit;
+}
+
 /* -- Responsive -- */
 @media (max-width: 900px) {
   .pageLayout {
