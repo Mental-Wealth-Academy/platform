@@ -773,3 +773,90 @@
     padding: 5px 10px;
   }
 }
+
+/* ── Dark Mode ── */
+
+:global([data-theme="dark"]) .pageLayout {
+  background: #0D0E16;
+}
+
+:global([data-theme="dark"]) .categoryPill {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .productCard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .productCard:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .statsCard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .statsLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .bottomCta {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .bottomCtaTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .bottomCtaSub {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .detailOverlay {
+  background: rgba(13, 14, 22, 0.85);
+}
+
+:global([data-theme="dark"]) .detailPanel {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .detailImageWrap {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .detailTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailDesc,
+:global([data-theme="dark"]) .detailSub {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .detailDivider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .detailSaveButton {
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailClose {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailClose:hover {
+  background: rgba(22, 23, 31, 0.95);
+}
+
+:global([data-theme="dark"]) .frameTransparent {
+  background: linear-gradient(135deg, rgba(107, 128, 255, 0.04) 0%, rgba(22, 23, 31, 0.6) 100%);
+}

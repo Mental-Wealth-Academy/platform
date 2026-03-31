@@ -333,3 +333,77 @@
     width: 100%;
   }
 }
+
+/* ===== Dark Mode Overrides ===== */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(107, 128, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .closeButton:hover:not(:disabled) {
+  background: #1A1B24;
+  border-color: #6B80FF;
+  color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .description {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .atSymbol {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .usernameInput {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .usernameInput::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .usernameInput:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 4px rgba(107, 128, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .checking {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .neutralText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .errorMessage {
+  background: rgba(255, 82, 82, 0.12);
+  border-color: rgba(255, 82, 82, 0.25);
+  color: #FF6B6B;
+}
+
+:global([data-theme="dark"]) .footer {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .cancelButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .cancelButton:hover:not(:disabled) {
+  background: rgba(107, 128, 255, 0.12);
+  border-color: rgba(107, 128, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}

@@ -713,3 +713,120 @@
     display: none;
   }
 }
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .card {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .cardButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .label {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sublabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .dayDot {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .chevron {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .startSection {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .expandedContent {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .instructions {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .dayBtnLocked {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.35);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .startBtnDisabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.35);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .weekNavLabel {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .weekNavBtn:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .modalHeader {
+  background: rgba(107, 128, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .modalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .modalSubtitle {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .timerCount {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .timerBar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .textarea {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .textarea::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .modalFooter {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .pauseBtn {
+  color: rgba(227, 225, 238, 0.95);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .pauseBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .counter {
+  color: rgba(227, 225, 238, 0.55);
+}

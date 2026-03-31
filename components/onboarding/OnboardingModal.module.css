@@ -564,3 +564,118 @@
   }
 }
 
+/* ===== Dark Mode Overrides ===== */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .progressBar {
+  background: rgba(107, 128, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: #1A1B24;
+  border-color: #6B80FF;
+  color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .stepDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .inputPrefix {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .input {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .input::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .input:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 4px rgba(107, 128, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .inputHint {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .radioOption {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .radioOption:hover {
+  border-color: rgba(107, 128, 255, 0.4);
+}
+
+:global([data-theme="dark"]) .radioOptionChecked {
+  background: rgba(107, 128, 255, 0.12) !important;
+  border-color: #6B80FF !important;
+  color: #6B80FF !important;
+}
+
+:global([data-theme="dark"]) .error {
+  background: rgba(255, 82, 82, 0.12);
+  border-color: rgba(255, 82, 82, 0.25);
+  color: #FF6B6B;
+}
+
+:global([data-theme="dark"]) .avatarOption {
+  background: #1A1B24;
+  border-color: transparent;
+}
+
+:global([data-theme="dark"]) .avatarOption:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .avatarSelected {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 4px rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .avatarCheckmark {
+  background: #16171F;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .completedAvatar {
+  border-color: #6B80FF;
+  box-shadow: 0 12px 32px rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .skipButton {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .skipButton:hover:not(:disabled) {
+  color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .secondaryButton {
+  color: #6B80FF;
+  background: rgba(107, 128, 255, 0.1);
+  border-color: rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .secondaryButton:hover {
+  background: rgba(107, 128, 255, 0.18);
+}
+

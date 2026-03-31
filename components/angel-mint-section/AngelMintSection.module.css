@@ -252,3 +252,37 @@
     font-size: var(--font-size-xl);
   }
 }
+
+/* ==================== DARK MODE ==================== */
+
+:global([data-theme="dark"]) .mintButton {
+  border-color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .mintButton:hover {
+  background: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .mintButtonText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .mintButton:hover .mintButtonText {
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .mintButtonArrow {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .mintButton:hover .mintButtonArrow {
+  color: #0D0E16;
+}
+
+:global([data-theme="dark"]) .empoweringText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .angelImage {
+  background: rgba(255, 255, 255, 0.04);
+}

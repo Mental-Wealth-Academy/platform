@@ -447,3 +447,111 @@
     width: 100%;
   }
 }
+
+/* ==================== DARK MODE ==================== */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .modalHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .userCard {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .avatar {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .avatarPlaceholder {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .userLabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .username {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .connectedBadge {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .connectButton {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .labelText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .input {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .input::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .input:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .textarea {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .textarea::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .textarea:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .charCount {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .amountMessage {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .templateLabel {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .templateButton {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .templateName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .submitRow {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .submitButton {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}

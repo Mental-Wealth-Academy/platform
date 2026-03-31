@@ -103,3 +103,29 @@
   line-height: 1.7;
   white-space: pre-line;
 }
+
+/* ═══════════════════════════════════════════════
+   DARK MODE OVERRIDES
+   ═══════════════════════════════════════════════ */
+
+:global([data-theme="dark"]) .overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .azuraIcon {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .content {
+  color: rgba(227, 225, 238, 0.55);
+}

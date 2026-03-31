@@ -262,3 +262,30 @@
     font-size: 10px;
   }
 }
+
+/* ==================== DARK MODE ==================== */
+
+:global([data-theme="dark"]) .label {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .azuraPower {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .aiTag {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .votingBar {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .votingBarIndicator {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .votingPowerDesc {
+  color: rgba(227, 225, 238, 0.55);
+}

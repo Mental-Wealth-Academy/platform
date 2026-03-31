@@ -1937,3 +1937,634 @@
     font-size: 11px;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   DARK MODE OVERRIDES
+   ═══════════════════════════════════════════════ */
+
+:global([data-theme="dark"]) .card {
+  background: color-mix(in srgb, var(--week-color, #6B80FF) 6%, #16171F);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .cardExpanded {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardExpanded:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .cardFace {
+  background: #16171F;
+}
+
+:global([data-theme="dark"]) .cardFace:hover {
+  background: rgba(107, 128, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .weekBadge {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .cardSubtitle {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .progressBg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .progressText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .expandArrow {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sectionsContainer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sectionsVisible {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .section {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sectionCompleted {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+:global([data-theme="dark"]) .sectionHeader:hover {
+  background: rgba(107, 128, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .sectionIcon {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionChevron {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .instructions {
+  color: rgba(227, 225, 238, 0.55);
+  background: rgba(107, 128, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .readLetterButton {
+  color: #6B80FF;
+  background: rgba(107, 128, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .readLetterButton:hover {
+  background: rgba(107, 128, 255, 0.15);
+  color: #8DA0FF;
+}
+
+:global([data-theme="dark"]) .textarea {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .textarea:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .textarea::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .input {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .input:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .input::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .listLabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .blurtsHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .blurtColumnHeader {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .blurtInput,
+:global([data-theme="dark"]) .affirmationInput {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .blurtInput {
+  background: rgba(229, 62, 62, 0.08);
+  border-color: rgba(229, 62, 62, 0.4);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .blurtInput:focus {
+  box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.25);
+}
+
+:global([data-theme="dark"]) .affirmationInput {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .affirmationInput:focus {
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+}
+
+:global([data-theme="dark"]) .lifeNumber {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .lifeInput {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .lifeInput:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .checklistItem {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .checklistItem:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .checklistText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .timeMapHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .select {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23E3E1EE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+:global([data-theme="dark"]) .select:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .safetyMapSection {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .subSectionTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .enjoyListHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .enjoyListNumber {
+  background: rgba(107, 128, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .dateInput {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .dateInput:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .affirmationInputGreen {
+  color: rgba(227, 225, 238, 0.95);
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .affirmationInputGreen:focus {
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+}
+
+:global([data-theme="dark"]) .affirmationInputGreen::placeholder {
+  color: rgba(134, 239, 172, 0.4);
+}
+
+:global([data-theme="dark"]) .affirmationReminder {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+:global([data-theme="dark"]) .affirmationReminder p {
+  color: #FBBF24;
+}
+
+:global([data-theme="dark"]) .lifePieLabel {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .lifePieInstructions {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .slider {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .slider::-webkit-slider-thumb {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .slider::-moz-range-thumb {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .completeButton {
+  color: rgba(227, 225, 238, 0.95);
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .completeButton:hover {
+  background: #6B80FF;
+  color: #FFFFFF;
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .completeButtonActive {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .cardSealed {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.06) 0%, rgba(245, 200, 66, 0.04) 50%, rgba(212, 160, 23, 0.06) 100%);
+}
+
+:global([data-theme="dark"]) .cardSealed:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .weekBadgeSealed {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .cardLocked {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .cardLocked::before {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .cardLocked:hover {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .weekBadgeLocked {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .sealSection {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(107, 128, 255, 0.04) 0%, rgba(107, 128, 255, 0.08) 100%);
+}
+
+:global([data-theme="dark"]) .sealAzuraIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealPromptTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sealPromptDesc {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealButton {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .sealButtonActive {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .sealButtonActive:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .sealButtonActive:active {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .sealedBadge {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealedDetails {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .txLink {
+  color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .sealModal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .sealModalHeader {
+  background: linear-gradient(135deg, rgba(107, 128, 255, 0.06) 0%, rgba(107, 128, 255, 0.1) 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealModalAzura {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .sealModalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sealModalText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealSummary {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealSummaryLabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealSummaryValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sealSpinner {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-top-color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .sealStepItem {
+  background: rgba(107, 128, 255, 0.08);
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .sealStepActive {
+  background: rgba(34, 197, 94, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sealStepDot {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealCompleteText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealReward {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(253, 230, 138, 0.08) 100%);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #FBBF24;
+}
+
+:global([data-theme="dark"]) .sealModalFooter {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sealModalCancel {
+  color: rgba(227, 225, 238, 0.55);
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealModalCancel:hover {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .sealModalConfirm {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .sealModalConfirm:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .sealModalDone {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .sealModalDone:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .morningPagesStrip {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: rgba(107, 128, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .morningPagesLabel {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .morningPagesDayBtn {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .morningPagesDayAvailable {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .morningPagesDayAvailable:hover {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .morningPagesDayDone {
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .morningPagesDayLocked {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.35);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .morningPagesPending {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sectionsGateOverlay {
+  background: rgba(22, 23, 31, 0.92);
+}
+
+:global([data-theme="dark"]) .sectionsGateText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionsGateBtn {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .sectionsGateBtn:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .sectionsGatePending {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .morningPagesModal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .morningPagesModalHeader {
+  background: linear-gradient(135deg, rgba(107, 128, 255, 0.06) 0%, rgba(107, 128, 255, 0.1) 100%);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .morningPagesModalDayBadge {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .morningPagesModalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .morningPagesModalSubtitle {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .morningPagesTimerCount {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .morningPagesTimerBar {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .morningPagesTextarea {
+  color: rgba(227, 225, 238, 0.95);
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .morningPagesTextarea:focus {
+  border-color: #6B80FF;
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.25);
+}
+
+:global([data-theme="dark"]) .morningPagesTextarea::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .morningPagesModalFooter {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .morningPagesModalNote {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .morningPagesSubmitBtn {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:global([data-theme="dark"]) .morningPagesSubmitBtn:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode responsive overrides */
+@media (max-width: 768px) {
+  :global([data-theme="dark"]) .card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  :global([data-theme="dark"]) .sealModal {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}

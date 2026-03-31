@@ -756,3 +756,96 @@
   width: 40%;
   height: 10px;
 }
+
+/* ── Dark Mode ── */
+
+:global([data-theme="dark"]) .categoryPill {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .categoryPill:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .artCard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .artCard:hover {
+  border-color: transparent;
+}
+
+:global([data-theme="dark"]) .frameInner {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .collectionBanner {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .bannerTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .bannerSub {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .detailOverlay {
+  background: rgba(13, 14, 22, 0.85);
+}
+
+:global([data-theme="dark"]) .detailPanel {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .detailImageWrap {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .detailTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailDesc {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .detailDivider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .detailSaveButton {
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailClose {
+  background: rgba(22, 23, 31, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .detailClose:hover {
+  background: rgba(22, 23, 31, 0.95);
+}
+
+:global([data-theme="dark"]) .skeletonCard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 800px 100%;
+}
+
+:global([data-theme="dark"]) .skeletonFrame {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 800px 100%;
+}

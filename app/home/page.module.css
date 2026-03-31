@@ -653,3 +653,117 @@
     font-size: 13px;
   }
 }
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .greeting {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .streakNumber {
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .streakUnit {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .weekTitle {
+  color: #FFFFFF;
+}
+
+:global([data-theme="dark"]) .weekLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .topLeaderboard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .topLeaderboardTitle {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .podiumName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .podiumShards {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .weekArrow {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .weekArrow:hover:not(:disabled) {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .weekDot {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .readingCard {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .readingCategory {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .readingTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .readingAuthor {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .readingArrow {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .modalCard {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .modalClose {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .modalClose:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .modalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .modalSub {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .leagueRank {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .leagueName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .leagueShards {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .emptyText {
+  color: rgba(227, 225, 238, 0.55);
+}

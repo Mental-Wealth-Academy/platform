@@ -528,3 +528,131 @@
     padding: 10px 20px 16px;
   }
 }
+
+/* Dark Mode Overrides */
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: #6B80FF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .title {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .reelWindow {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .reelWindow::before {
+  background: linear-gradient(to bottom, #1A1B24 0%, transparent 100%);
+}
+
+:global([data-theme="dark"]) .reelWindow::after {
+  background: linear-gradient(to top, #1A1B24 0%, transparent 100%);
+}
+
+:global([data-theme="dark"]) .reelItemName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .reelItemIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .tierCommon {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.55);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .spinButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .spinButton:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .spinButton:active:not(:disabled) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .resultOverlay {
+  background: rgba(22, 23, 31, 0.97);
+}
+
+:global([data-theme="dark"]) .resultTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .resultImage {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .resultDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .resultButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .resultButton:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .lootTableTitle {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .lootTableRow {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .lootTableIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .lootTableName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .lootTableChance {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .fundNoticeText {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .reelPointer {
+  filter: drop-shadow(-2px 0 0 rgba(255, 255, 255, 0.1));
+}
+
+:global([data-theme="dark"]) .reelPointerLeft {
+  filter: drop-shadow(2px 0 0 rgba(255, 255, 255, 0.1));
+}

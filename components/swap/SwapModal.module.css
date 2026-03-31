@@ -278,3 +278,73 @@
     font-size: 16px;
   }
 }
+
+/* ==================== DARK MODE ==================== */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .header {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .tokenCard {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .tokenCard:focus-within {
+  border-color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .tokenLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .tokenName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .tokenInput {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .tokenInput::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .balanceLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .swapDirectionBtn {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .swapDirectionBtn:hover {
+  background: #6B80FF;
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .rateRow {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(107, 128, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .rateLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .rateValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .swapCta {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}

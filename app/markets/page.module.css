@@ -661,3 +661,126 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Dark Mode ── */
+
+:global([data-theme="dark"]) .main {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .filterBtn {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .filterBtn:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .statsBar {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .statValue,
+:global([data-theme="dark"]) .statValueSmall {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .card {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .endDate {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .question {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .probBar {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .cardMeta {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .quickBetBtn {
+  background: rgba(107, 128, 255, 0.06);
+  border-color: rgba(107, 128, 255, 0.15);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .quickBetBtn:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .customBetInput {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .customBetInput::placeholder {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .potentialWin {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .alreadyBet {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(107, 128, 255, 0.15);
+}
+
+:global([data-theme="dark"]) .betsSectionTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .betRow {
+  background: rgba(22, 23, 31, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .betQuestion {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .betAmount {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .betPayout {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .emptyTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .emptyText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .loading {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .noBets {
+  color: rgba(227, 225, 238, 0.55);
+}

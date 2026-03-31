@@ -503,3 +503,168 @@
     font-size: 20px;
   }
 }
+
+/* Dark Mode Overrides */
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: #6B80FF;
+}
+
+:global([data-theme="dark"]) .header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: #0D0E16;
+}
+
+:global([data-theme="dark"]) .headerTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .rewardTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .rewardDesc {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .rewardIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .pointsBadge {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .detailItem {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .detailLabel {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .detailValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .bottomSection {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  background: #0D0E16;
+}
+
+:global([data-theme="dark"]) .sectionTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sectionDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .uploadArea {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .uploadArea:hover {
+  background: rgba(107, 128, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .uploadText {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .uploadSubtext {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .infoBox {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .infoBoxTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .infoBoxText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .requirementItem {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .checkIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .requirementTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .requirementDescription {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .actionBox {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .actionIcon {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .actionText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .submitButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .submitButton:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .submitButton:active:not(:disabled) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .secondaryButton {
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .secondaryButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: #6B80FF;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .stepButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .stepButton:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}

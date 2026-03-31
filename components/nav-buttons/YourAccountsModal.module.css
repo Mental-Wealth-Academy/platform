@@ -390,3 +390,67 @@
   }
 }
 
+/* Dark Mode Overrides */
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .connectionsModal {
+  background-color: #16171F;
+}
+
+:global([data-theme="dark"]) .modalHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .wallet {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .social {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .emptyContainer {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .emptyContainer span {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .strokedText {
+  color: rgba(227, 225, 238, 0.95);
+  -webkit-text-stroke-color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .shadowInnerGlow {
+  box-shadow: inset 0 2px 8px rgba(107, 128, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .animatedButton {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .animatedButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .bgPluses {
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px);
+}
+
+:global([data-theme="dark"]) .btn.connect {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .btn.connect:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}

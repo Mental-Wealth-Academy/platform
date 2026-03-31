@@ -247,3 +247,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==================== DARK MODE ==================== */
+
+:global([data-theme="dark"]) .container {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .icon svg {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .statValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .contractLink {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .balance {
+  color: rgba(227, 225, 238, 0.55);
+}

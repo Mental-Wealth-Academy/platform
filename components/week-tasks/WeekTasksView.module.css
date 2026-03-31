@@ -509,3 +509,111 @@
     padding: 0 12px 14px;
   }
 }
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .taskCard {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .taskCard:hover {
+  border-color: rgba(107, 128, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .taskCardHeader:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .taskTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .taskPreview {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .taskCheckEmpty {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:global([data-theme="dark"]) .expandArrow {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .taskCardContent {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .taskInstructions {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .lockedMessage {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .saveBar {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .progressText {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .progressBar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .sealBtn {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.35);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sealHint {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .sealedBanner {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: #4ADE80;
+}
+
+:global([data-theme="dark"]) .sealModal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sealModalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sealModalText {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealModalCancel {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sealModalCancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .sealModalProgress {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .sealSpinner {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sealModalComplete h3 {
+  color: rgba(227, 225, 238, 0.95);
+}

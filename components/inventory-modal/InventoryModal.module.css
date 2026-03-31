@@ -285,3 +285,90 @@
   color: #1A1D33;
   font-variant-numeric: tabular-nums;
 }
+
+/* ===== Dark Mode Overrides ===== */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: rgba(107, 128, 255, 0.12);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .avatar {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .avatarFallback {
+  background: #1A1B24;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .displayName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .walletAddress {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .badge {
+  color: #6B80FF;
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .statValue {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .statLabel {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .statDivider {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sectionLabel {
+  color: rgba(227, 225, 238, 0.55);
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .loadingDot {
+  background: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .balanceRow:hover {
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .tokenIcon {
+  background: #1A1B24;
+}
+
+:global([data-theme="dark"]) .tokenUsdc {
+  background: rgba(39, 117, 202, 0.15);
+}
+
+:global([data-theme="dark"]) .tokenName {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .tokenTicker {
+  color: rgba(227, 225, 238, 0.55);
+}
+
+:global([data-theme="dark"]) .balanceValue {
+  color: rgba(227, 225, 238, 0.95);
+}
