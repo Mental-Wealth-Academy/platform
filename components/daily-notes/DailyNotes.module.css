@@ -2,12 +2,23 @@
 
 .card {
   width: 100%;
-  background: #FFFFFF;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  background: linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%);
+  border: 1px solid rgba(107, 128, 255, 0.15);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
+  position: relative;
+}
+
+.vizBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.15;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .cardButton {
@@ -22,10 +33,12 @@
   cursor: pointer;
   text-align: left;
   transition: background 0.15s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .cardButton:hover {
-  background: #F4F5FE;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .cardLeft {
@@ -53,7 +66,7 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #1A1D33;
+  color: rgba(227, 225, 238, 0.95);
 }
 
 .sublabel {
@@ -63,7 +76,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(26, 29, 51, 0.4);
+  color: rgba(227, 225, 238, 0.45);
   margin-top: 2px;
 }
 
@@ -86,8 +99,8 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #E0E1EE;
-  border: 1.5px solid rgba(26, 29, 51, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   transition: all 0.2s ease;
 }
 
@@ -129,7 +142,7 @@
 
 .chevron {
   transition: transform 0.2s ease;
-  color: #1A1D33;
+  color: rgba(227, 225, 238, 0.7);
 }
 
 .chevronRotated {
@@ -142,7 +155,9 @@
   align-items: center;
   justify-content: center;
   padding: 12px 20px 16px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 1;
 }
 
 .startBtn {
@@ -175,9 +190,9 @@
 }
 
 .startBtnDisabled {
-  background: #E8E9F0;
-  color: #AAAAAA;
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
   cursor: not-allowed;
 }
@@ -189,14 +204,16 @@
 /* Expanded Content */
 .expandedContent {
   padding: 0 20px 20px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 1;
 }
 
 .instructions {
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(227, 225, 238, 0.55);
   line-height: 1.7;
   margin: 16px 0;
 }
@@ -217,7 +234,7 @@
   font-size: 14px;
   font-weight: 700;
   border-radius: 10px;
-  border: 1.5px solid rgba(26, 29, 51, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   transition: all 0.15s ease;
 }
 
@@ -242,9 +259,9 @@
 }
 
 .dayBtnLocked {
-  background: #E8E9F0;
-  color: #AAAAAA;
-  border-color: rgba(26, 29, 51, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.25);
+  border-color: rgba(255, 255, 255, 0.06);
   cursor: not-allowed;
 }
 
@@ -256,7 +273,9 @@
   gap: 16px;
   margin-top: 16px;
   padding-top: 12px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  z-index: 1;
 }
 
 .weekNavBtn {
@@ -279,8 +298,8 @@
 }
 
 .weekNavBtn:disabled {
-  background: #E8E9F0;
-  color: #AAAAAA;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(227, 225, 238, 0.25);
   cursor: not-allowed;
 }
 
@@ -288,7 +307,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 600;
-  color: #1A1D33;
+  color: rgba(227, 225, 238, 0.85);
   letter-spacing: 0.05em;
 }
 
@@ -311,7 +330,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 600;
-  color: #888;
+  color: rgba(227, 225, 238, 0.45);
 }
 
 /* Timer Modal */
@@ -718,65 +737,6 @@
 /* ============================================ */
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
-
-:global([data-theme="dark"]) .card {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .cardButton:hover {
-  background: rgba(107, 128, 255, 0.12);
-}
-
-:global([data-theme="dark"]) .label {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .sublabel {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .dayDot {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .chevron {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .startSection {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .expandedContent {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .instructions {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .dayBtnLocked {
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(227, 225, 238, 0.35);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .startBtnDisabled {
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(227, 225, 238, 0.35);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .weekNavLabel {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .weekNavBtn:disabled {
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(227, 225, 238, 0.35);
-}
 
 :global([data-theme="dark"]) .modal {
   background: #16171F;
