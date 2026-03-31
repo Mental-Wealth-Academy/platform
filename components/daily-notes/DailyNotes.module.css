@@ -40,11 +40,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--week-color, #5168FF);
+  background: linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%);
   color: #FFFFFF;
   border: none;
   border-radius: 12px;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .label {
