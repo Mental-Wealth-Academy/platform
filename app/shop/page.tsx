@@ -258,17 +258,6 @@ export default function ShopPage() {
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.page}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <span className={styles.headerTag}>Campus Store</span>
-            <h1 className={styles.headerTitle}>The Shop</h1>
-            <p className={styles.headerSub}>
-              Uniforms, field gear, and artifacts for scholars operating at the frontier of education and autonomy.
-            </p>
-          </div>
-        </div>
-
         {/* Category pills */}
         <div className={styles.categories}>
           {ALL_CATEGORIES.map((cat) => (

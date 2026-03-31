@@ -82,13 +82,6 @@ function GallerySkeleton() {
     <div className={styles.pageLayout}>
       <SideNavigation />
       <main className={styles.page}>
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <div className={`${styles.skeleton} ${styles.skeletonTag}`} />
-            <div className={`${styles.skeleton} ${styles.skeletonTitle}`} />
-            <div className={`${styles.skeleton} ${styles.skeletonSub}`} />
-          </div>
-        </div>
         <div className={styles.categories}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className={`${styles.skeleton} ${styles.skeletonPill}`} />
@@ -138,17 +131,6 @@ export default function GalleryPage() {
       <div className={styles.bgViz}><CyberpunkDataViz /></div>
       <SideNavigation />
       <main className={styles.page}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <span className={styles.headerTag}>Angel Collection</span>
-            <h1 className={styles.headerTitle}>The Gallery</h1>
-            <p className={styles.headerSub}>
-              Explore the work of our Angels — the artists, visionaries, and scholars whose creations define the Academy.
-            </p>
-          </div>
-        </div>
-
         {/* Category pills */}
         <div className={styles.categories}>
           {ALL_ERAS.map((era) => (

@@ -11,56 +11,23 @@
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 40px 28px 80px;
+  padding: 24px 28px 80px;
   color: var(--color-text-dark);
-}
-
-/* ── Header ── */
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 36px;
-}
-
-.headerLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.headerTag {
-  font-family: var(--font-button);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-primary);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.headerTitle {
-  font-family: var(--font-secondary);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-dark);
-  line-height: 1.1;
-  margin: 0;
-}
-
-.headerSub {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  max-width: 480px;
-  line-height: 1.5;
 }
 
 /* ── Category pills ── */
 .categories {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
+  gap: 6px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categories::-webkit-scrollbar {
+  display: none;
 }
 
 .categoryPill {
@@ -76,6 +43,8 @@
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .categoryPill:hover {
@@ -713,22 +682,16 @@
   }
 
   .page {
-    padding: 72px 16px 60px;
+    padding: 16px 12px 60px;
   }
 
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .headerTitle {
-    font-size: var(--font-size-xl);
+  .categories {
+    margin-bottom: 12px;
   }
 
   .bentoGrid {
     grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .cardHero { grid-column: span 6; grid-row: span 1; }
@@ -736,23 +699,54 @@
   .cardMedium { grid-column: span 3; }
   .cardSmall { grid-column: span 3; }
   .cardWide { grid-column: span 6; }
-  .loreCard { grid-column: span 6; }
+  .loreCard { grid-column: span 6; padding: 20px 16px; }
   .statsCard { grid-column: span 6; }
-  .featuredBanner { grid-column: span 6; flex-direction: column; gap: 16px; text-align: center; }
-  .bottomCta { grid-column: span 6; flex-direction: column; gap: 16px; text-align: center; }
+  .featuredBanner { grid-column: span 6; flex-direction: column; gap: 12px; text-align: center; padding: 16px 20px; }
+  .bottomCta { grid-column: span 6; flex-direction: column; gap: 12px; text-align: center; padding: 16px 20px; }
+
+  .frame {
+    padding: 8px;
+  }
+
+  .cardMeta {
+    padding: 8px 10px 10px;
+  }
+
+  .metaTitle {
+    font-size: 12px;
+  }
+
+  .metaSub {
+    font-size: 10px;
+  }
+
+  .productCard {
+    border-radius: 10px;
+  }
+
+  .detailOverlay {
+    padding: 12px;
+  }
 
   .detailPanel {
     flex-direction: column;
-    max-height: 90vh;
+    max-height: 92vh;
+    border-radius: 16px;
   }
 
   .detailImageWrap {
     flex: none;
     max-height: 40vh;
+    padding: 12px;
   }
 
   .detailInfo {
-    padding: 24px 20px;
+    padding: 16px 16px 20px;
+    gap: 12px;
+  }
+
+  .detailTitle {
+    font-size: 18px;
   }
 
   .heroOverlayTitle {
@@ -763,6 +757,7 @@
 @media (max-width: 500px) {
   .bentoGrid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .cardHero, .cardLarge, .cardWide, .loreCard, .statsCard, .featuredBanner, .bottomCta {
@@ -771,5 +766,10 @@
 
   .cardMedium, .cardSmall {
     grid-column: span 2;
+  }
+
+  .categoryPill {
+    font-size: 10px;
+    padding: 5px 10px;
   }
 }
