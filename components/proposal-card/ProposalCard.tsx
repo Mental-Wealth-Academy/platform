@@ -222,21 +222,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      {review && review.decision === 'approved' && review.tokenAllocation && (
-        <div className={styles.tokenSection}>
-          <div className={styles.tokenHeader}>
-            <span className={styles.tokenAmount}>{review.tokenAllocation}%</span>
-          </div>
-          <div className={styles.tokenBarTrack}>
-            <div
-              className={styles.tokenBarFill}
-              style={{ width: `${Math.min(100, (review.tokenAllocation / 40) * 100)}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {review && review.reasoning && !(review.decision === 'approved' && review.tokenAllocation) && (
+      {review && review.reasoning && (
         <div className={styles.preview}>
           <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
           <p className={styles.previewText}>{review.reasoning}</p>
