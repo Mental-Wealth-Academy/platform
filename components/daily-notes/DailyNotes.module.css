@@ -468,32 +468,22 @@
   gap: 8px;
 }
 
-.modalDayBadge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: var(--week-color, #5168FF);
-  color: #FFFFFF;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 20px;
-}
-
 .modalTitle {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: #1A1D33;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .modalSubtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  color: #666;
+  font-weight: 500;
+  color: rgba(26, 29, 51, 0.5);
   margin: 0;
+  letter-spacing: 0.01em;
 }
 
 .timerDisplay {

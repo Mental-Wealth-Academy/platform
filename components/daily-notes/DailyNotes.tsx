@@ -368,9 +368,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           <div className={styles.modalBackdrop} onClick={requestClose} />
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <span className={styles.modalDayBadge}>Week {currentWeek} — Day {(activeDayIndex ?? 0) + 1} of 7</span>
-              <h3 className={styles.modalTitle}>Morning Pages</h3>
-              <p className={styles.modalSubtitle}>Write freely for 15 minutes every morning. These will be your rituals to summon your higher self, morning pages clear your mind and unlock your creative self.</p>
+              <h3 className={styles.modalTitle}>Morning Prayers</h3>
+              <p className={styles.modalSubtitle}>Write freely for 15 minutes. No editing, no judgment — just let it flow.</p>
             </div>
 
             <div className={styles.timerDisplay}>
