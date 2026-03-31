@@ -63,6 +63,11 @@ const USDC_ADDRESS =
 
 type LiquidityTarget = 'governance' | 'trader';
 
+const AZURA_EMOTES = {
+  default: 'https://i.imgur.com/ExJZFiA.png',
+  thinking: 'https://i.imgur.com/4FsFcDO.png',
+} as const;
+
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -86,6 +91,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [showLiquidityInput, setShowLiquidityInput] = useState(false);
   const [liquidityTarget, setLiquidityTarget] = useState<LiquidityTarget>('governance');
   const [txPending, setTxPending] = useState(false);
+  const [currentEmote, setCurrentEmote] = useState<keyof typeof AZURA_EMOTES>('default');
+  const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
@@ -346,10 +353,17 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
+  const showEmote = useCallback((emote: keyof typeof AZURA_EMOTES, durationMs = 6000) => {
+    if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
+    setCurrentEmote(emote);
+    emoteTimerRef.current = setTimeout(() => setCurrentEmote('default'), durationMs);
+  }, []);
+
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
 
     if (action === 'treasury') {
+      showEmote('thinking');
       const userMsg: Message = {
         id: Date.now().toString(),
         text: "What's the treasury balance?",
@@ -368,6 +382,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, userMsg]);
       addAzuraMessage(generateAzuraResponse('polymarket signals'));
     } else if (action === 'liquidity') {
+      showEmote('thinking');
       setShowLiquidityInput(true);
       setLiquidityTarget('governance');
       const userMsg: Message = {
@@ -474,7 +489,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
         <div className={styles.characterSection}>
           <Image
-            src="https://i.imgur.com/HFjHyUZ.png"
+            src={AZURA_EMOTES[currentEmote]}
             alt="Azura working at her desk"
             fill
             className={styles.characterImage}
