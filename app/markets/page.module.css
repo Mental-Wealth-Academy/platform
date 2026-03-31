@@ -72,6 +72,7 @@
 .statsBar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 10px 16px;
   background: #fff;
@@ -100,7 +101,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 1;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -181,6 +181,151 @@
   background: rgba(185, 28, 28, 0.06);
   border-color: rgba(185, 28, 28, 0.5);
   color: #991B1B;
+}
+
+/* ── Your Bets Button ── */
+
+.yourBetsBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border: 1px solid rgba(81, 104, 255, 0.25);
+  border-radius: 20px;
+  background: rgba(81, 104, 255, 0.06);
+  color: #5168FF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.yourBetsBtn:hover {
+  background: rgba(81, 104, 255, 0.14);
+  border-color: rgba(81, 104, 255, 0.5);
+}
+
+.yourBetsBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 50%;
+  background: #5168FF;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Bets Modal ── */
+
+.betsModalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9998;
+}
+
+.betsModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(600px, calc(100vh - 64px));
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid rgba(81, 104, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.betsModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
+}
+
+.betsModalTitle {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1B24;
+}
+
+.betsModalClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(26, 27, 36, 0.06);
+  color: rgba(26, 27, 36, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.betsModalClose:hover {
+  background: rgba(26, 27, 36, 0.12);
+  color: #1A1B24;
+}
+
+.betsModalBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.betsModalFooter {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(26, 27, 36, 0.08);
+  display: flex;
+  justify-content: flex-end;
+}
+
+:global([data-theme="dark"]) .betsModal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .betsModalHeader {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .betsModalTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .betsModalClose {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:global([data-theme="dark"]) .betsModalClose:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+:global([data-theme="dark"]) .betsModalFooter {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .yourBetsBtn {
+  background: rgba(81, 104, 255, 0.12);
+  border-color: rgba(81, 104, 255, 0.3);
 }
 
 /* ── Market Cards Grid ── */

@@ -329,6 +329,7 @@ export default function Markets() {
   const { play } = useSound();
   const [mounted, setMounted] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [showBetsModal, setShowBetsModal] = useState(false);
   const { authenticated, ready: privyReady } = usePrivy();
 
   // Load from localStorage on mount
@@ -558,12 +559,14 @@ export default function Markets() {
     };
   });
 
-  // Apply filter
-  let markets = [...polyList, ...academyList];
+  // Apply filter — academy markets always on top
+  let markets: typeof polyList;
   if (filter === 'academy') {
     markets = academyList;
   } else if (filter !== 'all') {
     markets = polyList.filter((m) => m.category === filter.toUpperCase());
+  } else {
+    markets = [...academyList, ...polyList];
   }
 
   const activeBets = bets.filter((b) => b.status === 'active');
@@ -625,11 +628,11 @@ export default function Markets() {
             </div>
           </div>
           <button
-            className={styles.resetBtn}
-            onClick={handleReset}
+            className={styles.yourBetsBtn}
+            onClick={() => { play('click'); setShowBetsModal(true); }}
             onMouseEnter={() => play('hover')}
           >
-            Reset
+            Your Bets{bets.length > 0 && <span className={styles.yourBetsBadge}>{bets.filter(b => b.status === 'active').length}</span>}
           </button>
         </div>
 
@@ -672,65 +675,62 @@ export default function Markets() {
           </div>
         )}
 
-        {/* ── Active Bets ── */}
-        {activeBets.length > 0 && (
-          <div className={styles.betsSection}>
-            <div className={styles.betsSectionTitle}>
-              Your Bets ({activeBets.length} active)
-            </div>
-            <div className={styles.betsList}>
-              {activeBets.map((bet) => (
-                <div key={bet.id} className={styles.betRow}>
-                  <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>
-                    {bet.side}
-                  </span>
-                  <span className={styles.betQuestion}>{bet.question}</span>
-                  <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
-                  <span className={styles.betPayout}>
-                    wins {bet.potentialWin.toLocaleString()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── Resolved Bets ── */}
-        {resolvedBets.length > 0 && (
-          <div className={styles.betsSection}>
-            <div className={styles.betsSectionTitle}>Recent Results</div>
-            <div className={styles.betsList}>
-              {resolvedBets.map((bet) => (
-                <div
-                  key={bet.id}
-                  className={bet.status === 'won' ? styles.betWon : styles.betLost}
-                >
-                  <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>
-                    {bet.side}
-                  </span>
-                  <span className={styles.betQuestion}>{bet.question}</span>
-                  <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
-                  <span
-                    className={
-                      bet.status === 'won' ? styles.betWonBadge : styles.betLostBadge
-                    }
-                  >
-                    {bet.status === 'won'
-                      ? `+${bet.potentialWin.toLocaleString()}`
-                      : `-${bet.amount.toLocaleString()}`}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {bets.length === 0 && mounted && (
-          <div className={styles.noBets}>
-            No bets yet. Pick a market above and make your first prediction!
-          </div>
-        )}
       </div>
+
+      {/* ── Bets Modal ── */}
+      {showBetsModal && (
+        <>
+          <div className={styles.betsModalBackdrop} onClick={() => setShowBetsModal(false)} />
+          <div className={styles.betsModal}>
+            <div className={styles.betsModalHeader}>
+              <span className={styles.betsModalTitle}>Your Bets</span>
+              <button className={styles.betsModalClose} onClick={() => setShowBetsModal(false)} type="button" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className={styles.betsModalBody}>
+              {activeBets.length > 0 && (
+                <div className={styles.betsSection}>
+                  <div className={styles.betsSectionTitle}>Active ({activeBets.length})</div>
+                  <div className={styles.betsList}>
+                    {activeBets.map((bet) => (
+                      <div key={bet.id} className={styles.betRow}>
+                        <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>{bet.side}</span>
+                        <span className={styles.betQuestion}>{bet.question}</span>
+                        <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
+                        <span className={styles.betPayout}>wins {bet.potentialWin.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {resolvedBets.length > 0 && (
+                <div className={styles.betsSection}>
+                  <div className={styles.betsSectionTitle}>Recent Results</div>
+                  <div className={styles.betsList}>
+                    {resolvedBets.map((bet) => (
+                      <div key={bet.id} className={bet.status === 'won' ? styles.betWon : styles.betLost}>
+                        <span className={bet.side === 'YES' ? styles.betSideYes : styles.betSideNo}>{bet.side}</span>
+                        <span className={styles.betQuestion}>{bet.question}</span>
+                        <span className={styles.betAmount}>{bet.amount.toLocaleString()}</span>
+                        <span className={bet.status === 'won' ? styles.betWonBadge : styles.betLostBadge}>
+                          {bet.status === 'won' ? `+${bet.potentialWin.toLocaleString()}` : `-${bet.amount.toLocaleString()}`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {bets.length === 0 && (
+                <div className={styles.noBets}>No bets yet. Pick a market and make your first prediction!</div>
+              )}
+            </div>
+            <div className={styles.betsModalFooter}>
+              <button className={styles.resetBtn} onClick={() => { handleReset(); setShowBetsModal(false); }} onMouseEnter={() => play('hover')}>Reset All</button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ── Toast ── */}
       {toast && <div className={styles.toast}>{toast}</div>}
