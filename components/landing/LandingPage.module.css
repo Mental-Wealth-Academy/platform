@@ -167,9 +167,10 @@
 /* Hero button slide text */
 .heroSlideWrap {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   overflow: hidden;
-  height: 1.2em;
+  height: 1.4em;
   vertical-align: middle;
 }
 
