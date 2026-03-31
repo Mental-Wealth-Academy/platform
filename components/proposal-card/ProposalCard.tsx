@@ -225,7 +225,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       {review && review.decision === 'approved' && review.tokenAllocation && (
         <div className={styles.tokenSection}>
           <div className={styles.tokenHeader}>
-            <Image src="/icons/academybadge.png" alt="Shard" width={20} height={20} unoptimized />
             <span className={styles.tokenAmount}>{review.tokenAllocation}%</span>
           </div>
           <div className={styles.tokenBarTrack}>
@@ -234,9 +233,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
               style={{ width: `${Math.min(100, (review.tokenAllocation / 40) * 100)}%` }}
             />
           </div>
-          {review.reasoning && (
-            <p className={styles.tokenDescription}>{review.reasoning}</p>
-          )}
         </div>
       )}
 

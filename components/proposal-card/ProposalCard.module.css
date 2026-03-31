@@ -199,42 +199,38 @@
 }
 
 .tokenSection {
-  padding: 16px 24px;
-  border-bottom: 2px solid rgba(81, 104, 255, 0.08);
-  background: rgba(81, 104, 255, 0.02);
-  border: 2px solid rgba(81, 104, 255, 0.1);
-  border-radius: var(--radius-lg);
-  margin: 0 16px 0;
+  padding: 12px 20px;
+  background: transparent;
+  margin: 0 16px;
 }
 
 .tokenHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .tokenAmount {
-  font-size: 16px;
-  font-weight: 800;
-  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
   color: var(--color-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
 }
 
 .tokenBarTrack {
   width: 100%;
-  height: 10px;
+  height: 3px;
   border-radius: var(--radius-full);
-  background: rgba(81, 104, 255, 0.1);
+  background: rgba(81, 104, 255, 0.12);
   overflow: hidden;
-  margin-bottom: 10px;
 }
 
 .tokenBarFill {
   height: 100%;
   border-radius: var(--radius-full);
-  background: linear-gradient(90deg, #4CAF50, #81C784, #E040FB);
+  background: var(--color-primary);
   transition: width 0.6s ease;
 }
 
