@@ -55,23 +55,23 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
   const getStage1Image = () => {
     switch (stage1) {
-      case 'approved': return '/uploads/HappyEmote.png';
-      case 'rejected': return '/uploads/SadEmote.png';
-      case 'analyzing': return '/uploads/ConfusedEmote.png';
-      default: return '/uploads/ConfusedEmote.png';
+      case 'approved': return 'https://i.imgur.com/3Y3KrnJ.png';
+      case 'rejected': return 'https://i.imgur.com/XIe1jZy.png';
+      case 'analyzing': return 'https://i.imgur.com/ePrWP7A.png';
+      default: return 'https://i.imgur.com/ePrWP7A.png';
     }
   };
 
   const getStage2Image = () => {
-    if (stage2 === 'success') return '/uploads/HappyEmote.png';
-    if (stage2 === 'failed') return '/uploads/PainEmote.png';
-    return '/uploads/ConfusedEmote.png';
+    if (stage2 === 'success') return 'https://i.imgur.com/3Y3KrnJ.png';
+    if (stage2 === 'failed') return 'https://i.imgur.com/ZYpNkse.png';
+    return 'https://i.imgur.com/ePrWP7A.png';
   };
 
   const getStage3Image = () => {
-    if (stage3 === 'completed') return '/uploads/HappyEmote.png';
-    if (stage3 === 'defeated' || stage3 === 'expired') return '/uploads/SadEmote.png';
-    return '/uploads/ConfusedEmote.png';
+    if (stage3 === 'completed') return 'https://i.imgur.com/3Y3KrnJ.png';
+    if (stage3 === 'defeated' || stage3 === 'expired') return 'https://i.imgur.com/XIe1jZy.png';
+    return 'https://i.imgur.com/ePrWP7A.png';
   };
 
   const isStage1Done = stage1 === 'approved' || stage1 === 'rejected';

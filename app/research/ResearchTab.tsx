@@ -1214,7 +1214,7 @@ export default function ResearchTab() {
             <div className={styles.sectionLabel}>07 — Azura Statistical Interpretation</div>
             <div className={styles.azuraPanel}>
               <div className={styles.azuraId}>
-                <Image src="https://i.imgur.com/qTEmw8E.png" alt="Azura" width={56} height={56} className={styles.azuraPfp} unoptimized />
+                <Image src="https://i.imgur.com/3Y3KrnJ.png" alt="Azura" width={56} height={56} className={styles.azuraPfp} unoptimized />
                 <div className={styles.azuraNameLabel}>Azura</div>
               </div>
               <div>
