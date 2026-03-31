@@ -44,19 +44,19 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
+  description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
   icons: {
     icon: '/icons/mentalwealth-academy-logo.png',
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
+    description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
     images: [
       {
-        url: '/icons/embbedBanner.png',
+        url: 'https://i.imgur.com/D7KNpDv.jpeg',
         width: 1200,
         height: 630,
-        alt: 'Mental Wealth Academy - Next Gen Micro-University',
+        alt: 'Mental Wealth Academy - A 12-Week Micro-University',
       },
     ],
     type: 'website',
@@ -64,20 +64,20 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.',
-    images: ['/icons/embbedBanner.png'],
+    description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
+    images: ['https://i.imgur.com/D7KNpDv.jpeg'],
   },
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: `${APP_URL}/icons/embbedBanner.png`,
+      imageUrl: 'https://i.imgur.com/D7KNpDv.jpeg',
       button: {
         title: 'Launch Mental Wealth Academy',
         action: {
           type: 'launch_miniapp',
           name: 'Mental Wealth Academy',
           url: APP_URL,
-          splashImageUrl: `${APP_URL}/icons/embbedBanner.png`,
+          splashImageUrl: 'https://i.imgur.com/D7KNpDv.jpeg',
           splashBackgroundColor: '#000000',
         },
       },
