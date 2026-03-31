@@ -240,7 +240,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           <div className={styles.voteBarSection}>
             <div className={styles.voteBarTrack}>
               <div className={styles.voteBarYes} style={{ width: `${yesPct}%` }} />
-              <div className={styles.voteBarDivider} />
+              <div className={styles.voteBarNo} style={{ width: `${noPct}%` }} />
             </div>
             <div className={styles.voteBarLabels}>
               <span className={styles.voteBarYesLabel}>Yes {yesPct}%</span>

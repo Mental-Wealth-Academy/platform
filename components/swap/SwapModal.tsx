@@ -17,15 +17,15 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
   const [toAmount, setToAmount] = useState('')
   const [isReversed, setIsReversed] = useState(false)
 
-  const RATE = 100 // 1 USDC = 100 SHARDS
+  const RATE = 100 // 100 SHARDS = 1 VOTE
 
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
   }, [])
 
-  const fromToken = isReversed ? 'SHARDS' : 'USDC'
-  const toToken = isReversed ? 'USDC' : 'SHARDS'
+  const fromToken = isReversed ? 'VOTES' : 'SHARDS'
+  const toToken = isReversed ? 'SHARDS' : 'VOTES'
   const fromBalance = '0.00'
   const toBalance = '0.00'
 
@@ -33,7 +33,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
     setFromAmount(value)
     const num = parseFloat(value)
     if (!isNaN(num) && num > 0) {
-      const converted = isReversed ? num / RATE : num * RATE
+      const converted = isReversed ? num * RATE : num / RATE
       setToAmount(converted.toFixed(2))
     } else {
       setToAmount('')
@@ -138,7 +138,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
           <div className={styles.rateRow}>
             <span className={styles.rateLabel}>Rate</span>
             <span className={styles.rateValue}>
-              1 USDC = 100 SHARDS
+              100 SHARDS = 1 VOTE
             </span>
           </div>
 

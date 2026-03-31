@@ -149,33 +149,28 @@
 }
 
 .voteBarTrack {
-  position: relative;
+  display: flex;
   width: 100%;
   height: 22px;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: rgba(81, 104, 255, 0.08);
   border: 2px solid rgba(81, 104, 255, 0.12);
+  gap: 2px;
 }
 
 .voteBarYes {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, rgba(76, 175, 80, 0.45), rgba(76, 175, 80, 0.2));
+  height: 100%;
+  background: #4CAF50;
   transition: width 0.4s ease;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 }
 
-.voteBarDivider {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--color-text-dark);
-  opacity: 0.1;
-  z-index: 2;
+.voteBarNo {
+  height: 100%;
+  background: #F44336;
+  transition: width 0.4s ease;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .voteBarLabels {
@@ -195,7 +190,7 @@
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
-  color: var(--color-secondary);
+  color: #F44336;
 }
 
 .tokenSection {

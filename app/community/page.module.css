@@ -2106,7 +2106,10 @@
 }
 
 :global([data-theme="dark"]) .primaryCta {
-  border-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.4);
 }
 
 :global([data-theme="dark"]) .secondaryCta {
