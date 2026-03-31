@@ -1392,11 +1392,13 @@
 
 :global([data-theme="dark"]) .navItemIcon {
   color: rgba(227, 225, 238, 0.4);
-  filter: brightness(2);
+  filter: invert(1) brightness(1.2);
+  opacity: 0.5;
 }
 
 :global([data-theme="dark"]) .navItemActive .navItemIcon {
   color: rgba(227, 225, 238, 0.95);
+  opacity: 1;
 }
 
 :global([data-theme="dark"]) .navItemLabel {

@@ -278,8 +278,8 @@ export default function ShopPage() {
           {activeCategory === 'All' && (
             <div className={styles.featuredBanner}>
               <div className={styles.bannerLeft}>
-                <span className={styles.bannerTitle}>New Scholar Enrollment Open</span>
-                <span className={styles.bannerSub}>Get your starter kit — blazer, journal, pins, and keycard in one bundle.</span>
+                <span className={styles.bannerTitle}>The Ethereal Starter Collection</span>
+                <span className={styles.bannerSub}>Everything you need to begin your ascension — blazer, journal, pins, and keycard.</span>
               </div>
               <button
                 className={styles.bannerButton}

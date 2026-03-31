@@ -192,13 +192,13 @@
 }
 
 :global([data-theme="dark"]) .iconImg {
-  opacity: 0.3;
-  filter: brightness(2);
+  opacity: 0.35;
+  filter: invert(1) brightness(1.2);
 }
 
 :global([data-theme="dark"]) .tabActive .iconImg {
   opacity: 1;
-  filter: brightness(2) drop-shadow(0 0 4px rgba(107, 128, 255, 0.35));
+  filter: invert(1) brightness(1.2) drop-shadow(0 0 4px rgba(107, 128, 255, 0.35));
 }
 
 :global([data-theme="dark"]) .label {
