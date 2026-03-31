@@ -1187,7 +1187,7 @@
     z-index: 1101;
     border-right: none;
     box-shadow: none;
-    padding-bottom: 80px;
+    padding-bottom: 16px;
   }
 
   /* Override collapsed state on mobile - always full width */
