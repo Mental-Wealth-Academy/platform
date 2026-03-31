@@ -322,10 +322,11 @@
   flex-direction: column;
   border-top: 3px solid var(--color-primary);
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .sectionHead {
-  padding: 32px 40px 28px;
+  padding: 24px 40px 16px;
 }
 
 .sectionNumber {
@@ -349,24 +350,21 @@
 }
 
 .sectionBodyWrapper {
-  margin: 0 40px 40px;
-  flex: 1;
-  min-height: 0;
+  margin: 0 40px 24px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 .sectionBody {
   display: flex;
   gap: 28px;
   align-items: flex-start;
-  flex: 1;
-  min-height: 0;
 }
 
 .sectionImage {
   flex: 0 0 auto;
-  width: 320px;
+  width: 280px;
   background-size: cover;
   background-position: top left;
   background-repeat: no-repeat;
@@ -423,8 +421,9 @@
   border-left: 1px solid rgba(26, 29, 51, 0.08);
   display: flex;
   flex-direction: column;
-  padding: 32px 28px 40px;
+  padding: 24px 24px 24px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .sectionSmallTitle {
@@ -445,7 +444,7 @@
 }
 
 .ctaButtonBordered {
-  margin-top: auto;
+  margin-top: 16px;
   padding: 14px 20px;
   background: #ffffff;
   border: 1.5px solid rgba(26, 29, 51, 0.25);
@@ -471,8 +470,9 @@
   border-left: 1px solid rgba(26, 29, 51, 0.06);
   display: flex;
   flex-direction: column;
-  padding: 32px 24px;
+  padding: 24px 24px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .lockedSectionCh2 {
