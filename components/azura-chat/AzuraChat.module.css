@@ -23,8 +23,9 @@
   height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: #1A1D33;
-  border: 3px solid #1A1D33;
+  background: linear-gradient(#1A1D33, #1A1D33) padding-box,
+              linear-gradient(135deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088) border-box;
+  border: 1px solid transparent;
   border-radius: 16px;
   box-shadow: 8px 8px 0 rgba(26, 29, 51, 0.4);
   z-index: 9999;

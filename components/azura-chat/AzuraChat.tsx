@@ -273,6 +273,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
+    showEmote('blankStare');
     addAzuraMessage(generateAzuraResponse(userMessage.text));
   };
 
@@ -324,6 +325,11 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       return "Prices are loading... CoinGecko's being slow again. Try asking in a few seconds.";
     }
 
+    // Prayers
+    if (t.includes('prayer') || t.includes('prayers')) {
+      return "Prayers are proposals submitted to the academy. You pour your intention into a proposal, and the community decides if it's worthy. Think of it like... casting a spell. If enough souls align with your vision, the treasury funds it. Every prayer that passes is proof that collective will can move capital.";
+    }
+
     // Polymarket / predictions
     if (t.includes('polymarket') || t.includes('prediction') || t.includes('signal') || t.includes('position')) {
       if (treasury.topMarkets.length > 0) {
@@ -336,7 +342,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     // Add liquidity
     if (t.includes('liquidity') || t.includes('fund') || t.includes('deposit') || t.includes('add usdc') || t.includes('contribute')) {
       const hasTrader = !!TRADER_ADDRESS;
-      return `You wanna fund the treasury? Smart move. Hit the "Add Liquidity" button below and send USDC.${
+      return `You wanna fund the treasury? Smart move. Hit the "Add Offering" button below and send USDC.${
         hasTrader ? ' You can choose to fund the governance treasury or the trading treasury — pick your target before sending.' : ''
       } I'll use it for Polymarket positions — the quant models pick the entries, I just execute. ${
         treasury.balance ? `Current total: $${treasury.balance}.` : ''
@@ -392,14 +398,15 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, userMsg]);
       addAzuraMessage(generateAzuraResponse('treasury balance'));
     } else if (action === 'markets') {
+      showEmote('scheming');
       const userMsg: Message = {
         id: Date.now().toString(),
-        text: "What markets are you watching?",
+        text: "What are prayers?",
         sender: 'user',
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, userMsg]);
-      addAzuraMessage(generateAzuraResponse('polymarket signals'));
+      addAzuraMessage(generateAzuraResponse('what are prayers'));
     } else if (action === 'liquidity') {
       showEmote('thinking');
       setShowLiquidityInput(true);
@@ -458,6 +465,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, userMsg]);
 
       const tx = await usdc.transfer(targetAddress, amountWei);
+      showEmote('searching', 15000);
       addAzuraMessage(`Transaction submitted. Hash: ${tx.hash.slice(0, 10)}...${tx.hash.slice(-6)}. Waiting for confirmation...`);
 
       await tx.wait();
@@ -465,11 +473,13 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       setLiquidityAmount('');
       fetchTreasuryContext();
 
+      showEmote('thinkingRight');
       setTimeout(() => {
         addAzuraMessage(`Confirmed. ${amount} USDC received into the ${targetLabel} treasury. I'll put it to work on the next signal. Good looking out.`);
       }, 2000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
+      showEmote('thinkingLeft');
       if (msg.includes('user rejected') || msg.includes('denied')) {
         addAzuraMessage("Transaction cancelled. No worries, the offer still stands whenever you're ready.");
       } else if (msg.includes('switch') && msg.includes('Base')) {
@@ -566,10 +576,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
             Treasury
           </button>
 <button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
-            Signals
+            Prayers?
           </button>
           <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
-            + Add Liquidity
+            + Add Offering
           </button>
         </div>
 
