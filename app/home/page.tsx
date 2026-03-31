@@ -242,7 +242,6 @@ export default function HomePage() {
             className={styles.topLeaderboard}
             onClick={() => { play('click'); setShowLeaderboard(true); }}
           >
-            <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
             <div className={styles.topLeaderboardPodium}>
               {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
                 { rank: 1, username: '---', avatarUrl: null, shards: 0 },
