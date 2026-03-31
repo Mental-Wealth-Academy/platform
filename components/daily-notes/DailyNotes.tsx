@@ -266,10 +266,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               <Image
                 src="https://i.imgur.com/ePrWP7A.png"
                 alt="Azura"
-                width={32}
-                height={32}
+                width={40}
+                height={40}
                 unoptimized
-                style={{ borderRadius: '6px' }}
               />
             </div>
             <div>
