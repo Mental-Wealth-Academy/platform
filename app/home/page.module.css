@@ -1,29 +1,44 @@
 /* Home Page — Card-based layout with swipe navigation */
 
 .pageLayout {
+  position: relative;
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
   background: #F7F7FA;
 }
 
+.bgViz {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 .content {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
   width: 100%;
   margin: 0 auto;
-  padding: 32px 24px 48px;
+  padding: 24px 24px 48px;
 }
 
 /* ============================================ */
-/* HERO — Greeting + Streak                     */
+/* HERO — Greeting + Streak + Leaderboard      */
 /* ============================================ */
 
 .hero {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 12px 0 20px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 16px;
   opacity: 0;
   transform: translateY(10px);
 }
@@ -32,24 +47,34 @@
   animation: fadeIn 0.5s ease forwards;
 }
 
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .greeting {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: rgba(26, 29, 51, 0.5);
-  margin: 0 0 8px 0;
+  margin: 0;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .streakRow {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 5px;
 }
 
 .streakNumber {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   color: #1A1D33;
   line-height: 1;
@@ -57,9 +82,106 @@
 
 .streakUnit {
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
   color: rgba(26, 29, 51, 0.4);
+}
+
+/* ============================================ */
+/* TOP LEADERBOARD (compact, inside hero row)  */
+/* ============================================ */
+
+.topLeaderboard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.topLeaderboard:hover {
+  border-color: rgba(81, 104, 255, 0.15);
+}
+
+.topLeaderboardTitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(26, 29, 51, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.topLeaderboardPodium {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.podiumSlot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.podiumFirst { order: 1; }
+.podiumSecond { order: 2; }
+.podiumThird { order: 3; }
+
+.podiumAvatarRing {
+  border-radius: 50%;
+  padding: 1.5px;
+  background: rgba(26, 29, 51, 0.08);
+}
+
+.podiumFirst .podiumAvatarRing { background: #D4A843; }
+.podiumSecond .podiumAvatarRing { background: #b0b8c9; }
+.podiumThird .podiumAvatarRing { background: #c47a3a; }
+
+.podiumAvatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.podiumAvatarImg {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.podiumName {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #1a1d33;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.podiumShards {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.3);
+  line-height: 1;
 }
 
 /* ============================================ */
@@ -70,7 +192,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 28px 0 8px;
+  margin: 20px 0 8px;
   padding: 0 4px;
 }
 
@@ -99,34 +221,33 @@
 }
 
 .weekArrow {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #FFFFFF;
-  border: 2px solid #1A1D33;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(26, 29, 51, 0.1);
+  border-radius: 10px;
   cursor: pointer;
   color: #1A1D33;
-  box-shadow: 3px 3px 0 #1A1D33;
   transition: all 0.15s ease;
 }
 
 .weekArrow:hover:not(:disabled) {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 #1A1D33;
+  background: #fff;
+  border-color: rgba(81, 104, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.08);
 }
 
 .weekArrow:active:not(:disabled) {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1A1D33;
+  transform: scale(0.95);
 }
 
 .weekArrow:disabled {
   opacity: 0.25;
   cursor: not-allowed;
-  box-shadow: 2px 2px 0 #CCCCCC;
 }
 
 /* Week Dots */
@@ -134,7 +255,7 @@
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .weekDot {
@@ -142,7 +263,7 @@
   height: 10px;
   border-radius: 50%;
   background: #E0E1EE;
-  border: 2px solid rgba(26, 29, 51, 0.12);
+  border: 1.5px solid rgba(26, 29, 51, 0.08);
   cursor: pointer;
   padding: 0;
   transition: all 0.15s ease;
@@ -154,13 +275,13 @@
 
 .weekDotActive {
   background: #5168FF;
-  border-color: #1A1D33;
+  border-color: rgba(81, 104, 255, 0.4);
   transform: scale(1.2);
 }
 
 .weekDotSealed {
   background: #22C55E;
-  border-color: #166534;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ============================================ */
@@ -185,7 +306,7 @@
 }
 
 /* ============================================ */
-/* READING CARD                                 */
+/* READING CARD (softened)                      */
 /* ============================================ */
 
 .readingCard {
@@ -194,27 +315,28 @@
   align-items: center;
   gap: 14px;
   padding: 14px 16px;
-  background: #FFFFFF;
-  border: 3px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 4px 4px 0 #1A1D33;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
 }
 
 .readingCard:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  border-color: rgba(81, 104, 255, 0.18);
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.06);
 }
 
 .readingMedia {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid #1A1D33;
+  border: 1px solid rgba(26, 29, 51, 0.08);
 }
 
 .readingImg {
@@ -263,112 +385,6 @@
   color: rgba(26, 29, 51, 0.25);
   flex-shrink: 0;
 }
-
-/* ============================================ */
-/* TOP LEADERBOARD                              */
-/* ============================================ */
-
-.topLeaderboard {
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  border-radius: 16px;
-  padding: 12px 16px;
-  cursor: pointer;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: border-color 0.2s ease;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.topLeaderboard::-webkit-scrollbar { display: none; }
-
-.topLeaderboard:hover {
-  border-color: rgba(81, 104, 255, 0.15);
-}
-
-.topLeaderboardTitle {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(26, 29, 51, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.topLeaderboardPodium {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.podiumSlot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.podiumFirst { order: 1; }
-.podiumSecond { order: 2; }
-.podiumThird { order: 3; }
-
-.podiumAvatarRing {
-  border-radius: 50%;
-  padding: 2px;
-  background: rgba(26, 29, 51, 0.08);
-}
-
-.podiumFirst .podiumAvatarRing { padding: 2px; background: #D4A843; }
-.podiumSecond .podiumAvatarRing { background: #b0b8c9; }
-.podiumThird .podiumAvatarRing { background: #c47a3a; }
-
-.podiumAvatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.podiumAvatarImg {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-}
-
-.podiumName {
-  font-family: 'Poppins', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  color: #1a1d33;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.podiumShards {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(26, 29, 51, 0.3);
-  line-height: 1;
-}
-
-
 
 /* ============================================ */
 /* LEADERBOARD MODAL                            */
@@ -546,29 +562,62 @@
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
-    padding-top: 16px;
+  }
+
+  .bgViz {
+    left: 0;
   }
 }
 
 @media (max-width: 480px) {
   .content {
-    padding: 20px 16px 88px;
+    padding: 16px 14px 88px;
   }
 
   .hero {
-    padding: 8px 0 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 12px;
   }
 
   .greeting {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .streakNumber {
-    font-size: 24px;
+    font-size: 20px;
+  }
+
+  .streakUnit {
+    font-size: 12px;
+  }
+
+  .topLeaderboard {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .topLeaderboardTitle {
+    font-size: 8px;
+  }
+
+  .podiumAvatar,
+  .podiumAvatarImg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .podiumName {
+    font-size: 9px;
+  }
+
+  .topLeaderboardPodium {
+    gap: 4px;
   }
 
   .weekHeader {
-    margin: 20px 0 6px;
+    margin: 14px 0 6px;
   }
 
   .weekTitle {
@@ -576,13 +625,13 @@
   }
 
   .weekArrow {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .weekDots {
     gap: 5px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .weekDot {
@@ -591,21 +640,16 @@
   }
 
   .readingCard {
-    padding: 12px 14px;
-    border-radius: 12px;
-    box-shadow: 3px 3px 0 #1A1D33;
+    padding: 10px 12px;
+    gap: 10px;
   }
 
   .readingMedia {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 
   .readingTitle {
     font-size: 13px;
-  }
-
-  .quickLinks {
-    grid-template-columns: 1fr;
   }
 }

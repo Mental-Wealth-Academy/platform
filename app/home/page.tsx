@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
+import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
@@ -223,45 +224,46 @@ export default function HomePage() {
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
     <DailyReadPopup activeWeek={activeWeek} />
     <div className={styles.pageLayout}>
+      <div className={styles.bgViz}><CyberpunkDataViz /></div>
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
 
-        {/* ===== TOP ACADEMICS LEADERBOARD ===== */}
-        <div
-          className={styles.topLeaderboard}
-          onClick={() => { play('click'); setShowLeaderboard(true); }}
-        >
-          <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
-          <div className={styles.topLeaderboardPodium}>
-            {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
-              { rank: 1, username: '---', avatarUrl: null, shards: 0 },
-              { rank: 2, username: '---', avatarUrl: null, shards: 0 },
-              { rank: 3, username: '---', avatarUrl: null, shards: 0 },
-            ]).map(u => (
-              <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
-                <div className={styles.podiumAvatarRing}>
-                  {u.avatarUrl ? (
-                    <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
-                  ) : (
-                    <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
-                      {u.username[0]?.toUpperCase() ?? '?'}
-                    </div>
-                  )}
-                </div>
-                <span className={styles.podiumName}>{u.username}</span>
-                <span className={styles.podiumShards}>{u.shards}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ===== GREETING + STREAK ===== */}
+        {/* ===== GREETING + STREAK + LEADERBOARD (compact row) ===== */}
         <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-          <p className={styles.greeting}>{getGreeting()}</p>
-          <div className={styles.streakRow}>
-            <span className={styles.streakNumber}>{streakCount}</span>
-            <span className={styles.streakUnit}>day streak</span>
+          <div className={styles.heroLeft}>
+            <p className={styles.greeting}>{getGreeting()}</p>
+            <div className={styles.streakRow}>
+              <span className={styles.streakNumber}>{streakCount}</span>
+              <span className={styles.streakUnit}>day streak</span>
+            </div>
           </div>
+          <button
+            type="button"
+            className={styles.topLeaderboard}
+            onClick={() => { play('click'); setShowLeaderboard(true); }}
+          >
+            <strong className={styles.topLeaderboardTitle}>TOP ACADEMICS</strong>
+            <div className={styles.topLeaderboardPodium}>
+              {(leaderboard.length > 0 ? leaderboard.slice(0, 3) : [
+                { rank: 1, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 2, username: '---', avatarUrl: null, shards: 0 },
+                { rank: 3, username: '---', avatarUrl: null, shards: 0 },
+              ]).map(u => (
+                <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
+                  <div className={styles.podiumAvatarRing}>
+                    {u.avatarUrl ? (
+                      <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
+                    ) : (
+                      <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
+                        {u.username[0]?.toUpperCase() ?? '?'}
+                      </div>
+                    )}
+                  </div>
+                  <span className={styles.podiumName}>{u.username}</span>
+                </div>
+              ))}
+            </div>
+          </button>
         </section>
 
         {/* ===== MORNING PAGE CARD ===== */}
