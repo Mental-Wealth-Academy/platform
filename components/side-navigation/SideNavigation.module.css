@@ -1181,12 +1181,13 @@
     left: 0;
     width: 300px;
     max-width: 85vw;
-    height: 100vh;
+    height: 100dvh;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
     z-index: 1101;
     border-right: none;
     box-shadow: none;
+    padding-bottom: 80px;
   }
 
   /* Override collapsed state on mobile - always full width */
@@ -1211,7 +1212,8 @@
 
   .navSections {
     overflow-y: auto;
-    max-height: calc(100vh - 200px);
+    flex: 1;
+    min-height: 0;
   }
 
   .section {
