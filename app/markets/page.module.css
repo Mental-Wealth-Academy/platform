@@ -4,7 +4,6 @@
   min-height: 100vh;
   margin-left: var(--sidebar-width, 272px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  background: var(--color-background, #FBF8FF);
   color: #1A1B24;
 }
 
