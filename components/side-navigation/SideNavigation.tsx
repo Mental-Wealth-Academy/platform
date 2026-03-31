@@ -581,7 +581,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   <div className={styles.shinyCardShine} />
                   <div className={styles.shinyCardContent}>
                     <div className={styles.shinyCardIcon}>
-                      <Image src="https://i.imgur.com/AkflhaJ.png" alt="Azura" width={36} height={36} unoptimized />
+                      <Image src="https://i.imgur.com/3Y3KrnJ.png" alt="Azura" width={36} height={36} unoptimized />
                     </div>
                     {!isCollapsed && (
                       <div className={styles.shinyCardText}>

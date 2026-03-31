@@ -1142,7 +1142,7 @@ export default function AccordionJournalCard({
               <div className={styles.sealPrompt}>
                 <div className={styles.sealAzuraIcon}>
                   <Image
-                    src="https://i.imgur.com/AkflhaJ.png"
+                    src="https://i.imgur.com/3Y3KrnJ.png"
                     alt="Azura"
                     width={32}
                     height={32}
@@ -1185,7 +1185,7 @@ export default function AccordionJournalCard({
             <div className={styles.sealModalHeader}>
               <div className={styles.sealModalAzura}>
                 <Image
-                  src="https://i.imgur.com/AkflhaJ.png"
+                  src="https://i.imgur.com/3Y3KrnJ.png"
                   alt="Azura"
                   width={48}
                   height={48}

@@ -38,7 +38,7 @@ function GratitudeModal({ onClose, onComplete }: GratitudeModalProps) {
           <div className={classes.modalHeader}>
             <div className={classes.azuraAvatar}>
               <Image
-                src="https://i.imgur.com/AkflhaJ.png"
+                src="https://i.imgur.com/3Y3KrnJ.png"
                 alt="Azura"
                 fill
                 className={classes.azuraImage}

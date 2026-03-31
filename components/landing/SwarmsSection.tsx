@@ -76,7 +76,7 @@ export const SwarmsSection = () => {
         <div className={styles.walletGroup}>
           <div className={styles.walletAvatar}>
             <Image
-              src="https://i.imgur.com/AkflhaJ.png"
+              src="https://i.imgur.com/3Y3KrnJ.png"
               alt="Azura"
               width={50}
               height={50}

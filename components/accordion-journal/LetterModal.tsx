@@ -38,7 +38,7 @@ export default function LetterModal({ isOpen, onClose, title, content }: LetterM
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <Image
-              src="https://i.imgur.com/AkflhaJ.png"
+              src="https://i.imgur.com/3Y3KrnJ.png"
               alt="Azura"
               width={28}
               height={28}

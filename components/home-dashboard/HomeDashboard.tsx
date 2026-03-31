@@ -31,7 +31,7 @@ function ScannerCTA({ onSubmit }: { onSubmit: () => void }) {
         <div className={styles.scannerBranding}>
           <div className={styles.scannerAvatarWrap}>
             <Image
-              src="https://i.imgur.com/AkflhaJ.png"
+              src="https://i.imgur.com/3Y3KrnJ.png"
               alt="Azura"
               width={44}
               height={44}
