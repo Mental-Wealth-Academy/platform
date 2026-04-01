@@ -51,8 +51,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
-  const [dataLoaded, setDataLoaded] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const morningPages = allWeekPages[currentWeek] ?? [];
@@ -178,22 +178,20 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   // Load all weeks from DB
   useEffect(() => {
-    if (dataLoaded || !enablePersistence) return;
+    if (hasLoadedRef.current || !enablePersistence) return;
+    hasLoadedRef.current = true;
 
     (async () => {
       try {
         const res = await fetch('/api/daily-notes', { credentials: 'include' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
-        }
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
       } catch {
         // silent
-      } finally {
-        setDataLoaded(true);
       }
     })();
-  }, [enablePersistence, dataLoaded]);
+  }, [enablePersistence]);
 
   // Debounced auto-save
   const save = useCallback(() => {
@@ -201,7 +199,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [allWeekPages]);
 
   useEffect(() => {
-    if (!dataLoaded || !enablePersistence) return;
+    if (!hasLoadedRef.current || !enablePersistence) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
@@ -218,7 +216,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }, 1500);
 
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [allWeekPages, enablePersistence, save, dataLoaded]);
+  }, [allWeekPages, enablePersistence, save]);
 
   // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
@@ -244,7 +242,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
-  const canStart = (!enablePersistence || dataLoaded) && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
+  const canStart = isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
   const handleCompactClick = () => {
     if (compact && canStart) {
@@ -276,13 +274,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div>
               <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
-                {compact && todayDone
-                  ? 'Completed today'
-                  : compact && canStart
-                    ? 'Tap to start'
-                    : compact && enablePersistence && !dataLoaded
-                      ? 'Loading...'
-                      : 'All entries are encrypted.'}
+                {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
               </span>
             </div>
           </div>
