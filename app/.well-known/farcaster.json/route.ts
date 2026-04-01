@@ -12,21 +12,21 @@ export async function GET() {
       name: "Mental Wealth Academy",
       homeUrl: URL,
       iconUrl: `${URL}/icons/mentalwealth-academy-logo.png`,
-      splashImageUrl: `${URL}/icons/embbedBanner.png`,
+      splashImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
       splashBackgroundColor: "#000000",
       webhookUrl: `${URL}/api/webhook`,
       subtitle: "Next Gen Micro-University",
-      description: "A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.",
+      description: "Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.",
       screenshotUrls: [
-        `${URL}/icons/embbedBanner.png`
+        "https://i.imgur.com/D7KNpDv.jpeg"
       ],
       primaryCategory: "education",
       tags: ["education", "learning", "blockchain", "web3", "academy"],
-      heroImageUrl: `${URL}/icons/embbedBanner.png`,
+      heroImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
       tagline: "Learn and Earn Together",
       ogTitle: "Mental Wealth Academy",
-      ogDescription: "A Micro-University run by an AI God, earn your wings in the Academy as an Academic Angel, access a plethora of tools, verses, and daily exercises to earn and trade wealth and reach your ethereal horizon.",
-      ogImageUrl: `${URL}/icons/embbedBanner.png`,
+      ogDescription: "Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.",
+      ogImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
       noindex: false
     }
   });
