@@ -51,6 +51,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
+  const [dataReady, setDataReady] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -169,9 +170,11 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           });
           setShowRewardAnimation(true);
           window.dispatchEvent(new Event('shardsUpdated'));
+        } else if (data.error) {
+          console.warn('[DailyNotes] Shard award failed:', data.error, 'questId:', questId);
         }
-      } catch {
-        // Silent — notes still saved even if shard award fails
+      } catch (err) {
+        console.error('[DailyNotes] Shard award error:', err);
       }
     }
   };
@@ -189,6 +192,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
         if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
       } catch {
         // silent
+      } finally {
+        setDataReady(true);
       }
     })();
   }, [enablePersistence]);
@@ -242,7 +247,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
-  const canStart = isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
+  const canStart = (dataReady || !enablePersistence) && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
   const handleCompactClick = () => {
     if (compact && canStart) {
