@@ -427,6 +427,128 @@
   font-style: italic;
 }
 
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .modal {
+  background: #16171F;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+:global([data-theme="dark"]) .header {
+  background: rgba(107, 128, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .headerTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .headerAuthor {
+  color: rgba(227, 225, 238, 0.5);
+}
+
+:global([data-theme="dark"]) .closeButton {
+  color: rgba(227, 225, 238, 0.7);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .closeButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .prose h1,
+:global([data-theme="dark"]) .prose h2,
+:global([data-theme="dark"]) .prose h3 {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .prose p,
+:global([data-theme="dark"]) .prose ul,
+:global([data-theme="dark"]) .prose ol {
+  color: rgba(227, 225, 238, 0.75);
+}
+
+:global([data-theme="dark"]) .prose strong {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .prose em {
+  color: rgba(227, 225, 238, 0.7);
+}
+
+:global([data-theme="dark"]) .prose hr {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .prose blockquote {
+  color: rgba(227, 225, 238, 0.65);
+}
+
+:global([data-theme="dark"]) .commentsSection {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .commentsTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .commentTextarea {
+  background: #1A1B24;
+  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .commentTextarea::placeholder {
+  color: rgba(227, 225, 238, 0.3);
+}
+
+:global([data-theme="dark"]) .commentSubmit {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .charCount {
+  color: rgba(227, 225, 238, 0.3);
+}
+
+:global([data-theme="dark"]) .signInPrompt {
+  color: rgba(227, 225, 238, 0.45);
+}
+
+:global([data-theme="dark"]) .commentAuthor {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .commentTime {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .commentText {
+  color: rgba(227, 225, 238, 0.7);
+}
+
+:global([data-theme="dark"]) .likeButton {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .deleteButton {
+  color: rgba(227, 225, 238, 0.25);
+}
+
+:global([data-theme="dark"]) .noComments {
+  color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .avatar,
+:global([data-theme="dark"]) .avatarFallback,
+:global([data-theme="dark"]) .avatarFallbackSmall {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 @media (max-width: 600px) {
   .modal {
     width: 100%;
