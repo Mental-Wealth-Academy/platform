@@ -56,8 +56,8 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
   const weekIntro = WEEK_INTROS[activeWeek];
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.card}>
+    <div className={styles.overlay} onClick={handleDismiss}>
+      <div className={styles.card} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <p className={styles.eyebrow}>Week {activeWeek}</p>
           <h2 className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
