@@ -53,7 +53,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const morningPages = allWeekPages[currentWeek] ?? [];
@@ -179,8 +178,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   // Load all weeks from DB
   useEffect(() => {
-    if (hasLoadedRef.current || !enablePersistence) return;
-    hasLoadedRef.current = true;
+    if (dataLoaded || !enablePersistence) return;
 
     (async () => {
       try {
@@ -195,7 +193,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
         setDataLoaded(true);
       }
     })();
-  }, [enablePersistence]);
+  }, [enablePersistence, dataLoaded]);
 
   // Debounced auto-save
   const save = useCallback(() => {
@@ -203,7 +201,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [allWeekPages]);
 
   useEffect(() => {
-    if (!hasLoadedRef.current || !enablePersistence) return;
+    if (!dataLoaded || !enablePersistence) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
@@ -220,7 +218,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }, 1500);
 
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [allWeekPages, enablePersistence, save]);
+  }, [allWeekPages, enablePersistence, save, dataLoaded]);
 
   // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
