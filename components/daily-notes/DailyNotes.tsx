@@ -278,7 +278,13 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div>
               <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
-                {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
+                {compact && todayDone
+                  ? 'Completed today'
+                  : compact && canStart
+                    ? 'Tap to start'
+                    : compact && enablePersistence && !dataLoaded
+                      ? 'Loading...'
+                      : 'All entries are encrypted.'}
               </span>
             </div>
           </div>

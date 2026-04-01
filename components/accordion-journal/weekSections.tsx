@@ -1,47 +1,92 @@
 import React from 'react';
 import type { JournalSection } from './AccordionJournalCard';
 
-// Shared icons
+// Shared icons — solid fill
 const PenIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 3v18M3 12h18" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
   </svg>
 );
 const ClockIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
   </svg>
 );
 const WalkIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="5" r="3" /><path d="M12 8v8M9 21l3-6 3 6M6 14h12" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/>
   </svg>
 );
 const ListIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 12h16M4 6h16M4 18h16" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
   </svg>
 );
 const TextIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
   </svg>
 );
 const HeartIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
   </svg>
 );
 const CheckIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 11 12 14 22 4" />
-    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
   </svg>
 );
 const StarIcon = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+  </svg>
+);
+
+// Week 5 unique icons — solid fill
+const FlameIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/>
+  </svg>
+);
+const SparkleIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 1l2.39 7.26L22 9l-7.61 2.74L12 23l-2.39-11.26L2 9l7.61-2.74z"/>
+  </svg>
+);
+const CompassIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.88-11.71L10 11l-1.71 5.29L14 15l1.88-5.71z"/>
+  </svg>
+);
+const HourglassIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M6 2v6l4 4-4 4v6h12v-6l-4-4 4-4V2H6z"/>
+  </svg>
+);
+const LightningIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+  </svg>
+);
+const GemIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2L2 9l10 13L22 9z"/>
+  </svg>
+);
+const PuzzleIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/>
+  </svg>
+);
+const TargetIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path fillRule="evenodd" d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 4a6 6 0 1 1 0 12A6 6 0 0 1 12 6zm0 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+  </svg>
+);
+const KeyIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
   </svg>
 );
 
@@ -175,7 +220,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'god',
     title: 'God',
-    icon: ListIcon,
+    icon: FlameIcon,
     type: 'list',
     instructions: 'The reason I can\'t really believe in a supportive God is ... List five grievances. (God can take it.)',
     listCount: 5,
@@ -184,7 +229,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'desires',
     title: 'List 5 Desires',
-    icon: ListIcon,
+    icon: HeartIcon,
     type: 'list',
     instructions: 'If I had either faith or money I would try ... List five desires. For the next week, be alert for images of these desires. When you spot them, clip them, buy them, photograph them, draw them, collect them somehow. With these images, begin a file of dreams that speak to you. Add to it continually for the duration of the course.',
     listCount: 5,
@@ -193,7 +238,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'imaginary-lives',
     title: 'List 5 Imaginary Lives',
-    icon: ListIcon,
+    icon: SparkleIcon,
     type: 'list',
     instructions: 'One more time, list five imaginary lives. Have they changed? Are you doing more parts of them? You may want to add images of these lives to your image file.',
     listCount: 5,
@@ -202,7 +247,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'adventures',
     title: 'List 5 Adventures',
-    icon: ListIcon,
+    icon: CompassIcon,
     type: 'list',
     instructions: 'If I were twenty and had money ... List five adventures. Again, add images of these to your visual image file.',
     listCount: 5,
@@ -211,7 +256,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'postponed-pleasures',
     title: 'List 5 Postponed Pleasures',
-    icon: ListIcon,
+    icon: HourglassIcon,
     type: 'list',
     instructions: 'If I were sixty-five and had money ... List five postponed pleasures. And again, collect these images. This is a very potent tool.',
     listCount: 5,
@@ -220,7 +265,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'mean-to-yourself',
     title: 'List 10 Ways You Are Mean to Yourself',
-    icon: ListIcon,
+    icon: LightningIcon,
     type: 'numbered-list',
     instructions: 'Ten ways I am mean to myself are ... Just as making the positive explicit helps allow it into our lives, making the negative explicit helps us to exorcise it.',
     listCount: 10,
@@ -229,7 +274,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'items-to-own',
     title: 'List 10 Items You Want to Own',
-    icon: StarIcon,
+    icon: GemIcon,
     type: 'numbered-list',
     instructions: 'Ten items I would like to own that I don\'t are ... And again, you may want to collect these images. In order to boost sales, experts in sales motivation often teach rookie salesmen to post images of what they would like to own. It works.',
     listCount: 10,
@@ -238,7 +283,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'favorite-creative-block',
     title: 'Favorite Creative Block',
-    icon: TextIcon,
+    icon: PuzzleIcon,
     type: 'text',
     instructions: 'Honestly, my favorite creative block is ... TV, over-reading, friends, work, rescuing others, overexercise. You name it. Whether you can draw or not, please cartoon yourself indulging in it.',
     placeholder: 'Describe your favorite creative block...',
@@ -246,7 +291,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'blame-for-blocked',
     title: 'Who You Blame for Being Blocked',
-    icon: TextIcon,
+    icon: TargetIcon,
     type: 'text',
     instructions: 'The person I blame for being blocked is ... Again, use your pages to mull on this.',
     placeholder: 'Write about who you blame for being blocked...',
@@ -254,7 +299,7 @@ export const week5Sections: JournalSection[] = [
   {
     id: 'payoff-staying-blocked',
     title: 'Payoff for Staying Blocked',
-    icon: TextIcon,
+    icon: KeyIcon,
     type: 'text',
     instructions: 'My payoff for staying blocked is ... This you may want to explore in your morning pages.',
     placeholder: 'Explore your payoff for staying blocked...',
