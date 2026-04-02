@@ -1,14 +1,17 @@
 /* Chapters Page - Editorial Horizontal Scroll Layout */
 
 .pageLayout {
-  margin-left: var(--sidebar-width, 265px);
-  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  min-height: 100vh;
+  position: fixed;
+  top: 72px;
+  bottom: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .page {
   width: 100%;
-  height: calc(100vh - 72px);
+  height: 100%;
   color: var(--color-text-dark);
   position: relative;
   overflow: hidden;
@@ -735,7 +738,11 @@
 
 @media (max-width: 900px) {
   .pageLayout {
-    margin-left: 0;
+    position: static;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
     padding-top: 66px;
   }
 
