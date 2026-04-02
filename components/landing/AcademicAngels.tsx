@@ -165,37 +165,9 @@ export const AcademicAngels: React.FC = () => {
     return () => window.removeEventListener('openPurchaseModal', handler);
   }, []);
 
-  const benefits = [
-    {
-      number: '01',
-      title: 'Lifetime Learning',
-      description: 'Every course, cohort, and seasonal programme the Academy ever runs. No subscriptions, no renewals.',
-    },
-    {
-      number: '02',
-      title: 'Funding for Your Work',
-      description: 'Propose research, creative projects, or community initiatives and receive funding from the Academy treasury.',
-    },
-    {
-      number: '03',
-      title: 'Path to Ethereal',
-      description: 'Walk alongside others devoted to the inner work. Art, science, and spirit — explored together.',
-    },
-  ];
-
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.sectionInner}>
-        <div className={styles.benefitsGrid}>
-          {benefits.map((benefit, i) => (
-            <div key={i} className={styles.benefitCard} style={{ transitionDelay: `${0.1 + i * 0.1}s` }}>
-              <span className={styles.benefitNumber}>{benefit.number}</span>
-              <h3 className={styles.benefitTitle}>{benefit.title}</h3>
-              <p className={styles.benefitDescription}>{benefit.description}</p>
-            </div>
-          ))}
-        </div>
-
         <div className={styles.ctaRow}>
           <span className={styles.ctaPrice}>$90</span>
           <span className={styles.ctaPriceLabel}>one-time</span>
