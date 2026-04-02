@@ -39,7 +39,7 @@ interface NavSection {
 const navSections: NavSection[] = [
   {
     id: 'main',
-    label: '',
+    label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/home.svg' },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/gallery.svg' },

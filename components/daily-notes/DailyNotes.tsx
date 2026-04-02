@@ -293,18 +293,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                 +100
               </span>
             )}
-            <div className={styles.dayDots}>
-              {Array.from({ length: 7 }, (_, i) => {
-                const done = morningPages.find(e => e.day === i + 1);
-                return (
-                  <div
-                    key={i}
-                    className={`${styles.dayDot} ${done ? styles.dayDotDone : ''}`}
-                    title={done ? `Day ${i + 1} — ${done.date}` : `Day ${i + 1}`}
-                  />
-                );
-              })}
-            </div>
           </div>
         </div>
 
