@@ -327,6 +327,7 @@
   min-width: 100%;
   flex-shrink: 0;
   box-sizing: border-box;
+  padding: 0 4px;
 }
 
 .carouselCard {
@@ -334,6 +335,9 @@
   border-radius: 12px;
   padding: 12px 16px;
   box-shadow: 0 1px 10px rgba(47, 44, 166, 0.4);
+  height: 110px;
+  display: flex;
+  flex-direction: column;
 }
 
 .carouselCardLabel {
@@ -352,6 +356,7 @@
   font-family: var(--font-primary);
   color: var(--color-secondary);
   margin: 0;
+  flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -361,7 +366,8 @@
 .carouselCardBar {
   height: 6px;
   border-radius: 3px;
-  margin-top: 8px;
+  margin-top: auto;
+  flex-shrink: 0;
   background: var(--color-primary);
   border: 1px solid rgba(0, 0, 0, 0.08);
   opacity: 0.3;
