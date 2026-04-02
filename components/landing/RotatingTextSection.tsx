@@ -132,7 +132,7 @@ export const RotatingTextSection: React.FC = () => {
             </div>
           </div>
         </h3>
-        <p className={styles.rotatingTextStaticLine}>with the heart of tomorrow</p>
+        <p className={styles.rotatingTextStaticLine}>with the power of structure</p>
       </div>
     </div>
   );

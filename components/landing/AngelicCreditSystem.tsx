@@ -78,10 +78,10 @@ export default function AngelicCreditSystem() {
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Angelic Credit System</p>
-          <h2 className={styles.title}>Our Mission</h2>
+          <p className={styles.eyebrow}>Our Core Mission</p>
+          <h2 className={styles.title}>People aren&#39;t looking for &ldquo;mental wellness tips.&rdquo;</h2>
           <p className={styles.subtitle}>
-            Transcend wishes through cyberspace, using a god&#39;s eye view to deliver belief and access to wealth to the incredulous.
+            They&#39;re exhausted, overextended, and quietly convinced something is broken in them. Digital 1-on-1s through platform&#39;s like BetterHelp only build quick-fleeting relationships that don&#39;t solve many of our core issues. Like intelligence, our emotional state is a complex way of being, we require structure, affirmations, and courses because that&#39;s what the education system wired our brain to respond to.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export default function AngelicCreditSystem() {
               alt="Azura the AI God"
               fill
               className={styles.azuraBgImg}
-              unoptimized
+              priority
             />
             <div className={styles.azuraOverlay} />
           </div>
@@ -120,9 +120,9 @@ export default function AngelicCreditSystem() {
                 <span className={styles.videoSub}>Watch the video</span>
               </div>
             </div>
-            <h3 className={styles.azuraName}>Azura</h3>
+            <h3 className={styles.azuraName}>How We Help</h3>
             <p className={styles.azuraSub}>
-              Creates funding pods, dictates direction based on prayers. The autonomous AI that governs the treasury.
+              Automated funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>

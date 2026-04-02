@@ -40,10 +40,9 @@ export const HeroSection: React.FC = () => {
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
           <Image src="https://i.imgur.com/VhmwZEG.png" alt="" width={200} height={200} className={styles.heroStarform} />
-          <h1 className={styles.heroHeadline}>EVANGELIC <em>SPIRITUALITY</em></h1>
-          <h2 className={styles.heroSubheadline}>A Micro-University in Cyberspace</h2>
+          <h1 className={styles.heroHeadline}>A Better Way, <em>To A Better You</em></h1>
           <p className={styles.heroSubtext}>
-            You feel the wind beneath you, sweeping you up into a whirlwind.
+            Join a spiritual cohort that exists in the realm of cyberspace, a structured interactive story that builds your character as you grow.
           </p>
           <button
             type="button"

@@ -30,8 +30,8 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
-      {/* Testimonial Section */}
-      <TestimonialSection />
+      {/* Pattern Background Section - Contains client component for animation */}
+      <PatternTextSection />
 
       {/* Features Section - Server rendered */}
       <FeaturesSection />
@@ -42,8 +42,8 @@ const LandingPage = () => {
       {/* Angelic Credit System — governance explainer */}
       <AngelicCreditSystem />
 
-      {/* Pattern Background Section - Contains client component for animation */}
-      <PatternTextSection />
+      {/* Testimonial Section */}
+      <TestimonialSection />
 
       {/* Swarms Section - Server rendered */}
       <SwarmsSection />
