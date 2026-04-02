@@ -1,8 +1,8 @@
 .container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 0;
   padding: 20px 16px;
 }
 
@@ -99,22 +99,59 @@
   color: #6B7280;
 }
 
-.arrow {
+.connector {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(81, 104, 255, 0.25);
-  flex-shrink: 0;
   margin-bottom: 28px; /* align with images, not labels */
+  padding: 0 8px;
 }
 
-.arrow svg {
-  width: 28px;
-  height: 28px;
+.connectorLine {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(81, 104, 255, 0.2) 0px,
+    rgba(81, 104, 255, 0.2) 8px,
+    transparent 8px,
+    transparent 14px
+  );
+  position: relative;
+  overflow: hidden;
 }
 
-.arrowActive {
-  color: rgba(81, 104, 255, 0.6);
+.connectorActive .connectorLine {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(81, 104, 255, 0.3) 0px,
+    rgba(81, 104, 255, 0.3) 8px,
+    transparent 8px,
+    transparent 14px
+  );
+}
+
+.connectorActive .connectorLine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(81, 104, 255, 0.6) 50%,
+    transparent 100%
+  );
+  animation: loaderSlide 2s ease-in-out infinite;
+}
+
+@keyframes loaderSlide {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 @keyframes borderPulse {
@@ -124,7 +161,6 @@
 
 @media (max-width: 768px) {
   .container {
-    gap: 8px;
     padding: 16px 8px;
   }
 
@@ -138,12 +174,8 @@
     max-width: 80px;
   }
 
-  .arrow svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .arrow {
+  .connector {
     margin-bottom: 22px;
+    padding: 0 4px;
   }
 }

@@ -309,8 +309,8 @@ export default function VotingPage() {
                 onMouseEnter={() => play('hover')}
                 type="button"
               >
-                <span className={styles.proposalLabel}>Proposal</span>
-                <span className={styles.proposalPrice}>Price: 100 SHARDS</span>
+                <span className={styles.proposalLabel}>Submit a Proposal</span>
+                <span className={styles.proposalPrice}>100 shards to submit</span>
               </button>
               {loading ? (
                   <div className={styles.proposalsGrid}>

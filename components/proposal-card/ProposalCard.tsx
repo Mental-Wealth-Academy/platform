@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
 import { useSound } from '@/hooks/useSound';
@@ -62,6 +62,17 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onChainData,
 }) => {
   const { play } = useSound();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const carouselSlideCount = 3;
+
+  const nextSlide = useCallback(() => {
+    setCarouselIndex(prev => (prev + 1) % carouselSlideCount);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
 
   const getStage1Variant = () => {
     if (status === 'pending_review') {
@@ -152,26 +163,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     }
   };
 
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) {
-      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-    } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-  };
-
-
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -222,13 +213,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      {review && review.reasoning && (
-        <div className={styles.preview}>
-          <p className={styles.previewLabel}>Azura&apos;s Remarks</p>
-          <p className={styles.previewText}>{review.reasoning}</p>
-        </div>
-      )}
-
       {/* Voting bar for proposals with on-chain vote data */}
       {onChainData && (() => {
         const forVotes = parseFloat(onChainData.forVotes);
@@ -250,8 +234,60 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         );
       })()}
 
+      {/* Auto-carousel: Blue's Review, Shards tooltip, Social tooltip */}
+      <div className={styles.carousel}>
+        <div
+          className={styles.carouselTrack}
+          style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
+        >
+          {/* Slide 1: Blue's Review */}
+          <div className={styles.carouselSlide}>
+            <div className={styles.carouselCard}>
+              <p className={styles.carouselCardLabel}>Blue&apos;s Review</p>
+              <p className={styles.carouselCardText}>
+                {review?.reasoning || 'Blue has not yet reviewed this proposal. Once submitted, the AI will score it across six dimensions.'}
+              </p>
+              <div className={styles.carouselCardBar} />
+            </div>
+          </div>
+
+          {/* Slide 2: Shards tooltip */}
+          <div className={styles.carouselSlide}>
+            <div className={styles.carouselCard}>
+              <p className={styles.carouselCardLabel}>Academy Shards</p>
+              <p className={styles.carouselCardText}>
+                Academy Shards are the tipping system for authorship. Each week you start with a free supply of 100 $ACADEMY. Use them to show love to authors and artists you love.
+              </p>
+              <div className={styles.carouselCardBar} />
+            </div>
+          </div>
+
+          {/* Slide 3: Social Network tooltip */}
+          <div className={styles.carouselSlide}>
+            <div className={styles.carouselCard}>
+              <p className={styles.carouselCardLabel}>Social Network</p>
+              <p className={styles.carouselCardText}>
+                Mental Wealth Academy is a decentralized social network where governance, education, and creative expression converge on-chain.
+              </p>
+              <div className={styles.carouselCardBar} />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.carouselDots}>
+          {Array.from({ length: carouselSlideCount }).map((_, i) => (
+            <button
+              key={i}
+              className={`${styles.carouselDot} ${i === carouselIndex ? styles.carouselDotActive : ''}`}
+              onClick={() => setCarouselIndex(i)}
+              type="button"
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className={styles.footer}>
-        <span className={styles.timestamp}>{formatTimestamp(createdAt)}</span>
         <button
           className={styles.viewButton}
           onClick={() => { play('click'); onViewDetails?.(id); }}

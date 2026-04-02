@@ -48,7 +48,7 @@
 
 .title {
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #1A1D33;
   margin: 0;
@@ -265,14 +265,12 @@
   border-top: 2px solid rgba(81, 104, 255, 0.12);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
 }
 
 .timestamp {
-  font-size: 12px;
-  font-family: var(--font-primary);
-  color: var(--color-secondary);
+  display: none;
 }
 
 .viewButton {
@@ -310,6 +308,81 @@
   height: 14px;
 }
 
+/* Carousel */
+
+.carousel {
+  padding: 0 24px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.carouselTrack {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.carouselSlide {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.carouselCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 10px rgba(47, 44, 166, 0.4);
+}
+
+.carouselCardLabel {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-primary);
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.carouselCardText {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: var(--font-primary);
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.carouselCardBar {
+  height: 6px;
+  border-radius: 3px;
+  margin-top: 8px;
+  background: linear-gradient(90deg, #00FF9D, #856BFF 64%, #FFD3FB);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.carouselDots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 12px;
+}
+
+.carouselDot {
+  width: 14px;
+  height: 12px;
+  border-radius: 0;
+  background: #52506C;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carouselDotActive {
+  width: 37px;
+  background: var(--color-primary);
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
@@ -336,7 +409,7 @@
   }
 
   .title {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .headerGem {
@@ -433,4 +506,17 @@
 
 :global([data-theme="dark"]) .viewButton:hover {
   box-shadow: 0 2px 8px rgba(107, 128, 255, 0.3);
+}
+
+:global([data-theme="dark"]) .carouselCard {
+  background: rgba(30, 31, 42, 0.95);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="dark"]) .carouselDot {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .carouselDotActive {
+  background: var(--color-primary);
 }
