@@ -245,7 +245,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <div className={styles.carouselCard}>
               <p className={styles.carouselCardLabel}>Blue&apos;s Review</p>
               <p className={styles.carouselCardText}>
-                {review?.reasoning || 'Blue has not yet reviewed this proposal. Once submitted, the AI will score it across six dimensions.'}
+                {review?.reasoning || 'Blue scores every proposal across six dimensions before it goes to vote.'}
               </p>
               <div className={styles.carouselCardBar} />
             </div>
@@ -256,7 +256,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <div className={styles.carouselCard}>
               <p className={styles.carouselCardLabel}>Academy Shards</p>
               <p className={styles.carouselCardText}>
-                Academy Shards are the tipping system for authorship. Each week you start with a free supply of 100 $ACADEMY. Use them to show love to authors and artists you love.
+                Tip authors with shards. You get 100 free $ACADEMY each week to support work you love.
               </p>
               <div className={styles.carouselCardBar} />
             </div>
@@ -267,7 +267,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <div className={styles.carouselCard}>
               <p className={styles.carouselCardLabel}>Social Network</p>
               <p className={styles.carouselCardText}>
-                Mental Wealth Academy is a decentralized social network where governance, education, and creative expression converge on-chain.
+                Governance, education, and creative expression -- all on-chain, all community-owned.
               </p>
               <div className={styles.carouselCardBar} />
             </div>
