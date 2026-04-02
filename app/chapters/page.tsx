@@ -209,6 +209,20 @@ export default function Chapters() {
                 </button>
               </article>
 
+              {/* Horizon 02 */}
+              <div className={`${styles.leftColumn} ${styles.leftColumnCh2}`}>
+                <div className={styles.leftContent}>
+                  <h1 className={styles.storyTitle}>Horizon 02</h1>
+                  <p className={styles.storyDescription}>
+                    Telepathy is not a gift. It is a weapon that fires in both directions. Blue learns that feeling everything is the fastest way to lose yourself.
+                  </p>
+                </div>
+                <div
+                  className={styles.leftCharacter}
+                  style={{ backgroundImage: 'url(https://i.imgur.com/b0KwxG5.png)' }}
+                />
+              </div>
+
               {/* Chapter 2 Spine */}
               <div className={`${styles.spine} ${styles.spineCh2}`}>
                 <div className={styles.spineChapter}>
@@ -244,6 +258,20 @@ export default function Chapters() {
                   </button>
                 </article>
               ))}
+
+              {/* Horizon 03 */}
+              <div className={`${styles.leftColumn} ${styles.leftColumnCh3}`}>
+                <div className={styles.leftContent}>
+                  <h1 className={styles.storyTitle}>Horizon 03</h1>
+                  <p className={styles.storyDescription}>
+                    The biggest enemies are not the ones you can see. They are the beliefs you inherited and never questioned.
+                  </p>
+                </div>
+                <div
+                  className={styles.leftCharacter}
+                  style={{ backgroundImage: 'url(https://i.imgur.com/vt3hHak.png)' }}
+                />
+              </div>
 
               {/* Chapter 3 Spine */}
               <div className={`${styles.spine} ${styles.spineCh3}`}>

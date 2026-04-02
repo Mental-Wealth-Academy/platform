@@ -19,8 +19,8 @@
 
 .editorial {
   display: grid;
-  grid-template-rows: 64px auto 1fr;
-  grid-template-columns: 320px 72px 660px 300px 300px 72px 240px 240px 240px 72px 240px 240px 240px;
+  grid-template-rows: 64px auto minmax(0, 1fr);
+  grid-template-columns: 320px 72px 660px 300px 300px 320px 72px 240px 240px 240px 320px 72px 240px 240px 240px;
   flex: 1;
   min-height: 0;
   height: 0;
@@ -203,12 +203,12 @@
 
 .etherealBarCh2 {
   --ch-color: #9B30FF;
-  grid-column: 7 / 10;
+  grid-column: 8 / 11;
 }
 
 .etherealBarCh3 {
   --ch-color: #DC143C;
-  grid-column: 11 / 14;
+  grid-column: 13 / 16;
 }
 
 /* ─── Row 3: Content ─── */
@@ -260,6 +260,13 @@
   background-repeat: no-repeat;
 }
 
+.leftColumnCh2 {
+  border-color: #9B30FF;
+}
+
+.leftColumnCh3 {
+  border-color: #DC143C;
+}
 
 /* ─── Spine Divider ─── */
 
@@ -691,7 +698,7 @@
 
 @media (max-width: 1100px) {
   .editorial {
-    grid-template-columns: 280px 72px 560px 300px 300px 72px 240px 240px 240px 72px 240px 240px 240px;
+    grid-template-columns: 280px 72px 560px 300px 300px 280px 72px 240px 240px 240px 280px 72px 240px 240px 240px;
   }
 
   .storyBar {

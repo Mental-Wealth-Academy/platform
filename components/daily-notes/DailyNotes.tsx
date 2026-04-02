@@ -259,10 +259,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
         className={`${styles.card} ${compact ? styles.cardCompact : ''} ${compact && todayDone ? styles.cardDone : ''}`}
         style={{ '--week-color': weekColor } as React.CSSProperties}
         onMouseEnter={() => play('hum')}
-        onClick={handleCompactClick}
       >
         <div className={styles.vizBg}><CyberpunkDataViz /></div>
-        <div className={styles.cardButton}>
+        <div className={styles.cardButton} onClick={handleCompactClick}>
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
               <Image
