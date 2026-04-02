@@ -109,7 +109,8 @@ export default function GalleryPage() {
   const { play } = useSound();
   const [selectedPainting, setSelectedPainting] = useState<Painting | null>(null);
   const [activeEra, setActiveEra] = useState('All');
-  const [loaded, setLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isContentLoading, setIsContentLoading] = useState(true);
 
   const filtered = activeEra === 'All' ? paintings : paintings.filter((p) => p.era === activeEra);
 
@@ -123,10 +124,15 @@ export default function GalleryPage() {
   }, []);
 
   useEffect(() => {
-    setLoaded(true);
+    setIsLoaded(true);
+    // Show skeleton briefly, then reveal content
+    const timer = setTimeout(() => {
+      setIsContentLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (!loaded) return <GallerySkeleton />;
+  if (isContentLoading) return <GallerySkeleton />;
 
   return (
     <div className={styles.pageLayout}>

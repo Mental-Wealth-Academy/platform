@@ -46,6 +46,7 @@ const shopItems: ShopItem[] = [
     category: 'Accessories',
     badge: 'new',
     size: 'large',
+    transparent: true,
   },
   // ── MEDIUM ──
   {
@@ -230,20 +231,28 @@ export default function ShopPage() {
   const { play } = useSound();
   const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [mounted, setMounted] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isContentLoading, setIsContentLoading] = useState(true);
 
   const filtered = activeCategory === 'All' ? shopItems : shopItems.filter((i) => i.category === activeCategory);
 
   useEffect(() => {
-    setMounted(true);
+    setIsLoaded(true);
+    // Show skeleton briefly, then reveal content
+    const timer = setTimeout(() => {
+      setIsContentLoading(false);
+    }, 600);
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelectedItem(null);
     };
     window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKey);
+    };
   }, []);
 
-  if (!mounted) {
+  if (isContentLoading) {
     return (
       <div className={styles.pageLayout}>
         <SideNavigation />

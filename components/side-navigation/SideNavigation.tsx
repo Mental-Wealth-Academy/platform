@@ -574,7 +574,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   }}
                   onMouseEnter={() => play('hover')}
                   type="button"
-                  title="Azura Agent"
+                  title="Blue Agent"
                 >
                   <div className={styles.shinyCardShine} />
                   <div className={styles.shinyCardContent}>
@@ -583,7 +583,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                     </div>
                     {!isCollapsed && (
                       <div className={styles.shinyCardText}>
-                        <span className={styles.shinyCardTitle}>Azura Agent</span>
+                        <span className={styles.shinyCardTitle}>Blue Agent</span>
                         <span className={styles.shinyCardSub}>Funds, Votes, Chat</span>
                       </div>
                     )}

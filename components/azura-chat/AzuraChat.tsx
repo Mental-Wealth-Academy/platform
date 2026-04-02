@@ -537,7 +537,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           <div className={styles.characterFade} />
           <div className={styles.characterNameplate}>
             <span className={styles.nameplateStatus} />
-            <span className={styles.nameplateName}>Azura</span>
+            <span className={styles.nameplateName}>Blue</span>
             <span className={styles.nameplateLabel}>v1.3</span>
           </div>
         </div>

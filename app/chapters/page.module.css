@@ -444,7 +444,7 @@
 }
 
 .ctaButtonBordered {
-  margin-top: 16px;
+  margin-top: auto;
   padding: 14px 20px;
   background: #ffffff;
   border: 1.5px solid rgba(26, 29, 51, 0.25);
@@ -504,7 +504,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 20px;
+  margin-top: auto;
   padding: 10px 16px;
   background: transparent;
   border: 1.5px solid rgba(26, 29, 51, 0.12);
