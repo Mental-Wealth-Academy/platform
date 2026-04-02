@@ -69,7 +69,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   };
 
   const getStage3Image = () => {
-    if (stage3 === 'completed') return 'https://i.imgur.com/3Y3KrnJ.png';
+    if (stage3 === 'completed') return 'https://i.imgur.com/4FsFcDO.png';
     if (stage3 === 'defeated' || stage3 === 'expired') return 'https://i.imgur.com/XIe1jZy.png';
     return 'https://i.imgur.com/ePrWP7A.png';
   };
