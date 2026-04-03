@@ -81,7 +81,7 @@ export default function AngelicCreditSystem() {
           <p className={styles.eyebrow}>Our Core Mission</p>
           <h2 className={styles.title}>People aren&#39;t looking for &ldquo;mental wellness tips.&rdquo;</h2>
           <p className={styles.subtitle}>
-            Digital 1-on-1s through platform&#39;s like BetterHelp extract users for quick-fleeting relationships that don&#39;t solve core issues. Our emotional state is complex, we require structure, affirmations, and innovation because the education system carved it into our brain.
+            Digital 1-on-1s on platform&#39;s like BetterHelp extract users for quick-fleeting relationships that don&#39;t solve our core issues. Our emotional state is complex, the education system carved structure into our brain, but we&#39;ve misplaced it from real forms of help. We crave innovation in how we connect.
           </p>
         </div>
 
