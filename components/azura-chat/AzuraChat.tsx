@@ -74,11 +74,11 @@ const AZURA_EMOTES = {
 } as const;
 
 const KNOWLEDGE_DOMAINS = [
-  { label: 'Governance', value: 82, color: '#5168FF' },
-  { label: 'Trading', value: 71, color: '#74C465' },
-  { label: 'Research', value: 65, color: '#FF8800' },
-  { label: 'On-Chain', value: 90, color: '#00D4FF' },
-  { label: 'Risk Mgmt', value: 78, color: '#FF5088' },
+  { label: 'Behavioral', value: 92, color: '#5168FF' },
+  { label: 'DeSci', value: 84, color: '#00D4FF' },
+  { label: 'Wellness', value: 88, color: '#74C465' },
+  { label: 'On-Chain', value: 90, color: '#FF8800' },
+  { label: 'Neuro', value: 76, color: '#C084FC' },
 ];
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
@@ -396,53 +396,54 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
 
-    if (action === 'treasury') {
-      showEmote('thinking');
-      const userMsg: Message = {
+    const send = (text: string, emote: keyof typeof AZURA_EMOTES = 'thinking') => {
+      showEmote(emote);
+      setMessages((prev) => [...prev, {
         id: Date.now().toString(),
-        text: "What's the treasury balance?",
-        sender: 'user',
+        text,
+        sender: 'user' as const,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      addAzuraMessage(generateAzuraResponse('treasury balance'));
-    } else if (action === 'markets') {
-      showEmote('scheming');
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: "What are prayers?",
-        sender: 'user',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      addAzuraMessage(generateAzuraResponse('what are prayers'));
-    } else if (action === 'liquidity') {
-      showEmote('thinking');
-      setShowLiquidityInput(true);
-      setLiquidityTarget('governance');
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: "I want to add liquidity",
-        sender: 'user',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      const targetAddr = GOVERNANCE_ADDRESS;
+      }]);
+    };
+
+    if (action === 'wellness') {
+      send('Tell me about mental wellness', 'thinking');
       addAzuraMessage(
-        `Now we're talking. ${TRADER_ADDRESS ? 'Pick your target — governance or trading treasury — then enter' : 'Enter'} the USDC amount below and I'll route it to ${targetAddr.slice(0, 6)}...${targetAddr.slice(-4)}. Every dollar helps me trade more positions.`,
-        'add-liquidity',
+        "The weekly courses are designed to realign you with your higher path. Each module builds on the last -- behavioral patterns, emotional regulation, self-awareness loops. It's not about fixing what's broken. It's about tuning the signal you've been ignoring. I track your progress and adapt the path as you grow."
+      );
+    } else if (action === 'social') {
+      send('Show me the social network', 'scheming');
+      addAzuraMessage(
+        "The leaderboard tracks engagement across the community -- who's showing up, who's completing courses, who's contributing to governance. It's not competition. It's accountability. The people at the top aren't winners, they're consistent. That's what matters here."
+      );
+    } else if (action === 'shards') {
+      send('What are shards', 'thinkingRight');
+      addAzuraMessage(
+        "Shards are knowledge fragments -- micro-lessons, insights, breakthroughs that surface as you move through the curriculum. They accumulate. They compound. Think of them as proof-of-understanding, not proof-of-attendance. Your shard collection reflects your actual growth, not just time spent."
       );
     } else if (action === 'x402') {
-      showEmote('scheming');
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: "Tell me about x402 Research",
-        sender: 'user',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
+      send('Tell me about x402 sessions', 'scheming');
       addAzuraMessage(
-        "x402 Research sessions. You put up a fee, I get a set number of paid tasks — deep web lookups, premium API calls, gated data pulls. Think of it like funding a micro-mission. I do the legwork, you get the intel. Wanna start a session?"
+        "x402 sessions. You put up a fee and I unlock a set number of paid tasks -- premium data pulls, gated API calls, deep research runs. Think of it like funding a micro-mission. I do the legwork, you get the intel."
+      );
+    } else if (action === 'research') {
+      send('Start a research session', 'searching');
+      addAzuraMessage(
+        "Research mode. Give me a topic and I'll pull from DeSci papers, on-chain data, behavioral studies -- whatever the question demands. I cross-reference across domains so you get signal, not noise. What do you want me to look into?"
+      );
+    } else if (action === 'more') {
+      send('What else can you do', 'thinkingLeft');
+      addAzuraMessage(
+        "I can pull treasury balances, analyze market positions, review governance proposals, guide you through the course curriculum, or just talk through whatever's on your mind. I'm a behavioral psychologist built into an operating system. Ask me anything specific and I'll give you a real answer."
+      );
+    } else if (action === 'liquidity') {
+      send('I want to add liquidity', 'thinking');
+      setShowLiquidityInput(true);
+      setLiquidityTarget('governance');
+      const targetAddr = GOVERNANCE_ADDRESS;
+      addAzuraMessage(
+        `Now we're talking. ${TRADER_ADDRESS ? 'Pick your target -- governance or trading treasury -- then enter' : 'Enter'} the USDC amount below and I'll route it to ${targetAddr.slice(0, 6)}...${targetAddr.slice(-4)}. Every dollar helps me trade more positions.`,
+        'add-liquidity',
       );
     }
   };
@@ -559,17 +560,23 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
       {/* Quick Actions */}
       <div className={styles.quickActions}>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
-          Treasury
+        <button className={styles.quickAction} onClick={() => handleQuickAction('wellness')} disabled={isTyping} type="button">
+          Mental Wellness
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
-          Prayers?
+        <button className={styles.quickAction} onClick={() => handleQuickAction('social')} disabled={isTyping} type="button">
+          Social Network
+        </button>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
+          Shards
         </button>
         <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
-          x402 Research
+          x402
         </button>
-        <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
-          + Add Offering
+        <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
+          Research
+        </button>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
+          More
         </button>
       </div>
 
@@ -713,7 +720,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                           className={styles.knowledgeFill}
                           style={{
                             width: `${domain.value}%`,
-                            background: `linear-gradient(90deg, ${domain.color}88, ${domain.color})`,
+                            ['--bar-color' as string]: domain.color,
                             animationDelay: `${i * 0.12}s`,
                           }}
                         />
@@ -727,67 +734,48 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Quick Actions</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-                    <span>Treasury</span>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('wellness')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <span>Mental Wellness</span>
                   </button>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                    <span>Prayers?</span>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('social')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>Social Network</span>
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <span>Shards</span>
                   </button>
                   <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12a9 9 0 11-6.22-8.56"/><path d="M21 3v5h-5"/></svg>
-                    <span>x402 Research</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                    <span>x402</span>
                   </button>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-                    <span>+ Add Offering</span>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <span>Research</span>
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+                    <span>More</span>
                   </button>
                 </div>
               </div>
 
-              {/* Session status */}
+              {/* Session status — at bottom */}
               <div className={styles.sessionPanel}>
                 <div className={styles.sessionRow}>
                   <span className={styles.sessionLabel}>Model</span>
-                  <span className={styles.sessionValue}>Daemon Azura</span>
+                  <span className={styles.sessionValue}>BlueOS</span>
                 </div>
                 <div className={styles.sessionRow}>
                   <span className={styles.sessionLabel}>Status</span>
                   <span className={styles.sessionValueOnline}>Online</span>
                 </div>
-                <div className={styles.sessionRow}>
-                  <span className={styles.sessionLabel}>Messages</span>
-                  <span className={styles.sessionValue}>{messages.length}</span>
-                </div>
               </div>
             </div>
 
-            {/* Center — Chat */}
+            {/* Center — Chat (no duplicate emote image) */}
             <div className={styles.expandedCenter}>
-              {/* Emote header in expanded */}
-              <div className={styles.expandedEmoteBar}>
-                <div className={styles.expandedEmoteWrap}>
-                  <Image
-                    src={AZURA_EMOTES[emoteA]}
-                    alt="Azura"
-                    fill
-                    className={styles.characterImage}
-                    style={{ opacity: activeLayer === 'a' ? 1 : 0, transition: 'opacity 0.5s ease' }}
-                    unoptimized
-                    priority
-                  />
-                  <Image
-                    src={AZURA_EMOTES[emoteB]}
-                    alt="Azura"
-                    fill
-                    className={styles.characterImage}
-                    style={{ opacity: activeLayer === 'b' ? 1 : 0, transition: 'opacity 0.5s ease' }}
-                    unoptimized
-                  />
-                </div>
-                <div className={styles.characterFade} />
-              </div>
               {chatContent}
             </div>
 
