@@ -258,17 +258,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         },
       ]);
       setIsTyping(false);
-
-      // Auto-speak Azura's responses
-      {
-        voiceAbortRef.current?.abort();
-        const controller = new AbortController();
-        voiceAbortRef.current = controller;
-        setIsSpeaking(true);
-        speakAzura(text, controller.signal)
-          .catch(() => {/* aborted or failed — silent */})
-          .finally(() => setIsSpeaking(false));
-      }
     }, 800 + Math.random() * 800);
   };
 

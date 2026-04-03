@@ -20,6 +20,58 @@ Your role:
 
 Keep responses concise (2-4 sentences unless the topic demands depth). No emojis. No filler.`;
 
+async function callAnthropicAPI(userMessage: string): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 512,
+      system: BLUE_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userMessage }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Anthropic API error: ${response.status} ${errorText}`);
+  }
+
+  const data = await response.json();
+  const content = data.content?.[0]?.text;
+  if (!content) throw new Error('Anthropic API returned empty content');
+  return content;
+}
+
+async function getAIResponse(userMessage: string): Promise<string> {
+  // Try Eliza first
+  try {
+    const response = await elizaAPI.chat({
+      messages: [
+        { role: 'system', parts: [{ type: 'text', text: BLUE_SYSTEM_PROMPT }] },
+        { role: 'user', parts: [{ type: 'text', text: userMessage }] },
+      ],
+    });
+    console.log('Blue chat completed via Eliza API');
+    return response;
+  } catch (elizaError: unknown) {
+    const msg = elizaError instanceof Error ? elizaError.message : 'Unknown';
+    console.warn('Eliza API failed, falling back to Anthropic:', msg);
+  }
+
+  // Fallback to Anthropic
+  const response = await callAnthropicAPI(userMessage);
+  console.log('Blue chat completed via Anthropic API (fallback)');
+  return response;
+}
+
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
@@ -82,20 +134,9 @@ export async function POST(request: Request) {
     }, { status: 402 });
   }
 
-  // Call Eliza API
+  // Call AI with Eliza -> Anthropic fallback
   try {
-    const response = await elizaAPI.chat({
-      messages: [
-        {
-          role: 'system',
-          parts: [{ type: 'text', text: BLUE_SYSTEM_PROMPT }],
-        },
-        {
-          role: 'user',
-          parts: [{ type: 'text', text: body.message }],
-        },
-      ],
-    });
+    const response = await getAIResponse(body.message);
 
     return NextResponse.json({
       response,
@@ -103,14 +144,14 @@ export async function POST(request: Request) {
       shardsDeducted: SHARD_COST,
     });
   } catch (err: unknown) {
-    // Refund shards on API failure
+    // Refund shards on total AI failure
     await sqlQuery(
       'UPDATE users SET shard_count = shard_count + :cost WHERE id = :id',
       { id: user.id, cost: SHARD_COST }
     );
 
-    const msg = err instanceof Error ? err.message : 'Eliza API error';
-    console.error('Blue chat Eliza error:', msg);
+    const msg = err instanceof Error ? err.message : 'AI error';
+    console.error('Blue chat AI error (both providers failed):', msg);
     return NextResponse.json({ error: 'ai_unavailable', message: msg }, { status: 502 });
   }
 }
