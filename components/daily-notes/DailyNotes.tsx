@@ -55,6 +55,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [dataReady, setDataReady] = useState(!enablePersistence);
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
@@ -185,15 +186,19 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
     (async () => {
       try {
-        const res = await fetch('/api/daily-notes', { credentials: 'include' });
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/daily-notes', { credentials: 'include', headers: authHeaders });
         if (!res.ok) return;
         const data = await res.json();
         if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
       } catch {
         // silent
+      } finally {
+        setDataReady(true);
       }
     })();
-  }, [enablePersistence]);
+  }, [enablePersistence, getAccessToken]);
 
   // Debounced auto-save
   const save = useCallback(() => {
@@ -201,14 +206,16 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [allWeekPages]);
 
   useEffect(() => {
-    if (!hasLoadedRef.current || !enablePersistence) return;
+    if (!dataReady || !enablePersistence) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
       try {
+        const token = await getAccessToken();
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
         await fetch('/api/daily-notes', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders },
           credentials: 'include',
           body: JSON.stringify(save()),
         });
@@ -218,7 +225,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }, 1500);
 
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [allWeekPages, enablePersistence, save]);
+  }, [allWeekPages, enablePersistence, dataReady, save, getAccessToken]);
 
   // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
@@ -244,7 +251,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
-  const canStart = isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
+  const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
   const handleCompactClick = () => {
     if (compact && canStart) {
@@ -275,7 +282,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div>
               <span className={styles.label}>Morning Prayers</span>
               <span className={styles.sublabel}>
-                {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
+                {compact && !dataReady ? 'Loading...' : compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
               </span>
             </div>
           </div>
