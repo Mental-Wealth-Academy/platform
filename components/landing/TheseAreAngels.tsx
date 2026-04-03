@@ -81,7 +81,7 @@ export default function TheseAreAngels() {
             />
           </div>
           <div className={styles.videoText}>
-            <span className={styles.videoTitle}><strong>This is Azura AI</strong></span>
+            <span className={styles.videoTitle}><strong>Blue AI</strong></span>
             <span className={styles.videoSub}>Watch the video</span>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function TheseAreAngels() {
             <div className={styles.modalHeader}>
               <div className={styles.modalHeaderLeft}>
                 <span className={styles.statusDot} />
-                <span className={styles.modalLabel}>AZURA AI</span>
+                <span className={styles.modalLabel}>BLUE AI</span>
               </div>
               <button className={styles.closeButton} onClick={closeVideo} aria-label="Close video">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

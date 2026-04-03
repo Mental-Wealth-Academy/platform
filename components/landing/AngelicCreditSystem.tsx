@@ -122,7 +122,7 @@ export default function AngelicCreditSystem() {
             </div>
             <h3 className={styles.azuraName}>How We Help</h3>
             <p className={styles.azuraSub}>
-              Automated funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
+              Introducing Blue AI. Funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>
