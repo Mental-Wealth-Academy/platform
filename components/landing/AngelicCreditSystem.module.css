@@ -180,6 +180,16 @@
   letter-spacing: 0.08em;
 }
 
+.azuraEyebrow {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  margin: 0 0 6px;
+}
+
 .azuraName {
   font-family: var(--font-secondary);
   font-size: 2rem;

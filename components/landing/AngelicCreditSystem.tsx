@@ -116,13 +116,14 @@ export default function AngelicCreditSystem() {
                 />
               </div>
               <div className={styles.videoText}>
-                <span className={styles.videoTitle}><strong>This is Azura</strong></span>
+                <span className={styles.videoTitle}><strong>This is BLUE</strong></span>
                 <span className={styles.videoSub}>Watch the video</span>
               </div>
             </div>
-            <h3 className={styles.azuraName}>How We Help</h3>
+            <p className={styles.azuraEyebrow}>How We Help</p>
+            <h3 className={styles.azuraName}>Introducing BlueOS</h3>
             <p className={styles.azuraSub}>
-              Introducing Blue AI. Funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
+              Funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>
@@ -156,7 +157,7 @@ export default function AngelicCreditSystem() {
             <div className={styles.modalHeader}>
               <div className={styles.modalHeaderLeft}>
                 <span className={styles.statusDot} />
-                <span className={styles.modalLabel}>AZURA AI</span>
+                <span className={styles.modalLabel}>BLUE AI</span>
               </div>
               <button className={styles.closeButton} onClick={closeVideo} aria-label="Close video">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -167,7 +168,7 @@ export default function AngelicCreditSystem() {
             <div className={styles.videoEmbed}>
               <iframe
                 src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
-                title="This is Azura AI"
+                title="This is BLUE AI"
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
               />
