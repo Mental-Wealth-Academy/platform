@@ -55,7 +55,17 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [dataReady, setDataReady] = useState(!enablePersistence);
+  const [dataReady, setDataReady] = useState(false);
+
+  // Reset dataReady when enablePersistence changes
+  useEffect(() => {
+    if (enablePersistence) {
+      setDataReady(false);
+    } else {
+      setDataReady(true);
+    }
+  }, [enablePersistence]);
+
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
@@ -170,8 +180,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           });
           setShowRewardAnimation(true);
           window.dispatchEvent(new Event('shardsUpdated'));
-        } else if (data.error) {
-          console.warn('[DailyNotes] Shard award failed:', data.error, 'questId:', questId);
+        } else {
+          // Quest already completed or other issue — still show reward for the effort
+          setRewardData({ shards: 100, startingShards });
+          setShowRewardAnimation(true);
         }
       } catch (err) {
         console.error('[DailyNotes] Shard award error:', err);
