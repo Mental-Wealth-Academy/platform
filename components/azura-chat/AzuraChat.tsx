@@ -73,6 +73,14 @@ const AZURA_EMOTES = {
   blankStare: 'https://i.imgur.com/igYuj37.png',
 } as const;
 
+const KNOWLEDGE_DOMAINS = [
+  { label: 'Governance', value: 82, color: '#5168FF' },
+  { label: 'Trading', value: 71, color: '#74C465' },
+  { label: 'Research', value: 65, color: '#FF8800' },
+  { label: 'On-Chain', value: 90, color: '#00D4FF' },
+  { label: 'Risk Mgmt', value: 78, color: '#FF5088' },
+];
+
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -84,6 +92,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -423,6 +432,18 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         `Now we're talking. ${TRADER_ADDRESS ? 'Pick your target — governance or trading treasury — then enter' : 'Enter'} the USDC amount below and I'll route it to ${targetAddr.slice(0, 6)}...${targetAddr.slice(-4)}. Every dollar helps me trade more positions.`,
         'add-liquidity',
       );
+    } else if (action === 'x402') {
+      showEmote('scheming');
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: "Tell me about x402 Research",
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      addAzuraMessage(
+        "x402 Research sessions. You put up a fee, I get a set number of paid tasks — deep web lookups, premium API calls, gated data pulls. Think of it like funding a micro-mission. I do the legwork, you get the intel. Wanna start a session?"
+      );
     }
   };
 
@@ -505,16 +526,312 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const chatContent = (
+    <>
+      {/* Messages */}
+      <div className={styles.messagesArea}>
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`${styles.messageBubble} ${
+              message.sender === 'user' ? styles.userMessage : styles.azuraMessage
+            }`}
+          >
+            <div className={styles.messageContent}>{message.text}</div>
+            <div className={styles.messageTime}>
+              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        ))}
+
+        {isTyping && (
+          <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
+            <div className={styles.typingDots}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
+          Treasury
+        </button>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
+          Prayers?
+        </button>
+        <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
+          x402 Research
+        </button>
+        <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
+          + Add Offering
+        </button>
+      </div>
+
+      {/* Liquidity Input */}
+      {showLiquidityInput && (
+        <div className={styles.liquidityBar}>
+          {TRADER_ADDRESS && (
+            <div className={styles.targetSelector}>
+              <button
+                type="button"
+                className={`${styles.targetButton} ${liquidityTarget === 'governance' ? styles.targetActive : ''}`}
+                onClick={() => setLiquidityTarget('governance')}
+                disabled={txPending}
+              >
+                Governance
+              </button>
+              <button
+                type="button"
+                className={`${styles.targetButton} ${liquidityTarget === 'trader' ? styles.targetActive : ''}`}
+                onClick={() => setLiquidityTarget('trader')}
+                disabled={txPending}
+              >
+                Trading
+              </button>
+            </div>
+          )}
+          <div className={styles.liquidityInputRow}>
+            <input
+              ref={liquidityInputRef}
+              type="number"
+              className={styles.liquidityInput}
+              placeholder="USDC amount"
+              value={liquidityAmount}
+              onChange={(e) => setLiquidityAmount(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddLiquidity(); }}
+              disabled={txPending}
+              min="0"
+              step="any"
+            />
+            <button
+              className={styles.liquidityConfirm}
+              onClick={handleAddLiquidity}
+              disabled={!liquidityAmount || parseFloat(liquidityAmount) <= 0 || txPending}
+              type="button"
+            >
+              {txPending ? 'Sending...' : 'Send'}
+            </button>
+            <button
+              className={styles.liquidityCancel}
+              onClick={() => { setShowLiquidityInput(false); setLiquidityAmount(''); }}
+              disabled={txPending}
+              type="button"
+              aria-label="Cancel"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Input */}
+      <div className={styles.inputArea}>
+        <input
+          ref={inputRef}
+          type="text"
+          className={styles.input}
+          placeholder="Say something..."
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={handleKeyPress}
+          disabled={isTyping}
+        />
+        <button
+          className={`${styles.voiceButton} ${isRecording ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
+          onClick={startVoiceChat}
+          type="button"
+          aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
+            <path d="M19 10v1a7 7 0 01-14 0v-1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="12" y1="18" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
+        <button
+          className={styles.sendButton}
+          onClick={handleSend}
+          disabled={!inputText.trim() || isTyping}
+          type="button"
+          aria-label="Send message"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L12 22M12 2L5 9M12 2L19 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          </svg>
+        </button>
+      </div>
+    </>
+  );
+
+  /* ── Expanded (fullscreen) layout ── */
+  if (isExpanded) {
+    return (
+      <>
+        <div className={styles.backdrop} onClick={() => setIsExpanded(false)} />
+        <div className={styles.expandedContainer}>
+          {/* Top bar */}
+          <div className={styles.expandedTopBar}>
+            <div className={styles.expandedTitle}>
+              <span className={styles.nameplateStatus} />
+              <span className={styles.nameplateName}>Blue</span>
+              <span className={styles.nameplateLabel}>v1.3</span>
+            </div>
+            <div className={styles.expandedControls}>
+              <button className={styles.expandButton} onClick={() => setIsExpanded(false)} type="button" aria-label="Collapse">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7" />
+                </svg>
+              </button>
+              <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.expandedBody}>
+            {/* Left panel — Knowledge & actions */}
+            <div className={styles.expandedLeft}>
+              <div className={styles.knowledgePanel}>
+                <h3 className={styles.panelHeading}>Knowledge Domains</h3>
+                <div className={styles.knowledgeBars}>
+                  {KNOWLEDGE_DOMAINS.map((domain, i) => (
+                    <div key={domain.label} className={styles.knowledgeRow}>
+                      <span className={styles.knowledgeLabel}>{domain.label}</span>
+                      <div className={styles.knowledgeTrack}>
+                        <div
+                          className={styles.knowledgeFill}
+                          style={{
+                            width: `${domain.value}%`,
+                            background: `linear-gradient(90deg, ${domain.color}88, ${domain.color})`,
+                            animationDelay: `${i * 0.12}s`,
+                          }}
+                        />
+                      </div>
+                      <span className={styles.knowledgeValue}>{domain.value}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.expandedQuickPanel}>
+                <h3 className={styles.panelHeading}>Quick Actions</h3>
+                <div className={styles.expandedQuickGrid}>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                    <span>Treasury</span>
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    <span>Prayers?</span>
+                  </button>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12a9 9 0 11-6.22-8.56"/><path d="M21 3v5h-5"/></svg>
+                    <span>x402 Research</span>
+                  </button>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                    <span>+ Add Offering</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Session status */}
+              <div className={styles.sessionPanel}>
+                <div className={styles.sessionRow}>
+                  <span className={styles.sessionLabel}>Model</span>
+                  <span className={styles.sessionValue}>Daemon Azura</span>
+                </div>
+                <div className={styles.sessionRow}>
+                  <span className={styles.sessionLabel}>Status</span>
+                  <span className={styles.sessionValueOnline}>Online</span>
+                </div>
+                <div className={styles.sessionRow}>
+                  <span className={styles.sessionLabel}>Messages</span>
+                  <span className={styles.sessionValue}>{messages.length}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Center — Chat */}
+            <div className={styles.expandedCenter}>
+              {/* Emote header in expanded */}
+              <div className={styles.expandedEmoteBar}>
+                <div className={styles.expandedEmoteWrap}>
+                  <Image
+                    src={AZURA_EMOTES[emoteA]}
+                    alt="Azura"
+                    fill
+                    className={styles.characterImage}
+                    style={{ opacity: activeLayer === 'a' ? 1 : 0, transition: 'opacity 0.5s ease' }}
+                    unoptimized
+                    priority
+                  />
+                  <Image
+                    src={AZURA_EMOTES[emoteB]}
+                    alt="Azura"
+                    fill
+                    className={styles.characterImage}
+                    style={{ opacity: activeLayer === 'b' ? 1 : 0, transition: 'opacity 0.5s ease' }}
+                    unoptimized
+                  />
+                </div>
+                <div className={styles.characterFade} />
+              </div>
+              {chatContent}
+            </div>
+
+            {/* Right — Full body character */}
+            <div className={styles.expandedRight}>
+              <div className={styles.fullBodyWrap}>
+                <Image
+                  src="/images/azura-fullbody.png"
+                  alt="Azura full body"
+                  fill
+                  className={styles.fullBodyImage}
+                  unoptimized
+                  priority
+                />
+                <div className={styles.fullBodyGlow} />
+              </div>
+              <div className={styles.fullBodyNameplate}>
+                <span className={styles.nameplateName}>Blue</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  /* ── Compact (default) layout ── */
   return (
     <>
       <div className={styles.backdrop} onClick={onClose} />
 
       <div className={styles.chatContainer}>
-        <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
+        <div className={styles.compactControls}>
+          <button className={styles.expandButton} onClick={() => setIsExpanded(true)} type="button" aria-label="Expand to fullscreen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+            </svg>
+          </button>
+          <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <div className={styles.characterSection}>
           <Image
@@ -542,143 +859,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className={styles.messagesArea}>
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`${styles.messageBubble} ${
-                message.sender === 'user' ? styles.userMessage : styles.azuraMessage
-              }`}
-            >
-              <div className={styles.messageContent}>{message.text}</div>
-              <div className={styles.messageTime}>
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </div>
-            </div>
-          ))}
-
-          {isTyping && (
-            <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
-              <div className={styles.typingDots}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Quick Actions */}
-        <div className={styles.quickActions}>
-          <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
-            Treasury
-          </button>
-<button className={styles.quickAction} onClick={() => handleQuickAction('markets')} disabled={isTyping} type="button">
-            Prayers?
-          </button>
-          <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
-            + Add Offering
-          </button>
-        </div>
-
-        {/* Liquidity Input */}
-        {showLiquidityInput && (
-          <div className={styles.liquidityBar}>
-            {TRADER_ADDRESS && (
-              <div className={styles.targetSelector}>
-                <button
-                  type="button"
-                  className={`${styles.targetButton} ${liquidityTarget === 'governance' ? styles.targetActive : ''}`}
-                  onClick={() => setLiquidityTarget('governance')}
-                  disabled={txPending}
-                >
-                  Governance
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.targetButton} ${liquidityTarget === 'trader' ? styles.targetActive : ''}`}
-                  onClick={() => setLiquidityTarget('trader')}
-                  disabled={txPending}
-                >
-                  Trading
-                </button>
-              </div>
-            )}
-            <div className={styles.liquidityInputRow}>
-              <input
-                ref={liquidityInputRef}
-                type="number"
-                className={styles.liquidityInput}
-                placeholder="USDC amount"
-                value={liquidityAmount}
-                onChange={(e) => setLiquidityAmount(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') handleAddLiquidity(); }}
-                disabled={txPending}
-                min="0"
-                step="any"
-              />
-              <button
-                className={styles.liquidityConfirm}
-                onClick={handleAddLiquidity}
-                disabled={!liquidityAmount || parseFloat(liquidityAmount) <= 0 || txPending}
-                type="button"
-              >
-                {txPending ? 'Sending...' : 'Send'}
-              </button>
-              <button
-                className={styles.liquidityCancel}
-                onClick={() => { setShowLiquidityInput(false); setLiquidityAmount(''); }}
-                disabled={txPending}
-                type="button"
-                aria-label="Cancel"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Chat Input */}
-        <div className={styles.inputArea}>
-          <input
-            ref={inputRef}
-            type="text"
-            className={styles.input}
-            placeholder="Say something..."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={handleKeyPress}
-            disabled={isTyping}
-          />
-          <button
-            className={`${styles.voiceButton} ${isRecording ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
-            onClick={startVoiceChat}
-            type="button"
-            aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
-              <path d="M19 10v1a7 7 0 01-14 0v-1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="12" y1="18" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
-          <button
-            className={styles.sendButton}
-            onClick={handleSend}
-            disabled={!inputText.trim() || isTyping}
-            type="button"
-            aria-label="Send message"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L12 22M12 2L5 9M12 2L19 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            </svg>
-          </button>
-        </div>
+        {chatContent}
       </div>
     </>
   );

@@ -44,12 +44,19 @@
   }
 }
 
-/* Close button */
-.closeButton {
+/* Compact controls row */
+.compactControls {
   position: absolute;
   top: 12px;
   right: 12px;
   z-index: 10;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Close button */
+.closeButton {
   width: 36px;
   height: 36px;
   display: flex;
@@ -68,6 +75,29 @@
   background: rgba(26, 29, 51, 0.9);
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Expand button */
+.expandButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 29, 51, 0.7);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.expandButton:hover {
+  background: rgba(81, 104, 255, 0.25);
+  color: #ffffff;
+  border-color: rgba(81, 104, 255, 0.5);
   transform: scale(1.1);
 }
 
@@ -300,6 +330,18 @@
 .quickAction:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.quickActionAccent {
+  background: rgba(255, 136, 0, 0.12);
+  border-color: rgba(255, 136, 0, 0.3);
+  color: #FF8800;
+}
+
+.quickActionAccent:hover:not(:disabled) {
+  background: rgba(255, 136, 0, 0.2);
+  border-color: rgba(255, 136, 0, 0.5);
+  color: #FF8800;
 }
 
 .quickActionHighlight {
@@ -642,5 +684,357 @@
 
   .messageBubble {
     max-width: 90%;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   Expanded / Fullscreen Layout
+   ═══════════════════════════════════════════════ */
+
+.expandedContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  background: #0D0F1A;
+  animation: expandOpen 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes expandOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Top bar */
+.expandedTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.expandedTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expandedControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 3-column body */
+.expandedBody {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 3fr 5fr 3fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Left panel */
+.expandedLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+}
+
+.panelHeading {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 14px;
+}
+
+/* Knowledge bars */
+.knowledgePanel {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 20px;
+}
+
+.knowledgeBars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.knowledgeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.knowledgeLabel {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.knowledgeTrack {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.knowledgeFill {
+  height: 100%;
+  border-radius: 3px;
+  animation: barGrow 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes barGrow {
+  from {
+    width: 0% !important;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.knowledgeValue {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Quick action cards (expanded) */
+.expandedQuickPanel {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 20px;
+}
+
+.expandedQuickGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.expandedQuickCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.expandedQuickCard:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.expandedQuickCard:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.expandedQuickAccent {
+  border-color: rgba(255, 136, 0, 0.2);
+  color: rgba(255, 136, 0, 0.7);
+}
+
+.expandedQuickAccent:hover:not(:disabled) {
+  border-color: rgba(255, 136, 0, 0.4);
+  color: #FF8800;
+  background: rgba(255, 136, 0, 0.08);
+}
+
+.expandedQuickHighlight {
+  border-color: rgba(116, 196, 101, 0.2);
+  color: rgba(116, 196, 101, 0.7);
+}
+
+.expandedQuickHighlight:hover:not(:disabled) {
+  border-color: rgba(116, 196, 101, 0.4);
+  color: #74C465;
+  background: rgba(116, 196, 101, 0.08);
+}
+
+/* Session info */
+.sessionPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sessionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sessionLabel {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.sessionValue {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sessionValueOnline {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: #74C465;
+}
+
+/* Center column */
+.expandedCenter {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #1A1D33;
+}
+
+.expandedEmoteBar {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.expandedEmoteWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Right panel — Full body */
+.expandedRight {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  background: linear-gradient(180deg, #0D0F1A 0%, #141728 50%, #1A1D33 100%);
+}
+
+.fullBodyWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fullBodyImage {
+  object-fit: contain;
+  object-position: center bottom;
+  animation: characterReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+@keyframes characterReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fullBodyGlow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(81, 104, 255, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+.fullBodyNameplate {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  padding: 6px 16px;
+  background: rgba(13, 15, 26, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(81, 104, 255, 0.25);
+  border-radius: 20px;
+  animation: characterReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+/* Expanded responsive */
+@media (max-width: 1024px) {
+  .expandedBody {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .expandedRight {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .expandedBody {
+    grid-template-columns: 1fr;
+  }
+
+  .expandedLeft {
+    display: none;
+  }
+
+  .expandedRight {
+    display: none;
   }
 }
