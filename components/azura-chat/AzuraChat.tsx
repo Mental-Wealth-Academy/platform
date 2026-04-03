@@ -578,6 +578,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         <button className={styles.quickAction} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
           More
         </button>
+        <button className={`${styles.quickAction} ${styles.quickActionHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
+          + Add Offering
+        </button>
       </div>
 
       {/* Liquidity Input */}
@@ -757,6 +760,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
                     <span>More</span>
+                  </button>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickHighlight}`} onClick={() => handleQuickAction('liquidity')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    <span>+ Add Offering</span>
                   </button>
                 </div>
               </div>
