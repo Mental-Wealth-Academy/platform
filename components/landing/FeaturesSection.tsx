@@ -91,15 +91,9 @@ export const FeaturesSection: React.FC = () => {
         </div>
 
         <div className={styles.ctaRow}>
-          <span className={styles.ctaPrice}>$90</span>
-          <span className={styles.ctaPriceLabel}>one-time</span>
-          <button
-            type="button"
-            className={styles.purchaseBtn}
-            onClick={() => window.dispatchEvent(new Event('openPurchaseModal'))}
-          >
-            Purchase Membership
-          </button>
+          <a href="#membership" className={styles.purchaseBtn}>
+            View Membership
+          </a>
         </div>
       </div>
     </section>

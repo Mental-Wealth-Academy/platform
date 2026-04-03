@@ -7,10 +7,10 @@ import { FeaturesSection } from './FeaturesSection';
 import { KeyFiguresSection } from './KeyFiguresSection';
 import { TestimonialSection } from './TestimonialSection';
 import { SwarmsSection } from './SwarmsSection';
+import { MembershipSection } from './MembershipSection';
 import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
-import { AcademicAngels } from './AcademicAngels';
 import AngelicCreditSystem from './AngelicCreditSystem';
 import styles from './LandingPage.module.css';
 
@@ -48,11 +48,11 @@ const LandingPage = () => {
       {/* Swarms Section - Server rendered */}
       <SwarmsSection />
 
+      {/* Membership — Free vs Paid tiers + purchase modal */}
+      <MembershipSection />
+
       {/* FAQ Section - Client component for accordion */}
       <FAQSection />
-
-      {/* Academic Angels — Membership benefits + mint */}
-      <AcademicAngels />
 
       {/* Footer - Server rendered */}
       <LandingFooter />
