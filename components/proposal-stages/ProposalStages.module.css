@@ -123,17 +123,11 @@
   overflow: hidden;
 }
 
-.connectorActive .connectorLine {
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(81, 104, 255, 0.3) 0px,
-    rgba(81, 104, 255, 0.3) 8px,
-    transparent 8px,
-    transparent 14px
-  );
+.connectorDone .connectorLine {
+  background: rgba(81, 104, 255, 0.35);
 }
 
-.connectorActive .connectorLine::after {
+.connectorAnimated .connectorLine::after {
   content: '';
   position: absolute;
   top: 0;

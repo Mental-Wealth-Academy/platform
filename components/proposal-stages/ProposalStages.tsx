@@ -76,6 +76,8 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
   const isStage1Done = stage1 === 'approved' || stage1 === 'rejected';
   const isStage2Done = stage2 === 'success' || stage2 === 'failed';
+  const isStage1Waiting = stage1 === 'waiting' || stage1 === 'analyzing';
+  const isStage2Waiting = stage2 === 'waiting' || stage2 === 'processing';
 
   return (
     <div className={styles.container}>
@@ -97,7 +99,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       </div>
 
       {/* Connector 1 */}
-      <div className={`${styles.connector} ${isStage1Done ? styles.connectorActive : ''}`}>
+      <div className={`${styles.connector} ${isStage1Done ? styles.connectorDone : ''} ${isStage1Waiting ? styles.connectorAnimated : ''}`}>
         <div className={styles.connectorLine} />
       </div>
 
@@ -119,7 +121,7 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
       </div>
 
       {/* Connector 2 */}
-      <div className={`${styles.connector} ${isStage2Done ? styles.connectorActive : ''}`}>
+      <div className={`${styles.connector} ${isStage2Done ? styles.connectorDone : ''} ${isStage2Waiting ? styles.connectorAnimated : ''}`}>
         <div className={styles.connectorLine} />
       </div>
 
