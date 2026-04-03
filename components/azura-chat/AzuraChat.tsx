@@ -349,7 +349,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     const t = userText.toLowerCase();
 
     if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
-      return "Yeah yeah, hi. I already said what I said. You need something or you just here to stare?";
+      return "Yeah yeah, hi. I already said what I said. Do you need something or are you just here to waste time and not do any work?";
     }
     if (t.includes('help')) {
       return "Alright alright, I can help. Ask me about mental wellness, your course progress, shards, governance, or start a research session. I'm here to help you stay aligned.";
