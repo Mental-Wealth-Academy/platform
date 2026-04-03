@@ -96,6 +96,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
+  const [userLoadComplete, setUserLoadComplete] = useState(false);
   const { play } = useSound();
   const sessionCreatedForRef = useRef<string | null>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -170,6 +171,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         setUsername(meData.user.username || null);
         setAvatarUrl(meData.user.avatarUrl || null);
         if (meData.user.shardCount !== undefined) setShardCount(meData.user.shardCount);
+        setUserLoadComplete(true);
+        window.dispatchEvent(new Event('userLoaded'));
         sessionCreatedForRef.current = walletAddress;
         // If user still has temp username, they need to complete onboarding
         if (!meData.user.username || meData.user.username.startsWith('user_')) {
@@ -193,6 +196,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           setUsername(refreshData.user.username || null);
           setAvatarUrl(refreshData.user.avatarUrl || null);
           if (refreshData.user.shardCount !== undefined) setShardCount(refreshData.user.shardCount);
+          setUserLoadComplete(true);
+          window.dispatchEvent(new Event('userLoaded'));
           window.dispatchEvent(new Event('userLoggedIn'));
         }
         sessionCreatedForRef.current = walletAddress;
@@ -232,6 +237,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       setShardCount(null);
       setUsername(null);
       setAvatarUrl(null);
+      setUserLoadComplete(false);
       return;
     }
 
@@ -259,6 +265,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           if (data.user.shardCount !== undefined) setShardCount(data.user.shardCount);
           setUsername(data.user.username || null);
           setAvatarUrl(data.user.avatarUrl || null);
+          setUserLoadComplete(true);
+          window.dispatchEvent(new Event('userLoaded'));
         } else {
           // Auth debug info from server
           if (data?.authDebug) {
@@ -629,7 +637,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           </div>
 
           {/* Account Button or Connect Account */}
-          {(isConnected && address) || (username && !username.startsWith('user_')) ? (
+          {((isConnected && address) || (username && !username.startsWith('user_'))) && userLoadComplete ? (
             <div className={styles.accountSection} ref={accountMenuRef}>
               <button
                 ref={accountButtonRef}

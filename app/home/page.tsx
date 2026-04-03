@@ -89,26 +89,40 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
+  const refreshAuth = useCallback(async () => {
     if (!ready || !authenticated) return;
-    (async () => {
-      try {
-        const token = await getAccessToken();
-        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
-        const meData = await meRes.json().catch(() => ({ user: null }));
-        if (!meData?.user) return;
-        setIsAuthenticated(true);
-        const uname = meData.user.username;
-        if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
-        const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
-        if (res.ok) {
-          const data = await res.json();
-          setWeekStatuses(data.weeks);
-        }
-      } catch {}
-    })();
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
+      const meData = await meRes.json().catch(() => ({ user: null }));
+      if (!meData?.user) return;
+      setIsAuthenticated(true);
+      const uname = meData.user.username;
+      if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
+      const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
+      if (res.ok) {
+        const data = await res.json();
+        setWeekStatuses(data.weeks);
+      }
+    } catch {}
   }, [ready, authenticated, getAccessToken]);
+
+  useEffect(() => {
+    refreshAuth();
+  }, [refreshAuth]);
+
+  // Re-fetch auth when SideNavigation finishes loading user (fixes race where
+  // wallet connects before Privy token is ready, leaving isAuthenticated false)
+  useEffect(() => {
+    const handler = () => refreshAuth();
+    window.addEventListener('userLoaded', handler);
+    window.addEventListener('userLoggedIn', handler);
+    return () => {
+      window.removeEventListener('userLoaded', handler);
+      window.removeEventListener('userLoggedIn', handler);
+    };
+  }, [refreshAuth]);
 
   useEffect(() => {
     fetch('/api/leaderboard').then(r => r.json()).then(d => setLeaderboard(d.users ?? [])).catch(() => {});
