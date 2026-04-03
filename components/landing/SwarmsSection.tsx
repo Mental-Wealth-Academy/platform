@@ -6,52 +6,15 @@ import styles from './SwarmsSection.module.css';
 import PortfolioModal from './PortfolioModal';
 import { useSound } from '@/hooks/useSound';
 
-const AZURA_WALLET = '0x2cbb90a761ba64014b811be342b8ef01b471992d';
-const AZURA_WALLET_TRUNCATED = '0x2cbb...992d';
-
 const PieChartIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F6F8ED" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 3V12L5.5 17.5" />
-    <path d="M12 12L21 12" />
-  </svg>
-);
-
-const CopyIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="5.333" y="5.333" width="8" height="8" rx="1" />
-    <rect x="2.667" y="2.667" width="8" height="8" rx="1" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#62BE8F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#F6F8ED">
+    <path d="M11 2.05V12h9.95c-.5 5.05-4.76 9-9.95 9-5.52 0-10-4.48-10-10 0-5.19 3.95-9.45 9-9.95zM13 2.05c4.17.46 7.49 3.78 7.95 7.95H13V2.05z" />
   </svg>
 );
 
 export const SwarmsSection = () => {
-  const [copied, setCopied] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
   const { play } = useSound();
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(AZURA_WALLET);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Fallback for older browsers
-      const textarea = document.createElement('textarea');
-      textarea.value = AZURA_WALLET;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
 
   return (
     <section className={styles.swarmsSection}>
@@ -69,33 +32,10 @@ export const SwarmsSection = () => {
           onClick={() => setPortfolioOpen(true)}
           type="button"
         >
-          <span className={styles.portfolioButtonText}>Total Portfolio Breakdown</span>
+          <span className={styles.portfolioButtonText}>Community Owned Treasury</span>
           <PieChartIcon />
         </button>
 
-        <div className={styles.walletGroup}>
-          <div className={styles.walletAvatar}>
-            <Image
-              src="https://i.imgur.com/3Y3KrnJ.png"
-              alt="Azura"
-              width={50}
-              height={50}
-              className={styles.walletAvatarImg}
-            />
-          </div>
-          <div className={styles.walletPill}>
-            <div className={styles.walletAddressInner}>
-              <span className={styles.walletAddress}>{AZURA_WALLET_TRUNCATED}</span>
-              <button
-                className={styles.copyButton}
-                onClick={handleCopy}
-                title={copied ? 'Copied!' : 'Copy wallet address'}
-              >
-                {copied ? <CheckIcon /> : <CopyIcon />}
-              </button>
-            </div>
-          </div>
-        </div>
         </div>
 
         {/* Content Grid  */}
@@ -137,7 +77,7 @@ export const SwarmsSection = () => {
                 <div className={styles.swarmsFeatureIcon}>
                   <Image src="/icons/debate-icon.svg" alt="Oracle Network" width={35} height={35} />
                 </div>
-                <h3 className={styles.swarmsFeatureTitle}>Gamified Social Network</h3>
+                <h3 className={styles.swarmsFeatureTitle}>Human-Centered Design</h3>
               </div>
               <p className={styles.swarmsFeatureText}>
                 Earn points, unlock quests, and level up through the system like an MMO. A seed community building the new territory for mental wellness — with on-chain governance, an AI co-pilot, and statistical dashboards tracking real progress. Think less app, more academy.
