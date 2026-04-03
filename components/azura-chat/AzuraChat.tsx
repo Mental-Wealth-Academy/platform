@@ -68,6 +68,8 @@ const KNOWLEDGE_DOMAINS = [
   { label: 'Neuro', value: 76, color: '#C084FC' },
 ];
 
+const SHARD_COST = 10;
+
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -80,6 +82,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [shardCount, setShardCount] = useState<number | null>(null);
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -139,9 +143,23 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     }
   }, []);
 
+  // Fetch shard count
+  const fetchShardCount = useCallback(async () => {
+    try {
+      const res = await fetch('/api/me', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setShardCount(data.user?.shardCount ?? 0);
+      }
+    } catch { /* silent */ }
+  }, []);
+
   useEffect(() => {
-    if (isOpen) fetchTreasuryContext();
-  }, [isOpen, fetchTreasuryContext]);
+    if (isOpen) {
+      fetchTreasuryContext();
+      fetchShardCount();
+    }
+  }, [isOpen, fetchTreasuryContext, fetchShardCount]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -190,18 +208,26 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       const transcript = event.results[0][0].transcript;
       if (transcript.trim()) {
         setInputText(transcript.trim());
-        // Auto-send after a short delay so user sees what was transcribed
+        // Auto-send via the same flow as typed messages
         setTimeout(() => {
+          setInputText(transcript.trim());
+          // Trigger handleSend logic inline
+          const text = transcript.trim();
           const userMessage: Message = {
             id: Date.now().toString(),
-            text: transcript.trim(),
+            text,
             sender: 'user',
             timestamp: new Date(),
           };
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
-          const response = generateAzuraResponse(transcript.trim());
-          addAzuraMessage(response);
+          showEmote('blankStare');
+          const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+          if (hasShards) {
+            setPendingMessage(text);
+          } else {
+            addAzuraMessage(generateAzuraResponse(text));
+          }
         }, 300);
       }
     };
@@ -246,12 +272,48 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     }, 800 + Math.random() * 800);
   };
 
+  const sendToEliza = async (text: string) => {
+    setIsTyping(true);
+    showEmote('searching');
+    try {
+      const res = await fetch('/api/chat/blue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ message: text, confirm: true }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.response) {
+        setShardCount(data.shardsRemaining);
+        setIsTyping(false);
+        addAzuraMessage(data.response);
+        return;
+      }
+
+      if (data.error === 'insufficient_shards') {
+        setShardCount(data.shardCount);
+        setIsTyping(false);
+        addAzuraMessage(generateAzuraResponse(text));
+        return;
+      }
+
+      // AI unavailable -- fallback to local
+      setIsTyping(false);
+      addAzuraMessage(generateAzuraResponse(text));
+    } catch {
+      setIsTyping(false);
+      addAzuraMessage(generateAzuraResponse(text));
+    }
+  };
+
   const handleSend = async () => {
     if (!inputText.trim() || isTyping) return;
 
+    const text = inputText.trim();
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputText.trim(),
+      text,
       sender: 'user',
       timestamp: new Date(),
     };
@@ -259,7 +321,30 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
     showEmote('blankStare');
-    addAzuraMessage(generateAzuraResponse(userMessage.text));
+
+    const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+
+    if (hasShards) {
+      // Show confirmation before spending shards
+      setPendingMessage(text);
+    } else {
+      // No shards -- use local responses
+      addAzuraMessage(generateAzuraResponse(text));
+    }
+  };
+
+  const confirmShardSpend = () => {
+    if (!pendingMessage) return;
+    const text = pendingMessage;
+    setPendingMessage(null);
+    sendToEliza(text);
+  };
+
+  const cancelShardSpend = () => {
+    if (!pendingMessage) return;
+    const text = pendingMessage;
+    setPendingMessage(null);
+    addAzuraMessage(generateAzuraResponse(text));
   };
 
   const generateAzuraResponse = (userText: string): string => {
@@ -452,6 +537,32 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Shard Confirmation */}
+      {pendingMessage && (
+        <div className={styles.shardConfirm}>
+          <div className={styles.shardConfirmText}>
+            Spend {SHARD_COST} shards for a deep response?
+            <span className={styles.shardConfirmBalance}>{shardCount} shards available</span>
+          </div>
+          <div className={styles.shardConfirmButtons}>
+            <button className={styles.shardConfirmYes} onClick={confirmShardSpend} type="button">
+              Spend {SHARD_COST} Shards
+            </button>
+            <button className={styles.shardConfirmNo} onClick={cancelShardSpend} type="button">
+              Basic Response
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Shard Counter */}
+      {shardCount !== null && (
+        <div className={styles.shardCounter}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span>{shardCount} shards</span>
+        </div>
+      )}
+
       {/* Quick Actions */}
       <div className={styles.quickActions}>
         <button className={styles.quickAction} onClick={() => handleQuickAction('wellness')} disabled={isTyping} type="button">
@@ -605,6 +716,16 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                 <div className={styles.sessionRow}>
                   <span className={styles.sessionLabel}>Status</span>
                   <span className={styles.sessionValueOnline}>Online</span>
+                </div>
+                {shardCount !== null && (
+                  <div className={styles.sessionRow}>
+                    <span className={styles.sessionLabel}>Shards</span>
+                    <span className={styles.sessionValue}>{shardCount}</span>
+                  </div>
+                )}
+                <div className={styles.sessionRow}>
+                  <span className={styles.sessionLabel}>Cost</span>
+                  <span className={styles.sessionValue}>{SHARD_COST}/msg</span>
                 </div>
               </div>
             </div>
