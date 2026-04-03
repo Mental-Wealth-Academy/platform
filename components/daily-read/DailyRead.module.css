@@ -159,8 +159,8 @@
 .readingDesc {
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
-  font-weight: 300;
-  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.7);
   line-height: 1.6;
   margin: 0 0 12px;
 }
