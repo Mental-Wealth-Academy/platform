@@ -258,6 +258,15 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         },
       ]);
       setIsTyping(false);
+
+      // Auto-speak Blue's responses via Eliza ElevenLabs TTS
+      voiceAbortRef.current?.abort();
+      const controller = new AbortController();
+      voiceAbortRef.current = controller;
+      setIsSpeaking(true);
+      speakAzura(text, controller.signal)
+        .catch(() => {/* aborted or TTS unavailable — silent */})
+        .finally(() => setIsSpeaking(false));
     }, 800 + Math.random() * 800);
   };
 
