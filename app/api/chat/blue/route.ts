@@ -8,70 +8,50 @@ export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 
-const BLUE_SERVER_URL = (process.env.ELIZA_API_BASE_URL || 'http://localhost:3001').replace(/\/+$/, '');
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma3:4b';
 const BLUE_SYSTEM_PROMPT = bluePersona.system;
 
-async function callBlueServer(userMessage: string, userId: string): Promise<string> {
-  const response = await fetch(`${BLUE_SERVER_URL}/chat`, {
+// Build a rich system prompt from the full character file
+const BLUE_FULL_PROMPT = [
+  bluePersona.system,
+  '',
+  `Style: ${bluePersona.style?.chat?.[0] || ''}`,
+  '',
+  'Example responses (match this tone):',
+  ...bluePersona.messageExamples.slice(0, 4).map(
+    (ex: any) => `User: "${ex[0]?.content?.text}" -> Blue: "${ex[1]?.content?.text}"`
+  ),
+].join('\n');
+
+async function callOllama(userMessage: string): Promise<string> {
+  const response = await fetch(`${OLLAMA_URL}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: userMessage, userId }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Blue server error: ${response.status} ${errText}`);
-  }
-
-  const data = await response.json();
-  if (!data.response) throw new Error('Blue server returned empty response');
-  console.log(`Blue chat completed via ElizaOS (${data.mode} mode)`);
-  return data.response;
-}
-
-async function callAnthropicAPI(userMessage: string): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 512,
-      system: BLUE_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
+      model: OLLAMA_MODEL,
+      messages: [
+        { role: 'system', content: BLUE_FULL_PROMPT },
+        { role: 'user', content: userMessage },
+      ],
+      stream: false,
+      options: {
+        temperature: 0.8,
+        num_predict: 256,
+      },
     }),
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Anthropic API error: ${response.status} ${errorText}`);
+    const errText = await response.text();
+    throw new Error(`Ollama error: ${response.status} ${errText}`);
   }
 
   const data = await response.json();
-  const content = data.content?.[0]?.text;
-  if (!content) throw new Error('Anthropic API returned empty content');
-  return content;
-}
-
-async function getAIResponse(userMessage: string, userId: string): Promise<string> {
-  // Try Blue ElizaOS server first -- full character, memory, plugins
-  try {
-    return await callBlueServer(userMessage, userId);
-  } catch (blueError: unknown) {
-    const msg = blueError instanceof Error ? blueError.message : 'Unknown';
-    console.warn('Blue server failed, falling back to Anthropic:', msg);
-  }
-
-  // Fallback to Anthropic with the character's system prompt
-  const response = await callAnthropicAPI(userMessage);
-  console.log('Blue chat completed via Anthropic API (fallback)');
-  return response;
+  const text = data.message?.content;
+  if (!text) throw new Error('Ollama returned empty response');
+  console.log(`Blue chat completed via Ollama (${OLLAMA_MODEL})`);
+  return text;
 }
 
 export async function POST(request: Request) {
@@ -136,9 +116,9 @@ export async function POST(request: Request) {
     }, { status: 402 });
   }
 
-  // Call AI with Eliza -> Anthropic fallback
+  // Call Ollama directly with Blue's personality
   try {
-    const response = await getAIResponse(body.message, user.id);
+    const response = await callOllama(body.message);
 
     return NextResponse.json({
       response,
@@ -146,14 +126,14 @@ export async function POST(request: Request) {
       shardsDeducted: SHARD_COST,
     });
   } catch (err: unknown) {
-    // Refund shards on total AI failure
+    // Refund shards on AI failure
     await sqlQuery(
       'UPDATE users SET shard_count = shard_count + :cost WHERE id = :id',
       { id: user.id, cost: SHARD_COST }
     );
 
     const msg = err instanceof Error ? err.message : 'AI error';
-    console.error('Blue chat AI error (both providers failed):', msg);
+    console.error('Blue chat error:', msg);
     return NextResponse.json({ error: 'ai_unavailable', message: msg }, { status: 502 });
   }
 }
