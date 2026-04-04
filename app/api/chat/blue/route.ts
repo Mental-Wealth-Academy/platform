@@ -8,50 +8,58 @@ export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma3:4b';
-const BLUE_SYSTEM_PROMPT = bluePersona.system;
+const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
+const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 
-// Build a rich system prompt from the full character file
-const BLUE_FULL_PROMPT = [
+// Rich system prompt from the character file
+const BLUE_SYSTEM_PROMPT = [
   bluePersona.system,
   '',
   `Style: ${bluePersona.style?.chat?.[0] || ''}`,
   '',
-  'Example responses (match this tone):',
+  'Example responses (match this tone and length):',
   ...bluePersona.messageExamples.slice(0, 4).map(
     (ex: any) => `User: "${ex[0]?.content?.text}" -> Blue: "${ex[1]?.content?.text}"`
   ),
 ].join('\n');
 
-async function callOllama(userMessage: string): Promise<string> {
-  const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+async function callElizaCloud(userMessage: string): Promise<string> {
+  const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': `Bearer ${ELIZA_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
-      model: OLLAMA_MODEL,
       messages: [
-        { role: 'system', content: BLUE_FULL_PROMPT },
-        { role: 'user', content: userMessage },
+        { role: 'system', parts: [{ type: 'text', text: BLUE_SYSTEM_PROMPT }] },
+        { role: 'user', parts: [{ type: 'text', text: userMessage }] },
       ],
-      stream: false,
-      options: {
-        temperature: 0.8,
-        num_predict: 256,
-      },
     }),
   });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Ollama error: ${response.status} ${errText}`);
+    throw new Error(`Eliza Cloud error: ${response.status} ${errText}`);
   }
 
-  const data = await response.json();
-  const text = data.message?.content;
-  if (!text) throw new Error('Ollama returned empty response');
-  console.log(`Blue chat completed via Ollama (${OLLAMA_MODEL})`);
-  return text;
+  // Parse SSE streaming response
+  const sseText = await response.text();
+  let fullText = '';
+  for (const line of sseText.split('\n')) {
+    if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+      try {
+        const event = JSON.parse(line.slice(6));
+        if (event.type === 'text-delta' && event.delta) {
+          fullText += event.delta;
+        }
+      } catch { /* skip */ }
+    }
+  }
+
+  if (!fullText) throw new Error('Eliza Cloud returned empty response');
+  console.log('Blue chat completed via Eliza Cloud');
+  return fullText;
 }
 
 export async function POST(request: Request) {
@@ -90,7 +98,6 @@ export async function POST(request: Request) {
     }, { status: 402 });
   }
 
-  // If confirm flag not set, return cost confirmation
   if (!body.confirm) {
     return NextResponse.json({
       needsConfirmation: true,
@@ -116,9 +123,8 @@ export async function POST(request: Request) {
     }, { status: 402 });
   }
 
-  // Call Ollama directly with Blue's personality
   try {
-    const response = await callOllama(body.message);
+    const response = await callElizaCloud(body.message);
 
     return NextResponse.json({
       response,
@@ -126,7 +132,7 @@ export async function POST(request: Request) {
       shardsDeducted: SHARD_COST,
     });
   } catch (err: unknown) {
-    // Refund shards on AI failure
+    // Refund shards on failure
     await sqlQuery(
       'UPDATE users SET shard_count = shard_count + :cost WHERE id = :id',
       { id: user.id, cost: SHARD_COST }
