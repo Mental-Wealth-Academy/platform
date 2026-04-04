@@ -22,6 +22,10 @@ const WEEK_INTROS: Record<number, { title: string; body: string }> = {
     title: 'Recovering a Sense of Possibility',
     body: 'This week you are being asked to examine your payoffs in remaining stuck. You will explore how you curtail your own possibilities by placing limits on the good you can receive. You will examine the cost of settling for appearing good instead of being authentic. You may find yourself thinking about radical changes, no longer ruling out your growth by making others the cause of your constriction.',
   },
+  6: {
+    title: 'Recovering a Sense of Abundance',
+    body: 'This week you confront a deep creative block\u2014your relationship with money. You will examine the inherited stories you carry about scarcity, worth, and what you are allowed to receive. The exercises will surface the ways your attitudes toward abundance and luxury quietly starve your creative life. You will begin counting\u2014a practice of radical clarity around how you spend, what you value, and where the two diverge. This week may feel volatile.',
+  },
 };
 
 const STORAGE_KEY = 'dailyReadLastSeenWeek';

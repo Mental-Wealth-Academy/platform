@@ -307,6 +307,23 @@ export const week5Sections: JournalSection[] = [
 ];
 
 // ─── Week 6: Abundance ───────────────────────────────────────────────
+
+// Week 6 unique icons
+const CoinIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+  </svg>
+);
+const LeafIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.7c.68.21 1.36.34 2.09.34C13 20 17 15 17 8zM6.73 17.64C8.21 14.89 10.6 12 17 10c0 4-3 8-8.27 8-.37 0-.73-.03-1.08-.1l.08-.26z"/>
+  </svg>
+);
+const BroomIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.36 2.72l1.42 1.42-5.72 5.71c1.07 1.54 1.22 3.39.32 4.59L9.06 8.12c1.2-.9 3.05-.75 4.59.32l5.71-5.72zM5.93 17.57c-2.01-2.01-3.24-4.41-3.58-6.65l4.88-2.09 7.44 7.44-2.09 4.88c-2.24-.34-4.64-1.57-6.65-3.58z"/>
+  </svg>
+);
 export const week6Sections: JournalSection[] = [
   artistDate(),
   artistWalk(),
@@ -315,33 +332,49 @@ export const week6Sections: JournalSection[] = [
     title: 'Luxury List',
     icon: StarIcon,
     type: 'numbered-list',
-    instructions: 'List ten items that feel luxurious to you. Circle two that you could afford or acquire this week. Luxury doesn\'t have to be expensive.',
+    instructions: 'List ten items that feel luxurious to you. These do not have to be expensive. A fresh raspberry, a teacup from Chinatown, an hour with no agenda. Circle two that you could afford or acquire this week.',
     listCount: 10,
     listLabels: Array.from({ length: 10 }, (_, i) => `${i + 1}.`),
   },
   {
     id: 'counting-exercise',
     title: 'Counting Exercise',
-    icon: TextIcon,
+    icon: CoinIcon,
     type: 'text',
-    instructions: 'How much do you spend on creative supplies? Time? Energy? Count what you invest in creativity versus what you spend avoiding it.',
-    placeholder: 'Reflect on your creative investment...',
+    instructions: 'For the next week, carry a small notepad and write down every single thing you spend money on. Every nickel. Every cab ride, every coffee, every loan to a friend. Be meticulous, thorough, and nonjudgmental. This is self-observation, not self-flagellation. What patterns do you notice? Where does your money actually go versus where you say you value?',
+    placeholder: 'Track your spending and reflect on what you discover...',
   },
   {
     id: 'money-madness',
     title: 'Money Madness Survey',
     icon: TextIcon,
     type: 'text',
-    instructions: 'What did your family believe about money? "Money is..." "Rich people are..." "Artists are..." "I could never afford..." Write your money mythology.',
-    placeholder: 'Write your money beliefs...',
+    instructions: 'Complete these phrases as fast as you can. Don\'t think, just write:\n\nPeople with money are ___.\nMoney makes people ___.\nI\'d have more money if ___.\nMy dad thought money was ___.\nMy mom always thought money would ___.\nIn my family, money caused ___.\nMoney equals ___.\nIf I had money, I\'d ___.\nIf I could afford it, I\'d ___.\nI\'m afraid that if I had money I would ___.\nMoney is ___.\nHaving money is not ___.\nIn order to have more money, I\'d need to ___.\nWhen I have money, I usually ___.\nIf I weren\'t so cheap I\'d ___.\nBeing broke tells me ___.',
+    placeholder: 'Write your money mythology...',
   },
   {
     id: 'time-money-inventory',
     title: 'Time & Money Inventory',
-    icon: TextIcon,
+    icon: HourglassIcon,
     type: 'text',
-    instructions: 'Where does your money actually go? Where does your time actually go? Is there a discrepancy between what you say you value and how you spend?',
+    instructions: 'Where does your money actually go? Where does your time actually go? Is there a discrepancy between what you say you value and how you spend? Are you fritting away cash on things you don\'t cherish and denying yourself what you do?',
     placeholder: 'Reflect on where your time and money go...',
+  },
+  {
+    id: 'natural-abundance',
+    title: 'Natural Abundance',
+    icon: LeafIcon,
+    type: 'checklist',
+    instructions: 'Go outside and collect five pretty or interesting rocks. Then pick five flowers or leaves. Rocks can be carried in pockets, fingered in meetings\u2014small, constant reminders of your creative consciousness. Press the flowers between wax paper and save them in a book. If you did this in kindergarten, good. Some of the best creative play happens there.',
+    checkItems: ['Found 5 interesting rocks', 'Picked 5 flowers or leaves', 'Pressed or saved the flowers'],
+  },
+  {
+    id: 'clearing',
+    title: 'Clearing',
+    icon: BroomIcon,
+    type: 'checklist',
+    instructions: 'Throw out or give away five ratty pieces of clothing. Then look at your home environment\u2014any new changes you can make? Clearing physical space clears creative space.',
+    checkItems: ['Removed 5 ratty clothing items', 'Made a change in my home environment'],
   },
 ];
 
