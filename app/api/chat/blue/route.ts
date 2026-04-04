@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
 
 export const runtime = 'nodejs';
@@ -9,8 +8,26 @@ export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 
-// Use the character's own system prompt so Eliza and Anthropic get the same voice
+const BLUE_SERVER_URL = (process.env.ELIZA_API_BASE_URL || 'http://localhost:3001').replace(/\/+$/, '');
 const BLUE_SYSTEM_PROMPT = bluePersona.system;
+
+async function callBlueServer(userMessage: string, userId: string): Promise<string> {
+  const response = await fetch(`${BLUE_SERVER_URL}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: userMessage, userId }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Blue server error: ${response.status} ${errText}`);
+  }
+
+  const data = await response.json();
+  if (!data.response) throw new Error('Blue server returned empty response');
+  console.log(`Blue chat completed via ElizaOS (${data.mode} mode)`);
+  return data.response;
+}
 
 async function callAnthropicAPI(userMessage: string): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -42,22 +59,16 @@ async function callAnthropicAPI(userMessage: string): Promise<string> {
   return content;
 }
 
-async function getAIResponse(userMessage: string): Promise<string> {
-  // Try Eliza first -- it has Blue's full character context + memory
+async function getAIResponse(userMessage: string, userId: string): Promise<string> {
+  // Try Blue ElizaOS server first -- full character, memory, plugins
   try {
-    const response = await elizaAPI.chat({
-      messages: [
-        { role: 'user', parts: [{ type: 'text', text: userMessage }] },
-      ],
-    });
-    console.log('Blue chat completed via Eliza API');
-    return response;
-  } catch (elizaError: unknown) {
-    const msg = elizaError instanceof Error ? elizaError.message : 'Unknown';
-    console.warn('Eliza API failed, falling back to Anthropic:', msg);
+    return await callBlueServer(userMessage, userId);
+  } catch (blueError: unknown) {
+    const msg = blueError instanceof Error ? blueError.message : 'Unknown';
+    console.warn('Blue server failed, falling back to Anthropic:', msg);
   }
 
-  // Fallback to Anthropic with the same system prompt
+  // Fallback to Anthropic with the character's system prompt
   const response = await callAnthropicAPI(userMessage);
   console.log('Blue chat completed via Anthropic API (fallback)');
   return response;
@@ -127,7 +138,7 @@ export async function POST(request: Request) {
 
   // Call AI with Eliza -> Anthropic fallback
   try {
-    const response = await getAIResponse(body.message);
+    const response = await getAIResponse(body.message, user.id);
 
     return NextResponse.json({
       response,
