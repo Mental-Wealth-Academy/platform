@@ -10,7 +10,7 @@ import {
   type Character,
   type UUID,
 } from "@elizaos/core";
-import { openaiPlugin } from "@elizaos/plugin-openai";
+import { anthropicPlugin } from "@elizaos/plugin-anthropic";
 import { sqlPlugin } from "@elizaos/plugin-sql";
 import { elizaClassicPlugin } from "@elizaos/plugin-eliza-classic";
 
@@ -18,7 +18,7 @@ import { elizaClassicPlugin } from "@elizaos/plugin-eliza-classic";
 import blueCharacterData from "../lib/bluepersonality.json";
 
 const PORT = parseInt(process.env.PORT || "3001", 10);
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
 
 // ── Character setup ──────────────────────────────────────────
@@ -27,7 +27,7 @@ const character: Character = createCharacter({
   name: blueCharacterData.name || "Blue",
   bio: blueCharacterData.bio || "Blue OS - behavioral psychologist at Mental Wealth Academy.",
   secrets: {
-    OPENAI_API_KEY,
+    ANTHROPIC_API_KEY,
     ELEVENLABS_API_KEY,
   },
 } as any);
@@ -44,14 +44,14 @@ async function initializeRuntime() {
     // Add database plugin
     runtime.registerPlugin(sqlPlugin);
 
-    // Add AI plugin -- OpenAI if key exists, else classic pattern matching
-    if (OPENAI_API_KEY) {
-      runtime.registerPlugin(openaiPlugin);
-      elizaLogger.info("Blue server: OpenAI plugin registered");
+    // Add AI plugin -- Anthropic (Claude) if key exists, else classic pattern matching
+    if (ANTHROPIC_API_KEY) {
+      runtime.registerPlugin(anthropicPlugin);
+      elizaLogger.info("Blue server: Anthropic plugin registered");
     } else {
       runtime.registerPlugin(elizaClassicPlugin);
       initMode = "classic";
-      elizaLogger.warn("Blue server: No OPENAI_API_KEY -- using classic ELIZA fallback");
+      elizaLogger.warn("Blue server: No ANTHROPIC_API_KEY -- using classic ELIZA fallback");
     }
 
     await runtime.initialize();
@@ -233,8 +233,8 @@ async function main() {
 
   app.listen(PORT, () => {
     elizaLogger.info(`Blue OS server running on port ${PORT} (${initMode} mode)`);
-    if (OPENAI_API_KEY) elizaLogger.info("OpenAI: configured");
-    else elizaLogger.warn("OpenAI: NOT configured -- using classic fallback");
+    if (ANTHROPIC_API_KEY) elizaLogger.info("Anthropic: configured");
+    else elizaLogger.warn("Anthropic: NOT configured -- using classic fallback");
     if (ELEVENLABS_API_KEY) elizaLogger.info("ElevenLabs: configured");
     else elizaLogger.warn("ElevenLabs: NOT configured");
   });

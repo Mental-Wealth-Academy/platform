@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@elizaos/core": "alpha",
-    "@elizaos/plugin-openai": "alpha",
+    "@elizaos/plugin-anthropic": "alpha",
     "@elizaos/plugin-sql": "alpha",
     "@elizaos/plugin-eliza-classic": "alpha",
     "express": "^4.21.0",
