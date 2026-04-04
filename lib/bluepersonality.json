@@ -122,10 +122,7 @@
     "Incisive"
   ],
   "knowledge": [],
-  "plugins": [
-    "@elizaos/plugin-mcp",
-    "@elizaos/plugin-tts-elevenlabs"
-  ],
+  "plugins": [],
   "settings": {
     "voice": {
       "provider": "elevenlabs",

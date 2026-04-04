@@ -1,3 +1,12 @@
+// Ensure env vars are set before any ElizaOS imports
+if (!process.env.POSTGRES_URL && process.env.DATABASE_URL) {
+  process.env.POSTGRES_URL = process.env.DATABASE_URL;
+}
+// SECRET_SALT is needed for getSetting decryption -- use a stable default
+if (!process.env.SECRET_SALT) {
+  process.env.SECRET_SALT = "blue-os-salt-mwa";
+}
+
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -7,19 +16,23 @@ import {
   elizaLogger,
   stringToUuid,
   ChannelType,
+  ensureConnection,
   type Character,
   type UUID,
 } from "@elizaos/core";
-import { anthropicPlugin } from "@elizaos/plugin-anthropic";
-import { sqlPlugin } from "@elizaos/plugin-sql";
-import { elizaClassicPlugin } from "@elizaos/plugin-eliza-classic";
+
+// Use require() -- alpha ESM exports are inconsistent with Bun's resolver
+const { anthropicPlugin } = require("@elizaos/plugin-anthropic");
+const { createDatabaseAdapter, plugin: sqlPlugin } = require("@elizaos/plugin-sql");
+const { elizaClassicPlugin } = require("@elizaos/plugin-eliza-classic");
 
 // ── Load Blue character from personality file ────────────────
-import blueCharacterData from "../lib/bluepersonality.json";
+import blueCharacterData from "./lib/bluepersonality.json";
 
 const PORT = parseInt(process.env.PORT || "3001", 10);
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
+const POSTGRES_URL = process.env.POSTGRES_URL || "";
 
 // ── Character setup ──────────────────────────────────────────
 const character: Character = createCharacter({
@@ -29,6 +42,16 @@ const character: Character = createCharacter({
   secrets: {
     ANTHROPIC_API_KEY,
     ELEVENLABS_API_KEY,
+    POSTGRES_URL,
+  },
+  settings: {
+    ...blueCharacterData.settings,
+    POSTGRES_URL,
+    secrets: {
+      ANTHROPIC_API_KEY,
+      ELEVENLABS_API_KEY,
+      POSTGRES_URL,
+    },
   },
 } as any);
 
@@ -41,10 +64,9 @@ async function initializeRuntime() {
   try {
     runtime = new AgentRuntime(character);
 
-    // Add database plugin
+    // Register SQL plugin
     runtime.registerPlugin(sqlPlugin);
 
-    // Add AI plugin -- Anthropic (Claude) if key exists, else classic pattern matching
     if (ANTHROPIC_API_KEY) {
       runtime.registerPlugin(anthropicPlugin);
       elizaLogger.info("Blue server: Anthropic plugin registered");
@@ -56,18 +78,20 @@ async function initializeRuntime() {
 
     await runtime.initialize();
     elizaLogger.info(`Blue server initialized in ${initMode} mode`);
+    if (POSTGRES_URL) elizaLogger.info("Database: PostgreSQL");
+    else elizaLogger.info("Database: PGLite (embedded)");
   } catch (err: any) {
     elizaLogger.error("Blue runtime init failed:", err.message);
     initError = err.message;
 
-    // Fallback: try classic mode without database
+    // Fallback: try classic mode without SQL plugin
     try {
       runtime = new AgentRuntime(character);
       runtime.registerPlugin(elizaClassicPlugin);
       await runtime.initialize();
       initMode = "classic";
       initError = null;
-      elizaLogger.info("Blue server: fell back to classic mode");
+      elizaLogger.info("Blue server: fell back to classic mode (no database)");
     } catch (fallbackErr: any) {
       elizaLogger.error("Blue classic fallback also failed:", fallbackErr.message);
       initError = fallbackErr.message;
@@ -129,10 +153,24 @@ app.post("/chat", async (req, res) => {
       return res.status(503).json({ error: "Blue runtime not initialized" });
     }
 
-    const userId = (rawUserId || uuidv4()) as UUID;
-    const roomId = stringToUuid(`blue-chat-${userId}`) as UUID;
+    const userId = stringToUuid(rawUserId || uuidv4()) as UUID;
+    const roomId = stringToUuid(`blue-chat-${rawUserId || userId}`) as UUID;
 
-    // Create message memory through the canonical pipeline
+    // Ensure entity + room exist in DB (required for foreign key constraints on logs)
+    try {
+      const worldId = stringToUuid("blue-world") as UUID;
+      await ensureConnection(runtime, {
+        entityId: userId,
+        roomId,
+        worldId,
+        userName: rawUserId || "anonymous",
+        name: rawUserId || "Anonymous User",
+        source: "rest_api",
+      });
+    } catch (connErr: any) {
+      elizaLogger.warn("ensureConnection failed:", connErr.message?.slice(0, 100));
+    }
+
     const messageMemory = createMessageMemory({
       id: uuidv4() as UUID,
       entityId: userId,
@@ -144,19 +182,22 @@ app.post("/chat", async (req, res) => {
       },
     });
 
-    // Process through elizaOS message service
     let responseText = "";
 
-    await runtime.messageService?.handleMessage(
-      runtime,
-      messageMemory,
-      async (content) => {
-        if (content?.text) {
-          responseText += content.text;
+    try {
+      await runtime.messageService?.handleMessage(
+        runtime,
+        messageMemory,
+        async (content) => {
+          if (content?.text) {
+            responseText += content.text;
+          }
+          return [];
         }
-        return [];
-      }
-    );
+      );
+    } catch (msgErr: any) {
+      elizaLogger.warn("Message pipeline error:", msgErr.message?.slice(0, 120));
+    }
 
     if (!responseText) {
       responseText = "I'm here. Give me something to work with.";
@@ -171,59 +212,6 @@ app.post("/chat", async (req, res) => {
   } catch (err: any) {
     elizaLogger.error("Chat error:", err.message);
     res.status(500).json({ error: err.message || "Internal error" });
-  }
-});
-
-// ── POST /chat/stream ────────────────────────────────────────
-app.post("/chat/stream", async (req, res) => {
-  try {
-    const { message, userId: rawUserId } = req.body;
-
-    if (!message || typeof message !== "string") {
-      return res.status(400).json({ error: "message is required" });
-    }
-
-    if (!runtime) {
-      return res.status(503).json({ error: "Blue runtime not initialized" });
-    }
-
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    });
-
-    const userId = (rawUserId || uuidv4()) as UUID;
-    const roomId = stringToUuid(`blue-chat-${userId}`) as UUID;
-
-    const messageMemory = createMessageMemory({
-      id: uuidv4() as UUID,
-      entityId: userId,
-      roomId,
-      content: {
-        text: message,
-        source: "rest_api",
-        channelType: ChannelType.DM,
-      },
-    });
-
-    await runtime.messageService?.handleMessage(
-      runtime,
-      messageMemory,
-      async (content) => {
-        if (content?.text) {
-          res.write(`data: ${JSON.stringify({ text: content.text })}\n\n`);
-        }
-        return [];
-      }
-    );
-
-    res.write("data: [DONE]\n\n");
-    res.end();
-  } catch (err: any) {
-    elizaLogger.error("Stream error:", err.message);
-    res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
-    res.end();
   }
 });
 

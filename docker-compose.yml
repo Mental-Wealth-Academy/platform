@@ -1,6 +1,21 @@
-version: "3.8"
-
 services:
+  blue-db:
+    image: pgvector/pgvector:pg16
+    container_name: blue-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=blue
+      - POSTGRES_PASSWORD=blue-os-local
+      - POSTGRES_DB=blue
+    volumes:
+      - blue-data:/var/lib/postgresql/data
+      - ./blue-server/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blue"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   blue:
     build:
       context: .
@@ -9,7 +24,14 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
+    depends_on:
+      blue-db:
+        condition: service_healthy
     environment:
       - PORT=3001
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - POSTGRES_URL=postgresql://blue:blue-os-local@blue-db:5432/blue
+
+volumes:
+  blue-data:
