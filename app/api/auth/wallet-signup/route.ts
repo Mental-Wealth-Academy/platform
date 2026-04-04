@@ -30,6 +30,17 @@ export async function POST(request: Request) {
       );
     }
 
+    // Optional Farcaster profile data from mini-app login
+    let farcasterUsername: string | undefined;
+    let farcasterPfp: string | undefined;
+    try {
+      const body = await request.json();
+      farcasterUsername = body?.farcasterUsername;
+      farcasterPfp = body?.farcasterPfp;
+    } catch {
+      // No body or invalid JSON — fine, these are optional
+    }
+
     // Normalize: trim whitespace, ensure 0x prefix, lowercase
     const walletAddress = rawWallet.trim().toLowerCase();
     const normalized = walletAddress.startsWith('0x') ? walletAddress : `0x${walletAddress}`;
@@ -49,16 +60,37 @@ export async function POST(request: Request) {
     );
 
     if (existingUser.length > 0) {
+      // Back-fill avatar from Farcaster pfp if user doesn't have one yet
+      if (farcasterPfp) {
+        try {
+          await sqlQuery(
+            `UPDATE users SET avatar_url = COALESCE(avatar_url, :avatarUrl) WHERE id = :userId`,
+            { avatarUrl: farcasterPfp, userId: existingUser[0].id }
+          );
+        } catch {
+          // Non-critical
+        }
+      }
       return NextResponse.json({ ok: true, userId: existingUser[0].id, existing: true });
     }
 
     // Create new user
     const userId = uuidv4();
-    const tempUsername = `user_${userId.substring(0, 8)}`;
+    let username = `user_${userId.substring(0, 8)}`;
+    if (farcasterUsername) {
+      const sanitized = farcasterUsername.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 32);
+      if (sanitized.length >= 5) {
+        const taken = await sqlQuery<Array<{ id: string }>>(
+          `SELECT id FROM users WHERE LOWER(username) = LOWER(:username) LIMIT 1`,
+          { username: sanitized.toLowerCase() }
+        );
+        if (taken.length === 0) username = sanitized;
+      }
+    }
 
     await sqlQuery(
-      `INSERT INTO users (id, wallet_address, username) VALUES (:id, :walletAddress, :username)`,
-      { id: userId, walletAddress: walletAddressClean, username: tempUsername }
+      `INSERT INTO users (id, wallet_address, username, avatar_url) VALUES (:id, :walletAddress, :username, :avatarUrl)`,
+      { id: userId, walletAddress: walletAddressClean, username, avatarUrl: farcasterPfp || null }
     );
 
     return NextResponse.json({ ok: true, userId, existing: false });
