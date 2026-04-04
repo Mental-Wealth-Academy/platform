@@ -1,0 +1,4 @@
+node_modules/
+.eliza/
+dist/
+bun.lock
