@@ -100,7 +100,18 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
       {/* Connector 1 */}
       <div className={`${styles.connector} ${isStage1Done ? styles.connectorDone : ''} ${isStage1Waiting ? styles.connectorAnimated : ''}`}>
-        <div className={styles.connectorLine} />
+        <div className={styles.connectorLine}>
+          {isStage1Waiting && (
+            <Image
+              src="/icons/bluescanner.png"
+              alt="Blue"
+              width={32}
+              height={32}
+              className={styles.blueRunner}
+              unoptimized
+            />
+          )}
+        </div>
       </div>
 
       {/* Stage 2: Vote */}
@@ -122,7 +133,18 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
       {/* Connector 2 */}
       <div className={`${styles.connector} ${isStage2Done ? styles.connectorDone : ''} ${isStage2Waiting ? styles.connectorAnimated : ''}`}>
-        <div className={styles.connectorLine} />
+        <div className={styles.connectorLine}>
+          {isStage2Waiting && (
+            <Image
+              src="/icons/bluescanner.png"
+              alt="Blue"
+              width={32}
+              height={32}
+              className={styles.blueRunner}
+              unoptimized
+            />
+          )}
+        </div>
       </div>
 
       {/* Stage 3: Outcome */}

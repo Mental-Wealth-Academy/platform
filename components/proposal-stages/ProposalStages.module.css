@@ -148,6 +148,23 @@
   100% { left: 100%; }
 }
 
+.blueRunner {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  animation: blueRun 2s ease-in-out infinite;
+  z-index: 1;
+  image-rendering: pixelated;
+}
+
+@keyframes blueRun {
+  0% { left: -16px; }
+  100% { left: calc(100% - 16px); }
+}
+
 @keyframes borderPulse {
   0%, 100% { border-color: rgba(139, 92, 246, 0.5); }
   50% { border-color: rgba(139, 92, 246, 0.2); }
@@ -171,5 +188,10 @@
   .connector {
     margin-bottom: 22px;
     padding: 0 4px;
+  }
+
+  .blueRunner {
+    width: 24px;
+    height: 24px;
   }
 }
