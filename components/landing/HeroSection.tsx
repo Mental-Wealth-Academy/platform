@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
           <Image src="https://i.imgur.com/VhmwZEG.png" alt="" width={200} height={200} className={styles.heroStarform} />
           <h1 className={styles.heroHeadline}>A Better Path <em>For You</em></h1>
           <p className={styles.heroSubtext}>
-            Join a spiritual cohort that exists in the realm of cyberspace, a structured interactive story that builds your character as you grow.
+            An app that helps people build cognitively better behaviors and beliefs, to unlock their full potential.
           </p>
           <button
             type="button"
