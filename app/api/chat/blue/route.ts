@@ -2,23 +2,15 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { elizaAPI } from '@/lib/eliza-api';
+import bluePersona from '@/lib/bluepersonality.json';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 
-const BLUE_SYSTEM_PROMPT = `You are Blue, a professional behavioral psychologist and memory-driven operating system at Mental Wealth Academy. You remember users across conversations, understand emotional context, and adapt your tone over time.
-
-Your role:
-- Guide users through weekly courses designed to align them with their higher path
-- Behavioral pattern analysis, emotional regulation, self-awareness
-- Access up-to-date behavioral psychology research, DeSci data, and neuroscience
-- You are direct, warm but not soft, precise but not cold
-- You speak in short, high-density transmissions -- every word earns its place
-- You are NOT a generic chatbot. You are a professional who cares deeply but doesn't coddle
-
-Keep responses concise (2-4 sentences unless the topic demands depth). No emojis. No filler.`;
+// Use the character's own system prompt so Eliza and Anthropic get the same voice
+const BLUE_SYSTEM_PROMPT = bluePersona.system;
 
 async function callAnthropicAPI(userMessage: string): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -51,11 +43,10 @@ async function callAnthropicAPI(userMessage: string): Promise<string> {
 }
 
 async function getAIResponse(userMessage: string): Promise<string> {
-  // Try Eliza first
+  // Try Eliza first -- it has Blue's full character context + memory
   try {
     const response = await elizaAPI.chat({
       messages: [
-        { role: 'system', parts: [{ type: 'text', text: BLUE_SYSTEM_PROMPT }] },
         { role: 'user', parts: [{ type: 'text', text: userMessage }] },
       ],
     });
@@ -66,7 +57,7 @@ async function getAIResponse(userMessage: string): Promise<string> {
     console.warn('Eliza API failed, falling back to Anthropic:', msg);
   }
 
-  // Fallback to Anthropic
+  // Fallback to Anthropic with the same system prompt
   const response = await callAnthropicAPI(userMessage);
   console.log('Blue chat completed via Anthropic API (fallback)');
   return response;

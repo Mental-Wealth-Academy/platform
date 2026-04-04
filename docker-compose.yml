@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  blue:
+    image: elizaos/eliza:latest
+    container_name: blue-os
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./lib/bluepersonality.json:/app/characters/blue.json
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_MODEL_ID=eleven_flash_v2_5
+    command: ["--character", "/app/characters/blue.json"]

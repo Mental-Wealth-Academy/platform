@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import azuraPersona from '@/lib/Azurapersonality.json'
+import azuraPersona from '@/lib/bluepersonality.json'
 import { getCurrentUserFromRequestCookie } from '@/lib/auth'
 
 interface SurveyAnswers {
