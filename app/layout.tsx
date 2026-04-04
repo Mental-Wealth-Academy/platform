@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
     images: [
       {
-        url: 'https://i.imgur.com/D7KNpDv.jpeg',
+        url: 'https://i.imgur.com/UXQDIpt.png',
         width: 1200,
         height: 630,
         alt: 'Mental Wealth Academy - A 12-Week Micro-University',
@@ -65,19 +65,19 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
     description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
-    images: ['https://i.imgur.com/D7KNpDv.jpeg'],
+    images: ['https://i.imgur.com/UXQDIpt.png'],
   },
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: 'https://i.imgur.com/D7KNpDv.jpeg',
+      imageUrl: 'https://i.imgur.com/UXQDIpt.png',
       button: {
         title: 'Launch Mental Wealth Academy',
         action: {
           type: 'launch_miniapp',
           name: 'Mental Wealth Academy',
           url: APP_URL,
-          splashImageUrl: 'https://i.imgur.com/D7KNpDv.jpeg',
+          splashImageUrl: 'https://i.imgur.com/vJeuvKU.png',
           splashBackgroundColor: '#000000',
         },
       },

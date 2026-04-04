@@ -12,21 +12,21 @@ export async function GET() {
       name: "Mental Wealth Academy",
       homeUrl: URL,
       iconUrl: `${URL}/icons/mentalwealth-academy-logo.png`,
-      splashImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
+      splashImageUrl: "https://i.imgur.com/vJeuvKU.png",
       splashBackgroundColor: "#000000",
       webhookUrl: `${URL}/api/webhook`,
       subtitle: "Next Gen Micro-University",
       description: "Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.",
       screenshotUrls: [
-        "https://i.imgur.com/D7KNpDv.jpeg"
+        "https://i.imgur.com/UXQDIpt.png"
       ],
       primaryCategory: "education",
       tags: ["education", "learning", "blockchain", "web3", "academy"],
-      heroImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
+      heroImageUrl: "https://i.imgur.com/UXQDIpt.png",
       tagline: "Learn and Earn Together",
       ogTitle: "Mental Wealth Academy",
       ogDescription: "Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.",
-      ogImageUrl: "https://i.imgur.com/D7KNpDv.jpeg",
+      ogImageUrl: "https://i.imgur.com/UXQDIpt.png",
       noindex: false
     }
   });
