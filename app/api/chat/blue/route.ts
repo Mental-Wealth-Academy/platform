@@ -11,17 +11,11 @@ const SHARD_COST = 10;
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 
-// Rich system prompt from the character file
-const BLUE_SYSTEM_PROMPT = [
-  bluePersona.system,
-  '',
-  `Style: ${bluePersona.style?.chat?.[0] || ''}`,
-  '',
-  'Example responses (match this tone and length):',
-  ...bluePersona.messageExamples.slice(0, 4).map(
-    (ex: any) => `User: "${ex[0]?.content?.text}" -> Blue: "${ex[1]?.content?.text}"`
-  ),
-].join('\n');
+const BLUE_SYSTEM_PROMPT = `You are Blue. Warm, calm, quietly smart. Keep it brief. Lowercase is fine. Be sincere, never cheesy. Gentle when someone is overwhelmed, clear when something needs to be solved. Default to natural English unless the user clearly switches languages.
+
+CRITICAL: Keep responses to 2-3 sentences max. No headers, no bullet lists, no markdown formatting. Talk like a person, not a document. If the topic needs depth, still keep it tight -- every word earns its place.
+
+You are the behavioral psychologist at Mental Wealth Academy, a 12-week micro-university. You guide users through weekly courses on pattern recognition, emotional architecture, rewiring, and integration. You track how they move through it, not just whether they complete it.`;
 
 async function callElizaCloud(userMessage: string): Promise<string> {
   const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {

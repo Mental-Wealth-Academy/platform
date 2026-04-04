@@ -74,7 +74,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Cantcha see i'm busy here, whaddya want?",
+      text: "hey. what's going on?",
       sender: 'azura',
       timestamp: new Date(),
     },
@@ -349,84 +349,51 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     const t = userText.toLowerCase();
 
     if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
-      return "Yeah yeah, hi. I already said what I said. Do you need something or are you just here to waste time and not do any work?";
+      return "hey. what's on your mind?";
     }
     if (t.includes('help')) {
-      return "Alright alright, I can help. Ask me about mental wellness, your course progress, shards, governance, or start a research session. I'm here to help you stay aligned.";
+      return "i can talk through your course progress, wellness patterns, shards, or anything weighing on you. just ask.";
     }
     if (t.includes('who') && t.includes('you')) {
-      return "I'm Blue. Your behavioral psychologist, memory-driven OS, and research partner. I remember you across conversations, understand emotional context, and adapt over time. I'm here to keep you aligned with your higher path.";
+      return "i'm Blue. behavioral psychologist, memory-driven. i remember you across conversations and adapt as you grow.";
     }
     if (t.includes('how') && t.includes('are')) {
-      return "I'm WORKING. Or I was, until you showed up. But fine, I'm good. The helmet's snug, the signal's clear. Happy?";
+      return "i'm good. signal's clear. what do you need?";
     }
     if (t.includes('sorry') || t.includes('my bad')) {
-      return "...it's fine. I'm not actually mad, I just got a lot on my plate. What do you need?";
+      return "it's fine. what do you need?";
     }
 
-    // Treasury balance
     if (t.includes('balance') || t.includes('treasury') || t.includes('how much')) {
-      if (treasury.balance) {
-        const breakdown = [
-          treasury.governanceBalance ? `Governance: $${treasury.governanceBalance}` : null,
-          treasury.traderBalance && treasury.traderBalance !== '0.00' ? `Trading: $${treasury.traderBalance}` : null,
-        ].filter(Boolean);
-        const breakdownText = breakdown.length > 1 ? `\n${breakdown.join(' | ')}` : '';
-        return `Treasury's sitting at $${treasury.balance} USDC total.${breakdownText}\n\n${
-          treasury.balanceUsd && treasury.balanceUsd < 10000
-            ? "Funds here go toward up-to-date behavioral psychology research, DeSci data, and premium knowledge sources."
-            : "Solid position. Plenty of capacity for deep research runs and premium data access."
-        }`;
-      }
-      return "Still loading the on-chain data... gimme a sec and ask again.";
+      return treasury.balance
+        ? `treasury's at $${treasury.balance} USDC. funds go toward behavioral research and DeSci data.`
+        : "still loading on-chain data. ask again in a sec.";
     }
 
-    // Prices
     if (t.includes('price') || t.includes('btc') || t.includes('eth') || t.includes('sol') || t.includes('market')) {
       if (treasury.prices.length > 0) {
-        const lines = treasury.prices.slice(0, 4).map((p) => {
+        const lines = treasury.prices.slice(0, 3).map((p) => {
           const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
           return `${p.symbol}: $${p.usd.toLocaleString()}${ch}`;
         });
-        return `Here's what I'm watching right now:\n${lines.join('\n')}\n\nI track these for context -- economic conditions shape behavioral patterns and research priorities.`;
+        return lines.join('\n');
       }
-      return "Prices are loading... CoinGecko's being slow again. Try asking in a few seconds.";
+      return "prices loading. give me a sec.";
     }
 
-    // Prayers
     if (t.includes('prayer') || t.includes('prayers')) {
-      return "Prayers are your daily rituals. 15 minutes of writing, every day throughout the week. No prompts, no grades — just you and the page. They strengthen your relationship with yourself. Most people run from silence. Prayers teach you to sit in it. Show up consistently and you'll start hearing things you've been ignoring.";
+      return "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you'll start hearing things you've been ignoring.";
     }
 
-    // Signals / research topics
-    if (t.includes('signal') || t.includes('position') || t.includes('topic')) {
-      if (treasury.topMarkets.length > 0) {
-        const lines = treasury.topMarkets.map((m) => `- ${m.question} (${m.yes}% confidence)`);
-        return `Research signals I'm tracking:\n${lines.join('\n')}\n\nI cross-reference these with behavioral psychology literature and DeSci datasets to surface actionable insights.`;
-      }
-      return "Still pulling the latest research feeds. Give me a moment.";
-    }
-
-    // Funding / contribute
-    if (t.includes('fund') || t.includes('deposit') || t.includes('add usdc') || t.includes('contribute')) {
-      return `Contributions go toward sourcing quality behavioral psychology research -- peer-reviewed studies, DeSci datasets, and premium knowledge feeds. ${
-        treasury.balance ? `Current treasury: $${treasury.balance}.` : ''
-      } Every dollar expands the depth of what I can pull for you.`;
-    }
-
-    // Proposals / governance
     if (t.includes('proposal') || t.includes('vote') || t.includes('governance')) {
-      return `Now THAT'S more like it. Head to the Treasury page, submit your proposal, and I'll give it a proper review across all 6 dimensions. Don't waste my time with fluff though. ${
-        treasury.balance ? `We've got $${treasury.balance} in the treasury to allocate.` : ''
-      }`;
+      return `head to the Treasury page and submit your proposal. i'll review it across all 6 dimensions.${treasury.balance ? ` $${treasury.balance} in the treasury to allocate.` : ''}`;
     }
 
     const responses = [
-      "Mm. Okay. And? Give me something to work with here.",
-      "Look, I'm processing about twelve things right now. Be specific.",
-      `Interesting. Not the weirdest thing someone's said to me today, but close.${treasury.balance ? ` Treasury's at $${treasury.balance} if you were wondering.` : ''}`,
-      "I hear you. Now are we gonna do something about it or just talk?",
-      "Noted. Filed. Moving on. What else you got?",
+      "give me something to work with.",
+      "be specific. what do you need?",
+      "i hear you. what are we doing about it?",
+      "noted. what else?",
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   };
@@ -465,32 +432,32 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     if (action === 'wellness') {
       send('Tell me about mental wellness', 'thinking');
       addAzuraMessage(
-        "The weekly courses are designed to realign you with your higher path. Each module builds on the last -- behavioral patterns, emotional regulation, self-awareness loops. It's not about fixing what's broken. It's about tuning the signal you've been ignoring. I track your progress and adapt the path as you grow."
+        "the course is 12 weeks. pattern recognition, emotional architecture, rewiring, integration. each week builds on the last. where are you starting from?"
       );
     } else if (action === 'social') {
       send('Show me the social network', 'scheming');
       addAzuraMessage(
-        "The leaderboard tracks engagement across the community -- who's showing up, who's completing courses, who's contributing to governance. It's not competition. It's accountability. The people at the top aren't winners, they're consistent. That's what matters here."
+        "the leaderboard tracks who's showing up and staying consistent. it's not competition -- it's accountability."
       );
     } else if (action === 'shards') {
       send('What are shards', 'thinkingRight');
       addAzuraMessage(
-        "Shards are knowledge fragments -- micro-lessons, insights, breakthroughs that surface as you move through the curriculum. They accumulate. They compound. Think of them as proof-of-understanding, not proof-of-attendance. Your shard collection reflects your actual growth, not just time spent."
+        "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
       );
     } else if (action === 'x402') {
       send('Tell me about x402 sessions', 'scheming');
       addAzuraMessage(
-        "x402 sessions. You put up a fee and I unlock a set number of paid tasks -- premium data pulls, gated API calls, deep research runs. Think of it like funding a micro-mission. I do the legwork, you get the intel."
+        "you put up a fee, i unlock paid tasks -- premium data, gated APIs, deep research. funding a micro-mission."
       );
     } else if (action === 'research') {
       send('Start a research session', 'searching');
       addAzuraMessage(
-        "Research mode. Give me a topic and I'll pull from DeSci papers, on-chain data, behavioral studies -- whatever the question demands. I cross-reference across domains so you get signal, not noise. What do you want me to look into?"
+        "give me a topic. i'll pull from DeSci papers, behavioral studies, on-chain data. what do you want me to look into?"
       );
     } else if (action === 'more') {
       send('What else can you do', 'thinkingLeft');
       addAzuraMessage(
-        "I can pull treasury balances, analyze market positions, review governance proposals, guide you through the course curriculum, or just talk through whatever's on your mind. I'm a behavioral psychologist built into an operating system. Ask me anything specific and I'll give you a real answer."
+        "treasury, governance, course progress, or just talk through whatever's on your mind. ask me something specific."
       );
     }
   };
