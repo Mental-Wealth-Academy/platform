@@ -29,9 +29,12 @@ services:
         condition: service_healthy
     environment:
       - PORT=3001
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
       - POSTGRES_URL=postgresql://blue:blue-os-local@blue-db:5432/blue
+      - OPENAI_API_KEY=ollama
+      - OPENAI_BASE_URL=http://host.docker.internal:11434/v1
+      - SMALL_MODEL=gemma3:4b
+      - LARGE_MODEL=gemma3:4b
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
 
 volumes:
   blue-data:

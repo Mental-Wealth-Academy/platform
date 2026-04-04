@@ -2,7 +2,6 @@
 if (!process.env.POSTGRES_URL && process.env.DATABASE_URL) {
   process.env.POSTGRES_URL = process.env.DATABASE_URL;
 }
-// SECRET_SALT is needed for getSetting decryption -- use a stable default
 if (!process.env.SECRET_SALT) {
   process.env.SECRET_SALT = "blue-os-salt-mwa";
 }
@@ -21,16 +20,15 @@ import {
   type UUID,
 } from "@elizaos/core";
 
-// Use require() -- alpha ESM exports are inconsistent with Bun's resolver
-const { anthropicPlugin } = require("@elizaos/plugin-anthropic");
-const { createDatabaseAdapter, plugin: sqlPlugin } = require("@elizaos/plugin-sql");
+const { openaiPlugin } = require("@elizaos/plugin-openai");
+const { plugin: sqlPlugin } = require("@elizaos/plugin-sql");
 const { elizaClassicPlugin } = require("@elizaos/plugin-eliza-classic");
 
-// ── Load Blue character from personality file ────────────────
 import blueCharacterData from "./lib/bluepersonality.json";
 
 const PORT = parseInt(process.env.PORT || "3001", 10);
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || "";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
 const POSTGRES_URL = process.env.POSTGRES_URL || "";
 
@@ -40,17 +38,22 @@ const character: Character = createCharacter({
   name: blueCharacterData.name || "Blue",
   bio: blueCharacterData.bio || "Blue OS - behavioral psychologist at Mental Wealth Academy.",
   secrets: {
-    ANTHROPIC_API_KEY,
+    OPENAI_API_KEY,
     ELEVENLABS_API_KEY,
     POSTGRES_URL,
   },
   settings: {
     ...blueCharacterData.settings,
     POSTGRES_URL,
+    OPENAI_BASE_URL,
+    model: process.env.SMALL_MODEL || "gemma3:4b",
     secrets: {
-      ANTHROPIC_API_KEY,
+      OPENAI_API_KEY,
+      OPENAI_BASE_URL,
       ELEVENLABS_API_KEY,
       POSTGRES_URL,
+      SMALL_MODEL: process.env.SMALL_MODEL || "gemma3:4b",
+      LARGE_MODEL: process.env.LARGE_MODEL || "gemma3:4b",
     },
   },
 } as any);
@@ -64,16 +67,15 @@ async function initializeRuntime() {
   try {
     runtime = new AgentRuntime(character);
 
-    // Register SQL plugin
     runtime.registerPlugin(sqlPlugin);
 
-    if (ANTHROPIC_API_KEY) {
-      runtime.registerPlugin(anthropicPlugin);
-      elizaLogger.info("Blue server: Anthropic plugin registered");
+    if (OPENAI_API_KEY) {
+      runtime.registerPlugin(openaiPlugin);
+      elizaLogger.info(`Blue server: OpenAI plugin registered (base: ${OPENAI_BASE_URL || 'default'})`);
     } else {
       runtime.registerPlugin(elizaClassicPlugin);
       initMode = "classic";
-      elizaLogger.warn("Blue server: No ANTHROPIC_API_KEY -- using classic ELIZA fallback");
+      elizaLogger.warn("Blue server: No OPENAI_API_KEY -- using classic ELIZA fallback");
     }
 
     await runtime.initialize();
@@ -84,7 +86,6 @@ async function initializeRuntime() {
     elizaLogger.error("Blue runtime init failed:", err.message);
     initError = err.message;
 
-    // Fallback: try classic mode without SQL plugin
     try {
       runtime = new AgentRuntime(character);
       runtime.registerPlugin(elizaClassicPlugin);
@@ -103,7 +104,6 @@ async function initializeRuntime() {
 const app = express();
 app.use(express.json());
 
-// CORS
 app.use((_req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -112,24 +112,20 @@ app.use((_req, res, next) => {
   next();
 });
 
-// ── GET / ────────────────────────────────────────────────────
 app.get("/", (_req, res) => {
   res.json({
     name: character.name,
     bio: typeof character.bio === "string" ? character.bio : character.bio?.[0] || "",
     version: "1.0.0",
-    powered_by: "elizaOS",
-    framework: "Express.js",
+    powered_by: "elizaOS + Ollama",
     mode: initMode,
     endpoints: {
       "POST /chat": "Send a message and receive a response",
       "GET /health": "Health check endpoint",
-      "GET /": "This info endpoint",
     },
   });
 });
 
-// ── GET /health ──────────────────────────────────────────────
 app.get("/health", (_req, res) => {
   res.json({
     status: initError ? "degraded" : "healthy",
@@ -140,7 +136,6 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// ── POST /chat ───────────────────────────────────────────────
 app.post("/chat", async (req, res) => {
   try {
     const { message, userId: rawUserId } = req.body;
@@ -156,7 +151,6 @@ app.post("/chat", async (req, res) => {
     const userId = stringToUuid(rawUserId || uuidv4()) as UUID;
     const roomId = stringToUuid(`blue-chat-${rawUserId || userId}`) as UUID;
 
-    // Ensure entity + room exist in DB (required for foreign key constraints on logs)
     try {
       const worldId = stringToUuid("blue-world") as UUID;
       await ensureConnection(runtime, {
@@ -217,12 +211,29 @@ app.post("/chat", async (req, res) => {
 
 // ── Start ────────────────────────────────────────────────────
 async function main() {
+  // Pull Ollama model if connected to Ollama
+  if (OPENAI_BASE_URL.includes("ollama")) {
+    const ollamaHost = OPENAI_BASE_URL.replace("/v1", "");
+    const model = process.env.SMALL_MODEL || "mistral:7b";
+    elizaLogger.info(`Pulling Ollama model: ${model}...`);
+    try {
+      await fetch(`${ollamaHost}/api/pull`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: model, stream: false }),
+      });
+      elizaLogger.info(`Ollama model ${model} ready`);
+    } catch (err: any) {
+      elizaLogger.warn(`Ollama pull failed (may already exist): ${err.message}`);
+    }
+  }
+
   await initializeRuntime();
 
   app.listen(PORT, () => {
     elizaLogger.info(`Blue OS server running on port ${PORT} (${initMode} mode)`);
-    if (ANTHROPIC_API_KEY) elizaLogger.info("Anthropic: configured");
-    else elizaLogger.warn("Anthropic: NOT configured -- using classic fallback");
+    if (OPENAI_BASE_URL) elizaLogger.info(`LLM: Ollama at ${OPENAI_BASE_URL}`);
+    else elizaLogger.info("LLM: OpenAI API");
     if (ELEVENLABS_API_KEY) elizaLogger.info("ElevenLabs: configured");
     else elizaLogger.warn("ElevenLabs: NOT configured");
   });
