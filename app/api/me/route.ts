@@ -31,12 +31,13 @@ export async function GET() {
   }
 
   // Get shard count and onboarding status from database
-  const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null }>>(
-    `SELECT shard_count, selected_avatar_id FROM users WHERE id = :id LIMIT 1`,
+  const userRows = await sqlQuery<Array<{ shard_count: number; selected_avatar_id: string | null; avatar_url: string | null }>>(
+    `SELECT shard_count, selected_avatar_id, avatar_url FROM users WHERE id = :id LIMIT 1`,
     { id: user.id }
   );
   const shardCount = userRows[0]?.shard_count ?? 0;
-  const onboardingComplete = !!userRows[0]?.selected_avatar_id;
+  // Onboarding is complete if user picked a platform avatar OR has an external avatar (e.g. Farcaster pfp)
+  const onboardingComplete = !!userRows[0]?.selected_avatar_id || !!userRows[0]?.avatar_url;
 
   // Get event reservations (event slugs)
   const reservationRows = await sqlQuery<Array<{ slug: string }>>(
