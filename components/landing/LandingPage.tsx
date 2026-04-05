@@ -1,4 +1,3 @@
-import { LandingScene } from './LandingScene';
 import { LandingHeader } from './LandingHeader';
 import { HeroSection } from './HeroSection';
 import { DonationPopup } from './DonationPopup';
@@ -20,9 +19,6 @@ const LandingPage = () => {
     <div className={styles.container}>
       {/* Header - Logo and CTAs */}
       <LandingHeader />
-
-      {/* 3D Scene - Client component, loads after LCP */}
-      <LandingScene />
 
       {/* Hero Section - Centered headline and CTA */}
       <HeroSection />

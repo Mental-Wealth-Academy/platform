@@ -1,14 +1,8 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useCallback, Suspense } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './page.module.css';
-
-const Scene = dynamic(() => import('@/components/landing/Scene'), {
-  ssr: false,
-  loading: () => null,
-});
 
 const NAV_ITEMS = [
   {
@@ -34,16 +28,12 @@ const NAV_ITEMS = [
 ];
 
 export default function LearnPage() {
-  const [showScene, setShowScene] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeId, setActiveId] = useState<string>('wealth');
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      setShowScene(true);
-      setTimeout(() => setIsLoaded(true), 100);
-    });
+    requestAnimationFrame(() => setIsLoaded(true));
   }, []);
 
   const setupObserver = useCallback(() => {
@@ -84,14 +74,8 @@ export default function LearnPage() {
 
   return (
     <div className={styles.page}>
-      {/* Three.js Background */}
-      <div className={styles.canvas}>
-        {showScene && (
-          <Suspense fallback={null}>
-            <Scene />
-          </Suspense>
-        )}
-      </div>
+      {/* Background */}
+      <div className={styles.canvas} />
 
       {/* Back to home */}
       <a href="/" className={styles.backLink}>

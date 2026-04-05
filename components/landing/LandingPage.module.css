@@ -4,15 +4,13 @@
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: #f4f5fe;
 }
 
 
-/* Hero Section - Centered layout over 3D scene */
+/* Hero Section - Centered layout */
 .heroSection {
-  position: absolute;
-  top: 44vh;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -20,8 +18,8 @@
   justify-content: center;
   max-width: 900px;
   width: 100%;
-  padding: 0 48px;
-  pointer-events: auto;
+  margin: 0 auto;
+  padding: 120px 48px 60px;
   box-sizing: border-box;
 }
 
@@ -46,7 +44,7 @@
   line-height: 1.15;
   margin: 0 0 12px 0;
   letter-spacing: 0em;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   text-transform: uppercase;
   animation: heroFadeUp 0.45s ease-out both;
 }
@@ -58,7 +56,7 @@
   line-height: 1.4;
   margin: 0 0 20px 0;
   letter-spacing: 0.04em;
-  color: rgba(26, 29, 51, 0.75);
+  color: rgba(26, 29, 51, 0.8);
   animation: heroFadeUp 0.45s ease-out 0.12s both;
 }
 
@@ -69,7 +67,7 @@
   font-weight: 400;
   line-height: 1.65;
   margin: 0 0 32px 0;
-  color: rgba(26, 29, 51, 0.55);
+  color: rgba(26, 29, 51, 0.65);
   max-width: 540px;
   animation: heroFadeUp 0.45s ease-out 0.25s both;
 }
@@ -227,7 +225,7 @@
   font-family: var(--font-primary);
   font-size: 17px;
   font-weight: 600;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   margin: 0;
 }
 
@@ -236,7 +234,7 @@
   padding: 14px 16px;
   font-family: var(--font-primary);
   font-size: 16px;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   background: #ffffff;
   border: 2px solid rgba(81, 104, 255, 0.2);
   border-radius: 12px;
@@ -391,24 +389,7 @@
 }
 
 .canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 0;
-  background-color: rgba(248, 247, 255, 0.80);
-  pointer-events: none;
-}
-
-.canvas::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('/azurabeauty.png') center / cover no-repeat;
-  opacity: 0.6;
-  z-index: 1;
-  pointer-events: none;
+  display: none;
 }
 
 .cardsContainer {
@@ -458,7 +439,7 @@
   gap: 6px;
   font-family: var(--font-primary);
   font-size: 13px;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   white-space: nowrap;
   line-height: 1.4;
 }
@@ -531,7 +512,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--color-background);
+  background: #f4f5fe;
   mix-blend-mode: none;
   opacity: 0.0;
   z-index: 2;
@@ -750,7 +731,7 @@
 }
 
 .loginTitle {
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-family: var(--font-primary);
   font-size: 32px;
   font-weight: var(--font-weight-bold);
@@ -771,7 +752,7 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-size: 16px;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-primary);
@@ -838,7 +819,7 @@
   padding: 0 12px;
   font-family: var(--font-primary);
   font-size: 14px;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   opacity: 0.7;
 }
 
@@ -904,7 +885,7 @@
   padding: 0 16px;
   font-family: var(--font-primary);
   font-size: 13px;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   opacity: 0.6;
 }
 
@@ -924,7 +905,7 @@
 }
 
 .heading {
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-family: var(--font-primary);
   font-size: 30px;
   font-weight: var(--font-weight-bold);
@@ -990,7 +971,7 @@
 
 .label {
   display: block;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-size: 14px;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-primary);
@@ -1074,7 +1055,7 @@
 }
 
 .checkboxLabel {
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-size: 14px;
   font-family: var(--font-primary);
   cursor: pointer;
@@ -1343,7 +1324,7 @@
 
 .signupLink {
   text-align: left;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   font-size: 12px;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-secondary);
@@ -1374,7 +1355,7 @@
 
 .termsText {
   text-align: left;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   opacity: 0.7;
   font-size: 11px;
   font-family: var(--font-primary);
@@ -1680,7 +1661,7 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.02rem;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   margin: 0 0 16px 0;
   border-radius: 4px;
 }
@@ -1947,7 +1928,7 @@
 .opportunitySection {
   position: relative;
   width: 100%;
-  background-color: var(--color-background);
+  background-color: #f4f5fe;
   padding: 48px 0;
   z-index: 1;
 }
@@ -2085,7 +2066,7 @@
   font-size: 1rem;
   line-height: 1.4;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-dark);
+  color: #1A1D33;
   margin: 0 0 16px 0;
 }
 
@@ -2105,7 +2086,7 @@
   font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   margin: 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -2140,7 +2121,7 @@
   line-height: 1.2;
   font-weight: var(--font-weight-semibold);
   letter-spacing: -0.02em;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   margin: 0;
   padding: 0 16px;
 }
@@ -2182,7 +2163,7 @@
   font-family: var(--font-primary);
   font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   line-height: 1.6;
   margin: 0;
 }
@@ -2246,7 +2227,7 @@
   font-family: var(--font-primary);
   font-weight: var(--font-weight-regular);
   font-size: 0.875rem;
-  color: var(--color-text-dark);
+  color: #1A1D33;
   line-height: 1.6;
   margin: 0;
 }
