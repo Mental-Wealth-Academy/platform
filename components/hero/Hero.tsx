@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
           <div className={styles.heroBackground}></div>
           <div className={styles.logoContainer}>
             <Image
-              src="/icons/spacey2klogo.png"
+              src="/icons/logo-spacey2k.png"
               alt="Spacey2k Logo"
               width={400}
               height={400}

@@ -288,7 +288,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
           <div className={styles.rewardBadge}>
             <div className={styles.rewardIcon}>
               <Image
-                src={reward.icon || '/icons/Coin Poly.svg'}
+                src={reward.icon || '/icons/ui-coin.svg'}
                 alt={reward.title}
                 width={32}
                 height={32}
@@ -315,7 +315,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>Reward</span>
               <span className={styles.detailValue}>
-                <Image src="/icons/Coin Poly.svg" alt="Daemon" width={14} height={14} />
+                <Image src="/icons/ui-coin.svg" alt="Daemon" width={14} height={14} />
                 {reward.points} Daemon
               </span>
             </div>

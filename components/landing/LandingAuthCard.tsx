@@ -31,7 +31,7 @@ export const LandingAuthCard: React.FC = () => {
           <div className={styles.loginHeader}>
             <div className={styles.logoContainer}>
               <Image
-                src="/icons/spacey2klogo.png"
+                src="/icons/logo-spacey2k.png"
                 alt="Logo"
                 width={150}
                 height={138}

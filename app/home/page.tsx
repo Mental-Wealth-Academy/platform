@@ -379,7 +379,7 @@ export default function HomePage() {
           <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={() => setShowLeaderboard(false)}>&times;</button>
             <div className={styles.modalHeader}>
-              <Image src="/icons/shard.svg" alt="" width={28} height={28} />
+              <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
               <div>
                 <strong className={styles.modalTitle}>TOP ACADEMICS</strong>
                 <span className={styles.modalSub}>

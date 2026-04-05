@@ -172,7 +172,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             <h3 className={styles.title}>{title}</h3>
           </div>
           <Image
-            src="/icons/academybadge.png"
+            src="/icons/badge-academy.png"
             alt="Shard"
             width={44}
             height={44}

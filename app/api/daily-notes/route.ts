@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
+import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-// Daily notes are stored in ethereal_progress with week_number = 99
-const DAILY_NOTES_WEEK = 99;
 
 /**
  * GET /api/daily-notes
@@ -24,13 +22,13 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
 
-  await ensureEtherealProgressSchema();
+  await ensurePrayersSchema();
 
   const rows = await sqlQuery<Array<{ progress_data: any }>>(
-    `SELECT progress_data FROM ethereal_progress
-     WHERE user_id = :userId AND week_number = :week
+    `SELECT progress_data FROM prayers
+     WHERE user_id = :userId
      LIMIT 1`,
-    { userId: user.id, week: DAILY_NOTES_WEEK }
+    { userId: user.id }
   );
 
   if (rows.length === 0) {
@@ -69,7 +67,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
 
-  await ensureEtherealProgressSchema();
+  await ensurePrayersSchema();
 
   let body: { allWeekPages: Record<string, unknown[]> };
   try {
@@ -84,11 +82,11 @@ export async function POST(request: Request) {
   const progressData = JSON.stringify({ encrypted: true, data: encrypted });
 
   await sqlQuery(
-    `INSERT INTO ethereal_progress (id, user_id, week_number, progress_data)
-     VALUES (gen_random_uuid()::text, :userId, :week, :progressData::jsonb)
-     ON CONFLICT (user_id, week_number)
+    `INSERT INTO prayers (id, user_id, progress_data)
+     VALUES (gen_random_uuid()::text, :userId, :progressData::jsonb)
+     ON CONFLICT (user_id)
      DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP`,
-    { userId: user.id, week: DAILY_NOTES_WEEK, progressData }
+    { userId: user.id, progressData }
   );
 
   return NextResponse.json({ ok: true });

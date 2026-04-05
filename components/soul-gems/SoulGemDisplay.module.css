@@ -47,11 +47,11 @@
   }
 }
 
-/* Azura Power Indicator - Compact Bento Style */
+/* Blue Power Indicator - Compact Bento Style */
 .azuraPower {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   padding: 16px;
   background: var(--color-background);
   border: 2px solid #ffffff;
@@ -62,14 +62,48 @@
   min-width: 180px;
 }
 
-.azuraPower > div:first-child {
+.treasuryHeader {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.azuraPower > div:last-child {
-  margin-top: 2px;
+.treasuryAmount {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.treasuryLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.powerRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.votingPowerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .azuraAvatar {
@@ -135,13 +169,14 @@
 .votingPowerSection {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .votingPowerValue {
   font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 28px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--color-primary);
   line-height: 1;
@@ -217,28 +252,28 @@
 
 @media (max-width: 768px) {
   .azuraPower {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
     padding: 12px;
-    gap: 8px;
+    gap: 10px;
     min-width: 0;
   }
 
-  .azuraPower > div:first-child {
+  .treasuryAmount {
+    font-size: 28px;
+  }
+
+  .powerRow {
     flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .azuraAvatar {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
   }
 
   .azuraName {
     font-size: 12px;
-    justify-content: center;
   }
 
   .copyButton {
@@ -249,17 +284,8 @@
     font-size: 8px;
   }
 
-  .viewWalletButton {
-    width: 100%;
-    justify-content: center;
-  }
-
   .votingPowerValue {
-    font-size: 22px;
-  }
-
-  .votingPowerDesc {
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 
@@ -286,6 +312,6 @@
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-:global([data-theme="dark"]) .votingPowerDesc {
-  color: rgba(227, 225, 238, 0.55);
+:global([data-theme="dark"]) .treasuryLabel {
+  color: rgba(227, 225, 238, 0.4);
 }

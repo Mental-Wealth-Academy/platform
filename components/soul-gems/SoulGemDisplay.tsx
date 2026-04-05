@@ -60,7 +60,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.gemIcon}>
-        <Image src="/icons/shard.svg" alt="DAEMON Shard" width={24} height={24} unoptimized />
+        <Image src="/icons/ui-shard.svg" alt="DAEMON Shard" width={24} height={24} unoptimized />
       </div>
       <span className={styles.amount}>{formatAmount(amount)}</span>
       {showLabel && <span className={styles.label}>{label || 'Soul Gems'}</span>}
@@ -69,7 +69,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
 };
 
 /**
- * Azura's Power Indicator with link to BaseScan
+ * Blue's Power Indicator with treasury display
  */
 interface AzuraPowerIndicatorProps {
   soulGems: string;
@@ -94,49 +94,54 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
 
   return (
     <div className={styles.azuraPower}>
-      <div>
-        <Image
-          src="https://i.imgur.com/3Y3KrnJ.png"
-          alt="Azura"
-          width={32}
-          height={32}
-          className={styles.azuraAvatar}
-          unoptimized
-        />
-        <div className={styles.azuraInfo}>
-          <h4 className={styles.azuraName}>
-            Azura
-            <span className={styles.aiTag}>Voting Power</span>
-            <button
-              className={styles.copyButton}
-              onClick={() => { play('click'); handleCopy(); }}
-              onMouseEnter={() => play('hover')}
-              title={copied ? 'Copied!' : `Copy address: ${walletAddress}`}
-              type="button"
-            >
-              {copied ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" />
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                </svg>
-              )}
-            </button>
-          </h4>
-        </div>
+      <div className={styles.treasuryHeader}>
+        <span className={styles.treasuryAmount}>$5,200</span>
+        <span className={styles.treasuryLabel}>Treasury</span>
       </div>
-      <div className={styles.votingPowerSection}>
-        <span className={styles.votingPowerValue}>{votingPower}%</span>
-        <div className={styles.votingBar}>
-          <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
-          <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
+      <div className={styles.powerRow}>
+        <div className={styles.avatarSection}>
+          <Image
+            src="https://i.imgur.com/3Y3KrnJ.png"
+            alt="Blue"
+            width={32}
+            height={32}
+            className={styles.azuraAvatar}
+            unoptimized
+          />
+          <div className={styles.azuraInfo}>
+            <h4 className={styles.azuraName}>
+              Blue
+              <button
+                className={styles.copyButton}
+                onClick={() => { play('click'); handleCopy(); }}
+                onMouseEnter={() => play('hover')}
+                title={copied ? 'Copied!' : `Copy address: ${walletAddress}`}
+                type="button"
+              >
+                {copied ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                  </svg>
+                )}
+              </button>
+            </h4>
+          </div>
         </div>
-        <p className={styles.votingPowerDesc}>
-          Azura&apos;s voting power is currently at {votingPower}%, which is similar to yesterday about this time.
-        </p>
+        <div className={styles.votingPowerSection}>
+          <div className={styles.votingPowerHeader}>
+            <span className={styles.aiTag}>Voting Power</span>
+            <span className={styles.votingPowerValue}>{votingPower}%</span>
+          </div>
+          <div className={styles.votingBar}>
+            <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
+            <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ ALTER TABLE forum_threads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE forum_posts ENABLE ROW LEVEL SECURITY;
 
 -- Enable RLS on Quest Completions table
-ALTER TABLE quest_completions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE quests ENABLE ROW LEVEL SECURITY;
 
 -- Enable RLS on X Accounts table
 ALTER TABLE x_accounts ENABLE ROW LEVEL SECURITY;

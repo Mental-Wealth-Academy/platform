@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
   description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
   icons: {
-    icon: '/icons/mentalwealth-academy-logo.png',
+    icon: '/icons/logo-mwa.png',
   },
   openGraph: {
     title: 'Mental Wealth Academy',

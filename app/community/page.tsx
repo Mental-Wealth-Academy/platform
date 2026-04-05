@@ -67,7 +67,7 @@ interface MergedProposal extends DatabaseProposal {
 
 const getTutorialSteps = (): TutorialStep[] => [
   {
-    message: 'Hey there! Welcome to the Decision Room. I\'m Azura, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
+    message: 'Hey there! Welcome to the Decision Room. I\'m Blue, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
     emotion: 'happy',
   },
   {
@@ -244,14 +244,26 @@ export default function VotingPage() {
           <div className={styles.statCardsRow}>
             <div className={styles.statCardCompact}>
               <button
-                className={styles.secondaryCta}
+                className={styles.exchangeCard}
                 onClick={() => { play('click'); setIsSwapOpen(true); }}
                 onMouseEnter={() => play('hover')}
                 type="button"
               >
-                <span className={styles.exchangeLabel}>Exchange Data</span>
-                <span className={styles.exchangePrice}>Price: 0.033</span>
-                <span className={styles.exchangeAddress}>0x84939...EA6F</span>
+                <div className={styles.exchangeCardInner}>
+                  <div className={styles.exchangeCardHeader}>
+                    <span className={styles.exchangeLabel}>Exchange</span>
+                    <span className={styles.exchangeLive}>LIVE</span>
+                  </div>
+                  <div className={styles.exchangePriceRow}>
+                    <span className={styles.exchangePriceValue}>0.033</span>
+                    <span className={styles.exchangePriceCurrency}>USDC</span>
+                  </div>
+                  <div className={styles.exchangeFooter}>
+                    <span className={styles.exchangeAddress}>0x84939...EA6F</span>
+                    <span className={styles.exchangeAction}>Swap</span>
+                  </div>
+                </div>
+                <div className={styles.exchangeGlow} />
               </button>
             </div>
             <div className={styles.statCardCompact}>

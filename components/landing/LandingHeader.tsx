@@ -64,7 +64,7 @@ export const LandingHeader: React.FC = () => {
       <div className={styles.headerContent}>
         <a href="/" className={styles.logoLink}>
           <Image
-            src="/icons/mwa-logo-horizontal.png"
+            src="/icons/logo-mwa-horizontal.png"
             alt="Mental Wealth Academy"
             width={160}
             height={58}

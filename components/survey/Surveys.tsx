@@ -405,7 +405,7 @@ export default function Surveys() {
               <div className={styles.surveyCardContent}>
                 <div className={styles.surveyCardIconBox}>
                   <Image 
-                    src="/icons/Survey.svg" 
+                    src="/icons/survey.svg" 
                     alt="Survey icon" 
                     width={48}
                     height={48}

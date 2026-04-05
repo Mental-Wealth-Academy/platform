@@ -611,7 +611,7 @@ export default function Markets() {
           )}
           <div className={styles.statsGroup}>
             <div className={styles.statItem}>
-              <Image src="/icons/shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
+              <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.shardIcon} />
               <span className={styles.statValue}>{mounted ? balance.toLocaleString() : '...'}</span>
             </div>
             <div className={styles.statDivider} />

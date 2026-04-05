@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   try {
     // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
-      `SELECT id FROM quest_completions
+      `SELECT id FROM quests
        WHERE user_id = :userId AND quest_id = :questId
        LIMIT 1`,
       { userId: user.id, questId }
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       // Re-check inside transaction to prevent race conditions
       const dupeCheck = await sqlQueryWithClient<Array<{ id: string }>>(
         client,
-        `SELECT id FROM quest_completions
+        `SELECT id FROM quests
          WHERE user_id = :userId AND quest_id = :questId
          LIMIT 1`,
         { userId: user.id, questId }
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       const completionId = uuidv4();
       await sqlQueryWithClient(
         client,
-        `INSERT INTO quest_completions (id, user_id, quest_id, shards_awarded)
+        `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
          VALUES (:id, :userId, :questId, :shards)`,
         { id: completionId, userId: user.id, questId, shards: shardsToAward }
       );

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
-import { ensureEventsSchema } from '@/lib/ensureEventsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { getWalletAddressFromRequest } from '@/lib/wallet-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
@@ -13,7 +12,6 @@ export async function GET() {
     return NextResponse.json({ user: null, dbConfigured: false });
   }
   await ensureForumSchema();
-  await ensureEventsSchema();
 
   const user = await getCurrentUserFromRequestCookie();
   if (!user) {
@@ -39,16 +37,6 @@ export async function GET() {
   // Onboarding is complete if user picked a platform avatar OR has an external avatar (e.g. Farcaster pfp)
   const onboardingComplete = !!userRows[0]?.selected_avatar_id || !!userRows[0]?.avatar_url;
 
-  // Get event reservations (event slugs)
-  const reservationRows = await sqlQuery<Array<{ slug: string }>>(
-    `SELECT e.slug 
-     FROM event_reservations er
-     JOIN events e ON er.event_id = e.id
-     WHERE er.user_id = :userId`,
-    { userId: user.id }
-  );
-  const eventReservations = reservationRows.map(row => row.slug);
-
   return NextResponse.json({
     user: {
       id: user.id,
@@ -56,7 +44,6 @@ export async function GET() {
       avatarUrl: user.avatarUrl,
       shardCount,
       onboardingComplete,
-      eventReservations,
       createdAt: user.createdAt,
     },
     dbConfigured: true,

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
+import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,7 +20,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
 
-  await ensureEtherealProgressSchema();
+  await ensureWeeksSchema();
 
   const rows = await sqlQuery<Array<{
     week_number: number;
@@ -29,7 +29,7 @@ export async function GET() {
     updated_at: string;
   }>>(
     `SELECT week_number, is_sealed, seal_tx_hash, updated_at
-     FROM ethereal_progress
+     FROM weeks
      WHERE user_id = :userId
      ORDER BY week_number ASC`,
     { userId: user.id }

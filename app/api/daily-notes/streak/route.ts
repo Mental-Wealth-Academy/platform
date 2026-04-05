@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { ensureEtherealProgressSchema } from '@/lib/ensureEtherealProgressSchema';
+import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { decryptForUser } from '@/lib/encrypt';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const DAILY_NOTES_WEEK = 99;
 
 interface MorningPageEntry {
   day: number;
@@ -30,13 +28,13 @@ export async function GET() {
     return NextResponse.json({ streak: 0, completedDays: [] });
   }
 
-  await ensureEtherealProgressSchema();
+  await ensurePrayersSchema();
 
   const rows = await sqlQuery<Array<{ progress_data: any }>>(
-    `SELECT progress_data FROM ethereal_progress
-     WHERE user_id = :userId AND week_number = :week
+    `SELECT progress_data FROM prayers
+     WHERE user_id = :userId
      LIMIT 1`,
-    { userId: user.id, week: DAILY_NOTES_WEEK }
+    { userId: user.id }
   );
 
   if (rows.length === 0) {

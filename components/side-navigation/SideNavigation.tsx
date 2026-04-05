@@ -41,19 +41,18 @@ const navSections: NavSection[] = [
     id: 'main',
     label: 'SPIRITUAL WORK',
     items: [
-      { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/home.svg' },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/gallery.svg' },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/markets.svg' },
+      { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/nav-home.svg' },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: '/icons/nav-markets.svg' },
     ],
   },
   {
     id: 'network',
     label: 'THE NETWORK',
     items: [
-      { id: 'community', label: 'Community', href: '/community', icon: '/icons/community.svg' },
-      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/shop.svg' },
-      { id: 'chapters', label: 'World', href: '/chapters', icon: '/icons/World Icon.svg' },
-      { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
+      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/nav-shop.svg' },
+{ id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -616,7 +615,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               title="Inventory"
             >
               <Image
-                src="/icons/shard.svg"
+                src="/icons/ui-shard.svg"
                 alt="Gems"
                 width={20}
                 height={20}
@@ -736,14 +735,14 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               title="Sign In"
             >
               {isCollapsed ? (
-                <Image src="/icons/plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
+                <Image src="/icons/ui-plug.svg" alt="" width={18} height={18} style={{ filter: 'invert(1)' }} />
               ) : (
                 <>
                   <span className={styles.slideTextWrap}>
                     <span className={styles.slideText}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
                     <span className={`${styles.slideText} ${styles.slideTextClone}`}>{isCreatingSession ? 'Connecting...' : 'Sign In'}</span>
                   </span>
-                  <Image src="/icons/plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
+                  <Image src="/icons/ui-plug.svg" alt="" width={16} height={16} style={{ marginLeft: 6, filter: 'invert(1)' }} />
                 </>
               )}
             </button>

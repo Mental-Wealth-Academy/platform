@@ -20,7 +20,7 @@ const LOOT_TABLE: LootItem[] = [
     id: 'shards-5',
     name: '+5 Shards',
     tier: 'common',
-    image: '/icons/shard.svg',
+    image: '/icons/ui-shard.svg',
     description: 'A small shard bonus to fuel your journey.',
     chance: 35,
   },
@@ -28,7 +28,7 @@ const LOOT_TABLE: LootItem[] = [
     id: 'shards-15',
     name: '+15 Shards',
     tier: 'uncommon',
-    image: '/icons/shard.svg',
+    image: '/icons/ui-shard.svg',
     description: 'A generous shard drop. Keep spinning!',
     chance: 25,
   },
@@ -257,7 +257,7 @@ const LootBoxModal: React.FC<LootBoxModalProps> = ({ isOpen, onClose, shardCount
           >
             {spinning ? 'Spinning...' : 'Spin'}
             <span className={styles.costBadge}>
-              <Image src="/icons/shard.svg" alt="" width={14} height={14} className={styles.costIcon} />
+              <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.costIcon} />
               {SPIN_COST}
             </span>
           </button>

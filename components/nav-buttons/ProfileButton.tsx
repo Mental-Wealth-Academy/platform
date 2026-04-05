@@ -25,7 +25,7 @@ const ProfileButton: React.FC = () => {
       >
         <span className={styles.buttonText}>Your impact</span>
         <Image 
-          src="/icons/Teleport.svg" 
+          src="/icons/nav-teleport.svg" 
           alt="Impact" 
           width={20}
           height={20}

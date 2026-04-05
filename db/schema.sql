@@ -150,7 +150,7 @@ CREATE TRIGGER update_forum_threads_updated_at
 -- ============================================================================
 
 -- Quest completions table - Tracks user quest progress
-CREATE TABLE quest_completions (
+CREATE TABLE quests (
   id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
   user_id CHAR(36) NOT NULL,
   quest_id VARCHAR(255) NOT NULL,
@@ -161,8 +161,8 @@ CREATE TABLE quest_completions (
 );
 
 -- Quest indexes
-CREATE INDEX idx_quest_completions_user_id ON quest_completions(user_id);
-CREATE INDEX idx_quest_completions_quest_id ON quest_completions(quest_id);
+CREATE INDEX idx_quests_user_id ON quests(user_id);
+CREATE INDEX idx_quests_quest_id ON quests(quest_id);
 
 -- ============================================================================
 -- SOCIAL INTEGRATIONS (Optional - For Future Features)
@@ -218,7 +218,7 @@ ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE forum_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE forum_threads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE forum_posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE quest_completions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE quests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE x_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE x_oauth_states ENABLE ROW LEVEL SECURITY;
 

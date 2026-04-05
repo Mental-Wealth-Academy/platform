@@ -28,7 +28,7 @@ export async function POST() {
   try {
     // Check if quest already completed
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
-      `SELECT id FROM quest_completions 
+      `SELECT id FROM quests 
        WHERE user_id = :userId AND quest_id = :questId 
        LIMIT 1`,
       { userId: user.id, questId: TWITTER_FOLLOW_QUEST_ID }
@@ -198,7 +198,7 @@ export async function POST() {
 
     const completionId = uuidv4();
     await sqlQuery(
-      `INSERT INTO quest_completions (id, user_id, quest_id, shards_awarded)
+      `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
        VALUES (:id, :userId, :questId, :shards)`,
       { id: completionId, userId: user.id, questId: TWITTER_FOLLOW_QUEST_ID, shards: SHARD_REWARD }
     );

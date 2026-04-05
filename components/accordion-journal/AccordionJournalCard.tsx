@@ -991,7 +991,7 @@ export default function AccordionJournalCard({
         <div className={styles.cardFaceRight}>
           {!isSealed && !isLocked && (
             <span className={styles.shardBadge} title="Earn 700 shards for sealing this week">
-              <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
+              <Image src="/icons/ui-shard.svg" alt="shard" width={14} height={14} />
               +700
             </span>
           )}
@@ -1013,7 +1013,7 @@ export default function AccordionJournalCard({
               />
             </svg>
             {isSealed ? (
-              <img src="/icons/seal.svg" className={styles.sealedIcon} width="16" height="16" alt="shield" />
+              <img src="/icons/ui-seal.svg" className={styles.sealedIcon} width="16" height="16" alt="shield" />
             ) : (
               <span className={styles.progressText}>{completedCount}/{totalSections}</span>
             )}
@@ -1115,7 +1115,7 @@ export default function AccordionJournalCard({
           {isSealed ? (
             <div className={styles.sealedInfo}>
               <div className={styles.sealedBadge}>
-                <img src="/icons/seal.svg" width="20" height="20" alt="shield" />
+                <img src="/icons/ui-seal.svg" width="20" height="20" alt="shield" />
                 <span>Week Sealed on Base</span>
               </div>
               <p className={styles.sealedDetails}>
@@ -1169,7 +1169,7 @@ export default function AccordionJournalCard({
                 onMouseEnter={() => play('hover')}
                 disabled={!canSeal}
               >
-                <img src="/icons/seal.svg" width="18" height="18" alt="shield" />
+                <img src="/icons/ui-seal.svg" width="18" height="18" alt="shield" />
                 Seal the Week
               </button>
             </>
@@ -1248,7 +1248,7 @@ export default function AccordionJournalCard({
               {sealStep === 'complete' && (
                 <div className={styles.sealComplete}>
                   <div className={styles.sealCompleteIcon}>
-                    <img src="/icons/seal.svg" width="48" height="48" alt="shield" />
+                    <img src="/icons/ui-seal.svg" width="48" height="48" alt="shield" />
                   </div>
                   <p className={styles.sealCompleteText}>
                     Your creative journey for Week {weekNumber} is now permanently attested on Base.
@@ -1275,7 +1275,7 @@ export default function AccordionJournalCard({
                     className={styles.sealModalConfirm}
                     onClick={() => { play('celebration'); handleSealWeek(); }}
                   >
-                    <img src="/icons/seal.svg" width="16" height="16" alt="shield" />
+                    <img src="/icons/ui-seal.svg" width="16" height="16" alt="shield" />
                     Seal with Azura
                   </button>
                 </>

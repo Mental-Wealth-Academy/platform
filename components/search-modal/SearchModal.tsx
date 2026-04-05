@@ -13,7 +13,7 @@ interface SearchModalProps {
 // Arrow Icon Component
 const ArrowIcon = () => (
   <Image
-    src="/icons/Arrow.svg"
+    src="/icons/ui-arrow.svg"
     alt="Arrow"
     width={24}
     height={24}
@@ -151,13 +151,13 @@ export function SearchModal({ isOpen, onClose, searchContainerRef }: SearchModal
         <SearchResult
           title="Company Data: Policy"
           description="Analysis of educational bridge data. Daemon-mirror S1, portable node."
-          imageUrl="/icons/CompanyLogo1.png"
+          imageUrl="/icons/logo-company-1.png"
           buttonVariant="light"
         />
         <SearchResult
           title="Foundational Blockchain"
           description="Enables stablecoins, agentkit data. CCTP-based, cross-chain swap auction protocol."
-          imageUrl="/icons/CompanyLogo2.png"
+          imageUrl="/icons/logo-company-2.png"
           buttonVariant="dark"
         />
       </div>

@@ -9,21 +9,21 @@ const LibraryCard: React.FC = () => {
         <span className={styles.title}>IPFS://Library</span>
         <div className={styles.icons}>
           <Image 
-            src="/icons/lovebadge.svg" 
+            src="/icons/badge-love.svg" 
             alt="Love badge" 
             width={24}
             height={24}
             className={styles.iconFrame}
           />
           <Image 
-            src="/icons/badge2.svg" 
+            src="/icons/badge-level-2.svg" 
             alt="Badge 2" 
             width={24}
             height={24}
             className={styles.iconFrame}
           />
           <Image 
-            src="/icons/badge3.svg" 
+            src="/icons/badge-level-3.svg" 
             alt="Badge 3" 
             width={24}
             height={24}

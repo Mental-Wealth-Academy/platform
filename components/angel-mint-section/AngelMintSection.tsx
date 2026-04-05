@@ -110,7 +110,7 @@ export default function AngelMintSection({ onOpenMintModal }: AngelMintSectionPr
           <div className={styles.logoTextContainer}>
             <div className={styles.logoContainer}>
               <Image
-                src="/icons/mentalwealth-academy-logo.png"
+                src="/icons/logo-mwa.png"
                 alt="Mental Wealth Academy Logo"
                 width={200}
                 height={184}

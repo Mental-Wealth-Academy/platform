@@ -307,7 +307,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               </div>
             ) : (
               <span className={styles.shardBadge} title="Earn 100 shards per day completed">
-                <Image src="/icons/shard.svg" alt="shard" width={14} height={14} />
+                <Image src="/icons/ui-shard.svg" alt="shard" width={14} height={14} />
                 +100
               </span>
             )}

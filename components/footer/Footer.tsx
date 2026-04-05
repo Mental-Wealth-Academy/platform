@@ -30,7 +30,6 @@ const data = [
     links: [
       { label: 'Features', link: '/home' },
       { label: 'Quests', link: '/quests' },
-      { label: 'Story', link: '/chapters' },
       { label: 'Support', link: 'https://mental-wealth-academy.gitbook.io/mental-wealth-academy-docs/' },
     ],
   },
@@ -87,7 +86,7 @@ export function Footer() {
       <div className={styles.inner}>
         <div className={styles.logo}>
           <Image
-            src="/icons/mentalwealth-academy-logo.png"
+            src="/icons/logo-mwa.png"
             alt="Mental Wealth Academy"
             width={180}
             height={48}

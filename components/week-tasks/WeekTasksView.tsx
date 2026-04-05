@@ -548,7 +548,7 @@ export default function WeekTasksView({
             onClick={() => { play('click'); setShowSealModal(true); }}
             onMouseEnter={() => play('hover')}
           >
-            <Image src="/icons/seal.svg" alt="" width={18} height={18} />
+            <Image src="/icons/ui-seal.svg" alt="" width={18} height={18} />
             Seal Week {weekNumber}
           </button>
           {!canSeal && (
@@ -559,7 +559,7 @@ export default function WeekTasksView({
 
       {isSealed && (
         <div className={styles.sealedBanner}>
-          <Image src="/icons/seal.svg" alt="" width={20} height={20} />
+          <Image src="/icons/ui-seal.svg" alt="" width={20} height={20} />
           <span>Week {weekNumber} sealed</span>
           {sealTxHash && (
             <span className={styles.sealedHash}>{sealTxHash.slice(0, 10)}...</span>
@@ -597,7 +597,7 @@ export default function WeekTasksView({
             )}
             {sealStep === 'complete' && (
               <div className={styles.sealModalComplete}>
-                <Image src="/icons/seal.svg" alt="" width={40} height={40} />
+                <Image src="/icons/ui-seal.svg" alt="" width={40} height={40} />
                 <h3>Week {weekNumber} Sealed</h3>
                 <p>+700 shards awarded</p>
                 <button className={styles.sealModalConfirm} onClick={() => { setShowSealModal(false); setSealStep('confirm'); }}>

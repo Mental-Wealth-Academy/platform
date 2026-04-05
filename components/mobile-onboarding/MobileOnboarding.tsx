@@ -83,7 +83,7 @@ const WelcomeScreenContent: React.FC = () => {
       {/* Mascot */}
       <div className={styles.mascotContainer}>
         <Image
-          src="/icons/mentalwealth-academy-logo.png"
+          src="/icons/logo-mwa.png"
           alt="Mental Wealth Academy"
           width={64}
           height={64}
@@ -112,7 +112,7 @@ const WelcomeScreenContent: React.FC = () => {
       <div className={styles.membershipCard}>
         <div className={styles.cardHeader}>
           <Image
-            src="/icons/mentalwealth-academy-logo.png"
+            src="/icons/logo-mwa.png"
             alt=""
             width={20}
             height={20}
@@ -165,7 +165,7 @@ const MoodScreenContent: React.FC<{
       {/* Cat Logo */}
       <div className={styles.moodLogo}>
         <Image
-          src="/icons/mentalwealth-academy-logo.png"
+          src="/icons/logo-mwa.png"
           alt="Mental Wealth Academy"
           width={56}
           height={56}

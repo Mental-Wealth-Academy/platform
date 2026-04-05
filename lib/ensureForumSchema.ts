@@ -197,9 +197,16 @@ async function _ensureForumSchemaImpl() {
     console.warn('Error creating users updated_at trigger:', err);
   }
 
-  // Quest completions table
+  // Migrate old table name if it exists
+  try {
+    await sqlQuery(`ALTER TABLE IF EXISTS quest_completions RENAME TO quests`);
+  } catch {
+    // Already renamed or doesn't exist
+  }
+
+  // Quests table
   await sqlQuery(`
-    CREATE TABLE IF NOT EXISTS quest_completions (
+    CREATE TABLE IF NOT EXISTS quests (
       id CHAR(36) PRIMARY KEY,
       user_id CHAR(36) NOT NULL,
       quest_id VARCHAR(255) NOT NULL,
@@ -211,8 +218,8 @@ async function _ensureForumSchemaImpl() {
   `);
 
   try {
-    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quest_completions_user_id ON quest_completions(user_id)`);
-    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quest_completions_quest_id ON quest_completions(quest_id)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quests_user_id ON quests(user_id)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quests_quest_id ON quests(quest_id)`);
   } catch (err: any) {
     // Indexes might already exist
   }
@@ -230,7 +237,7 @@ async function _ensureForumSchemaImpl() {
       transaction_status VARCHAR(50) NOT NULL DEFAULT 'pending',
       distributed_at TIMESTAMP NULL,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (quest_completion_id) REFERENCES quest_completions(id) ON DELETE CASCADE,
+      FOREIGN KEY (quest_completion_id) REFERENCES quests(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       UNIQUE (quest_completion_id)
     )
@@ -240,25 +247,6 @@ async function _ensureForumSchemaImpl() {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quest_crypto_rewards_user_id ON quest_crypto_rewards(user_id)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quest_crypto_rewards_quest_id ON quest_crypto_rewards(quest_id)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_quest_crypto_rewards_transaction_hash ON quest_crypto_rewards(transaction_hash)`);
-  } catch (err: any) {
-    // Indexes might already exist
-  }
-
-  // Account linking events table - Audit log for account linking/unlinking
-  await sqlQuery(`
-    CREATE TABLE IF NOT EXISTS account_linking_events (
-      id CHAR(36) PRIMARY KEY,
-      user_id CHAR(36) NOT NULL,
-      wallet_address VARCHAR(255) NOT NULL,
-      action VARCHAR(50) NOT NULL,
-      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    )
-  `);
-
-  try {
-    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_account_linking_events_user_id ON account_linking_events(user_id)`);
-    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_account_linking_events_created_at ON account_linking_events(created_at)`);
   } catch (err: any) {
     // Indexes might already exist
   }

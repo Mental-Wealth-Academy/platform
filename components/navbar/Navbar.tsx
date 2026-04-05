@@ -70,17 +70,6 @@ const VotingIcon: React.FC<{ size?: number; className?: string }> = ({ size = 20
 };
 
 // Library Icon - Using Library Icon.svg
-const LibraryIcon: React.FC<{ size?: number; className?: string }> = ({ size = 20, className }) => {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16.933333 16.933334" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <g transform="translate(0 -280.067)">
-        <path d="m3.7036508 280.59476c-.146169.00053-.2641097.11945-.2635514.26562v1.3224h2.1171854v-1.32241c.0005291-.14616-.1173798-.26509-.2635489-.26561zm7.9401062 0c-.146931-.00053-.266179.11868-.265616.26561v6.08646h2.116644v-6.08594c.000529-.14692-.119202-.26618-.266133-.26561zm-5.5573056 1.05885v5.29322h2.1151163v-5.29322c-.0005292-.14531-.118237-.26297-.2635515-.26355h-1.6006763c-.148627 0-.2510234.12753-.2508885.26355zm2.9104167.52917c-.1471295-.0008-.2666947.11848-.2661338.26561v1.3224h2.1177217v-1.3224c.000529-.14612-.11743-.26503-.263549-.26561zm-5.5567687.52968v.52917l2.1171854-.00001v-.52916zm-2.118217.52917c-.43516023 0-.79271553.35755-.79271553.79271v9.52552c0 .43516.3575553.79323.79271553.79323h14.2875006c.43516 0 .794785-.35807.794785-.79323v-9.52552c0-.43516-.359625-.79271-.794785-.79271h-1.586466v1.05678h1.056783c.146929-.00053.266179.11869.265618.26562v7.40781c-.000264.14633-.119295.26463-.265618.26407h-13.2281324c-.1457166-.00026-.2637684-.11835-.2640674-.26407v-7.40781c-.0005291-.14632.1177449-.26532.2640674-.26562h1.0588492v-1.05678zm2.118217.52916-.00106 5.82084 2.1171828-.00001.00106-5.82083zm5.2906349.52917v.52917l2.1177217-.00001v-.52916zm0 1.05885-.00106 4.23282 2.1177247-.00001.0011-4.23281zm-2.6442829 2.11718v.5271h2.1151163v-.52709zm5.2916896 0v.5271h2.116644v-.52709zm-5.2916896 1.05627-.00106 1.05936 2.1151162.00001.00106-1.05937zm5.2916896 0-.0011 1.05936 2.116668.00001.0011-1.05937zm-8.4672083 1.58802c-.1471295-.0008-.2666946.11848-.2661337.26561v.52969c.0005291.14632.1198138.26439.2661337.26355h11.1109503c.146119.00053.265033-.11743.265618-.26355v-.52969c.000529-.14693-.11869-.26617-.265618-.26561zm5.0265676 2.6448h1.0583333c.3449452.008.3449452.52142 0 .52916h-1.0583333c-.3449453-.008-.3449453-.52142 0-.52916zm-1.2609037 2.11718c-.082563.18332-.1789774.36045-.2821543.51521-.1923124.28847-.3480197.46071-.4252965.54312h-.6909144c-.3655616.0169-.3404579.54662.012409.52969h6.3499996c.352867 0 .352867-.52969 0-.52969h-.676444c-.07728-.0824-.232985-.25465-.425297-.54312-.103201-.1548-.199581-.33184-.282154-.51521z" fill="currentColor"/>
-      </g>
-    </svg>
-  );
-};
-
-
 const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -228,7 +217,7 @@ const Navbar: React.FC = () => {
           <Link href="/home" className={styles.brandLink} aria-label="Mental Wealth Academy">
             <div className={styles.logoWrapper}>
               <Image
-                src="/icons/mentalwealth-academy-logo.png"
+                src="/icons/logo-mwa.png"
                 alt="Mental Wealth Academy"
                 fill
                 priority
@@ -248,14 +237,6 @@ const Navbar: React.FC = () => {
               <HomeIcon size={20} className={styles.homeIcon} />
               <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Home</span><span className={`${styles.slideText} ${styles.slideClone}`}>Home</span></span>
-              </span>
-            </Link>
-
-            {/* Story Button */}
-            <Link href="/chapters" className={`${styles.navButton} ${isActive('/chapters') ? styles.navButtonActive : ''}`}>
-              <LibraryIcon size={20} className={styles.questIcon} />
-              <span className={isActive('/chapters') ? styles.buttonLabelActive : styles.buttonLabel}>
-                <span className={styles.slideWrap}><span className={styles.slideText}>Story</span><span className={`${styles.slideText} ${styles.slideClone}`}>Story</span></span>
               </span>
             </Link>
 
@@ -357,7 +338,7 @@ const Navbar: React.FC = () => {
                       {/* Mobile Shards Counter in Dropdown */}
                       <div className={styles.mobileShardsInDropdown}>
                         <Image
-                          src="/icons/shard.svg"
+                          src="/icons/ui-shard.svg"
                           alt="Daemon"
                           width={20}
                           height={20}
@@ -458,13 +439,6 @@ const Navbar: React.FC = () => {
         >
           <HomeIcon size={24} className={styles.homeIcon} />
           <span className={styles.mobileBottomNavLabel}>Home</span>
-        </Link>
-        <Link
-          href="/chapters"
-          className={`${styles.mobileBottomNavButton} ${isActive('/chapters') ? styles.mobileBottomNavButtonActive : ''}`}
-        >
-          <LibraryIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Story</span>
         </Link>
         <Link
           href="/quests"

@@ -10,7 +10,7 @@ const NewsletterCard: React.FC = () => {
           <span className={styles.title}>DAEMON://NEWSLETTER</span>
           <div className={styles.rightIcon}>
             <Image 
-              src="/icons/lovebadge.svg" 
+              src="/icons/badge-love.svg" 
               alt="Badge" 
               width={17.52} 
               height={17.52} 

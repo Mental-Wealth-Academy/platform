@@ -9,7 +9,7 @@ type Tone = 'concise' | 'warm' | 'formal' | 'friendly' | 'direct';
 type View = 'toolGrid' | 'terminal' | 'editAgents';
 type Agent = 'azura' | 'guy';
 
-const ICON_ARROW = '/icons/Arrow.svg';
+const ICON_ARROW = '/icons/ui-arrow.svg';
 
 // Compound Components
 function ToolCard({
@@ -216,7 +216,7 @@ export function DaemonTerminal() {
             <ToolCard
               title="Text Helper"
               desc="Polish your drafts with ease."
-              icon="/icons/Mental Health Icon.svg"
+              icon="/icons/mental-health.svg"
               variant="toolCardReviser"
               onClick={() => setView('terminal')}
             />
@@ -230,14 +230,14 @@ export function DaemonTerminal() {
             <ToolCard
               title="Share Sheets"
               desc="Shared spreadsheets for MWA researchers."
-              icon="/icons/bookicon.svg"
+              icon="/icons/ui-book.svg"
               variant="toolCardShareSheets"
               disabled
             />
             <ToolCard
               title="Dream Reader"
               desc="Study your unique Daemon."
-              icon="/icons/Eye.svg"
+              icon="/icons/ui-eye.svg"
               variant="toolCardDreamReader"
               disabled
             />
@@ -313,7 +313,7 @@ export function DaemonTerminal() {
                   disabled={loading}
                 >
                   <Image
-                    src="/icons/Coin Poly.svg"
+                    src="/icons/ui-coin.svg"
                     alt="Daemon"
                     width={16}
                     height={16}
