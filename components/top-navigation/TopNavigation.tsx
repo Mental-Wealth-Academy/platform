@@ -10,7 +10,6 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 
 const TOOLS_ITEMS = [
   { label: 'Credit Builder', href: '/credit-builder' },
-  { label: 'Treasury Management', href: 'https://azura-theta.vercel.app/' },
 ];
 
 const TopNavigation: React.FC = () => {
