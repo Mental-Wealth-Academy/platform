@@ -477,8 +477,9 @@
   width: 100%;
   text-align: left;
   font: inherit;
-  line-height: inherit;
+  line-height: normal;
   text-transform: none;
+  letter-spacing: normal;
 }
 
 .exchangeCard:hover {
@@ -488,7 +489,7 @@
 
 .exchangeHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin-bottom: 12px;
 }
@@ -532,6 +533,7 @@
   font-family: var(--font-primary);
   color: var(--color-text-dark);
   text-transform: none;
+  letter-spacing: normal;
   margin: 0;
 }
 
@@ -548,6 +550,7 @@
   line-height: 1.2;
   margin: 0;
   text-transform: none;
+  letter-spacing: normal;
 }
 
 .exchangeCurrency {
@@ -555,6 +558,7 @@
   font-weight: 600;
   color: rgba(116, 196, 101, 0.7);
   text-transform: none;
+  letter-spacing: normal;
   margin-left: 4px;
 }
 
@@ -568,6 +572,7 @@
   padding-top: 10px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   text-transform: none;
+  letter-spacing: normal;
 }
 
 @media (max-width: 768px) {
