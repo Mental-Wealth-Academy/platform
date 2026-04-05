@@ -6,6 +6,8 @@ import styles from './AzuraChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
 import type { CreditIntakeData } from './CreditBuilderInline';
+import ResearchCards from './ResearchCards';
+import type { ResearchSource } from './ResearchCards';
 
 // ── Azura Voice TTS ──────────────────────────────────────────
 async function speakAzura(text: string, signal?: AbortSignal): Promise<void> {
@@ -79,6 +81,7 @@ const RADAR_AXES = [
 ];
 
 const SHARD_COST = 10;
+const RESEARCH_COST = 1000;
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
@@ -95,6 +98,11 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+  const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
+  const [researchMode, setResearchMode] = useState(false);
+  const [researchSources, setResearchSources] = useState<ResearchSource[] | null>(null);
+  const [researchPayTo, setResearchPayTo] = useState('');
+  const [researchTopic, setResearchTopic] = useState('');
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -234,11 +242,15 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
           showEmote('dead');
-          const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-          if (hasShards) {
-            setPendingMessage(text);
+          if (researchMode) {
+            discoverResearch(text);
           } else {
-            addAzuraMessage(generateAzuraResponse(text));
+            const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+            if (hasShards) {
+              setPendingMessage(text);
+            } else {
+              addAzuraMessage(generateAzuraResponse(text));
+            }
           }
         }, 300);
       }
@@ -282,7 +294,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     }, 800 + Math.random() * 800);
   };
 
-  const sendToEliza = async (text: string) => {
+  const sendToEliza = async (text: string, mode?: 'research') => {
     setIsTyping(true);
     showEmote('searching');
     try {
@@ -290,7 +302,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: text, confirm: true }),
+        body: JSON.stringify({ message: text, confirm: true, mode }),
       });
       const data = await res.json();
 
@@ -332,6 +344,11 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     setInputText('');
     showEmote('dead');
 
+    if (researchMode) {
+      discoverResearch(text);
+      return;
+    }
+
     const hasShards = shardCount !== null && shardCount >= SHARD_COST;
 
     if (hasShards) {
@@ -343,8 +360,63 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const confirmShardSpend = () => {
+  const discoverResearch = async (topic: string) => {
+    setIsTyping(true);
+    showEmote('searching');
+    setResearchTopic(topic);
+    try {
+      const res = await fetch('/api/research/discover', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic }),
+      });
+      const data = await res.json();
+      setIsTyping(false);
+
+      if (data.sources?.length > 0) {
+        setResearchSources(data.sources);
+        setResearchPayTo(data.payTo);
+        addAzuraMessage('found some sources. pick the ones you want and i will fetch them for you.');
+      } else {
+        // no x402 sources found -- fall back to AI synthesis
+        addAzuraMessage('no paid sources available for that topic yet. let me synthesize from what i know.');
+        sendToEliza(topic, 'research');
+      }
+    } catch {
+      setIsTyping(false);
+      addAzuraMessage('discovery failed. let me try from my training.');
+      sendToEliza(topic, 'research');
+    }
+  };
+
+  const confirmShardSpend = async () => {
     if (!pendingMessage) return;
+
+    if (pendingType === 'research') {
+      setPendingMessage(null);
+      setPendingType('chat');
+      try {
+        const res = await fetch('/api/shards/deduct', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: RESEARCH_COST, reason: 'research_activation' }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
+          setResearchMode(true);
+          addAzuraMessage("research mode activated. what topic do you want me to look into?");
+        } else {
+          addAzuraMessage("couldn't process the payment. try again.");
+        }
+      } catch {
+        addAzuraMessage("something went wrong. try again.");
+      }
+      return;
+    }
+
     const text = pendingMessage;
     setPendingMessage(null);
     sendToEliza(text);
@@ -352,9 +424,12 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
   const cancelShardSpend = () => {
     if (!pendingMessage) return;
-    const text = pendingMessage;
     setPendingMessage(null);
-    addAzuraMessage(generateAzuraResponse(text));
+    if (pendingType === 'research') {
+      setPendingType('chat');
+      return;
+    }
+    addAzuraMessage(generateAzuraResponse(pendingMessage));
   };
 
   const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
@@ -539,10 +614,18 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
       );
     } else if (action === 'research') {
+      if (researchMode) {
+        send('Start a research session', 'searching');
+        addAzuraMessage("you're already in research mode. give me a topic.");
+        return;
+      }
       send('Start a research session', 'searching');
-      addAzuraMessage(
-        "research is a paid feature. send me USDC and i search a variety of the latest research, news, and academic case studies on real science. no journalism, no fluff, just credentialed science news on health and wellness. what topic do you want me to look into?"
-      );
+      if (shardCount !== null && shardCount >= RESEARCH_COST) {
+        setPendingType('research');
+        setPendingMessage('__research_activate__');
+      } else {
+        addAzuraMessage(`research costs 1,000 shards to activate. you have ${shardCount ?? 0}. keep building and come back.`);
+      }
     } else if (action === 'shards') {
       send('What are shards?', 'happy');
       addAzuraMessage(
@@ -615,19 +698,41 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         />
       )}
 
+      {/* Research Source Cards */}
+      {researchSources && researchSources.length > 0 && (
+        <ResearchCards
+          sources={researchSources}
+          payTo={researchPayTo}
+          topic={researchTopic}
+          onComplete={(synthesis) => {
+            setResearchSources(null);
+            showEmote('default');
+            addAzuraMessage(synthesis);
+          }}
+          onError={(msg) => {
+            setResearchSources(null);
+            addAzuraMessage(msg);
+          }}
+        />
+      )}
+
       {/* Shard Confirmation */}
       {pendingMessage && (
         <div className={styles.shardConfirm}>
           <div className={styles.shardConfirmText}>
-            Spend {SHARD_COST} shards for a deep response?
+            {pendingType === 'research'
+              ? 'Activate research mode?'
+              : `Spend ${SHARD_COST} shards for a deep response?`}
             <span className={styles.shardConfirmBalance}>{shardCount} shards available</span>
           </div>
           <div className={styles.shardConfirmButtons}>
             <button className={styles.shardConfirmYes} onClick={confirmShardSpend} type="button">
-              Spend {SHARD_COST} Shards
+              {pendingType === 'research'
+                ? `Spend ${RESEARCH_COST.toLocaleString()} Shards`
+                : `Spend ${SHARD_COST} Shards`}
             </button>
             <button className={styles.shardConfirmNo} onClick={cancelShardSpend} type="button">
-              Basic Response
+              {pendingType === 'research' ? 'Cancel' : 'Basic Response'}
             </button>
           </div>
         </div>

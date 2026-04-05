@@ -1207,3 +1207,86 @@
     display: none;
   }
 }
+
+/* ── Research Cards ───────────────────────────────────────── */
+
+.researchCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px;
+  margin: 0 16px 4px;
+  background: rgba(81, 104, 255, 0.06);
+  border: 1.5px solid rgba(81, 104, 255, 0.2);
+  border-radius: 12px;
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.researchLabel {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.02em;
+}
+
+.researchGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.researchCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.researchCard:hover {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.25);
+}
+
+.researchCardSelected {
+  background: rgba(81, 104, 255, 0.12);
+  border-color: rgba(81, 104, 255, 0.5);
+}
+
+.researchCardTitle {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.3;
+}
+
+.researchCardDesc {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+}
+
+.researchCardPrice {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary, #5168FF);
+  margin-top: 2px;
+}
+
+.researchCost {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  padding: 4px 0;
+}

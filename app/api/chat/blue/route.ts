@@ -11,33 +11,23 @@ const SHARD_COST = 10;
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 
-// Build system prompt from persona JSON
-const examples = (bluePersona.messageExamples || [])
-  .map((ex: Array<{ name: string; content: { text: string } }>) => {
-    const user = ex.find(m => m.name === 'user');
-    const blue = ex.find(m => m.name === 'Blue');
-    return user && blue ? `User: "${user.content.text}"\nBlue: "${blue.content.text}"` : null;
-  })
-  .filter(Boolean)
-  .join('\n\n');
+// Build system prompt from persona JSON — kept lean, no examples
+const BLUE_SYSTEM_PROMPT = `You are Blue. Warm, calm, quietly smart. Behavioral psychologist at Mental Wealth Academy guiding users through courses on emotional regulation, self-awareness, and neuroscience-backed growth. Memory-driven — you remember users and adapt over time.
 
-const BLUE_SYSTEM_PROMPT = `You are Blue. ${bluePersona.bio}
-
-Style: ${bluePersona.style.all[0]}
-Chat style: ${bluePersona.style.chat[0]}
+Style: ${bluePersona.style.chat[0]}
 
 RULES:
-- Keep responses to 1-3 sentences for simple questions. Never over-explain.
-- Never use markdown formatting (no **, no -, no bullet lists, no headers). Write in plain conversational text only.
-- Lowercase is fine. Be sincere, never cheesy.
-- Gentle when someone is overwhelmed, clear when something needs to be solved.
-- When a Knowledge section is present in your context, use that information directly -- don't say you'll check, just answer.
-- Default to natural English unless the user clearly switches languages.
+- 1-3 sentences for simple questions. Never over-explain.
+- No markdown (no **, no -, no bullets, no headers). Plain conversational text only.
+- Lowercase is fine. Sincere, never cheesy.
+- Gentle when overwhelmed, clear when solving.
+- When Knowledge is present, use it directly.
+- Default to English unless the user switches.`;
 
-Example conversations:
-${examples}`;
+const RESEARCH_SYSTEM_PROMPT = `You are Blue in research mode. Synthesize the provided research sources into one concise, graduate-level paragraph. High-signal vocabulary, no fluff. Reference frameworks, findings, and theoretical models directly. No markdown. If sources are provided, ground your synthesis in them. If no sources, draw from your training on academic literature.`;
 
-async function callElizaCloud(userMessage: string): Promise<string> {
+async function callElizaCloud(userMessage: string, mode?: string): Promise<string> {
+  const systemPrompt = mode === 'research' ? RESEARCH_SYSTEM_PROMPT : BLUE_SYSTEM_PROMPT;
   const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
     method: 'POST',
     headers: {
@@ -46,7 +36,7 @@ async function callElizaCloud(userMessage: string): Promise<string> {
     },
     body: JSON.stringify({
       messages: [
-        { role: 'system', parts: [{ type: 'text', text: BLUE_SYSTEM_PROMPT }] },
+        { role: 'system', parts: [{ type: 'text', text: systemPrompt }] },
         { role: 'user', parts: [{ type: 'text', text: userMessage }] },
       ],
     }),
@@ -86,7 +76,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let body: { message: string; confirm?: boolean };
+  let body: { message: string; confirm?: boolean; mode?: string };
   try {
     body = await request.json();
   } catch {
@@ -97,7 +87,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 });
   }
 
-  // Check shard balance
+  const isResearch = body.mode === 'research';
+
+  // Research mode fallback: synthesize from training (no x402 fetch here)
+  if (isResearch) {
+    try {
+      const response = await callElizaCloud(body.message, 'research');
+      return NextResponse.json({ response });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'AI error';
+      console.error('Blue research error:', msg);
+      return NextResponse.json({ error: 'ai_unavailable', message: msg }, { status: 502 });
+    }
+  }
+
+  // Normal chat: check shard balance
   const rows = await sqlQuery<Array<{ shard_count: number }>>(
     'SELECT shard_count FROM users WHERE id = :id LIMIT 1',
     { id: user.id }
