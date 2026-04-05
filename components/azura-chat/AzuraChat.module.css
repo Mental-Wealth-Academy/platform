@@ -242,18 +242,17 @@
 }
 
 .userMessage .messageContent {
-  background: var(--color-primary, #5168FF);
+  background: #2a2a2e;
   color: #ffffff;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.3);
 }
 
 .azuraMessage .messageContent {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: #007AFF;
+  border: none;
+  color: #ffffff;
   border-bottom-left-radius: 4px;
-  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
 }
 
 .messageTime {
