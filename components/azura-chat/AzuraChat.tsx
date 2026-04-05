@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './AzuraChat.module.css';
+import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
 import type { CreditIntakeData } from './CreditBuilderInline';
 
@@ -63,12 +64,22 @@ const AZURA_EMOTES = {
 } as const;
 
 const KNOWLEDGE_DOMAINS = [
-  'Psychology', 'Wellness', 'Creativity', 'Habits', 'Ethereum',
+  'Psychology', 'Wellness', 'Creativity', 'Habits',
+];
+
+const RADAR_AXES = [
+  { label: 'Cognition', value: 92, color: '#5168FF' },
+  { label: 'Emotion', value: 65, color: '#E8556D' },
+  { label: 'Behavior', value: 78, color: '#FF8844' },
+  { label: 'Resilience', value: 85, color: '#7B8FFF' },
+  { label: 'Self-Awareness', value: 58, color: '#C084FC' },
+  { label: 'Motivation', value: 72, color: '#3D8BFF' },
 ];
 
 const SHARD_COST = 10;
 
 const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
+  const { play } = useSound();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -528,7 +539,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     } else if (action === 'research') {
       send('Start a research session', 'searching');
       addAzuraMessage(
-        "research is a paid feature. i pull from the latest DeSci papers, behavioral studies, and on-chain data using x402 protocols. add USDC or pay through Stripe using the green input below to unlock a session. what topic do you want me to dig into?"
+        "research is a paid feature. send me USDC and i search a variety of the latest research, news, and academic case studies on real science. no journalism, no fluff, just credentialed science news on health and wellness. what topic do you want me to look into?"
       );
     } else if (action === 'shards') {
       send('What are shards?', 'happy');
@@ -620,16 +631,14 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         </div>
       )}
 
-      {/* Shard Counter */}
-      {shardCount !== null && (
-        <div className={styles.shardCounter}>
-          <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
-          <span>{shardCount} shards</span>
-        </div>
-      )}
-
       {/* Quick Actions */}
       <div className={styles.quickActions}>
+        {shardCount !== null && (
+          <div className={styles.shardCounter}>
+            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
+            <span>{shardCount}</span>
+          </div>
+        )}
         <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
           Shards
         </button>
@@ -692,11 +701,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         <div className={styles.expandedContainer}>
           {/* Top bar */}
           <div className={styles.expandedTopBar}>
-            <div className={styles.expandedTitle}>
-              <span className={styles.nameplateStatus} />
-              <span className={styles.nameplateName}>Blue</span>
-              <span className={styles.nameplateLabel}>v1.3</span>
-            </div>
+            <div className={styles.expandedTitle} />
+            <Image src="/icons/logo-mwa-horizontal.png" alt="Mental Wealth Academy" width={160} height={58} className={styles.topBarLogo} />
             <div className={styles.expandedControls}>
               <button className={styles.expandButton} onClick={() => setIsExpanded(false)} type="button" aria-label="Collapse">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -712,24 +718,85 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className={styles.expandedBody}>
-            {/* Left panel — Knowledge & actions */}
+            {/* Left panel — Knowledge & tools */}
             <div className={styles.expandedLeft}>
-              <div className={styles.expandedQuickPanel}>
-                <h3 className={styles.panelHeading}>Tools</h3>
-                <div className={styles.expandedQuickGrid}>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-                    <span>Credit Builder</span>
-                  </button>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <span>Research</span>
-                  </button>
+              {/* Radar chart */}
+              <div className={styles.radarSection}>
+                <div className={styles.radarWrap}>
+                  <svg viewBox="0 0 200 200" className={styles.radarSvg}>
+                    {/* Web rings */}
+                    {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, ri) => (
+                      <polygon
+                        key={ri}
+                        points={RADAR_AXES.map((_, i) => {
+                          const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                          const r = 80 * scale;
+                          return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
+                        }).join(' ')}
+                        fill="none"
+                        stroke="rgba(255, 255, 255, 0.04)"
+                        strokeWidth="1"
+                      />
+                    ))}
+                    {/* Axis lines with individual colors */}
+                    {RADAR_AXES.map((axis, i) => {
+                      const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                      return (
+                        <line
+                          key={i}
+                          x1="100" y1="100"
+                          x2={100 + 80 * Math.cos(angle)}
+                          y2={100 + 80 * Math.sin(angle)}
+                          stroke={axis.color}
+                          strokeWidth="1"
+                          opacity="0.15"
+                        />
+                      );
+                    })}
+                    {/* Individual colored web layers per axis */}
+                    {RADAR_AXES.map((axis, ai) => (
+                      <polygon
+                        key={ai}
+                        points={RADAR_AXES.map((_, i) => {
+                          const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                          const r = (i === ai ? axis.value / 100 : 0.15) * 80;
+                          return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
+                        }).join(' ')}
+                        fill={`${axis.color}18`}
+                        stroke={axis.color}
+                        strokeWidth="1"
+                        opacity="0.7"
+                      />
+                    ))}
+                    {/* Combined data polygon on top */}
+                    <polygon
+                      points={RADAR_AXES.map((axis, i) => {
+                        const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                        const r = (axis.value / 100) * 80;
+                        return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
+                      }).join(' ')}
+                      fill="rgba(81, 104, 255, 0.06)"
+                      stroke="rgba(255, 255, 255, 0.15)"
+                      strokeWidth="1"
+                    />
+                  </svg>
+                  {/* Labels positioned around the chart */}
+                  {RADAR_AXES.map((axis, i) => {
+                    const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                    const labelR = 95;
+                    const x = 50 + (labelR / 100) * 50 * Math.cos(angle);
+                    const y = 50 + (labelR / 100) * 50 * Math.sin(angle);
+                    return (
+                      <span
+                        key={axis.label}
+                        className={styles.radarLabel}
+                        style={{ left: `${x}%`, top: `${y}%`, color: axis.color }}
+                      >
+                        {axis.label}
+                      </span>
+                    );
+                  })}
                 </div>
-              </div>
-
-              {/* Knowledge tags */}
-              <div className={styles.knowledgeGraph}>
                 <h3 className={styles.panelHeading}>Trained In</h3>
                 <div className={styles.keywordGrid}>
                   {KNOWLEDGE_DOMAINS.map((domain) => (
@@ -738,17 +805,24 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Session status — at bottom */}
-              <div className={styles.sessionPanel}>
-                {shardCount !== null && (
-                  <div className={styles.sessionRow}>
-                    <span className={styles.sessionLabel}>Shards</span>
-                    <span className={styles.sessionValue}>{shardCount}</span>
-                  </div>
-                )}
-                <div className={styles.sessionRow}>
-                  <span className={styles.sessionLabel}>Cost</span>
-                  <span className={styles.sessionValue}>{SHARD_COST}/msg</span>
+              {/* Power Tools — pinned to bottom */}
+              <div className={styles.expandedQuickPanel}>
+                <h3 className={styles.panelHeading}>Power Tools</h3>
+                <div className={styles.expandedQuickGrid}>
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                    <span className={styles.toolSlideWrap}>
+                      <span className={styles.toolSlideText}>Credit Builder</span>
+                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
+                    </span>
+                  </button>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <span className={styles.toolSlideWrap}>
+                      <span className={styles.toolSlideText}>Research</span>
+                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>

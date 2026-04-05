@@ -370,16 +370,19 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* Shard Counter */
+/* Shard Counter — inline with quick actions */
 .shardCounter {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 16px;
+  gap: 4px;
+  padding: 6px 10px;
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(192, 132, 252, 0.6);
+  font-weight: 700;
+  color: rgba(192, 132, 252, 0.7);
+  background: rgba(192, 132, 252, 0.06);
+  border: 1.5px solid rgba(192, 132, 252, 0.15);
+  border-radius: 20px;
   flex-shrink: 0;
 }
 
@@ -799,18 +802,53 @@
 
 /* Top bar */
 .expandedTopBar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.08);
+  border-bottom: none;
   flex-shrink: 0;
+  background: rgba(13, 14, 22, 0.75);
+  backdrop-filter: blur(12px);
+}
+
+.expandedTopBar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa,
+    #5168FF
+  );
+  background-size: 200% 100%;
+  animation: rainbowShift 6s linear infinite;
+}
+
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 .expandedTitle {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.topBarLogo {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  margin: -18px 0;
 }
 
 .expandedControls {
@@ -828,15 +866,24 @@
   overflow: hidden;
 }
 
-/* Left panel — slightly elevated surface */
+/* Left panel — drawer with texture */
 .expandedLeft {
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 20px;
-  border-right: 1px solid rgba(81, 104, 255, 0.08);
+  border-right: 3px solid transparent;
+  border-image: linear-gradient(
+    180deg,
+    rgba(81, 104, 255, 0.15) 0%,
+    rgba(192, 132, 252, 0.1) 30%,
+    rgba(232, 85, 109, 0.08) 60%,
+    rgba(81, 104, 255, 0.12) 100%
+  ) 1;
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.015);
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(81, 104, 255, 0.01) 100%);
 }
 
 .panelHeading {
@@ -849,16 +896,35 @@
   margin: 0 0 14px;
 }
 
-/* Knowledge keywords */
-.knowledgeGraph {
-  padding-top: 16px;
-  border-top: 1px solid rgba(81, 104, 255, 0.08);
+/* Radar chart */
+.radarSection {
+  padding-bottom: 0;
+}
+
+.radarSection .panelHeading {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.radarWrap {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+}
+
+.radarSvg {
+  width: 100%;
+  height: 100%;
 }
 
 .keywordGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-bottom: 14px;
 }
 
 .keywordTag {
@@ -872,48 +938,101 @@
   color: rgba(220, 210, 230, 0.45);
 }
 
-/* Tool cards (expanded) — contained button style with icon */
+.radarLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(220, 210, 230, 0.45);
+  white-space: nowrap;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.radarValue {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Tool cards (expanded) — contained CTA style with shimmer */
 .expandedQuickPanel {
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(81, 104, 255, 0.08);
-  margin-bottom: 20px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .expandedQuickGrid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .expandedQuickCard {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #2a3070 0%, #1e2558 100%);
-  border: none;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #5168FF;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease;
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-align: left;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
+  overflow: hidden;
+}
+
+.expandedQuickCard svg {
+  width: 16px;
+  height: 16px;
 }
 
 .expandedQuickCard svg {
   flex-shrink: 0;
-  opacity: 0.8;
+}
+
+/* Shimmer sweep on hover — same as hero CTA */
+.expandedQuickCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.8s ease;
+  pointer-events: none;
 }
 
 .expandedQuickCard:hover:not(:disabled) {
-  color: #5168FF;
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.expandedQuickCard:hover:not(:disabled)::before {
+  left: 125%;
 }
 
 .expandedQuickCard:active:not(:disabled) {
-  opacity: 0.8;
+  transform: translateY(0);
 }
 
 .expandedQuickCard:disabled {
@@ -922,59 +1041,66 @@
 }
 
 .expandedQuickAccent {
-  background: linear-gradient(135deg, #2a3070 0%, #1e2558 100%);
+  /* same style, no differentiation needed */
 }
 
-.expandedQuickAccent:hover:not(:disabled) {
-  background: linear-gradient(135deg, #334088 0%, #2a3070 100%);
-}
-
-/* Session info — pinned to bottom */
-.sessionPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.sessionRow {
-  display: flex;
+/* Tool card text slide animation — matches hero CTA */
+.toolSlideWrap {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  overflow: hidden;
+  height: 1.4em;
+  vertical-align: middle;
 }
 
-.sessionLabel {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 500;
-  color: #4a5568;
+.toolSlideText {
+  display: block;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
-.sessionValue {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(220, 210, 230, 0.75);
+.toolSlideClone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(100%);
 }
 
-.sessionValueOnline {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 700;
-  color: #74C465;
+.expandedQuickCard:hover .toolSlideText {
+  transform: translateY(-100%);
 }
 
-/* Center column — recessed for depth */
+.expandedQuickCard:hover .toolSlideClone {
+  transform: translateY(0);
+}
+
+
+/* Center column — matches Blue's panel background */
 .expandedCenter {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: #10121f;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(81, 104, 255, 0.03) 39px,
+      rgba(81, 104, 255, 0.03) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(81, 104, 255, 0.03) 39px,
+      rgba(81, 104, 255, 0.03) 40px
+    ),
+    linear-gradient(180deg, #060810 0%, #0a0d18 40%, #0e1120 100%);
 }
 
-/* Right panel — Full body with radial light source */
+/* Right panel — Full body with grid + radial light */
 .expandedRight {
   position: relative;
   display: flex;
@@ -984,6 +1110,20 @@
   border-left: 1px solid rgba(81, 104, 255, 0.08);
   overflow: hidden;
   background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 31px,
+      rgba(81, 104, 255, 0.04) 31px,
+      rgba(81, 104, 255, 0.04) 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 31px,
+      rgba(81, 104, 255, 0.04) 31px,
+      rgba(81, 104, 255, 0.04) 32px
+    ),
     radial-gradient(ellipse 70% 50% at 50% 60%, rgba(81, 104, 255, 0.08) 0%, transparent 70%),
     radial-gradient(ellipse 50% 40% at 50% 80%, rgba(100, 80, 180, 0.06) 0%, transparent 70%),
     linear-gradient(180deg, #060810 0%, #0a0d18 40%, #0e1120 100%);
