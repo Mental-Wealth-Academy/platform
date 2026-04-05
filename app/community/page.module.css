@@ -551,7 +551,6 @@
   display: flex;
   align-items: baseline;
   gap: 6px;
-  margin-bottom: 8px;
 }
 
 .statCardCompact .exchangePrice {
@@ -575,7 +574,39 @@
   font-weight: 400;
   color: rgba(0, 0, 0, 0.45);
   line-height: 1.5;
-  margin: 0;
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 768px) {
+  .exchangeCard {
+    padding: 12px;
+  }
+
+  .exchangeHeader {
+    margin-bottom: 8px;
+  }
+
+  .statCardCompact .exchangeLabel {
+    font-size: 9px;
+  }
+
+  .exchangeTitle {
+    font-size: 12px;
+  }
+
+  .statCardCompact .exchangePrice {
+    font-size: 20px;
+  }
+
+  .exchangeCurrency {
+    font-size: 10px;
+  }
+
+  .exchangeDesc {
+    font-size: 10px;
+  }
 }
 
 /* ─── Demo Modal — Retro Futurism ─── */
@@ -2540,6 +2571,7 @@
 
 :global([data-theme="dark"]) .exchangeDesc {
   color: rgba(227, 225, 238, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .statCardCompact .exchangePrice {

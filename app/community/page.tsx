@@ -269,16 +269,16 @@ export default function VotingPage() {
                     </svg>
                   </div>
                   <div className={styles.exchangeTitleText}>
-                    <span className={styles.exchangeLabel}>Token Exchange</span>
+                    <span className={styles.exchangeLabel}>Shard Exchange</span>
                     <span className={styles.exchangeTitle}>Swap</span>
                   </div>
                 </div>
                 <div className={styles.exchangePriceRow}>
                   <span className={styles.exchangePrice}>$0.033</span>
-                  <span className={styles.exchangeCurrency}>USDC per token</span>
+                  <span className={styles.exchangeCurrency}>USDC per shard</span>
                 </div>
                 <p className={styles.exchangeDesc}>
-                  Buy or sell governance tokens directly. Current price reflects community market activity.
+                  Buy or sell shards directly. Current price reflects community market activity.
                 </p>
               </button>
             </div>
