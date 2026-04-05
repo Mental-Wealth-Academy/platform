@@ -740,14 +740,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
               {/* Session status — at bottom */}
               <div className={styles.sessionPanel}>
-                <div className={styles.sessionRow}>
-                  <span className={styles.sessionLabel}>Model</span>
-                  <span className={styles.sessionValue}>BlueOS</span>
-                </div>
-                <div className={styles.sessionRow}>
-                  <span className={styles.sessionLabel}>Status</span>
-                  <span className={styles.sessionValueOnline}>Online</span>
-                </div>
                 {shardCount !== null && (
                   <div className={styles.sessionRow}>
                     <span className={styles.sessionLabel}>Shards</span>
