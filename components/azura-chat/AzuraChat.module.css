@@ -885,42 +885,51 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
-/* Quick action cards (expanded) */
+/* Tool cards (expanded) — contained button style with icon */
 .expandedQuickPanel {
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.08);
   margin-bottom: 20px;
 }
 
 .expandedQuickGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
 .expandedQuickCard {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  gap: 10px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #2a3070 0%, #1e2558 100%);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.expandedQuickCard svg {
+  flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .expandedQuickCard:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #334088 0%, #2a3070 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(81, 104, 255, 0.25);
+}
+
+.expandedQuickCard:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .expandedQuickCard:disabled {
@@ -929,25 +938,11 @@
 }
 
 .expandedQuickAccent {
-  border-color: rgba(81, 104, 255, 0.15);
-  color: rgba(81, 104, 255, 0.7);
+  background: linear-gradient(135deg, #2a3070 0%, #1e2558 100%);
 }
 
 .expandedQuickAccent:hover:not(:disabled) {
-  border-color: rgba(81, 104, 255, 0.35);
-  color: #5168FF;
-  background: rgba(81, 104, 255, 0.08);
-}
-
-.expandedQuickHighlight {
-  border-color: rgba(116, 196, 101, 0.2);
-  color: rgba(116, 196, 101, 0.7);
-}
-
-.expandedQuickHighlight:hover:not(:disabled) {
-  border-color: rgba(116, 196, 101, 0.4);
-  color: #74C465;
-  background: rgba(116, 196, 101, 0.08);
+  background: linear-gradient(135deg, #334088 0%, #2a3070 100%);
 }
 
 /* Session info — pinned to bottom */
