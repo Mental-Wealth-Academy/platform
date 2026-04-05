@@ -849,78 +849,40 @@
   margin: 0 0 14px;
 }
 
-/* Knowledge node graph */
+/* Knowledge keywords */
 .knowledgeGraph {
   padding-top: 16px;
   border-top: 1px solid rgba(81, 104, 255, 0.08);
 }
 
-.nodeGraph {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 220px;
-  margin: 0 auto;
-}
-
-.nodeItem {
-  position: absolute;
-  transform: translate(-50%, -50%);
+.keywordGrid {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.keywordTag {
+  display: flex;
   align-items: center;
-  gap: 3px;
-  animation: nodeAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
 }
 
-@keyframes nodeAppear {
-  from { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-.nodeDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--node-color, #5168FF);
-  box-shadow: 0 0 10px var(--node-color, #5168FF), 0 0 20px color-mix(in srgb, var(--node-color, #5168FF) 40%, transparent);
-}
-
-.nodeLabel {
+.keywordLabel {
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(220, 210, 230, 0.5);
-  white-space: nowrap;
+  color: rgba(220, 210, 230, 0.55);
 }
 
-.nodeValue {
+.keywordValue {
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 10px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.nodeCenterDot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(81, 104, 255, 0.4);
-  box-shadow: 0 0 16px rgba(81, 104, 255, 0.2), 0 0 40px rgba(81, 104, 255, 0.08);
-}
-
-/* Radial connection lines from center to nodes */
-.nodeGraph::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(81, 104, 255, 0.06) 0%, transparent 50%);
-  pointer-events: none;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* Quick action cards (expanded) */

@@ -63,11 +63,11 @@ const AZURA_EMOTES = {
 } as const;
 
 const KNOWLEDGE_DOMAINS = [
-  { label: 'Behavioral', value: 92, color: '#5168FF' },
-  { label: 'DeSci', value: 84, color: '#7B8FFF' },
-  { label: 'Wellness', value: 88, color: '#5168FF' },
-  { label: 'On-Chain', value: 90, color: '#D4A054' },
-  { label: 'Neuro', value: 76, color: '#C4A44E' },
+  { label: 'Psychology', value: 92 },
+  { label: 'Wellness', value: 88 },
+  { label: 'Creativity', value: 85 },
+  { label: 'Habits', value: 90 },
+  { label: 'Ethereum', value: 82 },
 ];
 
 const SHARD_COST = 10;
@@ -732,35 +732,16 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Knowledge Domains — node graph */}
+              {/* Blue can help with */}
               <div className={styles.knowledgeGraph}>
-                <h3 className={styles.panelHeading}>Knowledge</h3>
-                <div className={styles.nodeGraph}>
-                  {KNOWLEDGE_DOMAINS.map((domain, i) => {
-                    const angle = (i / KNOWLEDGE_DOMAINS.length) * 2 * Math.PI - Math.PI / 2;
-                    const radius = 38;
-                    const x = 50 + radius * Math.cos(angle);
-                    const y = 50 + radius * Math.sin(angle);
-                    return (
-                      <div
-                        key={domain.label}
-                        className={styles.nodeItem}
-                        style={{
-                          left: `${x}%`,
-                          top: `${y}%`,
-                          ['--node-color' as string]: domain.color,
-                          animationDelay: `${i * 0.1}s`,
-                        }}
-                      >
-                        <div className={styles.nodeDot} />
-                        <span className={styles.nodeLabel}>{domain.label}</span>
-                        <span className={styles.nodeValue}>{domain.value}%</span>
-                      </div>
-                    );
-                  })}
-                  {/* Center node */}
-                  <div className={styles.nodeCenterDot} />
-                  {/* Connection lines rendered via CSS */}
+                <h3 className={styles.panelHeading}>Blue can help with</h3>
+                <div className={styles.keywordGrid}>
+                  {KNOWLEDGE_DOMAINS.map((domain) => (
+                    <div key={domain.label} className={styles.keywordTag}>
+                      <span className={styles.keywordLabel}>{domain.label}</span>
+                      <span className={styles.keywordValue}>{domain.value}%</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
