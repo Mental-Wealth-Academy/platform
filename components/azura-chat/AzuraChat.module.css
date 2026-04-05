@@ -861,7 +861,7 @@
 .expandedBody {
   flex: 1;
   display: grid;
-  grid-template-columns: 3fr 5fr 3fr;
+  grid-template-columns: 2.6fr 5fr 3fr;
   min-height: 0;
   overflow: hidden;
 }
@@ -901,16 +901,16 @@
   padding-bottom: 0;
 }
 
-.radarSection .panelHeading {
-  margin-top: 14px;
-  padding-top: 14px;
+.trainedInSection {
+  margin-top: auto;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .radarWrap {
   position: relative;
   width: 100%;
-  max-width: 220px;
+  max-width: 260px;
   margin: 0 auto;
   aspect-ratio: 1;
 }
@@ -961,8 +961,8 @@
 
 /* Tool cards (expanded) — contained CTA style with shimmer */
 .expandedQuickPanel {
-  margin-top: auto;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -1047,25 +1047,22 @@
 /* Tool card text slide animation — matches hero CTA */
 .toolSlideWrap {
   position: relative;
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   overflow: hidden;
   height: 1.4em;
-  vertical-align: middle;
+  line-height: 1.4em;
 }
 
 .toolSlideText {
   display: block;
   transition: transform 0.3s ease;
-  will-change: transform;
 }
 
 .toolSlideClone {
   position: absolute;
-  top: 0;
+  top: 100%;
   left: 0;
-  width: 100%;
-  transform: translateY(100%);
+  transition: transform 0.3s ease;
 }
 
 .expandedQuickCard:hover .toolSlideText {
@@ -1073,7 +1070,7 @@
 }
 
 .expandedQuickCard:hover .toolSlideClone {
-  transform: translateY(0);
+  transform: translateY(-100%);
 }
 
 

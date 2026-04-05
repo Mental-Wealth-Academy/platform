@@ -65,6 +65,8 @@ const AZURA_EMOTES = {
 
 const KNOWLEDGE_DOMAINS = [
   'Psychology', 'Wellness', 'Creativity', 'Habits',
+  'Mindfulness', 'Journaling', 'CBT', 'Governance',
+  'Stress', 'Sleep', 'Nutrition',
 ];
 
 const RADAR_AXES = [
@@ -797,15 +799,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                     );
                   })}
                 </div>
-                <h3 className={styles.panelHeading}>Trained In</h3>
-                <div className={styles.keywordGrid}>
-                  {KNOWLEDGE_DOMAINS.map((domain) => (
-                    <span key={domain} className={styles.keywordTag}>{domain}</span>
-                  ))}
-                </div>
               </div>
 
-              {/* Power Tools — pinned to bottom */}
+              {/* Power Tools */}
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
@@ -823,6 +819,16 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                       <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
                     </span>
                   </button>
+                </div>
+              </div>
+
+              {/* Trained In — bottom */}
+              <div className={styles.trainedInSection}>
+                <h3 className={styles.panelHeading}>Trained In</h3>
+                <div className={styles.keywordGrid}>
+                  {KNOWLEDGE_DOMAINS.map((domain) => (
+                    <span key={domain} className={styles.keywordTag}>{domain}</span>
+                  ))}
                 </div>
               </div>
             </div>
