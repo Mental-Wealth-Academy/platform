@@ -403,14 +403,41 @@
   opacity: 0.85;
 }
 
+.treasuryTypography {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 36px 0;
+}
+
+.treasuryLabel {
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.treasuryAmount {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 64px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
 .heroAzura > div:last-child {
   position: relative;
   z-index: 2;
   background: transparent;
   border-color: transparent;
   box-shadow: none;
-  padding: 28px 36px;
-  gap: 16px;
+  padding: 16px 36px 28px;
 }
 
 .heroAzura img {
@@ -418,19 +445,9 @@
   height: 48px;
 }
 
-.heroAzura h4 {
-  font-size: 16px;
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-.heroAzura h4 > span {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.heroAzura p {
-  color: rgba(255, 255, 255, 0.6);
+.heroAzura span {
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .heroAzura button {
@@ -445,8 +462,16 @@
 }
 
 @media (max-width: 768px) {
-  .heroAzura > div {
-    padding: 20px;
+  .treasuryTypography {
+    padding: 24px 20px 0;
+  }
+
+  .treasuryAmount {
+    font-size: 48px;
+  }
+
+  .heroAzura > div:last-child {
+    padding: 12px 20px 20px;
   }
 
   .heroAzura img {

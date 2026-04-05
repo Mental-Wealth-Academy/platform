@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { providers, Contract } from 'ethers';
-import { useSound } from '@/hooks/useSound';
 import styles from './TreasuryDisplay.module.css';
 
 interface TreasuryDisplayProps {
@@ -18,10 +17,8 @@ const USDC_ABI = [
 ];
 
 const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
-  contractAddress,
   usdcAddress,
 }) => {
-  const { play } = useSound();
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
 
@@ -71,14 +68,14 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <div className={styles.icon}>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="2" y="6" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
-              <path d="M2 10H22" stroke="currentColor" strokeWidth="2"/>
-              <circle cx="17" cy="15" r="2" fill="currentColor"/>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="6" width="20" height="14" rx="2" fill="currentColor"/>
+              <rect x="2" y="9" width="20" height="3" fill="currentColor" opacity="0.7"/>
+              <circle cx="17" cy="16" r="2" fill="#ffffff"/>
             </svg>
           </div>
           <div className={styles.titleText}>
-            <p className={styles.label}>Agent Wallet</p>
+            <p className={styles.label}>Agent Account</p>
             <h3 className={styles.title}>Blue&apos;s Wallet</h3>
           </div>
         </div>
@@ -88,29 +85,6 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
         ${balance}
         <span className={styles.currency}>USDC</span>
       </p>
-
-      <div className={styles.stats}>
-        <div className={styles.statItem}>
-          <p className={styles.statLabel}>Wallet</p>
-          <a
-            href={`https://basescan.org/address/${BLUE_WALLET}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.contractLink}
-            onClick={() => play('navigation')}
-            onMouseEnter={() => play('hover')}
-          >
-            {BLUE_WALLET.slice(0, 6)}...{BLUE_WALLET.slice(-4)}
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </a>
-        </div>
-        <div className={styles.statItem}>
-          <p className={styles.statLabel}>Network</p>
-          <p className={styles.statValue}>Base Mainnet</p>
-        </div>
-      </div>
     </div>
   );
 };

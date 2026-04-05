@@ -85,31 +85,25 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
 
   return (
     <div className={styles.azuraPower}>
-      <div className={styles.treasuryHeader}>
-        <span className={styles.treasuryLabel}>Treasury</span>
-        <span className={styles.treasuryAmount}>$5,200</span>
+      <div className={styles.avatarSection}>
+        <Image
+          src="https://i.imgur.com/3Y3KrnJ.png"
+          alt="Blue"
+          width={36}
+          height={36}
+          className={styles.azuraAvatar}
+          unoptimized
+        />
+        <span className={styles.azuraName}>Blue</span>
       </div>
-      <div className={styles.powerRow}>
-        <div className={styles.avatarSection}>
-          <Image
-            src="https://i.imgur.com/3Y3KrnJ.png"
-            alt="Blue"
-            width={36}
-            height={36}
-            className={styles.azuraAvatar}
-            unoptimized
-          />
-          <span className={styles.azuraName}>Blue</span>
+      <div className={styles.votingPowerSection}>
+        <div className={styles.votingPowerHeader}>
+          <span className={styles.aiTag}>Voting Power</span>
+          <span className={styles.votingPowerValue}>{votingPower}%</span>
         </div>
-        <div className={styles.votingPowerSection}>
-          <div className={styles.votingPowerHeader}>
-            <span className={styles.aiTag}>Voting Power</span>
-            <span className={styles.votingPowerValue}>{votingPower}%</span>
-          </div>
-          <div className={styles.votingBar}>
-            <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
-            <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
-          </div>
+        <div className={styles.votingBar}>
+          <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
+          <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
         </div>
       </div>
     </div>

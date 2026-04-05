@@ -11,7 +11,6 @@
 .header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   margin-bottom: 12px;
   position: relative;
   z-index: 1;
@@ -26,19 +25,19 @@
 .icon {
   width: 28px;
   height: 28px;
-  background: rgba(98, 190, 143, 0.15);
+  background: rgba(81, 104, 255, 0.12);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(98, 190, 143, 0.3);
+  border: 1px solid rgba(81, 104, 255, 0.25);
   flex-shrink: 0;
 }
 
 .icon svg {
   width: 16px;
   height: 16px;
-  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  color: var(--color-primary, #5168FF);
 }
 
 .titleText {
@@ -61,13 +60,6 @@
   font-family: var(--font-primary);
   color: var(--color-text-dark);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.refreshButton {
-  display: none;
 }
 
 .balance {
@@ -84,88 +76,13 @@
 .currency {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(98, 190, 143, 0.8);
+  color: rgba(81, 104, 255, 0.7);
   margin-left: 4px;
-}
-
-.error {
-  font-size: 12px;
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin: 8px 0;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  position: relative;
-  z-index: 1;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.statItem {
-  padding: 12px;
-  background: rgba(98, 190, 143, 0.08);
-  border-radius: 10px;
-  border: 1px solid rgba(98, 190, 143, 0.15);
-}
-
-.statLabel {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(26, 29, 51, 0.5);
-  margin: 0 0 6px 0;
-}
-
-.statValue {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin: 0;
-}
-
-.contractLink {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s ease;
-}
-
-.contractLink:hover {
-  color: #62BE8F;
-  transform: translateX(2px);
-}
-
-.contractLink svg {
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-}
-
-.contractLink:hover svg {
-  opacity: 1;
 }
 
 .loading {
   opacity: 0.6;
   animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes pulse {
@@ -215,10 +132,6 @@
   .currency {
     font-size: 10px;
   }
-
-  .stats {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ==================== DARK MODE ==================== */
@@ -228,19 +141,7 @@
 }
 
 :global([data-theme="dark"]) .icon svg {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .statLabel {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .statValue {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .contractLink {
-  color: rgba(227, 225, 238, 0.95);
+  color: rgba(81, 104, 255, 0.7);
 }
 
 :global([data-theme="dark"]) .balance {

@@ -47,51 +47,19 @@
   }
 }
 
-/* Blue Power Indicator - Compact Bento Style */
+/* Blue Power Indicator */
 .azuraPower {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 20px 16px 16px;
+  padding: 14px 16px;
   background: var(--color-background);
   border: 2px solid #ffffff;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
-  min-width: 180px;
-}
-
-.treasuryHeader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.treasuryLabel {
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.treasuryAmount {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 44px;
-  font-weight: 800;
-  color: var(--color-text-dark);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-
-.powerRow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  width: 100%;
 }
 
 .avatarSection {
@@ -201,17 +169,8 @@
 
 @media (max-width: 768px) {
   .azuraPower {
-    padding: 14px 12px 12px;
+    padding: 12px;
     gap: 10px;
-    min-width: 0;
-  }
-
-  .treasuryAmount {
-    font-size: 34px;
-  }
-
-  .powerRow {
-    width: 100%;
   }
 
   .azuraAvatar {
@@ -255,6 +214,3 @@
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-:global([data-theme="dark"]) .treasuryLabel {
-  color: rgba(227, 225, 238, 0.4);
-}
