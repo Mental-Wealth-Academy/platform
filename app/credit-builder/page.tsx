@@ -121,6 +121,13 @@ export default function CreditBuilderPage() {
           </p>
         </div>
 
+        {/* Legal Disclaimer */}
+        <div className={styles.disclaimer}>
+          <p className={styles.disclaimerText}>
+            This tool provides educational information about credit repair and is not legal, financial, or tax advice. Dispute letters reference federal consumer protection laws (FCRA, FDCPA, HIPAA) for educational purposes. Consult a licensed attorney or credit counselor before taking legal action. Your credit data is encrypted at rest and never shared with third parties.
+          </p>
+        </div>
+
         {/* Step Navigation */}
         <div className={styles.stepNav}>
           {CREDIT_STEPS.map((step, i) => {

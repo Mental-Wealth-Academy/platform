@@ -40,6 +40,22 @@
   margin: 0;
 }
 
+/* -- Legal Disclaimer -- */
+.disclaimer {
+  max-width: 720px;
+  margin: 12px auto 0;
+  padding: 0 24px;
+}
+
+.disclaimerText {
+  font-family: var(--font-body, 'Poppins', sans-serif);
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(227, 225, 238, 0.3);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* -- Step Navigation -- */
 .stepNav {
   display: flex;

@@ -171,6 +171,9 @@ export default function CreditBuilderInline({ onComplete, onRequestPayment, step
         >
           Submit Credit Info
         </button>
+        <p className={styles.disclaimer}>
+          Educational tool only -- not legal, financial, or tax advice. Your data is encrypted at rest.
+        </p>
       </div>
     </div>
   );

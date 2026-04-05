@@ -8,14 +8,14 @@ function getServerSecret(): string {
   return secret;
 }
 
-function deriveKey(userId: string): Buffer {
+function deriveKey(userId: string, domain = 'daily-notes'): Buffer {
   return createHmac('sha256', getServerSecret())
-    .update(`daily-notes:${userId}`)
+    .update(`${domain}:${userId}`)
     .digest();
 }
 
-export function encryptForUser(userId: string, plaintext: string): string {
-  const key = deriveKey(userId);
+export function encryptForUser(userId: string, plaintext: string, domain = 'daily-notes'): string {
+  const key = deriveKey(userId, domain);
   const iv = randomBytes(12);
   const cipher = createCipheriv(ALGORITHM, key, iv);
   const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
@@ -24,8 +24,8 @@ export function encryptForUser(userId: string, plaintext: string): string {
   return `${iv.toString('base64')}:${tag.toString('base64')}:${encrypted.toString('base64')}`;
 }
 
-export function decryptForUser(userId: string, ciphertext: string): string {
-  const key = deriveKey(userId);
+export function decryptForUser(userId: string, ciphertext: string, domain = 'daily-notes'): string {
+  const key = deriveKey(userId, domain);
   const parts = ciphertext.split(':');
   if (parts.length !== 3) throw new Error('Invalid ciphertext format');
   const iv = Buffer.from(parts[0], 'base64');

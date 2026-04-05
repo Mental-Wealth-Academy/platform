@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureCreditBuilderSchema } from '@/lib/ensureCreditBuilderSchema';
+import { encryptForUser, decryptForUser } from '@/lib/encrypt';
+import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 import type { CreditData, CreditStep } from '@/types/credit-builder';
+
+const ENCRYPT_DOMAIN = 'credit-builder';
 
 export async function GET() {
   if (!isDbConfigured()) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
@@ -14,12 +18,12 @@ export async function GET() {
   const rows = await sqlQuery<Array<{
     id: string;
     current_step: CreditStep;
-    credit_data: CreditData;
+    credit_data: string;
     audit_result: any;
     created_at: string;
     updated_at: string;
   }>>(
-    'SELECT id, current_step, credit_data, audit_result, created_at, updated_at FROM credit_profiles WHERE user_id = :userId',
+    'SELECT id, current_step, credit_data::text, audit_result, created_at, updated_at FROM credit_profiles WHERE user_id = :userId',
     { userId: user.id }
   );
 
@@ -28,6 +32,18 @@ export async function GET() {
   }
 
   const row = rows[0];
+
+  // Decrypt credit data
+  let creditData: CreditData;
+  try {
+    const raw = typeof row.credit_data === 'string' && row.credit_data.includes(':')
+      ? decryptForUser(user.id, row.credit_data, ENCRYPT_DOMAIN)
+      : row.credit_data;
+    creditData = typeof raw === 'string' ? JSON.parse(raw) : raw;
+  } catch {
+    // Fallback: data may be unencrypted (pre-migration)
+    creditData = typeof row.credit_data === 'string' ? JSON.parse(row.credit_data) : row.credit_data;
+  }
 
   // Get dispute counts
   const disputeCounts = await sqlQuery<Array<{ status: string; count: string }>>(
@@ -55,7 +71,7 @@ export async function GET() {
       id: row.id,
       userId: user.id,
       currentStep: row.current_step,
-      creditData: row.credit_data,
+      creditData,
       auditResult: row.audit_result,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
@@ -69,6 +85,12 @@ export async function POST(request: Request) {
   const user = await getCurrentUserFromRequestCookie();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  // Rate limit: 10 profile saves per hour
+  const rl = checkRateLimit({ max: 10, windowMs: 60 * 60 * 1000, identifier: `credit-profile:${user.id}` });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429, headers: getRateLimitHeaders(rl) });
+  }
+
   await ensureCreditBuilderSchema();
 
   const body = await request.json();
@@ -79,6 +101,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'creditData is required' }, { status: 400 });
   }
 
+  // Encrypt credit data at rest
+  const encrypted = encryptForUser(user.id, JSON.stringify(creditData), ENCRYPT_DOMAIN);
+
   // Upsert profile
   const rows = await sqlQuery<Array<{ id: string }>>(
     `INSERT INTO credit_profiles (id, user_id, current_step, credit_data)
@@ -87,7 +112,7 @@ export async function POST(request: Request) {
        credit_data = :creditData::jsonb,
        current_step = :step
      RETURNING id`,
-    { userId: user.id, step, creditData: JSON.stringify(creditData) }
+    { userId: user.id, step, creditData: JSON.stringify(encrypted) }
   );
 
   return NextResponse.json({ profileId: rows[0].id, step });

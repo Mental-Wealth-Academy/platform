@@ -3,6 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureCreditBuilderSchema } from '@/lib/ensureCreditBuilderSchema';
 import { generateDisputeLetter } from '@/lib/credit-builder-ai';
+import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 import type { DisputeTypeId, DisputeStatus } from '@/types/credit-builder';
 
 export async function GET() {
@@ -59,6 +60,12 @@ export async function POST(request: Request) {
   if (!isDbConfigured()) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
   const user = await getCurrentUserFromRequestCookie();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  // Rate limit: 10 dispute letters per hour (AI-generated)
+  const rl = checkRateLimit({ max: 10, windowMs: 60 * 60 * 1000, identifier: `credit-dispute:${user.id}` });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Dispute generation limit reached. Try again later.' }, { status: 429, headers: getRateLimitHeaders(rl) });
+  }
 
   await ensureCreditBuilderSchema();
 

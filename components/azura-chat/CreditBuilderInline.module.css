@@ -265,3 +265,13 @@
 .viewBtn:hover {
   background: rgba(81, 104, 255, 0.2);
 }
+
+/* Disclaimer */
+.disclaimer {
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px;
+  color: rgba(227, 225, 238, 0.25);
+  line-height: 1.5;
+  text-align: center;
+  margin: 4px 0 0;
+}

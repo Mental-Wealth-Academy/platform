@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   if (!isDbConfigured()) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
   const user = await getCurrentUserFromRequestCookie();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  // Rate limit: 20 deductions per hour
+  const rl = checkRateLimit({ max: 20, windowMs: 60 * 60 * 1000, identifier: `shard-deduct:${user.id}` });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: getRateLimitHeaders(rl) });
+  }
 
   const body = await request.json();
   const amount = body.amount;
