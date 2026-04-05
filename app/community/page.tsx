@@ -399,7 +399,9 @@ export default function VotingPage() {
             )}
 
             {activeTab === 'pods' && (
-              <section className={styles.fundingGrid}>
+              <section className={styles.fundingSection}>
+                <p className={styles.fundingSectionLabel}>Funding Pods</p>
+                <div className={styles.fundingGrid}>
                 {[
                   {
                     title: 'Brand Awareness',
@@ -440,12 +442,10 @@ export default function VotingPage() {
                           style={{ width: `${(pod.amount / pod.total) * 100}%`, background: pod.accent }}
                         />
                       </div>
-                      <span className={styles.fundingMeta}>
-                        of ${pod.total.toLocaleString()} total budget
-                      </span>
                     </div>
                   </div>
                 ))}
+                </div>
               </section>
             )}
 

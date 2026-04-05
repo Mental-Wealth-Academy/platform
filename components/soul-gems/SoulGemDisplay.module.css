@@ -51,8 +51,9 @@
 .azuraPower {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 16px 16px;
   background: var(--color-background);
   border: 2px solid #ffffff;
   border-radius: var(--radius-lg);
@@ -64,26 +65,27 @@
 
 .treasuryHeader {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.treasuryLabel {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .treasuryAmount {
   font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 800;
   color: var(--color-text-dark);
   line-height: 1;
   letter-spacing: -0.02em;
-}
-
-.treasuryLabel {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .powerRow {
@@ -94,8 +96,9 @@
 
 .avatarSection {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -115,42 +118,13 @@
   box-shadow: 0 2px 8px rgba(81, 104, 255, 0.2);
 }
 
-.azuraInfo {
-  flex: 1;
-  min-width: 0;
-}
-
 .azuraName {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-text-dark);
-  margin: 0 0 4px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.copyButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  background: transparent;
-  border: 1.5px solid rgba(81, 104, 255, 0.2);
-  border-radius: 4px;
-  cursor: pointer;
-  color: rgba(81, 104, 255, 0.5);
-  padding: 0;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-
-.copyButton:hover {
-  background: rgba(81, 104, 255, 0.1);
-  border-color: rgba(81, 104, 255, 0.4);
-  color: var(--color-primary);
+  margin: 0;
+  line-height: 1;
 }
 
 .aiTag {
@@ -216,31 +190,6 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.votingPowerDesc {
-  font-family: var(--font-primary);
-  font-size: 11px;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.5);
-  line-height: 1.4;
-  margin: 0;
-}
-
-.viewWalletButton {
-  display: none;
-}
-
-.viewWalletButton:hover {
-  background: rgba(139, 92, 246, 0.25);
-  border-color: rgba(139, 92, 246, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
-}
-
-.viewWalletButton svg {
-  width: 14px;
-  height: 14px;
-}
-
 @keyframes shimmer {
   0% {
     left: -100%;
@@ -252,32 +201,26 @@
 
 @media (max-width: 768px) {
   .azuraPower {
-    padding: 12px;
+    padding: 14px 12px 12px;
     gap: 10px;
     min-width: 0;
   }
 
   .treasuryAmount {
-    font-size: 28px;
+    font-size: 34px;
   }
 
   .powerRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    width: 100%;
   }
 
   .azuraAvatar {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
   }
 
   .azuraName {
-    font-size: 12px;
-  }
-
-  .copyButton {
-    display: none;
+    font-size: 10px;
   }
 
   .aiTag {

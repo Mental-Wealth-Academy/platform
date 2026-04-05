@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { useSound } from '@/hooks/useSound';
 import styles from './SoulGemDisplay.module.css';
 
 interface SoulGemDisplayProps {
@@ -82,55 +81,25 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   walletAddress,
   governanceTokenAddress,
 }) => {
-  const { play } = useSound();
-  const [copied, setCopied] = useState(false);
   const votingPower = 40;
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(walletAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
 
   return (
     <div className={styles.azuraPower}>
       <div className={styles.treasuryHeader}>
-        <span className={styles.treasuryAmount}>$5,200</span>
         <span className={styles.treasuryLabel}>Treasury</span>
+        <span className={styles.treasuryAmount}>$5,200</span>
       </div>
       <div className={styles.powerRow}>
         <div className={styles.avatarSection}>
           <Image
             src="https://i.imgur.com/3Y3KrnJ.png"
             alt="Blue"
-            width={32}
-            height={32}
+            width={36}
+            height={36}
             className={styles.azuraAvatar}
             unoptimized
           />
-          <div className={styles.azuraInfo}>
-            <h4 className={styles.azuraName}>
-              Blue
-              <button
-                className={styles.copyButton}
-                onClick={() => { play('click'); handleCopy(); }}
-                onMouseEnter={() => play('hover')}
-                title={copied ? 'Copied!' : `Copy address: ${walletAddress}`}
-                type="button"
-              >
-                {copied ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                ) : (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" />
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                  </svg>
-                )}
-              </button>
-            </h4>
-          </div>
+          <span className={styles.azuraName}>Blue</span>
         </div>
         <div className={styles.votingPowerSection}>
           <div className={styles.votingPowerHeader}>

@@ -66,28 +66,6 @@
   gap: 6px;
 }
 
-.copyButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  background: transparent;
-  border: 1.5px solid rgba(98, 190, 143, 0.2);
-  border-radius: 4px;
-  cursor: pointer;
-  color: rgba(98, 190, 143, 0.5);
-  padding: 0;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-
-.copyButton:hover {
-  background: rgba(98, 190, 143, 0.1);
-  border-color: rgba(98, 190, 143, 0.4);
-  color: #62BE8F;
-}
-
 .refreshButton {
   display: none;
 }
@@ -122,12 +100,11 @@
   z-index: 1;
 }
 
-.subtext {
-  display: none;
-}
-
 .stats {
-  display: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .statItem {
@@ -229,10 +206,6 @@
 
   .title {
     font-size: 12px;
-  }
-
-  .copyButton {
-    display: none;
   }
 
   .balance {
