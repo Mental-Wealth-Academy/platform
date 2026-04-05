@@ -21,9 +21,9 @@ const FAQ_ITEMS = [
       'We research and integrate tools from neuroscience and personal development. Things like reflective journaling frameworks, cognitive behavioral exercises, mindfulness protocols, and decision-making models. All of it bolted onto infrastructure that gives you ownership over your progress.',
   },
   {
-    question: 'Who is Azura?',
+    question: 'Who is Blue?',
     answer:
-      'Azura is our AI agent. She reviews your submissions, manages the community treasury, and provides feedback grounded in the course material. Think of her as a co-pilot who\'s read every paper you haven\'t gotten to yet.',
+      'Blue is our AI agent. Blue reviews your submissions, manages the community treasury, and provides feedback grounded in the course material. Think of Blue as a co-pilot who\'s read every paper you haven\'t gotten to yet.',
   },
   {
     question: 'How much time does it take each week?',

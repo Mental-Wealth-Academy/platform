@@ -57,7 +57,7 @@ export const FeaturesSection: React.FC = () => {
                   <span className={styles.checkDone}>&#10003;</span> Tag your mood
                 </div>
                 <div className={styles.checkItem}>
-                  <span className={styles.checkPending}>&#9675;</span> Get Azura&#39;s feedback
+                  <span className={styles.checkPending}>&#9675;</span> Get Blue&#39;s feedback
                 </div>
               </div>
             </div>
@@ -81,7 +81,7 @@ export const FeaturesSection: React.FC = () => {
                 <span className={styles.taskTitle}>Wishes &amp; Wealth</span>
                 {activeCard === 2 && <span className={styles.weekBadge}>Seasonal</span>}
               </div>
-              <p className={styles.taskDesc}>Submit wishes to the Academy, vote on community direction, and track your shards, tokens, and rewards. Every proposal is reviewed by Azura and decided by the Angels. Study generates wealth. Governance multiplies it.</p>
+              <p className={styles.taskDesc}>Submit wishes to the Academy, vote on community direction, and track your shards, tokens, and rewards. Every proposal is reviewed by Blue and decided by the Angels. Study generates wealth. Governance multiplies it.</p>
               <div className={styles.rewardsBar}>
                 <span>Your total:</span>
                 <span className={styles.rewardHighlight}>430 points exchanged</span>

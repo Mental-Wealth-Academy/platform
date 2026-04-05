@@ -39,14 +39,14 @@ const LandingPage = () => {
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
 
-      {/* Angelic Credit System — governance explainer */}
-      <AngelicCreditSystem />
+      {/* Swarms Section — Wealth, Community, & Purpose */}
+      <SwarmsSection />
 
       {/* Testimonial Section */}
       <TestimonialSection />
 
-      {/* Swarms Section - Server rendered */}
-      <SwarmsSection />
+      {/* Angelic Credit System — Our Core Mission */}
+      <AngelicCreditSystem />
 
       {/* Membership — Free vs Paid tiers + purchase modal */}
       <MembershipSection />

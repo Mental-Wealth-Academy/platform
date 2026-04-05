@@ -225,7 +225,7 @@ export default function PortfolioModal({ isOpen, onClose }: PortfolioModalProps)
                 </div>
                 <div className={styles.metricCard}>
                   <p className={styles.metricValue}>40,000</p>
-                  <p className={styles.metricLabel}>Azura Voting Power</p>
+                  <p className={styles.metricLabel}>Blue Voting Power</p>
                 </div>
                 <div className={styles.metricCard}>
                   <p className={styles.metricValue}>{data?.totalProposals || 0}</p>

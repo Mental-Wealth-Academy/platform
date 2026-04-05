@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
           <Image src="https://i.imgur.com/VhmwZEG.png" alt="" width={200} height={200} className={styles.heroStarform} />
           <h1 className={styles.heroHeadline}>Challenge <em>Your Mind</em></h1>
           <p className={styles.heroSubtext}>
-            A seasonal micro-university, that helps you break through slumps, earn gems, and activate your highest potential.
+            A seasonal micro-university that is helping you break through slumps, earn gems, and activate your highest potential.
           </p>
           <button
             type="button"
