@@ -101,8 +101,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
-  const [fullBodyEmote, setFullBodyEmote] = useState<'default' | 'surprised'>('default');
-  const fullBodyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -510,13 +508,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
     switchEmote(emote);
     emoteTimerRef.current = setTimeout(() => switchEmote('default'), durationMs);
-
-    // Sync full-body emote for surprised/searching states
-    if (emote === 'surprised' || emote === 'searching') {
-      if (fullBodyTimerRef.current) clearTimeout(fullBodyTimerRef.current);
-      setFullBodyEmote('surprised');
-      fullBodyTimerRef.current = setTimeout(() => setFullBodyEmote('default'), durationMs);
-    }
   }, [switchEmote]);
 
   const handleQuickAction = (action: string) => {
@@ -628,9 +619,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
       {/* Quick Actions */}
       <div className={styles.quickActions}>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
-          Credit Builder
-        </button>
         <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
           Research
         </button>
@@ -777,7 +765,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               {chatContent}
             </div>
 
-            {/* Right — Full body character with emote swap */}
+            {/* Right — Full body character */}
             <div className={styles.expandedRight}>
               <div className={styles.fullBodyWrap}>
                 <Image
@@ -785,17 +773,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   alt="Blue full body"
                   fill
                   className={styles.fullBodyImage}
-                  style={{ opacity: fullBodyEmote === 'default' ? 1 : 0, transition: 'opacity 0.5s ease' }}
                   unoptimized
                   priority
-                />
-                <Image
-                  src="/images/blue-fullbody-surprised.png"
-                  alt="Blue surprised"
-                  fill
-                  className={styles.fullBodyImage}
-                  style={{ opacity: fullBodyEmote === 'surprised' ? 1 : 0, transition: 'opacity 0.5s ease' }}
-                  unoptimized
                 />
                 <div className={styles.fullBodyGlow} />
               </div>
