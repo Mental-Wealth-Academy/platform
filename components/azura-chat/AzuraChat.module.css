@@ -419,15 +419,15 @@
 }
 
 .quickActionAccent {
-  background: rgba(255, 136, 0, 0.12);
-  border-color: rgba(255, 136, 0, 0.3);
-  color: #FF8800;
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.2);
+  color: rgba(81, 104, 255, 0.8);
 }
 
 .quickActionAccent:hover:not(:disabled) {
-  background: rgba(255, 136, 0, 0.2);
-  border-color: rgba(255, 136, 0, 0.5);
-  color: #FF8800;
+  background: rgba(81, 104, 255, 0.15);
+  border-color: rgba(81, 104, 255, 0.4);
+  color: #5168FF;
 }
 
 .quickActionHighlight {
@@ -804,7 +804,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(81, 104, 255, 0.08);
   flex-shrink: 0;
 }
 
@@ -829,21 +829,22 @@
   overflow: hidden;
 }
 
-/* Left panel */
+/* Left panel — slightly elevated surface */
 .expandedLeft {
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 20px;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(81, 104, 255, 0.08);
   overflow-y: auto;
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .panelHeading {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.35);
+  color: #4a5568;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin: 0 0 14px;
@@ -872,7 +873,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(220, 210, 230, 0.5);
   width: 72px;
   flex-shrink: 0;
 }
@@ -928,7 +929,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 10px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.85);
   width: 28px;
   text-align: right;
   flex-shrink: 0;
@@ -978,14 +979,14 @@
 }
 
 .expandedQuickAccent {
-  border-color: rgba(255, 136, 0, 0.2);
-  color: rgba(255, 136, 0, 0.7);
+  border-color: rgba(81, 104, 255, 0.15);
+  color: rgba(81, 104, 255, 0.7);
 }
 
 .expandedQuickAccent:hover:not(:disabled) {
-  border-color: rgba(255, 136, 0, 0.4);
-  color: #FF8800;
-  background: rgba(255, 136, 0, 0.08);
+  border-color: rgba(81, 104, 255, 0.35);
+  color: #5168FF;
+  background: rgba(81, 104, 255, 0.08);
 }
 
 .expandedQuickHighlight {
@@ -1019,14 +1020,14 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.3);
+  color: #4a5568;
 }
 
 .sessionValue {
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(220, 210, 230, 0.75);
 }
 
 .sessionValueOnline {
@@ -1036,24 +1037,27 @@
   color: #74C465;
 }
 
-/* Center column */
+/* Center column — recessed for depth */
 .expandedCenter {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: #1A1D33;
+  background: #10121f;
 }
 
-/* Right panel — Full body */
+/* Right panel — Full body with radial light source */
 .expandedRight {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 1px solid rgba(81, 104, 255, 0.08);
   overflow: hidden;
-  background: linear-gradient(180deg, #0D0F1A 0%, #141728 50%, #1A1D33 100%);
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 60%, rgba(81, 104, 255, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(100, 80, 180, 0.06) 0%, transparent 70%),
+    linear-gradient(180deg, #060810 0%, #0a0d18 40%, #0e1120 100%);
 }
 
 .fullBodyWrap {
@@ -1083,12 +1087,12 @@
 
 .fullBodyGlow {
   position: absolute;
-  bottom: 0;
+  bottom: -20%;
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(ellipse, rgba(81, 104, 255, 0.15) 0%, transparent 70%);
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(ellipse, rgba(81, 104, 255, 0.12) 0%, rgba(100, 80, 180, 0.06) 40%, transparent 70%);
   pointer-events: none;
   animation: glowPulse 4s ease-in-out infinite;
 }

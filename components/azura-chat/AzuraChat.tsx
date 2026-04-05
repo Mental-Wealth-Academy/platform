@@ -64,10 +64,10 @@ const AZURA_EMOTES = {
 
 const KNOWLEDGE_DOMAINS = [
   { label: 'Behavioral', value: 92, color: '#5168FF' },
-  { label: 'DeSci', value: 84, color: '#00D4FF' },
-  { label: 'Wellness', value: 88, color: '#74C465' },
-  { label: 'On-Chain', value: 90, color: '#FF8800' },
-  { label: 'Neuro', value: 76, color: '#C084FC' },
+  { label: 'DeSci', value: 84, color: '#7B8FFF' },
+  { label: 'Wellness', value: 88, color: '#5168FF' },
+  { label: 'On-Chain', value: 90, color: '#D4A054' },
+  { label: 'Neuro', value: 76, color: '#C4A44E' },
 ];
 
 const SHARD_COST = 10;
