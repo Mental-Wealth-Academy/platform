@@ -42,6 +42,7 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/nav-home.svg' },
+      { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/nav-courses.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
     ],
   },
