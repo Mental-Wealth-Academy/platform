@@ -62,26 +62,34 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button
-          onClick={() => { play('click'); onClose() }}
-          onMouseEnter={() => play('hover')}
-          className={styles.closeButton}
-          type="button"
-          aria-label="Close modal"
-        >
-          &times;
-        </button>
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <h2 className={styles.title}>Exchange</h2>
+            <span className={styles.subtitle}>Swap tokens instantly</span>
+          </div>
+          <button
+            onClick={() => { play('click'); onClose() }}
+            onMouseEnter={() => play('hover')}
+            className={styles.closeButton}
+            type="button"
+            aria-label="Close modal"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
 
         <div className={styles.content}>
-          <div className={styles.header}>
-            <h2 className={styles.title}>Exchange</h2>
-          </div>
-
           {/* From Token */}
           <div className={styles.tokenCard}>
+            <div className={styles.tokenHeader}>
+              <span className={styles.tokenLabel}>From</span>
+              <span className={styles.balanceLabel}>Balance: {fromBalance}</span>
+            </div>
             <div className={styles.tokenRow}>
-              <div className={styles.tokenInfo}>
-                <span className={styles.tokenLabel}>From</span>
+              <div className={styles.tokenBadge}>
+                <span className={styles.tokenIcon}>{fromToken === 'SHARDS' ? 'S' : 'V'}</span>
                 <span className={styles.tokenName}>{fromToken}</span>
               </div>
               <input
@@ -92,9 +100,6 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
                 onChange={(e) => handleFromChange(e.target.value)}
                 min="0"
               />
-            </div>
-            <div className={styles.balanceRow}>
-              <span className={styles.balanceLabel}>Balance: {fromBalance}</span>
             </div>
           </div>
 
@@ -107,7 +112,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
               type="button"
               aria-label="Swap direction"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <path d="M7 16L7 4M7 4L3 8M7 4L11 8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M17 8L17 20M17 20L21 16M17 20L13 16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -116,9 +121,13 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
 
           {/* To Token */}
           <div className={styles.tokenCard}>
+            <div className={styles.tokenHeader}>
+              <span className={styles.tokenLabel}>To</span>
+              <span className={styles.balanceLabel}>Balance: {toBalance}</span>
+            </div>
             <div className={styles.tokenRow}>
-              <div className={styles.tokenInfo}>
-                <span className={styles.tokenLabel}>To</span>
+              <div className={styles.tokenBadge}>
+                <span className={styles.tokenIcon}>{toToken === 'SHARDS' ? 'S' : 'V'}</span>
                 <span className={styles.tokenName}>{toToken}</span>
               </div>
               <input
@@ -129,17 +138,12 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
                 readOnly
               />
             </div>
-            <div className={styles.balanceRow}>
-              <span className={styles.balanceLabel}>Balance: {toBalance}</span>
-            </div>
           </div>
 
           {/* Rate Display */}
           <div className={styles.rateRow}>
             <span className={styles.rateLabel}>Rate</span>
-            <span className={styles.rateValue}>
-              100 SHARDS = 1 VOTE
-            </span>
+            <span className={styles.rateValue}>100 SHARDS = 1 VOTE</span>
           </div>
 
           {/* Swap CTA */}

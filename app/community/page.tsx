@@ -244,26 +244,14 @@ export default function VotingPage() {
           <div className={styles.statCardsRow}>
             <div className={styles.statCardCompact}>
               <button
-                className={styles.exchangeCard}
+                className={styles.secondaryCta}
                 onClick={() => { play('click'); setIsSwapOpen(true); }}
                 onMouseEnter={() => play('hover')}
                 type="button"
               >
-                <div className={styles.exchangeCardInner}>
-                  <div className={styles.exchangeCardHeader}>
-                    <span className={styles.exchangeLabel}>Exchange</span>
-                    <span className={styles.exchangeLive}>LIVE</span>
-                  </div>
-                  <div className={styles.exchangePriceRow}>
-                    <span className={styles.exchangePriceValue}>0.033</span>
-                    <span className={styles.exchangePriceCurrency}>USDC</span>
-                  </div>
-                  <div className={styles.exchangeFooter}>
-                    <span className={styles.exchangeAddress}>0x84939...EA6F</span>
-                    <span className={styles.exchangeAction}>Swap</span>
-                  </div>
-                </div>
-                <div className={styles.exchangeGlow} />
+                <span className={styles.exchangeLabel}>Exchange Data</span>
+                <span className={styles.exchangePrice}>Price: 0.033</span>
+                <span className={styles.exchangeAddress}>0x84939...EA6F</span>
               </button>
             </div>
             <div className={styles.statCardCompact}>

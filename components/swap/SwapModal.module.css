@@ -1,4 +1,4 @@
-/* Swap Modal — Brutalist Uniswap Style */
+/* Swap Modal — Polished Exchange */
 
 .overlay {
   position: fixed;
@@ -6,64 +6,61 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(26, 29, 51, 0.85);
+  background: rgba(10, 10, 18, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
   padding: var(--space-4);
   overflow-y: auto;
+  animation: overlayIn 0.2s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 6px 6px 0 #1A1D33;
+  max-width: 400px;
+  background: linear-gradient(165deg, #1a1d33 0%, #171a2e 40%, #1d1f35 100%);
+  border: 1px solid rgba(81, 104, 255, 0.15);
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  animation: modalIn 0.25s ease;
 }
 
-.closeButton {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 2px;
-  cursor: pointer;
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 0;
-  transition: all 0.15s ease;
-  z-index: 10;
+  justify-content: space-between;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.closeButton:hover {
-  background: rgba(255, 255, 255, 0.35);
-  transform: translate(-1px, -1px);
-}
-
-.content {
-  padding: 24px;
+.headerLeft {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.header {
-  background: var(--color-primary);
-  margin: -24px -24px 0 -24px;
-  padding: 20px 24px;
-  border-bottom: 3px solid #1A1D33;
+  gap: 2px;
 }
 
 .title {
@@ -71,22 +68,81 @@
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.01em;
   margin: 0;
+}
+
+.subtitle {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.01em;
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Content */
+.content {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* Token Input Cards */
 .tokenCard {
-  background: #f8f8fb;
-  border: 2px solid #1A1D33;
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  transition: border-color 0.15s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 16px 18px;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .tokenCard:focus-within {
-  border-color: var(--color-primary);
+  border-color: rgba(81, 104, 255, 0.3);
+  background: rgba(81, 104, 255, 0.04);
+}
+
+.tokenHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tokenLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.balanceLabel {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .tokenRow {
@@ -96,26 +152,32 @@
   gap: 12px;
 }
 
-.tokenInfo {
+.tokenBadge {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 10px;
 }
 
-.tokenLabel {
+.tokenIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.2), rgba(81, 104, 255, 0.08));
+  border: 1px solid rgba(81, 104, 255, 0.15);
   font-family: var(--font-primary);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #999999;
+  color: var(--color-primary);
 }
 
 .tokenName {
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  color: #1A1D33;
+  color: rgba(255, 255, 255, 0.9);
   letter-spacing: 0.02em;
 }
 
@@ -126,14 +188,15 @@
   border: none;
   outline: none;
   font-family: var(--font-primary);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
-  color: #1A1D33;
+  color: #ffffff;
   padding: 0;
+  letter-spacing: -0.02em;
 }
 
 .tokenInput::placeholder {
-  color: #cccccc;
+  color: rgba(255, 255, 255, 0.15);
 }
 
 /* Hide number input arrows */
@@ -146,45 +209,34 @@
   -moz-appearance: textfield;
 }
 
-.balanceRow {
-  margin-top: 8px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.balanceLabel {
-  font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 500;
-  color: #999999;
-}
-
 /* Swap Direction Button */
 .swapButtonRow {
   display: flex;
   justify-content: center;
-  margin: -6px 0;
+  margin: -2px 0;
   position: relative;
   z-index: 2;
 }
 
 .swapDirectionBtn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 50%;
+  background: #1a1d33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   cursor: pointer;
-  color: #1A1D33;
-  transition: background 0.15s ease, color 0.15s ease;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
 }
 
 .swapDirectionBtn:hover {
-  background: var(--color-primary);
-  color: #ffffff;
+  background: rgba(81, 104, 255, 0.15);
+  border-color: rgba(81, 104, 255, 0.3);
+  color: var(--color-primary);
+  transform: rotate(180deg);
 }
 
 /* Rate Display */
@@ -192,159 +244,184 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  background: rgba(81, 104, 255, 0.06);
-  border: 2px solid rgba(26, 29, 51, 0.1);
-  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
 }
 
 .rateLabel {
   font-family: var(--font-primary);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #999999;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .rateValue {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  font-weight: 700;
-  color: #1A1D33;
+  font-family: var(--font-code);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
 }
 
 /* Swap CTA */
 .swapCta {
   width: 100%;
-  padding: 14px 24px;
+  padding: 16px 24px;
+  margin-top: 8px;
   background: var(--color-primary);
   color: #ffffff;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
+  border: none;
+  border-radius: 14px;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 3px 3px 0 #1A1D33;
-  margin-top: 4px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
 }
 
 .swapCta:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0 #1A1D33;
+  background: #6179FF;
+  box-shadow: 0 6px 24px rgba(81, 104, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.swapCta:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.3);
 }
 
 /* Responsive */
 @media (max-width: 480px) {
   .overlay {
     padding: 12px;
+    align-items: flex-end;
   }
 
   .modal {
-    box-shadow: 4px 4px 0 #1A1D33;
-  }
-
-  .content {
-    padding: 20px 16px;
+    border-radius: 20px 20px 12px 12px;
+    max-width: 100%;
   }
 
   .header {
-    margin: -20px -16px 0 -16px;
-    padding: 16px;
+    padding: 18px 20px 14px;
   }
 
-  .title {
-    font-size: 15px;
-  }
-
-  .closeButton {
-    top: 12px;
-    right: 12px;
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
+  .content {
+    padding: 16px 20px 20px;
   }
 
   .tokenInput {
-    font-size: 20px;
+    font-size: 22px;
     width: 120px;
   }
 
   .tokenName {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  .tokenIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    border-radius: 10px;
   }
 }
 
-/* ==================== DARK MODE ==================== */
+/* ==================== LIGHT MODE ==================== */
 
-:global([data-theme="dark"]) .modal {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+:global(:root:not([data-theme="dark"])) .modal {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
 }
 
-:global([data-theme="dark"]) .header {
-  border-bottom-color: rgba(255, 255, 255, 0.06);
+:global(:root:not([data-theme="dark"])) .header {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
 }
 
-:global([data-theme="dark"]) .tokenCard {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.06);
+:global(:root:not([data-theme="dark"])) .title {
+  color: #1A1D33;
 }
 
-:global([data-theme="dark"]) .tokenCard:focus-within {
-  border-color: #6B80FF;
+:global(:root:not([data-theme="dark"])) .subtitle {
+  color: rgba(26, 29, 51, 0.45);
 }
 
-:global([data-theme="dark"]) .tokenLabel {
-  color: rgba(227, 225, 238, 0.35);
+:global(:root:not([data-theme="dark"])) .closeButton {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: rgba(26, 29, 51, 0.4);
 }
 
-:global([data-theme="dark"]) .tokenName {
-  color: rgba(227, 225, 238, 0.95);
+:global(:root:not([data-theme="dark"])) .closeButton:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(26, 29, 51, 0.7);
 }
 
-:global([data-theme="dark"]) .tokenInput {
-  color: rgba(227, 225, 238, 0.95);
+:global(:root:not([data-theme="dark"])) .tokenCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
-:global([data-theme="dark"]) .tokenInput::placeholder {
-  color: rgba(227, 225, 238, 0.35);
+:global(:root:not([data-theme="dark"])) .tokenCard:focus-within {
+  border-color: rgba(81, 104, 255, 0.35);
+  background: rgba(81, 104, 255, 0.03);
 }
 
-:global([data-theme="dark"]) .balanceLabel {
-  color: rgba(227, 225, 238, 0.35);
+:global(:root:not([data-theme="dark"])) .tokenLabel {
+  color: rgba(26, 29, 51, 0.4);
 }
 
-:global([data-theme="dark"]) .swapDirectionBtn {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.06);
-  color: rgba(227, 225, 238, 0.95);
+:global(:root:not([data-theme="dark"])) .balanceLabel {
+  color: rgba(26, 29, 51, 0.35);
 }
 
-:global([data-theme="dark"]) .swapDirectionBtn:hover {
-  background: #6B80FF;
-  color: #ffffff;
+:global(:root:not([data-theme="dark"])) .tokenName {
+  color: #1A1D33;
 }
 
-:global([data-theme="dark"]) .rateRow {
-  border-color: rgba(255, 255, 255, 0.06);
-  background: rgba(107, 128, 255, 0.04);
+:global(:root:not([data-theme="dark"])) .tokenInput {
+  color: #1A1D33;
 }
 
-:global([data-theme="dark"]) .rateLabel {
-  color: rgba(227, 225, 238, 0.35);
+:global(:root:not([data-theme="dark"])) .tokenInput::placeholder {
+  color: rgba(26, 29, 51, 0.2);
 }
 
-:global([data-theme="dark"]) .rateValue {
-  color: rgba(227, 225, 238, 0.95);
+:global(:root:not([data-theme="dark"])) .swapDirectionBtn {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(26, 29, 51, 0.5);
 }
 
-:global([data-theme="dark"]) .swapCta {
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: none;
+:global(:root:not([data-theme="dark"])) .swapDirectionBtn:hover {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.2);
+  color: var(--color-primary);
+}
+
+:global(:root:not([data-theme="dark"])) .rateRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+:global(:root:not([data-theme="dark"])) .rateLabel {
+  color: rgba(26, 29, 51, 0.4);
+}
+
+:global(:root:not([data-theme="dark"])) .rateValue {
+  color: rgba(26, 29, 51, 0.6);
+}
+
+:global(:root:not([data-theme="dark"])) .overlay {
+  background: rgba(26, 29, 51, 0.4);
 }
