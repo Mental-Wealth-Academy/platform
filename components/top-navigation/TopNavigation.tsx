@@ -9,6 +9,7 @@ import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
 const TOOLS_ITEMS = [
+  { label: 'Credit Builder', href: '/credit-builder' },
   { label: 'What is Wealth?', href: '/learn#wealth' },
   { label: 'Community DAO', href: '/learn#community' },
   { label: 'Cognitive Benefits', href: '/learn#cognitive' },
