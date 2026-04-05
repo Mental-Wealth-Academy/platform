@@ -21,6 +21,14 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
 }) => {
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(BLUE_WALLET);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   const loadBalance = useCallback(async () => {
     try {
@@ -81,10 +89,47 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
         </div>
       </div>
 
-      <p className={styles.balance}>
-        ${balance}
-        <span className={styles.currency}>USDC</span>
-      </p>
+      <div className={styles.balanceRow}>
+        <p className={styles.balance}>
+          ${balance}
+          <span className={styles.currency}>USDC</span>
+        </p>
+        <div className={styles.actions}>
+          <button
+            className={styles.actionButton}
+            onClick={handleCopy}
+            title={copied ? 'Copied!' : 'Copy wallet address'}
+            type="button"
+          >
+            {copied ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" />
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+              </svg>
+            )}
+          </button>
+          <button
+            className={styles.actionButton}
+            onClick={() => setShowInfo(!showInfo)}
+            title="About this wallet"
+            type="button"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4M12 8h.01" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      {showInfo && (
+        <p className={styles.infoText}>
+          Blue uses this wallet to transact on behalf of the community. It mostly gets used instantly, so this is typically empty. It costs to be the boss.
+        </p>
+      )}
     </div>
   );
 };

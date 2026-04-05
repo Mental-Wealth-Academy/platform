@@ -247,22 +247,22 @@ export default function VotingPage() {
           {/* Stat Cards — side by side */}
           <div className={styles.statCardsRow}>
             <div className={styles.statCardCompact}>
+              <TreasuryDisplay
+                contractAddress={CONTRACT_ADDRESS}
+                usdcAddress={USDC_ADDRESS}
+              />
+            </div>
+            <div className={styles.statCardCompact}>
               <button
                 className={styles.secondaryCta}
                 onClick={() => { play('click'); setIsSwapOpen(true); }}
                 onMouseEnter={() => play('hover')}
                 type="button"
               >
-                <span className={styles.exchangeLabel}>Exchange Data</span>
-                <span className={styles.exchangePrice}>Price: 0.033</span>
+                <span className={styles.exchangePrice}>0.033 USDC</span>
+                <span className={styles.exchangeLabel}>Exchange</span>
                 <span className={styles.exchangeAddress}>0x84939...EA6F</span>
               </button>
-            </div>
-            <div className={styles.statCardCompact}>
-              <TreasuryDisplay
-                contractAddress={CONTRACT_ADDRESS}
-                usdcAddress={USDC_ADDRESS}
-              />
             </div>
           </div>
 
