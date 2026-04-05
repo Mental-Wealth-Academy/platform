@@ -53,13 +53,13 @@ interface TreasuryContext {
 }
 
 const AZURA_EMOTES = {
-  default: 'https://i.imgur.com/ExJZFiA.png',
-  thinking: 'https://i.imgur.com/4FsFcDO.png',
-  scheming: 'https://i.imgur.com/3FMUm8a.png',
-  thinkingLeft: 'https://i.imgur.com/AjRHt7m.png',
-  thinkingRight: 'https://i.imgur.com/fRfcLdH.png',
-  searching: 'https://i.imgur.com/7RUM8I2.png',
-  blankStare: 'https://i.imgur.com/igYuj37.png',
+  default: '/images/blue-happy.png',
+  surprised: '/images/blue-surprised.png',
+  angry: '/images/blue-angry.png',
+  searching: '/images/blue-searching.png',
+  happy: '/images/blue-happy.png',
+  joyful: '/images/blue-joyful.png',
+  dead: '/images/blue-dead.png',
 } as const;
 
 const KNOWLEDGE_DOMAINS = [
@@ -101,6 +101,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
+  const [fullBodyEmote, setFullBodyEmote] = useState<'default' | 'surprised'>('default');
+  const fullBodyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -224,7 +226,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           };
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
-          showEmote('blankStare');
+          showEmote('dead');
           const hasShards = shardCount !== null && shardCount >= SHARD_COST;
           if (hasShards) {
             setPendingMessage(text);
@@ -321,7 +323,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
-    showEmote('blankStare');
+    showEmote('dead');
 
     const hasShards = shardCount !== null && shardCount >= SHARD_COST;
 
@@ -349,7 +351,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   };
 
   const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
-    showEmote('scheming');
+    showEmote('surprised');
 
     // Build credit data payload
     const scores = [];
@@ -508,12 +510,19 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
     switchEmote(emote);
     emoteTimerRef.current = setTimeout(() => switchEmote('default'), durationMs);
+
+    // Sync full-body emote for surprised/searching states
+    if (emote === 'surprised' || emote === 'searching') {
+      if (fullBodyTimerRef.current) clearTimeout(fullBodyTimerRef.current);
+      setFullBodyEmote('surprised');
+      fullBodyTimerRef.current = setTimeout(() => setFullBodyEmote('default'), durationMs);
+    }
   }, [switchEmote]);
 
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
 
-    const send = (text: string, emote: keyof typeof AZURA_EMOTES = 'thinking') => {
+    const send = (text: string, emote: keyof typeof AZURA_EMOTES = 'happy') => {
       showEmote(emote);
       setMessages((prev) => [...prev, {
         id: Date.now().toString(),
@@ -524,7 +533,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     };
 
     if (action === 'credit') {
-      send('I want to build my credit', 'thinking');
+      send('I want to build my credit', 'happy');
       setCreditStep('intake');
       addAzuraMessage(
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
@@ -535,7 +544,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         "give me a topic. i'll pull from DeSci papers, behavioral studies, on-chain data. what do you want me to look into?"
       );
     } else if (action === 'more') {
-      send('What else can you do', 'thinkingLeft');
+      send('What else can you do', 'happy');
       addAzuraMessage(
         "treasury, governance, course progress, or just talk through whatever's on your mind. ask me something specific."
       );
@@ -768,16 +777,25 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               {chatContent}
             </div>
 
-            {/* Right — Full body character */}
+            {/* Right — Full body character with emote swap */}
             <div className={styles.expandedRight}>
               <div className={styles.fullBodyWrap}>
                 <Image
                   src="/images/azura-fullbody.png"
-                  alt="Azura full body"
+                  alt="Blue full body"
                   fill
                   className={styles.fullBodyImage}
+                  style={{ opacity: fullBodyEmote === 'default' ? 1 : 0, transition: 'opacity 0.5s ease' }}
                   unoptimized
                   priority
+                />
+                <Image
+                  src="/images/blue-fullbody-surprised.png"
+                  alt="Blue surprised"
+                  fill
+                  className={styles.fullBodyImage}
+                  style={{ opacity: fullBodyEmote === 'surprised' ? 1 : 0, transition: 'opacity 0.5s ease' }}
+                  unoptimized
                 />
                 <div className={styles.fullBodyGlow} />
               </div>
