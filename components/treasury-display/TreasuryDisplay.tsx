@@ -22,7 +22,6 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(BLUE_WALLET);
@@ -112,24 +111,11 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
               </svg>
             )}
           </button>
-          <button
-            className={styles.actionButton}
-            onClick={() => setShowInfo(!showInfo)}
-            title="About this wallet"
-            type="button"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 16v-4M12 8h.01" />
-            </svg>
-          </button>
         </div>
       </div>
-      {showInfo && (
-        <p className={styles.infoText}>
-          Blue uses this wallet to transact on behalf of the community. It mostly gets used instantly, so this is typically empty. It costs to be the boss.
-        </p>
-      )}
+      <p className={styles.infoText}>
+        Blue uses this wallet to transact on behalf of the community. Users can pay instantly for her to do services, or exchange earned shards for responses.
+      </p>
     </div>
   );
 };

@@ -481,46 +481,101 @@
 }
 
 /* Compact Exchange Data — light card treatment */
-.statCardCompact .secondaryCta {
+.exchangeCard {
+  display: flex;
+  flex-direction: column;
   padding: 16px;
-  font-size: 12px;
   background: var(--color-background);
   border: 2px solid #ffffff;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
 }
 
-.statCardCompact .secondaryCta::before {
-  display: none;
+.exchangeCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.statCardCompact .secondaryCta::after {
-  display: none;
+.exchangeHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.exchangeIcon {
+  width: 28px;
+  height: 28px;
+  background: rgba(116, 196, 101, 0.12);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(116, 196, 101, 0.25);
+  flex-shrink: 0;
+}
+
+.exchangeIcon svg {
+  width: 16px;
+  height: 16px;
+  color: #74C465;
+}
+
+.exchangeTitleText {
+  display: flex;
+  flex-direction: column;
 }
 
 .statCardCompact .exchangeLabel {
-  font-size: 14px;
-  color: var(--color-text-dark);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  font-family: var(--font-button);
+  color: var(--color-text-muted);
   text-shadow: none;
+}
+
+.exchangeTitle {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-text-dark);
+}
+
+.exchangePriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .statCardCompact .exchangePrice {
-  font-size: 14px;
-  color: var(--color-text-dark);
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
   text-shadow: none;
-  opacity: 0.6;
+  opacity: 1;
 }
 
-.statCardCompact .exchangeAddress {
-  font-size: 10px;
-  color: var(--color-text-dark);
-  text-shadow: none;
-  background: rgba(0, 0, 0, 0.05);
-  opacity: 0.6;
+.exchangeCurrency {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(116, 196, 101, 0.7);
 }
 
-.statCardCompact .secondaryCta:hover .exchangeAddress {
-  background: rgba(0, 0, 0, 0.08);
+.exchangeDesc {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* ─── Demo Modal — Retro Futurism ─── */
@@ -2479,21 +2534,16 @@
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="dark"]) .statCardCompact .secondaryCta {
+:global([data-theme="dark"]) .exchangeCard {
   border-color: rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="dark"]) .statCardCompact .exchangeLabel {
-  color: rgba(227, 225, 238, 0.95);
+:global([data-theme="dark"]) .exchangeDesc {
+  color: rgba(227, 225, 238, 0.4);
 }
 
 :global([data-theme="dark"]) .statCardCompact .exchangePrice {
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .statCardCompact .exchangeAddress {
   color: rgba(227, 225, 238, 0.55);
-  background: rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .submitRow {

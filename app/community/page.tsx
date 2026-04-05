@@ -254,14 +254,32 @@ export default function VotingPage() {
             </div>
             <div className={styles.statCardCompact}>
               <button
-                className={styles.secondaryCta}
+                className={styles.exchangeCard}
                 onClick={() => { play('click'); setIsSwapOpen(true); }}
                 onMouseEnter={() => play('hover')}
                 type="button"
               >
-                <span className={styles.exchangePrice}>0.033 USDC</span>
-                <span className={styles.exchangeLabel}>Exchange</span>
-                <span className={styles.exchangeAddress}>0x84939...EA6F</span>
+                <div className={styles.exchangeHeader}>
+                  <div className={styles.exchangeIcon}>
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 10L3 14L7 18" fill="currentColor"/>
+                      <path d="M3 14H16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                      <path d="M17 14L21 10L17 6" fill="currentColor"/>
+                      <path d="M21 10H8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                    </svg>
+                  </div>
+                  <div className={styles.exchangeTitleText}>
+                    <span className={styles.exchangeLabel}>Token Exchange</span>
+                    <span className={styles.exchangeTitle}>Swap</span>
+                  </div>
+                </div>
+                <div className={styles.exchangePriceRow}>
+                  <span className={styles.exchangePrice}>$0.033</span>
+                  <span className={styles.exchangeCurrency}>USDC per token</span>
+                </div>
+                <p className={styles.exchangeDesc}>
+                  Buy or sell governance tokens directly. Current price reflects community market activity.
+                </p>
               </button>
             </div>
           </div>
