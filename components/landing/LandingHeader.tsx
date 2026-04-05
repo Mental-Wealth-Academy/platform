@@ -10,7 +10,6 @@ import { useSound } from '@/hooks/useSound';
 const TOOLS_ITEMS = [
   { label: 'What is Wealth?', href: '/learn#wealth' },
   { label: 'Simulator', href: 'https://azure-world.vercel.app' },
-  { label: 'CRM Payroll', href: 'https://azura-theta.vercel.app' },
 ];
 
 export const LandingHeader: React.FC = () => {
