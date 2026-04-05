@@ -532,7 +532,22 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     } else if (action === 'research') {
       send('Start a research session', 'searching');
       addAzuraMessage(
-        "give me a topic. i'll pull from DeSci papers, behavioral studies, on-chain data. what do you want me to look into?"
+        "research is a paid feature. i pull from the latest DeSci papers, behavioral studies, and on-chain data using x402 protocols. add USDC or pay through Stripe using the green input below to unlock a session. what topic do you want me to dig into?"
+      );
+    } else if (action === 'shards') {
+      send('What are shards?', 'happy');
+      addAzuraMessage(
+        "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
+      );
+    } else if (action === 'prayers') {
+      send('Tell me about morning prayers', 'happy');
+      addAzuraMessage(
+        "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you'll start hearing things you've been ignoring."
+      );
+    } else if (action === 'course') {
+      send('How does the course work?', 'happy');
+      addAzuraMessage(
+        "12 weeks. each week targets a specific psychological domain -- safety, identity, power, integrity, all the way to faith. complete readings, reflections, and quests. seal your progress on-chain."
       );
     } else if (action === 'more') {
       send('What else can you do', 'happy');
@@ -619,8 +634,14 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
       {/* Quick Actions */}
       <div className={styles.quickActions}>
-        <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
-          Research
+        <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
+          Shards
+        </button>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('prayers')} disabled={isTyping} type="button">
+          Prayers
+        </button>
+        <button className={styles.quickAction} onClick={() => handleQuickAction('course')} disabled={isTyping} type="button">
+          Course
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
           More
@@ -697,30 +718,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           <div className={styles.expandedBody}>
             {/* Left panel — Knowledge & actions */}
             <div className={styles.expandedLeft}>
-              <div className={styles.knowledgePanel}>
-                <h3 className={styles.panelHeading}>Knowledge Domains</h3>
-                <div className={styles.knowledgeBars}>
-                  {KNOWLEDGE_DOMAINS.map((domain, i) => (
-                    <div key={domain.label} className={styles.knowledgeRow}>
-                      <span className={styles.knowledgeLabel}>{domain.label}</span>
-                      <div className={styles.knowledgeTrack}>
-                        <div
-                          className={styles.knowledgeFill}
-                          style={{
-                            width: `${domain.value}%`,
-                            ['--bar-color' as string]: domain.color,
-                            animationDelay: `${i * 0.12}s`,
-                          }}
-                        />
-                      </div>
-                      <span className={styles.knowledgeValue}>{domain.value}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               <div className={styles.expandedQuickPanel}>
-                <h3 className={styles.panelHeading}>Quick Actions</h3>
+                <h3 className={styles.panelHeading}>Tools</h3>
                 <div className={styles.expandedQuickGrid}>
                   <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
@@ -730,10 +729,38 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     <span>Research</span>
                   </button>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
-                    <span>More</span>
-                  </button>
+                </div>
+              </div>
+
+              {/* Knowledge Domains — node graph */}
+              <div className={styles.knowledgeGraph}>
+                <h3 className={styles.panelHeading}>Knowledge</h3>
+                <div className={styles.nodeGraph}>
+                  {KNOWLEDGE_DOMAINS.map((domain, i) => {
+                    const angle = (i / KNOWLEDGE_DOMAINS.length) * 2 * Math.PI - Math.PI / 2;
+                    const radius = 38;
+                    const x = 50 + radius * Math.cos(angle);
+                    const y = 50 + radius * Math.sin(angle);
+                    return (
+                      <div
+                        key={domain.label}
+                        className={styles.nodeItem}
+                        style={{
+                          left: `${x}%`,
+                          top: `${y}%`,
+                          ['--node-color' as string]: domain.color,
+                          animationDelay: `${i * 0.1}s`,
+                        }}
+                      >
+                        <div className={styles.nodeDot} />
+                        <span className={styles.nodeLabel}>{domain.label}</span>
+                        <span className={styles.nodeValue}>{domain.value}%</span>
+                      </div>
+                    );
+                  })}
+                  {/* Center node */}
+                  <div className={styles.nodeCenterDot} />
+                  {/* Connection lines rendered via CSS */}
                 </div>
               </div>
 
