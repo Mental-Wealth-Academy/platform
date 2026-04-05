@@ -42,16 +42,15 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/nav-home.svg' },
+      { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
     ],
   },
   {
     id: 'network',
     label: 'THE NETWORK',
     items: [
-      { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
-      { id: 'credit-builder', label: 'Credit Builder', href: '/credit-builder', icon: '/icons/nav-markets.svg' },
-      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/nav-shop.svg' },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
+      { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/nav-shop.svg' },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },

@@ -529,16 +529,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       addAzuraMessage(
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
       );
-    } else if (action === 'shards') {
-      send('What are shards', 'thinkingRight');
-      addAzuraMessage(
-        "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
-      );
-    } else if (action === 'x402') {
-      send('Tell me about x402 sessions', 'scheming');
-      addAzuraMessage(
-        "you put up a fee, i unlock paid tasks -- premium data, gated APIs, deep research. funding a micro-mission."
-      );
     } else if (action === 'research') {
       send('Start a research session', 'searching');
       addAzuraMessage(
@@ -622,7 +612,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       {/* Shard Counter */}
       {shardCount !== null && (
         <div className={styles.shardCounter}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} />
           <span>{shardCount} shards</span>
         </div>
       )}
@@ -631,12 +621,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       <div className={styles.quickActions}>
         <button className={styles.quickAction} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
           Credit Builder
-        </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
-          Shards
-        </button>
-        <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
-          x402
         </button>
         <button className={`${styles.quickAction} ${styles.quickActionAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
           Research
@@ -744,14 +728,6 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
                     <span>Credit Builder</span>
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                    <span>Shards</span>
-                  </button>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('x402')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-                    <span>x402</span>
                   </button>
                   <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
