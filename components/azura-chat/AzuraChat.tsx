@@ -3,6 +3,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './AzuraChat.module.css';
+import CreditBuilderInline from './CreditBuilderInline';
+import type { CreditIntakeData } from './CreditBuilderInline';
 
 // ── Azura Voice TTS ──────────────────────────────────────────
 async function speakAzura(text: string, signal?: AbortSignal): Promise<void> {
@@ -98,6 +100,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -345,6 +348,97 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
     addAzuraMessage(generateAzuraResponse(text));
   };
 
+  const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
+    showEmote('scheming');
+
+    // Build credit data payload
+    const scores = [];
+    if (data.equifax) scores.push({ bureau: 'equifax', score: data.equifax });
+    if (data.experian) scores.push({ bureau: 'experian', score: data.experian });
+    if (data.transunion) scores.push({ bureau: 'transunion', score: data.transunion });
+
+    const accounts = [];
+    for (let i = 0; i < data.latePayments; i++) accounts.push({ name: `Late ${i+1}`, type: 'revolving', balance: 0, limit: null, status: 'late' });
+    for (let i = 0; i < data.collections; i++) accounts.push({ name: `Collection ${i+1}`, type: 'collection', balance: 0, limit: null, status: 'collection' });
+    for (let i = 0; i < data.chargeOffs; i++) accounts.push({ name: `Charge-off ${i+1}`, type: 'other', balance: 0, limit: null, status: 'charged_off' });
+
+    const inquiries = [];
+    for (let i = 0; i < data.hardInquiries; i++) inquiries.push({ creditor: `Inquiry ${i+1}`, date: new Date().toISOString(), type: 'hard' });
+
+    const creditData = {
+      scores,
+      accounts,
+      inquiries,
+      derogatory: [],
+      totalDebt: data.totalDebt ?? undefined,
+      totalCreditLimit: data.totalCreditLimit ?? undefined,
+      oldestAccountAge: data.oldestAccountYears ? data.oldestAccountYears * 12 : undefined,
+    };
+
+    // Save to profile
+    try {
+      await fetch('/api/credit-builder/profile', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ creditData, step: 'intake' }),
+      });
+    } catch { /* profile save failed but continue */ }
+
+    setCreditStep('payment');
+    addAzuraMessage("nice. i've got your info. now let's activate the audit. this runs a full FICO breakdown, generates dispute letters, and tracks your progress.");
+  };
+
+  const handleCreditPayment = async () => {
+    // Deduct shards
+    if (shardCount !== null && shardCount < 50) {
+      addAzuraMessage(`you need 50 shards to activate. you have ${shardCount}. keep showing up and earning, then come back.`);
+      return;
+    }
+    setCreditStep('processing');
+    showEmote('searching', 12000);
+    addAzuraMessage("processing payment and running your audit. give me a moment...");
+
+    try {
+      // Deduct shards
+      const deductRes = await fetch('/api/shards/deduct', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 50, reason: 'credit_builder_activation' }),
+      });
+      if (deductRes.ok) {
+        const deductData = await deductRes.json();
+        setShardCount(deductData.shardsRemaining ?? (shardCount !== null ? shardCount - 50 : null));
+      }
+
+      // Trigger audit
+      const auditRes = await fetch('/api/credit-builder/audit', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (auditRes.ok) {
+        const auditData = await auditRes.json();
+        const result = auditData.auditResult;
+        setCreditStep('done');
+        showEmote('default');
+        addAzuraMessage(
+          `audit complete. your average score is ${result.currentScoreAvg}, grade: ${result.overallGrade}. ` +
+          `i found ${result.disputeRecommendations?.length || 0} items you can dispute. ` +
+          `estimated potential gain: +${result.estimatedScoreAfterFixes - result.currentScoreAvg} points. ` +
+          `head to the full Credit Builder page for your dispute letters and action plan.`
+        );
+      } else {
+        setCreditStep('done');
+        addAzuraMessage("audit saved. head to the Credit Builder page to see your full results and start disputes.");
+      }
+    } catch {
+      setCreditStep('done');
+      addAzuraMessage("something went wrong with the audit. your info is saved though. try the Credit Builder page directly.");
+    }
+  };
+
   const generateAzuraResponse = (userText: string): string => {
     const t = userText.toLowerCase();
 
@@ -429,15 +523,11 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
       }]);
     };
 
-    if (action === 'wellness') {
-      send('Tell me about mental wellness', 'thinking');
+    if (action === 'credit') {
+      send('I want to build my credit', 'thinking');
+      setCreditStep('intake');
       addAzuraMessage(
-        "the course is 12 weeks. pattern recognition, emotional architecture, rewiring, integration. each week builds on the last. where are you starting from?"
-      );
-    } else if (action === 'social') {
-      send('Show me the social network', 'scheming');
-      addAzuraMessage(
-        "the leaderboard tracks who's showing up and staying consistent. it's not competition -- it's accountability."
+        "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
       );
     } else if (action === 'shards') {
       send('What are shards', 'thinkingRight');
@@ -502,6 +592,15 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Credit Builder Inline Form */}
+      {creditStep !== 'hidden' && (
+        <CreditBuilderInline
+          step={creditStep as 'intake' | 'payment' | 'processing' | 'done'}
+          onComplete={handleCreditIntakeComplete}
+          onRequestPayment={handleCreditPayment}
+        />
+      )}
+
       {/* Shard Confirmation */}
       {pendingMessage && (
         <div className={styles.shardConfirm}>
@@ -530,11 +629,8 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
       {/* Quick Actions */}
       <div className={styles.quickActions}>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('wellness')} disabled={isTyping} type="button">
-          Mental Wellness
-        </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('social')} disabled={isTyping} type="button">
-          Social Network
+        <button className={styles.quickAction} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
+          Credit Builder
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
           Shards
@@ -645,13 +741,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Quick Actions</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('wellness')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <span>Mental Wellness</span>
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('social')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    <span>Social Network</span>
+                  <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('credit')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                    <span>Credit Builder</span>
                   </button>
                   <button className={styles.expandedQuickCard} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
