@@ -406,7 +406,7 @@
   position: absolute;
   inset: 0;
   background: url('/azurabeauty.png') center / cover no-repeat;
-  opacity: 0.6;
+  opacity: 0.2;
   z-index: 1;
   pointer-events: none;
 }

@@ -40,9 +40,9 @@ export const HeroSection: React.FC = () => {
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
           <Image src="https://i.imgur.com/VhmwZEG.png" alt="" width={200} height={200} className={styles.heroStarform} />
-          <h1 className={styles.heroHeadline}>A Better Path <em>For You</em></h1>
+          <h1 className={styles.heroHeadline}>A Gamified Micro-University <em>For Better Health</em></h1>
           <p className={styles.heroSubtext}>
-            An app that helps people build cognitively better behaviors and beliefs, to unlock their full potential.
+            A seasonal 12-week app that helps you break-through slumps, and activate your highest potential.
           </p>
           <button
             type="button"
