@@ -862,27 +862,14 @@
 }
 
 .keywordTag {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
+  padding: 5px 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 6px;
-}
-
-.keywordLabel {
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
-  font-weight: 600;
-  color: rgba(220, 210, 230, 0.55);
-}
-
-.keywordValue {
-  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  color: rgba(220, 210, 230, 0.45);
 }
 
 /* Tool cards (expanded) — contained button style with icon */
@@ -922,14 +909,11 @@
 }
 
 .expandedQuickCard:hover:not(:disabled) {
-  background: linear-gradient(135deg, #334088 0%, #2a3070 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(81, 104, 255, 0.25);
+  color: #5168FF;
 }
 
 .expandedQuickCard:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
 }
 
 .expandedQuickCard:disabled {

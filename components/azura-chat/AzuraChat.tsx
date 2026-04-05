@@ -63,11 +63,7 @@ const AZURA_EMOTES = {
 } as const;
 
 const KNOWLEDGE_DOMAINS = [
-  { label: 'Psychology', value: 92 },
-  { label: 'Wellness', value: 88 },
-  { label: 'Creativity', value: 85 },
-  { label: 'Habits', value: 90 },
-  { label: 'Ethereum', value: 82 },
+  'Psychology', 'Wellness', 'Creativity', 'Habits', 'Ethereum',
 ];
 
 const SHARD_COST = 10;
@@ -732,15 +728,12 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Blue can help with */}
+              {/* Knowledge tags */}
               <div className={styles.knowledgeGraph}>
-                <h3 className={styles.panelHeading}>Blue can help with</h3>
+                <h3 className={styles.panelHeading}>Trained In</h3>
                 <div className={styles.keywordGrid}>
                   {KNOWLEDGE_DOMAINS.map((domain) => (
-                    <div key={domain.label} className={styles.keywordTag}>
-                      <span className={styles.keywordLabel}>{domain.label}</span>
-                      <span className={styles.keywordValue}>{domain.value}%</span>
-                    </div>
+                    <span key={domain} className={styles.keywordTag}>{domain}</span>
                   ))}
                 </div>
               </div>
