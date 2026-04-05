@@ -523,7 +523,7 @@
   font-weight: 600;
   font-family: var(--font-button);
   color: var(--color-text-muted);
-  text-shadow: none;
+  margin: 0 0 2px 0;
 }
 
 .exchangeTitle {
@@ -532,12 +532,12 @@
   font-family: var(--font-primary);
   color: var(--color-text-dark);
   text-transform: none;
+  margin: 0;
 }
 
 .exchangePriceRow {
   display: flex;
   align-items: baseline;
-  gap: 6px;
 }
 
 .statCardCompact .exchangePrice {
@@ -545,8 +545,9 @@
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
-  text-shadow: none;
-  opacity: 1;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: none;
 }
 
 .exchangeCurrency {
@@ -554,6 +555,7 @@
   font-weight: 600;
   color: rgba(116, 196, 101, 0.7);
   text-transform: none;
+  margin-left: 4px;
 }
 
 .exchangeDesc {
@@ -562,8 +564,8 @@
   font-weight: 400;
   color: rgba(0, 0, 0, 0.45);
   line-height: 1.5;
-  margin: 8px 0 0;
-  padding-top: 8px;
+  margin: 10px 0 0;
+  padding-top: 10px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   text-transform: none;
 }
@@ -595,6 +597,8 @@
 
   .exchangeDesc {
     font-size: 10px;
+    margin: 8px 0 0;
+    padding-top: 8px;
   }
 }
 
