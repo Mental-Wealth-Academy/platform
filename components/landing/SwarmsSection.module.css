@@ -221,7 +221,7 @@
   margin: 0;
 }
 
-/* Decorative Diamonds */
+/* Cohort Photo Grid */
 .swarmsDiamonds {
   display: none;
 }
@@ -230,17 +230,30 @@
   .swarmsDiamonds {
     display: block;
     position: relative;
-    min-height: 400px;
   }
 }
 
-.diamondsImg {
-  position: absolute;
-  top: -80px;
-  right: 24px;
-  width: 440px;
-  height: auto;
-  object-fit: contain;
+.cohortGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 6px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.cohortImg {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.85);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.cohortImg:hover {
+  filter: saturate(1);
+  transform: scale(1.03);
 }
 
 /* CTA */

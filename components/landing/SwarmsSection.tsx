@@ -85,15 +85,16 @@ export const SwarmsSection = () => {
             </div>
           </div>
 
-          {/* Right: Decorative diamonds */}
+          {/* Right: Cohort photo collage */}
           <div className={styles.swarmsDiamonds}>
-            <Image
-              src="https://i.imgur.com/nKONEi3.png"
-              alt="Decorative diamonds"
-              width={500}
-              height={600}
-              className={styles.diamondsImg}
-            />
+            <div className={styles.cohortGrid}>
+              <Image src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=400&fit=crop&crop=faces" alt="Students collaborating" width={200} height={200} className={styles.cohortImg} />
+              <Image src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=400&fit=crop&crop=faces" alt="Campus study group" width={200} height={200} className={styles.cohortImg} />
+              <Image src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=400&fit=crop&crop=faces" alt="Diverse cohort" width={200} height={200} className={styles.cohortImg} />
+              <Image src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop&crop=faces" alt="Team working together" width={200} height={200} className={styles.cohortImg} />
+              <Image src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=400&fit=crop&crop=faces" alt="Creative session" width={200} height={200} className={styles.cohortImg} />
+              <Image src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=400&fit=crop&crop=faces" alt="Study session" width={200} height={200} className={styles.cohortImg} />
+            </div>
           </div>
         </div>
         {/* CTA */}
