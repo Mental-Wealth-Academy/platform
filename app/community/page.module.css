@@ -211,6 +211,7 @@
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  text-transform: none;
 }
 
 .exchangeBg {
@@ -475,6 +476,9 @@
   transition: all 0.2s ease;
   width: 100%;
   text-align: left;
+  font: inherit;
+  line-height: inherit;
+  text-transform: none;
 }
 
 .exchangeCard:hover {
@@ -527,6 +531,7 @@
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-text-dark);
+  text-transform: none;
 }
 
 .exchangePriceRow {
@@ -548,6 +553,7 @@
   font-size: 12px;
   font-weight: 600;
   color: rgba(116, 196, 101, 0.7);
+  text-transform: none;
 }
 
 .exchangeDesc {
@@ -559,6 +565,7 @@
   margin: 8px 0 0;
   padding-top: 8px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
+  text-transform: none;
 }
 
 @media (max-width: 768px) {
