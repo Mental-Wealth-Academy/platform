@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import styles from './SwarmsSection.module.css';
 import PortfolioModal from './PortfolioModal';
 import { useSound } from '@/hooks/useSound';
+
+const CubesCanvas = dynamic(() => import('./SwarmsCubes'), { ssr: false });
 
 const PieChartIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="#F6F8ED">
@@ -18,6 +21,9 @@ export const SwarmsSection = () => {
 
   return (
     <section className={styles.swarmsSection}>
+      <div className={styles.cubesBackground}>
+        <CubesCanvas />
+      </div>
       <div className={styles.swarmsContainer}>
         {/* Title */}
         <p className={styles.swarmsEyebrow}>Benefits</p>

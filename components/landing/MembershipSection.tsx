@@ -170,7 +170,7 @@ export const MembershipSection: React.FC = () => {
         <p className={styles.eyebrow}>Membership</p>
         <h2 className={styles.title}>Choose Your Path</h2>
         <p className={styles.subtitle}>
-          Start free or go all-in. Both paths lead to the same Academy.
+          Every path leads to the same Academy, pick the pace that fits.
         </p>
 
         <div className={styles.tierGrid}>
@@ -181,7 +181,7 @@ export const MembershipSection: React.FC = () => {
               <div className={styles.tierPriceRow}>
                 <span className={styles.tierPrice}>Free</span>
               </div>
-              <p className={styles.tierDesc}>Begin the journey. Access the core course and start building your practice.</p>
+              <p className={styles.tierDesc}>Access the core course and start building your practice.</p>
             </div>
             <div className={styles.tierDivider} />
             <ul className={styles.tierFeatures}>
@@ -216,16 +216,16 @@ export const MembershipSection: React.FC = () => {
             </a>
           </div>
 
-          {/* Paid Tier */}
+          {/* Monthly Tier */}
           <div className={`${styles.tierCard} ${styles.tierCardPrimary}`}>
             <div className={styles.tierBadge}>Recommended</div>
             <div className={styles.tierHeader}>
-              <span className={styles.tierName}>Academic Angel</span>
+              <span className={styles.tierName}>Member</span>
               <div className={styles.tierPriceRow}>
-                <span className={styles.tierPrice}>$90</span>
-                <span className={styles.tierPriceLabel}>one-time</span>
+                <span className={styles.tierPrice}>$12</span>
+                <span className={styles.tierPriceLabel}>/month</span>
               </div>
-              <p className={styles.tierDesc}>Full membership. Governance power, treasury access, and lifetime entry to every cohort.</p>
+              <p className={styles.tierDesc}>Full access with governance power and research tools.</p>
             </div>
             <div className={styles.tierDivider} />
             <ul className={styles.tierFeatures}>
@@ -247,16 +247,51 @@ export const MembershipSection: React.FC = () => {
               </li>
               <li className={styles.tierFeature}>
                 <span className={`${styles.featureCheck} ${styles.featureCheckPrimary}`}><CheckIcon /></span>
-                Lifetime access to all future cohorts
-              </li>
-              <li className={styles.tierFeature}>
-                <span className={`${styles.featureCheck} ${styles.featureCheckPrimary}`}><CheckIcon /></span>
-                On-chain membership NFT
+                Blue AI co-pilot
               </li>
             </ul>
             <button
               type="button"
               className={styles.tierBtnPrimary}
+              onClick={openModal}
+              onMouseEnter={() => play('hover')}
+            >
+              Subscribe
+            </button>
+          </div>
+
+          {/* Lifetime Tier */}
+          <div className={styles.tierCard}>
+            <div className={styles.tierHeader}>
+              <span className={styles.tierName}>Academic Angel</span>
+              <div className={styles.tierPriceRow}>
+                <span className={styles.tierPrice}>$90</span>
+                <span className={styles.tierPriceLabel}>one-time</span>
+              </div>
+              <p className={styles.tierDesc}>Lifetime membership with on-chain ownership.</p>
+            </div>
+            <div className={styles.tierDivider} />
+            <ul className={styles.tierFeatures}>
+              <li className={styles.tierFeature}>
+                <span className={styles.featureCheck}><CheckIcon /></span>
+                Everything in Member
+              </li>
+              <li className={styles.tierFeature}>
+                <span className={styles.featureCheck}><CheckIcon /></span>
+                Lifetime access to all future cohorts
+              </li>
+              <li className={styles.tierFeature}>
+                <span className={styles.featureCheck}><CheckIcon /></span>
+                On-chain membership NFT
+              </li>
+              <li className={styles.tierFeature}>
+                <span className={styles.featureCheck}><CheckIcon /></span>
+                Treasury profit sharing
+              </li>
+            </ul>
+            <button
+              type="button"
+              className={styles.tierBtnSecondary}
               onClick={openModal}
               onMouseEnter={() => play('hover')}
             >

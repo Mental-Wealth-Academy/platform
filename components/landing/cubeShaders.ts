@@ -134,11 +134,11 @@ void main() {
     
     // Get screen-space coordinates for ASCII mask
     vec2 screenUV = gl_FragCoord.xy / resolution;
-    
+
     // Create pixelated ASCII star pattern from image (screen-space)
     float asciiMask;
     vec3 asciiColor = asciiPatternScreenSpace(screenUV, uAsciiImageTexture, asciicode, asciiMask);
-    
+
     // Use background color for non-star areas, blend cube colors into star areas
     vec3 bgColor = uBackgroundColor;
     vec3 starColor = glowingColor * 0.7 + asciiColor * 0.3;

@@ -3,7 +3,7 @@
   position: relative;
   width: 100%;
   padding: 80px 24px;
-  background: rgba(244, 245, 254, 0.80);
+  background: var(--color-background, #FBF8FF);
   z-index: 1;
   overflow: hidden;
 }
@@ -98,7 +98,7 @@
   color: var(--color-text-dark);
   opacity: 0.6;
   margin: 0 auto;
-  max-width: 560px;
+  max-width: 640px;
   line-height: 1.6;
 }
 
@@ -109,41 +109,37 @@
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 32px;
-  min-height: 360px;
-  display: flex;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  align-items: flex-end;
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  background: rgba(244, 245, 254, 0.85);
-  box-shadow: 0 8px 32px rgba(26, 29, 51, 0.10), 0 2px 8px rgba(26, 29, 51, 0.06);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  background: #FFFFFF;
+  border: 1px solid rgba(26, 27, 36, 0.08);
+  box-shadow: 0 4px 24px rgba(26, 29, 51, 0.06);
 }
 
 .azuraBg {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  min-height: 400px;
+  overflow: hidden;
+  background: rgba(244, 245, 254, 0.6);
 }
 
 .azuraBgImg {
   object-fit: cover;
-  object-position: center top;
-  transform: scaleX(-1);
-  opacity: 0.5;
+  object-position: center center;
 }
 
 .azuraOverlay {
-  position: absolute;
-  inset: 0;
   display: none;
 }
 
 .azuraContent {
   position: relative;
   z-index: 1;
-  padding: 40px;
-  width: 100%;
+  padding: 48px 40px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .azuraContentTop {
@@ -151,7 +147,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .azuraTop {
@@ -211,11 +207,11 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: transparent;
-  border: none;
+  background: rgba(244, 245, 254, 0.6);
+  border: 1px solid rgba(26, 27, 36, 0.06);
   border-radius: 12px;
   padding: 16px 0;
-  margin-bottom: 16px;
+  margin-top: auto;
 }
 
 .azuraStat {
@@ -486,25 +482,21 @@
 
 /* ── Video Card (inside Azura card) ── */
 .videoCard {
-  position: absolute;
-  top: 40px;
-  right: 40px;
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 10px 24px 10px 10px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(81, 104, 255, 0.06);
   border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(81, 104, 255, 0.12);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
-  z-index: 2;
 }
 
 .videoCard:hover {
-  background: rgba(0, 0, 0, 0.1);
-  border-color: rgba(81, 104, 255, 0.4);
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.3);
 }
 
 .videoThumb {
@@ -725,11 +717,16 @@
   }
 
   .azuraCard {
-    min-height: 300px;
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .azuraBg {
+    min-height: 240px;
   }
 
   .azuraContent {
-    padding: 24px;
+    padding: 28px 24px;
   }
 
   .tierInfo {

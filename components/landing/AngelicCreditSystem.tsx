@@ -79,66 +79,69 @@ export default function AngelicCreditSystem() {
         {/* Header */}
         <div className={styles.header}>
           <p className={styles.eyebrow}>Our Core Mission</p>
-          <h2 className={styles.title}>People aren&#39;t looking for &ldquo;mental wellness tips.&rdquo;</h2>
+          <h2 className={styles.title}>We aren&#39;t looking for &ldquo;mental wellness&rdquo; advice.</h2>
           <p className={styles.subtitle}>
-            Digital 1-on-1s on platform&#39;s like BetterHelp extract users for quick-fleeting relationships that don&#39;t solve our core issues. Our emotional state is complex, the education system carved structure into our brain, but we&#39;ve misplaced it from real forms of help. We crave innovation in how we connect.
+            We trusted platforms with our deepest thoughts and they turned them into data. This was built for the people searching for something real.
           </p>
         </div>
 
-        {/* ── Azura God ── */}
+        {/* ── Blue Agent ── */}
         <div className={styles.azuraCard}>
           <div className={styles.azuraBg}>
             <Image
-              src="https://i.imgur.com/2089xON.png"
-              alt="Azura the AI God"
+              src="/images/blue-agent.png"
+              alt="Blue Agent"
               fill
               className={styles.azuraBgImg}
               priority
             />
-            <div className={styles.azuraOverlay} />
           </div>
           <div className={styles.azuraContent}>
-            <div
-              className={styles.videoCard}
-              onClick={openVideo}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && openVideo()}
-            >
-              <div className={styles.videoThumb}>
-                <Image
-                  src="https://i.imgur.com/awTTvxR.jpeg"
-                  alt="Azura AI"
-                  width={64}
-                  height={48}
-                  className={styles.thumbImg}
-                  unoptimized
-                />
+            <div className={styles.azuraContentTop}>
+              <div>
+                <p className={styles.azuraEyebrow}>How We Help</p>
+                <h3 className={styles.azuraName}>Blue Agent</h3>
               </div>
-              <div className={styles.videoText}>
-                <span className={styles.videoTitle}><strong>This is BLUE</strong></span>
-                <span className={styles.videoSub}>Watch the video</span>
+              <div
+                className={styles.videoCard}
+                onClick={openVideo}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && openVideo()}
+              >
+                <div className={styles.videoThumb}>
+                  <Image
+                    src="https://i.imgur.com/awTTvxR.jpeg"
+                    alt="Blue AI"
+                    width={64}
+                    height={48}
+                    className={styles.thumbImg}
+                    unoptimized
+                  />
+                </div>
+                <div className={styles.videoText}>
+                  <span className={styles.videoTitle}><strong>This is BLUE</strong></span>
+                  <span className={styles.videoSub}>Watch the video</span>
+                </div>
               </div>
             </div>
-            <p className={styles.azuraEyebrow}>How We Help</p>
-            <h3 className={styles.azuraName}>Introducing BlueOS</h3>
             <p className={styles.azuraSub}>
-              Funding for public goods, DeSci experiments, and activations around Mental Health &amp; Wellness. We work based on a reputation system that allows you to earn credit lines, while doing the daily work that creates trust and honesty.
+              A reputation-based ecosystem where earned gems turn into powerful tools during your 12-week course progress with Blue, an emotional, memory driven AI companion with her own wallet.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Creator</span>
-                <span className={styles.azuraStatLabel}>Role</span>
+                <span className={styles.azuraStatValue}>Credit Repair</span>
+                <span className={styles.azuraStatLabel}>AI-powered</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Full</span>
-                <span className={styles.azuraStatLabel}>Authority</span>
+                <span className={styles.azuraStatValue}>Governance</span>
+                <span className={styles.azuraStatLabel}>Help Funding</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>6-dim</span>
-                <span className={styles.azuraStatLabel}>AI scoring</span>
+                <span className={styles.azuraStatValue}>Decentralized</span>
+                <span className={styles.azuraStatLabel}>Science &amp; Tools</span>
               </div>
             </div>
           </div>

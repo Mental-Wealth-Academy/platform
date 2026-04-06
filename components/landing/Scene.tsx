@@ -1,26 +1,33 @@
 'use client';
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useRef, useEffect, memo } from "react";
+import { Suspense, useRef, useEffect, memo, useState } from "react";
 import * as THREE from "three";
 
 import { cubeFragmentShader, cubeVertexShader } from './cubeShaders';
 import './scene.css';
 
-// Use device pixel ratio for crisp rendering on high-DPI displays
 const getDPR = () => {
   if (typeof window === 'undefined') return 1;
   return Math.min(window.devicePixelRatio || 1, 2);
 };
 
-// Cube component with unique rotation
-const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly }: { position: [number, number, number], rotationSpeed: [number, number, number], scale: number, verticalSpeed: number, horizontalOnly: boolean }) => {
+// ── Shared mouse state (NDC: -1 to 1) ──────────────────────
+const mouseNDC = { x: 0, y: 0 };
+
+// ── Cube with cursor interaction ────────────────────────────
+const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly }: {
+  position: [number, number, number];
+  rotationSpeed: [number, number, number];
+  scale: number;
+  verticalSpeed: number;
+  horizontalOnly: boolean;
+}) => {
   const mesh = useRef<THREE.Mesh>(null);
   const dprRef = useRef(getDPR());
   const textureRef = useRef<THREE.Texture | null>(null);
   const basePosition = useRef<[number, number, number]>(position);
 
-  // Create solid white texture (no gradient) - texture overlay removed in shader
   useEffect(() => {
     if (!textureRef.current && typeof window !== 'undefined') {
       const canvas = document.createElement('canvas');
@@ -28,14 +35,10 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
       canvas.height = 256;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        // Solid white texture (texture overlay is disabled in shader, so this won't affect colors)
         ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
         ctx.fillRect(0, 0, 256, 256);
-        
         textureRef.current = new THREE.CanvasTexture(canvas);
         textureRef.current.needsUpdate = true;
-        
-        // Update uniform if material exists
         if (mesh.current?.material) {
           const material = mesh.current.material as THREE.ShaderMaterial;
           if (material.uniforms?.utexture) {
@@ -50,19 +53,18 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     time: { value: 0.0 },
     rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    // Brand colors - 6 colors for 6 faces
-    ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) }, // Primary: #5168FF (rgb(81, 104, 255))
-    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) }, // Orange: #FF851B (rgb(255, 133, 27))
-    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) }, // Pinkish red: #E84057 (rgb(232, 64, 87))
-    ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) }, // White: rgb(255, 255, 255)
-    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) }, // Medium grey: #66666E (rgb(102, 102, 110))
-    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) }, // Green: #4CAF50 (rgb(76, 175, 80))
-    asciicode: { value: 100.0 }, // Higher value = tighter spacing between stars (doubled to halve spacing)
+    ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) },
+    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) },
+    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) },
+    ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
+    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) },
+    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) },
+    asciicode: { value: 100.0 },
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
-    uBackgroundColor: { value: new THREE.Vector3(0.957, 0.961, 0.996) }, // Background: #f4f5fe
+    uBackgroundColor: { value: new THREE.Vector3(0.53, 0.73, 0.98) },
     brightness: { value: 1.3 },
-    asciiu: { value: 1.0 }, // Not used in current implementation
+    asciiu: { value: 1.0 },
     resolution: {
       value: new THREE.Vector2(
         typeof window !== 'undefined' ? window.innerWidth * dprRef.current : 1920,
@@ -71,7 +73,6 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     },
   }).current;
 
-  // Update texture uniforms when textures are ready
   useEffect(() => {
     if (textureRef.current && uniforms.utexture) {
       uniforms.utexture.value = textureRef.current;
@@ -80,7 +81,6 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
     const updateResolution = () => {
       dprRef.current = getDPR();
       if (uniforms.resolution.value && window.innerWidth > 0 && window.innerHeight > 0) {
@@ -90,30 +90,43 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
         );
       }
     };
-    
     updateResolution();
     window.addEventListener('resize', updateResolution);
-    return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', updateResolution);
-      }
-    };
+    return () => window.removeEventListener('resize', updateResolution);
   }, [uniforms]);
 
   useFrame((state) => {
-    const { clock } = state;
-    if (mesh.current) {
-      if (mesh.current.material) {
-        const material = mesh.current.material as THREE.ShaderMaterial;
-        if (material.uniforms) {
-          material.uniforms.time.value = clock.getElapsedTime();
-        }
-      }
-      // Animate vertical position
-      const time = clock.getElapsedTime();
-      const yOffset = Math.sin(time * verticalSpeed) * 1.5; // Vertical movement amplitude
-      mesh.current.position.y = basePosition.current[1] + yOffset;
+    const { clock, camera } = state;
+    if (!mesh.current) return;
+
+    const material = mesh.current.material as THREE.ShaderMaterial;
+    if (material.uniforms) {
+      material.uniforms.time.value = clock.getElapsedTime();
     }
+
+    const time = clock.getElapsedTime();
+    const yOffset = Math.sin(time * verticalSpeed) * 1.5;
+    mesh.current.position.y = basePosition.current[1] + yOffset;
+
+    // Cursor repulsion — cubes drift away from mouse in world space
+    const mouseWorld = new THREE.Vector3(mouseNDC.x, mouseNDC.y, 0.5).unproject(camera);
+    const dir = mouseWorld.sub(camera.position).normalize();
+    const dist = -camera.position.z / dir.z;
+    const mousePos = camera.position.clone().add(dir.multiplyScalar(dist));
+
+    const dx = mesh.current.position.x - mousePos.x;
+    const dy = mesh.current.position.y - mousePos.y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    const influence = 6;
+
+    if (d < influence && d > 0.01) {
+      const force = ((influence - d) / influence) * 0.8;
+      mesh.current.position.x += (dx / d) * force * 0.15;
+      mesh.current.position.y += (dy / d) * force * 0.15;
+    }
+
+    // Gently drift back to base position
+    mesh.current.position.x += (basePosition.current[0] - mesh.current.position.x) * 0.02;
   });
 
   return (
@@ -130,84 +143,49 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
 
 RotatingCube.displayName = 'RotatingCube';
 
+// ── Cube distribution ───────────────────────────────────────
 const CubesScene = memo(() => {
-  // Generate cubes with unique positions and rotation speeds
   const cubes = [];
   const count = 12;
-  
-  // Calculate viewport bounds for even distribution
-  // Camera is at z=10, fov=75, so we can calculate visible area
   const cameraZ = 10;
   const fov = 75;
-  const aspect = typeof window !== 'undefined' ? window.innerWidth / window.innerHeight : 16/9;
+  const aspect = typeof window !== 'undefined' ? window.innerWidth / window.innerHeight : 16 / 9;
   const fovRad = (fov * Math.PI) / 180;
   const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
   const visibleWidth = visibleHeight * aspect;
-  
-  // Use grid-based distribution with some randomness for more even spread
   const gridSize = Math.ceil(Math.sqrt(count));
-  
+
   for (let i = 0; i < count; i++) {
-    // Grid-based distribution with randomization
     const gridX = (i % gridSize) / (gridSize - 1);
     const gridY = Math.floor(i / gridSize) / (gridSize - 1);
-    
-    // Convert grid position to viewport coordinates with randomization
-    const baseX = (gridX - 0.5) * visibleWidth * 0.8; // Use 80% of visible width
-    const baseY = (gridY - 0.5) * visibleHeight * 0.8; // Use 80% of visible height
-    
-    // Add random offset to break grid pattern and reach edges
+    const baseX = (gridX - 0.5) * visibleWidth * 0.8;
+    const baseY = (gridY - 0.5) * visibleHeight * 0.8;
     let x = baseX + (Math.random() - 0.5) * visibleWidth * 0.3;
     let y = baseY + (Math.random() - 0.5) * visibleHeight * 0.3;
 
-    // Push cubes out of center dead zone so hero text stays readable
     const deadZoneX = visibleWidth * 0.42;
     const deadZoneY = visibleHeight * 0.30;
     if (Math.abs(x) < deadZoneX && Math.abs(y) < deadZoneY) {
-      // Push to nearest edge
       if (Math.abs(x) / deadZoneX < Math.abs(y) / deadZoneY) {
         y = y >= 0 ? deadZoneY + Math.random() * 2 : -deadZoneY - Math.random() * 2;
       } else {
         x = x >= 0 ? deadZoneX + Math.random() * 2 : -deadZoneX - Math.random() * 2;
       }
     }
-    // Depth spread
-    const z = (Math.random() - 0.5) * 8;
-    
-    // Unique rotation speeds for each cube
-    const rotX = (Math.random() - 0.5) * 0.5;
-    const rotY = (Math.random() - 0.5) * 0.5;
-    const rotZ = (Math.random() - 0.5) * 0.5;
-    
-    // Scale variation - larger cubes for more presence
-    const scale = 1.8 + Math.random() * 2.2; // Range: 1.8 to 4.0
-    
-    // Vertical movement speed - some move up, some move down (positive = up, negative = down)
-    const verticalSpeed = (Math.random() - 0.5) * 1.0; // Range: -0.5 to 0.5 (doubled from 0.25)
-    
-    // Some cubes rotate only horizontally (around Y axis) - about 40% of cubes
-    const horizontalOnly = Math.random() < 0.4;
-    
+
     cubes.push({
-      position: [x, y, z] as [number, number, number],
-      rotationSpeed: [rotX, rotY, rotZ] as [number, number, number],
-      scale: scale,
-      verticalSpeed: verticalSpeed,
-      horizontalOnly: horizontalOnly,
+      position: [x, y, (Math.random() - 0.5) * 8] as [number, number, number],
+      rotationSpeed: [(Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5] as [number, number, number],
+      scale: 1.8 + Math.random() * 2.2,
+      verticalSpeed: (Math.random() - 0.5) * 1.0,
+      horizontalOnly: Math.random() < 0.4,
     });
   }
 
   return (
     <>
       {cubes.map((cube, i) => (
-        <RotatingCube
-          key={i}
-          position={cube.position}
-          rotationSpeed={cube.rotationSpeed}
-          scale={cube.scale}
-          verticalSpeed={cube.verticalSpeed}
-          horizontalOnly={cube.horizontalOnly}
-        />
+        <RotatingCube key={i} {...cube} />
       ))}
     </>
   );
@@ -215,38 +193,295 @@ const CubesScene = memo(() => {
 
 CubesScene.displayName = 'CubesScene';
 
-const SceneBackground = memo(() => {
+// ── Realistic blue sky with drifting clouds ─────────────────
+const SkyBackground = memo(() => {
+  const meshRef = useRef<THREE.Mesh>(null);
   const { scene } = useThree();
+
+  const skyUniforms = useRef({
+    time: { value: 0.0 },
+  }).current;
+
+  const skyVertex = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  `;
+
+  const skyFragment = `
+    uniform float time;
+    varying vec2 vUv;
+
+    // FBM noise for realistic clouds
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+        f.y
+      );
+    }
+
+    float fbm(vec2 p) {
+      float v = 0.0;
+      float a = 0.5;
+      vec2 shift = vec2(100.0);
+      for (int i = 0; i < 5; i++) {
+        v += a * noise(p);
+        p = p * 2.0 + shift;
+        a *= 0.5;
+      }
+      return v;
+    }
+
+    void main() {
+      // Sky gradient — deep blue top to lighter horizon
+      vec3 skyTop = vec3(0.18, 0.35, 0.75);     // deep blue
+      vec3 skyMid = vec3(0.30, 0.52, 0.88);     // rich blue
+      vec3 skyHorizon = vec3(0.55, 0.72, 0.94); // lighter blue horizon
+
+      float t = vUv.y;
+      vec3 sky = mix(skyHorizon, skyMid, smoothstep(0.0, 0.4, t));
+      sky = mix(sky, skyTop, smoothstep(0.4, 1.0, t));
+
+      // ── Far clouds — small, slow, faded, biased to the left + lower ──
+      vec2 uvFar = vUv * vec2(2.0, 1.5) + vec2(time * 0.006, time * 0.002);
+      float farCloud = fbm(uvFar + 3.7);
+      farCloud = smoothstep(0.42, 0.72, farCloud) * 0.35;
+      // Fade: strongest bottom-left, fades toward top-right
+      float farBias = smoothstep(0.8, 0.2, vUv.x) * smoothstep(0.7, 0.15, vUv.y);
+      farCloud *= farBias;
+      // Haze tint — distant clouds pick up sky color
+      vec3 farColor = mix(vec3(1.0), skyHorizon, 0.3);
+      sky = mix(sky, farColor, farCloud * 0.45);
+
+      // ── Mid clouds — moderate, medium speed ──
+      vec2 uvMid = vUv * vec2(3.0, 2.0) + vec2(time * 0.012, time * 0.004);
+      float midCloud = fbm(uvMid);
+      midCloud = smoothstep(0.43, 0.7, midCloud) * 0.45;
+      float midMask = smoothstep(0.05, 0.3, t) * smoothstep(1.0, 0.55, t);
+      midCloud *= midMask;
+      sky = mix(sky, vec3(1.0), midCloud * 0.5);
+
+      // ── Near clouds — larger, faster, more opaque, biased top-right ──
+      vec2 uvNear = vUv * vec2(1.4, 1.0) + vec2(time * 0.025, -time * 0.006);
+      float nearCloud = fbm(uvNear + 11.2);
+      nearCloud = smoothstep(0.38, 0.65, nearCloud) * 0.7;
+      // Fade: strongest top-right, fades toward bottom-left
+      float nearBias = smoothstep(0.2, 0.85, vUv.x) * smoothstep(0.3, 0.9, vUv.y);
+      nearCloud *= nearBias;
+      // Near clouds are brighter, slightly larger forms
+      sky = mix(sky, vec3(1.0, 1.0, 0.99), nearCloud * 0.6);
+
+      // Clear center for hero text
+      float centerClear = 1.0 - smoothstep(0.15, 0.4, length(vUv - vec2(0.5, 0.5)));
+      sky = mix(sky, mix(skyHorizon, skyMid, t), centerClear * 0.3);
+
+      // Subtle sun glow — upper area
+      float sun = 1.0 - length((vUv - vec2(0.65, 0.8)) * vec2(1.5, 1.0));
+      sun = pow(max(sun, 0.0), 5.0) * 0.15;
+      sky += vec3(sun * 1.0, sun * 0.95, sun * 0.8);
+
+      gl_FragColor = vec4(sky, 1.0);
+    }
+  `;
+
   useEffect(() => {
-    scene.background = new THREE.Color('#f4f5fe');
+    scene.background = null;
   }, [scene]);
+
+  useFrame(({ clock }) => {
+    skyUniforms.time.value = clock.getElapsedTime();
+  });
+
+  return (
+    <mesh ref={meshRef} renderOrder={-1} frustumCulled={false}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={skyVertex}
+        fragmentShader={skyFragment}
+        uniforms={skyUniforms}
+        depthWrite={false}
+        depthTest={false}
+      />
+    </mesh>
+  );
+});
+
+SkyBackground.displayName = 'SkyBackground';
+
+// ── Barrel-distorted iridescent wireframe overlay ───────────
+const GasLeakWire = memo(() => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  const wireUniforms = useRef({
+    time: { value: 0.0 },
+    mouse: { value: new THREE.Vector2(0.5, 0.5) },
+  }).current;
+
+  const wireVertex = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  `;
+
+  const wireFragment = `
+    uniform float time;
+    uniform vec2 mouse;
+    varying vec2 vUv;
+
+    // Barrel distortion
+    vec2 barrel(vec2 uv, vec2 center, float k1, float k2) {
+      vec2 d = uv - center;
+      float r2 = dot(d, d);
+      return center + d * (1.0 + k1 * r2 + k2 * r2 * r2);
+    }
+
+    // Smooth noise
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y);
+    }
+
+    // Caustic pattern — gentle, asymmetric, no split-screen
+    float caustic(vec2 uv, float t) {
+      float c = 0.0;
+      // Single slow layer — large gentle curves, drifting diagonally
+      vec2 p1 = uv * 1.8 + vec2(t * 0.04, t * 0.025);
+      c += pow(0.5 + 0.5 * sin(noise(p1) * 5.0 + t * 0.3), 2.0);
+      // Smaller detail — different angle to break symmetry
+      vec2 p2 = uv * 3.5 + vec2(-t * 0.06, t * 0.035);
+      c += pow(0.5 + 0.5 * sin(noise(p2 + 7.3) * 6.0 - t * 0.2), 2.5) * 0.35;
+      return c * 0.6;
+    }
+
+    void main() {
+      vec2 center = mix(vec2(0.5), mouse, 0.25);
+      float breathe = sin(time * 0.35) * 0.1;
+      float k1 = 1.4 + breathe;
+      float k2 = 0.9 + breathe * 0.4;
+
+      // Chromatic barrel splits
+      vec2 uvR = barrel(vUv, center, k1 * 1.06, k2 * 1.08);
+      vec2 uvG = barrel(vUv, center, k1, k2);
+      vec2 uvB = barrel(vUv, center, k1 * 0.94, k2 * 0.92);
+
+      // Caustics per channel — each sees slightly different distortion
+      float cR = caustic(uvR, time);
+      float cG = caustic(uvG, time + 0.3);
+      float cB = caustic(uvB, time + 0.6);
+
+      // Iridescent color shift based on angle + distance
+      vec2 p = vUv - 0.5;
+      float angle = atan(p.y, p.x);
+      float dist = length(p);
+
+      float hueShift = angle * 0.3 + dist * 2.5 + time * 0.08;
+      vec3 iri = vec3(
+        0.5 + 0.5 * sin(hueShift * 6.2832),
+        0.5 + 0.5 * sin(hueShift * 6.2832 + 2.094),
+        0.5 + 0.5 * sin(hueShift * 6.2832 + 4.189)
+      );
+
+      // Combine caustics with iridescence
+      vec3 color;
+      color.r = cR * iri.r;
+      color.g = cG * iri.g;
+      color.b = cB * iri.b;
+
+      // Subtle vein highlights — very gentle
+      float veins = max(cR, max(cG, cB));
+      color += vec3(0.9, 0.88, 1.0) * pow(veins, 5.0) * 0.06;
+
+      // Mouse glow — barely there, just a warmth
+      float mouseDist = length(vUv - mouse);
+      float mouseGlow = exp(-mouseDist * mouseDist * 12.0) * 0.04;
+      color += iri * mouseGlow;
+
+      // Wide vignette — caustics live mostly in the periphery, not center
+      float vignette = smoothstep(0.0, 0.25, dist) * (1.0 - smoothstep(0.5, 0.95, dist));
+
+      float alpha = max(color.r, max(color.g, color.b)) * 0.13 * vignette;
+
+      gl_FragColor = vec4(color, alpha);
+    }
+  `;
+
+  useFrame(({ clock }) => {
+    wireUniforms.time.value = clock.getElapsedTime();
+    wireUniforms.mouse.value.set(
+      mouseNDC.x * 0.5 + 0.5,
+      mouseNDC.y * 0.5 + 0.5
+    );
+  });
+
+  return (
+    <mesh ref={meshRef} renderOrder={0} frustumCulled={false}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        vertexShader={wireVertex}
+        fragmentShader={wireFragment}
+        uniforms={wireUniforms}
+        transparent={true}
+        depthWrite={false}
+        depthTest={false}
+      />
+    </mesh>
+  );
+});
+
+GasLeakWire.displayName = 'GasLeakWire';
+
+// ── Mouse tracker ───────────────────────────────────────────
+const MouseTracker = memo(() => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onMove = (e: MouseEvent) => {
+      mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
   return null;
 });
 
-SceneBackground.displayName = 'SceneBackground';
+MouseTracker.displayName = 'MouseTracker';
 
+// ── Main scene ──────────────────────────────────────────────
 const Scene = memo(() => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
-  
+
   return (
     <Canvas
       camera={{ position: [0, 0, 10], fov: 75 }}
       dpr={[dpr, dpr]}
-      style={{ width: '100%', height: '100%', background: '#f4f5fe' }}
+      style={{ width: '100%', height: '100%', cursor: 'none' }}
       gl={{
         antialias: true,
         powerPreference: 'high-performance',
-        alpha: false,
+        alpha: true,
         stencil: false,
-        depth: true
+        depth: true,
       }}
       frameloop="always"
       performance={{ min: 0.5 }}
     >
-      <SceneBackground />
-      <Suspense fallback={null}>
-        <CubesScene />
-      </Suspense>
+      <MouseTracker />
+      <SkyBackground />
+      <GasLeakWire />
     </Canvas>
   );
 });
@@ -254,4 +489,3 @@ const Scene = memo(() => {
 Scene.displayName = 'Scene';
 
 export default Scene;
-

@@ -23,6 +23,7 @@
   padding: 0 48px;
   pointer-events: auto;
   box-sizing: border-box;
+  cursor: none;
 }
 
 .heroContent {
@@ -46,8 +47,9 @@
   line-height: 1.15;
   margin: 0 0 12px 0;
   letter-spacing: 0em;
-  color: var(--color-text-dark);
+  color: #ffffff;
   text-transform: uppercase;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
   animation: heroFadeUp 0.45s ease-out both;
 }
 
@@ -58,7 +60,8 @@
   line-height: 1.4;
   margin: 0 0 20px 0;
   letter-spacing: 0.04em;
-  color: rgba(26, 29, 51, 0.75);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.1);
   animation: heroFadeUp 0.45s ease-out 0.12s both;
 }
 
@@ -69,7 +72,7 @@
   font-weight: 400;
   line-height: 1.65;
   margin: 0 0 32px 0;
-  color: rgba(26, 29, 51, 0.55);
+  color: rgba(255, 255, 255, 0.75);
   max-width: 540px;
   animation: heroFadeUp 0.45s ease-out 0.25s both;
 }
@@ -148,6 +151,7 @@
 .heroButton:hover:not(:disabled) {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.35);
 }
 
 .heroButton:hover:not(:disabled)::before {
@@ -397,18 +401,23 @@
   width: 100%;
   height: 100vh;
   z-index: 0;
-  background-color: rgba(248, 247, 255, 0.80);
-  pointer-events: none;
+  background-color: #4D85E0;
+  cursor: none;
 }
 
-.canvas::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('/azurabeauty.png') center / cover no-repeat;
-  opacity: 0.2;
-  z-index: 1;
+/* Crosshair cursor */
+.crosshair {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  margin-top: -14px;
   pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: multiply;
+  will-change: transform;
 }
 
 .cardsContainer {

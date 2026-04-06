@@ -7,9 +7,9 @@
   z-index: 100;
   padding: 10px 24px;
   background: rgba(244, 245, 254, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 4px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
   box-sizing: border-box;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
               padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -94,7 +94,7 @@
   background: transparent;
   border: none;
   padding: 0.6rem 0.4rem;
-  color: #1a1d33;
+  color: rgba(26, 29, 51, 0.8);
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
@@ -173,7 +173,7 @@
   background: transparent;
   border: 1px solid var(--color-primary);
   padding: 0.6rem 1.4rem;
-  border-radius: 0.25rem;
+  border-radius: 100px;
   color: var(--color-primary);
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
@@ -200,7 +200,7 @@
   background-color: var(--color-primary);
   border: none;
   padding: 0.6rem 1.4rem;
-  border-radius: 0.25rem;
+  border-radius: 100px;
   color: white;
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
