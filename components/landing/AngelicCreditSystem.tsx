@@ -20,7 +20,6 @@ const FLOATING_ANGELS = [
   { src: '/anbel12.png', top: '55%', right: '15%', size: 60 },
 ];
 
-const YOUTUBE_VIDEO_ID = 'JccxSJ3twmM';
 
 export default function AngelicCreditSystem() {
   const [showVideo, setShowVideo] = useState(false);
@@ -170,10 +169,10 @@ export default function AngelicCreditSystem() {
             </div>
             <div className={styles.videoEmbed}>
               <iframe
-                src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
+                src="/blue-intro-video.html"
                 title="This is BLUE AI"
-                allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
+                style={{ border: 'none' }}
               />
             </div>
           </div>
