@@ -23,7 +23,7 @@ export const FeaturesSection: React.FC = () => {
     if (!isVisible) return;
     const interval = setInterval(() => {
       setActiveCard((prev) => (prev + 1) % 3);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [isVisible]);
 
@@ -33,10 +33,10 @@ export const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <p className={styles.eyebrow}>Your Course</p>
           <h2 className={styles.title}>
-            Study Daily, Earn Wealth
+            Something Fun With Real Results
           </h2>
           <p className={styles.description}>
-            Tackle 12-weeks of intensive study, a spiritual chiropracticing that massages the soul, pays you in gold, and transforms you towards self-actualization.
+            Notes, tasks, fun challenges helping you get more creative and evolve, turn twenty minutes a day into a world of wealth and self-actualization.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export const FeaturesSection: React.FC = () => {
                 <span className={styles.taskTitle}>Morning Pages</span>
                 {activeCard === 0 && <span className={styles.weekBadge}>Daily</span>}
               </div>
-              <p className={styles.taskDesc}>You write for 15 minutes. No prompts, no pressure — just you and the page. Your entry stays private unless you choose to share it.</p>
+              <p className={styles.taskDesc}>Fifteen minutes of writing. No prompts, no pressure. Just you and the page. Private by default. The habit that changes everything.</p>
               <div className={styles.checklistProgress}>
                 <div className={styles.checkItem}>
                   <span className={styles.checkDone}>&#10003;</span> Write your entry
@@ -70,7 +70,7 @@ export const FeaturesSection: React.FC = () => {
                 <span className={styles.taskTitle}>Weekly Tasks</span>
                 {activeCard === 1 && <span className={styles.weekBadge}>Weekly</span>}
               </div>
-              <p className={styles.taskDesc}>Each week brings a new challenge. Complete readings, reflections, and quests to earn points and unlock the next stage. Miss a week and you fall behind — consistency is the currency.</p>
+              <p className={styles.taskDesc}>Each week unlocks a new challenge. Complete readings, reflections, and quests to earn shards and level up. Consistency is the main currency.</p>
             </div>
           </div>
 
@@ -78,10 +78,10 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.taskCard}>
               <span className={styles.cardNumber}>03</span>
               <div className={styles.taskHeader}>
-                <span className={styles.taskTitle}>Wishes &amp; Wealth</span>
-                {activeCard === 2 && <span className={styles.weekBadge}>Seasonal</span>}
+                <span className={styles.taskTitle}>Agentic Tools</span>
+                {activeCard === 2 && <span className={styles.weekBadge}>Always On</span>}
               </div>
-              <p className={styles.taskDesc}>Submit wishes to the Academy, vote on community direction, and track your shards, tokens, and rewards. Every proposal is reviewed by Blue and decided by the Angels. Study generates wealth. Governance multiplies it.</p>
+              <p className={styles.taskDesc}>Blue researches for you, builds your credit, and manages governance proposals. AI tools that pay for themselves through on-chain actions. Your agent works while you learn.</p>
               <div className={styles.rewardsBar}>
                 <span>Your total:</span>
                 <span className={styles.rewardHighlight}>430 points exchanged</span>
