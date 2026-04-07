@@ -1,46 +1,51 @@
+/* ── Digipet Mobile-First UI ── */
+/* Dark theme: #0d1b2a bg, #5dade2 accent, monospace throughout */
+
+/* ── Layout ── */
 .wrapper {
   width: 100%;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
+  flex-direction: column;
+  background: #0d1b2a;
   position: relative;
   overflow: hidden;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e6ed;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .container {
   width: 100%;
-  max-width: 960px;
-  aspect-ratio: 3 / 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
-.container canvas {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  width: 100% !important;
-  height: 100% !important;
-}
-
+/* ── Loading ── */
 .loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: #aaa;
-  font-family: monospace;
+  color: #8899aa;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 14px;
+  height: 100vh;
+  width: 100%;
 }
 
 .spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #333;
-  border-top-color: #7c5cfc;
+  width: 36px;
+  height: 36px;
+  border: 3px solid #1b2838;
+  border-top-color: #5dade2;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -49,39 +54,1201 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── Page-level chrome (used by page.tsx) ── */
 .backButton {
   position: absolute;
   top: 12px;
   left: 12px;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid #444;
-  color: #ccc;
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-family: monospace;
+  z-index: 50;
+  background: rgba(13, 27, 42, 0.85);
+  border: 1px solid #1b3a5c;
+  color: #8899aa;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 13px;
   cursor: pointer;
+  min-height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.15s, color 0.15s;
 }
 
-.backButton:hover {
-  background: rgba(60, 40, 120, 0.7);
-  color: #fff;
+.backButton:hover,
+.backButton:active {
+  background: rgba(93, 173, 226, 0.15);
+  color: #5dade2;
 }
 
 .pageTitle {
   position: absolute;
-  top: 10px;
+  top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 50;
   color: #5dade2;
-  font-family: monospace;
-  font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ── Top Bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 16px 8px;
+  flex-shrink: 0;
+}
+
+.shardBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(93, 173, 226, 0.1);
+  border: 1px solid #1b3a5c;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5dade2;
+}
+
+.shardIcon {
+  font-size: 16px;
+}
+
+.topBarTitle {
+  font-size: 14px;
+  color: #5a6a7a;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Garden View ── */
+.gardenArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 16px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.petStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.petCanvasWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.petCanvasWrap canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 12px rgba(93, 173, 226, 0.25));
+}
+
+.petNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(13, 27, 42, 0.8);
+  border: 1px solid #1b3a5c;
+  color: #5dade2;
+  font-size: 20px;
+  width: 40px;
+  height: 48px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 48px;
+  transition: background 0.15s;
+}
+
+.petNav:active {
+  background: rgba(93, 173, 226, 0.2);
+}
+
+.petNavLeft {
+  left: -52px;
+}
+
+.petNavRight {
+  right: -52px;
+}
+
+.petInfo {
+  text-align: center;
+  padding: 4px 0 8px;
+}
+
+.petName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e0e6ed;
+  margin: 0;
+}
+
+.petLevel {
+  font-size: 14px;
+  color: #5a6a7a;
+  margin: 0;
+}
+
+.petMeta {
+  font-size: 12px;
+  color: #4a5a6a;
+  margin: 2px 0 0;
+}
+
+.sparkleBadge {
+  color: #ffd700;
+  margin-left: 6px;
+}
+
+/* ── Status Bars ── */
+.statusBars {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0 12px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusLabel {
+  width: 32px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5a6a7a;
+  text-transform: uppercase;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.statusBarOuter {
+  flex: 1;
+  height: 16px;
+  background: #0a1422;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1b2838;
+  position: relative;
+}
+
+.statusBarInner {
+  height: 100%;
+  border-radius: 7px;
+  transition: width 0.4s ease;
+  min-width: 0;
+}
+
+.statusValue {
+  font-size: 11px;
+  color: #5a6a7a;
+  width: 54px;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+/* Bar color helpers (applied via inline style) */
+
+/* ── Action Grid ── */
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+  padding: 4px 0 20px;
+}
+
+.actionBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 14px;
+  padding: 12px 4px;
+  min-height: 56px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  font-family: 'Courier New', Courier, monospace;
+  color: #c0cad4;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.actionBtn:active {
+  background: #152d48;
+  border-color: #5dade2;
+  transform: scale(0.96);
+}
+
+.actionBtnIcon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.actionBtnLabel {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── Egg View ── */
+.eggArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 20px;
+  gap: 16px;
+}
+
+.eggArea canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 16px rgba(93, 173, 226, 0.3));
+  cursor: pointer;
+}
+
+.eggTapHint {
+  font-size: 16px;
+  color: #5dade2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.eggProgress {
+  font-size: 12px;
+  color: #4a5a6a;
+}
+
+/* ── Overlay / Panel base ── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: rgba(5, 10, 18, 0.92);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #1b2838;
+  flex-shrink: 0;
+}
+
+.overlayTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5dade2;
+  letter-spacing: 1px;
+}
+
+.overlayClose {
+  background: rgba(93, 173, 226, 0.1);
+  border: 1px solid #1b3a5c;
+  color: #5dade2;
+  font-size: 18px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', Courier, monospace;
+  transition: background 0.15s;
+}
+
+.overlayClose:active {
+  background: rgba(93, 173, 226, 0.25);
+}
+
+.overlayBody {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+}
+
+/* ── Bottom Sheet (Feed Panel) ── */
+.bottomSheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 35;
+  background: #0b1929;
+  border-top: 1px solid #1b3a5c;
+  border-radius: 20px 20px 0 0;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheetHandle {
+  width: 40px;
+  height: 4px;
+  background: #2a3a4a;
+  border-radius: 2px;
+  margin: 10px auto 4px;
+  flex-shrink: 0;
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 12px;
+  flex-shrink: 0;
+}
+
+.sheetTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5dade2;
+}
+
+.sheetClose {
+  background: none;
+  border: none;
+  color: #5a6a7a;
+  font-size: 22px;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.sheetBody {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Food Card ── */
+.foodCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.foodSwatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.foodInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.foodName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #c0cad4;
+}
+
+.foodCount {
+  font-size: 11px;
+  color: #5a6a7a;
+}
+
+.foodFeedBtn {
+  background: rgba(93, 173, 226, 0.15);
+  border: 1px solid #5dade2;
+  color: #5dade2;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 48px;
+  min-width: 56px;
+  transition: background 0.15s;
+}
+
+.foodFeedBtn:active {
+  background: rgba(93, 173, 226, 0.3);
+}
+
+.emptyMsg {
+  text-align: center;
+  color: #4a5a6a;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+/* ── Stats Panel ── */
+.statSection {
+  margin-bottom: 20px;
+}
+
+.statSectionTitle {
+  font-size: 12px;
+  color: #3a4a5a;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #1b2838;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  width: 60px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8899aa;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.statBarOuter {
+  flex: 1;
+  height: 12px;
+  background: #0a1422;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #1b2838;
+}
+
+.statBarInner {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.statValue {
+  width: 32px;
+  font-size: 12px;
+  color: #5a6a7a;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.statGrowth {
+  font-size: 10px;
+  color: #3a5a4a;
+  width: 36px;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.statMeta {
+  font-size: 13px;
+  color: #8899aa;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.evoHint {
+  font-size: 12px;
+  color: #5dade2;
   opacity: 0.7;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ── Shop View ── */
+.shopHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #1b2838;
+  flex-shrink: 0;
+}
+
+.shopBackBtn {
+  background: rgba(93, 173, 226, 0.1);
+  border: 1px solid #1b3a5c;
+  color: #5dade2;
+  font-size: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', Courier, monospace;
+  flex-shrink: 0;
+}
+
+.shopBackBtn:active {
+  background: rgba(93, 173, 226, 0.25);
+}
+
+.shopTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5dade2;
+  flex: 1;
+}
+
+.shopShards {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5dade2;
+  flex-shrink: 0;
+}
+
+.tabBar {
+  display: flex;
+  border-bottom: 1px solid #1b2838;
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #5a6a7a;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 0;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 48px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tabActive {
+  color: #5dade2;
+  border-bottom-color: #5dade2;
+}
+
+.shopGrid {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  align-content: start;
+}
+
+.shopCard {
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.shopCardSwatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #1b3a5c;
+}
+
+.shopCardName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0cad4;
+}
+
+.shopCardDesc {
+  font-size: 10px;
+  color: #4a5a6a;
+}
+
+.shopCardPrice {
+  font-size: 12px;
+  color: #5dade2;
+  font-weight: 700;
+}
+
+.shopBuyBtn {
+  background: rgba(93, 173, 226, 0.15);
+  border: 1px solid #5dade2;
+  color: #5dade2;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 40px;
+  width: 100%;
+  transition: background 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.shopBuyBtn:active {
+  background: rgba(93, 173, 226, 0.3);
+}
+
+.shopBuyBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.shopOwned {
+  font-size: 11px;
+  color: #2ecc71;
+  font-weight: 700;
+}
+
+/* ── Games View ── */
+.gamesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.gameCard {
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gameCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e0e6ed;
+}
+
+.gameCardDesc {
+  font-size: 13px;
+  color: #5a6a7a;
+}
+
+.gameCardPlayBtn {
+  background: #5dade2;
+  border: none;
+  color: #0d1b2a;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 48px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+
+.gameCardPlayBtn:active {
+  background: #4a9bd1;
+}
+
+/* ── Minigame Canvas ── */
+.minigameWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: #0d1b2a;
+  display: flex;
+  flex-direction: column;
+}
+
+.minigameHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  flex-shrink: 0;
+}
+
+.minigameTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5dade2;
+}
+
+.minigameScore {
+  font-size: 14px;
+  color: #ffd700;
+  font-weight: 700;
+}
+
+.minigameBackBtn {
+  background: rgba(93, 173, 226, 0.1);
+  border: 1px solid #1b3a5c;
+  color: #5dade2;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minigameBackBtn:active {
+  background: rgba(93, 173, 226, 0.25);
+}
+
+.minigameCanvas {
+  flex: 1;
+  width: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.minigameOver {
+  position: absolute;
+  inset: 0;
+  z-index: 42;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(5, 10, 18, 0.88);
+  animation: fadeIn 0.3s ease;
+}
+
+.minigameOverTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.minigameOverScore {
+  font-size: 18px;
+  color: #e0e6ed;
+}
+
+.minigameOverReward {
+  font-size: 14px;
+  color: #5dade2;
+  margin-top: 4px;
+}
+
+.minigamePlayBtn {
+  background: #5dade2;
+  border: none;
+  color: #0d1b2a;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 48px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+.minigamePlayBtn:active {
+  background: #4a9bd1;
+}
+
+/* ── Race View ── */
+.raceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+
+.raceCard {
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-height: 56px;
+}
+
+.raceCard:active {
+  border-color: #5dade2;
+}
+
+.raceCardDisabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.raceCardInfo {
+  flex: 1;
+}
+
+.raceCardName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e0e6ed;
+}
+
+.raceCardMeta {
+  font-size: 11px;
+  color: #4a5a6a;
+  margin-top: 2px;
+}
+
+.raceCardReward {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5dade2;
+  flex-shrink: 0;
+}
+
+.raceProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 16px;
+}
+
+.raceTrack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.raceTrackLabel {
+  font-size: 12px;
+  color: #8899aa;
+  font-weight: 700;
+}
+
+.raceTrackBar {
+  height: 20px;
+  background: #0a1422;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #1b2838;
+  position: relative;
+}
+
+.raceTrackFill {
+  height: 100%;
+  border-radius: 9px;
+  transition: width 0.3s ease;
+}
+
+.raceTerrain {
+  font-size: 11px;
+  color: #4a5a6a;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.raceResult {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.raceResultTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.raceResultReward {
+  font-size: 16px;
+  color: #5dade2;
+  margin-bottom: 16px;
+}
+
+/* ── Breed View ── */
+.breedArea {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.breedInstruction {
+  font-size: 14px;
+  color: #8899aa;
+  text-align: center;
+}
+
+.breedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.breedPetCard {
+  background: #0f2236;
+  border: 2px solid #1b3a5c;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-height: 56px;
+}
+
+.breedPetCard canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.breedPetSelected {
+  border-color: #e74c7d;
+  background: rgba(231, 76, 125, 0.08);
+}
+
+.breedPetName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0cad4;
+}
+
+.breedPreview {
+  text-align: center;
+  padding: 12px;
+  background: #0f2236;
+  border: 1px solid #1b3a5c;
+  border-radius: 14px;
+}
+
+.breedPreviewTitle {
+  font-size: 14px;
+  color: #e74c7d;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.breedPreviewInfo {
+  font-size: 12px;
+  color: #5a6a7a;
+  margin-bottom: 4px;
+}
+
+.breedBtn {
+  background: linear-gradient(135deg, #e74c7d, #c0392b);
+  border: none;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 56px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: opacity 0.15s;
+}
+
+.breedBtn:active {
+  opacity: 0.8;
+}
+
+.breedBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ── Toast ── */
+.toast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  background: rgba(93, 173, 226, 0.15);
+  border: 1px solid #5dade2;
+  color: #5dade2;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 12px;
+  animation: toastIn 0.25s ease, toastOut 0.3s ease 1.7s forwards;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ── Floating text ── */
+.floatingText {
+  position: absolute;
+  z-index: 55;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  font-weight: 700;
+  pointer-events: none;
+  animation: floatUp 1.2s ease forwards;
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-50px); }
+}
+
+/* ── No-pet empty state ── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+}
+
+.emptyStateTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5a6a7a;
+}
+
+.emptyStateMsg {
+  font-size: 13px;
+  color: #3a4a5a;
+}
+
+/* ── Backdrop for sheet ── */
+.sheetBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 34;
+  background: rgba(5, 10, 18, 0.55);
+  animation: fadeIn 0.2s ease;
+}
+
+/* ── Utility ── */
+.noScroll {
+  overflow: hidden;
+}
+
+/* ── Hearts animation (breed) ── */
+.heartsOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  font-size: 24px;
+  animation: heartFloat 2s ease forwards;
+}
+
+@keyframes heartFloat {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  50% { opacity: 1; transform: translateY(-80px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-160px) scale(0.8); }
+}
+
+/* ── Pet-tapped interaction feedback ── */
+.petTapFeedback {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
 }
