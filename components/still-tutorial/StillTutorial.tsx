@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import AzuraDialogue, { AzuraEmotion } from '../azura-dialogue/AzuraDialogue';
+import BlueDialogue, { BlueEmotion } from '../blue-dialogue/BlueDialogue';
 import styles from './StillTutorial.module.css';
 
 export interface TutorialStep {
   message: string;
-  emotion: AzuraEmotion;
+  emotion: BlueEmotion;
   targetElement?: string; // CSS selector for element to highlight
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
 }
@@ -139,7 +139,7 @@ const StillTutorial: React.FC<StillTutorialProps> = ({
         </div>
 
         <div className={styles.content}>
-          <AzuraDialogue
+          <BlueDialogue
             key={currentStep}
             message={currentStepData.message}
             emotion={currentStepData.emotion}

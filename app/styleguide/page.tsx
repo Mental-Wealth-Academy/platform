@@ -984,8 +984,8 @@ export default function StyleGuidePage() {
               description="Hero section for landing pages"
             />
             <ComponentIndexItem 
-              name="AzuraDialogue" 
-              path="components/azura-dialogue" 
+              name="BlueDialogue" 
+              path="components/blue-dialogue" 
               description="AI assistant dialogue interface"
             />
             <ComponentIndexItem 

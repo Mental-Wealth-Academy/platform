@@ -632,9 +632,9 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
         "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
       );
     } else if (action === 'prayers') {
-      send('Tell me about morning prayers', 'happy');
+      send('Tell me about morning pages', 'happy');
       addAzuraMessage(
-        "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you'll start hearing things you've been ignoring."
+        "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and your morning pages will start catching what you've been trying not to hear."
       );
     } else if (action === 'course') {
       send('How does the course work?', 'happy');
@@ -750,7 +750,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           Shards
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('prayers')} disabled={isTyping} type="button">
-          Prayers
+          Pages
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('course')} disabled={isTyping} type="button">
           Course

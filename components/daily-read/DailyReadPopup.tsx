@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import BlueDialogue, { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 import { useSound } from '@/hooks/useSound';
 import styles from './DailyReadPopup.module.css';
 
@@ -30,6 +31,24 @@ const WEEK_INTROS: Record<number, { title: string; body: string }> = {
 
 const STORAGE_KEY = 'dailyReadLastSeenWeek';
 
+const WEEK_DIALOGUES: Record<number, { emotion: BlueEmotion; message: string }> = {
+  0: {
+    emotion: 'happy',
+    message:
+      "Before you move, I want to ground this week in ten principles. Read them slowly. Let them set the tone for your morning pages before the rest of the day starts talking over you.",
+  },
+  5: {
+    emotion: 'confused',
+    message:
+      "Week 5 asks for honesty. Notice where you've made small cages out of old limits, and bring that tension into your morning pages instead of smoothing it over.",
+  },
+  6: {
+    emotion: 'sad',
+    message:
+      "Week 6 tends to stir things up. Money stories, scarcity, and self-worth all surface here. Stay close to your morning pages this week. They will help you hear what's actually yours.",
+  },
+};
+
 interface DailyReadPopupProps {
   activeWeek: number;
   onDismiss?: () => void;
@@ -38,12 +57,14 @@ interface DailyReadPopupProps {
 export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopupProps) {
   const { play } = useSound();
   const [visible, setVisible] = useState(false);
+  const [dialogueComplete, setDialogueComplete] = useState(false);
 
   useEffect(() => {
     if (activeWeek <= 0) return;
     const lastSeen = localStorage.getItem(STORAGE_KEY);
     if (lastSeen !== String(activeWeek)) {
       setVisible(true);
+      setDialogueComplete(false);
       play('navigation');
     }
   }, [activeWeek, play]);
@@ -58,16 +79,35 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
   if (!visible) return null;
 
   const weekIntro = WEEK_INTROS[activeWeek];
+  const weekDialogue = WEEK_DIALOGUES[activeWeek] ?? {
+    emotion: 'happy' as BlueEmotion,
+    message: `Week ${activeWeek} is open. Read this slowly, then carry the strongest thread into your morning pages before the day starts crowding it out.`,
+  };
 
   return (
     <div className={styles.overlay} onClick={handleDismiss}>
       <div className={styles.card} onClick={e => e.stopPropagation()}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>Week {activeWeek}</p>
-          <h2 className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
+        <div className={styles.dialogueWrap}>
+          <BlueDialogue
+            key={activeWeek}
+            message={weekDialogue.message}
+            emotion={weekDialogue.emotion}
+            onComplete={() => setDialogueComplete(true)}
+            showSkip
+          />
         </div>
 
-        <div className={styles.principlesWrap}>
+        <div className={`${styles.header} ${dialogueComplete ? styles.headerVisible : ''}`}>
+          <p className={styles.eyebrow}>Week {activeWeek}</p>
+          <h2 className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
+          <p className={styles.subtitle}>
+            {weekIntro
+              ? 'Let this frame the week, then keep the thread alive in your morning pages.'
+              : 'These are the core ideas underneath the work. Read them once before you begin.'}
+          </p>
+        </div>
+
+        <div className={`${styles.principlesWrap} ${dialogueComplete ? styles.principlesWrapVisible : ''}`}>
           {weekIntro ? (
             <p className={styles.weekIntroBody}>{weekIntro.body}</p>
           ) : (
@@ -82,14 +122,14 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
           )}
         </div>
 
-        <div className={styles.footer}>
+        <div className={`${styles.footer} ${dialogueComplete ? styles.footerVisible : ''}`}>
           <button type="button" className={styles.ctaButton} onClick={handleDismiss} onMouseEnter={() => play('hover')}>
             <span className={styles.checkIcon}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </span>
-            Finished Reading
+            Continue To Morning Pages
           </button>
         </div>
       </div>

@@ -21,7 +21,7 @@
 /* Card */
 .card {
   width: 100%;
-  max-width: 520px;
+  max-width: 680px;
   max-height: min(90vh, calc(100dvh - 48px));
   background: #ffffff;
   border: 2px solid #1A1D33;
@@ -31,6 +31,10 @@
   flex-direction: column;
   animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+}
+
+.dialogueWrap {
+  padding: 24px 24px 0;
 }
 
 @keyframes cardIn {
@@ -46,8 +50,15 @@
 
 /* Header */
 .header {
-  padding: 28px 32px 0;
-  text-align: center;
+  padding: 12px 32px 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.headerVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .eyebrow {
@@ -70,13 +81,30 @@
   line-height: 1.3;
 }
 
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(26, 29, 51, 0.72);
+  line-height: 1.65;
+  margin: 10px 0 0;
+}
+
 /* Principles list */
 .principlesWrap {
   flex: 1;
   overflow-y: auto;
   padding: 24px 32px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
   scrollbar-width: thin;
   scrollbar-color: rgba(81, 104, 255, 0.2) transparent;
+}
+
+.principlesWrapVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .principlesWrap::-webkit-scrollbar {
@@ -149,6 +177,14 @@
 .footer {
   padding: 20px 32px 28px;
   border-top: 1px solid rgba(26, 29, 51, 0.08);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.footerVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .ctaButton {
@@ -203,11 +239,15 @@
   }
 
   .header {
-    padding: 24px 20px 0;
+    padding: 12px 20px 0;
   }
 
   .title {
     font-size: 20px;
+  }
+
+  .dialogueWrap {
+    padding: 20px 20px 0;
   }
 
   .principlesWrap {
@@ -253,6 +293,10 @@
 
 :global([data-theme="dark"]) .title {
   color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: rgba(227, 225, 238, 0.72);
 }
 
 :global([data-theme="dark"]) .principleNumber {

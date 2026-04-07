@@ -292,7 +292,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               />
             </div>
             <div>
-              <span className={styles.label}>Morning Prayers</span>
+              <span className={styles.label}>Morning Pages</span>
               <span className={styles.sublabel}>
                 {compact && !dataReady ? 'Loading...' : compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
               </span>
@@ -374,12 +374,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       {timerActive && typeof window !== 'undefined' && createPortal(
         <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
           <div className={styles.modalBackdrop} onClick={requestClose} />
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="morning-prayers-session-title">
-            <h3 id="morning-prayers-session-title" className={styles.srOnly}>Morning Prayers</h3>
+          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="morning-pages-session-title">
+            <h3 id="morning-pages-session-title" className={styles.srOnly}>Morning Pages</h3>
 
             <div className={styles.modalMain}>
               <div className={styles.timerDisplay}>
-                <div className={styles.sessionBadge}>Morning Prayers</div>
+                <div className={styles.sessionBadge}>Morning Pages</div>
               </div>
 
               <div className={styles.writeArea}>

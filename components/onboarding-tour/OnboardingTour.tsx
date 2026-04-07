@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AzuraDialogue, { AzuraEmotion } from '../azura-dialogue/AzuraDialogue';
+import BlueDialogue, { BlueEmotion } from '../blue-dialogue/BlueDialogue';
 import styles from './OnboardingTour.module.css';
 
 interface OnboardingTourProps {
@@ -13,9 +13,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
 
-  const messages: Array<{ message: string; emotion: AzuraEmotion }> = [
+  const messages: Array<{ message: string; emotion: BlueEmotion }> = [
     {
-      message: "Hey there! I'm Azura, and I'll be here whenever you need me. Welcome to Mental Wealth Academy — a place to learn, reflect, and grow together.",
+      message: "Hey there! I'm Blue, and I'll be here whenever you need me. Welcome to Mental Wealth Academy — a place to learn, reflect, and grow together.",
       emotion: 'happy',
     },
     {
@@ -84,7 +84,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isBlocked = false }) =>
           ×
         </button>
         <div className={styles.content}>
-          <AzuraDialogue
+          <BlueDialogue
             key={currentMessageIndex}
             message={currentMessage.message}
             emotion={currentMessage.emotion}

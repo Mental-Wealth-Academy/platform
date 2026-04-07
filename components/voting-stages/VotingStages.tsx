@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './VotingStages.module.css';
-import { AzuraEmotion } from '@/components/azura-dialogue/AzuraDialogue';
+import { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 
 export type Stage1Variant = 'waiting' | 'authenticated' | 'success';
 export type Stage2Variant = 'waiting' | 'in-progress' | 'failed-quorum' | 'pass';
@@ -14,13 +14,13 @@ interface VotingStageProps {
   variants: Stage1Variant[] | Stage2Variant[] | Stage3Variant[];
 }
 
-const emotionMap: Record<Stage1Variant, AzuraEmotion> = {
+const emotionMap: Record<Stage1Variant, BlueEmotion> = {
   waiting: 'confused',
   authenticated: 'happy',
   success: 'happy',
 };
 
-const emotionImages: Record<AzuraEmotion, string> = {
+const emotionImages: Record<BlueEmotion, string> = {
   happy: 'https://i.imgur.com/3Y3KrnJ.png',
   confused: 'https://i.imgur.com/ePrWP7A.png',
   sad: 'https://i.imgur.com/XIe1jZy.png',

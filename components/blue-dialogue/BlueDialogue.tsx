@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import styles from './AzuraDialogue.module.css';
+import styles from './BlueDialogue.module.css';
 
-export type AzuraEmotion = 'happy' | 'confused' | 'sad' | 'pain';
+export type BlueEmotion = 'happy' | 'confused' | 'sad' | 'pain';
 
-interface AzuraDialogueProps {
+interface BlueDialogueProps {
   message: string;
-  emotion?: AzuraEmotion;
+  emotion?: BlueEmotion;
   onComplete?: () => void;
   speed?: number; // Characters per interval (lower = faster)
   autoStart?: boolean;
@@ -16,14 +16,14 @@ interface AzuraDialogueProps {
   onSkip?: () => void;
 }
 
-const emotionImages: Record<AzuraEmotion, string> = {
+const emotionImages: Record<BlueEmotion, string> = {
   happy: 'https://i.imgur.com/3Y3KrnJ.png',
   confused: 'https://i.imgur.com/ePrWP7A.png',
   sad: 'https://i.imgur.com/XIe1jZy.png',
   pain: 'https://i.imgur.com/ZYpNkse.png',
 };
 
-const AzuraDialogue: React.FC<AzuraDialogueProps> = ({
+const BlueDialogue: React.FC<BlueDialogueProps> = ({
   message,
   emotion = 'happy',
   onComplete,
@@ -34,7 +34,7 @@ const AzuraDialogue: React.FC<AzuraDialogueProps> = ({
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [currentEmotion, setCurrentEmotion] = useState<AzuraEmotion>(emotion);
+  const [currentEmotion, setCurrentEmotion] = useState<BlueEmotion>(emotion);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isCompleteRef = useRef(false);
   const lastMessageRef = useRef<string>('');
@@ -133,7 +133,7 @@ const AzuraDialogue: React.FC<AzuraDialogueProps> = ({
         <div className={styles.avatarWrapper}>
           <Image
             src={emotionImages[currentEmotion]}
-            alt={`Azura ${currentEmotion}`}
+            alt={`Blue ${currentEmotion}`}
             width={80}
             height={80}
             className={styles.avatar}
@@ -141,7 +141,7 @@ const AzuraDialogue: React.FC<AzuraDialogueProps> = ({
           />
         </div>
         <div className={styles.nameTag}>
-          <span className={styles.name}>Azura</span>
+          <span className={styles.name}>Blue</span>
           <span className={styles.role}>AI Co-pilot</span>
         </div>
       </div>
@@ -162,4 +162,4 @@ const AzuraDialogue: React.FC<AzuraDialogueProps> = ({
   );
 };
 
-export default AzuraDialogue;
+export default BlueDialogue;
