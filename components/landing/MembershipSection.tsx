@@ -170,7 +170,7 @@ export const MembershipSection: React.FC = () => {
         <p className={styles.eyebrow}>Membership</p>
         <h2 className={styles.title}>Choose Your Path</h2>
         <p className={styles.subtitle}>
-          Every path leads to the same Academy, pick the pace that fits.
+          Start the journey your way.
         </p>
 
         <div className={styles.tierGrid}>

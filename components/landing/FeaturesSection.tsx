@@ -17,7 +17,7 @@ const featureCards = [
   },
   {
     number: '02',
-    title: 'Weekly Tasks',
+    title: 'Weekly Rewards',
     badge: 'Weekly',
     description:
       'Each week unlocks a new challenge. Complete readings, reflections, and quests to earn shards and level up. Consistency is the main currency.',
@@ -27,7 +27,7 @@ const featureCards = [
   },
   {
     number: '03',
-    title: 'Agentic Tools',
+    title: 'AI Companions',
     badge: 'Always On',
     description:
       'Blue researches for you, builds your credit, and manages governance proposals. AI tools that pay for themselves through on-chain actions.',
@@ -70,7 +70,7 @@ export const FeaturesSection: React.FC = () => {
 
     const interval = setInterval(() => {
       setActiveCard((prev) => (prev + 1) % featureCards.length);
-    }, 4200);
+    }, 5600);
 
     return () => clearInterval(interval);
   }, [isVisible]);
@@ -81,27 +81,15 @@ export const FeaturesSection: React.FC = () => {
       className={`${styles.featuresSection} ${isVisible ? styles.sectionVisible : ''}`}
     >
       <div className={styles.container}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>Your Course</p>
-          <h2 className={styles.title}>A Real Wellness Game That&apos;s Actually Fun.</h2>
-          <p className={styles.description}>
-            Earning shards with the AI companions makes the course enjoyable and earns you
-            real cash.
-          </p>
-          <a href="#membership" className={styles.ctaButton}>
-            View Membership
-          </a>
-        </div>
-
         <div className={styles.showcase}>
           <div className={styles.companionTop}>
             <div className={styles.companionFrame}>
               <Image
-                src="/azurabeauty.png"
+                src="/uploads/vesper-landing-avatar.png"
                 alt="AI companion portrait"
                 fill
                 sizes="(max-width: 768px) 96px, 132px"
-                className={styles.companionImageAlt}
+                className={styles.companionImage}
               />
             </div>
           </div>
@@ -109,7 +97,7 @@ export const FeaturesSection: React.FC = () => {
           <div className={styles.companionBottom}>
             <div className={styles.companionFrame}>
               <Image
-                src="/anbel01.png"
+                src="/uploads/blue-landing-avatar.png"
                 alt="AI companion portrait"
                 fill
                 sizes="(max-width: 768px) 96px, 132px"
@@ -122,7 +110,7 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.phoneStack}>
               <div className={`${styles.phoneMockup} ${styles.phoneRear}`}>
                 <Image
-                  src="/uploads/chat1.png"
+                  src="/uploads/mockup-app-landing-2.png"
                   alt="Course reading screen on phone"
                   fill
                   sizes="(max-width: 768px) 42vw, 320px"
@@ -133,7 +121,7 @@ export const FeaturesSection: React.FC = () => {
 
               <div className={`${styles.phoneMockup} ${styles.phoneFront}`}>
                 <Image
-                  src="/uploads/chat2.png"
+                  src="/uploads/mockup-app-landing.png"
                   alt="Week one tasks screen on phone"
                   fill
                   sizes="(max-width: 768px) 46vw, 360px"
@@ -145,6 +133,33 @@ export const FeaturesSection: React.FC = () => {
           </div>
 
           <div className={styles.stageColumn}>
+            <div className={styles.header}>
+              <p className={styles.eyebrow}>Your Course</p>
+              <h2 className={styles.title}>A Wellness Game That&apos;s Actually Fun.</h2>
+              <p className={styles.description}>
+                Hang with your AI companions, stack shards, and turn your daily wellness
+                routine into something playful, motivating, and worth showing up for.
+              </p>
+              <a
+                href="https://github.com/Mental-Wealth-Academy/platform"
+                target="_blank"
+                rel="noreferrer"
+                className={styles.ctaButton}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className={styles.ctaIcon}
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 2C6.477 2 2 6.589 2 12.25c0 4.529 2.865 8.372 6.839 9.728.5.096.682-.223.682-.496 0-.245-.009-.894-.014-1.755-2.782.617-3.369-1.375-3.369-1.375-.455-1.183-1.11-1.498-1.11-1.498-.908-.637.069-.624.069-.624 1.004.072 1.532 1.055 1.532 1.055.892 1.566 2.341 1.114 2.91.852.091-.665.349-1.114.635-1.37-2.221-.26-4.555-1.14-4.555-5.074 0-1.121.39-2.038 1.029-2.756-.103-.262-.446-1.316.098-2.744 0 0 .84-.277 2.75 1.052A9.303 9.303 0 0 1 12 6.851a9.27 9.27 0 0 1 2.504.35c1.909-1.329 2.748-1.052 2.748-1.052.546 1.428.202 2.482.099 2.744.641.718 1.028 1.635 1.028 2.756 0 3.944-2.337 4.811-4.565 5.066.359.319.678.948.678 1.91 0 1.379-.012 2.492-.012 2.831 0 .275.18.596.688.495C19.138 20.619 22 16.777 22 12.25 22 6.589 17.523 2 12 2Z"
+                  />
+                </svg>
+                Check Github
+              </a>
+            </div>
+
             <div className={styles.cardStage}>
               <div className={styles.stageGlow} />
 

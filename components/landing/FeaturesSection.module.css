@@ -91,6 +91,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   min-width: 192px;
   height: 48px;
   padding: 0 24px;
@@ -117,8 +118,8 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(260px, 0.95fr) minmax(420px, 1.25fr);
-  align-items: center;
-  gap: 28px;
+  align-items: start;
+  gap: 40px;
   min-height: 630px;
   opacity: 0;
   transform: translateY(28px);
@@ -134,6 +135,7 @@
 .mockupColumn {
   position: relative;
   min-height: 560px;
+  z-index: 3;
 }
 
 .phoneStack {
@@ -150,22 +152,23 @@
     0 40px 80px rgba(0, 0, 0, 0.46),
     0 0 0 1px rgba(255, 255, 255, 0.08);
   background: rgba(7, 7, 18, 0.72);
+  z-index: 3;
 }
 
 .phoneRear {
-  left: 28px;
-  top: 72px;
-  width: min(320px, 72%);
-  aspect-ratio: 3135 / 2162;
+  left: 24px;
+  top: 88px;
+  width: min(265px, 66%);
+  aspect-ratio: 498 / 1184;
   transform: rotate(-0.045turn);
   z-index: 1;
 }
 
 .phoneFront {
-  left: 150px;
-  top: 94px;
-  width: min(360px, 76%);
-  aspect-ratio: 2241 / 1929;
+  left: 186px;
+  top: 34px;
+  width: min(280px, 69%);
+  aspect-ratio: 498 / 1184;
   transform: rotate(0.01turn);
   z-index: 2;
 }
@@ -177,6 +180,39 @@
 .stageColumn {
   position: relative;
   z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 10px;
+}
+
+.stageColumn .header {
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 0;
+  max-width: 760px;
+}
+
+.stageColumn .title {
+  margin: 0 0 14px;
+  max-width: 16ch;
+}
+
+.stageColumn .description {
+  margin: 0;
+  max-width: 42rem;
+}
+
+.stageColumn .ctaButton {
+  margin-top: 18px;
+}
+
+.ctaIcon {
+  order: 2;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
 }
 
 .cardStage {
@@ -401,7 +437,7 @@
 }
 
 .companionBottom {
-  bottom: -8px;
+  bottom: 92px;
   left: -4px;
 }
 
@@ -418,14 +454,8 @@
   background: rgba(16, 20, 53, 0.75);
 }
 
-.companionImage,
-.companionImageAlt {
+.companionImage {
   object-fit: cover;
-}
-
-.companionImageAlt {
-  object-position: 56% 18%;
-  transform: scale(1.12);
 }
 
 @media (max-width: 1100px) {
@@ -442,6 +472,31 @@
 
   .stageColumn {
     order: 1;
+    padding-top: 0;
+  }
+
+  .stageColumn .header {
+    align-items: center;
+    text-align: center;
+    max-width: none;
+  }
+
+  .stageColumn .title,
+  .stageColumn .description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .stageColumn .title {
+    max-width: 14ch;
+  }
+
+  .stageColumn .description {
+    max-width: 36rem;
+  }
+
+  .stageColumn .ctaButton {
+    margin-top: 20px;
   }
 
   .companionTop {
@@ -450,7 +505,7 @@
   }
 
   .companionBottom {
-    bottom: -18px;
+    bottom: 12px;
     left: 20px;
   }
 }
@@ -469,11 +524,11 @@
     margin-bottom: 30px;
   }
 
-  .title {
+  .stageColumn .title {
     max-width: 12ch;
   }
 
-  .description {
+  .stageColumn .description {
     font-size: 15px;
     max-width: 34ch;
   }

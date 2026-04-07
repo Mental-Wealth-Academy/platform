@@ -78,9 +78,9 @@ export default function AngelicCreditSystem() {
         {/* Header */}
         <div className={styles.header}>
           <p className={styles.eyebrow}>Our Core Mission</p>
-          <h2 className={styles.title}>Make Mental Wealth Something Everyone Can Afford</h2>
+          <h2 className={styles.title}>Benefits Anyone Can Afford</h2>
           <p className={styles.subtitle}>
-            Other platforms exchange private user data for quick-fleeting relationships, like doordash for your mental health. We create a new form of gamified health and make it social &amp; fun.
+            our core mission is keeping powerful knowledge, free, available, and low-cost to people everywhere around the world.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function AngelicCreditSystem() {
         <div className={styles.azuraCard}>
           <div className={styles.azuraBg}>
             <Image
-              src="/images/blue-agent.png"
+              src="https://i.imgur.com/Ehf0XUt.png"
               alt="Blue Agent"
               fill
               className={styles.azuraBgImg}

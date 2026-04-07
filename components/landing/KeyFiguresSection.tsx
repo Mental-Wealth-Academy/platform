@@ -8,7 +8,7 @@ export const KeyFiguresSection: React.FC = () => {
           <span className={styles.label}>Active Members</span>
           <div className={styles.valueRow}>
             <span className={styles.number}>100+</span>
-            <span className={styles.unit}>Believers</span>
+            <span className={styles.unit}>Members</span>
           </div>
         </div>
 

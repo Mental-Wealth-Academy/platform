@@ -30,23 +30,23 @@ const LandingPage = () => {
       {/* Company Logos Section */}
       <CompanyLogos />
 
-      {/* Swarms Section — Wealth, Community, & Purpose */}
-      <SwarmsSection />
+      {/* Features Section - Server rendered */}
+      <FeaturesSection />
 
       {/* Testimonial Section */}
       <TestimonialSection />
 
-      {/* Pattern Background Section - Contains client component for animation */}
-      <PatternTextSection />
-
-      {/* Features Section - Server rendered */}
-      <FeaturesSection />
+      {/* Swarms Section — Wealth, Community, & Purpose */}
+      <SwarmsSection />
 
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />
 
       {/* Angelic Credit System — Our Core Mission */}
       <AngelicCreditSystem />
+
+      {/* Pattern Background Section - Contains client component for animation */}
+      <PatternTextSection />
 
       {/* Membership — Free vs Paid tiers + purchase modal */}
       <MembershipSection />
