@@ -7,22 +7,27 @@ import styles from './RewardDetailModal.module.css';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { ShardAnimation } from '../quests/ShardAnimation';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
+import type { QuestType } from '@/lib/quest-definitions';
 
-export type RewardType = 'proof-required' | 'no-proof' | 'twitter-follow' | 'follow-and-own';
-
-export interface Reward {
+export interface Quest {
   id: string;
   title: string;
   points: number;
   desc: string;
-  rewardType: RewardType;
+  rewardType: QuestType;
+  targetCount?: number;
+  progressCount?: number;
+  claimedCount?: number;
+  weekNumber?: number;
   icon?: string;
 }
+
+export type Reward = Quest;
 
 interface RewardDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  reward: Reward | null;
+  reward: Quest | null;
 }
 
 const CloseIcon: React.FC = () => (
@@ -31,7 +36,7 @@ const CloseIcon: React.FC = () => (
   </svg>
 );
 
-const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, reward }) => {
+const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, reward: quest }) => {
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const { address, isConnected } = useAccount();
@@ -71,7 +76,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
 
   // Check Twitter link status for twitter-follow rewards
   useEffect(() => {
-    if (!reward || reward.rewardType !== 'twitter-follow' || !isConnected) {
+    if (!quest || quest.rewardType !== 'twitter-follow' || !isConnected) {
       setStep1Completed(false);
       setStep2Completed(false);
       return;
@@ -153,7 +158,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('xAccountUpdated', handleXAccountUpdate);
     };
-  }, [reward, isConnected, address, step2Completed]);
+  }, [quest, isConnected, address, step2Completed]);
 
   const handleConnectTwitter = async () => {
     try {
@@ -211,9 +216,11 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
   };
 
   const handleCompleteReward = async () => {
-    if (!reward) return;
+    if (!quest) return;
 
-    if (reward.rewardType === 'twitter-follow' && (!step1Completed || !step2Completed)) return;
+    if ((quest.claimedCount ?? 0) >= (quest.targetCount ?? 1)) return;
+    if (quest.rewardType === 'sealed-week' && (quest.progressCount ?? 0) < (quest.targetCount ?? 1)) return;
+    if (quest.rewardType === 'twitter-follow' && (!step1Completed || !step2Completed)) return;
 
     setIsCompleting(true);
     try {
@@ -225,13 +232,13 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
       const currentStartingShards = meData?.user?.shardCount ?? 0;
       setStartingShards(currentStartingShards);
 
-      const shardReward = reward.points;
+      const shardReward = quest.points;
       const response = await fetch('/api/quests/complete', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          questId: reward.id,
+          questId: quest.id,
           shards: shardReward,
         }),
       });
@@ -252,24 +259,31 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
           }, 2000);
         }, 5000);
       } else {
-        alert(data.error || 'Failed to complete reward. Please try again.');
+        alert(data.error || 'Failed to complete quest. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to complete reward:', error);
-      alert('Failed to complete reward. Please try again.');
+      console.error('Failed to complete quest:', error);
+      alert('Failed to complete quest. Please try again.');
     } finally {
       setIsCompleting(false);
     }
   };
 
-  if (!reward || !shouldRender) return null;
+  if (!quest || !shouldRender) return null;
 
-  const rewardTypeLabel: Record<RewardType, string> = {
+  const questTypeLabel: Record<QuestType, string> = {
     'proof-required': 'Proof Required',
     'no-proof': 'No Proof Needed',
     'twitter-follow': 'Social',
     'follow-and-own': 'Follow & Own',
+    'sealed-week': 'Course Milestone',
   };
+  const targetCount = quest.targetCount ?? 1;
+  const progressCount = quest.progressCount ?? 0;
+  const claimedCount = quest.claimedCount ?? 0;
+  const questIsComplete = claimedCount >= targetCount;
+  const canClaimSealedWeek = quest.rewardType === 'sealed-week' && progressCount >= targetCount && !questIsComplete;
+  const questProgressLabel = `${progressCount}/${targetCount}`;
 
   return (
     <>
@@ -277,7 +291,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
       <div className={`${styles.modal} ${isAnimating ? styles.modalOpen : ''}`}>
         {/* Header */}
         <div className={styles.header}>
-          <h2 className={styles.headerTitle}>Reward Details</h2>
+          <h2 className={styles.headerTitle}>Quest Details</h2>
           <button className={styles.closeButton} onClick={onClose} aria-label="Close">
             <CloseIcon />
           </button>
@@ -288,35 +302,35 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
           <div className={styles.rewardBadge}>
             <div className={styles.rewardIcon}>
               <Image
-                src={reward.icon || '/icons/ui-coin.svg'}
-                alt={reward.title}
+                src={quest.icon || '/icons/ui-coin.svg'}
+                alt={quest.title}
                 width={32}
                 height={32}
               />
             </div>
           </div>
-          <h1 className={styles.rewardTitle}>{reward.title}</h1>
-          <p className={styles.rewardDesc}>{reward.desc}</p>
-          <span className={styles.pointsBadge}>{reward.points} pts</span>
+          <h1 className={styles.rewardTitle}>{quest.title}</h1>
+          <p className={styles.rewardDesc}>{quest.desc}</p>
+          <span className={styles.pointsBadge}>{quest.points} pts</span>
 
           <div className={styles.detailsGrid}>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>Type</span>
-              <span className={styles.detailValue}>{rewardTypeLabel[reward.rewardType]}</span>
+              <span className={styles.detailValue}>{questTypeLabel[quest.rewardType]}</span>
             </div>
             <div className={styles.detailItem}>
-              <span className={styles.detailLabel}>Completions</span>
-              <span className={styles.detailValue}>1 per person</span>
+              <span className={styles.detailLabel}>Progress</span>
+              <span className={styles.detailValue}>{questProgressLabel}</span>
             </div>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>Resolver</span>
-              <span className={styles.detailValue}>Academy Oracle</span>
+              <span className={styles.detailValue}>{quest.rewardType === 'sealed-week' ? 'Home Progress' : 'Academy Oracle'}</span>
             </div>
             <div className={styles.detailItem}>
-              <span className={styles.detailLabel}>Reward</span>
+              <span className={styles.detailLabel}>Claims</span>
               <span className={styles.detailValue}>
                 <Image src="/icons/ui-coin.svg" alt="Daemon" width={14} height={14} />
-                {reward.points} Daemon
+                {claimedCount}/{targetCount}
               </span>
             </div>
           </div>
@@ -324,12 +338,43 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
 
         {/* Bottom Section - conditional on reward type */}
         <div className={styles.bottomSection}>
-          {/* Proof Required */}
-          {reward.rewardType === 'proof-required' && (
+          {quest.rewardType === 'sealed-week' && (
             <>
-              <h3 className={styles.sectionTitle}>Provide Proof</h3>
+              <h3 className={styles.sectionTitle}>Seal Progress Required</h3>
               <p className={styles.sectionDescription}>
-                Upload your proof into a ZK-Rollup. The rollup will be processed and sent for submission by the Daemon Model and the MWA Team.
+                This quest checks your actual Week {quest.weekNumber} seal status from the home page. Once that week is sealed, you can claim this quest here.
+              </p>
+
+              <div className={styles.actionBox}>
+                <div className={styles.actionIcon}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L19 6V11C19 16 15.5 20 12 21C8.5 20 5 16 5 11V6L12 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <p className={styles.actionText}>
+                  {progressCount >= targetCount
+                    ? `Week ${quest.weekNumber} is sealed. You can claim this quest now.`
+                    : `Week ${quest.weekNumber} is not sealed yet. Seal it on the home page first.`}
+                </p>
+              </div>
+
+              <button
+                className={styles.submitButton}
+                type="button"
+                onClick={handleCompleteReward}
+                disabled={!canClaimSealedWeek || isCompleting}
+              >
+                {questIsComplete ? 'Quest completed' : isCompleting ? 'Claiming...' : `Claim ${quest.points} pts`}
+              </button>
+            </>
+          )}
+
+          {/* Proof Required */}
+          {quest.rewardType === 'proof-required' && (
+            <>
+              <h3 className={styles.sectionTitle}>Submit Quest Entry</h3>
+              <p className={styles.sectionDescription}>
+                Each submission advances this quest by one entry. Track your count here until you reach {targetCount}/{targetCount}.
               </p>
 
               <div className={styles.uploadArea}>
@@ -366,18 +411,23 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
                 </p>
               </div>
 
-              <button className={styles.submitButton} type="button">
-                Submit Proof
+              <button
+                className={styles.submitButton}
+                type="button"
+                onClick={handleCompleteReward}
+                disabled={isCompleting || questIsComplete}
+              >
+                {questIsComplete ? 'Quest completed' : isCompleting ? 'Submitting...' : `Submit entry (${questProgressLabel})`}
               </button>
             </>
           )}
 
           {/* No Proof */}
-          {reward.rewardType === 'no-proof' && (
+          {quest.rewardType === 'no-proof' && (
             <>
-              <h3 className={styles.sectionTitle}>Complete Reward</h3>
+              <h3 className={styles.sectionTitle}>Complete Quest</h3>
               <p className={styles.sectionDescription}>
-                Complete the task described above, then click the button below to claim your {reward.points} Daemon.
+                Complete the task described above, then claim your {quest.points} points here.
               </p>
 
               <div className={styles.actionBox}>
@@ -387,7 +437,7 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
                   </svg>
                 </div>
                 <p className={styles.actionText}>
-                  Once you&apos;ve completed the task, claim your reward below.
+                  Once you&apos;ve completed the task, claim your quest below.
                 </p>
               </div>
 
@@ -395,19 +445,19 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
                 className={styles.submitButton}
                 type="button"
                 onClick={handleCompleteReward}
-                disabled={isCompleting}
+                disabled={isCompleting || questIsComplete}
               >
-                {isCompleting ? 'Completing...' : `Claim ${reward.points} Daemon`}
+                {questIsComplete ? 'Quest completed' : isCompleting ? 'Claiming...' : `Claim ${quest.points} pts`}
               </button>
             </>
           )}
 
           {/* Twitter Follow */}
-          {reward.rewardType === 'twitter-follow' && (
+          {quest.rewardType === 'twitter-follow' && (
             <>
-              <h3 className={styles.sectionTitle}>Complete Reward</h3>
+              <h3 className={styles.sectionTitle}>Complete Quest</h3>
               <p className={styles.sectionDescription}>
-                Connect your X (Twitter) account and follow @MentalWealthDAO to earn Daemon!
+                Connect your X account and follow @MentalWealthDAO to complete this quest.
               </p>
 
               <div className={styles.requirementsList}>
@@ -470,26 +520,26 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
                   className={styles.submitButton}
                   type="button"
                   onClick={handleCompleteReward}
-                  disabled={isCompleting}
+                  disabled={isCompleting || questIsComplete}
                 >
-                  {isCompleting ? 'Completing...' : 'Complete & Claim Daemon'}
+                  {questIsComplete ? 'Quest completed' : isCompleting ? 'Claiming...' : 'Complete quest'}
                 </button>
               )}
 
               {!isConnected && (
                 <div className={styles.infoBox}>
-                  <p className={styles.infoBoxText}>Please sign in to complete this reward.</p>
+                  <p className={styles.infoBoxText}>Please sign in to complete this quest.</p>
                 </div>
               )}
             </>
           )}
 
           {/* Follow and Own */}
-          {reward.rewardType === 'follow-and-own' && (
+          {quest.rewardType === 'follow-and-own' && (
             <>
-              <h3 className={styles.sectionTitle}>Complete Reward</h3>
+              <h3 className={styles.sectionTitle}>Complete Quest</h3>
               <p className={styles.sectionDescription}>
-                Follow the Farcaster account @daemonagent and own an Academic Angel to complete this reward.
+                Follow the Farcaster account @daemonagent and own an Academic Angel to complete this quest.
               </p>
 
               <div className={styles.requirementsList}>
@@ -547,4 +597,4 @@ const RewardDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, 
   );
 };
 
-export default RewardDetailModal;
+export default QuestDetailModal;

@@ -5,20 +5,20 @@ import Image from 'next/image';
 import styles from './GameCard.module.css';
 
 interface GameCardProps {
-  taskName: string;
-  taskDescription: string;
-  completed: number;
-  total: number;
-  onAccept?: () => void;
+  questName: string;
+  questDescription: string;
+  progressCurrent: number;
+  progressTotal: number;
+  onOpenQuest?: () => void;
   shardIcon?: string;
 }
 
 const GameCard: React.FC<GameCardProps> = ({
-  taskName,
-  taskDescription,
-  completed,
-  total,
-  onAccept,
+  questName,
+  questDescription,
+  progressCurrent,
+  progressTotal,
+  onOpenQuest,
   shardIcon = '/icons/ui-shard.svg',
 }) => {
   return (
@@ -36,22 +36,22 @@ const GameCard: React.FC<GameCardProps> = ({
       </div>
 
       <div className={styles.textContainer}>
-        <h3 className={styles.taskName}>{taskName}</h3>
-        <p className={styles.taskDescription}>{taskDescription}</p>
+        <h3 className={styles.taskName}>{questName}</h3>
+        <p className={styles.taskDescription}>{questDescription}</p>
       </div>
 
       <div className={styles.actionContainer}>
         <div className={styles.completionTicker}>
           <span className={styles.tickerText}>
-            {completed}/{total}
+            {progressCurrent}/{progressTotal}
           </span>
         </div>
 
-        <button className={styles.acceptButton} onClick={onAccept}>
+        <button className={styles.acceptButton} onClick={onOpenQuest}>
           <div className={styles.acceptGlow} />
           <div className={styles.acceptBody}>
             <div className={styles.scanlines} />
-            <span className={styles.acceptText}>ACCEPT</span>
+            <span className={styles.acceptText}>OPEN QUEST</span>
           </div>
           <div className={styles.acceptBorder} />
         </button>

@@ -35,10 +35,10 @@ export const MobileBottomNav: React.FC = () => {
         <span className={styles.label}>The Course</span>
       </Link>
 
-      {/* Rewards */}
+      {/* Quests */}
       <Link href="/rewards" className={`${styles.tab} ${pathname === '/rewards' ? styles.tabActive : ''}`}>
         <Image src="/icons/rewards.svg" alt="" width={22} height={22} className={styles.iconImg} />
-        <span className={styles.label}>Rewards</span>
+        <span className={styles.label}>Quests</span>
       </Link>
 
       {/* Pet */}

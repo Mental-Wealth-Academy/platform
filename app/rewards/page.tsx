@@ -1,30 +1,100 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GameCard from '@/components/game-card/GameCard';
-import RewardDetailModal, { Reward } from '@/components/reward-detail-modal/RewardDetailModal';
+import RewardDetailModal, { Quest } from '@/components/reward-detail-modal/RewardDetailModal';
 import { useSound } from '@/hooks/useSound';
+import { QUEST_DEFINITIONS } from '@/lib/quest-definitions';
 import styles from './page.module.css';
 
-const rewards: Reward[] = [
-  { id: 'reward-blog', title: 'Write a community blog post', points: 50, desc: 'Share knowledge or a personal story with the community', rewardType: 'proof-required' },
-  { id: 'reward-onboard', title: 'Onboard a new member', points: 75, desc: 'Walk someone through their first week in the academy', rewardType: 'no-proof' },
-  { id: 'reward-study', title: 'Host a study session', points: 100, desc: 'Lead a group learning session on any relevant topic', rewardType: 'proof-required' },
-  { id: 'reward-bug', title: 'Submit a bug report', points: 30, desc: 'Find and document a bug in the platform with steps to reproduce', rewardType: 'proof-required' },
-  { id: 'reward-social', title: 'Design a social media asset', points: 60, desc: 'Create a shareable graphic that represents MWA values', rewardType: 'proof-required' },
-  { id: 'reward-twitter', title: 'Follow @MentalWealthDAO on X', points: 40, desc: 'Connect your X account and follow the official MWA account', rewardType: 'twitter-follow' },
-];
+interface WeekStatus {
+  weekNumber: number;
+  isSealed: boolean;
+}
 
 export default function RewardsPage() {
-  const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
+  const { ready, authenticated, getAccessToken } = usePrivy();
+  const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
+  const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
   const { play } = useSound();
 
-  const handleAccept = (reward: Reward) => {
+  const refreshQuestData = useCallback(async () => {
+    if (!ready || !authenticated) {
+      setWeekStatuses([]);
+      setQuestCounts({});
+      return;
+    }
+
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const [weeksRes, countsRes] = await Promise.all([
+        fetch('/api/ethereal-progress/all', { credentials: 'include', cache: 'no-store', headers: authHeaders }),
+        fetch('/api/quests/progress', { credentials: 'include', cache: 'no-store', headers: authHeaders }),
+      ]);
+
+      if (weeksRes.ok) {
+        const weekData = await weeksRes.json();
+        setWeekStatuses(weekData.weeks ?? []);
+      }
+
+      if (countsRes.ok) {
+        const countData = await countsRes.json();
+        setQuestCounts(countData.counts ?? {});
+      }
+    } catch {
+      setWeekStatuses([]);
+      setQuestCounts({});
+    }
+  }, [ready, authenticated, getAccessToken]);
+
+  useEffect(() => {
+    refreshQuestData();
+  }, [refreshQuestData]);
+
+  useEffect(() => {
+    const handler = () => refreshQuestData();
+    window.addEventListener('userLoaded', handler);
+    window.addEventListener('userLoggedIn', handler);
+    window.addEventListener('shardsUpdated', handler);
+    return () => {
+      window.removeEventListener('userLoaded', handler);
+      window.removeEventListener('userLoggedIn', handler);
+      window.removeEventListener('shardsUpdated', handler);
+    };
+  }, [refreshQuestData]);
+
+  const quests = useMemo<Quest[]>(() => {
+    return QUEST_DEFINITIONS.map((quest) => {
+      const claimedCount = Math.min(questCounts[quest.key] ?? 0, quest.targetCount);
+      const progressCount = quest.questType === 'sealed-week'
+        ? (weekStatuses.find((week) => week.weekNumber === quest.weekNumber)?.isSealed ? 1 : 0)
+        : claimedCount;
+
+      return {
+        id: quest.key,
+        title: quest.title,
+        points: quest.points,
+        desc: quest.desc,
+        rewardType: quest.questType,
+        targetCount: quest.targetCount,
+        progressCount,
+        claimedCount,
+        weekNumber: quest.weekNumber,
+        icon: quest.icon,
+      };
+    });
+  }, [questCounts, weekStatuses]);
+
+  const handleAccept = (quest: Quest) => {
     play('click');
-    setSelectedReward(reward);
+    setSelectedQuest(quest);
     setIsRewardModalOpen(true);
   };
 
@@ -43,22 +113,22 @@ export default function RewardsPage() {
                   height={36}
                   className={styles.headingIcon}
                 />
-                <h1 className={styles.headingTitle}>Rewards</h1>
+                <h1 className={styles.headingTitle}>Quests</h1>
               </div>
               <p className={styles.headingSubtitle}>
-                Earn shards by contributing to the community
+                Track quest requirements and claim shards for finished work
               </p>
             </div>
 
             <div className={styles.cardList}>
-              {rewards.map((reward) => (
-                <div key={reward.id} onMouseEnter={() => play('hover')}>
+              {quests.map((quest) => (
+                <div key={quest.id} onMouseEnter={() => play('hover')}>
                   <GameCard
-                    taskName={reward.title}
-                    taskDescription={`${reward.points} pts — ${reward.desc}`}
-                    completed={0}
-                    total={1}
-                    onAccept={() => handleAccept(reward)}
+                    questName={quest.title}
+                    questDescription={`${quest.points} pts — ${quest.desc}`}
+                    progressCurrent={quest.progressCount ?? 0}
+                    progressTotal={quest.targetCount ?? 1}
+                    onOpenQuest={() => handleAccept(quest)}
                   />
                 </div>
               ))}
@@ -69,8 +139,8 @@ export default function RewardsPage() {
 
       <RewardDetailModal
         isOpen={isRewardModalOpen}
-        onClose={() => { setIsRewardModalOpen(false); setSelectedReward(null); }}
-        reward={selectedReward}
+        onClose={() => { setIsRewardModalOpen(false); setSelectedQuest(null); }}
+        reward={selectedQuest}
       />
     </>
   );

@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
+import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
+import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
 import { v4 as uuidv4 } from 'uuid';
 
 export const runtime = 'nodejs';
@@ -21,6 +23,10 @@ const QUEST_REWARDS: Record<string, number> = {
 
 // Daily notes quests follow pattern: daily-notes-w{week}-d{day}
 function getQuestShardReward(questId: string): number {
+  const definition = getQuestDefinitionForStoredQuestId(questId);
+  if (definition) {
+    return definition.points;
+  }
   if (QUEST_REWARDS[questId] !== undefined) {
     return QUEST_REWARDS[questId];
   }
@@ -40,6 +46,7 @@ export async function POST(request: Request) {
     );
   }
   await ensureForumSchema();
+  await ensureWeeksSchema();
 
   // Get our internal user record (authenticated via wallet address)
   const user = await getCurrentUserFromRequestCookie();
@@ -55,15 +62,56 @@ export async function POST(request: Request) {
   }
 
   // SECURITY: Shard reward determined server-side, client value ignored
-  const shardsToAward = getQuestShardReward(questId);
+  const definition = getQuestDefinition(questId);
 
   try {
+    if (definition?.questType === 'sealed-week') {
+      const sealedRows = await sqlQuery<Array<{ is_sealed: boolean }>>(
+        `SELECT is_sealed
+         FROM weeks
+         WHERE user_id = :userId AND week_number = :weekNumber
+         LIMIT 1`,
+        { userId: user.id, weekNumber: definition.weekNumber }
+      );
+
+      if (!sealedRows[0]?.is_sealed) {
+        return NextResponse.json(
+          { error: `Week ${definition.weekNumber} must be sealed on your home page before this quest can be claimed.` },
+          { status: 400 }
+        );
+      }
+    }
+
+    let resolvedQuestId = questId;
+    let shardsToAward = getQuestShardReward(questId);
+
+    if (definition && definition.targetCount > 1) {
+      const existingRows = await sqlQuery<Array<{ quest_id: string }>>(
+        `SELECT quest_id
+         FROM quests
+         WHERE user_id = :userId`,
+        { userId: user.id }
+      );
+
+      const completionCount = existingRows.filter((row) => {
+        const matchedDefinition = getQuestDefinitionForStoredQuestId(row.quest_id);
+        return matchedDefinition?.key === definition.key;
+      }).length;
+
+      if (completionCount >= definition.targetCount) {
+        return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
+      }
+
+      resolvedQuestId = `${definition.key}-${completionCount + 1}`;
+      shardsToAward = getQuestShardReward(resolvedQuestId);
+    }
+
     // Check if quest already completed (outside transaction for early exit)
     const existingCompletion = await sqlQuery<Array<{ id: string }>>(
       `SELECT id FROM quests
        WHERE user_id = :userId AND quest_id = :questId
        LIMIT 1`,
-      { userId: user.id, questId }
+      { userId: user.id, questId: resolvedQuestId }
     );
 
     if (existingCompletion.length > 0) {
@@ -78,7 +126,7 @@ export async function POST(request: Request) {
         `SELECT id FROM quests
          WHERE user_id = :userId AND quest_id = :questId
          LIMIT 1`,
-        { userId: user.id, questId }
+        { userId: user.id, questId: resolvedQuestId }
       );
       if (dupeCheck.length > 0) {
         throw new Error('QUEST_ALREADY_COMPLETED');
@@ -97,7 +145,7 @@ export async function POST(request: Request) {
         client,
         `INSERT INTO quests (id, user_id, quest_id, shards_awarded)
          VALUES (:id, :userId, :questId, :shards)`,
-        { id: completionId, userId: user.id, questId, shards: shardsToAward }
+        { id: completionId, userId: user.id, questId: resolvedQuestId, shards: shardsToAward }
       );
 
       const shardRows = await sqlQueryWithClient<Array<{ shard_count: number; wallet_address: string | null }>>(
@@ -126,4 +174,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to complete quest.' }, { status: 500 });
   }
 }
-

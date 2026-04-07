@@ -303,9 +303,9 @@ export default function VotingPage() {
               onMouseEnter={() => play('hover')}
             >
               <div className={styles.podIcon}>
-                <Image src="/icons/rewards.svg" alt="Rewards" width={40} height={40} />
+                <Image src="/icons/rewards.svg" alt="Quests" width={40} height={40} />
               </div>
-              <h3 className={styles.podTitle}>Rewards</h3>
+              <h3 className={styles.podTitle}>Quests</h3>
               <p className={styles.podDesc}>Earn from contributing to shared resources and collective growth</p>
             </div>
             <div

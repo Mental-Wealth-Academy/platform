@@ -1,39 +1,36 @@
-/* Game Card - Gamified reward card */
+/* Quest Card */
 
 .card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
-  border-radius: 20px;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid #5B3AED;
   background: linear-gradient(
     135deg,
     #5B4FD9 0%,
     #3D35A8 50%,
     #2A237A 100%
   );
-  box-shadow:
-    0 8px 32px rgba(59, 47, 168, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   width: 100%;
   box-sizing: border-box;
+  box-shadow: none;
 }
 
-/* Shard icon container */
 .shardContainer {
   flex-shrink: 0;
-  width: 110px;
-  height: 110px;
+  width: 84px;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .shardBox {
-  width: 100px;
-  height: 100px;
-  border-radius: 18px;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
   background: linear-gradient(
     145deg,
     #6B7CFF 0%,
@@ -41,9 +38,7 @@
     #4558E8 100%
   );
   border: 2px solid rgba(125, 137, 242, 0.6);
-  box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.35),
-    inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,12 +46,11 @@
 }
 
 .shardIcon {
-  width: 65px;
-  height: 65px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
 }
 
-/* Text area */
 .textContainer {
   flex: 1;
   min-width: 0;
@@ -68,105 +62,91 @@
 
 .taskName {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 26px;
-  font-weight: 700;
-  font-style: italic;
+  font-size: 20px;
+  font-weight: 800;
   color: #FFFFFF;
   margin: 0;
   line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .taskDescription {
   font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 16px;
-  font-weight: 400;
-  font-style: italic;
+  font-size: 14px;
+  font-weight: 500;
   color: #FFFFFF;
   margin: 0;
-  line-height: 1.4;
-  opacity: 0.85;
+  line-height: 1.45;
+  opacity: 0.9;
 }
 
-/* Right action area */
 .actionContainer {
   flex-shrink: 0;
-  width: 180px;
+  width: 150px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: stretch;
 }
 
-/* Completion ticker pill */
 .completionTicker {
-  height: 42px;
-  border-radius: 8px;
-  border: 1px solid rgba(66, 76, 185, 0.5);
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #424CB9;
   background: linear-gradient(
     180deg,
     #0A1A3A 0%,
     #071530 100%
   );
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none;
 }
 
 .tickerText {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 18px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 3px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 2px;
 }
 
-/* Accept button - layered CRT/scanline effect */
 .acceptButton {
   position: relative;
   width: 100%;
-  height: 52px;
+  height: 42px;
   border: none;
   background: none;
   padding: 0;
   cursor: pointer;
   overflow: visible;
+  filter: none;
+  box-shadow: none;
 }
 
 .acceptButton:hover .acceptBody {
-  background: #1a1a1c;
+  opacity: 0.92;
 }
 
 .acceptButton:active .acceptBody {
   transform: scale(0.98);
 }
 
-/* Subtle glow behind button */
 .acceptGlow {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  filter: blur(8px);
-  border-radius: 4px;
+  display: none;
 }
 
-/* Dark body with scanlines */
 .acceptBody {
   position: absolute;
-  inset: 0;
-  background: #0C0C0E;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  inset: 2px;
+  background: #111113;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: background 0.15s, transform 0.1s;
+  transition: opacity 0.15s, transform 0.1s;
 }
 
-/* Scanline overlay pattern */
 .scanlines {
   position: absolute;
   inset: 0;
@@ -184,53 +164,83 @@
   position: relative;
   z-index: 2;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 5px;
-  color: rgba(223, 220, 189, 0.85);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #DFDCBD;
   text-transform: uppercase;
 }
 
-/* White hairline border */
 .acceptBorder {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 0.6px solid rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .card {
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
-    padding: 18px;
-    gap: 14px;
-    border-radius: 16px;
+    gap: 12px;
+    padding: 14px;
   }
 
   .shardContainer {
-    width: 100%;
-    height: auto;
+    width: 62px;
+    height: 62px;
   }
 
   .shardBox {
-    width: 72px;
-    height: 72px;
-    border-radius: 14px;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
   }
 
   .shardIcon {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
   }
 
   .taskName {
-    font-size: 20px;
+    font-size: 17px;
   }
 
   .taskDescription {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .actionContainer {
+    width: 112px;
+    gap: 8px;
+  }
+
+  .completionTicker {
+    height: 28px;
+  }
+
+  .tickerText {
+    font-size: 12px;
+  }
+
+  .acceptButton {
+    height: 36px;
+  }
+
+  .acceptText {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+}
+
+@media (max-width: 520px) {
+  .card {
+    flex-wrap: wrap;
+  }
+
+  .textContainer {
+    gap: 2px;
   }
 
   .actionContainer {
@@ -240,9 +250,8 @@
   }
 
   .completionTicker {
-    flex: 0 0 auto;
     width: 70px;
-    height: 38px;
+    flex: 0 0 auto;
   }
 
   .acceptButton {
