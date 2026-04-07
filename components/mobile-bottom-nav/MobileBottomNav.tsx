@@ -14,10 +14,6 @@ export const MobileBottomNav: React.FC = () => {
     window.dispatchEvent(new Event('toggleSidebar'));
   };
 
-  const handleAzuraChat = () => {
-    window.dispatchEvent(new Event('toggleAzuraChat'));
-  };
-
   return (
     <nav className={styles.nav}>
       {/* Menu */}
@@ -28,36 +24,24 @@ export const MobileBottomNav: React.FC = () => {
         <span className={styles.label}>Menu</span>
       </button>
 
-      {/* Prayers */}
+      {/* The Course */}
       <Link href="/home" className={`${styles.tab} ${pathname === '/home' ? styles.tabActive : ''}`}>
-        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C12 2 9 6 9 9c0 1.5.7 2.8 1.8 3.6L8 21h8l-2.8-8.4C14.3 11.8 15 10.5 15 9c0-3-3-7-3-7z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12 2v4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.5" />
+        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 19.5A2.5 2.5 0 016.5 17H20V4H6.5A2.5 2.5 0 004 6.5v13zM6.5 17H20v2.5H6.5a.5.5 0 010-1H20" />
+          <path d="M8 7h8v2H8z" opacity="0.7" />
         </svg>
-        <span className={styles.label}>PRAYERS</span>
+        <span className={styles.label}>The Course</span>
       </Link>
-
-      {/* Ask (Azura Chat) */}
-      <button type="button" className={styles.tab} onClick={handleAzuraChat} aria-label="Ask">
-        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="12" cy="10" r="0.5" fill="currentColor" />
-          <path d="M12 7v0a2 2 0 012 2c0 .7-.4 1.4-1 1.7L12 11.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
-        <span className={styles.label}>ASK</span>
-      </button>
 
       {/* Pet */}
       <Link href="/digipet" className={`${styles.tab} ${pathname === '/digipet' ? styles.tabActive : ''}`}>
-        <svg className={styles.icon} width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <circle cx="11" cy="3" r="2" fill="currentColor" opacity="0.7" />
-          <line x1="11" y1="5" x2="11" y2="7" stroke="currentColor" strokeWidth="1" opacity="0.5" />
-          <ellipse cx="11" cy="11" rx="5" ry="4.5" fill="currentColor" />
-          <circle cx="9" cy="10" r="1" fill="#111" />
-          <circle cx="13" cy="10" r="1" fill="#111" />
-          <ellipse cx="11" cy="17" rx="4" ry="3.5" fill="currentColor" opacity="0.85" />
-          <rect x="7" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
-          <rect x="12" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
+        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4.5 9.5C4.5 7 6 5 6 5s1.5 2 1.5 4.5S6 14 6 14s-1.5-2-1.5-4.5z" />
+          <path d="M16.5 9.5C16.5 7 18 5 18 5s1.5 2 1.5 4.5S18 14 18 14s-1.5-2-1.5-4.5z" />
+          <circle cx="12" cy="14" r="6" />
+          <circle cx="10" cy="13" r="1.2" fill="#111" />
+          <circle cx="14" cy="13" r="1.2" fill="#111" />
+          <ellipse cx="12" cy="15.5" rx="1.5" ry="0.8" fill="#111" opacity="0.4" />
         </svg>
         <span className={styles.label}>Pet</span>
       </Link>
