@@ -380,15 +380,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div className={styles.modalMain}>
               <div className={styles.timerDisplay}>
                 <div className={styles.sessionBadge}>Morning Prayers</div>
-                <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                  {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
-                </div>
-                <div className={styles.timerBar}>
-                  <div
-                    className={styles.timerBarFill}
-                    style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
-                  />
-                </div>
               </div>
 
               <div className={styles.writeArea}>
@@ -405,6 +396,17 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
 
             <div className={styles.modalFooter}>
+              <div className={styles.footerTimer}>
+                <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                  {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
+                </div>
+                <div className={styles.timerBar}>
+                  <div
+                    className={styles.timerBarFill}
+                    style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
+                  />
+                </div>
+              </div>
               <button
                 type="button"
                 className={styles.pauseBtn}

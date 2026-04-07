@@ -479,7 +479,7 @@
 }
 
 .timerDisplay {
-  padding: 20px 20px 12px;
+  padding: 20px 20px 8px;
   text-align: center;
 }
 
@@ -502,12 +502,11 @@
 
 .timerCount {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: clamp(44px, 9vw, 72px);
+  font-size: clamp(28px, 5vw, 42px);
   font-weight: 700;
   color: #1A1D33;
-  letter-spacing: -2px;
+  letter-spacing: -1px;
   line-height: 1;
-  margin-bottom: 14px;
   transition: color 0.3s ease;
 }
 
@@ -517,7 +516,7 @@
 
 .timerPaused {
   color: #888;
-  font-size: 36px;
+  font-size: 22px;
   letter-spacing: 0.1em;
 }
 
@@ -538,7 +537,7 @@
 
 .writeArea {
   position: relative;
-  padding: 0 20px 20px;
+  padding: 0 20px 12px;
   flex: 1;
 }
 
@@ -563,7 +562,7 @@
 .textarea {
   width: 100%;
   height: 100%;
-  min-height: 380px;
+  min-height: 440px;
   padding: 60px 18px 20px;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
@@ -590,13 +589,23 @@
 }
 
 .modalFooter {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: stretch;
-  justify-content: stretch;
   gap: 0;
   padding: 0;
   border-top: 1px solid rgba(26, 29, 51, 0.08);
   background: rgba(255, 255, 255, 0.78);
+}
+
+.footerTimer {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .pauseBtn {
@@ -831,6 +840,14 @@
     padding: 18px 16px 10px;
   }
 
+  .footerTimer {
+    padding: 10px 16px 8px;
+  }
+
+  .timerCount {
+    font-size: clamp(24px, 7vw, 34px);
+  }
+
   .writeArea {
     padding: 0 16px 16px;
   }
@@ -842,7 +859,7 @@
   }
 
   .textarea {
-    min-height: 320px;
+    min-height: 280px;
     padding: 58px 16px 18px;
     font-size: 15px;
   }
