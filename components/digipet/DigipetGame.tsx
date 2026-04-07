@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import type {
   ChaoBridge, GameSave, ChaoData, EggData, FoodType, ItemType,
   ChaoType, ChaoStage, ChaoStats, ChaoColor, RaceConfig,
@@ -34,6 +35,8 @@ const JOY_COLOR = '#f1c40f';
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function DigipetGame() {
+  const router = useRouter();
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -176,10 +179,9 @@ export default function DigipetGame() {
         if (petCanvasRef.current && pet) {
           renderPet(petCanvasRef.current, pet.color, pet.stage, pet.type, frameRef.current, 4);
         }
-        // Render egg if on egg view
         const egg = save.eggs[0];
         if (eggCanvasRef.current && egg && save.chao.length === 0) {
-          renderEgg(eggCanvasRef.current, egg.color, egg.hatchProgress, 4);
+          renderEgg(eggCanvasRef.current, egg.color, egg.hatchProgress, 5);
         }
       }
       animRef.current = requestAnimationFrame(animate);
@@ -298,7 +300,6 @@ export default function DigipetGame() {
     pet.happiness = clamp(pet.happiness + food.happinessBoost, 0, 100);
     chao[selectedPetIdx] = pet;
 
-    // Check evolution
     const evolved = checkEvolution(pet);
     if (evolved) {
       chao[selectedPetIdx] = evolved;
@@ -345,7 +346,6 @@ export default function DigipetGame() {
     else if (egg.hatchProgress < 100) { sfx('egg_crack'); }
 
     if (egg.hatchProgress >= 100) {
-      // Hatch!
       const name = window.prompt('Name your new pet!', 'Bubbles');
       if (!name) { eggs[0] = { ...eggs[0], hatchProgress: 95 }; doSave({ ...save, eggs }); return; }
       const nextSave = { ...save, eggs };
@@ -388,7 +388,6 @@ export default function DigipetGame() {
     setShards(result.newBalance);
     const inv = { ...save.inventory.items };
     inv[type] = (inv[type] || 0) + 1;
-    // Also boost happiness of current pet
     if (selectedPet) {
       const chao = [...save.chao];
       const pet = { ...chao[selectedPetIdx] };
@@ -406,7 +405,6 @@ export default function DigipetGame() {
     const c = COLORS[idx];
     if (!c || !save) return;
     if (save.purchasedColors.includes(idx)) {
-      // Apply color to current pet
       if (!selectedPet) return;
       const chao = [...save.chao];
       const pet = { ...chao[selectedPetIdx] };
@@ -440,7 +438,6 @@ export default function DigipetGame() {
     setRaceCPU(0);
     setRaceSeg(0);
 
-    // Race simulation
     let playerProg = 0;
     let cpuProg = 0;
     let seg = 0;
@@ -530,7 +527,6 @@ export default function DigipetGame() {
     setMinigameScore(0);
     setMinigameReward(0);
 
-    // Start on next frame once canvas is mounted
     requestAnimationFrame(() => {
       const canvas = minigameCanvasRef.current;
       if (!canvas) return;
@@ -544,7 +540,6 @@ export default function DigipetGame() {
 
       const petColor = selectedPet ? `rgb(${selectedPet.color.r},${selectedPet.color.g},${selectedPet.color.b})` : '#5dade2';
 
-      // Game state
       const state = {
         x: W / 2, y: H - 100, vy: -8, vx: 0,
         coins: [] as { x: number; y: number; collected: boolean }[],
@@ -555,7 +550,6 @@ export default function DigipetGame() {
       };
       minigameStateRef.current = state;
 
-      // Generate initial platforms
       for (let i = 0; i < 20; i++) {
         const px = Math.random() * (W - 80) + 10;
         const py = H - 80 - i * 55;
@@ -564,7 +558,6 @@ export default function DigipetGame() {
         if (i > 8 && Math.random() < 0.15) state.spikes.push({ x: Math.random() * (W - 20), y: py + 10 });
       }
 
-      // Touch
       const handleTouch = (e: TouchEvent) => {
         e.preventDefault();
         const touch = e.touches[0];
@@ -576,7 +569,6 @@ export default function DigipetGame() {
       canvas.addEventListener('touchstart', handleTouch, { passive: false });
       canvas.addEventListener('touchmove', handleTouch, { passive: false });
       canvas.addEventListener('touchend', handleTouchEnd);
-      // Mouse fallback
       canvas.addEventListener('mousedown', (e) => { state.dir = e.offsetX < W / 2 ? -1 : 1; });
       canvas.addEventListener('mouseup', () => { state.dir = 0; });
 
@@ -586,22 +578,19 @@ export default function DigipetGame() {
         const dt = lastT ? Math.min((ts - lastT) / 1000, 0.05) : 0.016;
         lastT = ts;
 
-        // Physics
         state.vx = state.dir * 200;
-        state.vy += 600 * dt; // gravity
+        state.vy += 600 * dt;
         state.x += state.vx * dt;
         state.y += state.vy * dt;
 
-        // Wrap horizontal
         if (state.x < -10) state.x = W + 10;
         if (state.x > W + 10) state.x = -10;
 
-        // Platform collision (only when falling)
         if (state.vy > 0) {
           for (const p of state.platforms) {
             const py = p.y - state.scrollY;
             if (state.y >= py - 12 && state.y <= py + 6 && state.x > p.x - 10 && state.x < p.x + p.w + 10) {
-              state.vy = -350 - Math.min(state.score * 0.3, 100); // jump
+              state.vy = -350 - Math.min(state.score * 0.3, 100);
               state.y = py - 12;
               sfx('bounce');
               break;
@@ -609,20 +598,17 @@ export default function DigipetGame() {
           }
         }
 
-        // Scroll up
         const screenY = state.y - state.scrollY;
         if (screenY < H * 0.4) {
           state.scrollY = state.y - H * 0.4;
         }
 
-        // Track height for score
         if (state.y < state.highestY) {
           state.score += Math.floor((state.highestY - state.y) / 10);
           state.highestY = state.y;
           setMinigameScore(state.score);
         }
 
-        // Coin collection
         for (const c of state.coins) {
           if (c.collected) continue;
           const cy = c.y - state.scrollY;
@@ -634,7 +620,6 @@ export default function DigipetGame() {
           }
         }
 
-        // Spike hit
         for (const sp of state.spikes) {
           const sy = sp.y - state.scrollY;
           if (Math.abs(state.x - sp.x) < 14 && Math.abs((state.y - state.scrollY) - sy) < 14) {
@@ -642,12 +627,10 @@ export default function DigipetGame() {
           }
         }
 
-        // Fall off bottom
         if (state.y - state.scrollY > H + 40) {
           state.gameOver = true;
         }
 
-        // Generate more platforms above
         const topPlatY = Math.min(...state.platforms.map(p => p.y));
         if (topPlatY > state.scrollY - H) {
           for (let i = 0; i < 5; i++) {
@@ -659,16 +642,13 @@ export default function DigipetGame() {
           }
         }
 
-        // Cull far-below platforms
         state.platforms = state.platforms.filter(p => p.y - state.scrollY < H + 200);
         state.coins = state.coins.filter(c => c.y - state.scrollY < H + 200);
         state.spikes = state.spikes.filter(s => s.y - state.scrollY < H + 200);
 
-        // Draw
         ctx.fillStyle = '#0d1b2a';
         ctx.fillRect(0, 0, W, H);
 
-        // Platforms
         for (const p of state.platforms) {
           const py = p.y - state.scrollY;
           ctx.fillStyle = '#1b3a5c';
@@ -677,7 +657,6 @@ export default function DigipetGame() {
           ctx.fillRect(p.x + 2, py, p.w - 4, 4);
         }
 
-        // Coins
         for (const c of state.coins) {
           if (c.collected) continue;
           const cy = c.y - state.scrollY;
@@ -691,7 +670,6 @@ export default function DigipetGame() {
           ctx.fill();
         }
 
-        // Spikes
         for (const sp of state.spikes) {
           const sy = sp.y - state.scrollY;
           ctx.fillStyle = '#e74c3c';
@@ -702,13 +680,11 @@ export default function DigipetGame() {
           ctx.fill();
         }
 
-        // Pet (circle with eyes)
         const drawY = state.y - state.scrollY;
         ctx.fillStyle = petColor;
         ctx.beginPath();
         ctx.arc(state.x, drawY, 14, 0, Math.PI * 2);
         ctx.fill();
-        // Eyes
         ctx.fillStyle = '#fff';
         ctx.beginPath(); ctx.arc(state.x - 5, drawY - 3, 4, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(state.x + 5, drawY - 3, 4, 0, Math.PI * 2); ctx.fill();
@@ -756,7 +732,6 @@ export default function DigipetGame() {
       };
       minigameStateRef.current = state;
 
-      // Touch/mouse drag
       const handleMove = (clientX: number) => { state.catcherX = clamp(clientX, 24, W - 24); };
       canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (e.touches[0]) handleMove(e.touches[0].clientX); }, { passive: false });
       canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if (e.touches[0]) handleMove(e.touches[0].clientX); }, { passive: false });
@@ -768,7 +743,6 @@ export default function DigipetGame() {
         const dt = lastT ? Math.min((ts - lastT) / 1000, 0.05) : 0.016;
         lastT = ts;
 
-        // Spawn
         state.spawnTimer += dt;
         const spawnRate = Math.max(0.4, 1.2 - state.score * 0.008);
         if (state.spawnTimer > spawnRate) {
@@ -782,12 +756,10 @@ export default function DigipetGame() {
           });
         }
 
-        // Update items
         for (const item of state.items) {
           item.y += item.vy * dt;
         }
 
-        // Check catches
         const catcherY = H - 40;
         for (let i = state.items.length - 1; i >= 0; i--) {
           const item = state.items[i];
@@ -804,17 +776,14 @@ export default function DigipetGame() {
             state.items.splice(i, 1);
             continue;
           }
-          // Remove off-screen
           if (item.y > H + 20) {
             state.items.splice(i, 1);
           }
         }
 
-        // Draw
         ctx.fillStyle = '#0d1b2a';
         ctx.fillRect(0, 0, W, H);
 
-        // Items
         for (const item of state.items) {
           if (item.type === 'coin') {
             ctx.fillStyle = '#ffd700';
@@ -826,14 +795,12 @@ export default function DigipetGame() {
             ctx.beginPath(); ctx.arc(item.x, item.y, 10, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#c0392b';
             ctx.fillRect(item.x - 3, item.y - 6, 6, 3);
-            // Fuse
             ctx.strokeStyle = '#f1c40f';
             ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(item.x, item.y - 10); ctx.lineTo(item.x + 4, item.y - 15); ctx.stroke();
           }
         }
 
-        // Catcher (pet circle + plate)
         ctx.fillStyle = '#1b3a5c';
         ctx.fillRect(state.catcherX - 28, catcherY + 8, 56, 6);
         ctx.fillStyle = petColor;
@@ -845,7 +812,6 @@ export default function DigipetGame() {
         ctx.beginPath(); ctx.arc(state.catcherX - 4, catcherY - 2, 2, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(state.catcherX + 6, catcherY - 2, 2, 0, Math.PI * 2); ctx.fill();
 
-        // Lives display
         ctx.fillStyle = '#e74c3c';
         ctx.font = '16px monospace';
         for (let i = 0; i < state.lives; i++) {
@@ -873,7 +839,6 @@ export default function DigipetGame() {
     bridge.current.earnShards(reward, `Minigame: ${view}`).then(r => {
       if (r.ok) setShards(r.newBalance);
     });
-    // Boost a random stat
     if (save && selectedPet) {
       const chao = [...save.chao];
       const pet = { ...chao[selectedPetIdx] };
@@ -898,7 +863,6 @@ export default function DigipetGame() {
   function goView(v: View) {
     ensureAudio();
     sfx('click');
-    // Cleanup any running race timer
     if (raceTimerRef.current) clearInterval(raceTimerRef.current);
     setView(v);
     if (v === 'race') { setRacePhase('list'); setActiveRace(null); }
@@ -986,146 +950,158 @@ export default function DigipetGame() {
   return (
     <div className={styles.wrapper} onClick={ensureAudio}>
       <div className={styles.container}>
-        {/* Top bar */}
+        {/* Header bar: Back + Shards */}
         <div className={styles.topBar}>
+          <button className={styles.headerBackBtn} onClick={() => router.push('/home')}>
+            &larr;
+          </button>
           <div className={styles.shardBadge}>
             <span className={styles.shardIcon}>{'\u25C7'}</span>
             <span>{shards}</span>
           </div>
-          <span className={styles.topBarTitle}>Digipet</span>
         </div>
 
         {/* ─── Garden View ─────────────────────────────────────────── */}
         {view === 'garden' && (
-          <div className={styles.gardenArea}>
-            {hasPets && pet ? (
-              <>
-                {/* Pet canvas */}
-                <div className={styles.petStage}>
-                  {save.chao.length > 1 && (
-                    <button
-                      className={`${styles.petNav} ${styles.petNavLeft}`}
-                      onClick={() => { sfx('tap'); setSelectedPetIdx(i => (i - 1 + save.chao.length) % save.chao.length); }}
-                    >&larr;</button>
-                  )}
-                  <div className={styles.petCanvasWrap} onClick={petPet}>
-                    <canvas ref={petCanvasRef} width={128} height={160} />
-                  </div>
-                  {save.chao.length > 1 && (
-                    <button
-                      className={`${styles.petNav} ${styles.petNavRight}`}
-                      onClick={() => { sfx('tap'); setSelectedPetIdx(i => (i + 1) % save.chao.length); }}
-                    >&rarr;</button>
-                  )}
-                </div>
-
-                {/* Pet info */}
-                <div className={styles.petInfo}>
-                  <p className={styles.petName}>
-                    {pet.name}
-                    {pet.sparkle && <span className={styles.sparkleBadge}>{'\u2726'}</span>}
-                  </p>
-                  <p className={styles.petLevel}>Lv.{petLevel}</p>
-                  <p className={styles.petMeta}>
-                    Type: {pet.type.charAt(0).toUpperCase() + pet.type.slice(1)} &middot; {pet.stage}
-                  </p>
-                </div>
-
-                {/* Status bars */}
-                <div className={styles.statusBars}>
-                  <div className={styles.statusRow}>
-                    <span className={styles.statusLabel}>HP</span>
-                    <div className={styles.statusBarOuter}>
-                      <div className={styles.statusBarInner} style={{ width: `${pet.hp}%`, background: HP_COLOR }} />
+          <>
+            <div className={styles.gardenArea}>
+              {hasPets && pet ? (
+                <>
+                  {/* Pet stage with green garden background */}
+                  <div className={styles.gardenBg}>
+                    <div className={styles.petStage}>
+                      {save.chao.length > 1 && (
+                        <button
+                          className={`${styles.petNav} ${styles.petNavLeft}`}
+                          onClick={() => { sfx('tap'); setSelectedPetIdx(i => (i - 1 + save.chao.length) % save.chao.length); }}
+                        >&larr;</button>
+                      )}
+                      <div className={styles.petCanvasWrap} onClick={petPet}>
+                        <canvas ref={petCanvasRef} width={128} height={160} />
+                      </div>
+                      {save.chao.length > 1 && (
+                        <button
+                          className={`${styles.petNav} ${styles.petNavRight}`}
+                          onClick={() => { sfx('tap'); setSelectedPetIdx(i => (i + 1) % save.chao.length); }}
+                        >&rarr;</button>
+                      )}
                     </div>
-                    <span className={styles.statusValue}>{Math.round(pet.hp)}/100</span>
                   </div>
-                  <div className={styles.statusRow}>
-                    <span className={styles.statusLabel}>Joy</span>
-                    <div className={styles.statusBarOuter}>
-                      <div className={styles.statusBarInner} style={{ width: `${pet.happiness}%`, background: JOY_COLOR }} />
-                    </div>
-                    <span className={styles.statusValue}>{Math.round(pet.happiness)}/100</span>
-                  </div>
-                </div>
 
-                {/* Action grid */}
-                <div className={styles.actionGrid}>
-                  <button className={styles.actionBtn} onClick={() => { sfx('click'); setFeedOpen(true); }}>
-                    <span className={styles.actionBtnIcon}>{'\uD83C\uDF4E'}</span>
-                    <span className={styles.actionBtnLabel}>Feed</span>
-                  </button>
-                  <button className={styles.actionBtn} onClick={petPet}>
-                    <span className={styles.actionBtnIcon}>{'\uD83D\uDC95'}</span>
-                    <span className={styles.actionBtnLabel}>Pet</span>
-                  </button>
-                  <button className={styles.actionBtn} onClick={() => goView('stats')}>
-                    <span className={styles.actionBtnIcon}>{'\uD83D\uDCCA'}</span>
-                    <span className={styles.actionBtnLabel}>Stats</span>
-                  </button>
-                  <button className={styles.actionBtn} onClick={() => goView('shop')}>
-                    <span className={styles.actionBtnIcon}>{'\uD83D\uDED2'}</span>
-                    <span className={styles.actionBtnLabel}>Shop</span>
-                  </button>
-                  <button className={styles.actionBtn} onClick={() => goView('games')}>
-                    <span className={styles.actionBtnIcon}>{'\uD83C\uDFAE'}</span>
-                    <span className={styles.actionBtnLabel}>Games</span>
-                  </button>
-                  <button className={styles.actionBtn} onClick={() => goView('race')}>
-                    <span className={styles.actionBtnIcon}>{'\uD83C\uDFC1'}</span>
-                    <span className={styles.actionBtnLabel}>Race</span>
-                  </button>
-                  {canBreed && (
-                    <button className={styles.actionBtn} onClick={() => goView('breed')}>
-                      <span className={styles.actionBtnIcon}>{'\u2764\uFE0F'}</span>
-                      <span className={styles.actionBtnLabel}>Breed</span>
-                    </button>
-                  )}
-                </div>
-
-                {/* Also show eggs if any */}
-                {hasEggs && (
-                  <div style={{ textAlign: 'center', padding: '0 0 16px' }}>
-                    <p style={{ color: '#5a6a7a', fontSize: 12 }}>
-                      You have {save.eggs.length} egg{save.eggs.length > 1 ? 's' : ''} waiting to hatch!
+                  {/* Pet info */}
+                  <div className={styles.petInfo}>
+                    <p className={styles.petName}>
+                      {pet.name}
+                      {pet.sparkle && <span className={styles.sparkleBadge}>{'\u2726'}</span>}
+                    </p>
+                    <p className={styles.petLevel}>
+                      {'\u2605'} Lv.{petLevel}
+                      <span className={styles.petMeta}>
+                        &nbsp;&middot; {pet.type.charAt(0).toUpperCase() + pet.type.slice(1)}
+                      </span>
                     </p>
                   </div>
-                )}
-              </>
-            ) : hasEggs ? (
-              /* ─── Egg view ─── */
-              <div className={styles.eggArea}>
-                <canvas
-                  ref={eggCanvasRef}
-                  width={80}
-                  height={96}
-                  onClick={tapEgg}
-                />
-                <p className={styles.eggTapHint}>Tap to hatch!</p>
-                <p className={styles.eggProgress}>
-                  Progress: {Math.round(save.eggs[0].hatchProgress)}% &middot; Taps: {eggTaps}
-                </p>
-                <div className={styles.statusBars} style={{ maxWidth: 200 }}>
-                  <div className={styles.statusRow}>
-                    <span className={styles.statusLabel}>Hatch</span>
-                    <div className={styles.statusBarOuter}>
-                      <div className={styles.statusBarInner} style={{ width: `${save.eggs[0].hatchProgress}%`, background: '#5dade2' }} />
+
+                  {/* Status bars */}
+                  <div className={styles.statusBars}>
+                    <div className={styles.statusRow}>
+                      <span className={styles.statusLabel}>HP</span>
+                      <div className={styles.statusBarOuter}>
+                        <div className={styles.statusBarInner} style={{ width: `${pet.hp}%`, background: `linear-gradient(90deg, ${HP_COLOR}, #58d68d)` }} />
+                      </div>
+                      <span className={styles.statusValue}>{Math.round(pet.hp)}</span>
+                    </div>
+                    <div className={styles.statusRow}>
+                      <span className={styles.statusLabel}>Joy</span>
+                      <div className={styles.statusBarOuter}>
+                        <div className={styles.statusBarInner} style={{ width: `${pet.happiness}%`, background: `linear-gradient(90deg, ${JOY_COLOR}, #f9e584)` }} />
+                      </div>
+                      <span className={styles.statusValue}>{Math.round(pet.happiness)}</span>
                     </div>
                   </div>
+
+                  {/* Pet action buttons */}
+                  <div className={styles.petActions}>
+                    <button className={styles.actionBtn} onClick={() => { sfx('click'); setFeedOpen(true); }}>
+                      <span className={styles.actionBtnIcon}>{'\uD83C\uDF4E'}</span>
+                      <span className={styles.actionBtnLabel}>Feed</span>
+                    </button>
+                    <button className={styles.actionBtn} onClick={petPet}>
+                      <span className={styles.actionBtnIcon}>{'\uD83D\uDC95'}</span>
+                      <span className={styles.actionBtnLabel}>Pet</span>
+                    </button>
+                    <button className={styles.actionBtn} onClick={() => goView('stats')}>
+                      <span className={styles.actionBtnIcon}>{'\uD83D\uDCCA'}</span>
+                      <span className={styles.actionBtnLabel}>Stats</span>
+                    </button>
+                    {canBreed && (
+                      <button className={styles.actionBtn} onClick={() => goView('breed')}>
+                        <span className={styles.actionBtnIcon}>{'\u2764\uFE0F'}</span>
+                        <span className={styles.actionBtnLabel}>Breed</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Egg notice */}
+                  {hasEggs && (
+                    <div className={styles.eggNotice}>
+                      {save.eggs.length} egg{save.eggs.length > 1 ? 's' : ''} waiting to hatch!
+                    </div>
+                  )}
+                </>
+              ) : hasEggs ? (
+                /* ─── Egg view for new users ─── */
+                <div className={styles.eggArea}>
+                  <div className={styles.gardenBg}>
+                    <div className={styles.eggCanvasWrap} onClick={tapEgg}>
+                      <canvas
+                        ref={eggCanvasRef}
+                        width={100}
+                        height={120}
+                      />
+                    </div>
+                  </div>
+                  <p className={styles.eggTapHint}>Tap the egg to hatch!</p>
+                  <div className={styles.hatchBarWrap}>
+                    <div className={styles.statusBarOuter}>
+                      <div className={styles.statusBarInner} style={{ width: `${save.eggs[0].hatchProgress}%`, background: 'linear-gradient(90deg, #5dade2, #85c1e9)' }} />
+                    </div>
+                    <span className={styles.hatchPercent}>{Math.round(save.eggs[0].hatchProgress)}%</span>
+                  </div>
+                  {eggTaps > 0 && (
+                    <p className={styles.eggProgress}>
+                      Taps: {eggTaps}
+                    </p>
+                  )}
                 </div>
-                <button className={styles.actionBtn} onClick={() => goView('shop')} style={{ maxWidth: 120 }}>
-                  <span className={styles.actionBtnIcon}>{'\uD83D\uDED2'}</span>
-                  <span className={styles.actionBtnLabel}>Shop</span>
-                </button>
-              </div>
-            ) : (
-              /* ─── No pets, no eggs ─── */
-              <div className={styles.emptyState}>
-                <p className={styles.emptyStateTitle}>No pets yet</p>
-                <p className={styles.emptyStateMsg}>Visit the shop or check back later!</p>
-              </div>
-            )}
-          </div>
+              ) : (
+                /* ─── No pets, no eggs (should be rare) ─── */
+                <div className={styles.emptyState}>
+                  <p className={styles.emptyStateTitle}>No pets yet</p>
+                  <p className={styles.emptyStateMsg}>Visit the shop to get started!</p>
+                  <button className={styles.emptyShopBtn} onClick={() => goView('shop')}>
+                    Open Shop
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* ─── Bottom navigation bar (always visible) ─── */}
+            <div className={styles.bottomNav}>
+              <button className={styles.bottomNavBtn} onClick={() => goView('shop')}>
+                <span className={styles.bottomNavIcon}>{'\uD83D\uDED2'}</span>
+                <span className={styles.bottomNavLabel}>Shop</span>
+              </button>
+              <button className={styles.bottomNavBtn} onClick={() => goView('games')}>
+                <span className={styles.bottomNavIcon}>{'\uD83C\uDFAE'}</span>
+                <span className={styles.bottomNavLabel}>Games</span>
+              </button>
+              <button className={styles.bottomNavBtn} onClick={() => goView('race')}>
+                <span className={styles.bottomNavIcon}>{'\uD83C\uDFC1'}</span>
+                <span className={styles.bottomNavLabel}>Race</span>
+              </button>
+            </div>
+          </>
         )}
 
         {/* ─── Feed Bottom Sheet ─────────────────────────────────── */}
@@ -1140,7 +1116,12 @@ export default function DigipetGame() {
               </div>
               <div className={styles.sheetBody}>
                 {Object.entries(save.inventory.food).filter(([, c]) => c && c > 0).length === 0 ? (
-                  <p className={styles.emptyMsg}>No food! Visit the Shop.</p>
+                  <div className={styles.emptyFeedMsg}>
+                    <p className={styles.emptyMsg}>No food!</p>
+                    <button className={styles.emptyShopBtn} onClick={() => { setFeedOpen(false); goView('shop'); }}>
+                      Visit Shop
+                    </button>
+                  </div>
                 ) : (
                   Object.entries(save.inventory.food).filter(([, c]) => c && c > 0).map(([type, count]) => {
                     const food = FOODS[type];
@@ -1170,7 +1151,6 @@ export default function DigipetGame() {
               <button className={styles.overlayClose} onClick={() => goView('garden')}>&times;</button>
             </div>
             <div className={styles.overlayBody}>
-              {/* Identity */}
               <div className={styles.statSection}>
                 <div className={styles.statSectionTitle}>Identity</div>
                 <div className={styles.statMeta}><span>Name</span><span>{pet.name}</span></div>
@@ -1182,7 +1162,6 @@ export default function DigipetGame() {
                 {pet.sparkle && <div className={styles.statMeta}><span>Sparkle</span><span>{'\u2726'} Yes</span></div>}
               </div>
 
-              {/* Vitals */}
               <div className={styles.statSection}>
                 <div className={styles.statSectionTitle}>Vitals</div>
                 <div className={styles.statRow}>
@@ -1201,7 +1180,6 @@ export default function DigipetGame() {
                 </div>
               </div>
 
-              {/* Stats */}
               <div className={styles.statSection}>
                 <div className={styles.statSectionTitle}>Abilities</div>
                 {(['swim', 'fly', 'run', 'power', 'stamina'] as (keyof ChaoStats)[]).map(stat => {
@@ -1221,7 +1199,6 @@ export default function DigipetGame() {
                 })}
               </div>
 
-              {/* Evolution hint */}
               {pet.stage === 'child' && (
                 <p className={styles.evoHint}>Next evolution at level {EVO_THRESHOLD_1}!</p>
               )}

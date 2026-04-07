@@ -51,6 +51,7 @@ const navSections: NavSection[] = [
     label: 'THE NETWORK',
     items: [
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
+      { id: 'digipet', label: 'Digipet', href: '/digipet', icon: '/icons/nav-digipet.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/nav-shop.svg' },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
