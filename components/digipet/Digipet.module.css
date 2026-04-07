@@ -19,7 +19,7 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Shard pill ──────────── */
-.shardPill { position: absolute; top: 16px; right: 20px; font-size: 12px; font-weight: 600; color: #71717a; letter-spacing: .3px; }
+.shardPill { position: fixed; top: 16px; right: 20px; font-size: 12px; font-weight: 600; color: #71717a; letter-spacing: .3px; z-index: 10; }
 
 /* ── Pet ─────────────────── */
 .petWrap { cursor: pointer; -webkit-tap-highlight-color: transparent; }

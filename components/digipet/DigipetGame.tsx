@@ -135,7 +135,7 @@ export default function DigipetGame() {
       {/* Name + mood */}
       <div className={styles.info}>
         <h1 className={styles.name}>{pet.name}</h1>
-        <p className={styles.sub}>Lv.{lv} &middot; {m}</p>
+        <p className={styles.sub}>{pet.name === 'Zaniah' ? 'Your companion' : ''}</p>
       </div>
 
       {/* Buttons right under info */}
