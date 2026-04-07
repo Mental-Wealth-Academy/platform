@@ -69,6 +69,19 @@
   filter: drop-shadow(0 0 4px rgba(81, 104, 255, 0.35));
 }
 
+.iconImg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.tabActive .iconImg {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(81, 104, 255, 0.35));
+}
+
 .label {
   font-family: 'Space Grotesk', 'Poppins', sans-serif;
   font-size: 9px;

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './MobileBottomNav.module.css';
@@ -36,11 +37,7 @@ export const MobileBottomNav: React.FC = () => {
 
       {/* Pet */}
       <Link href="/digipet" className={`${styles.tab} ${pathname === '/digipet' ? styles.tabActive : ''}`}>
-        <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2c-1 0-2.5 2-3.5 4S7 10 7 12a5 5 0 0010 0c0-2-.5-4-1.5-6S13 2 12 2z" />
-          <circle cx="10.5" cy="11" r="1" fill="#fff" />
-          <circle cx="13.5" cy="11" r="1" fill="#fff" />
-        </svg>
+        <Image src="/icons/nav-teleport.svg" alt="" width={22} height={22} className={styles.iconImg} />
         <span className={styles.label}>Pet</span>
       </Link>
     </nav>
