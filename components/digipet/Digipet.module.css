@@ -35,7 +35,7 @@
 
 /* ── Quip ────────────────── */
 .quipWrap {
-  height: 28px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,19 +47,14 @@
   color: #a1a1aa;
   letter-spacing: .5px;
   margin: 0;
-  animation: quipIn .3s ease;
-  overflow: hidden;
   white-space: nowrap;
-  border-right: 2px solid #52525b;
-  animation: quipIn .3s ease, blink .6s step-end infinite;
 }
-@keyframes quipIn {
-  from { max-width: 0; opacity: 0; }
-  to { max-width: 300px; opacity: 1; }
+.cursor {
+  animation: blink .5s step-end infinite;
+  color: #52525b;
+  font-weight: 400;
 }
-@keyframes blink {
-  50% { border-color: transparent; }
-}
+@keyframes blink { 50% { opacity: 0; } }
 
 /* ── Info ────────────────── */
 .info { text-align: center; margin-top: 12px; }

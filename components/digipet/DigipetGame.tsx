@@ -41,8 +41,10 @@ export default function DigipetGame() {
   const [feedOpen, setFeedOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
-  const [quip, setQuip] = useState<string | null>(null);
-  const quipTimer = useRef<ReturnType<typeof setTimeout>>();
+  const [quipDisplay, setQuipDisplay] = useState('');
+  const [quipVisible, setQuipVisible] = useState(false);
+  const quipInterval = useRef<ReturnType<typeof setInterval>>();
+  const quipTimeout = useRef<ReturnType<typeof setTimeout>>();
   const bridge = useRef<ChaoBridge>(null!);
   const toastT = useRef<ReturnType<typeof setTimeout>>();
   const audioOk = useRef(false);
@@ -135,9 +137,21 @@ export default function DigipetGame() {
     sfx('pet');
     doSave({ ...save, chao: [{ ...pet, happiness: clamp(pet.happiness + 5, 0, 100) }, ...save.chao.slice(1)] });
     setTapAnim(true); setTimeout(() => setTapAnim(false), 500);
-    setQuip(QUIPS[Math.floor(Math.random() * QUIPS.length)]);
-    clearTimeout(quipTimer.current);
-    quipTimer.current = setTimeout(() => setQuip(null), 2200);
+    // Typewriter effect — letter by letter
+    clearInterval(quipInterval.current);
+    clearTimeout(quipTimeout.current);
+    const text = QUIPS[Math.floor(Math.random() * QUIPS.length)];
+    let i = 0;
+    setQuipDisplay('');
+    setQuipVisible(true);
+    quipInterval.current = setInterval(() => {
+      i++;
+      setQuipDisplay(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(quipInterval.current);
+        quipTimeout.current = setTimeout(() => setQuipVisible(false), 1800);
+      }
+    }, 70);
   }
 
   // ── Render ──────────────────────
@@ -154,7 +168,7 @@ export default function DigipetGame() {
 
       {/* Quip */}
       <div className={styles.quipWrap}>
-        {quip && <p className={styles.quip}>{quip}</p>}
+        {quipVisible && <p className={styles.quip}>{quipDisplay}<span className={styles.cursor}>|</span></p>}
       </div>
 
       {/* Pet */}
