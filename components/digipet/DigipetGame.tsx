@@ -132,28 +132,13 @@ export default function DigipetGame() {
           className={`${styles.pet} ${tapAnim ? styles.petTap : ''}`} unoptimized draggable={false} priority />
       </div>
 
-      {/* Name + status */}
+      {/* Name + mood */}
       <div className={styles.info}>
         <h1 className={styles.name}>{pet.name}</h1>
         <p className={styles.sub}>Lv.{lv} &middot; {m}</p>
       </div>
 
-      {/* HP / Joy bars */}
-      <div className={styles.bars}>
-        <div className={styles.bar}>
-          <span className={styles.barLbl}>HP</span>
-          <div className={styles.barTrack}><div className={styles.barHp} style={{ width: `${pet.hp}%` }} /></div>
-        </div>
-        <div className={styles.bar}>
-          <span className={styles.barLbl}>Joy</span>
-          <div className={styles.barTrack}><div className={styles.barJoy} style={{ width: `${pet.happiness}%` }} /></div>
-        </div>
-      </div>
-
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Two buttons */}
+      {/* Buttons right under info */}
       <div className={styles.actions}>
         <button className={styles.btn} onClick={(e) => { e.stopPropagation(); audio(); sfx('click'); setFeedOpen(!feedOpen); }}>
           Feed
