@@ -175,6 +175,39 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
+:global([data-theme="dark"]) .container {
+  background: #f7f8ff;
+}
+
+:global([data-theme="dark"]) .name {
+  color: #1A1D33;
+}
+
+:global([data-theme="dark"]) .role {
+  color: rgba(26, 29, 51, 0.72);
+}
+
+:global([data-theme="dark"]) .dialogueContent {
+  background: rgba(81, 104, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .dialogueContent::before {
+  border-right-color: rgba(81, 104, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .message {
+  color: #1A1D33;
+}
+
+:global([data-theme="dark"]) .skipButton {
+  background-color: #ffffff;
+  color: #1A1D33;
+}
+
+:global([data-theme="dark"]) .skipButton:hover {
+  background-color: #f3f4fb;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
