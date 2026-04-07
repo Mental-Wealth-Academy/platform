@@ -42,7 +42,7 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Prayers', href: '/home', icon: '/icons/nav-home.svg' },
-      { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/nav-courses.svg' },
+      { id: 'pet', label: 'Pet', href: '/digipet', icon: '/icons/nav-pet.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
     ],
   },
@@ -51,7 +51,7 @@ const navSections: NavSection[] = [
     label: 'THE NETWORK',
     items: [
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
-      { id: 'digipet', label: 'Digipet', href: '/digipet', icon: '/icons/nav-digipet.svg' },
+      { id: 'courses', label: 'Courses', href: '/courses', icon: '/icons/nav-courses.svg' },
       { id: 'shop', label: 'Shop', href: '/shop', icon: '/icons/nav-shop.svg' },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

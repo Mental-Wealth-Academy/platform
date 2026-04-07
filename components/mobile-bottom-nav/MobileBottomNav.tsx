@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './MobileBottomNav.module.css';
@@ -9,7 +8,6 @@ import styles from './MobileBottomNav.module.css';
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
-  // Hide on landing page
   if (pathname === '/') return null;
 
   const handleMenuOpen = () => {
@@ -30,32 +28,26 @@ export const MobileBottomNav: React.FC = () => {
         <span className={styles.label}>Menu</span>
       </button>
 
-      {/* Dailies */}
+      {/* Prayers */}
       <Link href="/home" className={`${styles.tab} ${pathname === '/home' ? styles.tabActive : ''}`}>
-        <Image src="/icons/nav-world.svg" alt="" width={22} height={22} className={styles.iconImg} />
-        <span className={styles.label}>Dailies</span>
+        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C12 2 9 6 9 9c0 1.5.7 2.8 1.8 3.6L8 21h8l-2.8-8.4C14.3 11.8 15 10.5 15 9c0-3-3-7-3-7z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 2v4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.5" />
+        </svg>
+        <span className={styles.label}>PRAYERS</span>
       </Link>
 
-      {/* Center — Azura Chat */}
-      <button type="button" className={styles.centerTab} onClick={handleAzuraChat} aria-label="Azura Chat">
-        <div className={styles.centerBubble}>
-          <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-            <path d="M14 0C14.6 7.4 20.6 13.4 28 14C20.6 14.6 14.6 20.6 14 28C13.4 20.6 7.4 14.6 0 14C7.4 13.4 13.4 7.4 14 0Z" fill="#fff" />
-          </svg>
-        </div>
+      {/* Ask (Azura Chat) */}
+      <button type="button" className={styles.tab} onClick={handleAzuraChat} aria-label="Ask">
+        <svg className={styles.icon} width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="10" r="0.5" fill="currentColor" />
+          <path d="M12 7v0a2 2 0 012 2c0 .7-.4 1.4-1 1.7L12 11.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+        <span className={styles.label}>ASK</span>
       </button>
 
-      {/* Gallery */}
-      <Link href="/gallery" className={`${styles.tab} ${pathname === '/gallery' ? styles.tabActive : ''}`}>
-        <svg className={styles.icon} width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <rect x="2" y="12" width="5" height="8" rx="1" stroke="currentColor" strokeWidth="1.6" fill="none" />
-          <rect x="8.5" y="5" width="5" height="15" rx="1" stroke="currentColor" strokeWidth="1.6" fill="none" />
-          <rect x="15" y="9" width="5" height="11" rx="1" stroke="currentColor" strokeWidth="1.6" fill="none" />
-        </svg>
-        <span className={styles.label}>Gallery</span>
-      </Link>
-
-      {/* Digipet */}
+      {/* Pet */}
       <Link href="/digipet" className={`${styles.tab} ${pathname === '/digipet' ? styles.tabActive : ''}`}>
         <svg className={styles.icon} width="22" height="22" viewBox="0 0 22 22" fill="none">
           <circle cx="11" cy="3" r="2" fill="currentColor" opacity="0.7" />
@@ -67,7 +59,7 @@ export const MobileBottomNav: React.FC = () => {
           <rect x="7" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
           <rect x="12" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
         </svg>
-        <span className={styles.label}>Digipet</span>
+        <span className={styles.label}>Pet</span>
       </Link>
     </nav>
   );
