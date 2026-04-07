@@ -87,7 +87,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
     <div className={styles.azuraPower}>
       <div className={styles.avatarSection}>
         <Image
-          src="https://i.imgur.com/3Y3KrnJ.png"
+          src="https://i.imgur.com/Y6YNtam.png"
           alt="Blue"
           width={36}
           height={36}
