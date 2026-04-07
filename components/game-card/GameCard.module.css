@@ -3,15 +3,19 @@
 .card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 19px 10px;
-  border-radius: 12px;
-  border: 1px solid #5B3AED;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 20px;
   background: linear-gradient(
-    100deg,
-    #4037C4 0%,
-    #1F1A5E 100%
+    135deg,
+    #5B4FD9 0%,
+    #3D35A8 50%,
+    #2A237A 100%
   );
+  box-shadow:
+    0 8px 32px rgba(59, 47, 168, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   width: 100%;
   box-sizing: border-box;
 }
@@ -19,8 +23,8 @@
 /* Shard icon container */
 .shardContainer {
   flex-shrink: 0;
-  width: 115px;
-  height: 119px;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,10 +33,17 @@
 .shardBox {
   width: 100px;
   height: 100px;
-  border-radius: 16px;
-  background: #5169FF;
-  border: 2px solid #7D89F2;
-  box-shadow: 0 4px 8.7px rgba(0, 0, 0, 0.58);
+  border-radius: 18px;
+  background: linear-gradient(
+    145deg,
+    #6B7CFF 0%,
+    #5169FF 50%,
+    #4558E8 100%
+  );
+  border: 2px solid rgba(125, 137, 242, 0.6);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,43 +68,49 @@
 
 .taskName {
   font-family: var(--font-headline, 'Space Grotesk', sans-serif);
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 26px;
+  font-weight: 700;
+  font-style: italic;
   color: #FFFFFF;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .taskDescription {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
+  font-style: italic;
   color: #FFFFFF;
   margin: 0;
   line-height: 1.4;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 /* Right action area */
 .actionContainer {
   flex-shrink: 0;
-  width: 194px;
+  width: 180px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   align-items: stretch;
 }
 
 /* Completion ticker pill */
 .completionTicker {
-  height: 35px;
-  border-radius: 6px;
-  border: 1px solid #424CB9;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid rgba(66, 76, 185, 0.5);
   background: linear-gradient(
     180deg,
-    #051B44 0%,
-    #022249 100%
+    #0A1A3A 0%,
+    #071530 100%
   );
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,17 +118,17 @@
 
 .tickerText {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 16px;
-  font-weight: 600;
-  color: #FFFFFF;
-  letter-spacing: 2px;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 3px;
 }
 
 /* Accept button - layered CRT/scanline effect */
 .acceptButton {
   position: relative;
   width: 100%;
-  height: 49px;
+  height: 52px;
   border: none;
   background: none;
   padding: 0;
@@ -120,40 +137,33 @@
 }
 
 .acceptButton:hover .acceptBody {
-  opacity: 0.92;
+  background: #1a1a1c;
 }
 
 .acceptButton:active .acceptBody {
   transform: scale(0.98);
 }
 
-/* Golden radial glow behind button */
+/* Subtle glow behind button */
 .acceptGlow {
   position: absolute;
-  inset: 2px;
-  background: radial-gradient(
-    ellipse at 21% 82%,
-    #FDDC75 0%,
-    #FCDB72 39%,
-    #BC4B27 100%
-  );
-  box-shadow:
-    inset 4px 3px 8px #BA4F2D,
-    inset -4px -3px 9px #BA4F2D;
-  filter: blur(15px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  filter: blur(8px);
+  border-radius: 4px;
 }
 
 /* Dark body with scanlines */
 .acceptBody {
   position: absolute;
-  inset: 4px 3px;
-  background: #111113;
-  backdrop-filter: blur(31px);
+  inset: 0;
+  background: #0C0C0E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: opacity 0.15s, transform 0.1s;
+  transition: background 0.15s, transform 0.1s;
 }
 
 /* Scanline overlay pattern */
@@ -165,8 +175,8 @@
     0deg,
     transparent,
     transparent 2px,
-    rgba(217, 217, 217, 0.06) 2px,
-    rgba(217, 217, 217, 0.06) 4px
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
   );
 }
 
@@ -174,18 +184,18 @@
   position: relative;
   z-index: 2;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 6px;
-  color: #DFDCBD;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  color: rgba(223, 220, 189, 0.85);
   text-transform: uppercase;
 }
 
 /* White hairline border */
 .acceptBorder {
   position: absolute;
-  inset: 2px;
-  border: 0.6px solid rgba(255, 255, 255, 0.5);
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   pointer-events: none;
 }
 
@@ -194,8 +204,9 @@
   .card {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
-    gap: 16px;
+    padding: 18px;
+    gap: 14px;
+    border-radius: 16px;
   }
 
   .shardContainer {
@@ -204,13 +215,14 @@
   }
 
   .shardBox {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
   }
 
   .shardIcon {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
   }
 
   .taskName {
@@ -224,15 +236,17 @@
   .actionContainer {
     width: 100%;
     flex-direction: row;
-    gap: 12px;
+    gap: 10px;
   }
 
   .completionTicker {
     flex: 0 0 auto;
-    width: 80px;
+    width: 70px;
+    height: 38px;
   }
 
   .acceptButton {
     flex: 1;
+    height: 44px;
   }
 }
