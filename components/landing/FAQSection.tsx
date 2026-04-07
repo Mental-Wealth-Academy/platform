@@ -8,12 +8,12 @@ const FAQ_ITEMS = [
   {
     question: 'What is Mental Wealth Academy?',
     answer:
-      'A 12-week cohort where you actually do the work on yourself. Each week strips back a layer, recovering a core sense of self through structured exercises rooted in psychology and neuroscience. It\'s peer-governed, on-chain, and designed for people who want agency over their own growth.',
+      'Mental Wealth Academy is a guided 12-week personal growth program. It combines journaling, reflection, practical exercises, and community support to help you build better habits, understand yourself more clearly, and make real changes in your life.',
   },
   {
     question: 'What does the 12-week course cover?',
     answer:
-      'Each week targets a specific psychological domain: safety, identity, power, integrity, possibility, abundance, connection, strength, compassion, self-protection, autonomy, and faith. The curriculum pulls from behavioral science research and pairs it with creative exercises you seal on-chain as proof of completion.',
+      'Each week focuses on a different part of your life and mindset, including safety, identity, confidence, boundaries, connection, compassion, and purpose. The course gives you structured prompts and exercises that help you reflect, stay consistent, and apply what you learn in everyday life.',
   },
   {
     question: 'What kind of tools do you use?',
@@ -21,9 +21,9 @@ const FAQ_ITEMS = [
       'We research and integrate tools from neuroscience and personal development. Things like reflective journaling frameworks, cognitive behavioral exercises, mindfulness protocols, and decision-making models. All of it bolted onto infrastructure that gives you ownership over your progress.',
   },
   {
-    question: 'Who is Blue?',
+    question: 'What are companions?',
     answer:
-      'Blue is our AI agent. Blue reviews your submissions, manages the community treasury, and provides feedback grounded in the course material. Think of Blue as a co-pilot who\'s read every paper you haven\'t gotten to yet.',
+      'Companions are AI guides inside the platform. They remember your progress, help you stay oriented, and add personality to the experience. You can think of them as supportive digital characters that help carry the story and guide you through different parts of the program.',
   },
   {
     question: 'How much time does it take each week?',

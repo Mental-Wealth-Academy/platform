@@ -84,7 +84,7 @@ export default function AngelicCreditSystem() {
           </p>
         </div>
 
-        {/* ── Blue Agent ── */}
+        {/* ── Companions ── */}
         <div className={styles.azuraCard}>
           <div className={styles.azuraBg}>
             <Image
@@ -99,7 +99,7 @@ export default function AngelicCreditSystem() {
             <div className={styles.azuraContentTop}>
               <div>
                 <p className={styles.azuraEyebrow}>How We Help</p>
-                <h3 className={styles.azuraName}>Blue Agent</h3>
+                <h3 className={styles.azuraName}>Companions</h3>
               </div>
               <div
                 className={styles.videoCard}
@@ -125,21 +125,21 @@ export default function AngelicCreditSystem() {
               </div>
             </div>
             <p className={styles.azuraSub}>
-              A reputation-based ecosystem where earned gems turn into powerful tools during your 12-week course progress with Blue, an emotional, memory driven AI companion with her own wallet.
+              Companions are AIs with memory, wallets, and context of the platform users. They play a role in the story and events that take place at Mental Wealth Academy.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Credit Repair</span>
+                <span className={styles.azuraStatValue}>Wellness</span>
                 <span className={styles.azuraStatLabel}>AI-powered</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Governance</span>
+                <span className={styles.azuraStatValue}>Fitness</span>
                 <span className={styles.azuraStatLabel}>Help Funding</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Decentralized</span>
+                <span className={styles.azuraStatValue}>Life Changes</span>
                 <span className={styles.azuraStatLabel}>Science &amp; Tools</span>
               </div>
             </div>

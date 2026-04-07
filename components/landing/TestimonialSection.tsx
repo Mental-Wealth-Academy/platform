@@ -6,33 +6,33 @@ import styles from './TestimonialSection.module.css';
 
 const testimonials = [
   {
-    quote: 'The weekly flows and peer sessions helped me reclaim my agency. I went from burnt out to building something meaningful — this community actually gets it.',
+    quote: 'The weekly sessions helped me get out of a pretty burnt-out place. I feel more clear, more consistent, and more connected to what I actually want to make.',
     name: 'Jordan K.',
-    title: 'Common Angel, Cohort 2',
+    title: 'Product designer',
     avatar: '/anbel03.png',
   },
   {
-    quote: 'Mental Wealth Academy gave me a space to connect, reflect, and grow on-chain. The governance felt real — my vote actually shaped where funding went. I\'ve never seen anything like this.',
+    quote: 'I joined because I wanted more structure and support in my life. What surprised me most was how thoughtful the community felt and how much people actually listened to each other.',
     name: 'Maya T.',
-    title: 'Elite Angel, Generation 1',
+    title: 'Graduate student',
     avatar: '/anbel07.png',
   },
   {
-    quote: 'The gamified quests kept me engaged when traditional support felt draining. Earning tokens for journaling and showing up? That\'s the kind of incentive design that works.',
+    quote: 'I usually fall off with programs like this, but the small prompts and check-ins kept me engaged. It made taking care of myself feel easier to come back to.',
     name: 'Aisha R.',
-    title: 'Common Angel, Cohort 1',
+    title: 'UX researcher',
     avatar: '/anbel10.png',
   },
   {
-    quote: 'I came for the mental health tools and stayed for the on-chain governance. Proposing funding for a peer-led breathwork circle and watching it pass — that changed how I see community power.',
+    quote: 'I came for the wellness tools, but I stayed because it felt like a real community. People support each other here in a way that feels practical, not performative.',
     name: 'Ezra M.',
-    title: 'Rare Angel, Cohort 2',
+    title: 'Community organizer',
     avatar: '/anbel04.png',
   },
   {
-    quote: 'The Morning Pages ritual rewired my mornings. Combining journaling with token rewards made consistency feel natural instead of forced. This is what Web3 wellness should look like.',
+    quote: 'The morning journaling practice genuinely changed my routine. It gave me a calmer start to the day and helped me notice patterns I normally ignore.',
     name: 'Priya S.',
-    title: 'Common Angel, Cohort 3',
+    title: 'College student',
     avatar: '/anbel09.png',
   },
 ];
