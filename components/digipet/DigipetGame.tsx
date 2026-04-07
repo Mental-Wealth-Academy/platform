@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
-import type { ChaoBridge, GameSave, ChaoData, FoodType } from '@/lib/digipet/types';
-import { FOODS, clamp, uid, getChaoLevel } from '@/lib/digipet/data';
+import type { ChaoBridge, GameSave, ChaoData } from '@/lib/digipet/types';
+import { clamp, uid } from '@/lib/digipet/data';
 import { deserializeSave, applyOfflineTime } from '@/lib/digipet/save';
 import { initAudio, sfx } from '@/lib/digipet/audio';
 import styles from './Digipet.module.css';
@@ -38,15 +38,12 @@ function mood(c: ChaoData) {
 export default function DigipetGame() {
   const [save, setSave] = useState<GameSave | null>(null);
   const [shards, setShards] = useState(0);
-  const [feedOpen, setFeedOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
   const [quipDisplay, setQuipDisplay] = useState('');
   const [quipVisible, setQuipVisible] = useState(false);
   const quipInterval = useRef<ReturnType<typeof setInterval>>();
   const quipTimeout = useRef<ReturnType<typeof setTimeout>>();
   const bridge = useRef<ChaoBridge>(null!);
-  const toastT = useRef<ReturnType<typeof setTimeout>>();
   const audioOk = useRef(false);
 
   useEffect(() => {
@@ -90,26 +87,6 @@ export default function DigipetGame() {
   const audio = useCallback(() => { if (!audioOk.current) { initAudio(); audioOk.current = true; } }, []);
   const pet = save?.chao[0] ?? null;
   const doSave = (s: GameSave) => { setSave(s); bridge.current.saveGame(JSON.stringify(s)); };
-  const notify = (m: string) => { setToast(m); clearTimeout(toastT.current); toastT.current = setTimeout(() => setToast(null), 2200); };
-
-  function feed(ft: FoodType) {
-    audio();
-    if (!save || !pet) return;
-    const food = FOODS[ft];
-    const cnt = save.inventory.food[ft] || 0;
-    if (cnt <= 0) { sfx('error'); notify('None left!'); return; }
-    const inv = { ...save.inventory.food }; inv[ft] = cnt - 1; if (!inv[ft]) delete inv[ft];
-    const p = { ...pet, hp: clamp(pet.hp + food.hpRestore, 0, 100), happiness: clamp(pet.happiness + food.happinessBoost, 0, 100) };
-    const s = { ...p.stats };
-    for (const [k, v] of Object.entries(food.statBoost)) {
-      if (v) { const g = p.genes[`${k}Growth` as keyof typeof p.genes] as number; s[k as keyof typeof s] += Math.round(v * g); }
-    }
-    p.stats = s;
-    sfx('feed');
-    doSave({ ...save, chao: [p, ...save.chao.slice(1)], inventory: { ...save.inventory, food: inv } });
-    notify(`Fed ${food.name}!`);
-    setFeedOpen(false);
-  }
 
   const QUIPS = [
     'brain feel nice',
@@ -157,10 +134,6 @@ export default function DigipetGame() {
   // ── Render ──────────────────────
   if (!save || !pet) return <div className={styles.page}><div className={styles.loadWrap}><div className={styles.spinner} /></div></div>;
 
-  const lv = getChaoLevel(pet.stats);
-  const m = mood(pet);
-  const foods = Object.entries(save.inventory.food).filter(([, n]) => n && n > 0);
-
   return (
     <div className={styles.page} onClick={audio}>
       {/* Shard count - subtle top right */}
@@ -185,38 +158,13 @@ export default function DigipetGame() {
 
       {/* Buttons right under info */}
       <div className={styles.actions}>
-        <button className={styles.btn} onClick={(e) => { e.stopPropagation(); audio(); sfx('click'); setFeedOpen(!feedOpen); }}>
+        <button className={styles.btn} onClick={(e) => { e.stopPropagation(); play(); }}>
           Feed
         </button>
         <button className={styles.btn} onClick={(e) => { e.stopPropagation(); play(); }}>
           Play
         </button>
       </div>
-
-      {/* Feed drawer */}
-      {feedOpen && (
-        <div className={styles.drawer}>
-          <div className={styles.drawerHandle} />
-          {foods.length === 0 ? (
-            <p className={styles.drawerEmpty}>No food yet. Earn shards from daily quests!</p>
-          ) : (
-            <div className={styles.foodList}>
-              {foods.map(([t, c]) => {
-                const f = FOODS[t]; if (!f) return null;
-                return (
-                  <button key={t} className={styles.foodItem} onClick={() => feed(t as FoodType)}>
-                    <span className={styles.foodDot} style={{ background: f.color }} />
-                    <span className={styles.foodLabel}>{f.name}</span>
-                    <span className={styles.foodCount}>x{c}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {toast && <div className={styles.toast}>{toast}</div>}
     </div>
   );
 }
