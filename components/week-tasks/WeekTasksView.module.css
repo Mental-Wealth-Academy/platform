@@ -72,13 +72,19 @@
   border-color: rgba(81, 104, 255, 0.15);
 }
 
-.taskCardDone .taskIcon {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(34, 197, 94, 0.1) 100%);
+.taskCardDone .taskArtwork {
   box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.2),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    0 4px 12px rgba(34, 197, 94, 0.15);
-  color: #22C55E;
+    0 0 0 1px rgba(34, 197, 94, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 10px 24px rgba(34, 197, 94, 0.18);
+}
+
+.taskCardDone .taskArtworkBadge {
+  background: rgba(255, 255, 255, 0.92);
+  color: #16A34A;
+  box-shadow:
+    0 8px 18px rgba(22, 163, 74, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .taskCardSealed {
@@ -104,38 +110,141 @@
   background: rgba(26, 29, 51, 0.02);
 }
 
-.taskIcon {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    135deg,
-    rgba(81, 104, 255, 0.2) 0%,
-    rgba(140, 120, 200, 0.12) 50%,
-    rgba(81, 104, 255, 0.08) 100%
-  );
-  color: var(--week-color, #5168FF);
-  border: none;
-  border-radius: 14px;
+.taskArtwork {
+  --art-base: color-mix(in srgb, var(--week-color, #5168FF) 66%, #0f172a 34%);
+  --art-accent: color-mix(in srgb, var(--week-color, #5168FF) 38%, #ffffff 62%);
+  --art-highlight: rgba(255, 255, 255, 0.72);
+  width: 112px;
+  height: 88px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
   flex-shrink: 0;
-  backdrop-filter: blur(8px);
   box-shadow:
     0 0 0 1px rgba(81, 104, 255, 0.12),
-    inset 0 1px 2px rgba(255, 255, 255, 0.25),
-    inset 0 -1px 1px rgba(81, 104, 255, 0.08),
-    0 4px 16px rgba(81, 104, 255, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 10px 28px rgba(81, 104, 255, 0.12);
   transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.taskCard:hover .taskIcon {
+.taskCard:hover .taskArtwork {
   box-shadow:
-    0 0 0 1px rgba(81, 104, 255, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    inset 0 -1px 1px rgba(81, 104, 255, 0.1),
-    0 6px 20px rgba(81, 104, 255, 0.18);
-  transform: scale(1.04);
+    0 0 0 1px rgba(81, 104, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 14px 34px rgba(81, 104, 255, 0.18);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.taskArtworkAurora {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    linear-gradient(135deg, #2a3b8f 0%, var(--week-color, #5168FF) 38%, #67d5ff 100%);
+}
+
+.taskArtworkSunrise {
+  background:
+    radial-gradient(circle at 75% 24%, rgba(255, 244, 182, 0.7), transparent 20%),
+    linear-gradient(140deg, #ff8d5c 0%, #ffb36f 35%, #ffd5a3 100%);
+}
+
+.taskArtworkOrbit {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.16), transparent 25%),
+    linear-gradient(135deg, #15213f 0%, #243d7b 40%, #5dd4c4 100%);
+}
+
+.taskArtworkBloom {
+  background:
+    radial-gradient(circle at 24% 22%, rgba(255, 248, 252, 0.45), transparent 26%),
+    linear-gradient(135deg, #6346d8 0%, #b14ff2 52%, #ff8eb1 100%);
+}
+
+.taskArtworkRibbon {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16), transparent 48%),
+    linear-gradient(140deg, #1e254e 0%, #4550a7 42%, #86a1ff 100%);
+}
+
+.taskArtworkPrism {
+  background:
+    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.24), transparent 20%),
+    linear-gradient(135deg, #1b2f63 0%, #4963ff 35%, #78e0ff 100%);
+}
+
+.taskArtworkGlow,
+.taskArtworkMesh,
+.taskArtworkOrb,
+.taskArtworkLine {
+  position: absolute;
+  pointer-events: none;
+}
+
+.taskArtworkGlow {
+  inset: auto -12% -38% auto;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.08) 45%, transparent 72%);
+  mix-blend-mode: screen;
+}
+
+.taskArtworkMesh {
+  top: 14px;
+  left: 14px;
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+  transform: rotate(-10deg);
+}
+
+.taskArtworkOrb {
+  right: 14px;
+  top: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--art-highlight) 0%, rgba(255, 255, 255, 0.22) 45%, transparent 72%);
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.24);
+}
+
+.taskArtworkLine {
+  left: -6px;
+  bottom: 22px;
+  width: 96px;
+  height: 40px;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.28) transparent transparent transparent;
+  border-radius: 50%;
+  transform: rotate(-10deg);
+}
+
+.taskArtworkBadge {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  background: rgba(15, 23, 42, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 8px 18px rgba(15, 23, 42, 0.16);
 }
 
 .taskInfo {
@@ -520,6 +629,31 @@
   margin: 0;
 }
 
+@media (max-width: 640px) {
+  .taskCardHeader {
+    gap: 12px;
+    padding: 16px 14px;
+  }
+
+  .taskArtwork {
+    width: 92px;
+    height: 78px;
+    border-radius: 18px;
+  }
+
+  .taskArtworkMesh {
+    width: 54px;
+    height: 54px;
+  }
+
+  .taskArtworkBadge {
+    width: 34px;
+    height: 34px;
+    left: 12px;
+    bottom: 10px;
+  }
+}
+
 /* ─── Responsive ─── */
 
 @media (max-width: 480px) {
@@ -532,10 +666,32 @@
     gap: 10px;
   }
 
-  .taskIcon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+  .taskArtwork {
+    width: 84px;
+    height: 72px;
+    border-radius: 16px;
+  }
+
+  .taskArtworkMesh {
+    top: 12px;
+    left: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+  }
+
+  .taskArtworkOrb {
+    right: 12px;
+    top: 12px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .taskArtworkBadge {
+    width: 32px;
+    height: 32px;
+    left: 10px;
+    bottom: 10px;
   }
 
   .taskTitle {

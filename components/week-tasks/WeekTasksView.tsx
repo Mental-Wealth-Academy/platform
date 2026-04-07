@@ -18,6 +18,36 @@ const WEEK_COLORS: Record<number, string> = {
 
 interface BlurtEntry { id: string; blurt: string; affirmation: string; }
 
+type TaskArtVariant = 'aurora' | 'sunrise' | 'orbit' | 'bloom' | 'ribbon' | 'prism';
+
+function getTaskArtVariant(section: JournalSection): TaskArtVariant {
+  const id = `${section.id}-${section.type}`;
+
+  if (id.includes('walk') || id.includes('date') || id.includes('enjoy')) return 'sunrise';
+  if (id.includes('life') || id.includes('affirm') || id.includes('champion')) return 'bloom';
+  if (id.includes('time') || id.includes('map') || id.includes('pie')) return 'orbit';
+  if (id.includes('letter') || id.includes('text') || id.includes('reading')) return 'ribbon';
+  if (id.includes('enemy') || id.includes('monster') || id.includes('check')) return 'prism';
+  return 'aurora';
+}
+
+function getTaskArtLabel(section: JournalSection): string {
+  switch (getTaskArtVariant(section)) {
+    case 'sunrise':
+      return 'Warm horizon illustration';
+    case 'bloom':
+      return 'Botanical gradient illustration';
+    case 'orbit':
+      return 'Orbital abstract illustration';
+    case 'ribbon':
+      return 'Layered ribbon illustration';
+    case 'prism':
+      return 'Prismatic abstract illustration';
+    default:
+      return 'Aurora gradient illustration';
+  }
+}
+
 interface WeekTasksViewProps {
   weekNumber: number;
   enablePersistence?: boolean;
@@ -473,6 +503,7 @@ export default function WeekTasksView({
 {journalSections.map(section => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
+        const artVariant = getTaskArtVariant(section);
         return (
           <div key={section.id} className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}>
             <button
@@ -481,7 +512,15 @@ export default function WeekTasksView({
               onClick={() => { if (!isSealed) toggleExpand(section.id); }}
               onMouseEnter={() => play('hover')}
             >
-              <div className={styles.taskIcon}>{section.icon}</div>
+              <div className={`${styles.taskArtwork} ${styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles]}`} aria-hidden="true">
+                <div className={styles.taskArtworkGlow} />
+                <div className={styles.taskArtworkMesh} />
+                <div className={styles.taskArtworkOrb} />
+                <div className={styles.taskArtworkLine} />
+                <div className={styles.taskArtworkBadge} aria-label={getTaskArtLabel(section)}>
+                  {section.icon}
+                </div>
+              </div>
               <div className={styles.taskInfo}>
                 <span className={styles.taskTitle}>{section.title}</span>
                 {!isOpen && (
