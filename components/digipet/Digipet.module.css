@@ -1,191 +1,118 @@
-/* ── Page ─────────────────────────────────────────────────────────────────── */
+/* ── Page ─────────────────────────────────────────── */
 .page {
-  position: relative;
   min-height: 100dvh;
   width: 100%;
-  overflow-x: hidden;
-  background: linear-gradient(175deg, #FFF8E7 0%, #FEF3D0 30%, #E8F5E9 75%, #D0ECE7 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 16px 32px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  color: #2D3436;
+  padding: 0 20px 40px;
+  background: #0f1923;
+  color: #e0e6ed;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
-/* ── Decorative blobs ─────────────────────────────────────────────────────── */
-.blob1, .blob2, .blob3 {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.25;
-}
-.blob1 {
-  width: 200px; height: 200px;
-  top: -40px; left: -60px;
-  background: radial-gradient(circle, #FFDEE9 0%, transparent 70%);
-}
-.blob2 {
-  width: 160px; height: 160px;
-  top: 120px; right: -50px;
-  background: radial-gradient(circle, #C1F0C1 0%, transparent 70%);
-}
-.blob3 {
-  width: 260px; height: 260px;
-  bottom: 60px; left: 30%;
-  background: radial-gradient(circle, #D4E4FF 0%, transparent 70%);
-}
-
-/* ── Top bar ──────────────────────────────────────────────────────────────── */
-.topBar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 4px;
-}
-.shardBadge {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(8px);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #6C5CE7;
-  letter-spacing: 0.3px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.backBtn {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(8px);
-  border: none;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #2D3436;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.backBtn:hover { background: rgba(255,255,255,0.95); }
-
-/* ── Center / loading / error ─────────────────────────────────────────────── */
+/* ── Center / loader ─────────────────────────────── */
 .center {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  min-height: 60dvh;
   gap: 16px;
 }
 .loader {
-  width: 40px; height: 40px;
-  border: 4px solid #E8D5B7;
-  border-top-color: #FF8E53;
+  width: 36px; height: 36px;
+  border: 3px solid #1e3a4f;
+  border-top-color: #5dade2;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loadingText {
-  font-size: 16px;
-  color: #636E72;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-.errorText {
-  font-size: 16px;
-  color: #E17055;
-  font-weight: 600;
-  text-align: center;
-}
+.loadText { font-size: 15px; color: #7f8c9b; font-weight: 600; }
 
-/* ── Pet section ──────────────────────────────────────────────────────────── */
-.petSection {
-  position: relative;
-  z-index: 1;
+/* ── Top bar ─────────────────────────────────────── */
+.topBar {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
-.petArea {
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+  padding: 14px 0;
+}
+.shardBadge {
+  background: rgba(93, 173, 226, 0.15);
+  border: 1px solid rgba(93, 173, 226, 0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #5dade2;
+}
+.backBtn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #e0e6ed;
   cursor: pointer;
-  transition: transform 0.15s ease;
-  filter: drop-shadow(0 8px 24px rgba(93, 173, 226, 0.25));
 }
-.petArea:active {
-  transform: scale(0.93);
+.backBtn:active { opacity: 0.7; }
+
+/* ── Pet ─────────────────────────────────────────── */
+.petWrap {
+  margin-top: 8px;
+  cursor: pointer;
+  position: relative;
 }
-.petSprite {
-  width: 200px;
-  height: 200px;
+.petImg {
+  width: 220px;
+  height: 220px;
   object-fit: contain;
-  image-rendering: auto;
-  pointer-events: none;
-  animation: petBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(93, 173, 226, 0.3));
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.15s ease;
 }
-@keyframes petBounce {
+.petImg:active { transform: scale(0.92); }
+.petTap { animation: tapBounce 0.5s ease; }
+@keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes tapBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  60% { transform: scale(0.92); }
+  100% { transform: scale(1); }
 }
 
-/* ── Name + level ─────────────────────────────────────────────────────────── */
-.nameRow {
-  position: relative;
-  z-index: 1;
+/* ── Info ─────────────────────────────────────────── */
+.infoBlock {
+  text-align: center;
+  margin-top: 12px;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 14px;
+  flex-direction: column;
+  gap: 4px;
 }
 .petName {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
-  color: #2D3436;
+  color: #fff;
   letter-spacing: -0.3px;
 }
-.petLevel {
-  font-size: 15px;
-  font-weight: 700;
-  color: #FDCB6E;
-}
-
-/* ── Mood ──────────────────────────────────────────────────────────────────── */
-.moodRow {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-}
-.moodEmoji { font-size: 18px; }
-.moodLabel {
-  font-size: 15px;
+.petMeta {
+  font-size: 14px;
   font-weight: 600;
-  color: #636E72;
+  color: #7f8c9b;
 }
 
-/* ── Status bars ──────────────────────────────────────────────────────────── */
-.barsWrap {
-  position: relative;
-  z-index: 1;
+/* ── Bars ─────────────────────────────────────────── */
+.bars {
   width: 100%;
-  max-width: 320px;
-  margin-top: 18px;
+  max-width: 300px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -196,131 +123,197 @@
   gap: 10px;
 }
 .barLabel {
-  width: 30px;
-  font-size: 13px;
+  width: 28px;
+  font-size: 12px;
   font-weight: 700;
-  color: #636E72;
+  color: #7f8c9b;
   text-align: right;
 }
 .barTrack {
   flex: 1;
-  height: 14px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 7px;
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
 }
-.barFill {
+.barFillHp {
   height: 100%;
-  border-radius: 7px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #2ecc71, #58d68d);
   transition: width 0.4s ease;
 }
-.barHp {
-  background: linear-gradient(90deg, #81C784, #66BB6A);
+.barFillJoy {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #f1c40f, #f9e584);
+  transition: width 0.4s ease;
 }
-.barJoy {
-  background: linear-gradient(90deg, #FFD54F, #FFCA28);
-}
-.barValue {
-  width: 28px;
-  font-size: 12px;
+.barVal {
+  width: 26px;
+  font-size: 11px;
   font-weight: 700;
-  color: #636E72;
+  color: #7f8c9b;
 }
 
-/* ── Action buttons ───────────────────────────────────────────────────────── */
-.actionsSpacer {
-  flex: 1;
-  min-height: 16px;
-}
-.actionsRow {
-  position: relative;
-  z-index: 1;
+/* ── Buttons ─────────────────────────────────────── */
+.btnRow {
   display: flex;
-  gap: 16px;
-  margin-top: 8px;
+  gap: 14px;
   width: 100%;
-  max-width: 360px;
-  justify-content: center;
+  max-width: 340px;
+  margin-top: 8px;
 }
 .btnFeed, .btnPlay {
   flex: 1;
-  max-width: 160px;
-  min-height: 64px;
+  min-height: 60px;
   border: none;
-  border-radius: 20px;
+  border-radius: 18px;
+  font-size: 17px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #fff;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  color: #fff;
-  font-family: inherit;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 .btnFeed {
-  background: linear-gradient(135deg, #E0433A, #D4622E);
+  background: linear-gradient(135deg, #e04040, #d4622e);
+  box-shadow: 0 4px 20px rgba(224, 67, 58, 0.35);
 }
 .btnPlay {
-  background: linear-gradient(135deg, #7C5CD6, #C2266E);
+  background: linear-gradient(135deg, #7c5cd6, #c2266e);
+  box-shadow: 0 4px 20px rgba(124, 92, 214, 0.35);
 }
-.btnFeed:hover, .btnPlay:hover {
-  transform: scale(1.04);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.16);
-}
-.btnFeed:active, .btnPlay:active {
-  transform: scale(0.97);
-}
-.btnIcon {
-  font-size: 22px;
-  line-height: 1;
-}
-.btnText {
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
+.btnFeed:hover, .btnPlay:hover { transform: scale(1.03); }
+.btnFeed:active, .btnPlay:active { transform: scale(0.96); }
+.btnEmoji { font-size: 20px; }
 
-/* ── Shop button ──────────────────────────────────────────────────────────── */
-.shopRow {
-  position: relative;
-  z-index: 1;
-  margin-top: 16px;
-}
 .btnShop {
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(8px);
-  color: #2D6A4F;
-  border: 2px solid rgba(45,106,79,0.2);
-  border-radius: 16px;
-  padding: 14px 32px;
+  margin-top: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 12px 28px;
   min-height: 48px;
   font-size: 15px;
   font-weight: 700;
   font-family: inherit;
-  letter-spacing: 0.3px;
+  color: #5dade2;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.12s ease;
 }
-.btnShop:hover {
-  transform: scale(1.04);
-  background: rgba(255,255,255,0.9);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-.btnShop:active { transform: scale(0.97); }
+.btnShop:hover { background: rgba(255,255,255,0.1); transform: scale(1.03); }
+.btnShop:active { transform: scale(0.96); }
 
-/* ── Toast ─────────────────────────────────────────────────────────────────── */
+/* ── View title (Feed / Shop) ────────────────────── */
+.viewTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 8px 0 16px;
+}
+
+/* ── Item list (feed + shop) ─────────────────────── */
+.itemList {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.itemCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.itemDot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.itemName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e0e6ed;
+}
+.itemSub {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7f8c9b;
+}
+.itemBtn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(135deg, #e04040, #d4622e);
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transition: transform 0.12s ease;
+}
+.itemBtn:active { transform: scale(0.94); }
+.itemBtnBuy {
+  composes: itemBtn;
+  background: linear-gradient(135deg, #0891a8, #1b9e6e);
+}
+.itemBtnBuy:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Empty state ─────────────────────────────────── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 0;
+  color: #7f8c9b;
+  font-size: 15px;
+  font-weight: 600;
+}
+.actionBtnAlt {
+  background: linear-gradient(135deg, #0891a8, #1b9e6e);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 28px;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* ── Toast ────────────────────────────────────────── */
 .toast {
   position: fixed;
-  bottom: 32px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(45,52,54,0.9);
-  color: #fff;
+  background: rgba(30, 58, 79, 0.95);
+  border: 1px solid rgba(93, 173, 226, 0.3);
+  color: #e0e6ed;
   padding: 10px 22px;
   border-radius: 14px;
   font-size: 14px;
@@ -330,200 +323,24 @@
   pointer-events: none;
 }
 @keyframes toastIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* ── Floating text ─────────────────────────────────────────────────────────── */
+/* ── Float text ──────────────────────────────────── */
 .floatText {
   position: fixed;
-  top: 40%;
+  top: 38%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
   z-index: 90;
   pointer-events: none;
   animation: floatUp 1.3s ease-out forwards;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 @keyframes floatUp {
   0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
   100% { opacity: 0; transform: translateX(-50%) translateY(-60px); }
 }
-
-/* ── Egg view ──────────────────────────────────────────────────────────────── */
-.eggContainer {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.eggTitle {
-  font-size: 22px;
-  font-weight: 800;
-  color: #2D3436;
-}
-.eggSubtitle {
-  font-size: 15px;
-  color: #636E72;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-.eggButton {
-  width: 140px;
-  height: 160px;
-  border: none;
-  background: rgba(255,251,240,0.85);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease;
-}
-.eggButton:active { transform: scale(0.93); }
-.eggEmoji { font-size: 64px; }
-.progressOuter {
-  width: 200px;
-  height: 12px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: 16px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
-}
-.progressInner {
-  height: 100%;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #81D4FA, #4FC3F7);
-  transition: width 0.3s ease;
-}
-.progressLabel {
-  font-size: 13px;
-  font-weight: 700;
-  color: #636E72;
-  margin-top: 4px;
-}
-.eggTapCount {
-  font-size: 13px;
-  color: #B2BEC3;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-/* ── Feed / shop sheet ─────────────────────────────────────────────────────── */
-.sheetContent {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 480px;
-  padding-top: 8px;
-}
-.sheetTitle {
-  font-size: 22px;
-  font-weight: 800;
-  color: #2D3436;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-/* ── Food grid ─────────────────────────────────────────────────────────────── */
-.foodGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.foodCard {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255,251,240,0.9);
-  border-radius: 16px;
-  padding: 12px 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-.foodDot {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.foodInfo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.foodName {
-  font-size: 15px;
-  font-weight: 700;
-  color: #2D3436;
-}
-.foodCount {
-  font-size: 13px;
-  font-weight: 600;
-  color: #636E72;
-}
-.foodPrice {
-  font-size: 13px;
-  font-weight: 700;
-  color: #6C5CE7;
-}
-.foodFeedBtn, .foodBuyBtn {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 20px;
-  min-height: 48px;
-  font-size: 15px;
-  font-weight: 800;
-  font-family: inherit;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.12s ease;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-.foodFeedBtn {
-  background: linear-gradient(135deg, #E0433A, #D4622E);
-}
-.foodBuyBtn {
-  background: linear-gradient(135deg, #0891A8, #1B9E6E);
-}
-.foodFeedBtn:hover, .foodBuyBtn:hover { transform: scale(1.04); }
-.foodFeedBtn:active, .foodBuyBtn:active { transform: scale(0.96); }
-
-/* ── Empty food state ──────────────────────────────────────────────────────── */
-.emptyFood {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 40px 0;
-}
-.emptyFoodText {
-  font-size: 16px;
-  font-weight: 600;
-  color: #B2BEC3;
-}
-.shopBtnLarge {
-  background: linear-gradient(135deg, #0891A8, #1B9E6E);
-  color: #fff;
-  border: none;
-  border-radius: 18px;
-  padding: 14px 36px;
-  min-height: 48px;
-  font-size: 16px;
-  font-weight: 800;
-  font-family: inherit;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-  transition: transform 0.15s ease;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-.shopBtnLarge:hover { transform: scale(1.04); }
-.shopBtnLarge:active { transform: scale(0.97); }
