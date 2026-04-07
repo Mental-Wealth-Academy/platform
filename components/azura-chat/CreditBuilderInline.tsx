@@ -82,7 +82,7 @@ export default function CreditBuilderInline({ onComplete, onRequestPayment, step
       <div className={styles.container}>
         <div className={styles.paymentCard}>
           <h4 className={styles.paymentTitle}>Activate Credit Audit</h4>
-          <p className={styles.paymentDesc}>Send payment to Blue's wallet to activate your personalized AI credit audit, dispute letter generation, and progress tracking.</p>
+          <p className={styles.paymentDesc}>Send payment to Blue&apos;s wallet to activate your personalized AI credit audit, dispute letter generation, and progress tracking.</p>
           <div className={styles.paymentDetails}>
             <span className={styles.paymentLabel}>Cost</span>
             <span className={styles.paymentAmount}>50 Shards</span>

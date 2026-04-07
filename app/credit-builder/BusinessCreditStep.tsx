@@ -78,7 +78,7 @@ export default function BusinessCreditStep() {
       <div className={styles.stepIntro}>
         <h2 className={styles.stepTitle}>Step 5: Build Business Credit</h2>
         <p className={styles.stepDesc}>
-          Separate your business finances from personal. Business credit doesn't affect your personal score and unlocks larger credit lines.
+          Separate your business finances from personal. Business credit doesn&apos;t affect your personal score and unlocks larger credit lines.
         </p>
       </div>
 

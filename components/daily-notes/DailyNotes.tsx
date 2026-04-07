@@ -374,33 +374,34 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       {timerActive && typeof window !== 'undefined' && createPortal(
         <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
           <div className={styles.modalBackdrop} onClick={requestClose} />
-          <div className={styles.modal}>
-            <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Morning Prayers</h3>
-              <p className={styles.modalSubtitle}>Write freely for 15 minutes. No editing, no judgment — just let it flow.</p>
-            </div>
+          <div className={styles.modal} role="dialog" aria-modal="true" aria-labelledby="morning-prayers-session-title">
+            <h3 id="morning-prayers-session-title" className={styles.srOnly}>Morning Prayers</h3>
 
-            <div className={styles.timerDisplay}>
-              <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
+            <div className={styles.modalMain}>
+              <div className={styles.timerDisplay}>
+                <div className={styles.sessionBadge}>Morning Prayers</div>
+                <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                  {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
+                </div>
+                <div className={styles.timerBar}>
+                  <div
+                    className={styles.timerBarFill}
+                    style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
+                  />
+                </div>
               </div>
-              <div className={styles.timerBar}>
-                <div
-                  className={styles.timerBarFill}
-                  style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
+
+              <div className={styles.writeArea}>
+                <div className={styles.promptPill}>Blue challenge: keep writing till the timer ends.</div>
+                <textarea
+                  className={styles.textarea}
+                  placeholder="Go. Write anything. Keep moving."
+                  value={timerText}
+                  onChange={(e) => setTimerText(e.target.value)}
+                  autoFocus
+                  disabled={isPaused}
                 />
               </div>
-            </div>
-
-            <div className={styles.writeArea}>
-              <textarea
-                className={styles.textarea}
-                placeholder="Start writing. Let your thoughts flow freely..."
-                value={timerText}
-                onChange={(e) => setTimerText(e.target.value)}
-                autoFocus
-                disabled={isPaused}
-              />
             </div>
 
             <div className={styles.modalFooter}>
