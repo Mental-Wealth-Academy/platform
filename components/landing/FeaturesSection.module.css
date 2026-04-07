@@ -1,24 +1,54 @@
-/* ── Section & Layout ─────────────────────────────── */
 .featuresSection {
   position: relative;
+  overflow: hidden;
   width: 100%;
-  padding: 80px 24px;
-  background: var(--color-background);
+  padding: 88px 24px 112px;
+  background:
+    linear-gradient(180deg, #09091a 0%, #0d0d27 48%, #14144d 100%);
   z-index: 1;
 }
 
+.featuresSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(43, 76, 255, 0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 76, 255, 0.22) 1px, transparent 1px);
+  background-size: 88px 44px, 88px 44px;
+  transform: perspective(920px) rotateX(76deg) scale(1.42) translateY(-4%);
+  transform-origin: top center;
+  opacity: 0.52;
+  pointer-events: none;
+}
+
+.featuresSection::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(241, 240, 123, 0.14), transparent 32%),
+    radial-gradient(circle at 20% 80%, rgba(79, 101, 255, 0.28), transparent 28%),
+    linear-gradient(180deg, rgba(4, 4, 12, 0) 40%, rgba(5, 5, 18, 0.35) 100%);
+  pointer-events: none;
+}
+
 .container {
-  max-width: 1180px;
+  position: relative;
+  max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
+  z-index: 1;
 }
 
 .header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 42px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(22px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 .sectionVisible .header {
@@ -26,818 +56,578 @@
   transform: translateY(0);
 }
 
-
-/* ── Eyebrow ─────────────────────────────────────── */
 .eyebrow {
+  margin: 0 0 12px;
   font-family: var(--font-ibm-plex-mono);
   font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-primary);
-  margin: 0 0 12px 0;
+  color: #b2b6ff;
 }
 
 .title {
+  margin: 0 auto 16px;
+  max-width: 860px;
   font-family: var(--font-secondary);
-  font-size: 2.618rem;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--color-text-dark);
-  margin: 0 auto 24px auto;
-  max-width: 750px;
+  font-size: clamp(2.5rem, 4vw, 3.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: #f7f1d5;
+  text-wrap: balance;
 }
 
 .description {
-  font-family: var(--font-primary);
-  font-size: 18px;
-  line-height: 1.6;
-  color: rgba(26, 27, 36, 0.7);
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 720px;
+  font-family: var(--font-primary);
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(245, 247, 255, 0.82);
 }
 
-/* ── Card Row ────────────────────────────────────── */
-.cardRow {
-  display: flex;
-  gap: 20px;
+.ctaButton {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 192px;
+  height: 48px;
+  padding: 0 24px;
+  border: 1px solid rgba(113, 132, 255, 0.65);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #5168ff 0%, #2a2dd6 100%);
+  box-shadow: 0 16px 30px rgba(44, 60, 194, 0.28);
+  color: #f8f8ff;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(44, 60, 194, 0.36);
+}
+
+.showcase {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.95fr) minmax(420px, 1.25fr);
+  align-items: center;
+  gap: 28px;
+  min-height: 630px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
   transition-delay: 0.08s;
 }
 
-.sectionVisible .cardRow {
+.sectionVisible .showcase {
   opacity: 1;
   transform: translateY(0);
 }
 
-.cardRow > .rainbowWrap,
-.cardRow > .cardSlot,
-.cardRow > .taskCard {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-}
-
-.cardSlot {
-  border-radius: 14px;
-  padding: 2px;
-  background: transparent;
-  transition: background 0.4s ease;
-}
-
-.cardRow .taskCard {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── Voting & Governance ─────────────────────────── */
-.statsRow {
-  display: flex;
-  gap: 16px;
-}
-
-.statCard {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px;
-  background: #f8f7ff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 12px;
-}
-
-.statLabel {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(26, 27, 36, 0.6);
-}
-
-.statValue {
-  font-family: var(--font-secondary);
-  font-size: 24px;
-  font-weight: 700;
-  color: #1A1D33;
-}
-
-.proposalCard {
-  padding: 20px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.proposalHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.badgeActive {
-  display: inline-block;
-  padding: 3px 10px;
-  background: var(--color-primary, #5168FF);
-  color: #fff;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 2px;
-  border: 2px solid #1A1D33;
-}
-
-.badgePassed {
-  display: inline-block;
-  padding: 3px 10px;
-  background: var(--color-tertiary, #74C465);
-  color: #fff;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 2px;
-  border: 2px solid #1A1D33;
-}
-
-.proposalId {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 12px;
-  color: rgba(26, 27, 36, 0.5);
-}
-
-.proposalTitle {
-  font-family: var(--font-primary);
-  font-size: 15px;
-  font-weight: 500;
-  color: #1A1D33;
-  margin: 0 0 14px 0;
-  line-height: 1.4;
-}
-
-.voteBar {
-  width: 100%;
-  height: 10px;
-  background: #e8e8f0;
-  border-radius: 20px;
-  border: 1px solid #1A1D33;
-  overflow: hidden;
-}
-
-.voteFor {
-  height: 100%;
-  background: var(--color-primary, #5168FF);
-  border-radius: 20px;
-}
-
-.voteLabels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(26, 27, 36, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* ── AI Agent Azura ──────────────────────────────── */
-.chatHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: #f8f7ff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.avatarWrap {
+.mockupColumn {
   position: relative;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
+  min-height: 560px;
 }
 
-.avatar {
-  width: 36px;
-  height: 36px;
-  background: var(--color-primary, #5168FF);
-  color: #fff;
-  font-family: var(--font-secondary);
-  font-weight: 700;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 2px solid #1A1D33;
+.phoneStack {
+  position: relative;
+  height: 100%;
+  min-height: 560px;
 }
 
-.onlineDot {
+.phoneMockup {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  background: var(--color-tertiary, #74C465);
-  border: 2px solid #fff;
-  border-radius: 50%;
-}
-
-.chatName {
-  display: block;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 600;
-  color: #1A1D33;
-}
-
-.chatStatus {
-  display: block;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  color: var(--color-tertiary, #74C465);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-.chatBody {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.bubbleAzura {
-  align-self: flex-start;
-  max-width: 80%;
-  padding: 12px 16px;
-  background: #f0f0ff;
-  border: 2px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 2px 2px 0 #1A1D33;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  color: #1A1D33;
-}
-
-.bubbleUser {
-  align-self: flex-end;
-  max-width: 80%;
-  padding: 12px 16px;
-  background: var(--color-primary, #5168FF);
-  color: #fff;
-  border: 2px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 2px 2px 0 #1A1D33;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.chatInput {
-  padding: 14px 16px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.chatInputText {
-  font-family: var(--font-primary);
-  font-size: 14px;
-  color: rgba(26, 27, 36, 0.4);
-}
-
-.soulGems {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-accent, #FF7729);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.gemIcon {
-  font-size: 14px;
-}
-
-/* ── Agent Tree ──────────────────────────────────── */
-.treeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: #f8f7ff;
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.treeHeaderLabel {
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 600;
-  color: #1A1D33;
-}
-
-.treeHeaderVersion {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--color-primary, #5168FF);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 2px 8px;
-  border: 2px solid #1A1D33;
-  border-radius: 2px;
-  background: #fff;
-}
-
-.treeContainer {
-  border: 2px solid #1A1D33;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 #1A1D33;
-  background: #ffffff;
+  border-radius: 44px;
   overflow: hidden;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.46),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: rgba(7, 7, 18, 0.72);
 }
 
-.treeRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  cursor: default;
-  transition: background 0.1s ease;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.06);
-  user-select: none;
+.phoneRear {
+  left: 28px;
+  top: 72px;
+  width: min(320px, 72%);
+  aspect-ratio: 3135 / 2162;
+  transform: rotate(-0.045turn);
+  z-index: 1;
 }
 
-.treeRow:last-child {
-  border-bottom: none;
+.phoneFront {
+  left: 150px;
+  top: 94px;
+  width: min(360px, 76%);
+  aspect-ratio: 2241 / 1929;
+  transform: rotate(0.01turn);
+  z-index: 2;
 }
 
-.treeRow[role='button'] {
-  cursor: pointer;
-}
-
-.treeRow[role='button']:hover {
-  background: #f0f0ff;
-}
-
-.treeRowDisabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.treeArrow {
-  width: 14px;
-  flex-shrink: 0;
-  font-size: 12px;
-  color: rgba(26, 29, 51, 0.45);
-  text-align: center;
-  line-height: 1;
-}
-
-.treeSpacer {
-  width: 14px;
-  flex-shrink: 0;
-}
-
-.treeAvatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  border: 2px solid #1A1D33;
-  flex-shrink: 0;
+.phoneImage {
   object-fit: cover;
 }
 
-.treeIcon {
-  width: 18px;
-  flex-shrink: 0;
-  text-align: center;
-  font-size: 13px;
-  color: var(--color-primary, #5168FF);
-  line-height: 1;
+.stageColumn {
+  position: relative;
+  z-index: 2;
 }
 
-.treeLabel {
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: #1A1D33;
-  line-height: 1.3;
+.cardStage {
+  position: relative;
+  min-height: 470px;
+  perspective: 1200px;
 }
 
-.treeBadgeDisabled {
-  margin-left: auto;
-  padding: 1px 6px;
-  background: rgba(26, 29, 51, 0.08);
-  color: rgba(26, 29, 51, 0.45);
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: 2px;
-  border: 1px solid rgba(26, 29, 51, 0.15);
+.stageGlow {
+  position: absolute;
+  inset: 18% 16% auto;
+  height: 56%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(130, 92, 255, 0.3) 0%, transparent 72%);
+  filter: blur(28px);
+  pointer-events: none;
 }
 
-/* ── Weekly Tasks ────────────────────────────────── */
-.miniTabs {
+.stageCard {
+  position: absolute;
+  inset: 0;
+  width: min(100%, 640px);
+  height: 390px;
+  margin: auto;
+  border-radius: 28px;
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.65s ease;
+  transform-style: preserve-3d;
+}
+
+.cardFront {
+  transform: translate3d(0, 0, 54px) scale(1);
+  opacity: 1;
+  z-index: 3;
+  filter: blur(0);
+}
+
+.cardMiddle {
+  transform: translate3d(44px, 24px, 0) scale(0.94);
+  opacity: 0.62;
+  z-index: 2;
+  filter: blur(0.4px);
+}
+
+.cardBack {
+  transform: translate3d(86px, 48px, -56px) scale(0.88);
+  opacity: 0.28;
+  z-index: 1;
+  filter: blur(1px);
+}
+
+.cardInner {
+  position: relative;
   display: flex;
-  gap: 8px;
-}
-
-.miniTab {
-  padding: 8px 14px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.15);
-  border-radius: 20px;
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #1A1D33;
-  cursor: default;
-}
-
-.miniTabActive {
-  background: var(--color-primary, #5168FF);
-  color: #ffffff;
-  border-color: var(--color-primary, #5168FF);
-}
-
-.rainbowWrap {
-  position: relative;
-  border-radius: 14px;
-  padding: 2px;
-  background: conic-gradient(from var(--rainbow-angle, 0deg), #ff6b6b, #ffa500, #ffd700, #74C465, #5168FF, #8b5cf6, #ff6b9d, #ff6b6b);
-  animation: rainbowSpin 4s linear infinite;
-}
-
-@property --rainbow-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes rainbowSpin {
-  to {
-    --rainbow-angle: 360deg;
-  }
-}
-
-.taskCard {
-  position: relative;
+  flex-direction: column;
+  height: 100%;
+  padding: 34px 34px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(20, 22, 39, 0.98) 0%, rgba(7, 7, 18, 0.96) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 30px 60px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 12px;
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cardChrome {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 24%),
+    linear-gradient(320deg, rgba(255, 255, 255, 0.08), transparent 30%);
+  pointer-events: none;
 }
 
 .cardNumber {
   position: absolute;
-  top: -8px;
-  right: 16px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 5.5rem;
-  font-weight: 700;
-  color: rgba(81, 104, 255, 0.06);
+  top: 18px;
+  right: 28px;
+  font-family: var(--font-secondary);
+  font-size: 4.9rem;
   line-height: 1;
-  pointer-events: none;
-  user-select: none;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, 0.06);
 }
 
-.sectionVisible .cardRow > :nth-child(1) .taskCard {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.1s;
-}
-
-.sectionVisible .cardRow > :nth-child(2) .taskCard {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.22s;
-}
-
-.sectionVisible .cardRow > :nth-child(3) .taskCard {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.34s;
-}
-
-.taskHeader {
+.cardHeader {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 8px;
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
-.taskTitle {
-  font-family: var(--font-secondary);
-  font-size: 16px;
+.cardEyebrow {
+  margin: 0 0 8px;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 11px;
   font-weight: 600;
-  color: #1A1D33;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(187, 193, 255, 0.72);
 }
 
-.weekBadge {
-  padding: 3px 10px;
-  background: var(--color-accent, #FF7729);
-  color: #fff;
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  line-height: 1.05;
+  color: #f9f7ef;
+}
+
+.badge {
+  flex-shrink: 0;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #c5a0ff 0%, #9e7df0 100%);
+  color: #151426;
   font-family: var(--font-ibm-plex-mono);
   font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 20px;
-  border: none;
-}
-
-.taskDesc {
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(26, 27, 36, 0.7);
-  margin: 0 0 14px 0;
-}
-
-.checklistProgress {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.checkItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: #1A1D33;
-}
-
-.checkDone {
-  color: var(--color-tertiary, #74C465);
   font-weight: 700;
-  font-size: 14px;
-}
-
-.checkPending {
-  color: rgba(26, 27, 36, 0.3);
-  font-size: 14px;
-}
-
-/* ── Quests & Learning ───────────────────────────── */
-.questProgress {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #f8f7ff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 12px;
-}
-
-.questProgressLabel {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(26, 27, 36, 0.6);
-  white-space: nowrap;
-}
-
-.questProgressBar {
-  flex: 1;
-  height: 10px;
-  background: #e8e8f0;
-  border-radius: 20px;
-  border: none;
-  overflow: hidden;
-}
-
-.questProgressFill {
-  height: 100%;
-  background: var(--color-primary, #5168FF);
-  border-radius: 20px;
-}
-
-.questProgressText {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: #1A1D33;
-  white-space: nowrap;
-}
-
-.questCard {
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 12px;
-}
-
-.questHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.questName {
-  font-family: var(--font-secondary);
-  font-size: 16px;
-  font-weight: 600;
-  color: #1A1D33;
-}
-
-.questReward {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary, #5168FF);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.questDesc {
+.cardDescription {
+  position: relative;
+  max-width: 92%;
+  margin: 0 0 24px;
   font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(26, 27, 36, 0.7);
-  margin: 0 0 10px 0;
+  font-size: 15px;
+  line-height: 1.72;
+  color: rgba(237, 239, 250, 0.82);
 }
 
-.questMeta {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(26, 27, 36, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.cardList {
+  display: grid;
+  gap: 12px;
+  margin-bottom: auto;
 }
 
-.rewardsBar {
+.cardListItem {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px;
-  background: #f8f7ff;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: 12px;
+  color: #f0f2ff;
+  font-family: var(--font-primary);
+  font-size: 14px;
+}
+
+.listDot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffd76b 0%, #9f85ff 100%);
+  box-shadow: 0 0 18px rgba(183, 147, 255, 0.65);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-family: var(--font-ibm-plex-mono);
   font-size: 11px;
-  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: rgba(26, 27, 36, 0.6);
-  flex-wrap: wrap;
+  color: rgba(213, 217, 255, 0.68);
 }
 
-.rewardHighlight {
-  color: var(--color-primary, #5168FF);
+.cardFooter strong {
+  color: #8ef3b0;
+  font-size: 11px;
 }
 
-/* ── CTA Row ────────────────────────────────────── */
-.ctaRow {
+.pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 48px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  transition-delay: 0.16s;
+  gap: 10px;
+  margin-top: 26px;
 }
 
-.sectionVisible .ctaRow {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.ctaPrice {
-  font-family: var(--font-secondary);
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a1d33;
-  letter-spacing: -0.02em;
-}
-
-.ctaPriceLabel {
-  font-family: var(--font-primary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(26, 29, 51, 0.4);
-  margin-right: 16px;
-}
-
-.purchaseBtn {
-  padding: 16px 40px;
-  background: #5168FF;
-  color: #FFFFFF;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid #5168FF;
-  border-radius: 8px;
+.paginationDot {
+  width: 38px;
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(171, 255, 208, 0.28);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.purchaseBtn:hover {
-  background: #3d51e0;
-  border-color: #3d51e0;
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
+.paginationDot:hover {
+  transform: scaleX(1.08);
 }
 
-.purchaseBtn:active {
-  transform: scale(0.98);
+.paginationDotActive {
+  background: #66d6a0;
 }
 
-/* ── Responsive ──────────────────────────────────── */
+.companionTop,
+.companionBottom {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.companionTop {
+  top: -8px;
+  right: 8px;
+}
+
+.companionBottom {
+  bottom: -8px;
+  left: -4px;
+}
+
+.companionFrame {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid rgba(163, 175, 255, 0.34);
+  box-shadow:
+    0 24px 42px rgba(0, 0, 0, 0.34),
+    0 0 0 8px rgba(68, 76, 192, 0.12);
+  background: rgba(16, 20, 53, 0.75);
+}
+
+.companionImage,
+.companionImageAlt {
+  object-fit: cover;
+}
+
+.companionImageAlt {
+  object-position: 56% 18%;
+  transform: scale(1.12);
+}
+
+@media (max-width: 1100px) {
+  .showcase {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    min-height: 0;
+  }
+
+  .mockupColumn {
+    min-height: 500px;
+    order: 2;
+  }
+
+  .stageColumn {
+    order: 1;
+  }
+
+  .companionTop {
+    top: -18px;
+    right: 24px;
+  }
+
+  .companionBottom {
+    bottom: -18px;
+    left: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .featuresSection {
-    padding: 60px 20px;
+    padding: 72px 16px 88px;
+  }
+
+  .featuresSection::before {
+    background-size: 56px 28px, 56px 28px;
+    opacity: 0.42;
+  }
+
+  .header {
+    margin-bottom: 30px;
   }
 
   .title {
-    font-size: 1.618rem;
+    max-width: 12ch;
   }
 
   .description {
-    font-size: 16px;
+    font-size: 15px;
+    max-width: 34ch;
   }
 
-  .cardRow {
-    flex-direction: column;
+  .ctaButton {
+    min-width: 176px;
+    height: 44px;
   }
 
-  .statsRow {
-    flex-direction: column;
+  .showcase {
+    gap: 22px;
   }
 
-  .statValue {
-    font-size: 20px;
+  .mockupColumn {
+    min-height: 340px;
   }
 
-  .bubbleAzura,
-  .bubbleUser {
-    max-width: 90%;
+  .phoneStack {
+    min-height: 340px;
   }
 
-  .questProgress {
-    flex-wrap: wrap;
+  .phoneRear {
+    left: 0;
+    top: 64px;
+    width: 52%;
+  }
+
+  .phoneFront {
+    left: 26%;
+    top: 8px;
+    width: 56%;
+  }
+
+  .cardStage {
+    min-height: 360px;
+  }
+
+  .stageCard {
+    width: 100%;
+    max-width: 100%;
+    height: 320px;
+  }
+
+  .cardInner {
+    padding: 24px 18px 18px;
+  }
+
+  .cardMiddle {
+    transform: translate3d(12px, 14px, 0) scale(0.965);
+  }
+
+  .cardBack {
+    transform: translate3d(20px, 24px, -36px) scale(0.93);
+  }
+
+  .cardDescription {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .cardList {
     gap: 8px;
   }
 
-  .questProgressBar {
-    min-width: 100%;
-    order: 3;
+  .cardListItem {
+    font-size: 13px;
   }
 
-  .rewardsBar {
+  .pagination {
+    margin-top: 18px;
+  }
+
+  .companionFrame {
+    display: none;
+  }
+
+  .companionTop {
+    display: none;
+  }
+
+  .companionBottom {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .featuresSection {
+    padding: 64px 14px 80px;
+  }
+
+  .showcase {
+    gap: 18px;
+  }
+
+  .mockupColumn {
+    min-height: 290px;
+  }
+
+  .phoneStack {
+    min-height: 290px;
+  }
+
+  .phoneRear {
+    top: 54px;
+    width: 50%;
+  }
+
+  .phoneFront {
+    left: 24%;
+    width: 58%;
+  }
+
+  .cardStage {
+    min-height: 332px;
+  }
+
+  .stageCard {
+    height: 296px;
+  }
+
+  .cardNumber {
+    top: 14px;
+    right: 18px;
+    font-size: 3.6rem;
+  }
+
+  .cardHeader {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .cardTitle {
+    font-size: 1.45rem;
+  }
+
+  .badge {
+    padding: 7px 10px;
+    font-size: 9px;
+  }
+
+  .cardDescription {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .cardListItem {
+    font-size: 12px;
+  }
+
+  .cardFooter {
+    margin-top: 18px;
+    padding-top: 14px;
     font-size: 10px;
-    gap: 6px;
-  }
-
-  .ctaRow {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .ctaPriceLabel {
-    margin-right: 0;
-  }
-
-  .purchaseBtn {
-    width: 100%;
-    margin-top: 8px;
-    padding: 14px 32px;
   }
 }

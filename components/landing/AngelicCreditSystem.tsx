@@ -78,9 +78,9 @@ export default function AngelicCreditSystem() {
         {/* Header */}
         <div className={styles.header}>
           <p className={styles.eyebrow}>Our Core Mission</p>
-          <h2 className={styles.title}>We aren&#39;t looking for &ldquo;mental wellness&rdquo; advice.</h2>
+          <h2 className={styles.title}>Make Mental Wealth Something Everyone Can Afford</h2>
           <p className={styles.subtitle}>
-            We trusted platforms with our deepest thoughts and they turned them into data. This was built for the people searching for something real.
+            Other platforms exchange private user data for quick-fleeting relationships, like doordash for your mental health. We create a new form of gamified health and make it social &amp; fun.
           </p>
         </div>
 
