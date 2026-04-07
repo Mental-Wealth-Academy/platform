@@ -1,0 +1,112 @@
+.pageLayout {
+  margin-left: var(--sidebar-width, 265px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+  color: var(--color-text-dark);
+}
+
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+    padding-top: 66px;
+  }
+
+  .page {
+    padding: 24px 16px;
+  }
+}
+
+.content {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Heading - game style */
+.heading {
+  position: relative;
+  padding: 24px 28px;
+  border-radius: 12px;
+  border: 1px solid #5B3AED;
+  background: linear-gradient(
+    135deg,
+    #4037C4 0%,
+    #1F1A5E 60%,
+    #140E3A 100%
+  );
+  overflow: hidden;
+}
+
+.heading::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(91, 58, 237, 0.06) 3px,
+    rgba(91, 58, 237, 0.06) 6px
+  );
+  pointer-events: none;
+}
+
+.heading::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.headingInner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.headingIcon {
+  filter: drop-shadow(0 0 8px rgba(81, 104, 255, 0.6));
+}
+
+.headingTitle {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 32px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.headingSubtitle {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 6px 0 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

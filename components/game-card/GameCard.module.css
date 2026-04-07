@@ -1,0 +1,238 @@
+/* Game Card - Gamified reward card */
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 19px 10px;
+  border-radius: 12px;
+  border: 1px solid #5B3AED;
+  background: linear-gradient(
+    100deg,
+    #4037C4 0%,
+    #1F1A5E 100%
+  );
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Shard icon container */
+.shardContainer {
+  flex-shrink: 0;
+  width: 115px;
+  height: 119px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shardBox {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+  background: #5169FF;
+  border: 2px solid #7D89F2;
+  box-shadow: 0 4px 8.7px rgba(0, 0, 0, 0.58);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.shardIcon {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+/* Text area */
+.textContainer {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+
+.taskName {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.taskDescription {
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+/* Right action area */
+.actionContainer {
+  flex-shrink: 0;
+  width: 194px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* Completion ticker pill */
+.completionTicker {
+  height: 35px;
+  border-radius: 6px;
+  border: 1px solid #424CB9;
+  background: linear-gradient(
+    180deg,
+    #051B44 0%,
+    #022249 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tickerText {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 2px;
+}
+
+/* Accept button - layered CRT/scanline effect */
+.acceptButton {
+  position: relative;
+  width: 100%;
+  height: 49px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.acceptButton:hover .acceptBody {
+  opacity: 0.92;
+}
+
+.acceptButton:active .acceptBody {
+  transform: scale(0.98);
+}
+
+/* Golden radial glow behind button */
+.acceptGlow {
+  position: absolute;
+  inset: 2px;
+  background: radial-gradient(
+    ellipse at 21% 82%,
+    #FDDC75 0%,
+    #FCDB72 39%,
+    #BC4B27 100%
+  );
+  box-shadow:
+    inset 4px 3px 8px #BA4F2D,
+    inset -4px -3px 9px #BA4F2D;
+  filter: blur(15px);
+}
+
+/* Dark body with scanlines */
+.acceptBody {
+  position: absolute;
+  inset: 4px 3px;
+  background: #111113;
+  backdrop-filter: blur(31px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+/* Scanline overlay pattern */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(217, 217, 217, 0.06) 2px,
+    rgba(217, 217, 217, 0.06) 4px
+  );
+}
+
+.acceptText {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  color: #DFDCBD;
+  text-transform: uppercase;
+}
+
+/* White hairline border */
+.acceptBorder {
+  position: absolute;
+  inset: 2px;
+  border: 0.6px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .shardContainer {
+    width: 100%;
+    height: auto;
+  }
+
+  .shardBox {
+    width: 80px;
+    height: 80px;
+  }
+
+  .shardIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .taskName {
+    font-size: 20px;
+  }
+
+  .taskDescription {
+    font-size: 14px;
+  }
+
+  .actionContainer {
+    width: 100%;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .completionTicker {
+    flex: 0 0 auto;
+    width: 80px;
+  }
+
+  .acceptButton {
+    flex: 1;
+  }
+}
