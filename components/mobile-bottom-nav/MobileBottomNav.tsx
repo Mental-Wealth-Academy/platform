@@ -55,10 +55,19 @@ export const MobileBottomNav: React.FC = () => {
         <span className={styles.label}>Gallery</span>
       </Link>
 
-      {/* Markets */}
-      <Link href="/markets" className={`${styles.tab} ${pathname === '/markets' ? styles.tabActive : ''}`}>
-        <Image src="/icons/nav-teleport.svg" alt="" width={22} height={22} className={styles.iconImg} />
-        <span className={styles.label}>Markets</span>
+      {/* Digipet */}
+      <Link href="/digipet" className={`${styles.tab} ${pathname === '/digipet' ? styles.tabActive : ''}`}>
+        <svg className={styles.icon} width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle cx="11" cy="3" r="2" fill="currentColor" opacity="0.7" />
+          <line x1="11" y1="5" x2="11" y2="7" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+          <ellipse cx="11" cy="11" rx="5" ry="4.5" fill="currentColor" />
+          <circle cx="9" cy="10" r="1" fill="#111" />
+          <circle cx="13" cy="10" r="1" fill="#111" />
+          <ellipse cx="11" cy="17" rx="4" ry="3.5" fill="currentColor" opacity="0.85" />
+          <rect x="7" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
+          <rect x="12" y="19" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
+        </svg>
+        <span className={styles.label}>Digipet</span>
       </Link>
     </nav>
   );
