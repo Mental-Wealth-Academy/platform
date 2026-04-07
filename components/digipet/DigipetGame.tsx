@@ -41,6 +41,8 @@ export default function DigipetGame() {
   const [feedOpen, setFeedOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
+  const [quip, setQuip] = useState<string | null>(null);
+  const quipTimer = useRef<ReturnType<typeof setTimeout>>();
   const bridge = useRef<ChaoBridge>(null!);
   const toastT = useRef<ReturnType<typeof setTimeout>>();
   const audioOk = useRef(false);
@@ -107,11 +109,35 @@ export default function DigipetGame() {
     setFeedOpen(false);
   }
 
+  const QUIPS = [
+    'brain feel nice',
+    'more touch pls',
+    'me think hard',
+    'why sky big',
+    'snooze soon',
+    'belly warm',
+    'thoughts go brrr',
+    'need nap bad',
+    'u smell like star',
+    'head full, no think',
+    'where treat go',
+    'big stretch now',
+    'me forgot thing',
+    'purr but alien',
+    'one brain cell left',
+    'sleepy but loyal',
+    'u give serotonin',
+    'me just lil guy',
+  ];
+
   function play() {
     audio(); if (!save || !pet) return;
     sfx('pet');
     doSave({ ...save, chao: [{ ...pet, happiness: clamp(pet.happiness + 5, 0, 100) }, ...save.chao.slice(1)] });
     setTapAnim(true); setTimeout(() => setTapAnim(false), 500);
+    setQuip(QUIPS[Math.floor(Math.random() * QUIPS.length)]);
+    clearTimeout(quipTimer.current);
+    quipTimer.current = setTimeout(() => setQuip(null), 2200);
   }
 
   // ── Render ──────────────────────
@@ -125,6 +151,11 @@ export default function DigipetGame() {
     <div className={styles.page} onClick={audio}>
       {/* Shard count - subtle top right */}
       <div className={styles.shardPill}>{shards} shards</div>
+
+      {/* Quip */}
+      <div className={styles.quipWrap}>
+        {quip && <p className={styles.quip}>{quip}</p>}
+      </div>
 
       {/* Pet */}
       <div className={styles.petWrap} onClick={play}>

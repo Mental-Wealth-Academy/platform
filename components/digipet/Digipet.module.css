@@ -33,6 +33,34 @@
 @keyframes idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes tap { 0% { transform: scale(1) rotate(0); } 25% { transform: scale(1.08) rotate(-3deg); } 50% { transform: scale(.95) rotate(2deg); } 75% { transform: scale(1.03) rotate(-1deg); } 100% { transform: scale(1) rotate(0); } }
 
+/* ── Quip ────────────────── */
+.quipWrap {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quip {
+  font-family: 'Courier New', 'Courier', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a1a1aa;
+  letter-spacing: .5px;
+  margin: 0;
+  animation: quipIn .3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #52525b;
+  animation: quipIn .3s ease, blink .6s step-end infinite;
+}
+@keyframes quipIn {
+  from { max-width: 0; opacity: 0; }
+  to { max-width: 300px; opacity: 1; }
+}
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
 /* ── Info ────────────────── */
 .info { text-align: center; margin-top: 12px; }
 .name { font-size: 22px; font-weight: 700; color: #f4f4f5; letter-spacing: -.3px; margin: 0; }
