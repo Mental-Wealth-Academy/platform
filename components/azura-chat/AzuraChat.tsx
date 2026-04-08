@@ -940,7 +940,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
-                        <span className={styles.toolCardTitle}>Credit Builder</span>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Credit Builder</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
+                        </span>
                         <span className={styles.toolCardMeta}>Repair and level up your profile.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
@@ -952,7 +955,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('time'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
-                        <span className={styles.toolCardTitle}>Time Management</span>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Time Management</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Time Management</span>
+                        </span>
                         <span className={styles.toolCardMeta}>Stack up to four timed focus blocks.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
@@ -964,7 +970,10 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                   <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
-                        <span className={styles.toolCardTitle}>Research</span>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
+                        </span>
                         <span className={styles.toolCardMeta}>Deep-dive sourcing and synthesis.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
