@@ -938,25 +938,40 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
                   <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
-                    <span className={styles.toolSlideWrap}>
-                      <span className={styles.toolSlideText}>Credit Builder</span>
-                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolCardTitle}>Credit Builder</span>
+                        <span className={styles.toolCardMeta}>Repair and level up your profile.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                      </span>
                     </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
                   <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('time'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
-                    <span className={styles.toolSlideWrap}>
-                      <span className={styles.toolSlideText}>Time Management</span>
-                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Time Management</span>
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolCardTitle}>Time Management</span>
+                        <span className={styles.toolCardMeta}>Stack up to four timed focus blocks.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
+                      </span>
                     </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
                   <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <span className={styles.toolSlideWrap}>
-                      <span className={styles.toolSlideText}>Research</span>
-                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolCardTitle}>Research</span>
+                        <span className={styles.toolCardMeta}>Deep-dive sourcing and synthesis.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                      </span>
                     </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
                 </div>
               </div>
