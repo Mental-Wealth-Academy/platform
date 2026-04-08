@@ -991,34 +991,10 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
-.expandedQuickCard::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -75%;
-  width: 50%;
-  height: 200%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.15) 45%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.15) 55%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  transition: left 0.8s ease;
-  pointer-events: none;
-}
-
 .expandedQuickCard:hover:not(:disabled) {
   transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.28);
   box-shadow: 0 12px 32px rgba(22, 34, 112, 0.34);
-}
-
-.expandedQuickCard:hover:not(:disabled)::before {
-  left: 125%;
 }
 
 .expandedQuickCard:active:not(:disabled) {
