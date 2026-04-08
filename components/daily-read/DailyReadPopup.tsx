@@ -30,7 +30,6 @@ const WEEK_INTROS: Record<number, { title: string; body: string }> = {
 };
 
 const STORAGE_KEY = 'dailyReadLastSeenWeek';
-
 const WEEK_DIALOGUES: Record<number, { emotion: BlueEmotion; message: string }> = {
   0: {
     emotion: 'happy',
@@ -90,7 +89,8 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
             key={activeWeek}
             message={weekDialogue.message}
             emotion={weekDialogue.emotion}
-            showSkip
+            fixedHeight
+            showSkip={false}
           />
         </div>
 

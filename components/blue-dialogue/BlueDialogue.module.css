@@ -83,6 +83,11 @@
   position: relative;
 }
 
+.dialogueContentFixed {
+  min-height: 128px;
+  height: 128px;
+}
+
 .dialogueContent::before {
   content: '';
   position: absolute;
@@ -117,6 +122,21 @@
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.messageScrollable {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.messageScrollable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messageScrollable::-webkit-scrollbar-thumb {
+  background: rgba(81, 104, 255, 0.25);
+  border-radius: 999px;
 }
 
 .cursor {
@@ -236,6 +256,11 @@
 
   .dialogueContent {
     padding: 14px 16px;
+  }
+
+  .dialogueContentFixed {
+    min-height: 116px;
+    height: 116px;
   }
 
   .dialogueContent::before,

@@ -14,6 +14,8 @@ interface BlueDialogueProps {
   autoStart?: boolean;
   showSkip?: boolean;
   onSkip?: () => void;
+  avatarSrc?: string;
+  fixedHeight?: boolean;
 }
 
 const emotionImages: Record<BlueEmotion, string> = {
@@ -23,6 +25,8 @@ const emotionImages: Record<BlueEmotion, string> = {
   pain: 'https://i.imgur.com/ZYpNkse.png',
 };
 
+const DEFAULT_BLUE_AVATAR = '/uploads/blueagent.png';
+
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
   message,
   emotion = 'happy',
@@ -31,6 +35,8 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   autoStart = true,
   showSkip = true,
   onSkip,
+  avatarSrc,
+  fixedHeight = false,
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -132,7 +138,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       <div className={styles.avatarContainer}>
         <div className={styles.avatarWrapper}>
           <Image
-            src={emotionImages[currentEmotion]}
+            src={avatarSrc ?? DEFAULT_BLUE_AVATAR}
             alt={`Blue ${currentEmotion}`}
             width={80}
             height={80}
@@ -141,13 +147,13 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
           />
         </div>
         <div className={styles.nameTag}>
-          <span className={styles.name}>Blue</span>
-          <span className={styles.role}>AI Co-pilot</span>
+          <span className={styles.name}>Agent Blue</span>
+          <span className={styles.role}>Leadership Team</span>
         </div>
       </div>
       <div className={styles.dialogueBox}>
-        <div className={styles.dialogueContent}>
-          <p className={styles.message}>
+        <div className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''}`}>
+          <p className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''}`}>
             {displayedText}
             {isTyping && <span className={styles.cursor}>|</span>}
           </p>
