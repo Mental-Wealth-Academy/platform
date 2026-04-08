@@ -1,0 +1,24 @@
+<svg width="1770" height="342" viewBox="0 0 1770 342" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arcGradient" x1="0" y1="342" x2="1770" y2="342" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF3E8E"/>
+      <stop offset="0.12" stop-color="#B25BFF"/>
+      <stop offset="0.24" stop-color="#52A3FF"/>
+      <stop offset="0.36" stop-color="#00E6C3"/>
+      <stop offset="0.5" stop-color="#FFE24A"/>
+      <stop offset="0.64" stop-color="#9EF26A"/>
+      <stop offset="0.76" stop-color="#00F0D0"/>
+      <stop offset="0.88" stop-color="#8A73FF"/>
+      <stop offset="1" stop-color="#FF4AA7"/>
+    </linearGradient>
+    <linearGradient id="starGradient" x1="885" y1="0" x2="885" y2="342" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFE24A"/>
+      <stop offset="0.5" stop-color="#FFF8D6"/>
+      <stop offset="1" stop-color="#FFD628"/>
+    </linearGradient>
+  </defs>
+  <path d="M1 341C177 273 429 220 838 201" stroke="url(#arcGradient)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M932 201C1338 213 1590 263 1769 341" stroke="url(#arcGradient)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M885 0L893.9 168.1L885 342L876.1 168.1L885 0Z" fill="url(#starGradient)"/>
+  <path d="M794 169L871.6 159.9L885 90L898.4 159.9L976 169L898.4 178.1L885 248L871.6 178.1L794 169Z" fill="url(#starGradient)"/>
+</svg>

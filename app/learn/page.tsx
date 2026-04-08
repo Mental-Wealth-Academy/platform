@@ -121,10 +121,10 @@ export default function LearnPage() {
         <main className={styles.content}>
           <div className={styles.heroSection}>
             <Image
-              src="https://i.imgur.com/VhmwZEG.png"
+              src="/icons/hero-starform.svg"
               alt="Mental Wealth Academy"
-              width={180}
-              height={180}
+              width={1770}
+              height={342}
               className={styles.logo}
               priority
             />

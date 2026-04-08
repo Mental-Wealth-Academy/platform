@@ -242,6 +242,12 @@ const SkyBackground = memo(() => {
       return v;
     }
 
+    float cloudShape(vec2 uv, float seed) {
+      float base = fbm(uv + seed);
+      float detail = fbm(uv * 1.9 - seed * 0.37);
+      return mix(base, detail, 0.35);
+    }
+
     void main() {
       // Sky gradient — deep blue top to lighter horizon
       vec3 skyTop = vec3(0.18, 0.35, 0.75);     // deep blue
@@ -252,34 +258,53 @@ const SkyBackground = memo(() => {
       vec3 sky = mix(skyHorizon, skyMid, smoothstep(0.0, 0.4, t));
       sky = mix(sky, skyTop, smoothstep(0.4, 1.0, t));
 
+      vec3 cloudHighlight = vec3(1.0, 0.995, 0.985);
+      vec3 cloudBody = vec3(0.92, 0.95, 1.0);
+      vec3 cloudShadow = vec3(0.56, 0.68, 0.88);
+
       // ── Far clouds — small, slow, faded, biased to the left + lower ──
       vec2 uvFar = vUv * vec2(2.0, 1.5) + vec2(time * 0.006, time * 0.002);
-      float farCloud = fbm(uvFar + 3.7);
-      farCloud = smoothstep(0.42, 0.72, farCloud) * 0.35;
+      float farField = cloudShape(uvFar, 3.7);
+      float farCloud = smoothstep(0.42, 0.72, farField) * 0.5;
+      float farCore = smoothstep(0.54, 0.8, farField) * 0.28;
       // Fade: strongest bottom-left, fades toward top-right
       float farBias = smoothstep(0.8, 0.2, vUv.x) * smoothstep(0.7, 0.15, vUv.y);
       farCloud *= farBias;
+      farCore *= farBias;
       // Haze tint — distant clouds pick up sky color
-      vec3 farColor = mix(vec3(1.0), skyHorizon, 0.3);
-      sky = mix(sky, farColor, farCloud * 0.45);
+      vec3 farColor = mix(cloudBody, skyHorizon, 0.42);
+      sky = mix(sky, farColor, farCloud * 0.62);
+      sky = mix(sky, cloudHighlight, farCore * 0.22);
 
       // ── Mid clouds — moderate, medium speed ──
       vec2 uvMid = vUv * vec2(3.0, 2.0) + vec2(time * 0.012, time * 0.004);
-      float midCloud = fbm(uvMid);
-      midCloud = smoothstep(0.43, 0.7, midCloud) * 0.45;
+      float midField = cloudShape(uvMid, 7.1);
+      float midCloud = smoothstep(0.4, 0.69, midField) * 0.66;
+      float midCore = smoothstep(0.51, 0.79, midField) * 0.46;
+      float midShadow = smoothstep(0.35, 0.64, midField) * (1.0 - smoothstep(0.54, 0.8, midField)) * 0.56;
       float midMask = smoothstep(0.05, 0.3, t) * smoothstep(1.0, 0.55, t);
       midCloud *= midMask;
-      sky = mix(sky, vec3(1.0), midCloud * 0.5);
+      midCore *= midMask;
+      midShadow *= midMask;
+      sky = mix(sky, mix(cloudBody, cloudHighlight, 0.45), midCloud * 0.68);
+      sky = mix(sky, cloudHighlight, midCore * 0.38);
+      sky = mix(sky, cloudShadow, midShadow * 0.34);
 
       // ── Near clouds — larger, faster, more opaque, biased top-right ──
       vec2 uvNear = vUv * vec2(1.4, 1.0) + vec2(time * 0.025, -time * 0.006);
-      float nearCloud = fbm(uvNear + 11.2);
-      nearCloud = smoothstep(0.38, 0.65, nearCloud) * 0.7;
+      float nearField = cloudShape(uvNear, 11.2);
+      float nearCloud = smoothstep(0.35, 0.62, nearField) * 0.92;
+      float nearCore = smoothstep(0.47, 0.76, nearField) * 0.68;
+      float nearShadow = smoothstep(0.3, 0.58, nearField) * (1.0 - smoothstep(0.5, 0.77, nearField)) * 0.76;
       // Fade: strongest top-right, fades toward bottom-left
       float nearBias = smoothstep(0.2, 0.85, vUv.x) * smoothstep(0.3, 0.9, vUv.y);
       nearCloud *= nearBias;
-      // Near clouds are brighter, slightly larger forms
-      sky = mix(sky, vec3(1.0, 1.0, 0.99), nearCloud * 0.6);
+      nearCore *= nearBias;
+      nearShadow *= nearBias;
+      // Near clouds keep bright tops but get denser bodies and cooler undersides.
+      sky = mix(sky, cloudBody, nearCloud * 0.78);
+      sky = mix(sky, cloudHighlight, nearCore * 0.52);
+      sky = mix(sky, cloudShadow, nearShadow * 0.42);
 
       // Clear center for hero text
       float centerClear = 1.0 - smoothstep(0.15, 0.4, length(vUv - vec2(0.5, 0.5)));

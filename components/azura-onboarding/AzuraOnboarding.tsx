@@ -173,11 +173,12 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
   return (
     <div className={styles.card}>
       <Image
-        src="https://i.imgur.com/VhmwZEG.png"
+        src="/icons/hero-starform.svg"
         alt=""
-        width={180}
-        height={180}
+        width={1770}
+        height={342}
         className={styles.starLogo}
+        priority
       />
 
       <h1 className={styles.heroHeading}>

@@ -39,7 +39,7 @@ export const HeroSection: React.FC = () => {
     <>
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
-          <Image src="https://i.imgur.com/VhmwZEG.png" alt="" width={200} height={200} className={styles.heroStarform} />
+          <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
           <h1 className={styles.heroHeadline}>Challenge <em>Your Mind</em></h1>
           <p className={styles.heroSubtext}>
             A seasonal micro-university that is helping you break through slumps, earn gems, and activate your highest potential.

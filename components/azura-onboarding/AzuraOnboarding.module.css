@@ -28,8 +28,8 @@
 
 /* Star logo above heading */
 .starLogo {
-  width: 140px;
-  height: 140px;
+  width: 180px;
+  height: auto;
   object-fit: contain;
   margin-bottom: 4px;
   animation: starPulse 3s ease-in-out infinite;
@@ -307,8 +307,8 @@
   }
 
   .starLogo {
-    width: 100px;
-    height: 100px;
+    width: 132px;
+    height: auto;
     margin-bottom: 2px;
   }
 
