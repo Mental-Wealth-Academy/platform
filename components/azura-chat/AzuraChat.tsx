@@ -73,13 +73,29 @@ const KNOWLEDGE_DOMAINS = [
 ];
 
 const RADAR_AXES = [
-  { label: 'Cognition', value: 92, color: '#5168FF' },
-  { label: 'Emotion', value: 65, color: '#E8556D' },
-  { label: 'Behavior', value: 78, color: '#FF8844' },
-  { label: 'Resilience', value: 85, color: '#7B8FFF' },
-  { label: 'Self-Awareness', value: 58, color: '#C084FC' },
-  { label: 'Motivation', value: 72, color: '#3D8BFF' },
+  { label: 'Memory', value: 88, color: '#5168FF' },
+  { label: 'Research', value: 83, color: '#3D8BFF' },
+  { label: 'Planning', value: 76, color: '#7B8FFF' },
+  { label: 'Guidance', value: 91, color: '#C084FC' },
+  { label: 'Presence', value: 68, color: '#E8556D' },
+  { label: 'Follow-Through', value: 80, color: '#FF8844' },
 ];
+
+function getRadarPoint(index: number, scale: number, radius = 80) {
+  const angle = (index / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+  const r = radius * scale;
+  return {
+    x: 100 + r * Math.cos(angle),
+    y: 100 + r * Math.sin(angle),
+  };
+}
+
+function getRadarPoints(scales: number[], radius = 80) {
+  return scales.map((scale, index) => {
+    const point = getRadarPoint(index, scale, radius);
+    return `${point.x},${point.y}`;
+  }).join(' ');
+}
 
 const SHARD_COST = 10;
 const RESEARCH_COST = 1000;
@@ -858,68 +874,86 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.radarSection}>
                 <div className={styles.radarWrap}>
                   <svg viewBox="0 0 200 200" className={styles.radarSvg}>
+                    {[1.0, 0.78, 0.56, 0.34].map((scale, ri) => (
+                      <polygon
+                        key={`fill-${ri}`}
+                        points={getRadarPoints(RADAR_AXES.map(() => scale))}
+                        fill={ri % 2 === 0 ? 'rgba(255, 255, 255, 0.028)' : 'rgba(81, 104, 255, 0.018)'}
+                        stroke="none"
+                      />
+                    ))}
                     {/* Web rings */}
                     {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, ri) => (
                       <polygon
                         key={ri}
-                        points={RADAR_AXES.map((_, i) => {
-                          const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
-                          const r = 80 * scale;
-                          return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
-                        }).join(' ')}
+                        points={getRadarPoints(RADAR_AXES.map(() => scale))}
                         fill="none"
-                        stroke="rgba(255, 255, 255, 0.04)"
-                        strokeWidth="1"
+                        stroke="rgba(255, 255, 255, 0.05)"
+                        strokeWidth={ri === 4 ? '1.2' : '1'}
                       />
                     ))}
                     {/* Axis lines with individual colors */}
                     {RADAR_AXES.map((axis, i) => {
-                      const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
+                      const point = getRadarPoint(i, 1);
                       return (
                         <line
                           key={i}
                           x1="100" y1="100"
-                          x2={100 + 80 * Math.cos(angle)}
-                          y2={100 + 80 * Math.sin(angle)}
+                          x2={point.x}
+                          y2={point.y}
                           stroke={axis.color}
                           strokeWidth="1"
                           opacity="0.15"
                         />
                       );
                     })}
-                    {/* Individual colored web layers per axis */}
-                    {RADAR_AXES.map((axis, ai) => (
-                      <polygon
-                        key={ai}
-                        points={RADAR_AXES.map((_, i) => {
-                          const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
-                          const r = (i === ai ? axis.value / 100 : 0.15) * 80;
-                          return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
-                        }).join(' ')}
-                        fill={`${axis.color}18`}
-                        stroke={axis.color}
-                        strokeWidth="1"
-                        opacity="0.7"
-                      />
-                    ))}
+                    {/* Broader colored facets so the web reads layered instead of star-shaped */}
+                    {RADAR_AXES.map((axis, index) => {
+                      const prev = (index - 1 + RADAR_AXES.length) % RADAR_AXES.length;
+                      const next = (index + 1) % RADAR_AXES.length;
+                      const scales = RADAR_AXES.map((_, i) => {
+                        if (i === index) return axis.value / 100;
+                        if (i === prev || i === next) return 0.46;
+                        return 0.18;
+                      });
+                      return (
+                        <polygon
+                          key={`facet-${axis.label}`}
+                          points={getRadarPoints(scales)}
+                          fill={`${axis.color}1F`}
+                          stroke={axis.color}
+                          strokeWidth="1.1"
+                          opacity="0.82"
+                        />
+                      );
+                    })}
                     {/* Combined data polygon on top */}
                     <polygon
-                      points={RADAR_AXES.map((axis, i) => {
-                        const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
-                        const r = (axis.value / 100) * 80;
-                        return `${100 + r * Math.cos(angle)},${100 + r * Math.sin(angle)}`;
-                      }).join(' ')}
-                      fill="rgba(81, 104, 255, 0.06)"
-                      stroke="rgba(255, 255, 255, 0.15)"
-                      strokeWidth="1"
+                      points={getRadarPoints(RADAR_AXES.map((axis) => axis.value / 100))}
+                      fill="rgba(81, 104, 255, 0.11)"
+                      stroke="rgba(255, 255, 255, 0.24)"
+                      strokeWidth="1.4"
                     />
+                    {RADAR_AXES.map((axis, i) => {
+                      const point = getRadarPoint(i, axis.value / 100);
+                      return (
+                        <circle
+                          key={`node-${axis.label}`}
+                          cx={point.x}
+                          cy={point.y}
+                          r="3.2"
+                          fill={axis.color}
+                          stroke="rgba(255, 255, 255, 0.7)"
+                          strokeWidth="1"
+                        />
+                      );
+                    })}
                   </svg>
                   {/* Labels positioned around the chart */}
                   {RADAR_AXES.map((axis, i) => {
-                    const angle = (i / RADAR_AXES.length) * 2 * Math.PI - Math.PI / 2;
-                    const labelR = 95;
-                    const x = 50 + (labelR / 100) * 50 * Math.cos(angle);
-                    const y = 50 + (labelR / 100) * 50 * Math.sin(angle);
+                    const labelPoint = getRadarPoint(i, 1.18);
+                    const x = (labelPoint.x / 200) * 100;
+                    const y = (labelPoint.y / 200) * 100;
                     return (
                       <span
                         key={axis.label}
