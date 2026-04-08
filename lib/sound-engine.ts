@@ -9,6 +9,7 @@ export type SoundType =
   | 'toggle-on'
   | 'toggle-off'
   | 'celebration'
+  | 'alarm'
   | 'hum';
 
 // C pentatonic scale frequencies
@@ -265,6 +266,14 @@ export class SoundEngine {
           lfo.start(shimmerStart);
           lfo.stop(shimmerStart + this.dur(0.6));
         }
+        break;
+      }
+
+      case 'alarm': {
+        const base = scale[3];
+        this.tone(base, now, this.dur(0.18), 'square', 0.28);
+        this.tone(base * 1.5, now + this.dur(0.12), this.dur(0.2), 'triangle', 0.24);
+        this.tone(scale[4] * 2, now + this.dur(0.3), this.dur(0.34), 'sine', 0.18);
         break;
       }
     }

@@ -6,6 +6,7 @@ import styles from './AzuraChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
 import type { CreditIntakeData } from './CreditBuilderInline';
+import TimeManagementInline from './TimeManagementInline';
 import ResearchCards from './ResearchCards';
 import type { ResearchSource } from './ResearchCards';
 
@@ -118,6 +119,7 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
+  const [timeManagementVisible, setTimeManagementVisible] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -609,9 +611,17 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
 
     if (action === 'credit') {
       send('I want to build my credit', 'happy');
+      setTimeManagementVisible(false);
       setCreditStep('intake');
       addAzuraMessage(
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
+      );
+    } else if (action === 'time') {
+      send('Help me time block', 'happy');
+      setCreditStep('hidden');
+      setTimeManagementVisible(true);
+      addAzuraMessage(
+        "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
       );
     } else if (action === 'research') {
       if (researchMode) {
@@ -695,6 +705,23 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
           step={creditStep as 'intake' | 'payment' | 'processing' | 'done'}
           onComplete={handleCreditIntakeComplete}
           onRequestPayment={handleCreditPayment}
+        />
+      )}
+
+      {timeManagementVisible && (
+        <TimeManagementInline
+          onTimerStarted={(taskTitle, durationMinutes) => {
+            showEmote('happy', 5000);
+            addAzuraMessage(`timer's live. ${taskTitle} for ${durationMinutes} minutes.`);
+          }}
+          onNextTask={(taskTitle, durationMinutes) => {
+            showEmote('surprised', 4500);
+            addAzuraMessage(`next up: ${taskTitle}. ${durationMinutes} minutes. go.`);
+          }}
+          onSessionComplete={() => {
+            showEmote('joyful', 5000);
+            addAzuraMessage("clean run. you're done.");
+          }}
         />
       )}
 
@@ -915,6 +942,13 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
                     <span className={styles.toolSlideWrap}>
                       <span className={styles.toolSlideText}>Credit Builder</span>
                       <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
+                    </span>
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('time'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
+                    <span className={styles.toolSlideWrap}>
+                      <span className={styles.toolSlideText}>Time Management</span>
+                      <span className={`${styles.toolSlideText} ${styles.toolSlideClone}`}>Time Management</span>
                     </span>
                   </button>
                   <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
