@@ -3,7 +3,7 @@ import bluePersona from '@/lib/bluepersonality.json';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const BLUE_VOICE_ID = bluePersona.settings?.voice?.voiceId || process.env.AZURA_VOICE_ID || '';
+const BLUE_VOICE_ID = process.env.AZURA_VOICE_ID || bluePersona.settings?.voice?.voiceId || '';
 const BLUE_VOICE_MODEL = bluePersona.settings?.voice?.model || 'eleven_flash_v2_5';
 
 async function requestTts(text: string, voiceId?: string) {
@@ -16,10 +16,10 @@ async function requestTts(text: string, voiceId?: string) {
     payload.voiceId = voiceId;
   }
 
-  return fetch(`${ELIZA_BASE_URL}/api/elevenlabs/tts`, {
+  return fetch(`${ELIZA_BASE_URL}/api/v1/voice/tts`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${ELIZA_API_KEY}`,
+      'X-API-Key': ELIZA_API_KEY,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
