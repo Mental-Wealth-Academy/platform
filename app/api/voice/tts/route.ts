@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
+const AZURA_VOICE_ID = 'FqO9krgIMfqsiPX6GaSC';
 
 export async function POST(req: NextRequest) {
   if (!ELIZA_API_KEY) {
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         text,
+        voiceId: AZURA_VOICE_ID,
         modelId: 'eleven_flash_v2_5',
       }),
     });
