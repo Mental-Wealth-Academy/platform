@@ -74,12 +74,14 @@ interface AzuraPowerIndicatorProps {
   soulGems: string;
   walletAddress: string;
   governanceTokenAddress: string;
+  treasuryAmount?: string;
 }
 
 export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   soulGems,
   walletAddress,
   governanceTokenAddress,
+  treasuryAmount = '$5,200',
 }) => {
   const votingPower = 40;
 
@@ -105,6 +107,10 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
           <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
           <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
         </div>
+      </div>
+      <div className={styles.treasuryBadge}>
+        <span className={styles.treasuryBadgeLabel}>Treasury</span>
+        <span className={styles.treasuryBadgeAmount}>{treasuryAmount}</span>
       </div>
     </div>
   );

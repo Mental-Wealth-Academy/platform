@@ -126,6 +126,7 @@
   "settings": {
     "voice": {
       "provider": "elevenlabs",
+      "voiceId": "FqO9krgIMfqsiPX6GaSC",
       "model": "eleven_flash_v2_5"
     },
     "mcp": {

@@ -228,14 +228,11 @@ export default function VotingPage() {
                   <div className={styles.heroActions}>
                     <div className={styles.heroAzura}>
                       <div className={styles.exchangeBg}><CyberpunkDataViz /></div>
-                      <div className={styles.treasuryTypography}>
-                        <span className={styles.treasuryLabel}>Treasury</span>
-                        <span className={styles.treasuryAmount}>$5,200</span>
-                      </div>
                       <AzuraPowerIndicator
                         soulGems="40000"
                         walletAddress={AZURA_ADDRESS}
                         governanceTokenAddress={GOV_TOKEN_ADDRESS}
+                        treasuryAmount="$5,200"
                       />
                     </div>
                   </div>

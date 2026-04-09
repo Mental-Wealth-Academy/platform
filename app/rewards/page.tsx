@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GameCard from '@/components/game-card/GameCard';
+import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
+import MintModal from '@/components/mint-modal/MintModal';
 import RewardDetailModal, { Quest } from '@/components/reward-detail-modal/RewardDetailModal';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS } from '@/lib/quest-definitions';
@@ -19,8 +20,10 @@ export default function RewardsPage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const [showMintModal, setShowMintModal] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
+  const [countdown, setCountdown] = useState('12:41:32');
   const { play } = useSound();
 
   const refreshQuestData = useCallback(async () => {
@@ -70,6 +73,25 @@ export default function RewardsPage() {
     };
   }, [refreshQuestData]);
 
+  useEffect(() => {
+    const targetTime = Date.now() + ((12 * 60 * 60) + (41 * 60) + 32) * 1000;
+
+    const tick = () => {
+      const remaining = Math.max(0, targetTime - Date.now());
+      const hours = Math.floor(remaining / 3_600_000);
+      const minutes = Math.floor((remaining % 3_600_000) / 60_000);
+      const seconds = Math.floor((remaining % 60_000) / 1000);
+
+      setCountdown(
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+      );
+    };
+
+    tick();
+    const interval = window.setInterval(tick, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
   const quests = useMemo<Quest[]>(() => {
     return QUEST_DEFINITIONS.map((quest) => {
       const claimedCount = Math.min(questCounts[quest.key] ?? 0, quest.targetCount);
@@ -106,18 +128,15 @@ export default function RewardsPage() {
           <div className={styles.content}>
             <div className={styles.heading}>
               <div className={styles.headingInner}>
-                <Image
-                  src="/icons/ui-shard.svg"
-                  alt=""
-                  width={36}
-                  height={36}
-                  className={styles.headingIcon}
-                />
                 <h1 className={styles.headingTitle}>Quests</h1>
               </div>
               <p className={styles.headingSubtitle}>
                 Track quest requirements and claim shards for finished work
               </p>
+            </div>
+            <div className={styles.headingTimerRow}>
+              <span className={styles.headingTimerLabel}>time until refresh</span>
+              <span className={styles.headingTimer}>{countdown}</span>
             </div>
 
             <div className={styles.cardList}>
@@ -125,7 +144,7 @@ export default function RewardsPage() {
                 <div key={quest.id} onMouseEnter={() => play('hover')}>
                   <GameCard
                     questName={quest.title}
-                    questDescription={`${quest.points} pts — ${quest.desc}`}
+                    questDescription={quest.desc}
                     progressCurrent={quest.progressCount ?? 0}
                     progressTotal={quest.targetCount ?? 1}
                     onOpenQuest={() => handleAccept(quest)}
@@ -133,10 +152,13 @@ export default function RewardsPage() {
                 </div>
               ))}
             </div>
+
+            <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
           </div>
         </main>
       </div>
 
+      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
       <RewardDetailModal
         isOpen={isRewardModalOpen}
         onClose={() => { setIsRewardModalOpen(false); setSelectedQuest(null); }}

@@ -420,7 +420,10 @@
   background: transparent;
   border-color: transparent;
   box-shadow: none;
-  padding: 16px 36px 28px;
+  padding: 28px 36px;
+  display: flex;
+  align-items: center;
+  min-height: 126px;
 }
 
 .heroAzura img {
@@ -454,7 +457,8 @@
   }
 
   .heroAzura > div:last-child {
-    padding: 12px 20px 20px;
+    padding: 18px 20px;
+    min-height: unset;
   }
 
   .heroAzura img {

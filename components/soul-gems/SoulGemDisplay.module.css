@@ -51,60 +51,67 @@
 .azuraPower {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  background: var(--color-background);
-  border: 2px solid #ffffff;
+  gap: 10px;
+  padding: 12px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
+  backdrop-filter: none;
 }
 
 .avatarSection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 3px;
   flex-shrink: 0;
+  width: 54px;
+  min-width: 54px;
+  align-self: center;
 }
 
 .votingPowerHeader {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
 .azuraAvatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   flex-shrink: 0;
-  border: 1px solid rgba(81, 104, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(81, 104, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 18px rgba(81, 104, 255, 0.18);
 }
 
 .azuraName {
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
-  color: var(--color-text-dark);
+  color: rgba(255, 255, 255, 0.95);
   margin: 0;
   line-height: 1;
+  letter-spacing: 0.02em;
 }
 
 .aiTag {
-  font-size: 9px;
-  padding: 2px 6px;
-  background: rgba(81, 104, 255, 0.08);
+  font-size: 10px;
+  padding: 3px 7px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-sm);
-  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  color: rgba(255, 255, 255, 0.66);
   font-weight: 600;
   font-family: var(--font-button);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Voting Power Section */
@@ -114,28 +121,30 @@
   gap: 4px;
   flex: 1;
   min-width: 0;
+  justify-content: center;
 }
 
 .votingPowerValue {
   font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--color-primary);
+  color: #ffffff;
   line-height: 1;
+  letter-spacing: -0.03em;
 }
 
 .votingBar {
   position: relative;
   width: 100%;
   height: 8px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
   overflow: visible;
 }
 
 .votingBarFill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 999px;
   background: linear-gradient(
     90deg,
     #5168FF,
@@ -153,9 +162,45 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 2.5px solid rgba(0, 0, 0, 0.25);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  background: #16171F;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.treasuryBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+  width: 170px;
+  min-width: 170px;
+  min-height: 84px;
+  padding: 12px 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.treasuryBadgeLabel {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1;
+}
+
+.treasuryBadgeAmount {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  text-shadow: none;
 }
 
 @keyframes shimmer {
@@ -169,13 +214,15 @@
 
 @media (max-width: 768px) {
   .azuraPower {
-    padding: 12px;
-    gap: 10px;
+    padding: 10px 12px;
+    gap: 8px;
+    align-items: stretch;
+    flex-wrap: wrap;
   }
 
   .azuraAvatar {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
   }
 
   .azuraName {
@@ -187,7 +234,23 @@
   }
 
   .votingPowerValue {
-    font-size: 14px;
+    font-size: 18px;
+  }
+
+  .votingPowerSection {
+    min-width: 0;
+    flex-basis: calc(100% - 70px);
+  }
+
+  .treasuryBadge {
+    width: 100%;
+    min-width: 0;
+    min-height: 70px;
+    align-items: center;
+  }
+
+  .treasuryBadgeAmount {
+    font-size: 24px;
   }
 }
 
@@ -213,4 +276,3 @@
   background: #16171F;
   border-color: rgba(255, 255, 255, 0.25);
 }
-

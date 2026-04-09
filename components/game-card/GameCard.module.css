@@ -9,10 +9,10 @@
   border-radius: 16px;
   border: 1px solid #5B3AED;
   background: linear-gradient(
-    135deg,
+    180deg,
     #5B4FD9 0%,
-    #3D35A8 50%,
-    #2A237A 100%
+    #3D35A8 48%,
+    #1F1A5E 100%
   );
   width: 100%;
   box-sizing: border-box;

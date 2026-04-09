@@ -61,7 +61,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'twitter-follow-quest',
-    title: 'Follow @MentalWealthDAO on X',
+    title: 'Follow @MentalWealthDAO',
     points: 40,
     desc: 'Connect your X account and follow the official Mental Wealth Academy account.',
     questType: 'twitter-follow',
