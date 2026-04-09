@@ -44,14 +44,14 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: '/icons/nav-home.svg' },
       { id: 'rewards', label: 'Quests', href: '/rewards', icon: '/icons/rewards.svg' },
       { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
     ],
   },
   {
-    id: 'network',
+    id: 'extras',
     label: 'EXTRAS',
     items: [
       { id: 'pet', label: 'Pet', href: '/digipet', icon: '/icons/nav-teleport.svg' },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
@@ -415,6 +415,134 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
+  const mainSection = navSections.find((section) => section.id === 'main');
+  const extrasSection = navSections.find((section) => section.id === 'extras');
+
+  const renderSection = (section: NavSection) => {
+    const isExtras = section.id === 'extras';
+    const isExpanded = isExtras ? adminExpanded : true;
+
+    return (
+      <div className={styles.section}>
+        {section.label && (
+          <button
+            className={`${styles.sectionHeader} ${isExtras ? styles.sectionHeaderToggle : ''}`}
+            onClick={isExtras ? () => setAdminExpanded(!adminExpanded) : undefined}
+            type="button"
+          >
+            <span className={styles.sectionLabel}>{section.label}</span>
+            {section.badge && (
+              <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
+                {section.badge}
+              </span>
+            )}
+            {isExtras && (
+              <svg
+                className={`${styles.sectionChevron} ${adminExpanded ? styles.sectionChevronOpen : ''}`}
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            )}
+          </button>
+        )}
+        <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
+          {section.items.map((item) => (
+            item.requiresPro && !isPro ? (
+              <button
+                key={item.id}
+                onClick={() => {
+                  play('click');
+                  setIsProModalOpen(true);
+                  setIsMobileMenuOpen(false);
+                }}
+                onMouseEnter={() => play('hover')}
+                className={`${styles.navItem} ${styles.navItemButton}`}
+                title={isCollapsed ? item.label : undefined}
+              >
+                {item.icon && (
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className={styles.navItemIcon}
+                  />
+                )}
+                <span className={styles.navItemLabel}>{item.label}</span>
+                <span className={`${styles.badge} ${styles.badgePro}`}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  Pro
+                </span>
+              </button>
+            ) : item.disabled ? (
+              <div
+                key={item.id}
+                className={`${styles.navItem} ${styles.navItemDisabled}`}
+                title={isCollapsed ? item.label : undefined}
+              >
+                {item.icon && (
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className={styles.navItemIcon}
+                  />
+                )}
+                <span className={styles.navItemLabel}>{item.label}</span>
+                {item.badge && (
+                  <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
+                    {item.badge}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
+                {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                onClick={() => {
+                  play('navigation');
+                  setIsMobileMenuOpen(false);
+                }}
+                onMouseEnter={() => play('hover')}
+                title={isCollapsed ? item.label : undefined}
+              >
+                {item.icon && (
+                  <Image
+                    src={item.icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className={styles.navItemIcon}
+                  />
+                )}
+                <span className={styles.navItemLabel}>{item.label}</span>
+                {item.badge && (
+                  <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            )
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Mobile Top Bar */}
@@ -448,130 +576,9 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
         {/* Navigation Sections */}
         <div className={styles.navSections}>
-          {navSections.map((section) => {
-            const isAdmin = section.id === 'network';
-            const isExpanded = isAdmin ? adminExpanded : true;
-            return (
-            <React.Fragment key={section.id}>
-            <div className={styles.section}>
-              {section.label && (
-              <button
-                className={`${styles.sectionHeader} ${isAdmin ? styles.sectionHeaderToggle : ''}`}
-                onClick={isAdmin ? () => setAdminExpanded(!adminExpanded) : undefined}
-                type="button"
-              >
-                <span className={styles.sectionLabel}>{section.label}</span>
-                {section.badge && (
-                  <span className={`${styles.sectionBadge} ${section.badgeType === 'pro' ? styles.sectionBadgePro : ''}`}>
-                    {section.badge}
-                  </span>
-                )}
-                {isAdmin && (
-                  <svg
-                    className={`${styles.sectionChevron} ${adminExpanded ? styles.sectionChevronOpen : ''}`}
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                )}
-              </button>
-              )}
-              <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
-                {section.items.map((item) => (
-                  item.requiresPro && !isPro ? (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        play('click');
-                        setIsProModalOpen(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      onMouseEnter={() => play('hover')}
-                      className={`${styles.navItem} ${styles.navItemButton}`}
-                      title={isCollapsed ? item.label : undefined}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      <span className={`${styles.badge} ${styles.badgePro}`}>
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                        Pro
-                      </span>
-                    </button>
-                  ) : item.disabled ? (
-                    <div
-                      key={item.id}
-                      className={`${styles.navItem} ${styles.navItemDisabled}`}
-                      title={isCollapsed ? item.label : undefined}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
-                      {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                      onClick={() => {
-                        play('navigation');
-                        setIsMobileMenuOpen(false);
-                      }}
-                      onMouseEnter={() => play('hover')}
-                      title={isCollapsed ? item.label : undefined}
-                    >
-                      {item.icon && (
-                        <Image
-                          src={item.icon}
-                          alt=""
-                          width={20}
-                          height={20}
-                          className={styles.navItemIcon}
-                        />
-                      )}
-                      <span className={styles.navItemLabel}>{item.label}</span>
-                      {item.badge && (
-                        <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  )
-                ))}
-              </div>
-            </div>
-            {/* Shiny card spacer between Featured and Tools */}
-            {section.id === 'main' && (
+          <div className={styles.navPrimaryGroup}>
+            {mainSection && renderSection(mainSection)}
+            {mainSection && (
               <div className={styles.shinyCardSpacer}>
                 <button
                   className={styles.shinyCard}
@@ -598,9 +605,13 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 </button>
               </div>
             )}
-            </React.Fragment>
-            );
-          })}
+          </div>
+
+          {extrasSection && (
+            <div className={styles.navExtrasGroup}>
+              {renderSection(extrasSection)}
+            </div>
+          )}
         </div>
 
         {/* Bottom Section - Inventory, Wallet */}

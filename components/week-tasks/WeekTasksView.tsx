@@ -10,8 +10,8 @@ import type { JournalSection } from '@/components/accordion-journal/AccordionJou
 import { useSound } from '@/hooks/useSound';
 
 const WEEK_COLORS: Record<number, string> = {
-  0: '#FF6B6B', 1: '#FF6B6B', 2: '#FF8E53', 3: '#FFB347',
-  4: '#FFD93D', 5: '#6BCB77', 6: '#4ECDC4', 7: '#45B7D1',
+  0: '#5168FF', 1: '#5168FF', 2: '#3B82F6', 3: '#06B6D4',
+  4: '#14B8A6', 5: '#22C55E', 6: '#4ECDC4', 7: '#45B7D1',
   8: '#5168FF', 9: '#7C3AED', 10: '#A855F7', 11: '#D946EF',
   12: '#EC4899', 13: '#EC4899',
 };
@@ -34,7 +34,7 @@ function getTaskArtVariant(section: JournalSection): TaskArtVariant {
 function getTaskArtLabel(section: JournalSection): string {
   switch (getTaskArtVariant(section)) {
     case 'sunrise':
-      return 'Warm horizon illustration';
+      return 'Calm horizon illustration';
     case 'bloom':
       return 'Botanical gradient illustration';
     case 'orbit':

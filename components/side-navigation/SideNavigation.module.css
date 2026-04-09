@@ -356,6 +356,16 @@
   min-height: 0;
 }
 
+.navPrimaryGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.navExtrasGroup {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
 .section {
   display: flex;
   flex-direction: column;

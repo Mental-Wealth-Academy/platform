@@ -284,11 +284,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
               <Image
-                src="https://i.imgur.com/ePrWP7A.png"
-                alt="Azura"
+                src="/icons/notebook-writing.svg"
+                alt="Notebook writing icon"
                 width={40}
                 height={40}
-                unoptimized
               />
             </div>
             <div>

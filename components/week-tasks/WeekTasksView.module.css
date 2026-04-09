@@ -143,8 +143,8 @@
 
 .taskArtworkSunrise {
   background:
-    radial-gradient(circle at 75% 24%, rgba(255, 244, 182, 0.7), transparent 20%),
-    linear-gradient(140deg, #ff8d5c 0%, #ffb36f 35%, #ffd5a3 100%);
+    radial-gradient(circle at 75% 24%, rgba(224, 242, 254, 0.72), transparent 20%),
+    linear-gradient(140deg, #0f3d91 0%, #2563eb 42%, #7dd3fc 100%);
 }
 
 .taskArtworkOrbit {
