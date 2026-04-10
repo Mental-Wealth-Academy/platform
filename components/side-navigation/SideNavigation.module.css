@@ -616,20 +616,6 @@
   box-shadow: 0 10px 24px rgba(81, 104, 255, 0.12);
 }
 
-.navItemActive::after {
-  content: '';
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 4px;
-  height: 3px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(81, 104, 255, 0), var(--color-primary), rgba(81, 104, 255, 0));
-  opacity: 0.95;
-  box-shadow: 0 0 14px rgba(81, 104, 255, 0.45);
-  animation: navItemUnderline 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .navItemDisabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -647,37 +633,13 @@
   width: 36px;
   height: 36px;
   border-radius: 14px;
-  background: linear-gradient(180deg, #1d233f 0%, #10162f 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 6px 16px rgba(16, 22, 47, 0.18);
   flex-shrink: 0;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, background 0.28s ease;
-}
-
-.navItemIconWrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 35% 30%, rgba(122, 146, 255, 0.32), rgba(81, 104, 255, 0.08) 58%, rgba(81, 104, 255, 0) 78%);
-  opacity: 0;
-  transform: scale(0.72);
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .navItemIconWrapActive {
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.04) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 10px 24px rgba(81, 104, 255, 0.18);
-  transform: translateY(-3px) scale(1.05);
+  transform: translateY(-3px) scale(1.03);
   animation: navIconPop 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-.navItemIconWrapActive::before {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .navItemIcon {
@@ -733,27 +695,14 @@
   }
 }
 
-@keyframes navItemUnderline {
-  0% {
-    opacity: 0;
-    transform: scaleX(0.2);
-  }
-  100% {
-    opacity: 0.95;
-    transform: scaleX(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .navItem,
   .navItemIconWrap,
-  .navItemIconWrap::before,
   .navItemIcon,
   .navItemLabel {
     transition: none;
   }
 
-  .navItemActive::after,
   .navItemIconWrapActive {
     animation: none;
   }

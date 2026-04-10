@@ -47,44 +47,12 @@
   -webkit-tap-highlight-color: transparent;
   position: relative;
   padding: 10px 4px 8px;
-  isolation: isolate;
 }
 
 .tab:active { transform: scale(0.96); }
 
-.tab::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  width: 48px;
-  height: 48px;
-  border-radius: 18px;
-  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.02) 70%);
-  opacity: 0;
-  transform: scale(0.72) translateY(8px);
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: -1;
-}
-
 .tabActive {
   color: var(--color-primary);
-}
-
-.tabActive::before {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-.tabActive::after {
-  content: '';
-  position: absolute;
-  bottom: 7px;
-  width: 26px;
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(81, 104, 255, 0), var(--color-primary), rgba(81, 104, 255, 0));
-  box-shadow: 0 0 12px rgba(81, 104, 255, 0.7);
-  animation: activeUnderline 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .iconWrap {
@@ -97,25 +65,9 @@
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.iconWrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 35% 30%, rgba(122, 146, 255, 0.34), rgba(81, 104, 255, 0.08) 58%, rgba(81, 104, 255, 0) 78%);
-  opacity: 0;
-  transform: scale(0.72);
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .iconWrapActive {
-  transform: translateY(-4px) scale(1.06);
+  transform: translateY(-3px) scale(1.03);
   animation: iconPop 0.56s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-.iconWrapActive::before {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .iconSvg {
@@ -165,29 +117,15 @@
   }
 }
 
-@keyframes activeUnderline {
-  0% {
-    opacity: 0;
-    transform: scaleX(0.25);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tab,
-  .tab::before,
   .iconWrap,
-  .iconWrap::before,
   .iconSvg,
   .label {
     transition: none;
   }
 
-  .iconWrapActive,
-  .tabActive::after {
+  .iconWrapActive {
     animation: none;
   }
 }
@@ -210,9 +148,4 @@
 
 :global([data-theme="dark"]) .tabActive {
   color: var(--color-primary);
-}
-
-:global([data-theme="dark"]) .tabActive::after {
-  background: linear-gradient(90deg, rgba(107, 128, 255, 0), var(--color-primary), rgba(107, 128, 255, 0));
-  box-shadow: 0 0 12px rgba(107, 128, 255, 0.7);
 }
