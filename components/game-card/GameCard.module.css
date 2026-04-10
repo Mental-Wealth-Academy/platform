@@ -19,9 +19,17 @@
   background: var(--action-card-background);
   width: 100%;
   box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 10px 24px rgba(12, 18, 48, 0.14);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 :global([data-theme="light"]) .card,
@@ -44,6 +52,22 @@
       #1F1A5E 100%
     );
   --action-card-border: #5B3AED;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 30px rgba(12, 18, 48, 0.22);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.card:active {
+  transform: translateY(0) scale(0.99);
 }
 
 @media (prefers-color-scheme: light) {
@@ -202,17 +226,17 @@
   border: none;
   background: none;
   padding: 0;
-  cursor: pointer;
   overflow: visible;
   filter: none;
   box-shadow: none;
+  pointer-events: none;
 }
 
-.acceptButton:hover .acceptBody {
+.card:hover .acceptBody {
   opacity: 0.92;
 }
 
-.acceptButton:active .acceptBody {
+.card:active .acceptBody {
   transform: scale(0.98);
 }
 

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import Image from 'next/image';
+import { Trophy } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GameCard from '@/components/game-card/GameCard';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
@@ -16,6 +18,12 @@ interface WeekStatus {
   isSealed: boolean;
 }
 
+interface PlayerProfile {
+  username: string | null;
+  avatarUrl: string | null;
+  shardCount: number;
+}
+
 export default function RewardsPage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [selectedQuest, setSelectedQuest] = useState<Quest | null>(null);
@@ -23,6 +31,7 @@ export default function RewardsPage() {
   const [showMintModal, setShowMintModal] = useState(false);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [countdown, setCountdown] = useState('12:41:32');
   const { play } = useSound();
 
@@ -37,9 +46,10 @@ export default function RewardsPage() {
       const token = await getAccessToken();
       const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
-      const [weeksRes, countsRes] = await Promise.all([
+      const [weeksRes, countsRes, meRes] = await Promise.all([
         fetch('/api/ethereal-progress/all', { credentials: 'include', cache: 'no-store', headers: authHeaders }),
         fetch('/api/quests/progress', { credentials: 'include', cache: 'no-store', headers: authHeaders }),
+        fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders }),
       ]);
 
       if (weeksRes.ok) {
@@ -51,9 +61,21 @@ export default function RewardsPage() {
         const countData = await countsRes.json();
         setQuestCounts(countData.counts ?? {});
       }
+
+      if (meRes.ok) {
+        const meData = await meRes.json();
+        if (meData.user) {
+          setPlayerProfile({
+            username: meData.user.username ?? null,
+            avatarUrl: meData.user.avatarUrl ?? null,
+            shardCount: meData.user.shardCount ?? 0,
+          });
+        }
+      }
     } catch {
       setWeekStatuses([]);
       setQuestCounts({});
+      setPlayerProfile(null);
     }
   }, [ready, authenticated, getAccessToken]);
 
@@ -114,6 +136,14 @@ export default function RewardsPage() {
     });
   }, [questCounts, weekStatuses]);
 
+  const completedQuestCount = useMemo(
+    () => quests.filter((quest) => (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1)).length,
+    [quests]
+  );
+
+  const playerName = playerProfile?.username?.trim() || 'Player One';
+  const playerInitial = playerName.charAt(0).toUpperCase();
+
   const handleAccept = (quest: Quest) => {
     play('click');
     setSelectedQuest(quest);
@@ -126,27 +156,64 @@ export default function RewardsPage() {
         <SideNavigation />
         <main className={styles.page}>
           <div className={styles.content}>
+            <section className={styles.playerBar} aria-label="Quest stats">
+              <div className={styles.playerBarTrack}>
+                <div className={styles.statChip}>
+                  <div className={styles.statIconShell}>
+                    <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.statShardIcon} />
+                  </div>
+                  <div className={styles.statValueGroup}>
+                    <span className={styles.statLabel}>Shards</span>
+                    <span className={styles.statValue}>{playerProfile?.shardCount ?? 0}</span>
+                  </div>
+                </div>
+
+                <div className={styles.statChip}>
+                  <div className={styles.statIconShell}>
+                    <Trophy size={18} weight="fill" className={styles.statTrophyIcon} />
+                  </div>
+                  <div className={styles.statValueGroup}>
+                    <span className={styles.statLabel}>Completed</span>
+                    <span className={styles.statValue}>{completedQuestCount}</span>
+                  </div>
+                </div>
+
+                <div className={`${styles.statChip} ${styles.profileChip}`}>
+                  <div className={styles.profileAvatarShell}>
+                    {playerProfile?.avatarUrl ? (
+                      <Image
+                        src={playerProfile.avatarUrl}
+                        alt={playerName}
+                        width={40}
+                        height={40}
+                        className={styles.profileAvatar}
+                      />
+                    ) : (
+                      <div className={styles.profileFallbackAvatar}>{playerInitial}</div>
+                    )}
+                  </div>
+                  <div className={styles.statValueGroup}>
+                    <span className={styles.statLabel}>Profile</span>
+                    <span className={styles.profileName}>{playerName}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <div className={styles.heading}>
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
+                  <span className={styles.headingEyebrow}>Mission board</span>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>
                   <p className={styles.headingSubtitle}>
-                    Finish quests. Earn shards.
+                    Finish quests, claim shards, and keep your momentum visible.
                   </p>
                   <div className={styles.headingTimerRow}>
-                    <span className={styles.headingTimerLabel}>time until finished</span>
+                    <span className={styles.headingTimerLabel}>refresh in</span>
                     <span className={styles.headingTimer}>{countdown}</span>
                   </div>
-                </div>
-
-                <div className={styles.headingArt} aria-hidden="true">
-                  <div className={styles.headingFrame}></div>
-                  <div className={styles.headingPanel}></div>
-                  <div className={`${styles.headingAccent} ${styles.headingAccentOne}`}></div>
-                  <div className={`${styles.headingAccent} ${styles.headingAccentTwo}`}></div>
-                  <div className={`${styles.headingAccent} ${styles.headingAccentThree}`}></div>
                 </div>
               </div>
             </div>

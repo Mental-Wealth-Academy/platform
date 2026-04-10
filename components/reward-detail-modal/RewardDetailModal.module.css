@@ -105,10 +105,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(81, 104, 255, 0.12);
-  border: 3px solid #1A1D33;
-  border-radius: 16px;
-  box-shadow: 3px 3px 0 #1A1D33;
+}
+
+.rewardIcon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
 }
 
 .rewardTitle {

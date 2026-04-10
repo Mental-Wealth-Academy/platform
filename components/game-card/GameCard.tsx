@@ -22,7 +22,12 @@ const GameCard: React.FC<GameCardProps> = ({
   shardIcon = '/icons/ui-shard.svg',
 }) => {
   return (
-    <div className={styles.card}>
+    <button
+      type="button"
+      className={styles.card}
+      onClick={onOpenQuest}
+      aria-label={`Open quest: ${questName}`}
+    >
       <div className={styles.shardContainer}>
         <div className={styles.shardBox}>
           <Image
@@ -47,16 +52,16 @@ const GameCard: React.FC<GameCardProps> = ({
           </span>
         </div>
 
-        <button className={styles.acceptButton} onClick={onOpenQuest}>
+        <div className={styles.acceptButton} aria-hidden="true">
           <div className={styles.acceptGlow} />
           <div className={styles.acceptBody}>
             <div className={styles.scanlines} />
             <span className={styles.acceptText}>OPEN QUEST</span>
           </div>
           <div className={styles.acceptBorder} />
-        </button>
+        </div>
       </div>
-    </div>
+    </button>
   );
 };
 
