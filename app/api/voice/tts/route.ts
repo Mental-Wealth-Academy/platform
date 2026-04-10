@@ -3,10 +3,12 @@ import bluePersona from '@/lib/bluepersonality.json';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const BLUE_VOICE_ID = process.env.AZURA_VOICE_ID || bluePersona.settings?.voice?.voiceId || '';
-const BLUE_VOICE_MODEL = bluePersona.settings?.voice?.model || 'eleven_flash_v2_5';
+const BLUE_VOICE_ID = bluePersona.settings?.voice?.voiceId || '';
+const BLUE_VOICE_MODEL =
+  bluePersona.settings?.voice?.model ||
+  'eleven_flash_v2_5';
 
-async function requestTts(text: string, voiceId?: string) {
+async function requestTts(path: string, text: string, voiceId?: string) {
   const payload: Record<string, string> = {
     text,
     modelId: BLUE_VOICE_MODEL,
@@ -16,9 +18,10 @@ async function requestTts(text: string, voiceId?: string) {
     payload.voiceId = voiceId;
   }
 
-  return fetch(`${ELIZA_BASE_URL}/api/v1/voice/tts`, {
+  return fetch(`${ELIZA_BASE_URL}${path}`, {
     method: 'POST',
     headers: {
+      'Authorization': `Bearer ${ELIZA_API_KEY}`,
       'X-API-Key': ELIZA_API_KEY,
       'Content-Type': 'application/json',
     },
@@ -38,15 +41,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid text' }, { status: 400 });
     }
 
-    let response = await requestTts(text, BLUE_VOICE_ID || undefined);
+    const attempts: Array<{ label: string; path: string; voiceId?: string }> = [
+      { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: BLUE_VOICE_ID || undefined },
+      { label: 'v1-default-voice', path: '/api/v1/voice/tts' },
+      { label: 'legacy-configured-voice', path: '/api/elevenlabs/tts', voiceId: BLUE_VOICE_ID || undefined },
+      { label: 'legacy-default-voice', path: '/api/elevenlabs/tts' },
+    ];
 
-    if (!response.ok && BLUE_VOICE_ID) {
+    let response: Response | null = null;
+
+    for (const attempt of attempts) {
+      response = await requestTts(attempt.path, text, attempt.voiceId);
+
+      if (response.ok) {
+        if (attempt.label !== 'v1-configured-voice') {
+          console.warn(`Eliza TTS succeeded via fallback path: ${attempt.label}`);
+        }
+        break;
+      }
+
       const errText = await response.text();
-      console.error('Eliza TTS BLUE voice request failed, retrying with default voice:', response.status, errText.slice(0, 200));
-      response = await requestTts(text);
+      console.error(`Eliza TTS attempt failed: ${attempt.label}`, response.status, errText.slice(0, 200));
     }
 
-    if (!response.ok) {
+    if (!response || !response.ok) {
       const errText = await response.text();
       console.error('Eliza TTS error:', response.status, errText.slice(0, 200));
       return NextResponse.json({ error: 'TTS generation failed' }, { status: response.status });
