@@ -203,7 +203,6 @@ export default function RewardsPage() {
             <div className={styles.heading}>
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
-                  <span className={styles.headingEyebrow}>Mission board</span>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>

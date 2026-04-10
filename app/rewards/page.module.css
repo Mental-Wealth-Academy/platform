@@ -165,22 +165,6 @@
   min-width: 0;
 }
 
-.headingEyebrow {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  background: rgba(81, 104, 255, 0.08);
-  color: #5168ff;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
 .headingInner {
   min-width: 0;
 }
@@ -293,12 +277,6 @@
     0 20px 46px rgba(3, 7, 22, 0.34);
 }
 
-:global([data-theme="dark"]) .headingEyebrow {
-  border-color: rgba(150, 170, 255, 0.18);
-  background: rgba(81, 104, 255, 0.14);
-  color: #b7c8ff;
-}
-
 :global([data-theme="dark"]) .headingSubtitle {
   color: rgba(226, 234, 255, 0.72);
 }
@@ -356,12 +334,6 @@
       0 20px 46px rgba(3, 7, 22, 0.34);
   }
 
-  :global([data-theme="system"]) .headingEyebrow {
-    border-color: rgba(150, 170, 255, 0.18);
-    background: rgba(81, 104, 255, 0.14);
-    color: #b7c8ff;
-  }
-
   :global([data-theme="system"]) .headingSubtitle {
     color: rgba(226, 234, 255, 0.72);
   }
@@ -384,10 +356,6 @@
 
   .page {
     padding: 24px 16px;
-  }
-
-  .playerBarTrack {
-    grid-template-columns: 1fr;
   }
 
   .profileChip {
@@ -426,24 +394,37 @@
   }
 
   .playerBarTrack {
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px;
     border-radius: 16px;
   }
 
   .statChip {
-    padding: 10px 12px;
+    gap: 8px;
+    padding: 10px 8px;
   }
 
   .statIconShell,
   .profileAvatarShell {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
   }
 
   .statValue,
   .profileName {
-    font-size: 16px;
+    font-size: 14px;
+  }
+
+  .statLabel {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .profileName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .headingContent {
