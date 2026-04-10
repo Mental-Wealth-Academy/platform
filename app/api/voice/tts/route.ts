@@ -49,6 +49,8 @@ export async function POST(req: NextRequest) {
     ];
 
     let response: Response | null = null;
+    let lastStatus = 500;
+    let lastErrorText = '';
 
     for (const attempt of attempts) {
       response = await requestTts(attempt.path, text, attempt.voiceId);
@@ -61,13 +63,14 @@ export async function POST(req: NextRequest) {
       }
 
       const errText = await response.text();
+      lastStatus = response.status;
+      lastErrorText = errText;
       console.error(`Eliza TTS attempt failed: ${attempt.label}`, response.status, errText.slice(0, 200));
     }
 
     if (!response || !response.ok) {
-      const errText = await response.text();
-      console.error('Eliza TTS error:', response.status, errText.slice(0, 200));
-      return NextResponse.json({ error: 'TTS generation failed' }, { status: response.status });
+      console.error('Eliza TTS error:', lastStatus, lastErrorText.slice(0, 200));
+      return NextResponse.json({ error: 'TTS generation failed' }, { status: lastStatus });
     }
 
     // Eliza returns streaming audio/mpeg
