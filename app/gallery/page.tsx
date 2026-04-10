@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import { useSound } from '@/hooks/useSound';
@@ -17,6 +17,8 @@ interface Painting {
   size: 'hero' | 'large' | 'medium' | 'small' | 'wide';
   zoraUrl?: string;
 }
+
+type GalleryTag = 'Art' | 'Digital' | 'AI';
 
 const paintings: Painting[] = [
   { title: 'Jhinn\'s Bay 01', artist: 'Metawave Studio', year: '2025', era: 'Art', size: 'medium', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWQ3ZzZpankzZDJzeDVpdHc0amNqeWxvdnpvNWhhYTducnh5dXJsNWl0eWVpNmkzcWpub3E=', desc: 'There was a beautiful distant planet with no rotation... Tucked in the corner was a place called Jhinn\'s Bay, a warm ocean that sang beautiful songs and hymns.', zoraUrl: 'https://zora.co/coin/base:0xe8e77731c21aead943393777a294c84b814bc799' },
@@ -67,7 +69,13 @@ const paintings: Painting[] = [
   { title: 'Power of Magic', artist: 'Metawave Studio', year: '2025', era: 'Art', size: 'small', image: 'https://scontent-iad4-1.choicecdn.com/-/rs:fit:1200:1200/f:best/aHR0cHM6Ly9tYWdpYy5kZWNlbnRyYWxpemVkLWNvbnRlbnQuY29tL2lwZnMvYmFmeWJlaWY1dXB0b3lsNTY3dTduNmxpbjRjZTZ2ZXdiZXhtZHZnc3V2YnNtMjN4cTJvbXRjcXo1Z2E=', desc: 'Magical forces at work.', zoraUrl: 'https://zora.co/coin/base:0xe363e1996b8891e68371c9e8d775ede1799c1dca' },
 ];
 
-const ALL_ERAS = ['All', ...Array.from(new Set(paintings.map((p) => p.era)))];
+function normalizeEra(era: string): GalleryTag {
+  if (era === 'Concept Art') return 'AI';
+  if (era === 'Branding' || era === 'Product Design') return 'Digital';
+  return 'Art';
+}
+
+const ALL_ERAS = ['All', ...Array.from(new Set(paintings.map((p) => normalizeEra(p.era))))];
 
 const sizeMap: Record<string, string> = {
   hero: styles.cardHero,
@@ -78,6 +86,15 @@ const sizeMap: Record<string, string> = {
 };
 
 const SKELETON_SIZES: Painting['size'][] = ['large', 'medium', 'medium', 'small', 'small', 'wide', 'hero', 'medium', 'large', 'small', 'medium', 'wide'];
+
+function shufflePaintings(items: Painting[]) {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 function GallerySkeleton() {
   return (
@@ -109,10 +126,19 @@ export default function GalleryPage() {
   const { play } = useSound();
   const [selectedPainting, setSelectedPainting] = useState<Painting | null>(null);
   const [activeEra, setActiveEra] = useState('All');
-  const [isLoaded, setIsLoaded] = useState(false);
   const [isContentLoading, setIsContentLoading] = useState(true);
+  const [shuffledPaintings, setShuffledPaintings] = useState<Painting[]>(() => shufflePaintings(paintings));
 
-  const filtered = activeEra === 'All' ? paintings : paintings.filter((p) => p.era === activeEra);
+  const shuffleGallery = useCallback(() => {
+    setShuffledPaintings(shufflePaintings(paintings));
+  }, []);
+
+  const filtered = useMemo(
+    () => (activeEra === 'All'
+      ? shuffledPaintings
+      : shuffledPaintings.filter((p) => normalizeEra(p.era) === activeEra)),
+    [activeEra, shuffledPaintings]
+  );
 
   // Close modal on Escape
   useEffect(() => {
@@ -124,13 +150,13 @@ export default function GalleryPage() {
   }, []);
 
   useEffect(() => {
-    setIsLoaded(true);
+    shuffleGallery();
     // Show skeleton briefly, then reveal content
     const timer = setTimeout(() => {
       setIsContentLoading(false);
     }, 600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [shuffleGallery]);
 
   if (isContentLoading) return <GallerySkeleton />;
 
@@ -140,26 +166,41 @@ export default function GalleryPage() {
       <SideNavigation />
       <main className={styles.page}>
         {/* Category pills */}
-        <div className={styles.categories}>
-          {ALL_ERAS.map((era) => (
-            <button
-              key={era}
-              className={`${styles.categoryPill} ${activeEra === era ? styles.categoryPillActive : ''}`}
-              onClick={() => {
-                play('click');
-                setActiveEra(era);
-              }}
-              onMouseEnter={() => play('hover')}
-            >
-              {era}
-            </button>
-          ))}
+        <div className={styles.toolbar}>
+          <div className={styles.categories}>
+            {ALL_ERAS.map((era) => (
+              <button
+                key={era}
+                className={`${styles.categoryPill} ${activeEra === era ? styles.categoryPillActive : ''}`}
+                onClick={() => {
+                  play('click');
+                  setActiveEra(era);
+                }}
+                onMouseEnter={() => play('hover')}
+              >
+                {era}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={styles.shuffleButton}
+            onClick={() => {
+              play('click');
+              shuffleGallery();
+            }}
+            onMouseEnter={() => play('hover')}
+          >
+            Shuffle Gallery
+          </button>
         </div>
 
         {/* Bento Grid */}
         <div className={styles.bentoGrid}>
           {filtered.map((painting, i) => {
             const isHero = painting.size === 'hero';
+            const tag = normalizeEra(painting.era);
 
             // Insert quote card after 3rd item
             const showQuoteAfter = i === 2 && activeEra === 'All';
@@ -190,7 +231,7 @@ export default function GalleryPage() {
                         <span className={styles.metaTitle}>{painting.title}</span>
                         <span className={styles.metaArtist}>{painting.artist}, {painting.year}</span>
                       </div>
-                      <span className={styles.metaEra}>{painting.era} &middot; {painting.year}</span>
+                      <span className={styles.metaEra}>{tag} &middot; {painting.year}</span>
                     </div>
                   )}
                 </div>
@@ -237,7 +278,7 @@ export default function GalleryPage() {
                 <img className={styles.detailImage} src={selectedPainting.image} alt={selectedPainting.title} referrerPolicy="no-referrer" />
               </div>
               <div className={styles.detailInfo}>
-                <span className={styles.detailEra}>{selectedPainting.era} &middot; {selectedPainting.year} &middot; Base</span>
+                <span className={styles.detailEra}>{normalizeEra(selectedPainting.era)} &middot; {selectedPainting.year} &middot; Base</span>
                 <span className={styles.detailTitle}>{selectedPainting.title}</span>
                 <span className={styles.detailArtist}>{selectedPainting.artist}</span>
                 <div className={styles.detailDivider} />

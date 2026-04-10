@@ -30,15 +30,23 @@
   color: var(--color-text-dark);
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 /* ── Category pills ── */
 .categories {
   display: flex;
   gap: 6px;
-  margin-bottom: 20px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  flex: 1;
 }
 
 .categories::-webkit-scrollbar {
@@ -79,12 +87,47 @@
   color: var(--color-text-light);
 }
 
+.shuffleButton {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(81, 104, 255, 0.22);
+  background: rgba(10, 14, 34, 0.82);
+  color: #ffffff;
+  font-family: var(--font-button);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.shuffleButton:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 24px rgba(81, 104, 255, 0.18);
+  background: rgba(18, 24, 54, 0.96);
+}
+
 /* ── Bento Grid ── */
 .bentoGrid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 16px;
   grid-auto-flow: dense;
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .shuffleButton {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* Size variants */
