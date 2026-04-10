@@ -6,46 +6,42 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './MobileBottomNav.module.css';
 
+const NAV_ITEMS = [
+  { id: 'home', label: 'Home', href: '/home', icon: '/icons/nav-home.svg' },
+  { id: 'quests', label: 'Quests', href: '/rewards', icon: '/icons/rewards.svg' },
+  { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
+  { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
+] as const;
+
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
   if (pathname === '/') return null;
 
-  const handleMenuOpen = () => {
-    window.dispatchEvent(new Event('toggleSidebar'));
+  const handleAgentOpen = () => {
+    window.dispatchEvent(new Event('toggleBlueChat'));
   };
+
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   return (
     <nav className={styles.nav}>
-      {/* Menu */}
-      <button type="button" className={styles.tab} onClick={handleMenuOpen} aria-label="Menu">
-        <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <rect x="3" y="5" width="18" height="2" rx="1" />
-          <rect x="3" y="11" width="18" height="2" rx="1" />
-          <rect x="3" y="17" width="18" height="2" rx="1" />
-        </svg>
-        <span className={styles.label}>Menu</span>
+      <button type="button" className={styles.tab} onClick={handleAgentOpen} aria-label="Open Blue agent">
+        <Image src="/icons/daemon.svg" alt="" width={24} height={24} className={styles.iconImg} aria-hidden="true" />
+        <span className={styles.label}>Blue Chat</span>
       </button>
 
-      {/* The Course */}
-      <Link href="/home" className={`${styles.tab} ${pathname === '/home' ? styles.tabActive : ''}`}>
-        <svg className={styles.icon} width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M6.5 2A2.5 2.5 0 004 4.5v15A2.5 2.5 0 006.5 22H20V2H6.5zM6 19.5a.5.5 0 01.5-.5H18v1H6.5a.5.5 0 01-.5-.5z" />
-        </svg>
-        <span className={styles.label}>The Course</span>
-      </Link>
-
-      {/* Quests */}
-      <Link href="/rewards" className={`${styles.tab} ${pathname === '/rewards' ? styles.tabActive : ''}`}>
-        <Image src="/icons/rewards.svg" alt="" width={22} height={22} className={styles.iconImg} />
-        <span className={styles.label}>Quests</span>
-      </Link>
-
-      {/* Pet */}
-      <Link href="/digipet" className={`${styles.tab} ${pathname === '/digipet' ? styles.tabActive : ''}`}>
-        <Image src="/icons/nav-teleport.svg" alt="" width={22} height={22} className={styles.iconImg} />
-        <span className={styles.label}>Pet</span>
-      </Link>
+      {NAV_ITEMS.map((item) => (
+        <Link
+          key={item.id}
+          href={item.href}
+          className={`${styles.tab} ${isActive(item.href) ? styles.tabActive : ''}`}
+          aria-label={item.label}
+        >
+          <Image src={item.icon} alt="" width={24} height={24} className={styles.iconImg} aria-hidden="true" />
+          <span className={styles.label}>{item.label}</span>
+        </Link>
+      ))}
     </nav>
   );
 };

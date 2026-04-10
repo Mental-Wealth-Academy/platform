@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
 import { providers, Contract, utils } from 'ethers';
-import styles from './AzuraChat.module.css';
+import styles from './BlueChat.module.css';
 
 const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const USDC_ABI = ['function transfer(address to, uint256 amount) returns (bool)'];

@@ -9,7 +9,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import YourAccountsModal from '@/components/nav-buttons/YourAccountsModal';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
-import AzuraChat from '@/components/azura-chat/AzuraChat';
+import BlueChat from '@/components/blue-chat/BlueChat';
 import styles from './Navbar.module.css';
 
 // Menu Icon Component - Chunky Y2K style
@@ -431,31 +431,6 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className={styles.mobileBottomNav}>
-        <Link
-          href="/home"
-          className={`${styles.mobileBottomNavButton} ${isActive('/home') ? styles.mobileBottomNavButtonActive : ''}`}
-        >
-          <HomeIcon size={24} className={styles.homeIcon} />
-          <span className={styles.mobileBottomNavLabel}>Home</span>
-        </Link>
-        <Link
-          href="/quests"
-          className={`${styles.mobileBottomNavButton} ${isActive('/quests') ? styles.mobileBottomNavButtonActive : ''}`}
-        >
-          <QuestsIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Quests</span>
-        </Link>
-        <Link
-          href="/voting"
-          className={`${styles.mobileBottomNavButton} ${isActive('/voting') ? styles.mobileBottomNavButtonActive : ''}`}
-        >
-          <VotingIcon size={24} className={styles.questIcon} />
-          <span className={styles.mobileBottomNavLabel}>Proposals</span>
-        </Link>
-      </div>
-
       {isYourAccountsModalOpen && (
         <YourAccountsModal onClose={() => setIsYourAccountsModalOpen(false)} />
       )}
@@ -472,10 +447,9 @@ const Navbar: React.FC = () => {
           onUsernameChanged={handleUsernameChanged}
         />
       )}
-      <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </nav>
   );
 };
 
 export default Navbar;
-

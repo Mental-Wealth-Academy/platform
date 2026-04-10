@@ -7,13 +7,13 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  height: 64px;
+  min-height: calc(74px + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, rgba(244, 245, 254, 0.95) 0%, rgba(237, 239, 252, 0.98) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1.5px solid rgba(255, 255, 255, 0.7);
   align-items: stretch;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 0;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   box-shadow: 0 -4px 24px rgba(81, 104, 255, 0.08), 0 -1px 0 rgba(255, 255, 255, 0.5) inset;
@@ -30,9 +30,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 6px;
   flex: 1;
-  height: 100%;
+  min-width: 58px;
+  height: 74px;
   background: none;
   border: none;
   cursor: pointer;
@@ -41,6 +42,7 @@
   transition: color 0.2s ease, transform 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   position: relative;
+  padding: 10px 4px 8px;
 }
 
 .tab:active { transform: scale(0.92); }
@@ -50,7 +52,7 @@
 .tabActive::after {
   content: '';
   position: absolute;
-  bottom: 4px;
+  bottom: 8px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
@@ -59,8 +61,8 @@
 }
 
 .icon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   transition: transform 0.15s ease;
 }
@@ -70,8 +72,8 @@
 }
 
 .iconImg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   opacity: 0.4;
   transition: opacity 0.2s ease, filter 0.2s ease;
@@ -87,8 +89,9 @@
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  line-height: 1;
+  line-height: 1.1;
   text-transform: uppercase;
+  text-align: center;
 }
 
 /* ── Dark mode ── */

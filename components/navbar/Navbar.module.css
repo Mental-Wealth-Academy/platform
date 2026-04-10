@@ -652,122 +652,6 @@
   height: 20px;
 }
 
-/* Mobile Bottom Navigation */
-.mobileBottomNav {
-  display: none;
-  position: fixed;
-  bottom: max(24px, calc(24px + env(safe-area-inset-bottom)));
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100vw - 32px);
-  max-width: 420px;
-  background: var(--color-background);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid #EAEBF4;
-  box-shadow: 
-    0 8px 32px rgba(120, 138, 255, 0.15),
-    0 0 60px rgba(120, 138, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  border-radius: 32px 16px 28px 12px;
-  padding: 12px 24px;
-  z-index: 100;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-family: 'IBM Plex Mono', monospace;
-}
-
-.mobileBottomNavButton {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px;
-  background: transparent;
-  border-radius: 20px 8px 16px 24px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease-out;
-  position: relative;
-  width: 56px;
-  height: 56px;
-  border: 1px solid transparent;
-}
-
-.mobileBottomNavButton:hover {
-  background: rgba(120, 138, 255, 0.1);
-  transform: scale(1.08);
-}
-
-.mobileBottomNavButtonActive {
-  background: linear-gradient(135deg, rgba(120, 138, 255, 0.25) 0%, rgba(120, 138, 255, 0.2) 100%);
-  border: 1px solid #788AFF;
-  box-shadow: 
-    0 0 20px rgba(120, 138, 255, 0.3),
-    inset 0 0 12px rgba(120, 138, 255, 0.1);
-}
-
-.mobileBottomNavButtonActive .homeIcon,
-.mobileBottomNavButtonActive .questIcon {
-  filter: drop-shadow(0 0 8px rgba(120, 138, 255, 0.6));
-  color: #788AFF;
-  opacity: 1;
-}
-
-.mobileBottomNavLabel {
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  color: #788AFF;
-  white-space: nowrap;
-  text-align: center;
-  background: #F4F5FE;
-  border-radius: 6px 4px 8px 2px;
-  padding: 4px 8px;
-  border: 1px solid #EAEBF4;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.mobileBottomNavButton:hover .mobileBottomNavLabel {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.mobileBottomNavButtonActive .mobileBottomNavLabel {
-  opacity: 0;
-}
-
-.mobileBottomNavButton .homeIcon,
-.mobileBottomNavButton .questIcon {
-  color: #788AFF;
-  transition: all 0.3s ease-out;
-  opacity: 0.6;
-  width: 24px;
-  height: 24px;
-}
-
-.mobileBottomNavButton:hover .homeIcon,
-.mobileBottomNavButton:hover .questIcon {
-  opacity: 1;
-  filter: drop-shadow(0 0 8px rgba(120, 138, 255, 0.5));
-}
-
-.mobileBottomNavButtonActive .homeIcon,
-.mobileBottomNavButtonActive .questIcon {
-  opacity: 1;
-}
-
 /* Shards/Daemon Counter in Dropdown */
 .mobileShardsInDropdown {
   display: flex;
@@ -889,11 +773,6 @@
     display: none;
   }
 
-  /* Show mobile bottom navigation */
-  .mobileBottomNav {
-    display: flex;
-  }
-
   .messageButton {
     width: 34px;
     height: 34px;
@@ -992,29 +871,6 @@
     font-size: 12px;
   }
 
-  .mobileBottomNav {
-    bottom: 16px;
-    padding: 10px 20px;
-    width: calc(100vw - 24px);
-  }
-
-  .mobileBottomNavButton {
-    width: 48px;
-    height: 48px;
-    padding: 6px;
-  }
-
-  .mobileBottomNavLabel {
-    font-size: 9px;
-    top: -26px;
-    padding: 3px 6px;
-  }
-
-  .mobileBottomNavButton .homeIcon,
-  .mobileBottomNavButton .questIcon {
-    width: 20px;
-    height: 20px;
-  }
 }
 
 /* ── Slide text hover animation ── */

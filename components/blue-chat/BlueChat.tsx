@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import styles from './AzuraChat.module.css';
+import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
 import type { CreditIntakeData } from './CreditBuilderInline';
@@ -42,7 +42,7 @@ interface Message {
   action?: string;
 }
 
-interface AzuraChatProps {
+interface BlueChatProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -100,7 +100,7 @@ function getRadarPoints(scales: number[], radius = 80) {
 const SHARD_COST = 10;
 const RESEARCH_COST = 1000;
 
-const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
+const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -1109,4 +1109,4 @@ const AzuraChat: React.FC<AzuraChatProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default AzuraChat;
+export default BlueChat;

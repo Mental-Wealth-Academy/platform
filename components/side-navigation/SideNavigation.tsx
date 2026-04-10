@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './SideNavigation.module.css';
-import AzuraChat from '../azura-chat/AzuraChat';
+import BlueChat from '../blue-chat/BlueChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '../username-change/UsernameChangeModal';
 import ProMembershipModal from '../pro-membership-modal/ProMembershipModal';
@@ -136,12 +136,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     };
     window.addEventListener('toggleSidebar', handler);
 
-    const azuraHandler = () => setIsChatOpen(true);
-    window.addEventListener('toggleAzuraChat', azuraHandler);
+    const blueChatHandler = () => setIsChatOpen(true);
+    window.addEventListener('toggleBlueChat', blueChatHandler);
 
     return () => {
       window.removeEventListener('toggleSidebar', handler);
-      window.removeEventListener('toggleAzuraChat', azuraHandler);
+      window.removeEventListener('toggleBlueChat', blueChatHandler);
     };
   });
 
@@ -762,7 +762,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       </nav>
 
       {/* Modals */}
-      <AzuraChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <BlueChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <InventoryModal
         isOpen={isInventoryOpen}
         onClose={() => setIsInventoryOpen(false)}
