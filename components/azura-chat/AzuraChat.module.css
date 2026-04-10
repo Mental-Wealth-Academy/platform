@@ -1335,3 +1335,234 @@
   text-align: center;
   padding: 4px 0;
 }
+
+:global(:root:not([data-theme="dark"])) .backdrop {
+  background: rgba(237, 242, 252, 0.72);
+}
+
+:global(:root:not([data-theme="dark"])) .chatContainer {
+  background: linear-gradient(#fdfefe, #f7f9ff) padding-box,
+              linear-gradient(135deg, #ff6b6b, #f59e0b, #84cc16, #22c55e, #38bdf8, #8b5cf6, #ec4899) border-box;
+  box-shadow: 8px 8px 0 rgba(31, 41, 55, 0.14), 0 24px 64px rgba(81, 104, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .closeButton,
+:global(:root:not([data-theme="dark"])) .expandButton {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(81, 104, 255, 0.14);
+  color: rgba(26, 29, 51, 0.56);
+}
+
+:global(:root:not([data-theme="dark"])) .closeButton:hover,
+:global(:root:not([data-theme="dark"])) .expandButton:hover {
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.24);
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .characterFade {
+  background: linear-gradient(to bottom, transparent 0%, rgba(247, 249, 255, 0.36) 30%, rgba(247, 249, 255, 0.78) 60%, #f7f9ff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .nameplateName {
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .nameplateLabel,
+:global(:root:not([data-theme="dark"])) .messageTime {
+  color: rgba(26, 29, 51, 0.4);
+}
+
+:global(:root:not([data-theme="dark"])) .messagesArea::-webkit-scrollbar-thumb {
+  background: rgba(81, 104, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .messagesArea::-webkit-scrollbar-thumb:hover {
+  background: rgba(81, 104, 255, 0.28);
+}
+
+:global(:root:not([data-theme="dark"])) .userMessage .messageContent {
+  background: #eef2f8;
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .azuraMessage .messageContent {
+  box-shadow: 0 10px 22px rgba(10, 132, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .typingDots span {
+  background: rgba(26, 29, 51, 0.28);
+}
+
+:global(:root:not([data-theme="dark"])) .shardConfirm,
+:global(:root:not([data-theme="dark"])) .researchCards {
+  background: rgba(81, 104, 255, 0.06);
+  border-color: rgba(81, 104, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .shardConfirmText,
+:global(:root:not([data-theme="dark"])) .researchCardTitle {
+  color: rgba(26, 29, 51, 0.82);
+}
+
+:global(:root:not([data-theme="dark"])) .shardConfirmBalance,
+:global(:root:not([data-theme="dark"])) .researchLabel,
+:global(:root:not([data-theme="dark"])) .researchCardDesc {
+  color: rgba(26, 29, 51, 0.44);
+}
+
+:global(:root:not([data-theme="dark"])) .shardConfirmNo,
+:global(:root:not([data-theme="dark"])) .quickAction,
+:global(:root:not([data-theme="dark"])) .targetButton,
+:global(:root:not([data-theme="dark"])) .liquidityCancel,
+:global(:root:not([data-theme="dark"])) .voiceButton,
+:global(:root:not([data-theme="dark"])) .researchCard {
+  background: rgba(255, 255, 255, 0.86);
+  border-color: rgba(81, 104, 255, 0.14);
+  color: rgba(26, 29, 51, 0.56);
+}
+
+:global(:root:not([data-theme="dark"])) .shardConfirmNo:hover,
+:global(:root:not([data-theme="dark"])) .quickAction:hover:not(:disabled),
+:global(:root:not([data-theme="dark"])) .targetButton:hover:not(:disabled),
+:global(:root:not([data-theme="dark"])) .liquidityCancel:hover:not(:disabled),
+:global(:root:not([data-theme="dark"])) .voiceButton:hover,
+:global(:root:not([data-theme="dark"])) .researchCard:hover {
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.22);
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .researchCardSelected {
+  background: rgba(81, 104, 255, 0.12);
+  border-color: rgba(81, 104, 255, 0.28);
+}
+
+:global(:root:not([data-theme="dark"])) .shardCounter {
+  color: rgba(124, 58, 237, 0.78);
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .quickActionAccent {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.18);
+  color: rgba(81, 104, 255, 0.92);
+}
+
+:global(:root:not([data-theme="dark"])) .quickActionHighlight {
+  background: rgba(116, 196, 101, 0.1);
+  border-color: rgba(116, 196, 101, 0.22);
+  color: #2f8f3c;
+}
+
+:global(:root:not([data-theme="dark"])) .liquidityBar {
+  border-top-color: rgba(116, 196, 101, 0.18);
+  background: rgba(116, 196, 101, 0.05);
+}
+
+:global(:root:not([data-theme="dark"])) .liquidityInput,
+:global(:root:not([data-theme="dark"])) .input {
+  background: #ffffff;
+  color: #1a1d33;
+  border-color: rgba(81, 104, 255, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .liquidityInput::placeholder,
+:global(:root:not([data-theme="dark"])) .input::placeholder {
+  color: rgba(26, 29, 51, 0.36);
+}
+
+:global(:root:not([data-theme="dark"])) .inputArea {
+  border-top-color: rgba(81, 104, 255, 0.1);
+  background: linear-gradient(180deg, rgba(247, 249, 255, 0.98) 0%, rgba(241, 245, 255, 0.98) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .sendButton {
+  box-shadow: 0 10px 20px rgba(10, 132, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedContainer {
+  background: linear-gradient(180deg, #f5f8ff 0%, #edf3ff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedTopBar {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 -1px 0 rgba(81, 104, 255, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedLeft {
+  border-image: linear-gradient(180deg, rgba(81, 104, 255, 0.14) 0%, rgba(192, 132, 252, 0.08) 30%, rgba(232, 85, 109, 0.06) 60%, rgba(81, 104, 255, 0.1) 100%) 1;
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(245, 248, 255, 0.96) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .panelHeading,
+:global(:root:not([data-theme="dark"])) .keywordTag,
+:global(:root:not([data-theme="dark"])) .radarLabel {
+  color: rgba(26, 29, 51, 0.5);
+}
+
+:global(:root:not([data-theme="dark"])) .keywordTag {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(81, 104, 255, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .radarValue {
+  color: rgba(26, 29, 51, 0.82);
+}
+
+:global(:root:not([data-theme="dark"])) .trainedInSection,
+:global(:root:not([data-theme="dark"])) .expandedQuickPanel {
+  border-top-color: rgba(81, 104, 255, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedQuickCard {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 246, 255, 0.96) 100%);
+  border-color: rgba(81, 104, 255, 0.12);
+  color: #1a1d33;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedQuickCard:hover:not(:disabled) {
+  border-color: rgba(81, 104, 255, 0.2);
+  box-shadow: 0 12px 30px rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardTitle {
+  color: rgba(26, 29, 51, 0.92);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardMeta {
+  color: rgba(26, 29, 51, 0.5);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardIcon {
+  color: rgba(81, 104, 255, 0.18);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardBottom {
+  background: rgba(81, 104, 255, 0.05);
+  border-top-color: rgba(81, 104, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+:global(:root:not([data-theme="dark"])) .toolCardBottom::before {
+  border-color: rgba(81, 104, 255, 0.22);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedCenter {
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(81, 104, 255, 0.03) 39px, rgba(81, 104, 255, 0.03) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(81, 104, 255, 0.03) 39px, rgba(81, 104, 255, 0.03) 40px),
+    linear-gradient(180deg, #f7faff 0%, #eef4ff 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .expandedRight {
+  border-left-color: rgba(81, 104, 255, 0.08);
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(81, 104, 255, 0.03) 31px, rgba(81, 104, 255, 0.03) 32px),
+    linear-gradient(180deg, #f5f8ff 0%, #ebf1ff 100%);
+}

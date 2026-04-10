@@ -127,16 +127,28 @@ export default function RewardsPage() {
         <main className={styles.page}>
           <div className={styles.content}>
             <div className={styles.heading}>
-              <div className={styles.headingInner}>
-                <h1 className={styles.headingTitle}>Quests</h1>
+              <div className={styles.headingContent}>
+                <div className={styles.headingCopy}>
+                  <div className={styles.headingInner}>
+                    <h1 className={styles.headingTitle}>QUESTS</h1>
+                  </div>
+                  <p className={styles.headingSubtitle}>
+                    Finish quests. Earn shards.
+                  </p>
+                  <div className={styles.headingTimerRow}>
+                    <span className={styles.headingTimerLabel}>time until finished</span>
+                    <span className={styles.headingTimer}>{countdown}</span>
+                  </div>
+                </div>
+
+                <div className={styles.headingArt} aria-hidden="true">
+                  <div className={styles.headingFrame}></div>
+                  <div className={styles.headingPanel}></div>
+                  <div className={`${styles.headingAccent} ${styles.headingAccentOne}`}></div>
+                  <div className={`${styles.headingAccent} ${styles.headingAccentTwo}`}></div>
+                  <div className={`${styles.headingAccent} ${styles.headingAccentThree}`}></div>
+                </div>
               </div>
-              <p className={styles.headingSubtitle}>
-                Track quest requirements and claim shards for finished work
-              </p>
-            </div>
-            <div className={styles.headingTimerRow}>
-              <span className={styles.headingTimerLabel}>time until refresh</span>
-              <span className={styles.headingTimer}>{countdown}</span>
             </div>
 
             <div className={styles.cardList}>

@@ -65,6 +65,16 @@ interface MergedProposal extends DatabaseProposal {
   };
 }
 
+interface CommunityAvatarUser {
+  username: string;
+  avatarUrl: string | null;
+}
+
+interface LeaderboardUser {
+  username: string;
+  avatarUrl: string | null;
+}
+
 const getTutorialSteps = (): TutorialStep[] => [
   {
     message: 'Hey there! Welcome to the Decision Room. I\'m Blue, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
@@ -113,6 +123,7 @@ export default function VotingPage() {
   const [activeTab, setActiveTab] = useState<'proposals' | 'pods' | 'rewards'>('pods');
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
+  const [communityAvatars, setCommunityAvatars] = useState<CommunityAvatarUser[]>([]);
   const { play } = useSound();
 
   useEffect(() => {
@@ -126,7 +137,35 @@ export default function VotingPage() {
 
   useEffect(() => {
     fetchProposals();
+    fetchCommunityAvatars();
   }, []);
+
+  const fetchCommunityAvatars = async () => {
+    try {
+      const response = await fetch('/api/leaderboard');
+      if (!response.ok) {
+        throw new Error('Failed to fetch leaderboard users');
+      }
+
+      const data = await response.json();
+      const users: LeaderboardUser[] = Array.isArray(data.users) ? data.users : [];
+      const uniqueUsers = users
+        .filter((user: LeaderboardUser) => Boolean(user?.username))
+        .filter((user: LeaderboardUser, index: number, list: LeaderboardUser[]) =>
+          list.findIndex((entry) => entry.username === user.username) === index
+        )
+        .slice(0, 7)
+        .map((user: LeaderboardUser) => ({
+          username: user.username,
+          avatarUrl: user.avatarUrl ?? null,
+        }));
+
+      setCommunityAvatars(uniqueUsers);
+    } catch (error) {
+      console.error('Error fetching community avatars:', error);
+      setCommunityAvatars([]);
+    }
+  };
 
   const fetchProposals = async () => {
     try {
@@ -232,7 +271,11 @@ export default function VotingPage() {
                         soulGems="40000"
                         walletAddress={AZURA_ADDRESS}
                         governanceTokenAddress={GOV_TOKEN_ADDRESS}
-                        treasuryAmount="$5,200"
+                        memberAvatars={communityAvatars.map((user) => ({
+                          src: user.avatarUrl,
+                          alt: user.username,
+                          fallback: user.username.slice(0, 1).toUpperCase(),
+                        }))}
                       />
                     </div>
                   </div>
@@ -247,37 +290,33 @@ export default function VotingPage() {
               <TreasuryDisplay
                 contractAddress={CONTRACT_ADDRESS}
                 usdcAddress={USDC_ADDRESS}
+                className={styles.treasuryHeroCard}
               />
             </div>
             <div className={styles.statCardCompact}>
-              <button
-                className={styles.exchangeCard}
-                onClick={() => { play('click'); setIsSwapOpen(true); }}
-                onMouseEnter={() => play('hover')}
-                type="button"
-              >
+              <div className={`${styles.exchangeCard} ${styles.votingPowerCard} ${styles.staticInfoCard}`}>
                 <div className={styles.exchangeHeader}>
                   <div className={styles.exchangeIcon}>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M7 10L3 14L7 18" fill="currentColor"/>
-                      <path d="M3 14H16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-                      <path d="M17 14L21 10L17 6" fill="currentColor"/>
-                      <path d="M21 10H8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                      <path d="M4 9.5H20" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+                      <path d="M6 14.5H18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+                      <circle cx="8" cy="9.5" r="1.8" fill="currentColor"/>
+                      <circle cx="16" cy="14.5" r="1.8" fill="currentColor"/>
                     </svg>
                   </div>
                   <div className={styles.exchangeTitleText}>
-                    <span className={styles.exchangeLabel}>Shard Exchange</span>
-                    <span className={styles.exchangeTitle}>Swap</span>
+                    <span className={styles.exchangeLabel}>Community Reserve</span>
+                    <span className={styles.exchangeTitle}>Treasury</span>
                   </div>
                 </div>
                 <div className={styles.exchangePriceRow}>
-                  <span className={styles.exchangePrice}>$0.033</span>
-                  <span className={styles.exchangeCurrency}>USDC per shard</span>
+                  <span className={styles.exchangePrice}>$5,200</span>
+                  <span className={styles.exchangeCurrency}>USDC available</span>
                 </div>
                 <p className={styles.exchangeDesc}>
-                  Buy or sell shards directly. Current price reflects community market activity.
+                  Shared community reserve for wellness support, platform infrastructure, creator rewards, and proposals the community votes to fund together over time.
                 </p>
-              </button>
+              </div>
             </div>
           </div>
 

@@ -506,24 +506,28 @@
 
 /* Dark Mode Overrides */
 :global([data-theme="dark"]) .modal {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  background:
+    radial-gradient(circle at top right, rgba(69, 123, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #171b24 0%, #141923 100%);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow:
+    0 28px 72px rgba(3, 8, 20, 0.56),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 :global([data-theme="dark"]) .closeButton {
-  border-color: rgba(255, 255, 255, 0.1);
-  color: rgba(227, 225, 238, 0.95);
+  border-color: rgba(123, 153, 255, 0.1);
+  color: rgba(236, 241, 252, 0.92);
 }
 
 :global([data-theme="dark"]) .closeButton:hover {
-  background: rgba(107, 128, 255, 0.12);
-  color: #6B80FF;
+  background: rgba(69, 123, 255, 0.14);
+  color: #8ca0ff;
 }
 
 :global([data-theme="dark"]) .header {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  background: #0D0E16;
+  border-bottom-color: rgba(123, 153, 255, 0.1);
+  background: linear-gradient(180deg, rgba(24, 30, 43, 0.98) 0%, rgba(18, 23, 34, 0.98) 100%);
 }
 
 :global([data-theme="dark"]) .headerTitle {
@@ -535,25 +539,25 @@
 }
 
 :global([data-theme="dark"]) .rewardDesc {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.6);
 }
 
 :global([data-theme="dark"]) .rewardIcon {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow: 0 10px 22px rgba(4, 8, 18, 0.26);
 }
 
 :global([data-theme="dark"]) .pointsBadge {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(123, 153, 255, 0.12);
 }
 
 :global([data-theme="dark"]) .detailItem {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(126, 156, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .detailLabel {
-  color: rgba(227, 225, 238, 0.35);
+  color: rgba(210, 218, 235, 0.48);
 }
 
 :global([data-theme="dark"]) .detailValue {
@@ -561,8 +565,8 @@
 }
 
 :global([data-theme="dark"]) .bottomSection {
-  border-top-color: rgba(255, 255, 255, 0.1);
-  background: #0D0E16;
+  border-top-color: rgba(123, 153, 255, 0.1);
+  background: linear-gradient(180deg, rgba(21, 26, 37, 0.98) 0%, rgba(15, 18, 27, 0.98) 100%);
 }
 
 :global([data-theme="dark"]) .sectionTitle {
@@ -570,17 +574,17 @@
 }
 
 :global([data-theme="dark"]) .sectionDescription {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.6);
 }
 
 :global([data-theme="dark"]) .uploadArea {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(126, 156, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .uploadArea:hover {
-  background: rgba(107, 128, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, #232b3f 0%, #1f2737 100%);
+  box-shadow: 0 10px 20px rgba(4, 8, 18, 0.22);
 }
 
 :global([data-theme="dark"]) .uploadText {
@@ -588,12 +592,12 @@
 }
 
 :global([data-theme="dark"]) .uploadSubtext {
-  color: rgba(227, 225, 238, 0.35);
+  color: rgba(210, 218, 235, 0.48);
 }
 
 :global([data-theme="dark"]) .infoBox {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(126, 156, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .infoBoxTitle {
@@ -601,16 +605,16 @@
 }
 
 :global([data-theme="dark"]) .infoBoxText {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.6);
 }
 
 :global([data-theme="dark"]) .requirementItem {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(126, 156, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .checkIcon {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(123, 153, 255, 0.12);
 }
 
 :global([data-theme="dark"]) .requirementTitle {
@@ -618,53 +622,57 @@
 }
 
 :global([data-theme="dark"]) .requirementDescription {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.6);
 }
 
 :global([data-theme="dark"]) .actionBox {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(126, 156, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .actionIcon {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow: 0 10px 22px rgba(4, 8, 18, 0.24);
 }
 
 :global([data-theme="dark"]) .actionText {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.6);
 }
 
 :global([data-theme="dark"]) .submitButton {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 12px 24px rgba(10, 132, 255, 0.16),
+    0 4px 16px rgba(3, 8, 20, 0.4);
 }
 
 :global([data-theme="dark"]) .submitButton:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 16px 28px rgba(10, 132, 255, 0.18),
+    0 6px 20px rgba(3, 8, 20, 0.46);
 }
 
 :global([data-theme="dark"]) .submitButton:active:not(:disabled) {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(3, 8, 20, 0.34);
 }
 
 :global([data-theme="dark"]) .secondaryButton {
-  color: rgba(227, 225, 238, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  color: rgba(236, 241, 252, 0.92);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow: 0 8px 18px rgba(3, 8, 20, 0.34);
 }
 
 :global([data-theme="dark"]) .secondaryButton:hover {
-  background: rgba(107, 128, 255, 0.12);
-  color: #6B80FF;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  background: rgba(69, 123, 255, 0.14);
+  color: #8ca0ff;
+  box-shadow: 0 10px 22px rgba(3, 8, 20, 0.4);
 }
 
 :global([data-theme="dark"]) .stepButton {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow: 0 8px 18px rgba(3, 8, 20, 0.26);
 }
 
 :global([data-theme="dark"]) .stepButton:hover:not(:disabled) {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 20px rgba(3, 8, 20, 0.34);
 }

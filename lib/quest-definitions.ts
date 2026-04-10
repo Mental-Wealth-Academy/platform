@@ -19,7 +19,7 @@ export interface QuestDefinition {
 export const QUEST_DEFINITIONS: QuestDefinition[] = [
   {
     key: 'quest-week-1-sealed',
-    title: 'Complete and seal Week 1',
+    title: 'Week 1',
     points: 100,
     desc: 'Finish the full Week 1 course and seal it from your home dashboard.',
     questType: 'sealed-week',
@@ -28,7 +28,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'quest-week-2-sealed',
-    title: 'Complete and seal Week 2',
+    title: 'Week 2',
     points: 100,
     desc: 'Finish the full Week 2 course and seal it from your home dashboard.',
     questType: 'sealed-week',
@@ -37,7 +37,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'quest-blog-post',
-    title: 'Write community blog reports',
+    title: 'Blog Posts',
     points: 50,
     desc: 'Share knowledge or a personal story with the community in five separate entries.',
     questType: 'proof-required',
@@ -45,7 +45,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'quest-social-asset',
-    title: 'Design social media assets',
+    title: 'Assets',
     points: 60,
     desc: 'Create five shareable assets that represent Mental Wealth Academy values.',
     questType: 'proof-required',
@@ -53,7 +53,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'quest-onboard-member',
-    title: 'Onboard a new member',
+    title: 'Onboard',
     points: 75,
     desc: 'Walk someone through their first week in the academy.',
     questType: 'no-proof',
@@ -61,7 +61,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
   },
   {
     key: 'twitter-follow-quest',
-    title: 'Follow @MentalWealthDAO',
+    title: 'Follow',
     points: 40,
     desc: 'Connect your X account and follow the official Mental Wealth Academy account.',
     questType: 'twitter-follow',

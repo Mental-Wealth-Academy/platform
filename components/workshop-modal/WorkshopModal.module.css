@@ -379,3 +379,105 @@
     gap: 14px;
   }
 }
+
+:global([data-theme="dark"]) .overlay {
+  background: rgba(8, 11, 18, 0.94);
+}
+
+:global([data-theme="dark"]) .modal {
+  background:
+    radial-gradient(circle at top right, rgba(69, 123, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #171b24 0%, #141923 100%);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow:
+    6px 6px 0 rgba(9, 14, 28, 0.72),
+    0 24px 64px rgba(3, 8, 20, 0.5);
+}
+
+:global([data-theme="dark"]) .closeBtn {
+  color: rgba(236, 241, 252, 0.6);
+}
+
+:global([data-theme="dark"]) .closeBtn:hover {
+  background: rgba(69, 123, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .modalTitle,
+:global([data-theme="dark"]) .workshopTitle,
+:global([data-theme="dark"]) .seatCountLabel {
+  color: rgba(244, 247, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .modalSub,
+:global([data-theme="dark"]) .workshopDesc,
+:global([data-theme="dark"]) .workshopMeta,
+:global([data-theme="dark"]) .teacherLabel,
+:global([data-theme="dark"]) .legendItem,
+:global([data-theme="dark"]) .seatIcon,
+:global([data-theme="dark"]) .seatTaken .seatIcon {
+  color: rgba(210, 218, 235, 0.58);
+}
+
+:global([data-theme="dark"]) .metaDot {
+  background: rgba(210, 218, 235, 0.34);
+}
+
+:global([data-theme="dark"]) .tabs,
+:global([data-theme="dark"]) .classroom {
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border-color: rgba(123, 153, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .tab {
+  color: rgba(210, 218, 235, 0.62);
+  border-right-color: rgba(123, 153, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .tab:hover {
+  background: rgba(69, 123, 255, 0.1);
+  color: rgba(244, 247, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .seatBar {
+  background: rgba(106, 129, 196, 0.16);
+}
+
+:global([data-theme="dark"]) .teacherDesk {
+  background: rgba(244, 247, 255, 0.72);
+}
+
+:global([data-theme="dark"]) .seat {
+  border-color: rgba(123, 153, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .seatOpen {
+  background: #273046;
+  box-shadow: 2px 2px 0 rgba(9, 14, 28, 0.72);
+}
+
+:global([data-theme="dark"]) .seatOpen:hover:not(:disabled) {
+  background: #2d3953;
+  box-shadow: 3px 3px 0 rgba(9, 14, 28, 0.72);
+}
+
+:global([data-theme="dark"]) .seatTaken {
+  background: rgba(210, 218, 235, 0.08);
+  border-color: rgba(210, 218, 235, 0.14);
+}
+
+:global([data-theme="dark"]) .seatTaken .seatIcon::after {
+  background: rgba(210, 218, 235, 0.14);
+}
+
+:global([data-theme="dark"]) .legendDot {
+  border-color: rgba(123, 153, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .legendOpen {
+  background: #273046;
+}
+
+:global([data-theme="dark"]) .legendTaken {
+  background: rgba(210, 218, 235, 0.08);
+  border-color: rgba(210, 218, 235, 0.14);
+}

@@ -115,15 +115,69 @@
   color: var(--color-primary, #5168FF);
 }
 
-.infoText {
-  font-family: var(--font-primary);
-  font-size: 11px;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.45);
-  line-height: 1.5;
-  margin: 10px 0 0;
-  padding-top: 10px;
+.powerSection {
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.powerHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.powerLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  font-family: var(--font-button);
+  color: var(--color-text-muted);
+}
+
+.powerValue {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.powerBar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  overflow: visible;
+}
+
+.powerBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #5168FF,
+    #74C465,
+    #E8556D,
+    #F2A0B5,
+    #a78bfa
+  );
+}
+
+.powerBarIndicator {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #16171F;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .loading {
@@ -166,8 +220,13 @@
     font-size: 10px;
   }
 
-  .infoText {
-    font-size: 10px;
+  .powerSection {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .powerValue {
+    font-size: 18px;
   }
 }
 
@@ -195,7 +254,18 @@
   color: rgba(81, 104, 255, 0.8);
 }
 
-:global([data-theme="dark"]) .infoText {
-  color: rgba(227, 225, 238, 0.4);
+:global([data-theme="dark"]) .powerSection {
   border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .powerLabel {
+  color: rgba(227, 225, 238, 0.5);
+}
+
+:global([data-theme="dark"]) .powerValue {
+  color: rgba(227, 225, 238, 0.92);
+}
+
+:global([data-theme="dark"]) .powerBar {
+  background: rgba(255, 255, 255, 0.06);
 }

@@ -378,14 +378,33 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
             <div className={styles.modalMain}>
               <div className={styles.timerDisplay}>
-                <div className={styles.sessionBadge}>Morning Pages</div>
+                <div className={styles.sessionHeader}>
+                  <div className={styles.sessionBadgeFrame}>
+                    <div className={styles.sessionBadgeGraphic} aria-hidden="true">
+                      <Image
+                        src="/uploads/blueagent.png"
+                        alt=""
+                        width={92}
+                        height={92}
+                        className={styles.sessionBadgeImage}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.sessionMeta}>
+                    <div className={styles.promptPill}>Write here for 15 minutes daily, keep it up. The rewards are based on merit but the benefits are based on the effort you put in. ✍️🌱</div>
+                  </div>
+                  <div className={styles.timerFrame}>
+                    <div className={`${styles.timerCount} ${styles.timerCountCompact} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                      {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.writeArea}>
-                <div className={styles.promptPill}>Blue challenge: keep writing till the timer ends.</div>
                 <textarea
                   className={styles.textarea}
-                  placeholder="Go. Write anything. Keep moving."
+                  placeholder="Write here for 15 minutes daily, keep it up. The rewards are based on merit but the benefits are based on the effort you put in."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus
@@ -396,9 +415,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
             <div className={styles.modalFooter}>
               <div className={styles.footerTimer}>
-                <div className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                  {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
-                </div>
                 <div className={styles.timerBar}>
                   <div
                     className={styles.timerBarFill}

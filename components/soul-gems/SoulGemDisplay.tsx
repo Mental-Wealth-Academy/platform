@@ -74,43 +74,45 @@ interface AzuraPowerIndicatorProps {
   soulGems: string;
   walletAddress: string;
   governanceTokenAddress: string;
-  treasuryAmount?: string;
+  memberAvatars?: Array<{
+    src: string | null;
+    alt: string;
+    fallback: string;
+  }>;
 }
 
 export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   soulGems,
   walletAddress,
   governanceTokenAddress,
-  treasuryAmount = '$5,200',
+  memberAvatars = [],
 }) => {
-  const votingPower = 40;
+  const heroAvatars = [
+    { src: 'https://i.imgur.com/Y6YNtam.png', alt: 'Blue', fallback: 'B' },
+    ...memberAvatars,
+  ].slice(0, 8);
 
   return (
     <div className={styles.azuraPower}>
-      <div className={styles.avatarSection}>
-        <Image
-          src="https://i.imgur.com/Y6YNtam.png"
-          alt="Blue"
-          width={36}
-          height={36}
-          className={styles.azuraAvatar}
-          unoptimized
-        />
-        <span className={styles.azuraName}>Blue</span>
-      </div>
-      <div className={styles.votingPowerSection}>
-        <div className={styles.votingPowerHeader}>
-          <span className={styles.aiTag}>Voting Power</span>
-          <span className={styles.votingPowerValue}>{votingPower}%</span>
-        </div>
-        <div className={styles.votingBar}>
-          <div className={styles.votingBarFill} style={{ width: `${votingPower}%` }} />
-          <div className={styles.votingBarIndicator} style={{ left: `${votingPower}%` }} />
-        </div>
-      </div>
-      <div className={styles.treasuryBadge}>
-        <span className={styles.treasuryBadgeLabel}>Treasury</span>
-        <span className={styles.treasuryBadgeAmount}>{treasuryAmount}</span>
+      <div className={styles.avatarStrip} aria-label="Blue and noun avatars">
+        {heroAvatars.map((avatar) => (
+          <div key={avatar.src} className={styles.avatarTile}>
+            {avatar.src ? (
+              <Image
+                src={avatar.src}
+                alt={avatar.alt}
+                width={250}
+                height={250}
+                className={styles.azuraAvatar}
+                unoptimized
+              />
+            ) : (
+              <div className={styles.avatarFallback} aria-label={avatar.alt}>
+                {avatar.fallback}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

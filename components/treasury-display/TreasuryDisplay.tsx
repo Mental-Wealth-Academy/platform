@@ -7,6 +7,7 @@ import styles from './TreasuryDisplay.module.css';
 interface TreasuryDisplayProps {
   contractAddress: string;
   usdcAddress: string;
+  className?: string;
 }
 
 const BLUE_WALLET = '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
@@ -18,7 +19,9 @@ const USDC_ABI = [
 
 const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   usdcAddress,
+  className,
 }) => {
+  const votingPower = 40;
   const [balance, setBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -71,7 +74,7 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   }, [loadBalance]);
 
   return (
-    <div className={`${styles.container} ${loading ? styles.loading : ''}`}>
+    <div className={`${styles.container} ${loading ? styles.loading : ''} ${className ?? ''}`}>
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <div className={styles.icon}>
@@ -113,9 +116,16 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
           </button>
         </div>
       </div>
-      <p className={styles.infoText}>
-        Blue uses this wallet to transact on behalf of the community. Users can pay instantly for her to do services, or exchange earned shards for responses.
-      </p>
+      <div className={styles.powerSection}>
+        <div className={styles.powerHeader}>
+          <span className={styles.powerLabel}>Voting Power</span>
+          <span className={styles.powerValue}>{votingPower}%</span>
+        </div>
+        <div className={styles.powerBar}>
+          <div className={styles.powerBarFill} style={{ width: `${votingPower}%` }} />
+          <div className={styles.powerBarIndicator} style={{ left: `${votingPower}%` }} />
+        </div>
+      </div>
     </div>
   );
 };

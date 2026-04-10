@@ -1,22 +1,77 @@
 /* Quest Card */
 
 .card {
+  --action-card-background:
+    linear-gradient(
+      180deg,
+      #5B4FD9 0%,
+      #3D35A8 48%,
+      #1F1A5E 100%
+    );
+  --action-card-border: #5B3AED;
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px 18px;
   min-height: 132px;
   border-radius: 16px;
-  border: 1px solid #5B3AED;
-  background: linear-gradient(
-    180deg,
-    #5B4FD9 0%,
-    #3D35A8 48%,
-    #1F1A5E 100%
-  );
+  border: 1px solid var(--action-card-border);
+  background: var(--action-card-background);
   width: 100%;
   box-sizing: border-box;
-  box-shadow: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(12, 18, 48, 0.14);
+}
+
+:global([data-theme="light"]) .card,
+:global([data-theme="system"]) .card {
+  --action-card-background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.52) 100%),
+    var(--gradient-futuristic-floss);
+  --action-card-border: rgba(81, 104, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    0 8px 18px rgba(81, 104, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .card {
+  --action-card-background:
+    linear-gradient(
+      180deg,
+      #5B4FD9 0%,
+      #3D35A8 48%,
+      #1F1A5E 100%
+    );
+  --action-card-border: #5B3AED;
+}
+
+@media (prefers-color-scheme: light) {
+  :global([data-theme="system"]) .card {
+    --action-card-background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.52) 100%),
+      var(--gradient-futuristic-floss);
+    --action-card-border: rgba(81, 104, 255, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.58),
+      0 8px 18px rgba(81, 104, 255, 0.08);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :global([data-theme="system"]) .card {
+    --action-card-background:
+      linear-gradient(
+        180deg,
+        #5B4FD9 0%,
+        #3D35A8 48%,
+        #1F1A5E 100%
+      );
+    --action-card-border: #5B3AED;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 10px 24px rgba(12, 18, 48, 0.14);
+  }
 }
 
 .shardContainer {
@@ -86,6 +141,26 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+
+:global([data-theme="light"]) .taskName,
+:global([data-theme="system"]) .taskName {
+  color: #1A1B24;
+}
+
+:global([data-theme="light"]) .taskDescription,
+:global([data-theme="system"]) .taskDescription {
+  color: rgba(26, 27, 36, 0.72);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global([data-theme="system"]) .taskName {
+    color: #FFFFFF;
+  }
+
+  :global([data-theme="system"]) .taskDescription {
+    color: rgba(255, 255, 255, 0.82);
+  }
 }
 
 .actionContainer {

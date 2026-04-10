@@ -224,12 +224,14 @@
   opacity: 1;
   pointer-events: none;
   overflow: hidden;
-  border-radius: calc(var(--radius-lg) - 2px);
+  border-radius: inherit;
 }
 
 .secondaryCta {
   position: relative;
   overflow: visible;
+  --hero-card-radius: 12px;
+  border-radius: var(--hero-card-radius);
 }
 
 .secondaryCta::before {
@@ -260,7 +262,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: calc(var(--radius-lg) - 2px);
+  border-radius: inherit;
   overflow: hidden;
   background:
     /* base fill — dark so text pops */
@@ -319,7 +321,8 @@
   width: 100%;
   position: relative;
   overflow: visible;
-  border-radius: var(--radius-lg);
+  --hero-card-radius: 12px;
+  border-radius: var(--hero-card-radius);
 }
 
 .heroAzura::before {
@@ -350,7 +353,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-lg);
+  border-radius: inherit;
   overflow: hidden;
   background:
     linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%),
@@ -384,6 +387,151 @@
   pointer-events: none;
   filter: contrast(1.3) saturate(1.2);
   opacity: 0.85;
+}
+
+:global(:root:not([data-theme="dark"])) .secondaryCta,
+:global(:root:not([data-theme="dark"])) .heroAzura {
+  box-shadow: 0 18px 38px rgba(81, 104, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .secondaryCta::after {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
+    repeating-linear-gradient(
+      87deg,
+      transparent 0px,
+      rgba(81, 104, 255, 0.08) 1px,
+      transparent 2px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      -3deg,
+      transparent 0px,
+      rgba(232, 85, 109, 0.05) 1px,
+      transparent 2px,
+      transparent 14px
+    ),
+    radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
+    radial-gradient(ellipse 48% 48% at 76% 24%, rgba(81, 104, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
+  filter: saturate(1.02);
+  opacity: 1;
+}
+
+:global(:root:not([data-theme="dark"])) .heroAzura::after {
+  background:
+    linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(80, 89, 155, 0.12) 50%, rgba(81, 104, 255, 0.06) 100%),
+    repeating-linear-gradient(
+      87deg,
+      transparent 0px,
+      rgba(81, 104, 255, 0.05) 1px,
+      transparent 2px,
+      transparent 10px
+    );
+  filter: saturate(1.01);
+  opacity: 1;
+}
+
+:global(:root:not([data-theme="dark"])) .exchangeBg {
+  opacity: 0.24;
+}
+
+:global(:root:not([data-theme="dark"])) .secondaryCta .exchangeLabel {
+  color: rgba(26, 29, 51, 0.48);
+  text-shadow: none;
+}
+
+:global(:root:not([data-theme="dark"])) .secondaryCta .exchangePrice,
+:global(:root:not([data-theme="dark"])) .secondaryCta .exchangeAddress,
+:global(:root:not([data-theme="dark"])) .treasuryAmount {
+  color: #1a1d33;
+  text-shadow: none;
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryLabel,
+:global(:root:not([data-theme="dark"])) .heroAzura span {
+  color: rgba(26, 29, 51, 0.6);
+  text-shadow: none;
+}
+
+:global(:root:not([data-theme="dark"])) .heroAzura button {
+  color: rgba(26, 29, 51, 0.48);
+  border-color: rgba(81, 104, 255, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+:global(:root:not([data-theme="dark"])) .heroAzura button:hover {
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.26);
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard {
+  background: linear-gradient(135deg, #fbfcff 0%, #f2f6ff 46%, #edf2fb 100%);
+  border-color: rgba(109, 138, 214, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 16px 32px rgba(109, 138, 214, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.icon) {
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.18);
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.title),
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.balance) {
+  color: #21304f;
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.currency) {
+  color: rgba(81, 104, 255, 0.72);
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.label),
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.infoText) {
+  color: rgba(33, 48, 79, 0.56);
+}
+
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.infoText) {
+  border-top-color: rgba(109, 138, 214, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard {
+  background: linear-gradient(135deg, #fcfffb 0%, #f2fbf4 44%, #edf8f0 100%);
+  border-color: rgba(116, 196, 101, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 16px 32px rgba(116, 196, 101, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 20px 36px rgba(116, 196, 101, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeIcon {
+  background: rgba(116, 196, 101, 0.14);
+  border-color: rgba(116, 196, 101, 0.24);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeTitle,
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangePrice {
+  color: #24513a;
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeLabel,
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeDesc {
+  color: rgba(36, 81, 58, 0.56);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeDesc {
+  border-top-color: rgba(116, 196, 101, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeCurrency {
+  color: rgba(47, 143, 60, 0.74);
 }
 
 .treasuryTypography {
@@ -420,15 +568,7 @@
   background: transparent;
   border-color: transparent;
   box-shadow: none;
-  padding: 28px 36px;
-  display: flex;
-  align-items: center;
-  min-height: 126px;
-}
-
-.heroAzura img {
-  width: 48px;
-  height: 48px;
+  padding: 0;
 }
 
 .heroAzura span {
@@ -457,13 +597,7 @@
   }
 
   .heroAzura > div:last-child {
-    padding: 18px 20px;
-    min-height: unset;
-  }
-
-  .heroAzura img {
-    width: 40px;
-    height: 40px;
+    padding: 0;
   }
 }
 
@@ -577,6 +711,15 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   text-transform: none;
   letter-spacing: normal;
+}
+
+.staticInfoCard {
+  cursor: default;
+}
+
+.staticInfoCard:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 768px) {
@@ -1551,6 +1694,10 @@
 .statCardCompact > * {
   flex: 1;
 }
+
+.treasuryHeroCard {}
+
+.votingPowerCard {}
 
 @media (max-width: 520px) {
   .statCardsRow {

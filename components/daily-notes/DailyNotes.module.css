@@ -4,7 +4,7 @@
   width: 100%;
   background: transparent;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: visible;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
@@ -41,7 +41,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 14px;
+  border-radius: inherit;
   overflow: hidden;
   background:
     linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%),
@@ -92,7 +92,7 @@
   opacity: 1;
   pointer-events: none;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: inherit;
 }
 
 .cardButton {
@@ -109,6 +109,7 @@
   transition: background 0.15s ease;
   position: relative;
   z-index: 2;
+  border-radius: 12px;
 }
 
 .cardButton:hover {
@@ -199,6 +200,76 @@
 .cardCompact:hover {
   box-shadow: 0 4px 16px rgba(81, 104, 255, 0.08);
   border-color: rgba(81, 104, 255, 0.15);
+}
+
+:global(:root:not([data-theme="dark"])) .card {
+  box-shadow: 0 14px 34px rgba(74, 93, 160, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .card::after {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
+    repeating-linear-gradient(
+      87deg,
+      transparent 0px,
+      rgba(81, 104, 255, 0.08) 1px,
+      transparent 2px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      -3deg,
+      transparent 0px,
+      rgba(232, 85, 109, 0.05) 1px,
+      transparent 2px,
+      transparent 14px
+    ),
+    radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
+    radial-gradient(ellipse 48% 48% at 76% 24%, rgba(81, 104, 255, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
+  filter: saturate(1.02);
+  opacity: 1;
+}
+
+:global(:root:not([data-theme="dark"])) .vizBg {
+  opacity: 0.24;
+}
+
+:global(:root:not([data-theme="dark"])) .cardButton {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.18) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .cardButton:hover {
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.08) 0%, rgba(81, 104, 255, 0.04) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .icon {
+  background: linear-gradient(180deg, #ffffff 0%, #eef3ff 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .label {
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .sublabel {
+  color: rgba(26, 29, 51, 0.48);
+}
+
+:global(:root:not([data-theme="dark"])) .dayDot {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .cardCompact:hover {
+  box-shadow: 0 18px 38px rgba(81, 104, 255, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .shardBadge {
+  color: #d9468f;
+  background: rgba(217, 70, 143, 0.1);
+  border-color: rgba(217, 70, 143, 0.2);
 }
 
 .cardDone {
@@ -535,53 +606,93 @@
   transition: width 1s linear;
 }
 
+.sessionHeader {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+.sessionBadgeFrame,
+.timerFrame {
+  width: 92px;
+  min-width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 20px;
+}
+
+.sessionBadgeGraphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.sessionBadgeImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.sessionMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
 .writeArea {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   padding: 0 20px 12px;
   flex: 1;
 }
 
 .promptPill {
-  position: absolute;
-  top: 14px;
-  left: 34px;
-  right: 34px;
-  z-index: 1;
-  padding: 10px 14px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: #2B4CFF;
-  background: rgba(81, 104, 255, 0.1);
-  border: 1px solid rgba(81, 104, 255, 0.16);
-  border-radius: 14px;
-  pointer-events: none;
+  width: 100%;
+  padding: 12px 16px;
+  font-family: 'SF Pro Display', 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  color: #FFFFFF;
+  background: #0A84FF;
+  border: none;
+  border-radius: 18px;
+}
+
+.timerFrame {
+  padding: 10px;
 }
 
 .textarea {
   width: 100%;
   height: 100%;
   min-height: 440px;
-  padding: 60px 18px 20px;
+  padding: 18px 18px 20px;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   line-height: 1.65;
   color: #1A1D33;
-  background:
-    linear-gradient(180deg, rgba(81, 104, 255, 0.03) 0, rgba(81, 104, 255, 0.03) 42px, #ffffff 42px, #ffffff 100%);
+  background: #ffffff;
   border: 2px solid rgba(81, 104, 255, 0.16);
   border-radius: 20px;
   resize: none;
   box-sizing: border-box;
-  transition: all 0.15s ease;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: border-color 0.15s ease;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: var(--week-color, #5168FF);
-  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.12);
+  border-color: rgba(81, 104, 255, 0.16);
 }
 
 .textarea::placeholder {
@@ -606,6 +717,14 @@
   padding: 12px 20px 10px;
   border-bottom: 1px solid rgba(26, 29, 51, 0.08);
   background: rgba(255, 255, 255, 0.72);
+}
+
+.timerCountCompact {
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-align: center;
 }
 
 .pauseBtn {
@@ -645,16 +764,24 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #FFFFFF;
-  background: linear-gradient(135deg, #2563EB 0%, #22C55E 100%);
-  border: none;
+  background: var(--color-primary, #5168FF);
+  border: 2px solid #1A1D33;
   border-radius: 0;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .submitBtn:hover {
-  background: linear-gradient(135deg, #1D4ED8 0%, #16A34A 100%);
+  background: #4459e6;
+}
+
+:global(:root:not([data-theme="dark"])) .submitBtn {
+  border-color: rgba(81, 104, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 18px rgba(81, 104, 255, 0.14);
 }
 
 /* ─── Confirm Close Dialog ─── */
@@ -840,6 +967,22 @@
     padding: 18px 16px 10px;
   }
 
+  .sessionHeader {
+    gap: 12px;
+  }
+
+  .sessionBadgeFrame,
+  .timerFrame {
+    width: 72px;
+    min-width: 72px;
+    height: 72px;
+    border-radius: 16px;
+  }
+
+  .timerFrame {
+    padding: 8px;
+  }
+
   .footerTimer {
     padding: 10px 16px 8px;
   }
@@ -848,19 +991,23 @@
     font-size: clamp(24px, 7vw, 34px);
   }
 
+  .timerCountCompact {
+    font-size: 16px;
+  }
+
   .writeArea {
     padding: 0 16px 16px;
   }
 
   .promptPill {
-    left: 28px;
-    right: 28px;
-    font-size: 10px;
+    max-width: 100%;
+    font-size: 12px;
+    padding: 10px 14px;
   }
 
   .textarea {
     min-height: 280px;
-    padding: 58px 16px 18px;
+    padding: 16px 16px 18px;
     font-size: 15px;
   }
 
@@ -876,6 +1023,26 @@
 }
 
 @media (max-width: 480px) {
+  .sessionHeader {
+    gap: 10px;
+  }
+
+  .sessionBadgeFrame,
+  .timerFrame {
+    width: 60px;
+    min-width: 60px;
+    height: 60px;
+    border-radius: 14px;
+  }
+
+  .timerFrame {
+    padding: 6px;
+  }
+
+  .timerCountCompact {
+    font-size: 14px;
+  }
+
   .label {
     font-size: 14px;
   }
@@ -890,8 +1057,14 @@
 /* ============================================ */
 
 :global([data-theme="dark"]) .modal {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(circle at top right, rgba(69, 123, 255, 0.16), transparent 26%),
+    radial-gradient(circle at top left, rgba(27, 67, 166, 0.12), transparent 32%),
+    linear-gradient(180deg, #171b24 0%, #141923 100%);
+  border-color: rgba(123, 153, 255, 0.12);
+  box-shadow:
+    0 30px 90px rgba(3, 8, 20, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 :global([data-theme="dark"]) .sessionBadge {
@@ -901,51 +1074,66 @@
 }
 
 :global([data-theme="dark"]) .timerCount {
-  color: rgba(227, 225, 238, 0.95);
+  color: rgba(244, 247, 255, 0.94);
+  text-shadow: 0 0 18px rgba(10, 132, 255, 0.12);
 }
 
 :global([data-theme="dark"]) .timerBar {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(106, 129, 196, 0.16);
 }
 
 :global([data-theme="dark"]) .textarea {
-  background: #1A1B24;
-  color: rgba(227, 225, 238, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
-  background:
-    linear-gradient(180deg, rgba(107, 128, 255, 0.1) 0, rgba(107, 128, 255, 0.1) 42px, #1A1B24 42px, #1A1B24 100%);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  color: rgba(244, 247, 255, 0.94);
+  border-color: rgba(126, 156, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 12px 30px rgba(4, 8, 18, 0.28);
 }
 
 :global([data-theme="dark"]) .textarea::placeholder {
-  color: rgba(227, 225, 238, 0.35);
+  color: rgba(214, 223, 242, 0.44);
+}
+
+:global([data-theme="dark"]) .textarea:focus {
+  border-color: rgba(126, 156, 255, 0.22);
 }
 
 :global([data-theme="dark"]) .promptPill {
-  background: rgba(107, 128, 255, 0.12);
-  border-color: rgba(107, 128, 255, 0.2);
-  color: #9CB0FF;
+  background: #0A84FF;
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 26px rgba(10, 132, 255, 0.16);
 }
 
 :global([data-theme="dark"]) .modalFooter {
-  border-top-color: rgba(255, 255, 255, 0.06);
-  background: linear-gradient(180deg, rgba(17, 18, 25, 0.98) 0%, rgba(12, 13, 18, 0.98) 100%);
+  border-top-color: rgba(123, 153, 255, 0.12);
+  background: linear-gradient(180deg, rgba(21, 26, 37, 0.98) 0%, rgba(15, 18, 27, 0.98) 100%);
 }
 
 :global([data-theme="dark"]) .footerTimer {
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-  background: linear-gradient(180deg, rgba(24, 26, 36, 0.98) 0%, rgba(14, 15, 22, 0.98) 100%);
+  border-bottom-color: rgba(123, 153, 255, 0.1);
+  background: linear-gradient(180deg, rgba(27, 33, 47, 0.96) 0%, rgba(20, 24, 35, 0.96) 100%);
 }
 
 :global([data-theme="dark"]) .pauseBtn {
-  color: rgba(227, 225, 238, 0.95);
-  background: rgba(255, 255, 255, 0.04);
-  border-right-color: rgba(255, 255, 255, 0.06);
+  color: rgba(236, 241, 252, 0.9);
+  background: linear-gradient(180deg, rgba(34, 41, 58, 0.96) 0%, rgba(27, 32, 46, 0.96) 100%);
+  border-right-color: rgba(123, 153, 255, 0.1);
 }
 
 :global([data-theme="dark"]) .pauseBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(40, 47, 66, 0.98) 0%, rgba(31, 37, 53, 0.98) 100%);
+}
+
+:global([data-theme="dark"]) .submitBtn {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 24px rgba(10, 132, 255, 0.18);
 }
 
 :global([data-theme="dark"]) .counter {
-  color: rgba(227, 225, 238, 0.55);
+  color: rgba(210, 218, 235, 0.58);
 }
