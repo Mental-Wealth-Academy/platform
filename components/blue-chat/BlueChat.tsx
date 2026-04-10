@@ -704,10 +704,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
         {isTyping && (
           <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
-            <div className={styles.typingDots}>
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className={styles.typingLoader}>
+              <video
+                className={styles.typingLoaderVideo}
+                src="/loaders/loading-dots-blue.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
             </div>
           </div>
         )}
@@ -798,9 +803,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         <button className={styles.quickAction} onClick={() => handleQuickAction('course')} disabled={isTyping} type="button">
           Course
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('more')} disabled={isTyping} type="button">
-          More
-        </button>
       </div>
 
       {/* Chat Input */}
@@ -868,7 +870,27 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className={styles.expandedBody}>
-            {/* Left panel — Knowledge & tools */}
+            {/* Left — Full body character */}
+            <div className={styles.expandedRight}>
+              <div className={styles.fullBodyWrap}>
+                <Image
+                  src="/images/azura-fullbody.png"
+                  alt="Blue full body"
+                  fill
+                  className={styles.fullBodyImage}
+                  unoptimized
+                  priority
+                />
+                <div className={styles.fullBodyGlow} />
+              </div>
+            </div>
+
+            {/* Center — Chat (no duplicate emote image) */}
+            <div className={styles.expandedCenter}>
+              {chatContent}
+            </div>
+
+            {/* Right panel — Knowledge & tools */}
             <div className={styles.expandedLeft}>
               {/* Radar chart */}
               <div className={styles.radarSection}>
@@ -1029,29 +1051,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
             </div>
-
-            {/* Center — Chat (no duplicate emote image) */}
-            <div className={styles.expandedCenter}>
-              {chatContent}
-            </div>
-
-            {/* Right — Full body character */}
-            <div className={styles.expandedRight}>
-              <div className={styles.fullBodyWrap}>
-                <Image
-                  src="/images/azura-fullbody.png"
-                  alt="Blue full body"
-                  fill
-                  className={styles.fullBodyImage}
-                  unoptimized
-                  priority
-                />
-                <div className={styles.fullBodyGlow} />
-              </div>
-              <div className={styles.fullBodyNameplate}>
-                <span className={styles.nameplateName}>Blue</span>
-              </div>
-            </div>
           </div>
         </div>
       </>
@@ -1075,32 +1074,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
-        </div>
-
-        <div className={styles.characterSection}>
-          <Image
-            src={AZURA_EMOTES[emoteA]}
-            alt="Azura"
-            fill
-            className={styles.characterImage}
-            style={{ opacity: activeLayer === 'a' ? 1 : 0, transition: 'opacity 0.5s ease' }}
-            unoptimized
-            priority
-          />
-          <Image
-            src={AZURA_EMOTES[emoteB]}
-            alt="Azura"
-            fill
-            className={styles.characterImage}
-            style={{ opacity: activeLayer === 'b' ? 1 : 0, transition: 'opacity 0.5s ease' }}
-            unoptimized
-          />
-          <div className={styles.characterFade} />
-          <div className={styles.characterNameplate}>
-            <span className={styles.nameplateStatus} />
-            <span className={styles.nameplateName}>Blue</span>
-            <span className={styles.nameplateLabel}>v1.3</span>
-          </div>
         </div>
 
         {chatContent}

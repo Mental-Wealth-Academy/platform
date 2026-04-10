@@ -27,7 +27,7 @@ export const MobileBottomNav: React.FC = () => {
   return (
     <nav className={styles.nav}>
       <button type="button" className={styles.tab} onClick={handleAgentOpen} aria-label="Open Blue agent">
-        <Image src="/icons/daemon.svg" alt="" width={24} height={24} className={styles.iconImg} aria-hidden="true" />
+        <Image src="/icons/chat-icon.svg" alt="" width={24} height={24} className={styles.iconImg} aria-hidden="true" />
         <span className={styles.label}>Blue Chat</span>
       </button>
 
