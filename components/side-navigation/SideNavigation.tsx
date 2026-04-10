@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
+import {
+  Gift,
+  House,
+  IconProps,
+  ImagesSquare,
+  Microscope,
+  PawPrint,
+  UsersThree,
+} from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import BlueChat from '../blue-chat/BlueChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
@@ -21,7 +30,7 @@ interface NavItem {
   id: string;
   label: string;
   href: string;
-  icon: string;
+  icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
   badge?: string;
   badgeType?: 'default' | 'highlight' | 'muted' | 'green' | 'pro';
   disabled?: boolean;
@@ -41,18 +50,18 @@ const navSections: NavSection[] = [
     id: 'main',
     label: 'SPIRITUAL WORK',
     items: [
-      { id: 'voting', label: 'Home', href: '/home', icon: '/icons/nav-home.svg' },
-      { id: 'rewards', label: 'Quests', href: '/rewards', icon: '/icons/rewards.svg' },
-      { id: 'community', label: 'Community', href: '/community', icon: '/icons/nav-community.svg' },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: '/icons/nav-gallery.svg' },
+      { id: 'voting', label: 'Home', href: '/home', icon: House },
+      { id: 'rewards', label: 'Quests', href: '/rewards', icon: Gift },
+      { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
     ],
   },
   {
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'pet', label: 'Pet', href: '/digipet', icon: '/icons/nav-teleport.svg' },
-      { id: 'research', label: 'DeSci Tools', href: '/research', icon: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'pet', label: 'Pet', href: '/digipet', icon: PawPrint },
+      { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -64,6 +73,19 @@ interface SideNavigationProps {
   externalMobileOpen?: boolean;
   onExternalMobileClose?: () => void;
 }
+
+const NavIconMark: React.FC<{
+  icon: NavItem['icon'];
+  isActive?: boolean;
+}> = ({ icon: Icon, isActive = false }) => (
+  <span className={`${styles.navItemIconWrap} ${isActive ? styles.navItemIconWrapActive : ''}`} aria-hidden="true">
+    <Icon
+      size={20}
+      weight={isActive ? 'fill' : 'regular'}
+      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ''}`}
+    />
+  </span>
+);
 
 const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onExternalMobileClose }) => {
   const pathname = usePathname();
@@ -454,8 +476,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           </button>
         )}
         <div className={`${styles.sectionItems} ${!isExpanded ? styles.sectionItemsCollapsed : ''}`}>
-          {section.items.map((item) => (
-            item.requiresPro && !isPro ? (
+          {section.items.map((item) => {
+            const active = isActive(item.href);
+
+            return item.requiresPro && !isPro ? (
               <button
                 key={item.id}
                 onClick={() => {
@@ -467,15 +491,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} ${styles.navItemButton}`}
                 title={isCollapsed ? item.label : undefined}
               >
-                {item.icon && (
-                  <Image
-                    src={item.icon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className={styles.navItemIcon}
-                  />
-                )}
+                <NavIconMark icon={item.icon} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 <span className={`${styles.badge} ${styles.badgePro}`}>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
@@ -491,15 +507,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} ${styles.navItemDisabled}`}
                 title={isCollapsed ? item.label : undefined}
               >
-                {item.icon && (
-                  <Image
-                    src={item.icon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className={styles.navItemIcon}
-                  />
-                )}
+                <NavIconMark icon={item.icon} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
@@ -511,7 +519,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
               <Link
                 key={item.id}
                 href={item.href}
-                className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
+                className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
                 {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 onClick={() => {
                   play('navigation');
@@ -519,16 +527,9 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 }}
                 onMouseEnter={() => play('hover')}
                 title={isCollapsed ? item.label : undefined}
+                aria-current={active ? 'page' : undefined}
               >
-                {item.icon && (
-                  <Image
-                    src={item.icon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className={styles.navItemIcon}
-                  />
-                )}
+                <NavIconMark icon={item.icon} isActive={active} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
@@ -536,8 +537,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                   </span>
                 )}
               </Link>
-            )
-          ))}
+            );
+          })}
         </div>
       </div>
     );
