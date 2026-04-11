@@ -9,6 +9,7 @@ import GameCard from '@/components/game-card/GameCard';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import RewardDetailModal, { Quest } from '@/components/reward-detail-modal/RewardDetailModal';
+import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
 import { useSound } from '@/hooks/useSound';
 import { QUEST_DEFINITIONS } from '@/lib/quest-definitions';
 import styles from './page.module.css';
@@ -32,6 +33,7 @@ export default function RewardsPage() {
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
+  const [showIntroLoader, setShowIntroLoader] = useState(true);
   const [countdown, setCountdown] = useState('12:41:32');
   const { play } = useSound();
 
@@ -152,6 +154,14 @@ export default function RewardsPage() {
 
   return (
     <>
+      {showIntroLoader && (
+        <IntroLoaderOverlay
+          src="/loaders/Treasure%20Chest.lottie"
+          label="Opening quests"
+          onFinish={() => setShowIntroLoader(false)}
+        />
+      )}
+
       <div className={styles.pageLayout}>
         <SideNavigation />
         <main className={styles.page}>

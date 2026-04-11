@@ -16,6 +16,7 @@ import SwapModal from '@/components/swap/SwapModal';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import RewardDetailModal, { Reward } from '@/components/reward-detail-modal/RewardDetailModal';
+import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
 import {
   fetchProposal,
   ProposalStatus
@@ -124,6 +125,7 @@ export default function VotingPage() {
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
   const [isRewardModalOpen, setIsRewardModalOpen] = useState(false);
   const [communityAvatars, setCommunityAvatars] = useState<CommunityAvatarUser[]>([]);
+  const [showIntroLoader, setShowIntroLoader] = useState(true);
   const { play } = useSound();
 
   useEffect(() => {
@@ -244,6 +246,14 @@ export default function VotingPage() {
 
   return (
     <>
+      {showIntroLoader && (
+        <IntroLoaderOverlay
+          src="/loaders/Gradient%20Dots%20Background.lottie"
+          label="Opening community"
+          onFinish={() => setShowIntroLoader(false)}
+        />
+      )}
+
       <StillTutorial
         steps={getTutorialSteps()}
         isOpen={showTutorial}

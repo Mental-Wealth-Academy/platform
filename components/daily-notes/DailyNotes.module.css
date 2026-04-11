@@ -166,17 +166,6 @@
   flex-shrink: 0;
 }
 
-.compactLoading {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-}
-
-.compactLoadingAnimation {
-  align-items: flex-start;
-  gap: 4px;
-}
-
 .cardRight {
   display: flex;
   align-items: center;

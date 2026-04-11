@@ -8,7 +8,7 @@ import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
-import LottieLoader from '@/components/lottie-loader/LottieLoader';
+import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
 import styles from './DailyNotes.module.css';
 
 interface MorningPageEntry {
@@ -52,6 +52,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
+  const [introDayIndex, setIntroDayIndex] = useState<number | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -98,13 +99,17 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }, 1000);
   }, []);
 
-  const startTimer = (dayIndex: number) => {
+  const beginWritingSession = (dayIndex: number) => {
     setActiveDayIndex(dayIndex);
     setTimerSeconds(900);
     setTimerText('');
     setTimerActive(true);
     setIsPaused(false);
     startTimerInterval();
+  };
+
+  const startTimer = (dayIndex: number) => {
+    setIntroDayIndex(dayIndex);
   };
 
   const pauseTimer = () => {
@@ -293,20 +298,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
             <div>
               <span className={styles.label}>Morning Pages</span>
-              {compact && !dataReady ? (
-                <div className={styles.compactLoading}>
-                  <LottieLoader
-                    src="/loaders/Sandy%20Loading.lottie"
-                    label="Loading"
-                    className={styles.compactLoadingAnimation}
-                    size={38}
-                  />
-                </div>
-              ) : (
-                <span className={styles.sublabel}>
-                  {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
-                </span>
-              )}
+              <span className={styles.sublabel}>
+                {compact && !dataReady ? 'Loading...' : compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
+              </span>
             </div>
           </div>
           <div className={styles.cardRight}>
@@ -382,6 +376,20 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       </div>
 
       {/* Timer Modal */}
+      {introDayIndex !== null && (
+        <IntroLoaderOverlay
+          src="/loaders/Sandy%20Loading.lottie"
+          label="Opening morning pages"
+          onFinish={() => {
+            const dayIndex = introDayIndex;
+            setIntroDayIndex(null);
+            if (dayIndex !== null) {
+              beginWritingSession(dayIndex);
+            }
+          }}
+        />
+      )}
+
       {timerActive && typeof window !== 'undefined' && createPortal(
         <div className={styles.modalOverlay} style={{ '--week-color': weekColor } as React.CSSProperties}>
           <div className={styles.modalBackdrop} onClick={requestClose} />
