@@ -648,7 +648,7 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  color: #ffffff;
+  color: #1A1D33;
   opacity: 1;
   transition: color 0.2s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.28s ease;
 }
@@ -1461,9 +1461,9 @@
 }
 
 :global([data-theme="dark"]) .navItemIcon {
-  color: rgba(227, 225, 238, 0.4);
-  filter: invert(1) brightness(1.2);
-  opacity: 0.5;
+  color: rgba(227, 225, 238, 0.75);
+  filter: none;
+  opacity: 1;
 }
 
 :global([data-theme="dark"]) .navItemActive .navItemIcon {

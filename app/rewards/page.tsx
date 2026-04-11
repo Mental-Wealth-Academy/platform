@@ -162,20 +162,14 @@ export default function RewardsPage() {
                   <div className={styles.statIconShell}>
                     <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.statShardIcon} />
                   </div>
-                  <div className={styles.statValueGroup}>
-                    <span className={styles.statLabel}>Shards</span>
-                    <span className={styles.statValue}>{playerProfile?.shardCount ?? 0}</span>
-                  </div>
+                  <span className={styles.statValue}>{playerProfile?.shardCount ?? 0}</span>
                 </div>
 
                 <div className={styles.statChip}>
                   <div className={styles.statIconShell}>
                     <Trophy size={18} weight="fill" className={styles.statTrophyIcon} />
                   </div>
-                  <div className={styles.statValueGroup}>
-                    <span className={styles.statLabel}>Completed</span>
-                    <span className={styles.statValue}>{completedQuestCount}</span>
-                  </div>
+                  <span className={styles.statValue}>{completedQuestCount}</span>
                 </div>
 
                 <div className={`${styles.statChip} ${styles.profileChip}`}>
@@ -191,10 +185,6 @@ export default function RewardsPage() {
                     ) : (
                       <div className={styles.profileFallbackAvatar}>{playerInitial}</div>
                     )}
-                  </div>
-                  <div className={styles.statValueGroup}>
-                    <span className={styles.statLabel}>Profile</span>
-                    <span className={styles.profileName}>{playerName}</span>
                   </div>
                 </div>
               </div>
