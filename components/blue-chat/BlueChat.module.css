@@ -201,6 +201,42 @@
   line-height: 1;
 }
 
+.reclaimBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(192, 132, 252, 0.24);
+  background: rgba(192, 132, 252, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.reclaimBubble:hover:not(:disabled) {
+  background: rgba(192, 132, 252, 0.14);
+  border-color: rgba(192, 132, 252, 0.36);
+}
+
+.reclaimBubble:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.reclaimBubbleIcon {
+  flex-shrink: 0;
+}
+
+.reclaimBubbleText {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* Typing indicator */
 .typingIndicator .messageContent {
   padding: 12px 16px;
@@ -1095,6 +1131,46 @@
   justify-content: center;
 }
 
+.knowledgeOrbit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.knowledgeBubble {
+  position: absolute;
+  left: calc(10% + (var(--bubble-index) * 7.5%));
+  top: calc(12% + ((var(--bubble-index) % 4) * 12%));
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(81, 104, 255, 0.08);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(220, 228, 255, 0.64);
+  white-space: nowrap;
+  animation: knowledgeFloat calc(12s + (var(--bubble-index) * 0.8s)) ease-in-out infinite;
+}
+
+.knowledgeBubble:nth-child(2n) {
+  left: auto;
+  right: calc(8% + (var(--bubble-index) * 5%));
+}
+
+@keyframes knowledgeFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+    opacity: 1;
+  }
+}
+
 .fullBodyImage {
   object-fit: contain;
   object-position: center bottom;
@@ -1105,11 +1181,11 @@
 @keyframes characterReveal {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.95);
+    transform: translateY(40px) scaleX(-1) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scaleX(-1) scale(1);
   }
 }
 
@@ -1403,6 +1479,12 @@
   color: rgba(26, 29, 51, 0.5);
 }
 
+:global(:root:not([data-theme="dark"])) .knowledgeBubble {
+  border-color: rgba(81, 104, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(220, 228, 255, 0.68);
+}
+
 :global(:root:not([data-theme="dark"])) .keywordTag {
   background: rgba(255, 255, 255, 0.72);
   border-color: rgba(81, 104, 255, 0.1);
@@ -1412,7 +1494,6 @@
   color: rgba(26, 29, 51, 0.82);
 }
 
-:global(:root:not([data-theme="dark"])) .trainedInSection,
 :global(:root:not([data-theme="dark"])) .expandedQuickPanel {
   border-top-color: rgba(81, 104, 255, 0.08);
 }

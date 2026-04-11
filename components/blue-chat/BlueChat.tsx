@@ -39,7 +39,11 @@ interface Message {
   text: string;
   sender: 'user' | 'azura';
   timestamp: Date;
-  action?: string;
+  action?: 'research-reclaim';
+}
+
+interface ViewerProfile {
+  username: string | null;
 }
 
 interface BlueChatProps {
@@ -114,12 +118,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [shardCount, setShardCount] = useState<number | null>(null);
+  const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
   const [researchMode, setResearchMode] = useState(false);
+  const [claudeProfessionalMode, setClaudeProfessionalMode] = useState(false);
   const [researchSources, setResearchSources] = useState<ResearchSource[] | null>(null);
   const [researchPayTo, setResearchPayTo] = useState('');
   const [researchTopic, setResearchTopic] = useState('');
+  const [researchReclaimToken, setResearchReclaimToken] = useState<string | null>(null);
+  const [researchReclaimStatus, setResearchReclaimStatus] = useState<'idle' | 'claiming' | 'claimed'>('idle');
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -188,6 +196,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (res.ok) {
         const data = await res.json();
         setShardCount(data.user?.shardCount ?? 0);
+        setViewerProfile({ username: data.user?.username ?? null });
       }
     } catch { /* silent */ }
   }, []);
@@ -262,6 +271,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           showEmote('dead');
           if (researchMode) {
             discoverResearch(text);
+          } else if (claudeProfessionalMode) {
+            sendToEliza(text, 'linkedin-professional');
           } else {
             const hasShards = shardCount !== null && shardCount >= SHARD_COST;
             if (hasShards) {
@@ -312,7 +323,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }, 800 + Math.random() * 800);
   };
 
-  const sendToEliza = async (text: string, mode?: 'research') => {
+  const sendToEliza = async (text: string, mode?: 'research' | 'linkedin-professional', action?: Message['action']) => {
     setIsTyping(true);
     showEmote('searching');
     try {
@@ -325,25 +336,25 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const data = await res.json();
 
       if (res.ok && data.response) {
-        setShardCount(data.shardsRemaining);
+        setShardCount(data.shardsRemaining ?? shardCount);
         setIsTyping(false);
-        addAzuraMessage(data.response);
+        addAzuraMessage(data.response, action);
         return;
       }
 
       if (data.error === 'insufficient_shards') {
         setShardCount(data.shardCount);
         setIsTyping(false);
-        addAzuraMessage(generateAzuraResponse(text));
+        addAzuraMessage(generateAzuraResponse(text), action);
         return;
       }
 
       // AI unavailable -- fallback to local
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text));
+      addAzuraMessage(generateAzuraResponse(text), action);
     } catch {
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text));
+      addAzuraMessage(generateAzuraResponse(text), action);
     }
   };
 
@@ -364,6 +375,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (researchMode) {
       discoverResearch(text);
+      return;
+    }
+
+    if (claudeProfessionalMode) {
+      sendToEliza(text, 'linkedin-professional');
       return;
     }
 
@@ -393,13 +409,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setIsTyping(false);
 
       if (data.sources?.length > 0) {
+        setResearchReclaimToken(null);
+        setResearchReclaimStatus('idle');
         setResearchSources(data.sources);
         setResearchPayTo(data.payTo);
         addAzuraMessage('found some sources. pick the ones you want and i will fetch them for you.');
       } else {
         // no x402 sources found -- fall back to AI synthesis
+        setResearchReclaimToken(data.reclaimToken ?? null);
+        setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
         addAzuraMessage('no paid sources available for that topic yet. let me synthesize from what i know.');
-        sendToEliza(topic, 'research');
+        sendToEliza(topic, 'research', data.reclaimToken ? 'research-reclaim' : undefined);
       }
     } catch {
       setIsTyping(false);
@@ -448,6 +468,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return;
     }
     addAzuraMessage(generateAzuraResponse(pendingMessage));
+  };
+
+  const reclaimResearchShards = async () => {
+    if (!researchReclaimToken || researchReclaimStatus !== 'idle') return;
+
+    setResearchReclaimStatus('claiming');
+
+    try {
+      const res = await fetch('/api/shards/reclaim', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: researchReclaimToken }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setShardCount(data.shardsRemaining ?? shardCount);
+        setResearchReclaimStatus('claimed');
+        setResearchReclaimToken(null);
+        window.dispatchEvent(new Event('shardsUpdated'));
+        return;
+      }
+    } catch {
+      // ignore and restore idle state below
+    }
+
+    setResearchReclaimStatus('idle');
   };
 
   const handleCreditIntakeComplete = async (data: CreditIntakeData) => {
@@ -627,6 +675,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (action === 'credit') {
       send('I want to build my credit', 'happy');
+      setClaudeProfessionalMode(false);
       setTimeManagementVisible(false);
       setCreditStep('intake');
       addAzuraMessage(
@@ -634,12 +683,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'time') {
       send('Help me time block', 'happy');
+      setClaudeProfessionalMode(false);
       setCreditStep('hidden');
       setTimeManagementVisible(true);
       addAzuraMessage(
         "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
       );
     } else if (action === 'research') {
+      setClaudeProfessionalMode(false);
       if (researchMode) {
         send('Start a research session', 'searching');
         addAzuraMessage("you're already in research mode. give me a topic.");
@@ -652,6 +703,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       } else {
         addAzuraMessage(`research costs 1,000 shards to activate. you have ${shardCount ?? 0}. keep building and come back.`);
       }
+    } else if (action === 'claude-professional') {
+      send('Open LinkedIn professional mode', 'happy');
+      setResearchMode(false);
+      setTimeManagementVisible(false);
+      setCreditStep('hidden');
+      setClaudeProfessionalMode(true);
+      addAzuraMessage(
+        "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, or linkedin copy and i'll handle it in james marsh voice."
+      );
     } else if (action === 'shards') {
       send('What are shards?', 'happy');
       addAzuraMessage(
@@ -684,6 +744,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const canUseClaudeProfessional = ['volcano', 'jhinova_bay'].includes((viewerProfile?.username || '').trim().toLowerCase());
+
   const chatContent = (
     <>
       {/* Messages */}
@@ -696,6 +758,19 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             }`}
           >
             <div className={styles.messageContent}>{message.text}</div>
+            {message.sender === 'azura' && message.action === 'research-reclaim' && (
+              <button
+                type="button"
+                className={styles.reclaimBubble}
+                onClick={reclaimResearchShards}
+                disabled={researchReclaimStatus !== 'idle'}
+              >
+                <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.reclaimBubbleIcon} />
+                <span className={styles.reclaimBubbleText}>
+                  {researchReclaimStatus === 'claimed' ? 'Shards reclaimed' : researchReclaimStatus === 'claiming' ? 'Reclaiming shards...' : 'Reclaim shards'}
+                </span>
+              </button>
+            )}
             <div className={styles.messageTime}>
               {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
@@ -873,6 +948,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             {/* Left — Full body character */}
             <div className={styles.expandedRight}>
               <div className={styles.fullBodyWrap}>
+                <div className={styles.knowledgeOrbit} aria-hidden="true">
+                  {KNOWLEDGE_DOMAINS.map((domain, index) => (
+                    <span
+                      key={domain}
+                      className={styles.knowledgeBubble}
+                      style={{ ['--bubble-index' as string]: String(index) }}
+                    >
+                      {domain}
+                    </span>
+                  ))}
+                </div>
                 <Image
                   src="/images/azura-fullbody.png"
                   alt="Blue full body"
@@ -1041,15 +1127,28 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Trained In — bottom */}
-              <div className={styles.trainedInSection}>
-                <h3 className={styles.panelHeading}>Trained In</h3>
-                <div className={styles.keywordGrid}>
-                  {KNOWLEDGE_DOMAINS.map((domain) => (
-                    <span key={domain} className={styles.keywordTag}>{domain}</span>
-                  ))}
+              {canUseClaudeProfessional && (
+                <div className={styles.expandedQuickPanel}>
+                  <h3 className={styles.panelHeading}>Owner Access</h3>
+                  <div className={styles.expandedQuickGrid}>
+                    <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('claude-professional'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                      <span className={styles.toolCardTop}>
+                        <span className={styles.toolCardText}>
+                          <span className={styles.toolSlideWrap}>
+                            <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Claude Professional</span>
+                            <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Claude Professional</span>
+                          </span>
+                          <span className={styles.toolCardMeta}>LinkedIn, recruiter replies, and application drafting through your Claude skill path.</span>
+                        </span>
+                        <span className={styles.toolCardIcon} aria-hidden="true">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 3 7v6c0 5.25 3.44 9.74 9 11 5.56-1.26 9-5.75 9-11V7l-9-5Zm0 4.18 5 2.78V13c0 3.66-2.15 6.92-5 7.94-2.85-1.02-5-4.28-5-7.94V8.96l5-2.78Z"/></svg>
+                        </span>
+                      </span>
+                      <span className={styles.toolCardBottom} aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
