@@ -83,24 +83,21 @@ const AZURA_EMOTES = {
 
 const KNOWLEDGE_DOMAINS = [
   'Psychology', 'Wellness', 'Creativity', 'Habits',
-  'Mindfulness', 'Journaling', 'CBT', 'Governance',
-  'Stress', 'Sleep', 'Nutrition',
+  'Science', 'CBT', 'Stress', 'Sleep', 'Nutrition',
 ];
 
 // Explicit scatter positions across the full column (x, y as % of container)
 // dx/dy = float drift offsets in px
 const BUBBLE_SCATTER: { x: string; y: string; dx: string; dy: string; delay: string }[] = [
-  { x: '6%',  y: '5%',  dx: '6px',  dy: '-12px', delay: '0s' },     // Psychology
-  { x: '68%', y: '9%',  dx: '-8px', dy: '-10px', delay: '-2.1s' },  // Wellness
-  { x: '38%', y: '19%', dx: '5px',  dy: '-14px', delay: '-4.5s' },  // Creativity
-  { x: '80%', y: '30%', dx: '-6px', dy: '-8px',  delay: '-1.3s' },  // Habits
-  { x: '4%',  y: '42%', dx: '10px', dy: '-10px', delay: '-6.2s' },  // Mindfulness
-  { x: '62%', y: '50%', dx: '-5px', dy: '-13px', delay: '-3.8s' },  // Journaling
-  { x: '18%', y: '63%', dx: '7px',  dy: '-9px',  delay: '-0.7s' },  // CBT
-  { x: '72%', y: '71%', dx: '-9px', dy: '-8px',  delay: '-5.1s' },  // Governance
-  { x: '5%',  y: '80%', dx: '6px',  dy: '-11px', delay: '-2.9s' },  // Stress
-  { x: '50%', y: '89%', dx: '-5px', dy: '-7px',  delay: '-4.0s' },  // Sleep
-  { x: '78%', y: '17%', dx: '-7px', dy: '-13px', delay: '-1.6s' },  // Nutrition
+  { x: '7%',  y: '7%',  dx: '6px',  dy: '-12px', delay: '0s' },
+  { x: '66%', y: '10%', dx: '-8px', dy: '-10px', delay: '-2.1s' },
+  { x: '40%', y: '20%', dx: '5px',  dy: '-14px', delay: '-4.5s' },
+  { x: '79%', y: '31%', dx: '-6px', dy: '-8px',  delay: '-1.3s' },
+  { x: '8%',  y: '47%', dx: '10px', dy: '-10px', delay: '-6.2s' },
+  { x: '66%', y: '56%', dx: '-5px', dy: '-13px', delay: '-3.8s' },
+  { x: '18%', y: '69%', dx: '7px',  dy: '-9px',  delay: '-0.7s' },
+  { x: '52%', y: '87%', dx: '-5px', dy: '-7px',  delay: '-4.0s' },
+  { x: '77%', y: '17%', dx: '-7px', dy: '-13px', delay: '-1.6s' },
 ];
 
 const RADAR_AXES = [
