@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
@@ -881,13 +882,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         {isTyping && (
           <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
             <div className={styles.typingLoader}>
-              <video
+              <DotLottieReact
                 className={styles.typingLoaderVideo}
-                src="/loaders/loading-dots-blue.mp4"
-                autoPlay
+                src="/loaders/Loading%20Dots%20Blue.lottie"
                 loop
-                muted
-                playsInline
+                autoplay
               />
             </div>
           </div>

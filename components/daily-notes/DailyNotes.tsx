@@ -8,6 +8,7 @@ import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
+import LottieLoader from '@/components/lottie-loader/LottieLoader';
 import styles from './DailyNotes.module.css';
 
 interface MorningPageEntry {
@@ -292,9 +293,20 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
             <div>
               <span className={styles.label}>Morning Pages</span>
-              <span className={styles.sublabel}>
-                {compact && !dataReady ? 'Loading...' : compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
-              </span>
+              {compact && !dataReady ? (
+                <div className={styles.compactLoading}>
+                  <LottieLoader
+                    src="/loaders/Sandy%20Loading.lottie"
+                    label="Loading"
+                    className={styles.compactLoadingAnimation}
+                    size={38}
+                  />
+                </div>
+              ) : (
+                <span className={styles.sublabel}>
+                  {compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
+                </span>
+              )}
             </div>
           </div>
           <div className={styles.cardRight}>
