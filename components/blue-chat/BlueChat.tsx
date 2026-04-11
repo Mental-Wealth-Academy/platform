@@ -76,6 +76,22 @@ const KNOWLEDGE_DOMAINS = [
   'Stress', 'Sleep', 'Nutrition',
 ];
 
+// Explicit scatter positions across the full column (x, y as % of container)
+// dx/dy = float drift offsets in px
+const BUBBLE_SCATTER: { x: string; y: string; dx: string; dy: string; delay: string }[] = [
+  { x: '6%',  y: '5%',  dx: '6px',  dy: '-12px', delay: '0s' },     // Psychology
+  { x: '68%', y: '9%',  dx: '-8px', dy: '-10px', delay: '-2.1s' },  // Wellness
+  { x: '38%', y: '19%', dx: '5px',  dy: '-14px', delay: '-4.5s' },  // Creativity
+  { x: '80%', y: '30%', dx: '-6px', dy: '-8px',  delay: '-1.3s' },  // Habits
+  { x: '4%',  y: '42%', dx: '10px', dy: '-10px', delay: '-6.2s' },  // Mindfulness
+  { x: '62%', y: '50%', dx: '-5px', dy: '-13px', delay: '-3.8s' },  // Journaling
+  { x: '18%', y: '63%', dx: '7px',  dy: '-9px',  delay: '-0.7s' },  // CBT
+  { x: '72%', y: '71%', dx: '-9px', dy: '-8px',  delay: '-5.1s' },  // Governance
+  { x: '5%',  y: '80%', dx: '6px',  dy: '-11px', delay: '-2.9s' },  // Stress
+  { x: '50%', y: '89%', dx: '-5px', dy: '-7px',  delay: '-4.0s' },  // Sleep
+  { x: '78%', y: '17%', dx: '-7px', dy: '-13px', delay: '-1.6s' },  // Nutrition
+];
+
 const RADAR_AXES = [
   { label: 'Memory', value: 88, color: '#5168FF' },
   { label: 'Research', value: 83, color: '#3D8BFF' },
@@ -949,15 +965,26 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <div className={styles.expandedRight}>
               <div className={styles.fullBodyWrap}>
                 <div className={styles.knowledgeOrbit} aria-hidden="true">
-                  {KNOWLEDGE_DOMAINS.map((domain, index) => (
-                    <span
-                      key={domain}
-                      className={styles.knowledgeBubble}
-                      style={{ ['--bubble-index' as string]: String(index) }}
-                    >
-                      {domain}
-                    </span>
-                  ))}
+                  {KNOWLEDGE_DOMAINS.map((domain, index) => {
+                    const pos = BUBBLE_SCATTER[index];
+                    return (
+                      <span
+                        key={domain}
+                        className={styles.knowledgeBubble}
+                        style={{
+                          ['--bubble-index' as string]: String(index),
+                          ['--bx' as string]: pos.x,
+                          ['--by' as string]: pos.y,
+                          ['--dx' as string]: pos.dx,
+                          ['--dy' as string]: pos.dy,
+                          animationDelay: pos.delay,
+                          animationDuration: `${10 + index * 0.9}s`,
+                        }}
+                      >
+                        {domain}
+                      </span>
+                    );
+                  })}
                 </div>
                 <Image
                   src="/images/azura-fullbody.png"

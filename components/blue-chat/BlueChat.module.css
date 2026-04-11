@@ -1140,9 +1140,9 @@
 
 .knowledgeBubble {
   position: absolute;
-  left: calc(10% + (var(--bubble-index) * 7.5%));
-  top: calc(12% + ((var(--bubble-index) % 4) * 12%));
-  padding: 8px 12px;
+  left: var(--bx);
+  top: var(--by);
+  padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(81, 104, 255, 0.08);
@@ -1150,24 +1150,23 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(220, 228, 255, 0.64);
+  color: rgba(220, 228, 255, 0.6);
   white-space: nowrap;
-  animation: knowledgeFloat calc(12s + (var(--bubble-index) * 0.8s)) ease-in-out infinite;
-}
-
-.knowledgeBubble:nth-child(2n) {
-  left: auto;
-  right: calc(8% + (var(--bubble-index) * 5%));
+  animation: knowledgeFloat 10s ease-in-out infinite;
 }
 
 @keyframes knowledgeFloat {
   0%, 100% {
     transform: translate3d(0, 0, 0);
-    opacity: 0.72;
+    opacity: 0.55;
   }
-  50% {
-    transform: translate3d(0, -10px, 0);
-    opacity: 1;
+  33% {
+    transform: translate3d(var(--dx, 6px), var(--dy, -10px), 0);
+    opacity: 0.85;
+  }
+  66% {
+    transform: translate3d(calc(var(--dx, 6px) * -0.4), calc(var(--dy, -10px) * 0.6), 0);
+    opacity: 0.65;
   }
 }
 
