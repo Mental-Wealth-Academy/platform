@@ -156,7 +156,7 @@ export default function RewardsPage() {
     <>
       {showIntroLoader && (
         <IntroLoaderOverlay
-          src="/loaders/Treasure%20Chest.lottie"
+          src="/loaders/shine_rotate.lottie"
           label="Opening quests"
           onFinish={() => setShowIntroLoader(false)}
         />

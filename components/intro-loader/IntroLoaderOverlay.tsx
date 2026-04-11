@@ -1,30 +1,23 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { DotLottieReact, DotLottie } from '@lottiefiles/dotlottie-react';
+import { useEffect, useRef } from 'react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import styles from './IntroLoaderOverlay.module.css';
 
 interface IntroLoaderOverlayProps {
   src: string;
   label?: string;
-  loops?: number;
+  durationMs?: number;
   onFinish: () => void;
 }
 
 export default function IntroLoaderOverlay({
   src,
   label,
-  loops = 2,
+  durationMs = 450,
   onFinish,
 }: IntroLoaderOverlayProps) {
-  const loopCountRef = useRef(0);
   const finishedRef = useRef(false);
-  const [player, setPlayer] = useState<DotLottie | null>(null);
-
-  useEffect(() => {
-    loopCountRef.current = 0;
-    finishedRef.current = false;
-  }, [src, loops]);
 
   const finish = () => {
     if (finishedRef.current) return;
@@ -33,39 +26,23 @@ export default function IntroLoaderOverlay({
   };
 
   useEffect(() => {
-    if (!player) return;
-
-    const handleLoop = () => {
-      loopCountRef.current += 1;
-      if (loopCountRef.current >= loops) {
-        finish();
-      }
-    };
-
-    const handleComplete = () => {
-      finish();
-    };
-
-    player.addEventListener('loop', handleLoop);
-    player.addEventListener('complete', handleComplete);
-
+    finishedRef.current = false;
+    const timeout = window.setTimeout(finish, durationMs);
     return () => {
-      player.removeEventListener('loop', handleLoop);
-      player.removeEventListener('complete', handleComplete);
+      window.clearTimeout(timeout);
     };
-  }, [player, loops]);
+  }, [src, durationMs]);
 
   return (
     <div className={styles.overlay} role="presentation">
       <div className={styles.backdrop} />
-      <div className={styles.card}>
+      <div className={styles.content}>
         <DotLottieReact
-        className={styles.animation}
-        src={src}
-        loop
-        autoplay
-        dotLottieRefCallback={setPlayer}
-      />
+          className={styles.animation}
+          src={src}
+          loop
+          autoplay
+        />
         {label ? <span className={styles.label}>{label}</span> : null}
       </div>
     </div>

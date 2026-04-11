@@ -248,7 +248,7 @@ export default function VotingPage() {
     <>
       {showIntroLoader && (
         <IntroLoaderOverlay
-          src="/loaders/Gradient%20Dots%20Background.lottie"
+          src="/loaders/Treasure%20Chest.lottie"
           label="Opening community"
           onFinish={() => setShowIntroLoader(false)}
         />
