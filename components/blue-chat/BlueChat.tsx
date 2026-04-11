@@ -40,10 +40,20 @@ interface Message {
   sender: 'user' | 'azura';
   timestamp: Date;
   action?: 'research-reclaim';
+  attachments?: UploadedAttachment[];
 }
 
 interface ViewerProfile {
   username: string | null;
+}
+
+interface UploadedAttachment {
+  id: string;
+  url: string;
+  mime: string;
+  size: number;
+  name: string;
+  extractedText?: string | null;
 }
 
 interface BlueChatProps {
@@ -158,12 +168,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
+  const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch treasury context when chat opens
   const fetchTreasuryContext = useCallback(async () => {
@@ -339,7 +352,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }, 800 + Math.random() * 800);
   };
 
-  const sendToEliza = async (text: string, mode?: 'research' | 'linkedin-professional', action?: Message['action']) => {
+  const sendToEliza = async (
+    text: string,
+    mode?: 'research' | 'linkedin-professional',
+    action?: Message['action'],
+    attachments?: UploadedAttachment[]
+  ) => {
     setIsTyping(true);
     showEmote('searching');
     try {
@@ -347,7 +365,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: text, confirm: true, mode }),
+        body: JSON.stringify({ message: text, confirm: true, mode, attachments }),
       });
       const data = await res.json();
 
@@ -374,19 +392,71 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleSend = async () => {
-    if (!inputText.trim() || isTyping) return;
+  const uploadAttachmentFiles = async (files: FileList | null) => {
+    if (!files?.length || isUploadingAttachment) return;
 
-    const text = inputText.trim();
+    setIsUploadingAttachment(true);
+
+    try {
+      for (const file of Array.from(files).slice(0, Math.max(0, 4 - pendingAttachments.length))) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.url || !data.mime) {
+          throw new Error(data.error || 'Upload failed');
+        }
+
+        setPendingAttachments((prev) => [
+          ...prev,
+          {
+            id: `${data.url}:${Date.now()}`,
+            url: data.url,
+            mime: data.mime,
+            size: data.size ?? file.size,
+            name: data.name ?? file.name,
+            extractedText: data.extractedText ?? null,
+          },
+        ]);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Upload failed';
+      addAzuraMessage(`attachment upload failed: ${message}`);
+    } finally {
+      if (attachmentInputRef.current) {
+        attachmentInputRef.current.value = '';
+      }
+      setIsUploadingAttachment(false);
+    }
+  };
+
+  const removePendingAttachment = (attachmentId: string) => {
+    setPendingAttachments((prev) => prev.filter((attachment) => attachment.id !== attachmentId));
+  };
+
+  const handleSend = async () => {
+    if (isTyping || isUploadingAttachment) return;
+    if (!inputText.trim() && pendingAttachments.length === 0) return;
+
+    const text = inputText.trim() || 'Please review these attachments and help me continue.';
+    const attachments = pendingAttachments;
     const userMessage: Message = {
       id: Date.now().toString(),
       text,
       sender: 'user',
       timestamp: new Date(),
+      attachments,
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
+    setPendingAttachments([]);
     showEmote('dead');
 
     if (researchMode) {
@@ -395,7 +465,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     if (claudeProfessionalMode) {
-      sendToEliza(text, 'linkedin-professional');
+      sendToEliza(text, 'linkedin-professional', undefined, attachments);
       return;
     }
 
@@ -692,6 +762,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     if (action === 'credit') {
       send('I want to build my credit', 'happy');
       setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
       setTimeManagementVisible(false);
       setCreditStep('intake');
       addAzuraMessage(
@@ -700,6 +771,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     } else if (action === 'time') {
       send('Help me time block', 'happy');
       setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
       setCreditStep('hidden');
       setTimeManagementVisible(true);
       addAzuraMessage(
@@ -707,6 +779,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       );
     } else if (action === 'research') {
       setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
       if (researchMode) {
         send('Start a research session', 'searching');
         addAzuraMessage("you're already in research mode. give me a topic.");
@@ -726,7 +799,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setCreditStep('hidden');
       setClaudeProfessionalMode(true);
       addAzuraMessage(
-        "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, or linkedin copy and i'll handle it in james marsh voice."
+        "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
       );
     } else if (action === 'shards') {
       send('What are shards?', 'happy');
@@ -774,6 +847,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             }`}
           >
             <div className={styles.messageContent}>{message.text}</div>
+            {message.attachments && message.attachments.length > 0 && (
+              <div className={styles.messageAttachments}>
+                {message.attachments.map((attachment) => (
+                  <div key={attachment.id} className={styles.messageAttachmentChip}>
+                    <span className={styles.messageAttachmentIcon} aria-hidden="true">
+                      {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
+                    </span>
+                    <span className={styles.messageAttachmentName}>{attachment.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             {message.sender === 'azura' && message.action === 'research-reclaim' && (
               <button
                 type="button"
@@ -898,21 +983,66 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       {/* Chat Input */}
       <div className={styles.inputArea}>
+        {claudeProfessionalMode && pendingAttachments.length > 0 && (
+          <div className={styles.pendingAttachments}>
+            {pendingAttachments.map((attachment) => (
+              <div key={attachment.id} className={styles.pendingAttachmentChip}>
+                <span className={styles.pendingAttachmentType} aria-hidden="true">
+                  {attachment.mime === 'application/pdf' ? 'PDF' : 'IMG'}
+                </span>
+                <span className={styles.pendingAttachmentName}>{attachment.name}</span>
+                <button
+                  type="button"
+                  className={styles.pendingAttachmentRemove}
+                  onClick={() => removePendingAttachment(attachment.id)}
+                  aria-label={`Remove ${attachment.name}`}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <input
+          ref={attachmentInputRef}
+          type="file"
+          accept="application/pdf,image/png,image/jpeg,image/webp"
+          multiple
+          className={styles.attachmentInput}
+          onChange={(e) => uploadAttachmentFiles(e.target.files)}
+          disabled={isTyping || isUploadingAttachment}
+        />
+        {claudeProfessionalMode && (
+          <button
+            className={styles.attachButton}
+            onClick={() => attachmentInputRef.current?.click()}
+            disabled={isTyping || isUploadingAttachment || pendingAttachments.length >= 4}
+            type="button"
+            aria-label="Attach PDF or screenshot"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21.44 11.05 12.25 20.24a6 6 0 1 1-8.49-8.49l9.2-9.19a4 4 0 0 1 5.65 5.66l-9.2 9.19a2 2 0 1 1-2.82-2.83l8.49-8.48" />
+            </svg>
+          </button>
+        )}
         <input
           ref={inputRef}
           type="text"
           className={styles.input}
-          placeholder="Say something..."
+          placeholder={claudeProfessionalMode ? 'Send a prompt, screenshot, or PDF...' : 'Say something...'}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyPress}
-          disabled={isTyping}
+          disabled={isTyping || isUploadingAttachment}
         />
         <button
           className={`${styles.voiceButton} ${isRecording ? styles.voiceActive : ''} ${isSpeaking ? styles.voiceSpeaking : ''}`}
           onClick={startVoiceChat}
           type="button"
           aria-label={isRecording ? 'Stop recording' : 'Voice chat'}
+          disabled={claudeProfessionalMode || isUploadingAttachment}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect x="9" y="1" width="6" height="12" rx="3" fill="currentColor"/>
@@ -924,7 +1054,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         <button
           className={styles.sendButton}
           onClick={handleSend}
-          disabled={!inputText.trim() || isTyping}
+          disabled={(!inputText.trim() && pendingAttachments.length === 0) || isTyping || isUploadingAttachment}
           type="button"
           aria-label="Send message"
         >

@@ -201,6 +201,43 @@
   line-height: 1;
 }
 
+.messageAttachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.messageAttachmentChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.messageAttachmentIcon {
+  flex-shrink: 0;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.messageAttachmentName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
 .reclaimBubble {
   display: inline-flex;
   align-items: center;
@@ -550,9 +587,74 @@
 .inputArea {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 12px 16px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.attachmentInput {
+  display: none;
+}
+
+.pendingAttachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.pendingAttachmentChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.14);
+  border: 1px solid rgba(81, 104, 255, 0.24);
+}
+
+.pendingAttachmentType {
+  flex-shrink: 0;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.pendingAttachmentName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.pendingAttachmentRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pendingAttachmentRemove:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 
 .input {
@@ -582,6 +684,33 @@
 
 .input:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.attachButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(81, 104, 255, 0.12);
+  border: 2px solid rgba(81, 104, 255, 0.24);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.attachButton:hover {
+  background: rgba(81, 104, 255, 0.2);
+  border-color: rgba(81, 104, 255, 0.38);
+  color: #ffffff;
+}
+
+.attachButton:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -1449,6 +1578,25 @@
 :global(:root:not([data-theme="dark"])) .inputArea {
   border-top-color: rgba(81, 104, 255, 0.1);
   background: linear-gradient(180deg, rgba(247, 249, 255, 0.98) 0%, rgba(241, 245, 255, 0.98) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .attachButton {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.18);
+  color: #31437a;
+}
+
+:global(:root:not([data-theme="dark"])) .pendingAttachmentChip,
+:global(:root:not([data-theme="dark"])) .messageAttachmentChip {
+  background: rgba(81, 104, 255, 0.08);
+  border-color: rgba(81, 104, 255, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .pendingAttachmentName,
+:global(:root:not([data-theme="dark"])) .messageAttachmentName,
+:global(:root:not([data-theme="dark"])) .pendingAttachmentType,
+:global(:root:not([data-theme="dark"])) .messageAttachmentIcon {
+  color: #1a1d33;
 }
 
 :global(:root:not([data-theme="dark"])) .sendButton {

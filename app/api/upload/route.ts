@@ -8,13 +8,16 @@ import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 const ALLOWED_MIME = new Set([
   'image/png',
   'image/jpeg',
   'image/gif',
   'image/webp',
+  'application/pdf',
 ]);
+
+const MAX_EXTRACTED_TEXT_LENGTH = 12000;
 
 function extForMime(mime: string) {
   switch (mime) {
@@ -26,8 +29,47 @@ function extForMime(mime: string) {
       return 'gif';
     case 'image/webp':
       return 'webp';
+    case 'application/pdf':
+      return 'pdf';
     default:
       return null;
+  }
+}
+
+async function extractPdfText(bytes: Uint8Array): Promise<string | null> {
+  try {
+    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const loadingTask = pdfjs.getDocument({
+      data: bytes,
+      isEvalSupported: false,
+      useSystemFonts: false,
+    });
+    const pdf = await loadingTask.promise;
+
+    const pages: string[] = [];
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item) => ('str' in item ? item.str : ''))
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (pageText) {
+        pages.push(pageText);
+      }
+
+      if (pages.join('\n').length >= MAX_EXTRACTED_TEXT_LENGTH) {
+        break;
+      }
+    }
+
+    const text = pages.join('\n').slice(0, MAX_EXTRACTED_TEXT_LENGTH).trim();
+    return text || null;
+  } catch (error) {
+    console.error('PDF text extraction failed:', error);
+    return null;
   }
 }
 
@@ -57,10 +99,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Missing file.' }, { status: 400 });
   }
 
-  // Validate file size (max 5MB)
+  // Validate file size (max 10MB)
   if (file.size > MAX_FILE_SIZE) {
     return NextResponse.json(
-      { error: `File size exceeds 5MB limit. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB` },
+      { error: `File size exceeds 10MB limit. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB` },
       { status: 413 }
     );
   }
@@ -91,9 +133,15 @@ export async function POST(request: Request) {
 
   await writeFile(diskPath, bytes);
 
+  const extractedText = file.type === 'application/pdf'
+    ? await extractPdfText(new Uint8Array(bytes))
+    : null;
+
   return NextResponse.json({
     url: `/uploads/${filename}`,
+    name: path.basename(file.name || `upload.${ext}`),
     mime: file.type,
     size: file.size,
+    extractedText,
   });
 }

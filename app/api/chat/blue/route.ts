@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import path from 'path';
+import { readFile } from 'fs/promises';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import bluePersona from '@/lib/bluepersonality.json';
@@ -60,6 +62,89 @@ Output rules:
 - If the user asks for review, give a candid assessment first, then improved draft language
 - Only answer career, LinkedIn, recruiter, profile, application, or professional branding tasks in this mode`;
 
+interface ChatAttachment {
+  url: string;
+  mime: string;
+  name?: string;
+  extractedText?: string | null;
+}
+
+function isClaudeImageMime(mime: string) {
+  return ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(mime);
+}
+
+function isSafeUploadUrl(url: string) {
+  return typeof url === 'string' && /^\/uploads\/[A-Za-z0-9._-]+$/.test(url);
+}
+
+async function readUploadedImageAsBase64(url: string): Promise<string | null> {
+  if (!isSafeUploadUrl(url)) return null;
+
+  const uploadsRoot = path.join(process.cwd(), 'public', 'uploads');
+  const filePath = path.join(process.cwd(), 'public', url.replace(/^\/+/, ''));
+  const normalizedPath = path.normalize(filePath);
+
+  if (!normalizedPath.startsWith(uploadsRoot)) {
+    return null;
+  }
+
+  try {
+    const bytes = await readFile(normalizedPath);
+    return bytes.toString('base64');
+  } catch {
+    return null;
+  }
+}
+
+async function buildLinkedInClaudeMessage(
+  userMessage: string,
+  attachments: ChatAttachment[]
+) {
+  const content: Array<Record<string, unknown>> = [];
+  const attachmentNotes: string[] = [];
+
+  for (const attachment of attachments.slice(0, 4)) {
+    if (!isSafeUploadUrl(attachment.url)) continue;
+
+    const label = attachment.name || attachment.url.split('/').pop() || 'attachment';
+    if (attachment.mime === 'application/pdf') {
+      attachmentNotes.push(
+        attachment.extractedText?.trim()
+          ? `PDF: ${label}\n${attachment.extractedText.trim()}`
+          : `PDF: ${label}\nNo extractable text was available from this file.`
+      );
+      continue;
+    }
+
+    if (isClaudeImageMime(attachment.mime)) {
+      const base64 = await readUploadedImageAsBase64(attachment.url);
+      if (base64) {
+        attachmentNotes.push(`Image attached: ${label}`);
+        content.push({
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: attachment.mime,
+            data: base64,
+          },
+        });
+      }
+    }
+  }
+
+  const textBlock = [
+    `User request:\n${userMessage}`,
+    attachmentNotes.length > 0
+      ? `Attachment context:\n${attachmentNotes.join('\n\n')}`
+      : null,
+  ].filter(Boolean).join('\n\n');
+
+  return [
+    { type: 'text', text: textBlock },
+    ...content,
+  ];
+}
+
 async function callElizaCloud(userMessage: string, mode?: string): Promise<string> {
   const systemPrompt = mode === 'research' ? RESEARCH_SYSTEM_PROMPT : BLUE_SYSTEM_PROMPT;
   const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
@@ -100,11 +185,16 @@ async function callElizaCloud(userMessage: string, mode?: string): Promise<strin
   return fullText;
 }
 
-async function callClaudeLinkedInProfessional(userMessage: string): Promise<string> {
+async function callClaudeLinkedInProfessional(
+  userMessage: string,
+  attachments: ChatAttachment[] = []
+): Promise<string> {
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) {
     throw new Error('ANTHROPIC_API_KEY not configured');
   }
+
+  const messageContent = await buildLinkedInClaudeMessage(userMessage, attachments);
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -117,7 +207,7 @@ async function callClaudeLinkedInProfessional(userMessage: string): Promise<stri
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1200,
       system: LINKEDIN_PROFESSIONAL_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
+      messages: [{ role: 'user', content: messageContent }],
     }),
   });
 
@@ -127,9 +217,9 @@ async function callClaudeLinkedInProfessional(userMessage: string): Promise<stri
   }
 
   const data = await response.json();
-  const content = data.content?.[0]?.text;
-  if (!content) throw new Error('Empty response from Claude');
-  return content;
+  const responseText = data.content?.[0]?.text;
+  if (!responseText) throw new Error('Empty response from Claude');
+  return responseText;
 }
 
 export async function POST(request: Request) {
@@ -142,7 +232,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let body: { message: string; confirm?: boolean; mode?: string };
+  let body: { message: string; confirm?: boolean; mode?: string; attachments?: ChatAttachment[] };
   try {
     body = await request.json();
   } catch {
@@ -152,6 +242,15 @@ export async function POST(request: Request) {
   if (!body.message || typeof body.message !== 'string') {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 });
   }
+
+  const attachments = Array.isArray(body.attachments)
+    ? body.attachments.filter((attachment) => (
+      attachment
+      && typeof attachment.url === 'string'
+      && typeof attachment.mime === 'string'
+      && isSafeUploadUrl(attachment.url)
+    ))
+    : [];
 
   const isResearch = body.mode === 'research';
   const isLinkedInProfessional = body.mode === 'linkedin-professional';
@@ -163,7 +262,7 @@ export async function POST(request: Request) {
     }
 
     try {
-      const response = await callClaudeLinkedInProfessional(body.message);
+      const response = await callClaudeLinkedInProfessional(body.message, attachments);
       return NextResponse.json({ response });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Claude error';
