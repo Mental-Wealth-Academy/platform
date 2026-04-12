@@ -6,6 +6,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import BookReaderModal from '@/components/book-reader/BookReaderModal';
+import WeekOneVisualNovel from '@/components/visual-novel/WeekOneVisualNovel';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import DailyReadPopup from '@/components/daily-read/DailyReadPopup';
@@ -54,6 +55,7 @@ export default function HomePage() {
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
+  const [isWeekOneNovelOpen, setIsWeekOneNovelOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<number>(1);
@@ -233,6 +235,17 @@ export default function HomePage() {
 
   const weekReading = WEEKLY_READINGS[Math.min(viewWeek, WEEKLY_READINGS.length - 1)];
   const isReadingVideo = weekReading.imageUrl.endsWith('.mp4');
+  const handleOpenReading = useCallback((index: number) => {
+    const reading = WEEKLY_READINGS[index];
+    if (reading?.slug === 'recovering-safety') {
+      setReaderIndex(index);
+      setIsWeekOneNovelOpen(true);
+      return;
+    }
+
+    setReaderIndex(index);
+    setIsReaderOpen(true);
+  }, []);
 
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
@@ -339,7 +352,7 @@ export default function HomePage() {
           <button
             type="button"
             className={styles.readingCard}
-            onClick={() => { play('click'); setReaderIndex(Math.min(viewWeek, WEEKLY_READINGS.length - 1)); setIsReaderOpen(true); }}
+            onClick={() => { play('click'); handleOpenReading(Math.min(viewWeek, WEEKLY_READINGS.length - 1)); }}
             onMouseEnter={() => play('hover')}
           >
             <div className={styles.readingMedia}>
@@ -417,6 +430,10 @@ export default function HomePage() {
         author={currentReading.author}
         markdownPath={currentReading.markdownPath}
         slug={currentReading.slug}
+      />
+      <WeekOneVisualNovel
+        isOpen={isWeekOneNovelOpen}
+        onClose={() => setIsWeekOneNovelOpen(false)}
       />
 
     </div>

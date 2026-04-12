@@ -50,11 +50,12 @@
 /* Blue Power Indicator */
 .azuraPower {
   display: flex;
-  align-items: center;
-  padding: 18px 28px;
+  align-items: stretch;
+  gap: 16px;
+  padding: 20px;
   background: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(80, 89, 155, 0.12) 50%, rgba(81, 104, 255, 0.06) 100%);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   box-shadow: none;
   position: relative;
   overflow: visible;
@@ -62,47 +63,176 @@
   backdrop-filter: none;
 }
 
+.leadCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: min(240px, 34%);
+  min-width: 200px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.leadCard::after {
+  content: '';
+  position: absolute;
+  inset: auto -20% -28% auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.24), transparent 68%);
+  pointer-events: none;
+}
+
+.leadAvatarFrame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(81, 104, 255, 0.45);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.leadAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.leadMeta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.leadEyebrow,
+.rosterEyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.54);
+}
+
+.leadName {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.leadCopy {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.rosterPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px 4px;
+}
+
+.rosterHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rosterTitle {
+  margin: 4px 0 0;
+  font-size: 18px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.rosterCount {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.68);
+}
+
 .avatarStrip {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   min-width: 0;
-  padding: 10px 10px 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 .avatarTile {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
+  padding: 10px;
+  border-radius: 16px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .azuraAvatar {
   width: 100%;
-  height: 100%;
-  border-radius: 16px;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
   flex-shrink: 0;
-  border: 2px solid var(--color-primary, #5168FF);
+  border: 1px solid rgba(81, 104, 255, 0.45);
   object-fit: cover;
   display: block;
 }
 
 .avatarFallback {
   width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  border: 2px solid var(--color-primary, #5168FF);
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  border: 1px solid rgba(81, 104, 255, 0.45);
   background: linear-gradient(135deg, rgba(81, 104, 255, 0.18) 0%, rgba(81, 104, 255, 0.1) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 48px;
+  font-size: 34px;
   font-weight: 800;
-  color: rgba(26, 29, 51, 0.76);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.avatarName {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.64);
 }
 
 .azuraName {
@@ -232,15 +362,31 @@
 
 @media (max-width: 768px) {
   .azuraPower {
-    padding: 14px 18px;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .leadCard {
+    width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .leadAvatarFrame {
+    width: 88px;
+    min-width: 88px;
+    margin-bottom: 0;
   }
 
   .avatarStrip {
-    grid-template-columns: repeat(8, minmax(88px, 1fr));
+    grid-template-columns: repeat(6, minmax(88px, 1fr));
     gap: 8px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 8px 6px 2px;
+    padding: 0 0 2px;
   }
 
   .avatarStrip::-webkit-scrollbar {
@@ -282,6 +428,17 @@
   .azuraPower {
     padding: 12px 14px;
   }
+
+  .leadCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .leadAvatarFrame {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 10px;
+  }
 }
 
 /* ==================== DARK MODE ==================== */
@@ -292,6 +449,12 @@
 
 :global([data-theme="dark"]) .azuraPower {
   border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .leadCard,
+:global([data-theme="dark"]) .avatarTile,
+:global([data-theme="dark"]) .rosterCount {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .aiTag {

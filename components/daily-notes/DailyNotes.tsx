@@ -411,7 +411,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                     </div>
                   </div>
                   <div className={styles.sessionMeta}>
-                    <div className={styles.promptPill}>Write here for 15 minutes daily, keep it up. The rewards are based on merit but the benefits are based on the effort you put in. ✍️🌱</div>
+                    <div className={styles.promptPill}>Write for 15 min. Think of this as your art. ✍️🌱</div>
                   </div>
                   <div className={styles.timerFrame}>
                     <div className={`${styles.timerCount} ${styles.timerCountCompact} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
@@ -424,7 +424,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="Write here for 15 minutes daily, keep it up. The rewards are based on merit but the benefits are based on the effort you put in."
+                  placeholder="Write for 15 min. Think of this as your art."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus

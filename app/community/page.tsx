@@ -156,7 +156,7 @@ export default function VotingPage() {
         .filter((user: LeaderboardUser, index: number, list: LeaderboardUser[]) =>
           list.findIndex((entry) => entry.username === user.username) === index
         )
-        .slice(0, 7)
+        .slice(0, 12)
         .map((user: LeaderboardUser) => ({
           username: user.username,
           avatarUrl: user.avatarUrl ?? null,
@@ -273,7 +273,29 @@ export default function VotingPage() {
           <div className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
             <header className={styles.header}>
               <div className={styles.headerContent}>
-                <div className={styles.headerText}>
+                <div className={styles.heroShell}>
+                  <div className={styles.headerText}>
+                    <p className={styles.heroEyebrow}>Community</p>
+                    <h1 className={styles.heroTitle}>Pods, proposals, and real people building together.</h1>
+                    <p className={styles.heroCopy}>
+                      This room is where the Academy turns energy into action. Community members show up, submit ideas,
+                      vote on what matters, and fund the work that should actually happen next.
+                    </p>
+                    <div className={styles.heroStats}>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatValue}>{communityAvatars.length || 0}</span>
+                        <span className={styles.heroStatLabel}>faces in rotation</span>
+                      </div>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatValue}>3</span>
+                        <span className={styles.heroStatLabel}>live lanes</span>
+                      </div>
+                      <div className={styles.heroStat}>
+                        <span className={styles.heroStatValue}>24/7</span>
+                        <span className={styles.heroStatLabel}>proposal surface</span>
+                      </div>
+                    </div>
+                  </div>
                   <div className={styles.heroActions}>
                     <div className={styles.heroAzura}>
                       <div className={styles.exchangeBg}><CyberpunkDataViz /></div>

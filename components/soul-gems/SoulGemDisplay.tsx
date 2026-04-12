@@ -90,29 +90,67 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   const heroAvatars = [
     { src: 'https://i.imgur.com/Y6YNtam.png', alt: 'Blue', fallback: 'B' },
     ...memberAvatars,
-  ].slice(0, 8);
+  ].slice(0, 12);
+  const leadAvatar = heroAvatars[0];
+  const rosterAvatars = heroAvatars.slice(1);
+  const communityCount = rosterAvatars.length;
 
   return (
     <div className={styles.azuraPower}>
-      <div className={styles.avatarStrip} aria-label="Blue and noun avatars">
-        {heroAvatars.map((avatar) => (
-          <div key={avatar.src} className={styles.avatarTile}>
-            {avatar.src ? (
-              <Image
-                src={avatar.src}
-                alt={avatar.alt}
-                width={250}
-                height={250}
-                className={styles.azuraAvatar}
-                unoptimized
-              />
-            ) : (
-              <div className={styles.avatarFallback} aria-label={avatar.alt}>
-                {avatar.fallback}
-              </div>
-            )}
+      <div className={styles.leadCard}>
+        <div className={styles.leadAvatarFrame}>
+          {leadAvatar?.src ? (
+            <Image
+              src={leadAvatar.src}
+              alt={leadAvatar.alt}
+              width={250}
+              height={250}
+              className={styles.leadAvatar}
+              unoptimized
+            />
+          ) : (
+            <div className={styles.avatarFallback} aria-label={leadAvatar?.alt ?? 'Blue'}>
+              {leadAvatar?.fallback ?? 'B'}
+            </div>
+          )}
+        </div>
+        <div className={styles.leadMeta}>
+          <span className={styles.leadEyebrow}>Host Node</span>
+          <strong className={styles.leadName}>Blue</strong>
+          <p className={styles.leadCopy}>Holding the room while members surface ideas, vote, and move resources with intent.</p>
+        </div>
+      </div>
+
+      <div className={styles.rosterPanel}>
+        <div className={styles.rosterHeader}>
+          <div>
+            <span className={styles.rosterEyebrow}>Active Faces</span>
+            <h3 className={styles.rosterTitle}>Community roster</h3>
           </div>
-        ))}
+          <span className={styles.rosterCount}>{communityCount}+ live</span>
+        </div>
+
+        <div className={styles.avatarStrip} aria-label="Blue and community avatars">
+          {rosterAvatars.map((avatar, index) => (
+            <div key={`${avatar.alt}-${index}`} className={styles.avatarTile}>
+              {avatar.src ? (
+                <Image
+                  src={avatar.src}
+                  alt={avatar.alt}
+                  width={250}
+                  height={250}
+                  className={styles.azuraAvatar}
+                  unoptimized
+                />
+              ) : (
+                <div className={styles.avatarFallback} aria-label={avatar.alt}>
+                  {avatar.fallback}
+                </div>
+              )}
+              <span className={styles.avatarName}>{avatar.alt}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

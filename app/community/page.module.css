@@ -112,12 +112,89 @@
   width: 100%;
 }
 
+.heroShell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 20px;
+  align-items: stretch;
+  width: 100%;
+}
+
 .headerText {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 16px;
   flex: 1;
   min-width: 0;
+  padding: 28px 28px 26px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(12, 17, 33, 0.94), rgba(17, 25, 43, 0.9));
+  box-shadow:
+    0 18px 40px rgba(7, 10, 18, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.heroEyebrow {
+  margin: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.heroTitle {
+  margin: 0;
+  max-width: 12ch;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(34px, 4.2vw, 58px);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.heroCopy {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 15px;
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.heroStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.heroStatValue {
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.heroStatLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .heroActions {
@@ -394,6 +471,41 @@
   box-shadow: 0 18px 38px rgba(81, 104, 255, 0.16);
 }
 
+:global(:root:not([data-theme="dark"])) .headerText {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 255, 0.94)),
+    linear-gradient(135deg, rgba(81, 104, 255, 0.06), rgba(116, 196, 101, 0.04));
+  border-color: rgba(109, 138, 214, 0.12);
+  box-shadow:
+    0 18px 38px rgba(81, 104, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+:global(:root:not([data-theme="dark"])) .heroEyebrow {
+  color: rgba(33, 48, 79, 0.5);
+}
+
+:global(:root:not([data-theme="dark"])) .heroTitle {
+  color: #21304f;
+}
+
+:global(:root:not([data-theme="dark"])) .heroCopy {
+  color: rgba(33, 48, 79, 0.68);
+}
+
+:global(:root:not([data-theme="dark"])) .heroStat {
+  background: rgba(81, 104, 255, 0.05);
+  border-color: rgba(109, 138, 214, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .heroStatValue {
+  color: #21304f;
+}
+
+:global(:root:not([data-theme="dark"])) .heroStatLabel {
+  color: rgba(33, 48, 79, 0.48);
+}
+
 :global(:root:not([data-theme="dark"])) .secondaryCta::after {
   background:
     linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
@@ -588,6 +700,10 @@
 }
 
 @media (max-width: 768px) {
+  .heroShell {
+    grid-template-columns: 1fr;
+  }
+
   .treasuryTypography {
     padding: 24px 20px 0;
   }
@@ -598,6 +714,19 @@
 
   .heroAzura > div:last-child {
     padding: 0;
+  }
+
+  .headerText {
+    padding: 22px 20px;
+  }
+
+  .heroTitle {
+    max-width: none;
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  .heroStats {
+    grid-template-columns: 1fr;
   }
 }
 

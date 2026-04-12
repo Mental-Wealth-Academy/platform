@@ -807,7 +807,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     } else if (action === 'prayers') {
       send('Tell me about morning pages', 'happy');
       addAzuraMessage(
-        "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and your morning pages will start catching what you've been trying not to hear."
+        "write for 15 min, get into flow state, and keep it up. no prompts, no pressure. just you and the page."
       );
     } else if (action === 'course') {
       send('How does the course work?', 'happy');
