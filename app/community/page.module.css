@@ -61,11 +61,11 @@
   background: var(--color-primary);
   color: #ffffff;
   box-shadow: 3px 3px 0 #1A1D33;
-  padding: 20px 36px;
+  padding: 18px 24px;
   font-size: 14px;
   margin-bottom: 16px;
-  flex-direction: column;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 14px;
   position: relative;
   overflow: hidden;
 }
@@ -75,14 +75,34 @@
   font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  text-align: left;
 }
 
-.proposalPrice {
-  font-weight: 500;
-  font-size: 12px;
-  opacity: 0.65;
-  text-transform: none;
-  letter-spacing: 0.02em;
+.proposalReward {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.proposalRewardIcon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.proposalRewardValue {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .primaryCta:hover {
@@ -838,6 +858,9 @@
 /* Tab Content */
 .tabContent {
   animation: tabFadeIn 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 @keyframes tabFadeIn {
@@ -1961,6 +1984,10 @@
     font-size: 10px;
   }
 
+  .primaryCta {
+    padding: 16px 18px;
+  }
+
   .fundingStateMetrics {
     flex-direction: column;
     align-items: flex-start;
@@ -2141,6 +2168,11 @@
     padding: 14px;
   }
 
+  .primaryCta {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
   .communityViewPanel {
     padding-right: 6px;
   }
@@ -2148,6 +2180,16 @@
   .proposalsEntryIcon {
     width: 36px;
     height: 36px;
+  }
+
+  .proposalReward {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  .proposalRewardIcon {
+    width: 20px;
+    height: 20px;
   }
 
   .fundingStateCard {

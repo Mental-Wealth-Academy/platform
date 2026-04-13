@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { providers } from 'ethers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
@@ -445,7 +446,18 @@ export default function VotingPage() {
                     type="button"
                   >
                     <span className={styles.proposalLabel}>Submit a Proposal</span>
-                    <span className={styles.proposalPrice}>100 shards to submit</span>
+                    <span className={styles.proposalReward}>
+                      <span className={styles.proposalRewardIcon} aria-hidden="true">
+                        <Image
+                          src="/icons/ui-shard.svg"
+                          alt=""
+                          width={16}
+                          height={16}
+                          unoptimized
+                        />
+                      </span>
+                      <span className={styles.proposalRewardValue}>+500</span>
+                    </span>
                   </button>
                   {loading ? (
                     <div className={styles.proposalsGrid}>

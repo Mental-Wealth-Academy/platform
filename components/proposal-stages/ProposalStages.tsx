@@ -21,12 +21,16 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   stage2,
   stage3,
 }) => {
+  const stage1Title = 'Review';
+  const stage2Title = 'Vote';
+  const stage3Title = 'Result';
+
   const getStage1Label = () => {
     switch (stage1) {
-      case 'waiting': return 'Waiting...';
-      case 'analyzing': return 'Analyzing...';
-      case 'approved': return 'Approved.';
-      case 'rejected': return 'Rejected.';
+      case 'waiting': return 'Queued';
+      case 'analyzing': return 'Scanning';
+      case 'approved': return 'Approved';
+      case 'rejected': return 'Rejected';
       default: return 'Unknown';
     }
   };
@@ -34,9 +38,9 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
   const getStage2Label = () => {
     switch (stage2) {
       case 'waiting': return 'Awaiting';
-      case 'processing': return 'Processing...';
+      case 'processing': return 'Opening';
       case 'success':
-        return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Vote ended' : 'Voting';
+        return (stage3 === 'defeated' || stage3 === 'completed' || stage3 === 'expired') ? 'Closed' : 'Live';
       case 'failed': return 'Failed';
       default: return 'Unknown';
     }
@@ -87,15 +91,16 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
           <Image
             src={getStage1Image()}
             alt="Azura"
-            width={100}
-            height={100}
+            width={72}
+            height={72}
             className={styles.stageImage}
             unoptimized
           />
         </div>
-        <p className={styles.stageLabel}>
-          Stage 1: {getStage1Label()}
-        </p>
+        <div className={styles.stageCopy}>
+          <p className={styles.stageTitle}>{stage1Title}</p>
+          <p className={styles.stageLabel}>{getStage1Label()}</p>
+        </div>
       </div>
 
       {/* Connector 1 */}
@@ -120,15 +125,16 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
           <Image
             src={getStage2Image()}
             alt="Vote"
-            width={100}
-            height={100}
+            width={72}
+            height={72}
             className={styles.stageImage}
             unoptimized
           />
         </div>
-        <p className={styles.stageLabel}>
-          Stage 2: {getStage2Label()}
-        </p>
+        <div className={styles.stageCopy}>
+          <p className={styles.stageTitle}>{stage2Title}</p>
+          <p className={styles.stageLabel}>{getStage2Label()}</p>
+        </div>
       </div>
 
       {/* Connector 2 */}
@@ -153,15 +159,16 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
           <Image
             src={getStage3Image()}
             alt="Outcome"
-            width={100}
-            height={100}
+            width={72}
+            height={72}
             className={styles.stageImage}
             unoptimized
           />
         </div>
-        <p className={styles.stageLabel}>
-          Stage 3: {getStage3Label()}
-        </p>
+        <div className={styles.stageCopy}>
+          <p className={styles.stageTitle}>{stage3Title}</p>
+          <p className={styles.stageLabel}>{getStage3Label()}</p>
+        </div>
       </div>
     </div>
   );
