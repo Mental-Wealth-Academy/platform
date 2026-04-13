@@ -129,7 +129,7 @@ export default function VotingPage() {
   const [showMintModal, setShowMintModal] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
-  const [activeFundingSlide, setActiveFundingSlide] = useState(FUNDING_CAROUSEL_START_INDEX);
+  const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [showIntroLoader, setShowIntroLoader] = useState(true);
   const { play } = useSound();
@@ -452,42 +452,42 @@ export default function VotingPage() {
                 </section>
 
                 <section className={styles.communityViewPanel}>
-                <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
-                  <button
-                    className={`${styles.proposalsEntryButton} ${styles.proposalSubmitButton}`}
-                    onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
-                    onMouseEnter={() => play('hover')}
-                    type="button"
-                  >
-                    <div className={styles.proposalsEntryIcon}>
-                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                        <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                        <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                        <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
-                      </svg>
-                    </div>
-                    <div className={styles.proposalsEntryContent}>
-                      <span className={styles.proposalsEntryLabel}>Submit a Proposal</span>
-                      <span className={styles.proposalsEntryMeta}>
-                        Share an idea for community funding and earn +500 shards when you contribute.
+                  <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
+                    <button
+                      className={`${styles.proposalsEntryButton} ${styles.proposalSubmitButton}`}
+                      onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
+                      onMouseEnter={() => play('hover')}
+                      type="button"
+                    >
+                      <div className={styles.proposalsEntryIcon}>
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                          <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                          <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                          <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
+                        </svg>
+                      </div>
+                      <div className={styles.proposalsEntryContent}>
+                        <span className={styles.proposalsEntryLabel}>Submit a Proposal</span>
+                        <span className={styles.proposalsEntryMeta}>
+                          Share an idea for community funding and submit it for review and potential treasury approval.
+                        </span>
+                      </div>
+                      <span className={styles.proposalReward}>
+                        <span className={styles.proposalRewardIcon} aria-hidden="true">
+                          <Image
+                            src="/icons/ui-shard.svg"
+                            alt=""
+                            width={16}
+                            height={16}
+                            unoptimized
+                          />
+                        </span>
+                        <span className={styles.proposalRewardValue}>500 fee</span>
                       </span>
-                    </div>
-                    <span className={styles.proposalReward}>
-                      <span className={styles.proposalRewardIcon} aria-hidden="true">
-                        <Image
-                          src="/icons/ui-shard.svg"
-                          alt=""
-                          width={16}
-                          height={16}
-                          unoptimized
-                        />
-                      </span>
-                      <span className={styles.proposalRewardValue}>+500</span>
-                    </span>
-                  </button>
-                  {loading ? (
-                    <div className={styles.proposalsGrid}>
+                    </button>
+                    {loading ? (
+                      <div className={styles.proposalsGrid}>
                       {[...Array(3)].map((_, i) => (
                         <ProposalCardSkeleton key={i} />
                       ))}

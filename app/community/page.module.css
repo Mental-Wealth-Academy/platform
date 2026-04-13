@@ -104,6 +104,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-primary);
 }
 
@@ -749,7 +750,7 @@
 .communityTopbar {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .communityMainWrapper {
@@ -767,7 +768,8 @@
 
 .communityTab {
   flex: 1 1 50%;
-  padding: 0 0 12px;
+  min-height: 48px;
+  padding: 10px 0 14px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
@@ -865,7 +867,7 @@
 .communityViewPanel {
   width: 50%;
   flex: 0 0 50%;
-  padding: 0 12px 18px 0;
+  padding: 0 12px 18px;
   box-sizing: border-box;
 }
 
@@ -878,7 +880,7 @@
 }
 
 .proposalsTabContent {
-  padding-top: 18px;
+  padding-top: 14px;
 }
 
 .proposalSubmitButton {
@@ -1995,7 +1997,7 @@
   }
 
   .communityViewPanel {
-    padding-right: 8px;
+    padding: 0 8px 18px;
   }
 
   .communityTabs {
@@ -2208,7 +2210,7 @@
   }
 
   .communityViewPanel {
-    padding-right: 6px;
+    padding: 0 6px 18px;
   }
 
   .proposalsEntryIcon {
