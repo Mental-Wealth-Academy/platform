@@ -323,11 +323,12 @@ export default function VotingPage() {
           </div>
 
           <div className={styles.communityViewViewport}>
-            <div
-              className={styles.communityViewTrack}
-              style={{ transform: communityView === 'proposals' ? 'translateX(-50%)' : 'translateX(0%)' }}
-            >
-              <section className={styles.communityViewPanel}>
+            <div className={styles.communityViewMask}>
+              <div
+                className={styles.communityViewTrack}
+                style={{ transform: communityView === 'proposals' ? 'translateX(-50%)' : 'translateX(0%)' }}
+              >
+                <section className={styles.communityViewPanel}>
                 <section className={styles.fundingSection}>
                   <div className={styles.fundingCarouselViewport}>
                     <div className={styles.fundingCarouselMask}>
@@ -439,9 +440,9 @@ export default function VotingPage() {
                 <div className={styles.overviewAngelSection}>
                   <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
                 </div>
-              </section>
+                </section>
 
-              <section className={styles.communityViewPanel}>
+                <section className={styles.communityViewPanel}>
                 <div className={styles.tabContent}>
                   <button
                     className={styles.primaryCta}
@@ -534,7 +535,8 @@ export default function VotingPage() {
                     </div>
                   )}
                 </div>
-              </section>
+                </section>
+              </div>
             </div>
           </div>
           </>

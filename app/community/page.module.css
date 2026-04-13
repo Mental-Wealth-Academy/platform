@@ -13,7 +13,7 @@
   padding: 40px 24px;
   color: var(--color-text-dark);
   position: relative;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 @media (max-width: 900px) {
@@ -837,8 +837,15 @@
 }
 
 .communityViewViewport {
-  overflow: hidden;
   width: 100%;
+  overflow: visible;
+  padding: 0 14px 22px;
+  margin: 0 -14px -22px;
+}
+
+.communityViewMask {
+  width: 100%;
+  overflow: hidden;
 }
 
 .communityViewTrack {
