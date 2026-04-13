@@ -128,6 +128,41 @@ function getRadarPoints(scales: number[], radius = 80) {
 const SHARD_COST = 10;
 const RESEARCH_COST = 1000;
 
+const GPU_TIER_INFO = {
+  focus: {
+    label: 'Focus',
+    model: 'Llama 3.1 8B',
+    gpu: 'RTX 4070',
+    desc: 'Fast synthesis. Summaries and structured reports.',
+    shards: 3000,
+    badge: 'Fast',
+    badgeClass: 'gpuTierBadgeFocus',
+    cardClass: 'gpuTierCardFocus',
+  },
+  deep: {
+    label: 'Deep',
+    model: 'Llama 3.1 8B',
+    gpu: 'RTX 4090',
+    desc: 'Thorough multi-source analysis.',
+    shards: 8000,
+    badge: 'Balanced',
+    badgeClass: 'gpuTierBadgeDeep',
+    cardClass: 'gpuTierCardDeep',
+  },
+  elite: {
+    label: 'Elite',
+    model: 'Llama 3.1 70B',
+    gpu: 'A100',
+    desc: 'Graduate-level synthesis at 70B scale.',
+    shards: 20000,
+    badge: 'Maximum',
+    badgeClass: 'gpuTierBadgeElite',
+    cardClass: 'gpuTierCardElite',
+  },
+} as const;
+
+type GpuTier = keyof typeof GPU_TIER_INFO;
+
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const { play } = useSound();
   const [messages, setMessages] = useState<Message[]>([
@@ -152,6 +187,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [researchTopic, setResearchTopic] = useState('');
   const [researchReclaimToken, setResearchReclaimToken] = useState<string | null>(null);
   const [researchReclaimStatus, setResearchReclaimStatus] = useState<'idle' | 'claiming' | 'claimed'>('idle');
+  const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'select' | null>(null);
+  const [gpuJobId, setGpuJobId] = useState<string | null>(null);
+  const [gpuResearchMode, setGpuResearchMode] = useState(false);
+  const [gpuTopic, setGpuTopic] = useState('');
+  const [gpuStatus, setGpuStatus] = useState<'provisioning' | 'completed' | 'failed' | null>(null);
+  const gpuPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [treasury, setTreasury] = useState<TreasuryContext>({
     balance: null,
     balanceUsd: null,
@@ -296,7 +337,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           setMessages((prev) => [...prev, userMessage]);
           setInputText('');
           showEmote('dead');
-          if (researchMode) {
+          if (gpuResearchMode && gpuJobId) {
+            if (gpuTopic) {
+              addAzuraMessage('already processing your topic. gpu synthesis in progress.');
+            } else {
+              setGpuTopic(text);
+              addAzuraMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu.`);
+            }
+          } else if (researchMode) {
             discoverResearch(text);
           } else if (claudeProfessionalMode) {
             sendToEliza(text, 'linkedin-professional');
@@ -457,6 +505,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setPendingAttachments([]);
     showEmote('dead');
 
+    if (gpuResearchMode && gpuJobId) {
+      if (gpuTopic) {
+        addAzuraMessage('already processing your topic. gpu synthesis in progress — hang tight.');
+      } else {
+        setGpuTopic(text);
+        addAzuraMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu for synthesis.`);
+        showEmote('searching');
+      }
+      return;
+    }
+
     if (researchMode) {
       discoverResearch(text);
       return;
@@ -511,6 +570,117 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       sendToEliza(topic, 'research');
     }
   };
+
+  const startGpuResearch = async (tier: GpuTier) => {
+    setGpuPickerStep(null);
+    setIsTyping(true);
+    showEmote('searching');
+    try {
+      const res = await fetch('/api/research/gpu', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error === 'insufficient_shards') {
+          addAzuraMessage(
+            `not enough shards. ${GPU_TIER_INFO[tier].label} GPU costs ${GPU_TIER_INFO[tier].shards.toLocaleString()} shards. keep building and come back.`
+          );
+        } else if (data.error === 'GPU research not available') {
+          addAzuraMessage('gpu research is not configured yet. check back soon.');
+        } else {
+          addAzuraMessage('gpu provisioning failed. try again.');
+        }
+        return;
+      }
+
+      setGpuJobId(data.jobId);
+      setGpuStatus('provisioning');
+      setGpuResearchMode(true);
+      setShardCount(data.shardsRemaining ?? shardCount);
+      addAzuraMessage(
+        `${GPU_TIER_INFO[tier].label} GPU is spinning up on Nosana (${GPU_TIER_INFO[tier].model}, ${GPU_TIER_INFO[tier].gpu}). drop your research topic and i'll start synthesizing as soon as compute is ready. this usually takes 2-5 minutes.`
+      );
+    } catch {
+      addAzuraMessage('gpu connection failed. check your network and try again.');
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  // Poll GPU job status until synthesis completes or fails
+  useEffect(() => {
+    if (!gpuJobId || !gpuTopic) return;
+
+    let active = true;
+
+    const poll = async () => {
+      if (!active) return;
+      try {
+        const res = await fetch(
+          `/api/research/gpu/${gpuJobId}?topic=${encodeURIComponent(gpuTopic)}`,
+          { credentials: 'include' }
+        );
+        const data = await res.json();
+        if (!active) return;
+
+        if (data.status === 'completed' && data.result) {
+          active = false;
+          setGpuStatus('completed');
+          setGpuResearchMode(false);
+          setGpuJobId(null);
+          setGpuTopic('');
+          setIsTyping(true);
+          setTimeout(() => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: (Date.now() + 1).toString(),
+                text: data.result as string,
+                sender: 'azura' as const,
+                timestamp: new Date(),
+              },
+            ]);
+            setIsTyping(false);
+          }, 600);
+        } else if (data.status === 'failed') {
+          active = false;
+          setGpuStatus('failed');
+          setGpuResearchMode(false);
+          setGpuJobId(null);
+          setGpuTopic('');
+          setIsTyping(true);
+          setTimeout(() => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: (Date.now() + 1).toString(),
+                text: 'gpu synthesis failed. your shards have been refunded.',
+                sender: 'azura' as const,
+                timestamp: new Date(),
+              },
+            ]);
+            setIsTyping(false);
+          }, 600);
+        }
+      } catch {
+        // network error — keep polling
+      }
+    };
+
+    poll();
+    const id = setInterval(poll, 10000);
+    gpuPollRef.current = id;
+
+    return () => {
+      active = false;
+      clearInterval(id);
+      gpuPollRef.current = null;
+    };
+  }, [gpuJobId, gpuTopic]);
 
   const confirmShardSpend = async () => {
     if (!pendingMessage) return;
@@ -790,6 +960,21 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       } else {
         addAzuraMessage(`research costs 1,000 shards to activate. you have ${shardCount ?? 0}. keep building and come back.`);
       }
+    } else if (action === 'gpu-research') {
+      setResearchMode(false);
+      setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
+      if (gpuResearchMode) {
+        send('GPU research is running', 'searching');
+        addAzuraMessage(gpuTopic ? 'gpu research is processing your topic. synthesis in progress.' : 'gpu research is active. drop your research topic.');
+        return;
+      }
+      send('Start GPU research session', 'searching');
+      if (shardCount !== null && shardCount >= GPU_TIER_INFO.focus.shards) {
+        setGpuPickerStep('gate');
+      } else {
+        addAzuraMessage(`gpu research starts at ${GPU_TIER_INFO.focus.shards.toLocaleString()} shards. you have ${shardCount ?? 0}. keep building.`);
+      }
     } else if (action === 'claude-professional') {
       send('Open LinkedIn professional mode', 'happy');
       setResearchMode(false);
@@ -934,6 +1119,54 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             addAzuraMessage(msg);
           }}
         />
+      )}
+
+      {/* GPU Research Picker */}
+      {gpuPickerStep === 'gate' && (
+        <div className={styles.gpuPicker}>
+          <span className={styles.gpuPickerTitle}>GPU Research</span>
+          <p className={styles.gpuPickerDesc}>
+            Borrow dedicated GPU compute from the Nosana network to run a powerful open-source model directly on your research topic. Pick a compute tier.
+          </p>
+          <div className={styles.gpuPickerButtons}>
+            <button className={styles.gpuPickerProceed} onClick={() => setGpuPickerStep('select')} type="button">
+              Select Model
+            </button>
+            <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {gpuPickerStep === 'select' && (
+        <div className={styles.gpuPicker}>
+          <span className={styles.gpuPickerTitle}>Select Compute Tier</span>
+          <div className={styles.gpuTierGrid}>
+            {(Object.keys(GPU_TIER_INFO) as GpuTier[]).map((tier) => {
+              const t = GPU_TIER_INFO[tier];
+              const hasShards = shardCount !== null && shardCount >= t.shards;
+              return (
+                <button
+                  key={tier}
+                  className={`${styles.gpuTierCard} ${styles[t.cardClass as keyof typeof styles]}`}
+                  onClick={() => startGpuResearch(tier)}
+                  disabled={!hasShards || isTyping}
+                  type="button"
+                >
+                  <span className={`${styles.gpuTierBadge} ${styles[t.badgeClass as keyof typeof styles]}`}>{t.badge}</span>
+                  <span className={styles.gpuTierLabel}>{t.label}</span>
+                  <span className={styles.gpuTierModel}>{t.model}</span>
+                  <span className={styles.gpuTierGpu}>{t.gpu}</span>
+                  <span className={styles.gpuTierDesc}>{t.desc}</span>
+                  <span className={styles.gpuTierShards}>{t.shards.toLocaleString()} shards{!hasShards ? ' (need more)' : ''}</span>
+                </button>
+              );
+            })}
+          </div>
+          <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button" style={{ marginTop: 4 }}>
+            Cancel
+          </button>
+        </div>
       )}
 
       {/* Shard Confirmation */}
@@ -1273,6 +1506,21 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                      </span>
+                    </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
+                  </button>
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('gpu-research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>GPU Research</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>GPU Research</span>
+                        </span>
+                        <span className={styles.toolCardMeta}>Nosana GPU. 8B–70B model synthesis.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4zM1 3h2v18H1zm20 0h2v18h-2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />

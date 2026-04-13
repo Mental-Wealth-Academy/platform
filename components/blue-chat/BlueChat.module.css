@@ -1725,6 +1725,239 @@
     linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
 }
 
+/* ── GPU Research Picker ─────────────────────────────────────────────────── */
+
+.gpuPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 0 16px 4px;
+  background: rgba(20, 20, 32, 0.92);
+  border: 1.5px solid rgba(81, 104, 255, 0.28);
+  border-radius: 14px;
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gpuPickerTitle {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.gpuPickerDesc {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+}
+
+.gpuPickerButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.gpuPickerProceed {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--color-primary, #5168FF);
+  border: 1.5px solid var(--color-primary, #5168FF);
+  border-radius: 8px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gpuPickerProceed:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(81, 104, 255, 0.38);
+}
+
+.gpuPickerCancel {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gpuPickerCancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.gpuTierGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.gpuTierCard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.15s ease;
+}
+
+.gpuTierCard:hover {
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.gpuTierCard:active {
+  transform: translateY(0);
+}
+
+.gpuTierCard:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.gpuTierCardFocus:hover {
+  border-color: rgba(81, 104, 255, 0.4);
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.gpuTierCardDeep:hover {
+  border-color: rgba(151, 36, 166, 0.45);
+  background: rgba(151, 36, 166, 0.08);
+}
+
+.gpuTierCardElite:hover {
+  border-color: rgba(232, 85, 109, 0.45);
+  background: rgba(232, 85, 109, 0.08);
+}
+
+.gpuTierBadge {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.gpuTierBadgeFocus {
+  background: rgba(81, 104, 255, 0.18);
+  color: #7b8fff;
+}
+
+.gpuTierBadgeDeep {
+  background: rgba(151, 36, 166, 0.18);
+  color: #c07fe0;
+}
+
+.gpuTierBadgeElite {
+  background: rgba(232, 85, 109, 0.18);
+  color: #ff8fa3;
+}
+
+.gpuTierLabel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
+}
+
+.gpuTierModel {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.gpuTierGpu {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.gpuTierDesc {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+}
+
+.gpuTierShards {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 2px;
+}
+
+/* Light mode overrides */
+:global(:root:not([data-theme="dark"])) .gpuPicker {
+  background: rgba(245, 246, 255, 0.96);
+  border-color: rgba(81, 104, 255, 0.2);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuPickerTitle {
+  color: rgba(26, 29, 51, 0.45);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuPickerDesc {
+  color: rgba(26, 29, 51, 0.75);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuPickerCancel {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(81, 104, 255, 0.12);
+  color: rgba(26, 29, 51, 0.45);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuTierCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuTierLabel {
+  color: rgba(26, 29, 51, 0.88);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuTierModel,
+:global(:root:not([data-theme="dark"])) .gpuTierGpu {
+  color: rgba(26, 29, 51, 0.38);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuTierDesc {
+  color: rgba(26, 29, 51, 0.52);
+}
+
+:global(:root:not([data-theme="dark"])) .gpuTierShards {
+  color: rgba(26, 29, 51, 0.72);
+}
+
+/* ── ─────────────────────────────────────────────────────────────────────── */
+
 :global(:root:not([data-theme="dark"])) .expandedRight {
   border-right-color: rgba(81, 104, 255, 0.08);
   background:
