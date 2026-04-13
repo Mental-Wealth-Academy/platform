@@ -878,11 +878,15 @@
 
 .fundingCarouselViewport {
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
   margin-top: 2px;
-  padding: 18px 14px 24px;
-  margin: -18px -14px -20px;
+  padding: 18px 14px 28px;
+  margin: -18px -14px -24px;
+}
+
+.fundingCarouselMask {
+  width: 100%;
+  overflow: hidden;
 }
 
 .fundingCarouselTrack {

@@ -330,53 +330,55 @@ export default function VotingPage() {
               <section className={styles.communityViewPanel}>
                 <section className={styles.fundingSection}>
                   <div className={styles.fundingCarouselViewport}>
-                    <div
-                      className={styles.fundingCarouselTrack}
-                      style={{
-                        transform: `translateX(-${activeFundingSlide * 20}%)`,
-                        transition: isFundingTransitionEnabled ? 'transform 760ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
-                      }}
-                      onTransitionEnd={handleFundingTrackTransitionEnd}
-                    >
-                      {fundingSlides.map((pod, index) => (
-                        <div key={`${pod.title}-${index}`} className={styles.fundingCarouselSlide}>
-                          <div
-                            className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
-                            onMouseEnter={() => play('hover')}
-                            style={{ ['--funding-accent' as string]: pod.accent }}
-                          >
-                            <div className={styles.exchangeHeader}>
-                              <div className={`${styles.exchangeIcon} ${styles.fundingStateIcon}`}>
-                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M4 12h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                  <path d="M8 8h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                  <path d="M8 16h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                </svg>
+                    <div className={styles.fundingCarouselMask}>
+                      <div
+                        className={styles.fundingCarouselTrack}
+                        style={{
+                          transform: `translateX(-${activeFundingSlide * 20}%)`,
+                          transition: isFundingTransitionEnabled ? 'transform 760ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+                        }}
+                        onTransitionEnd={handleFundingTrackTransitionEnd}
+                      >
+                        {fundingSlides.map((pod, index) => (
+                          <div key={`${pod.title}-${index}`} className={styles.fundingCarouselSlide}>
+                            <div
+                              className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
+                              onMouseEnter={() => play('hover')}
+                              style={{ ['--funding-accent' as string]: pod.accent }}
+                            >
+                              <div className={styles.exchangeHeader}>
+                                <div className={`${styles.exchangeIcon} ${styles.fundingStateIcon}`}>
+                                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 12h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                    <path d="M8 8h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                    <path d="M8 16h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                  </svg>
+                                </div>
+                                <div className={styles.exchangeTitleText}>
+                                  <span className={styles.exchangeLabel}>Funding Pod</span>
+                                  <span className={styles.exchangeTitle}>{pod.title}</span>
+                                </div>
                               </div>
-                              <div className={styles.exchangeTitleText}>
-                                <span className={styles.exchangeLabel}>Funding Pod</span>
-                                <span className={styles.exchangeTitle}>{pod.title}</span>
+                              <div className={styles.fundingStateMetrics}>
+                                <div className={styles.exchangePriceRow}>
+                                  <span className={styles.exchangePrice}>${pod.amount.toLocaleString()}</span>
+                                  <span className={styles.exchangeCurrency}>allocated</span>
+                                </div>
+                                <span className={styles.fundingStatePercent}>
+                                  {Math.round((pod.amount / pod.total) * 100)}% of treasury
+                                </span>
                               </div>
-                            </div>
-                            <div className={styles.fundingStateMetrics}>
-                              <div className={styles.exchangePriceRow}>
-                                <span className={styles.exchangePrice}>${pod.amount.toLocaleString()}</span>
-                                <span className={styles.exchangeCurrency}>allocated</span>
+                              <p className={styles.exchangeDesc}>{pod.desc}</p>
+                              <div className={styles.fundingStateProgress}>
+                                <div
+                                  className={styles.fundingStateProgressFill}
+                                  style={{ width: `${(pod.amount / pod.total) * 100}%` }}
+                                />
                               </div>
-                              <span className={styles.fundingStatePercent}>
-                                {Math.round((pod.amount / pod.total) * 100)}% of treasury
-                              </span>
-                            </div>
-                            <p className={styles.exchangeDesc}>{pod.desc}</p>
-                            <div className={styles.fundingStateProgress}>
-                              <div
-                                className={styles.fundingStateProgressFill}
-                                style={{ width: `${(pod.amount / pod.total) * 100}%` }}
-                              />
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div className={styles.fundingIndicators} aria-label="Funding pod states">
