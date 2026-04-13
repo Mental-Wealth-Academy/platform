@@ -875,6 +875,18 @@
   gap: 20px;
 }
 
+.proposalsTabContent {
+  padding-top: 18px;
+}
+
+.proposalSubmitButton {
+  justify-content: flex-start;
+}
+
+.proposalSubmitButton .proposalsEntryContent {
+  flex: 1;
+}
+
 @keyframes tabFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

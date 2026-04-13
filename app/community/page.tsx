@@ -444,14 +444,27 @@ export default function VotingPage() {
                 </section>
 
                 <section className={styles.communityViewPanel}>
-                <div className={styles.tabContent}>
+                <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
                   <button
-                    className={styles.primaryCta}
+                    className={`${styles.proposalsEntryButton} ${styles.proposalSubmitButton}`}
                     onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
                     onMouseEnter={() => play('hover')}
                     type="button"
                   >
-                    <span className={styles.proposalLabel}>Submit a Proposal</span>
+                    <div className={styles.proposalsEntryIcon}>
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                        <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                        <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                        <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
+                      </svg>
+                    </div>
+                    <div className={styles.proposalsEntryContent}>
+                      <span className={styles.proposalsEntryLabel}>Submit a Proposal</span>
+                      <span className={styles.proposalsEntryMeta}>
+                        Share an idea for community funding and earn +500 shards when you contribute.
+                      </span>
+                    </div>
                     <span className={styles.proposalReward}>
                       <span className={styles.proposalRewardIcon} aria-hidden="true">
                         <Image
