@@ -17,6 +17,20 @@ interface Scene {
   palette: 'indigo' | 'gold' | 'teal' | 'rose' | 'violet';
 }
 
+type ScreenOrientationWithLock = ScreenOrientation & {
+  lock?: (
+    orientation:
+      | 'any'
+      | 'natural'
+      | 'landscape'
+      | 'portrait'
+      | 'portrait-primary'
+      | 'portrait-secondary'
+      | 'landscape-primary'
+      | 'landscape-secondary'
+  ) => Promise<void>;
+};
+
 const SCENES: Scene[] = [
   {
     id: 'threshold',
@@ -84,8 +98,13 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
 
     const lockLandscape = async () => {
       try {
-        if (typeof screen !== 'undefined' && 'orientation' in screen && typeof screen.orientation.lock === 'function') {
-          await screen.orientation.lock('landscape');
+        const orientation =
+          typeof screen !== 'undefined' && 'orientation' in screen
+            ? (screen.orientation as ScreenOrientationWithLock)
+            : null;
+
+        if (orientation && typeof orientation.lock === 'function') {
+          await orientation.lock('landscape');
         }
       } catch {
         // Mobile browsers often reject orientation locking outside fullscreen/app contexts.
