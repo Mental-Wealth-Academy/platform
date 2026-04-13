@@ -8,6 +8,7 @@ import {
   stopDeployment,
   type GpuTier,
 } from '@/lib/nosana';
+import { discoverSources, fetchSelectedSources, encodeForLLM } from '@/lib/x402-research';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -108,10 +109,26 @@ export async function GET(
   }
 
   const tier = (job.tier || 'deep') as GpuTier;
+  const researchTopic = topic || job.topic;
+
+  // Attempt x402 source discovery — enrich GPU synthesis with real paid content
+  let sourceContext: string | undefined;
+  try {
+    const discovered = await discoverSources(researchTopic);
+    if (discovered.length > 0) {
+      const fetched = await fetchSelectedSources(discovered.slice(0, 2));
+      if (fetched.length > 0) {
+        sourceContext = encodeForLLM(fetched);
+        console.log(`GPU synthesis enriched with ${fetched.length} x402 source(s) for: ${researchTopic}`);
+      }
+    }
+  } catch {
+    // x402 unavailable or AZURA_PRIVATE_KEY not set — continue without sources
+  }
 
   let result: string;
   try {
-    result = await synthesizeOnGPU(endpoint, topic || job.topic, tier);
+    result = await synthesizeOnGPU(endpoint, researchTopic, tier, sourceContext);
   } catch (err) {
     await sqlQuery(
       `UPDATE nosana_research_jobs SET status = 'failed' WHERE id = :id`,

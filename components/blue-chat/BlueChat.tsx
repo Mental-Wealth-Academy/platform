@@ -187,6 +187,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [researchTopic, setResearchTopic] = useState('');
   const [researchReclaimToken, setResearchReclaimToken] = useState<string | null>(null);
   const [researchReclaimStatus, setResearchReclaimStatus] = useState<'idle' | 'claiming' | 'claimed'>('idle');
+  const [researchSuggestions, setResearchSuggestions] = useState<Array<{ title: string; author: string; year?: number; desc: string }> | null>(null);
   const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'select' | null>(null);
   const [gpuJobId, setGpuJobId] = useState<string | null>(null);
   const [gpuResearchMode, setGpuResearchMode] = useState(false);
@@ -541,6 +542,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     setIsTyping(true);
     showEmote('searching');
     setResearchTopic(topic);
+    setResearchSuggestions(null);
+
     try {
       const res = await fetch('/api/research/discover', {
         method: 'POST',
@@ -549,26 +552,63 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify({ topic }),
       });
       const data = await res.json();
-      setIsTyping(false);
 
       if (data.sources?.length > 0) {
+        setIsTyping(false);
         setResearchReclaimToken(null);
         setResearchReclaimStatus('idle');
         setResearchSources(data.sources);
         setResearchPayTo(data.payTo);
-        addAzuraMessage('found some sources. pick the ones you want and i will fetch them for you.');
-      } else {
-        // no x402 sources found -- fall back to AI synthesis
-        setResearchReclaimToken(data.reclaimToken ?? null);
-        setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
-        addAzuraMessage('no paid sources available for that topic yet. let me synthesize from what i know.');
-        sendToEliza(topic, 'research', data.reclaimToken ? 'research-reclaim' : undefined);
+        addAzuraMessage('found some sources. pick the ones you want and i will fetch them.');
+        return;
       }
+
+      // No paid sources — fetch AI-curated suggestions as entry points
+      try {
+        const suggestRes = await fetch('/api/research/suggest', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic }),
+        });
+        const suggestData = await suggestRes.json();
+
+        setIsTyping(false);
+
+        if (suggestRes.ok && suggestData.suggestions?.length > 0) {
+          setResearchSuggestions(suggestData.suggestions);
+          setResearchReclaimToken(data.reclaimToken ?? null);
+          setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
+          addAzuraMessage("no paid sources in the bazaar yet. here are three foundational works — click one to synthesize from it.");
+          return;
+        }
+      } catch {
+        // suggest failed — fall through to Eliza
+      }
+
+      setIsTyping(false);
+      setResearchReclaimToken(data.reclaimToken ?? null);
+      setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
+      addAzuraMessage('no sources available. synthesizing from training.');
+      sendToEliza(topic, 'research', data.reclaimToken ? 'research-reclaim' : undefined);
     } catch {
       setIsTyping(false);
-      addAzuraMessage('discovery failed. let me try from my training.');
+      addAzuraMessage('discovery failed. synthesizing from training.');
       sendToEliza(topic, 'research');
     }
+  };
+
+  const handleSuggestionClick = (s: { title: string; author: string; year?: number; desc: string }) => {
+    setResearchSuggestions(null);
+    const label = `${s.title} by ${s.author}${s.year ? ` (${s.year})` : ''}`;
+    setMessages((prev) => [...prev, {
+      id: Date.now().toString(),
+      text: `Synthesize: ${label}`,
+      sender: 'user' as const,
+      timestamp: new Date(),
+    }]);
+    const prompt = `${label} — synthesize the key contributions of this work in the context of: ${researchTopic}`;
+    sendToEliza(prompt, 'research');
   };
 
   const startGpuResearch = async (tier: GpuTier) => {
@@ -1119,6 +1159,29 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             addAzuraMessage(msg);
           }}
         />
+      )}
+
+      {/* Research Suggestions — shown when bazaar returns no paid sources */}
+      {researchSuggestions && researchSuggestions.length > 0 && (
+        <div className={styles.researchCards}>
+          <span className={styles.researchLabel}>foundational works — click to synthesize</span>
+          <div className={styles.researchGrid}>
+            {researchSuggestions.map((s, i) => (
+              <button
+                key={i}
+                type="button"
+                className={styles.researchCard}
+                onClick={() => handleSuggestionClick(s)}
+                disabled={isTyping}
+              >
+                <span className={styles.researchCardTitle}>{s.title}</span>
+                <span className={styles.researchCardDesc}>
+                  {s.author}{s.year ? ` · ${s.year}` : ''} — {s.desc}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* GPU Research Picker */}
