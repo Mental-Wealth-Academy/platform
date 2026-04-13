@@ -275,55 +275,56 @@ export default function VotingPage() {
             <VotingPageSkeleton />
           ) : (
           <>
-          <div className={styles.communityTopbar}>
-            <div className={styles.communityTabs} role="tablist" aria-label="Community views">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={communityView === 'overview'}
-                className={`${styles.communityTab} ${communityView === 'overview' ? styles.communityTabActive : ''}`}
-                onClick={() => { play('click'); setCommunityView('overview'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                Community
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={communityView === 'proposals'}
-                className={`${styles.communityTab} ${communityView === 'proposals' ? styles.communityTabActive : ''}`}
-                onClick={() => { play('click'); setCommunityView('proposals'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                Proposals
-              </button>
+          <div className={styles.communityMainWrapper}>
+            <div className={styles.communityTopbar}>
+              <div className={styles.communityTabs} role="tablist" aria-label="Community views">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={communityView === 'overview'}
+                  className={`${styles.communityTab} ${communityView === 'overview' ? styles.communityTabActive : ''}`}
+                  onClick={() => { play('click'); setCommunityView('overview'); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  Community
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={communityView === 'proposals'}
+                  className={`${styles.communityTab} ${communityView === 'proposals' ? styles.communityTabActive : ''}`}
+                  onClick={() => { play('click'); setCommunityView('proposals'); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  Proposals
+                </button>
+              </div>
+
+              {communityView === 'overview' && (
+                <button
+                  type="button"
+                  className={styles.proposalsEntryButton}
+                  onClick={() => { play('click'); setCommunityView('proposals'); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  <div className={styles.proposalsEntryIcon}>
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                      <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                      <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                      <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div className={styles.proposalsEntryContent}>
+                    <span className={styles.proposalsEntryLabel}>Proposals</span>
+                    <span className={styles.proposalsEntryMeta}>Submit ideas for funding and shape what the community builds next.</span>
+                  </div>
+                </button>
+              )}
             </div>
 
-            {communityView === 'overview' && (
-              <button
-                type="button"
-                className={styles.proposalsEntryButton}
-                onClick={() => { play('click'); setCommunityView('proposals'); }}
-                onMouseEnter={() => play('hover')}
-              >
-                <div className={styles.proposalsEntryIcon}>
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                    <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                    <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                    <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
-                  </svg>
-                </div>
-                <div className={styles.proposalsEntryContent}>
-                  <span className={styles.proposalsEntryLabel}>Proposals</span>
-                  <span className={styles.proposalsEntryMeta}>Submit ideas for funding and shape what the community builds next.</span>
-                </div>
-              </button>
-            )}
-          </div>
-
-          <div className={styles.communityViewViewport}>
-            <div className={styles.communityViewMask}>
+            <div className={styles.communityViewViewport}>
+              <div className={styles.communityViewMask}>
               <div
                 className={styles.communityViewTrack}
                 style={{ transform: communityView === 'proposals' ? 'translateX(-50%)' : 'translateX(0%)' }}
@@ -538,6 +539,7 @@ export default function VotingPage() {
                 </section>
               </div>
             </div>
+          </div>
           </div>
           </>
           )}
