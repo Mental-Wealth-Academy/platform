@@ -114,6 +114,9 @@ const FUNDING_PODS = [
   },
 ] as const;
 
+const FUNDING_CAROUSEL_REPEAT_COUNT = 4;
+const FUNDING_CAROUSEL_START_INDEX = FUNDING_PODS.length;
+
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
@@ -126,7 +129,7 @@ export default function VotingPage() {
   const [showMintModal, setShowMintModal] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
-  const [activeFundingSlide, setActiveFundingSlide] = useState(1);
+  const [activeFundingSlide, setActiveFundingSlide] = useState(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [showIntroLoader, setShowIntroLoader] = useState(true);
   const { play } = useSound();
@@ -146,7 +149,7 @@ export default function VotingPage() {
   useEffect(() => {
     const interval = window.setInterval(() => {
       setActiveFundingSlide((prev) => prev + 1);
-    }, 4200);
+    }, 5600);
 
     return () => window.clearInterval(interval);
   }, []);
@@ -236,16 +239,16 @@ export default function VotingPage() {
     }
   };
 
-  const fundingSlides = [
-    FUNDING_PODS[FUNDING_PODS.length - 1],
-    ...FUNDING_PODS,
-    FUNDING_PODS[0],
-  ];
-  const activeFundingIndicator = (activeFundingSlide - 1 + FUNDING_PODS.length) % FUNDING_PODS.length;
+  const fundingSlides = Array.from(
+    { length: FUNDING_CAROUSEL_REPEAT_COUNT },
+    () => FUNDING_PODS
+  ).flat();
+  const fundingSlideWidth = 100 / fundingSlides.length;
+  const activeFundingIndicator = activeFundingSlide % FUNDING_PODS.length;
   const handleFundingTrackTransitionEnd = () => {
-    if (activeFundingSlide === FUNDING_PODS.length + 1) {
+    if (activeFundingSlide >= fundingSlides.length - FUNDING_PODS.length) {
       setIsFundingTransitionEnabled(false);
-      setActiveFundingSlide(1);
+      setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX);
     }
   };
 
@@ -336,13 +339,18 @@ export default function VotingPage() {
                       <div
                         className={styles.fundingCarouselTrack}
                         style={{
-                          transform: `translateX(-${activeFundingSlide * 20}%)`,
-                          transition: isFundingTransitionEnabled ? 'transform 760ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+                          width: `${fundingSlides.length * 100}%`,
+                          transform: `translateX(-${activeFundingSlide * fundingSlideWidth}%)`,
+                          transition: isFundingTransitionEnabled ? 'transform 1150ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
                         }}
                         onTransitionEnd={handleFundingTrackTransitionEnd}
                       >
                         {fundingSlides.map((pod, index) => (
-                          <div key={`${pod.title}-${index}`} className={styles.fundingCarouselSlide}>
+                          <div
+                            key={`${pod.title}-${index}`}
+                            className={styles.fundingCarouselSlide}
+                            style={{ width: `${fundingSlideWidth}%`, flexBasis: `${fundingSlideWidth}%` }}
+                          >
                             <div
                               className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
                               onMouseEnter={() => play('hover')}
@@ -392,7 +400,7 @@ export default function VotingPage() {
                         onClick={() => {
                           play('click');
                           setIsFundingTransitionEnabled(true);
-                          setActiveFundingSlide(index + 1);
+                          setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX + index);
                         }}
                         onMouseEnter={() => play('hover')}
                         aria-pressed={index === activeFundingIndicator}

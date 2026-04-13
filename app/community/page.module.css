@@ -81,28 +81,30 @@
 .proposalReward {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
+  gap: 8px;
+  padding: 6px 10px 6px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(81, 104, 255, 0.16);
+  background: rgba(81, 104, 255, 0.08);
   flex-shrink: 0;
+  align-self: center;
 }
 
 .proposalRewardIcon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(81, 104, 255, 0.14);
 }
 
 .proposalRewardValue {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
 }
 
 .primaryCta:hover {
@@ -2271,6 +2273,19 @@
   color: #ffffff;
   border-color: rgba(107, 128, 255, 0.3);
   box-shadow: 0 4px 16px rgba(81, 104, 255, 0.35);
+}
+
+:global([data-theme="dark"]) .proposalReward {
+  border-color: rgba(107, 128, 255, 0.22);
+  background: rgba(107, 128, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .proposalRewardIcon {
+  background: rgba(107, 128, 255, 0.18);
+}
+
+:global([data-theme="dark"]) .proposalRewardValue {
+  color: rgba(227, 225, 238, 0.95);
 }
 
 :global([data-theme="dark"]) .primaryCta:hover {
