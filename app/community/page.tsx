@@ -320,7 +320,6 @@ export default function VotingPage() {
                   </div>
                   <div className={styles.proposalsEntryContent}>
                     <span className={styles.proposalsEntryLabel}>Proposals</span>
-                    <span className={styles.proposalsEntryMeta}>Submit ideas for funding and shape what the community builds next.</span>
                   </div>
                 </button>
               )}
@@ -454,7 +453,7 @@ export default function VotingPage() {
                 <section className={styles.communityViewPanel}>
                   <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
                     <button
-                      className={`${styles.proposalsEntryButton} ${styles.proposalSubmitButton}`}
+                      className={styles.proposalsEntryButton}
                       onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
                       onMouseEnter={() => play('hover')}
                       type="button"
@@ -469,9 +468,6 @@ export default function VotingPage() {
                       </div>
                       <div className={styles.proposalsEntryContent}>
                         <span className={styles.proposalsEntryLabel}>Submit Proposal</span>
-                        <span className={styles.proposalsEntryMeta}>
-                          Share an idea and get it funded by the community.
-                        </span>
                       </div>
                       <span className={styles.proposalReward}>
                         <span className={styles.proposalRewardIcon} aria-hidden="true">

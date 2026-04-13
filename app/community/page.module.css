@@ -79,9 +79,6 @@
 }
 
 .proposalReward {
-  grid-area: badge;
-  justify-self: end;
-  align-self: start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -90,7 +87,7 @@
   border: 1px solid rgba(81, 104, 255, 0.16);
   background: rgba(81, 104, 255, 0.08);
   flex-shrink: 0;
-  align-self: center;
+  margin-left: auto;
 }
 
 .proposalRewardIcon {
@@ -792,14 +789,9 @@
 }
 
 .proposalsEntryButton {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas:
-    "icon . badge"
-    "text text text";
-  column-gap: 12px;
-  row-gap: 12px;
-  align-items: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
   padding: 14px 16px;
   border: 1px solid rgba(26, 27, 36, 0.12);
@@ -817,9 +809,9 @@
 }
 
 .proposalsEntryIcon {
-  grid-area: icon;
   width: 40px;
   height: 40px;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -836,10 +828,7 @@
 }
 
 .proposalsEntryContent {
-  grid-area: text;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  flex: 1;
   min-width: 0;
   text-align: left;
 }
@@ -902,13 +891,6 @@
   padding-top: 14px;
 }
 
-.proposalSubmitButton {
-  justify-content: flex-start;
-}
-
-.proposalSubmitButton .proposalsEntryContent {
-  flex: none;
-}
 
 @keyframes tabFadeIn {
   from { opacity: 0; transform: translateY(8px); }
