@@ -857,6 +857,8 @@
   width: 100%;
   overflow: hidden;
   margin-top: 2px;
+  padding: 14px 0 18px;
+  margin-bottom: -14px;
 }
 
 .fundingCarouselTrack {
@@ -868,7 +870,7 @@
 .fundingCarouselSlide {
   width: 20%;
   flex: 0 0 20%;
-  padding: 0 6px;
+  padding: 0 8px;
   box-sizing: border-box;
 }
 
@@ -949,6 +951,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  margin-bottom: 14px;
 }
 
 .fundingIndicator {
@@ -2161,6 +2164,7 @@
 
   .fundingIndicators {
     gap: 6px;
+    margin-bottom: 18px;
   }
 
   .fundingIndicator {
