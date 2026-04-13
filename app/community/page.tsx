@@ -434,7 +434,9 @@ export default function VotingPage() {
                   </div>
                 </div>
 
-                <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
+                <div className={styles.overviewAngelSection}>
+                  <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
+                </div>
               </section>
 
               <section className={styles.communityViewPanel}>

@@ -977,6 +977,11 @@
   margin-bottom: 14px;
 }
 
+.overviewAngelSection {
+  width: 100%;
+  overflow: hidden;
+}
+
 .fundingIndicator {
   width: 8px;
   height: 8px;
