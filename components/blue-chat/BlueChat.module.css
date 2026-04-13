@@ -1447,7 +1447,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .chatContainer {
-  background: linear-gradient(#000000, #000000) padding-box,
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
               linear-gradient(135deg, #ff6b6b, #f59e0b, #84cc16, #22c55e, #38bdf8, #8b5cf6, #ec4899) border-box;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.35), 0 24px 64px rgba(0, 0, 0, 0.28);
 }
@@ -1467,7 +1467,7 @@
 }
 
 :global(:root:not([data-theme="dark"])) .messageTime {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(26, 29, 51, 0.38);
 }
 
 :global(:root:not([data-theme="dark"])) .messagesArea::-webkit-scrollbar-thumb {
@@ -1604,11 +1604,11 @@
 }
 
 :global(:root:not([data-theme="dark"])) .expandedContainer {
-  background: #000000;
+  background: #ffffff;
 }
 
 :global(:root:not([data-theme="dark"])) .expandedTopBar {
-  background: rgba(0, 0, 0, 0.82);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   box-shadow: inset 0 -1px 0 rgba(81, 104, 255, 0.08);
 }
@@ -1706,12 +1706,12 @@
   background:
     repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(81, 104, 255, 0.03) 39px, rgba(81, 104, 255, 0.03) 40px),
     repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(81, 104, 255, 0.03) 39px, rgba(81, 104, 255, 0.03) 40px),
-    linear-gradient(180deg, #000000 0%, #000000 100%);
+    linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
 }
 
 :global(:root:not([data-theme="dark"])) .expandedRight {
   border-right-color: rgba(81, 104, 255, 0.08);
   background:
     repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(81, 104, 255, 0.03) 31px, rgba(81, 104, 255, 0.03) 32px),
-    linear-gradient(180deg, #000000 0%, #000000 100%);
+    linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
 }
