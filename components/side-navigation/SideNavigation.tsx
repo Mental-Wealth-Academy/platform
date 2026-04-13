@@ -12,7 +12,7 @@ import {
   IconProps,
   ImagesSquare,
   Microscope,
-  PawPrint,
+  UserCircle,
   UsersThree,
 } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
@@ -53,14 +53,14 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'rewards', label: 'Quests', href: '/rewards', icon: Gift },
       { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
+      { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
     ],
   },
   {
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'pet', label: 'Pet', href: '/digipet', icon: PawPrint },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },

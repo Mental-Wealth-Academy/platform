@@ -29,12 +29,14 @@
 
 .title {
   font-family: var(--font-secondary);
-  font-size: 2.618rem;
+  font-size: clamp(2.5rem, 4vw, 3.7rem);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   color: var(--color-text-dark);
-  margin: 0 0 16px 0;
+  margin: 0 auto 16px;
+  max-width: 860px;
+  text-wrap: balance;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -43,11 +45,11 @@
 
 .subtitle {
   font-family: var(--font-primary);
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.65;
   color: rgba(26, 27, 36, 0.6);
   margin: 0 auto 48px;
-  max-width: 520px;
+  max-width: 720px;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.4s ease, transform 0.4s ease;
@@ -105,6 +107,16 @@
   box-shadow: 0 12px 40px rgba(81, 104, 255, 0.16);
 }
 
+.tierCardValue {
+  border-color: #e85d93;
+  box-shadow: 0 8px 32px rgba(232, 93, 147, 0.12);
+}
+
+.tierCardValue:hover {
+  border-color: #e85d93;
+  box-shadow: 0 12px 40px rgba(232, 93, 147, 0.18);
+}
+
 /* ── Badge ───────────────────────────────────────── */
 .tierBadge {
   position: absolute;
@@ -119,6 +131,10 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   border-radius: 20px;
+}
+
+.tierBadgeValue {
+  background: #e85d93;
 }
 
 /* ── Tier Header ─────────────────────────────────── */

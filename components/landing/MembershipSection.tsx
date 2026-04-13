@@ -167,7 +167,6 @@ export const MembershipSection: React.FC = () => {
   return (
     <section ref={sectionRef} id="membership" className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
-        <p className={styles.eyebrow}>Membership</p>
         <h2 className={styles.title}>Choose Your Path</h2>
         <p className={styles.subtitle}>
           Start the journey your way.
@@ -261,7 +260,8 @@ export const MembershipSection: React.FC = () => {
           </div>
 
           {/* Lifetime Tier */}
-          <div className={styles.tierCard}>
+          <div className={`${styles.tierCard} ${styles.tierCardValue}`}>
+            <div className={`${styles.tierBadge} ${styles.tierBadgeValue}`}>Best Value</div>
             <div className={styles.tierHeader}>
               <span className={styles.tierName}>Academic Angel</span>
               <div className={styles.tierPriceRow}>

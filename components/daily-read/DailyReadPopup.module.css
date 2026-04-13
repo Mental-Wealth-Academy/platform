@@ -171,6 +171,7 @@
   color: #1A1D33;
   line-height: 1.75;
   margin: 0;
+  white-space: pre-line;
 }
 
 /* Footer */

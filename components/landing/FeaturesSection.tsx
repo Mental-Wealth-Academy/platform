@@ -11,7 +11,7 @@ const featureCards = [
     badge: 'Daily',
     description:
       'Fifteen minutes of writing. No prompts, no pressure. Just you and the page. Private by default. The habit that changes everything.',
-    details: ['Write your entry', 'Tag your mood', "Get Blue's feedback"],
+    details: ['Write your entry', 'Tag your mood', 'Get helpful feedback'],
     footerLabel: 'Private by default',
     footerValue: '15 minutes'
   },
@@ -27,13 +27,13 @@ const featureCards = [
   },
   {
     number: '03',
-    title: 'AI Companions',
+    title: 'AI Workflows',
     badge: 'Always On',
     description:
-      'Blue researches for you, builds your credit, and manages governance proposals. AI tools that pay for themselves through on-chain actions.',
+      'Research, credit building, and governance support in one streamlined set of tools.',
     details: ['Ask hard questions', 'Get real guidance', 'Cash out progress'],
-    footerLabel: 'Companion status',
-    footerValue: 'Online'
+    footerLabel: 'Helpful tools',
+    footerValue: 'Always on'
   }
 ];
 
@@ -86,7 +86,7 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.companionFrame}>
               <Image
                 src="/uploads/vesper-landing-avatar.png"
-                alt="AI companion portrait"
+                alt="Workflow portrait"
                 fill
                 sizes="(max-width: 768px) 96px, 132px"
                 className={styles.companionImage}
@@ -98,7 +98,7 @@ export const FeaturesSection: React.FC = () => {
             <div className={styles.companionFrame}>
               <Image
                 src="/uploads/blue-landing-avatar.png"
-                alt="AI companion portrait"
+                alt="Workflow portrait"
                 fill
                 sizes="(max-width: 768px) 96px, 132px"
                 className={styles.companionImage}
@@ -134,29 +134,15 @@ export const FeaturesSection: React.FC = () => {
 
           <div className={styles.stageColumn}>
             <div className={styles.header}>
-              <p className={styles.eyebrow}>Your Course</p>
-              <h2 className={styles.title}>A Wellness Game That&apos;s Actually Fun.</h2>
+              <h2 className={styles.title}>&ldquo;Intellectually Refreshing&rdquo;</h2>
               <p className={styles.description}>
-                Hang with your AI companions, stack shards, and turn your daily wellness
-                routine into something playful, motivating, and worth showing up for.
+                It really helped me get out of a creative slump and make real life changes.
               </p>
               <a
-                href="https://github.com/Mental-Wealth-Academy/platform"
-                target="_blank"
-                rel="noreferrer"
+                href="/home"
                 className={styles.ctaButton}
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className={styles.ctaIcon}
-                >
-                  <path
-                    fill="currentColor"
-                    d="M12 2C6.477 2 2 6.589 2 12.25c0 4.529 2.865 8.372 6.839 9.728.5.096.682-.223.682-.496 0-.245-.009-.894-.014-1.755-2.782.617-3.369-1.375-3.369-1.375-.455-1.183-1.11-1.498-1.11-1.498-.908-.637.069-.624.069-.624 1.004.072 1.532 1.055 1.532 1.055.892 1.566 2.341 1.114 2.91.852.091-.665.349-1.114.635-1.37-2.221-.26-4.555-1.14-4.555-5.074 0-1.121.39-2.038 1.029-2.756-.103-.262-.446-1.316.098-2.744 0 0 .84-.277 2.75 1.052A9.303 9.303 0 0 1 12 6.851a9.27 9.27 0 0 1 2.504.35c1.909-1.329 2.748-1.052 2.748-1.052.546 1.428.202 2.482.099 2.744.641.718 1.028 1.635 1.028 2.756 0 3.944-2.337 4.811-4.565 5.066.359.319.678.948.678 1.91 0 1.379-.012 2.492-.012 2.831 0 .275.18.596.688.495C19.138 20.619 22 16.777 22 12.25 22 6.589 17.523 2 12 2Z"
-                  />
-                </svg>
-                Check Github
+                Start Now
               </a>
             </div>
 
@@ -174,7 +160,6 @@ export const FeaturesSection: React.FC = () => {
 
                     <div className={styles.cardHeader}>
                       <div>
-                        <p className={styles.cardEyebrow}>Academy mode</p>
                         <h3 className={styles.cardTitle}>{card.title}</h3>
                       </div>
                       <span className={styles.badge}>{card.badge}</span>

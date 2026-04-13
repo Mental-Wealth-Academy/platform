@@ -8,7 +8,7 @@ interface BookReaderModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  author: string;
+  author?: string;
   markdownPath: string;
   slug: string;
 }
@@ -247,7 +247,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
         <div className={styles.header}>
           <div className={styles.headerInfo}>
             <h2 className={styles.headerTitle}>{title}</h2>
-            <p className={styles.headerAuthor}>{author}</p>
+            {author ? <p className={styles.headerAuthor}>{author}</p> : null}
           </div>
           <button className={styles.closeButton} onClick={onClose} aria-label="Close">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">

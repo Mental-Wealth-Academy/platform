@@ -47,6 +47,43 @@
   animation: fadeIn 0.5s ease forwards;
 }
 
+.skeletonBlock {
+  position: relative;
+  overflow: hidden;
+  background: rgba(26, 29, 51, 0.08);
+  color: transparent;
+  pointer-events: none;
+}
+
+.skeletonBlock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+.skeletonText,
+.skeletonTextShort,
+.skeletonTextWide {
+  display: block;
+  border-radius: 999px;
+  min-height: 0.9em;
+}
+
+.skeletonText {
+  width: 72px;
+}
+
+.skeletonTextShort {
+  width: 48px;
+}
+
+.skeletonTextWide {
+  width: 150px;
+}
+
 .heroLeft {
   display: flex;
   flex-direction: column;
@@ -284,6 +321,12 @@
   border-color: rgba(34, 197, 94, 0.3);
 }
 
+.weekDotLoading {
+  background: rgba(26, 29, 51, 0.08);
+  border-color: transparent;
+  cursor: default;
+}
+
 /* ============================================ */
 /* SWIPEABLE WEEK CONTENT                       */
 /* ============================================ */
@@ -328,6 +371,19 @@
 .readingCard:hover {
   border-color: rgba(81, 104, 255, 0.18);
   box-shadow: 0 4px 16px rgba(81, 104, 255, 0.06);
+}
+
+.readingCardSkeleton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.03);
 }
 
 .readingMedia {
@@ -384,6 +440,36 @@
 .readingArrow {
   color: rgba(26, 29, 51, 0.25);
   flex-shrink: 0;
+}
+
+.weekTasksSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 16px 20px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(26, 29, 51, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.03);
+}
+
+.weekTaskBar {
+  width: 110px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.weekTaskPanel {
+  width: 100%;
+  height: 72px;
+  border-radius: 14px;
+}
+
+.weekTaskButton {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
 }
 
 /* ============================================ */
@@ -555,6 +641,12 @@
   }
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* ============================================ */
 /* RESPONSIVE                                   */
 /* ============================================ */
@@ -683,6 +775,14 @@
   border-color: rgba(255, 255, 255, 0.06);
 }
 
+:global([data-theme="dark"]) .skeletonBlock {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
 :global([data-theme="dark"]) .topLeaderboardTitle {
   color: rgba(227, 225, 238, 0.35);
 }
@@ -710,10 +810,23 @@
   border-color: rgba(255, 255, 255, 0.06);
 }
 
+:global([data-theme="dark"]) .weekDotActive {
+  background: #6b80ff;
+  border-color: rgba(107, 128, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.18);
+}
+
 :global([data-theme="dark"]) .readingCard {
   background: rgba(30, 32, 48, 0.9);
   border-color: rgba(107, 128, 255, 0.12);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .readingCardSkeleton,
+:global([data-theme="dark"]) .weekTasksSkeleton {
+  background: rgba(30, 32, 48, 0.9);
+  border-color: rgba(107, 128, 255, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 :global([data-theme="dark"]) .readingCard:hover {

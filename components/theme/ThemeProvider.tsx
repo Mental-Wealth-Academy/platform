@@ -12,7 +12,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
 });
@@ -23,14 +23,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
 
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
 
   useEffect(() => {
     const stored = localStorage.getItem('mwa-theme') as Theme | null;
     if (stored === 'dark' || stored === 'light') {
       setThemeState(stored);
     }
-    // Default is dark — no need to check prefers-color-scheme
+    // Default to light when no stored preference exists.
   }, []);
 
   useEffect(() => {

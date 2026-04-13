@@ -499,7 +499,11 @@ export default function WeekTasksView({
   }
 
   return (
-    <div className={styles.container} style={{ '--week-color': weekColor } as React.CSSProperties}>
+    <div
+      className={styles.container}
+      data-week-number={weekNumber}
+      style={{ '--week-color': weekColor } as React.CSSProperties}
+    >
 {journalSections.map(section => {
         const isOpen = expandedSection === section.id;
         const isDone = completedSections.has(section.id);
@@ -514,12 +518,7 @@ export default function WeekTasksView({
             >
               <div className={`${styles.taskArtwork} ${styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles]}`} aria-hidden="true">
                 <div className={styles.taskArtworkGlow} />
-                <div className={styles.taskArtworkMesh} />
-                <div className={styles.taskArtworkOrb} />
                 <div className={styles.taskArtworkLine} />
-                <div className={styles.taskArtworkBadge} aria-label={getTaskArtLabel(section)}>
-                  {section.icon}
-                </div>
               </div>
               <div className={styles.taskInfo}>
                 <span className={styles.taskTitle}>{section.title}</span>

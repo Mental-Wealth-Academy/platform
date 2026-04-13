@@ -59,7 +59,7 @@
 /* ── Header ── */
 .header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 42px;
 }
 
 .eyebrow {
@@ -73,13 +73,14 @@
 }
 
 .title {
+  margin: 0 auto 16px;
+  max-width: 860px;
   font-family: var(--font-secondary);
-  font-size: 2.618rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 4vw, 3.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   color: var(--color-text-dark);
-  margin: 0 0 16px;
+  text-wrap: balance;
 }
 
 .title2 {
@@ -94,12 +95,13 @@
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  margin: 0 auto;
+  max-width: 720px;
+  font-family: var(--font-primary);
+  font-size: 17px;
+  line-height: 1.65;
   color: var(--color-text-dark);
   opacity: 0.6;
-  margin: 0 auto;
-  max-width: 640px;
-  line-height: 1.6;
 }
 
 /* ── Azura God Card ── */
@@ -145,7 +147,7 @@
 .azuraContentTop {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   margin-bottom: 16px;
 }
@@ -188,7 +190,7 @@
 
 .azuraName {
   font-family: var(--font-secondary);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #000000;
   margin: 0 0 8px;

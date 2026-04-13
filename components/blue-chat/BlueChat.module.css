@@ -23,11 +23,12 @@
   height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: linear-gradient(#000000, #000000) padding-box,
-              linear-gradient(135deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088) border-box;
-  border: 1px solid transparent;
-  border-radius: 16px;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55);
+  background: #ffffff;
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 6px rgba(81, 104, 255, 0.04),
+    0 24px 60px rgba(11, 14, 40, 0.12);
   z-index: 9999;
   overflow: hidden;
   animation: chatSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -62,19 +63,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(11, 14, 40, 0.06);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(11, 14, 40, 0.55);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .closeButton:hover {
-  background: rgba(0, 0, 0, 0.92);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(11, 14, 40, 0.1);
+  color: rgba(11, 14, 40, 0.85);
+  border-color: rgba(11, 14, 40, 0.18);
   transform: scale(1.1);
 }
 
@@ -85,19 +85,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(81, 104, 255, 0.07);
+  border: 1.5px solid rgba(81, 104, 255, 0.18);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(81, 104, 255, 0.6);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .expandButton:hover {
-  background: rgba(81, 104, 255, 0.25);
-  color: #ffffff;
-  border-color: rgba(81, 104, 255, 0.5);
+  background: rgba(81, 104, 255, 0.13);
+  color: #5168FF;
+  border-color: rgba(81, 104, 255, 0.35);
   transform: scale(1.1);
 }
 
@@ -121,12 +120,12 @@
 }
 
 .messagesArea::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(81, 104, 255, 0.18);
   border-radius: 4px;
 }
 
 .messagesArea::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(81, 104, 255, 0.3);
 }
 
 /* Message bubbles */
@@ -196,7 +195,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 10px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(11, 14, 40, 0.32);
   padding: 0 6px;
   line-height: 1;
 }
@@ -214,8 +213,8 @@
   min-width: 0;
   padding: 7px 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(81, 104, 255, 0.07);
+  border: 1px solid rgba(81, 104, 255, 0.16);
 }
 
 .messageAttachmentIcon {
@@ -224,7 +223,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.74);
+  color: rgba(81, 104, 255, 0.7);
 }
 
 .messageAttachmentName {
@@ -235,7 +234,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 14, 40, 0.75);
 }
 
 .reclaimBubble {
@@ -245,16 +244,16 @@
   margin-top: 6px;
   padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(192, 132, 252, 0.24);
+  border: 1px solid rgba(192, 132, 252, 0.3);
   background: rgba(192, 132, 252, 0.08);
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(140, 80, 220, 0.9);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .reclaimBubble:hover:not(:disabled) {
-  background: rgba(192, 132, 252, 0.14);
-  border-color: rgba(192, 132, 252, 0.36);
+  background: rgba(192, 132, 252, 0.15);
+  border-color: rgba(192, 132, 252, 0.45);
 }
 
 .reclaimBubble:disabled {
@@ -292,6 +291,7 @@
   object-fit: contain;
   border-radius: 999px;
   overflow: hidden;
+  mix-blend-mode: multiply;
 }
 
 /* Shard Confirmation */
@@ -311,7 +311,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(11, 14, 40, 0.8);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -320,7 +320,7 @@
 .shardConfirmBalance {
   font-size: 10px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 40, 0.4);
 }
 
 .shardConfirmButtons {
@@ -350,20 +350,20 @@
 .shardConfirmNo {
   flex: 1;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(11, 14, 40, 0.04);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 8px;
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 40, 0.45);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .shardConfirmNo:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(11, 14, 40, 0.08);
+  color: rgba(11, 14, 40, 0.7);
 }
 
 /* Shard Counter — inline with quick actions */
@@ -375,9 +375,9 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 700;
-  color: rgba(192, 132, 252, 0.7);
-  background: rgba(192, 132, 252, 0.06);
-  border: 1.5px solid rgba(192, 132, 252, 0.15);
+  color: rgba(140, 80, 220, 0.8);
+  background: rgba(192, 132, 252, 0.08);
+  border: 1.5px solid rgba(192, 132, 252, 0.22);
   border-radius: 20px;
   flex-shrink: 0;
 }
@@ -389,26 +389,27 @@
   gap: 6px;
   padding: 8px 16px 8px;
   flex-shrink: 0;
+  border-top: 1px solid rgba(11, 14, 40, 0.06);
 }
 
 .quickAction {
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(11, 14, 40, 0.04);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 20px;
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 14, 40, 0.5);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .quickAction:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(81, 104, 255, 0.07);
+  color: #5168FF;
+  border-color: rgba(81, 104, 255, 0.2);
 }
 
 .quickAction:disabled {
@@ -459,10 +460,10 @@
 .targetButton {
   flex: 1;
   padding: 5px 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.45);
+  background: rgba(11, 14, 40, 0.03);
+  color: rgba(11, 14, 40, 0.4);
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
@@ -471,8 +472,8 @@
 }
 
 .targetButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(11, 14, 40, 0.07);
+  color: rgba(11, 14, 40, 0.65);
 }
 
 .targetActive {
@@ -497,11 +498,11 @@
   padding: 8px 12px;
   border: 2px solid rgba(116, 196, 101, 0.3);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(116, 196, 101, 0.04);
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: rgba(11, 14, 40, 0.85);
   outline: none;
   transition: all 0.15s ease;
   min-width: 0;
@@ -515,7 +516,7 @@
 }
 
 .liquidityInput::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(11, 14, 40, 0.3);
   font-weight: 500;
 }
 
@@ -562,10 +563,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(11, 14, 40, 0.04);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 6px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(11, 14, 40, 0.4);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
@@ -590,7 +591,7 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 12px 16px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(11, 14, 40, 0.07);
 }
 
 .attachmentInput {
@@ -622,7 +623,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(81, 104, 255, 0.7);
 }
 
 .pendingAttachmentName {
@@ -633,7 +634,7 @@
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
   font-weight: 600;
-  color: #ffffff;
+  color: rgba(11, 14, 40, 0.75);
 }
 
 .pendingAttachmentRemove {
@@ -645,41 +646,41 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(11, 14, 40, 0.06);
+  color: rgba(11, 14, 40, 0.5);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .pendingAttachmentRemove:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: rgba(255, 59, 48, 0.1);
+  color: #FF3B30;
 }
 
 .input {
   flex: 1;
   min-width: 0;
   padding: 10px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(11, 14, 40, 0.12);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 14, 40, 0.03);
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
+  color: rgba(11, 14, 40, 0.85);
   transition: all 0.15s ease;
   outline: none;
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(11, 14, 40, 0.3);
 }
 
 .input:focus {
   border-color: var(--color-primary, #5168FF);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.15);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.1);
 }
 
 .input:disabled {
@@ -697,7 +698,7 @@
   background: rgba(81, 104, 255, 0.12);
   border: 2px solid rgba(81, 104, 255, 0.24);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(81, 104, 255, 0.75);
   cursor: pointer;
   transition: all 0.15s ease;
   flex-shrink: 0;
@@ -706,7 +707,7 @@
 .attachButton:hover {
   background: rgba(81, 104, 255, 0.2);
   border-color: rgba(81, 104, 255, 0.38);
-  color: #ffffff;
+  color: #5168FF;
 }
 
 .attachButton:disabled {
@@ -722,19 +723,19 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  background: rgba(255, 255, 255, 0.06);
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: rgba(11, 14, 40, 0.04);
+  border: 1.5px solid rgba(11, 14, 40, 0.1);
   border-radius: 50%;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(11, 14, 40, 0.38);
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
 .voiceButton:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(11, 14, 40, 0.07);
+  color: rgba(11, 14, 40, 0.6);
+  border-color: rgba(11, 14, 40, 0.18);
 }
 
 .voiceActive {
@@ -803,14 +804,19 @@
     left: 0;
     width: 100%;
     height: 100%;
-    max-height: 100vh;
+    max-height: 100dvh;
     border-radius: 0;
     border: none;
     box-shadow: none;
+    border-top: 1px solid rgba(81, 104, 255, 0.1);
   }
 
   .messageBubble {
     max-width: 85%;
+  }
+
+  .inputArea {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -820,19 +826,19 @@
   }
 
   .inputArea {
-    padding: 10px 8px 14px;
+    padding: 10px 8px calc(14px + env(safe-area-inset-bottom, 0px));
     gap: 6px;
   }
 
   .input {
     min-width: 0;
     padding: 10px 12px;
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .voiceButton {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 
   .voiceButton svg {
@@ -841,8 +847,8 @@
   }
 
   .sendButton {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 
   .sendButton svg {
@@ -852,6 +858,16 @@
 
   .messageBubble {
     max-width: 90%;
+  }
+
+  .quickActions {
+    padding: 6px 12px 6px;
+    gap: 5px;
+  }
+
+  .quickAction {
+    padding: 5px 10px;
+    font-size: 10px;
   }
 }
 

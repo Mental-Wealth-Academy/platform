@@ -27,6 +27,11 @@ const WEEK_INTROS: Record<number, { title: string; body: string }> = {
     title: 'Recovering a Sense of Abundance',
     body: 'This week you confront a deep creative block\u2014your relationship with money. You will examine the inherited stories you carry about scarcity, worth, and what you are allowed to receive. The exercises will surface the ways your attitudes toward abundance and luxury quietly starve your creative life. You will begin counting\u2014a practice of radical clarity around how you spend, what you value, and where the two diverge. This week may feel volatile.',
   },
+  7: {
+    title: 'CHECK-IN',
+    body:
+      'How many days this week did you do your morning pages? Have you\nallowed yourself to daydream a few creative risks? Are you coddling\nyour artist child with childhood loves?\n\nDid you do your artist date this week? Did you use it to take any risks?\nWhat did you do? How did it feel?\n\nDid you experience any synchronicity this week? What was it?\n\nWere there any other issues this week that you consider significant for\nyour recovery? Describe them.',
+  },
 };
 
 const STORAGE_KEY = 'dailyReadLastSeenWeek';

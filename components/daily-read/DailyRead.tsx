@@ -6,7 +6,7 @@ import styles from './DailyRead.module.css';
 
 interface Reading {
   title: string;
-  author: string;
+  author?: string;
   description: string;
   category: string;
   imageUrl: string;
@@ -86,7 +86,7 @@ export default function WeeklyRead({ readings, onReadClick, activeWeek }: Weekly
             <div className={styles.readingInfo}>
               <p className={styles.readingCategory}>{currentReading.category}</p>
               <h4 className={styles.readingTitle}>{currentReading.title}</h4>
-              <p className={styles.readingAuthor}>{currentReading.author}</p>
+              {currentReading.author ? <p className={styles.readingAuthor}>{currentReading.author}</p> : null}
               <p className={styles.readingDesc}>{currentReading.description}</p>
               {isReadingLocked ? (
                 <span className={styles.lockedBadge}>

@@ -1056,6 +1056,20 @@
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
 
+:global([data-theme="dark"]) .card {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 0 0 3px rgba(81, 104, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .cardCompact:hover {
+  box-shadow:
+    0 0 0 1px rgba(107, 128, 255, 0.3),
+    0 10px 40px rgba(0, 0, 0, 0.75),
+    0 0 20px rgba(81, 104, 255, 0.12);
+}
+
 :global([data-theme="dark"]) .modal {
   background:
     radial-gradient(circle at top right, rgba(69, 123, 255, 0.16), transparent 26%),

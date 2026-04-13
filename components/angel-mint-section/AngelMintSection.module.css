@@ -146,12 +146,13 @@
 
 .empoweringText {
   font-family: var(--font-primary);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-dark);
   text-transform: none;
   letter-spacing: 0.05em;
   margin: 0;
+  padding-inline: var(--space-md);
   text-align: center;
 }
 
@@ -219,7 +220,7 @@
   }
 
   .empoweringText {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
   }
 }
 

@@ -287,3 +287,76 @@
     display: none;
   }
 }
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .card {
+  background: #1E1F2C;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+:global([data-theme="dark"]) .card:hover {
+  box-shadow:
+    0 0 0 1px rgba(107, 128, 255, 0.28),
+    0 10px 40px rgba(0, 0, 0, 0.75),
+    0 0 20px rgba(81, 104, 255, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+:global([data-theme="dark"]) .cardButton {
+  background: none;
+}
+
+:global([data-theme="dark"]) .cardButton:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .icon {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .label {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .sublabel {
+  color: rgba(227, 225, 238, 0.45);
+}
+
+:global([data-theme="dark"]) .expandedContent {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .readingTitle {
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global([data-theme="dark"]) .readingAuthor {
+  color: rgba(227, 225, 238, 0.45);
+}
+
+:global([data-theme="dark"]) .readingDesc {
+  color: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme="dark"]) .chevron {
+  color: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme="dark"]) .counter {
+  color: rgba(227, 225, 238, 0.4);
+}
+
+:global([data-theme="dark"]) .readingNav {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .navLabel {
+  color: rgba(227, 225, 238, 0.7);
+}

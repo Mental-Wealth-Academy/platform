@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import ProposalStages from '@/components/proposal-stages/ProposalStages';
 import { useSound } from '@/hooks/useSound';
@@ -62,17 +62,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onChainData,
 }) => {
   const { play } = useSound();
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const carouselSlideCount = 3;
-
-  const nextSlide = useCallback(() => {
-    setCarouselIndex(prev => (prev + 1) % carouselSlideCount);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
 
   const getStage1Variant = () => {
     if (status === 'pending_review') {
@@ -234,57 +223,11 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         );
       })()}
 
-      {/* Auto-carousel: Blue's Review, Shards tooltip, Social tooltip */}
-      <div className={styles.carousel}>
-        <div
-          className={styles.carouselTrack}
-          style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
-        >
-          {/* Slide 1: Blue's Review */}
-          <div className={styles.carouselSlide}>
-            <div className={styles.carouselCard}>
-              <p className={styles.carouselCardLabel}>Blue&apos;s Review</p>
-              <p className={styles.carouselCardText}>
-                {review?.reasoning || 'Blue scores every proposal across six dimensions before it goes to vote.'}
-              </p>
-              <div className={styles.carouselCardBar} />
-            </div>
-          </div>
-
-          {/* Slide 2: Shards tooltip */}
-          <div className={styles.carouselSlide}>
-            <div className={styles.carouselCard}>
-              <p className={styles.carouselCardLabel}>Academy Shards</p>
-              <p className={styles.carouselCardText}>
-                Tip authors with shards. You get 100 free $ACADEMY each week to support work you love.
-              </p>
-              <div className={styles.carouselCardBar} />
-            </div>
-          </div>
-
-          {/* Slide 3: Social Network tooltip */}
-          <div className={styles.carouselSlide}>
-            <div className={styles.carouselCard}>
-              <p className={styles.carouselCardLabel}>Social Network</p>
-              <p className={styles.carouselCardText}>
-                Governance, education, and creative expression -- all on-chain, all community-owned.
-              </p>
-              <div className={styles.carouselCardBar} />
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.carouselDots}>
-          {Array.from({ length: carouselSlideCount }).map((_, i) => (
-            <button
-              key={i}
-              className={`${styles.carouselDot} ${i === carouselIndex ? styles.carouselDotActive : ''}`}
-              onClick={() => setCarouselIndex(i)}
-              type="button"
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
+      <div className={styles.reviewSection}>
+        <p className={styles.reviewLabel}>Blue&apos;s Review</p>
+        <p className={styles.reviewText}>
+          {review?.reasoning || 'Blue scores every proposal across six dimensions before it goes to vote.'}
+        </p>
       </div>
 
       <div className={styles.footer}>

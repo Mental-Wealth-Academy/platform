@@ -166,9 +166,10 @@
 
 .heroTagline {
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(26, 29, 51, 0.7);
   margin: 0;
+  padding: 0 var(--space-md);
   letter-spacing: 0.02em;
 }
 

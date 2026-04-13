@@ -8,7 +8,7 @@ import {
   Gift,
   House,
   IconProps,
-  ImagesSquare,
+  UserCircle,
   UsersThree,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { id: 'quests', label: 'Quests', href: '/rewards', icon: Gift },
   { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
   { id: 'home', label: 'Home', href: '/home', icon: House },
-  { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
+  { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
 ] as const;
 
 const NavIconMark: React.FC<{

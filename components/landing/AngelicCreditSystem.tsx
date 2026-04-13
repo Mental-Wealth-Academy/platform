@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './AngelicCreditSystem.module.css';
 
@@ -22,7 +21,6 @@ const FLOATING_ANGELS = [
 
 
 export default function AngelicCreditSystem() {
-  const [showVideo, setShowVideo] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -36,18 +34,6 @@ export default function AngelicCreditSystem() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
-  const openVideo = useCallback(() => setShowVideo(true), []);
-  const closeVideo = useCallback(() => setShowVideo(false), []);
-
-  useEffect(() => {
-    if (!showVideo) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeVideo();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [showVideo, closeVideo]);
 
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
@@ -77,10 +63,9 @@ export default function AngelicCreditSystem() {
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Our Core Mission</p>
-          <h2 className={styles.title}>Benefits Anyone Can Afford</h2>
+          <h2 className={styles.title}>Edutainment</h2>
           <p className={styles.subtitle}>
-            our core mission is keeping powerful knowledge, free, available, and low-cost to people everywhere around the world.
+            Simple tools and lessons that make growth feel fun.
           </p>
         </div>
 
@@ -99,86 +84,32 @@ export default function AngelicCreditSystem() {
             <div className={styles.azuraContentTop}>
               <div>
                 <p className={styles.azuraEyebrow}>How We Help</p>
-                <h3 className={styles.azuraName}>Companions</h3>
-              </div>
-              <div
-                className={styles.videoCard}
-                onClick={openVideo}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && openVideo()}
-              >
-                <div className={styles.videoThumb}>
-                  <Image
-                    src="https://i.imgur.com/awTTvxR.jpeg"
-                    alt="Blue AI"
-                    width={64}
-                    height={48}
-                    className={styles.thumbImg}
-                    unoptimized
-                  />
-                </div>
-                <div className={styles.videoText}>
-                  <span className={styles.videoTitle}><strong>This is BLUE</strong></span>
-                  <span className={styles.videoSub}>Watch the video</span>
-                </div>
+                <h3 className={styles.azuraName}>Support Tools</h3>
               </div>
             </div>
             <p className={styles.azuraSub}>
-              Companions are AIs with memory, wallets, and context of the platform users. They play a role in the story and events that take place at Mental Wealth Academy.
+              Smart tools that help you stay organized, build momentum, and make better progress.
             </p>
             <div className={styles.azuraStats}>
               <div className={styles.azuraStat}>
                 <span className={styles.azuraStatValue}>Wellness</span>
-                <span className={styles.azuraStatLabel}>AI-powered</span>
+                <span className={styles.azuraStatLabel}>Support</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
                 <span className={styles.azuraStatValue}>Fitness</span>
-                <span className={styles.azuraStatLabel}>Help Funding</span>
+                <span className={styles.azuraStatLabel}>Funding</span>
               </div>
               <div className={styles.azuraStatDivider} />
               <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Life Changes</span>
-                <span className={styles.azuraStatLabel}>Science &amp; Tools</span>
+                <span className={styles.azuraStatValue}>Change</span>
+                <span className={styles.azuraStatLabel}>Tools</span>
               </div>
             </div>
           </div>
         </div>
 
       </div>
-
-      {/* Video Modal — portaled to body to escape stacking context */}
-      {showVideo && createPortal(
-        <div className={styles.videoOverlay} onClick={closeVideo}>
-          <div className={styles.videoModal} onClick={(e) => e.stopPropagation()}>
-            <span className={`${styles.cornerAccent} ${styles.cornerTL}`} />
-            <span className={`${styles.cornerAccent} ${styles.cornerTR}`} />
-            <span className={`${styles.cornerAccent} ${styles.cornerBL}`} />
-            <span className={`${styles.cornerAccent} ${styles.cornerBR}`} />
-            <div className={styles.modalHeader}>
-              <div className={styles.modalHeaderLeft}>
-                <span className={styles.statusDot} />
-                <span className={styles.modalLabel}>BLUE AI</span>
-              </div>
-              <button className={styles.closeButton} onClick={closeVideo} aria-label="Close video">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
-            </div>
-            <div className={styles.videoEmbed}>
-              <iframe
-                src="/blue-intro-video.html"
-                title="This is BLUE AI"
-                allowFullScreen
-                style={{ border: 'none' }}
-              />
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </section>
   );
 }

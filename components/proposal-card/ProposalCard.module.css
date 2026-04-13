@@ -3,18 +3,18 @@
 .card {
   width: 100%;
   background: #ffffff;
-  border: 3px solid #1A1D33;
+  border: 1.5px solid rgba(81, 104, 255, 0.14);
   border-radius: var(--radius-xl);
-  box-shadow: 4px 4px 0 #1A1D33;
+  box-shadow: 0 2px 12px rgba(81, 104, 255, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
 }
 
 .card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(81, 104, 255, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .header {

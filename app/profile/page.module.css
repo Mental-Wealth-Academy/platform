@@ -1,0 +1,724 @@
+.pageLayout {
+  position: relative;
+  margin-left: var(--sidebar-width, 265px);
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 100vh;
+  background: transparent;
+}
+
+.bgViz {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 112px;
+}
+
+.shell {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.topMeta {
+  padding-top: 4px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar,
+.avatarFallback {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  border: 2px solid rgba(26, 29, 51, 0.12);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(210, 122, 59, 0.14);
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 700;
+  color: #d87041;
+}
+
+.identityCopy {
+  min-width: 0;
+}
+
+.skeletonBlock {
+  position: relative;
+  overflow: hidden;
+  background: rgba(26, 29, 51, 0.08);
+  color: transparent;
+  pointer-events: none;
+}
+
+.skeletonBlock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+.skeletonTitle,
+.skeletonStreakNumber,
+.skeletonStreakUnit,
+.skeletonTipLine,
+.skeletonTipLineShort,
+.skeletonMonthTitle,
+.skeletonStatValue,
+.skeletonStatLabel {
+  display: block;
+  border-radius: 999px;
+}
+
+.skeletonTitle {
+  width: 160px;
+  height: 30px;
+  margin-top: 8px;
+}
+
+.skeletonStreakNumber {
+  width: 108px;
+  height: 58px;
+}
+
+.skeletonStreakUnit {
+  width: 110px;
+  height: 24px;
+}
+
+.tipSkeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.skeletonTipLine {
+  width: 100%;
+  height: 16px;
+}
+
+.skeletonTipLineShort {
+  width: 72%;
+  height: 16px;
+}
+
+.skeletonMonthTitle {
+  width: 170px;
+  height: 32px;
+  margin-top: 8px;
+}
+
+.skeletonStatValue {
+  width: 46px;
+  height: 28px;
+}
+
+.skeletonStatLabel {
+  width: 90px;
+  height: 12px;
+}
+
+.eyebrow,
+.sectionLabel {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(44, 40, 57, 0.46);
+}
+
+.title {
+  margin: 8px 0 0;
+  font-family: var(--font-primary);
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #373645;
+}
+
+.streakPanel,
+.tipCard,
+.calendarCard {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(220, 211, 195, 0.88);
+  border-radius: 28px;
+  box-shadow:
+    0 10px 32px rgba(193, 154, 83, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.streakPanel {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 14px;
+  align-items: center;
+  padding: 22px 22px 20px;
+}
+
+.streakCopy {
+  min-width: 0;
+}
+
+.streakValueRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 10px;
+}
+
+.streakNumber {
+  font-family: var(--font-primary);
+  font-size: 68px;
+  line-height: 0.9;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: #df7547;
+}
+
+.streakUnit {
+  font-family: var(--font-primary);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+  color: #df7547;
+}
+
+.stickerShell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sticker {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 12px 22px rgba(232, 133, 44, 0.18));
+}
+
+.tipCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 18px 18px 16px;
+}
+
+.tipIconWrap {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 235, 196, 0.8), rgba(255, 246, 224, 0.9));
+}
+
+.tipIcon {
+  width: 24px;
+  height: auto;
+}
+
+.tipText {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: #66616e;
+}
+
+.calendarCard {
+  padding: 20px 16px 18px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.calendarTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-primary);
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 800;
+  color: #44424f;
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.monthButton {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(214, 205, 189, 0.9);
+  border-radius: 14px;
+  background: #fffdf9;
+  color: #7d7989;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.monthButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(230, 136, 72, 0.45);
+  background: #ffffff;
+}
+
+.calendarMetaRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.calendarStat,
+.calendarStatMuted {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(222, 214, 201, 0.92);
+}
+
+.calendarStat {
+  background: linear-gradient(180deg, #fff4e7 0%, #fffaf3 100%);
+}
+
+.calendarStatMuted {
+  background: #fffdf9;
+}
+
+.calendarStatValue {
+  font-family: var(--font-primary);
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 800;
+  color: #44424f;
+}
+
+.calendarStatLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgba(68, 66, 79, 0.56);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px 6px;
+  margin-top: 18px;
+  padding: 16px 8px 10px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff9f1 100%);
+  border: 1px solid rgba(227, 219, 206, 0.9);
+}
+
+.weekday {
+  text-align: center;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(107, 102, 117, 0.62);
+  text-transform: uppercase;
+}
+
+.dayCell {
+  height: 40px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dayInMonth {
+  color: #4c4956;
+}
+
+.dayOutsideMonth {
+  color: rgba(76, 73, 86, 0.28);
+}
+
+.dayCompleted {
+  background: linear-gradient(180deg, #f2b33b 0%, #ef8f2f 48%, #e36643 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 242, 211, 0.55),
+    0 8px 18px rgba(225, 121, 47, 0.18);
+  color: #ffffff;
+}
+
+.dayToday {
+  outline: 2px solid rgba(233, 133, 69, 0.34);
+  outline-offset: 2px;
+}
+
+.dayNumber {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding-left: 2px;
+}
+
+.legendSwatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f2b33b 0%, #ef8f2f 48%, #e36643 100%);
+}
+
+.legendText {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: rgba(68, 66, 79, 0.68);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 900px) {
+  .pageLayout {
+    margin-left: 0;
+  }
+
+  .bgViz {
+    left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 16px 14px 96px;
+  }
+
+  .shell {
+    gap: 16px;
+  }
+
+  .streakPanel {
+    grid-template-columns: 1fr 92px;
+    padding: 18px 18px 18px;
+  }
+
+  .streakNumber {
+    font-size: 58px;
+  }
+
+  .streakUnit {
+    font-size: 22px;
+  }
+
+  .calendarCard {
+    padding: 18px 14px 16px;
+  }
+
+  .calendarGrid {
+    gap: 8px 4px;
+    padding: 14px 6px 10px;
+  }
+
+  .dayCell {
+    height: 36px;
+    border-radius: 14px;
+  }
+}
+
+@media (min-width: 769px) {
+  .page {
+    padding: 24px 24px 64px;
+  }
+
+  .shell {
+    max-width: 430px;
+  }
+
+  .streakPanel {
+    grid-template-columns: 1fr 150px;
+    padding: 26px 28px 24px;
+  }
+
+  .streakValueRow {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .streakNumber {
+    font-size: 78px;
+  }
+
+  .streakUnit {
+    font-size: 24px;
+  }
+
+  .calendarCard {
+    padding: 24px 22px 20px;
+  }
+
+  .calendarGrid {
+    gap: 12px 10px;
+    padding: 18px 12px 12px;
+  }
+
+  .dayCell {
+    height: 48px;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE OVERRIDES                          */
+/* ============================================ */
+
+:global([data-theme="dark"]) .avatar,
+:global([data-theme="dark"]) .avatarFallback {
+  border-color: rgba(150, 170, 255, 0.16);
+  background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 28px rgba(3, 7, 22, 0.26);
+}
+
+:global([data-theme="dark"]) .skeletonBlock {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+:global([data-theme="dark"]) .eyebrow,
+:global([data-theme="dark"]) .sectionLabel {
+  color: rgba(227, 225, 238, 0.38);
+}
+
+:global([data-theme="dark"]) .title,
+:global([data-theme="dark"]) .calendarTitle,
+:global([data-theme="dark"]) .calendarStatValue {
+  color: #eef3ff;
+}
+
+:global([data-theme="dark"]) .streakPanel,
+:global([data-theme="dark"]) .tipCard,
+:global([data-theme="dark"]) .calendarCard {
+  border-color: rgba(150, 170, 255, 0.16);
+  background: linear-gradient(180deg, rgba(14, 19, 39, 0.92) 0%, rgba(20, 28, 54, 0.96) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 36px rgba(3, 7, 22, 0.28);
+}
+
+:global([data-theme="dark"]) .streakNumber {
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .streakUnit {
+  color: rgba(227, 225, 238, 0.72);
+}
+
+:global([data-theme="dark"]) .tipIconWrap {
+  background: linear-gradient(180deg, rgba(37, 52, 92, 0.92), rgba(23, 33, 63, 0.96));
+  border: 1px solid rgba(150, 170, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .tipText,
+:global([data-theme="dark"]) .legendText,
+:global([data-theme="dark"]) .calendarStatLabel {
+  color: rgba(226, 234, 255, 0.68);
+}
+
+:global([data-theme="dark"]) .monthButton {
+  border-color: rgba(150, 170, 255, 0.16);
+  background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+  color: rgba(226, 234, 255, 0.82);
+}
+
+:global([data-theme="dark"]) .monthButton:hover {
+  border-color: rgba(107, 128, 255, 0.32);
+  background: rgba(36, 47, 86, 0.82);
+}
+
+:global([data-theme="dark"]) .calendarStat,
+:global([data-theme="dark"]) .calendarStatMuted {
+  border-color: rgba(150, 170, 255, 0.16);
+  background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .calendarGrid {
+  border-color: rgba(150, 170, 255, 0.16);
+  background: linear-gradient(180deg, rgba(13, 19, 39, 0.94) 0%, rgba(18, 25, 49, 0.98) 100%);
+}
+
+:global([data-theme="dark"]) .weekday {
+  color: rgba(226, 234, 255, 0.48);
+}
+
+:global([data-theme="dark"]) .dayInMonth {
+  color: rgba(238, 243, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .dayOutsideMonth {
+  color: rgba(226, 234, 255, 0.22);
+}
+
+:global([data-theme="dark"]) .dayToday {
+  outline-color: rgba(107, 128, 255, 0.42);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global([data-theme="system"]) .avatar,
+  :global([data-theme="system"]) .avatarFallback {
+    border-color: rgba(150, 170, 255, 0.16);
+    background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 12px 28px rgba(3, 7, 22, 0.26);
+  }
+
+  :global([data-theme="system"]) .skeletonBlock {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  :global([data-theme="system"]) .skeletonBlock::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  }
+
+  :global([data-theme="system"]) .eyebrow,
+  :global([data-theme="system"]) .sectionLabel {
+    color: rgba(227, 225, 238, 0.38);
+  }
+
+  :global([data-theme="system"]) .title,
+  :global([data-theme="system"]) .calendarTitle,
+  :global([data-theme="system"]) .calendarStatValue {
+    color: #eef3ff;
+  }
+
+  :global([data-theme="system"]) .streakPanel,
+  :global([data-theme="system"]) .tipCard,
+  :global([data-theme="system"]) .calendarCard {
+    border-color: rgba(150, 170, 255, 0.16);
+    background: linear-gradient(180deg, rgba(14, 19, 39, 0.92) 0%, rgba(20, 28, 54, 0.96) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 36px rgba(3, 7, 22, 0.28);
+  }
+
+  :global([data-theme="system"]) .streakNumber {
+    color: #ffffff;
+  }
+
+  :global([data-theme="system"]) .streakUnit {
+    color: rgba(227, 225, 238, 0.72);
+  }
+
+  :global([data-theme="system"]) .tipIconWrap {
+    background: linear-gradient(180deg, rgba(37, 52, 92, 0.92), rgba(23, 33, 63, 0.96));
+    border: 1px solid rgba(150, 170, 255, 0.14);
+  }
+
+  :global([data-theme="system"]) .tipText,
+  :global([data-theme="system"]) .legendText,
+  :global([data-theme="system"]) .calendarStatLabel {
+    color: rgba(226, 234, 255, 0.68);
+  }
+
+  :global([data-theme="system"]) .monthButton {
+    border-color: rgba(150, 170, 255, 0.16);
+    background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+    color: rgba(226, 234, 255, 0.82);
+  }
+
+  :global([data-theme="system"]) .monthButton:hover {
+    border-color: rgba(107, 128, 255, 0.32);
+    background: rgba(36, 47, 86, 0.82);
+  }
+
+  :global([data-theme="system"]) .calendarStat,
+  :global([data-theme="system"]) .calendarStatMuted {
+    border-color: rgba(150, 170, 255, 0.16);
+    background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  :global([data-theme="system"]) .calendarGrid {
+    border-color: rgba(150, 170, 255, 0.16);
+    background: linear-gradient(180deg, rgba(13, 19, 39, 0.94) 0%, rgba(18, 25, 49, 0.98) 100%);
+  }
+
+  :global([data-theme="system"]) .weekday {
+    color: rgba(226, 234, 255, 0.48);
+  }
+
+  :global([data-theme="system"]) .dayInMonth {
+    color: rgba(238, 243, 255, 0.92);
+  }
+
+  :global([data-theme="system"]) .dayOutsideMonth {
+    color: rgba(226, 234, 255, 0.22);
+  }
+
+  :global([data-theme="system"]) .dayToday {
+    outline-color: rgba(107, 128, 255, 0.42);
+  }
+}

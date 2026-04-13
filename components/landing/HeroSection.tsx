@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
           <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
           <h1 className={styles.heroHeadline}>Challenge <em>Your Mind</em></h1>
           <p className={styles.heroSubtext}>
-            A seasonal micro-university that is helping you break through slumps, earn gems, and activate your highest potential.
+            A 12-week micro-university to help you break out of slumps to activate your highest potential.
           </p>
           <button
             type="button"
