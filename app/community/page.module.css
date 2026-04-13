@@ -79,6 +79,9 @@
 }
 
 .proposalReward {
+  grid-area: badge;
+  justify-self: end;
+  align-self: start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -755,8 +758,8 @@
 
 .communityMainWrapper {
   width: 100%;
-  padding: 0 14px 22px;
-  margin: 0 -14px -22px;
+  padding: 0 12px 22px;
+  margin: 0 -12px -22px;
   box-sizing: border-box;
 }
 
@@ -789,11 +792,16 @@
 }
 
 .proposalsEntryButton {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "icon . badge"
+    "text text text";
+  column-gap: 12px;
+  row-gap: 12px;
+  align-items: start;
   width: 100%;
-  padding: 16px 18px;
+  padding: 14px 16px;
   border: 1px solid rgba(26, 27, 36, 0.12);
   border-radius: var(--radius-md);
   background: var(--card-background);
@@ -809,6 +817,7 @@
 }
 
 .proposalsEntryIcon {
+  grid-area: icon;
   width: 40px;
   height: 40px;
   display: inline-flex;
@@ -827,9 +836,11 @@
 }
 
 .proposalsEntryContent {
+  grid-area: text;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  min-width: 0;
   text-align: left;
 }
 
@@ -837,13 +848,21 @@
   font-family: var(--font-primary);
   font-size: 15px;
   font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--color-text-dark);
 }
 
 .proposalsEntryMeta {
   font-family: var(--font-primary);
   font-size: 12px;
-  line-height: 1.45;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   color: rgba(26, 27, 36, 0.58);
 }
 
@@ -888,7 +907,7 @@
 }
 
 .proposalSubmitButton .proposalsEntryContent {
-  flex: 1;
+  flex: none;
 }
 
 @keyframes tabFadeIn {
@@ -2005,7 +2024,7 @@
   }
 
   .proposalsEntryButton {
-    padding: 14px 16px;
+    padding: 14px;
   }
 
   .proposalsEntryLabel {
@@ -2200,7 +2219,7 @@
   }
 
   .proposalsEntryButton {
-    align-items: flex-start;
+    row-gap: 10px;
     padding: 14px;
   }
 
@@ -2219,8 +2238,8 @@
   }
 
   .proposalReward {
-    gap: 8px;
-    padding: 6px 10px;
+    gap: 6px;
+    padding: 5px 9px 5px 7px;
   }
 
   .proposalRewardIcon {

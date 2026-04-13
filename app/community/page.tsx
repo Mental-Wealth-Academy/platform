@@ -468,9 +468,9 @@ export default function VotingPage() {
                         </svg>
                       </div>
                       <div className={styles.proposalsEntryContent}>
-                        <span className={styles.proposalsEntryLabel}>Submit a Proposal</span>
+                        <span className={styles.proposalsEntryLabel}>Submit Proposal</span>
                         <span className={styles.proposalsEntryMeta}>
-                          Share an idea for community funding and submit it for review and potential treasury approval.
+                          Share an idea and get it funded by the community.
                         </span>
                       </div>
                       <span className={styles.proposalReward}>
@@ -483,7 +483,7 @@ export default function VotingPage() {
                             unoptimized
                           />
                         </span>
-                        <span className={styles.proposalRewardValue}>500 fee</span>
+                        <span className={styles.proposalRewardValue}>-500</span>
                       </span>
                     </button>
                     {loading ? (
