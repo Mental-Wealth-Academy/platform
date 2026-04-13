@@ -876,6 +876,13 @@
    ═══════════════════════════════════════════════ */
 
 .expandedContainer {
+  --radar-fill-a: rgba(255, 255, 255, 0.028);
+  --radar-fill-b: rgba(81, 104, 255, 0.018);
+  --radar-ring-color: rgba(255, 255, 255, 0.05);
+  --radar-axis-opacity: 0.15;
+  --radar-data-fill: rgba(81, 104, 255, 0.11);
+  --radar-data-stroke: rgba(255, 255, 255, 0.24);
+  --radar-node-stroke: rgba(255, 255, 255, 0.7);
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -1454,16 +1461,17 @@
 
 :global(:root:not([data-theme="dark"])) .closeButton,
 :global(:root:not([data-theme="dark"])) .expandButton {
-  background: rgba(0, 0, 0, 0.88);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(81, 104, 255, 0.18);
+  color: rgba(26, 29, 51, 0.72);
+  box-shadow: 0 8px 22px rgba(81, 104, 255, 0.12);
 }
 
 :global(:root:not([data-theme="dark"])) .closeButton:hover,
 :global(:root:not([data-theme="dark"])) .expandButton:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #ffffff;
+  background: #ffffff;
+  border-color: rgba(81, 104, 255, 0.28);
+  color: #1a1d33;
 }
 
 :global(:root:not([data-theme="dark"])) .messageTime {
@@ -1604,6 +1612,13 @@
 }
 
 :global(:root:not([data-theme="dark"])) .expandedContainer {
+  --radar-fill-a: rgba(81, 104, 255, 0.035);
+  --radar-fill-b: rgba(81, 104, 255, 0.02);
+  --radar-ring-color: rgba(81, 104, 255, 0.14);
+  --radar-axis-opacity: 0.3;
+  --radar-data-fill: rgba(81, 104, 255, 0.12);
+  --radar-data-stroke: rgba(81, 104, 255, 0.34);
+  --radar-node-stroke: rgba(255, 255, 255, 0.95);
   background: #ffffff;
 }
 
@@ -1650,9 +1665,10 @@
 }
 
 :global(:root:not([data-theme="dark"])) .knowledgeBubble {
-  border-color: rgba(81, 104, 255, 0.12);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(220, 228, 255, 0.68);
+  border-color: rgba(81, 104, 255, 0.14);
+  background: rgba(255, 255, 255, 0.82);
+  color: rgba(26, 29, 51, 0.7);
+  box-shadow: 0 10px 24px rgba(81, 104, 255, 0.1);
 }
 
 :global(:root:not([data-theme="dark"])) .keywordTag {

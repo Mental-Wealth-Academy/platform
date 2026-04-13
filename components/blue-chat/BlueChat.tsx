@@ -1139,7 +1139,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                       <polygon
                         key={`fill-${ri}`}
                         points={getRadarPoints(RADAR_AXES.map(() => scale))}
-                        fill={ri % 2 === 0 ? 'rgba(255, 255, 255, 0.028)' : 'rgba(81, 104, 255, 0.018)'}
+                        fill={ri % 2 === 0 ? 'var(--radar-fill-a)' : 'var(--radar-fill-b)'}
                         stroke="none"
                       />
                     ))}
@@ -1149,7 +1149,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                         key={ri}
                         points={getRadarPoints(RADAR_AXES.map(() => scale))}
                         fill="none"
-                        stroke="rgba(255, 255, 255, 0.05)"
+                        stroke="var(--radar-ring-color)"
                         strokeWidth={ri === 4 ? '1.2' : '1'}
                       />
                     ))}
@@ -1164,7 +1164,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                           y2={point.y}
                           stroke={axis.color}
                           strokeWidth="1"
-                          opacity="0.15"
+                          opacity="var(--radar-axis-opacity)"
                         />
                       );
                     })}
@@ -1191,8 +1191,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                     {/* Combined data polygon on top */}
                     <polygon
                       points={getRadarPoints(RADAR_AXES.map((axis) => axis.value / 100))}
-                      fill="rgba(81, 104, 255, 0.11)"
-                      stroke="rgba(255, 255, 255, 0.24)"
+                      fill="var(--radar-data-fill)"
+                      stroke="var(--radar-data-stroke)"
                       strokeWidth="1.4"
                     />
                     {RADAR_AXES.map((axis, i) => {
@@ -1204,7 +1204,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                           cy={point.y}
                           r="3.2"
                           fill={axis.color}
-                          stroke="rgba(255, 255, 255, 0.7)"
+                          stroke="var(--radar-node-stroke)"
                           strokeWidth="1"
                         />
                       );
