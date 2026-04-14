@@ -104,7 +104,12 @@ function nosanaHeaders() {
 
 function extractEndpoint(data: Record<string, unknown>): string | null {
   const endpoints = data.endpoints;
-  if (Array.isArray(endpoints) && endpoints.length > 0) return endpoints[0] as string;
+  if (Array.isArray(endpoints) && endpoints.length > 0) {
+    const ep = endpoints[0] as Record<string, unknown>;
+    // Nosana returns endpoint objects: { opId, port, url }
+    if (typeof ep?.url === 'string' && ep.url) return ep.url;
+    if (typeof ep === 'string' && ep) return ep;
+  }
   if (typeof endpoints === 'string' && endpoints) return endpoints;
   if (typeof data.url === 'string' && data.url) return data.url;
   if (typeof data.endpoint === 'string' && data.endpoint) return data.endpoint;
@@ -136,6 +141,17 @@ export async function createResearchDeployment(userId: string, tier: GpuTier): P
   const data = await res.json() as Record<string, unknown>;
   const id = data.id as string | undefined;
   if (!id) throw new Error('Nosana response missing deployment ID');
+
+  // Deployment is created in DRAFT state — must call /start to submit to the network
+  const startRes = await fetch(`${NOSANA_API_BASE}/deployments/${id}/start`, {
+    method: 'POST',
+    headers: nosanaHeaders(),
+  });
+  if (!startRes.ok) {
+    const err = await startRes.text();
+    throw new Error(`Nosana start failed: ${startRes.status} ${err}`);
+  }
+
   return id;
 }
 
