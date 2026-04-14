@@ -188,7 +188,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [researchReclaimToken, setResearchReclaimToken] = useState<string | null>(null);
   const [researchReclaimStatus, setResearchReclaimStatus] = useState<'idle' | 'claiming' | 'claimed'>('idle');
   const [researchSuggestions, setResearchSuggestions] = useState<Array<{ title: string; author: string; year?: number; desc: string }> | null>(null);
-  const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'select' | null>(null);
+  const [gpuPickerStep, setGpuPickerStep] = useState<'gate' | 'topic' | 'select' | null>(null);
+  const [gpuTopicDraft, setGpuTopicDraft] = useState('');
   const [gpuJobId, setGpuJobId] = useState<string | null>(null);
   const [gpuResearchMode, setGpuResearchMode] = useState(false);
   const [gpuTopic, setGpuTopic] = useState('');
@@ -611,8 +612,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     sendToEliza(prompt, 'research');
   };
 
-  const startGpuResearch = async (tier: GpuTier) => {
+  const startGpuResearch = async (tier: GpuTier, topic: string) => {
     setGpuPickerStep(null);
+    setGpuTopicDraft('');
     setIsTyping(true);
     showEmote('searching');
     try {
@@ -632,17 +634,23 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         } else if (data.error === 'GPU research not available') {
           addAzuraMessage('gpu research is not configured yet. check back soon.');
         } else {
-          addAzuraMessage('gpu provisioning failed. try again.');
+          addAzuraMessage(`gpu provisioning failed: ${data.error || 'unknown error'}. try again.`);
         }
         return;
       }
 
+      // Set topic immediately so polling loop starts as soon as the job ID is set
+      setGpuTopic(topic);
       setGpuJobId(data.jobId);
       setGpuStatus('provisioning');
       setGpuResearchMode(true);
       setShardCount(data.shardsRemaining ?? shardCount);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now().toString(), text: topic, sender: 'user' as const, timestamp: new Date() },
+      ]);
       addAzuraMessage(
-        `${GPU_TIER_INFO[tier].label} GPU is spinning up on Nosana (${GPU_TIER_INFO[tier].model}, ${GPU_TIER_INFO[tier].gpu}). drop your research topic and i'll start synthesizing as soon as compute is ready. this usually takes 2-5 minutes.`
+        `${GPU_TIER_INFO[tier].label} GPU is spinning up on Nosana (${GPU_TIER_INFO[tier].model}, ${GPU_TIER_INFO[tier].gpu}). synthesizing "${topic.slice(0, 60)}${topic.length > 60 ? '...' : ''}" — this usually takes 2–5 minutes.`
       );
     } catch {
       addAzuraMessage('gpu connection failed. check your network and try again.');
@@ -1189,11 +1197,41 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         <div className={styles.gpuPicker}>
           <span className={styles.gpuPickerTitle}>GPU Research</span>
           <p className={styles.gpuPickerDesc}>
-            Borrow dedicated GPU compute from the Nosana network to run a powerful open-source model directly on your research topic. Pick a compute tier.
+            Borrow dedicated GPU compute from the Nosana network. A powerful open-source model will synthesize a graduate-level report on your topic.
           </p>
           <div className={styles.gpuPickerButtons}>
-            <button className={styles.gpuPickerProceed} onClick={() => setGpuPickerStep('select')} type="button">
-              Select Model
+            <button className={styles.gpuPickerProceed} onClick={() => setGpuPickerStep('topic')} type="button">
+              Continue
+            </button>
+            <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {gpuPickerStep === 'topic' && (
+        <div className={styles.gpuPicker}>
+          <span className={styles.gpuPickerTitle}>What do you want to research?</span>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="e.g. cognitive behavioral therapy and neuroplasticity"
+            value={gpuTopicDraft}
+            onChange={(e) => setGpuTopicDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && gpuTopicDraft.trim()) setGpuPickerStep('select');
+            }}
+            autoFocus
+            style={{ marginBottom: 8 }}
+          />
+          <div className={styles.gpuPickerButtons}>
+            <button
+              className={styles.gpuPickerProceed}
+              onClick={() => { if (gpuTopicDraft.trim()) setGpuPickerStep('select'); }}
+              disabled={!gpuTopicDraft.trim()}
+              type="button"
+            >
+              Choose Compute Tier
             </button>
             <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button">
               Cancel
@@ -1212,7 +1250,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 <button
                   key={tier}
                   className={`${styles.gpuTierCard} ${styles[t.cardClass as keyof typeof styles]}`}
-                  onClick={() => startGpuResearch(tier)}
+                  onClick={() => startGpuResearch(tier, gpuTopicDraft.trim())}
                   disabled={!hasShards || isTyping}
                   type="button"
                 >
@@ -1226,8 +1264,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               );
             })}
           </div>
-          <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep(null)} type="button" style={{ marginTop: 4 }}>
-            Cancel
+          <button className={styles.gpuPickerCancel} onClick={() => setGpuPickerStep('topic')} type="button" style={{ marginTop: 4 }}>
+            Back
           </button>
         </div>
       )}

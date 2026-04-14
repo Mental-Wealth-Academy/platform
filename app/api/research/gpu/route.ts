@@ -5,6 +5,7 @@ import { createResearchDeployment, GPU_TIERS, type GpuTier } from '@/lib/nosana'
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30; // Nosana create + start can take several seconds
 
 const VALID_TIERS = new Set<string>(['focus', 'deep', 'elite']);
 
