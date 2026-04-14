@@ -17,6 +17,7 @@ export const GPU_TIERS = {
     maxTokens: 1200,
     maxModelLen: 2176,
     vram: 12,
+    awq: true,
     modelPath:
       '/root/.cache/huggingface/hub/models--hugging-quants--Meta-Llama-3.1-8B-Instruct-AWQ-INT4/snapshots/db1f81ad4b8c7e39777509fac66c652eb0a52f91',
     s3Url:
@@ -31,8 +32,9 @@ export const GPU_TIERS = {
     shardCost: 8000,
     market: '97G9NnvBDQ2WpKu6fasoMsAKmfj63C9rhysJnkeWodAf',
     maxTokens: 1800,
-    maxModelLen: 2176,
+    maxModelLen: 4096,
     vram: 18,
+    awq: false,
     modelPath:
       '/root/.cache/huggingface/hub/models--unsloth--Meta-Llama-3.1-8B/snapshots/069adfb3ab0ceba60b9af8f11fa51558b9f9d396',
     s3Url:
@@ -49,6 +51,7 @@ export const GPU_TIERS = {
     maxTokens: 2500,
     maxModelLen: 2176,
     vram: 40,
+    awq: true,
     modelPath:
       '/root/.cache/huggingface/hub/models--hugging-quants--Meta-Llama-3.1-70B-Instruct-AWQ-INT4/snapshots/2123003760781134cfc31124aa6560a45b491fdf',
     s3Url:
@@ -60,6 +63,13 @@ export const GPU_TIERS = {
 
 function buildJobDefinition(tier: GpuTier) {
   const t = GPU_TIERS[tier];
+  const cmd = [
+    '--model', t.modelPath,
+    '--served-model-name', 'llama3.1',
+    '--max-model-len', String(t.maxModelLen),
+  ];
+  if (t.awq) cmd.push('--quantization', 'awq');
+
   return {
     version: '0.1',
     type: 'container',
@@ -75,12 +85,7 @@ function buildJobDefinition(tier: GpuTier) {
           image: 'docker.io/vllm/vllm-openai:v0.5.4',
           gpu: true,
           expose: 8000,
-          cmd: [
-            '--model', t.modelPath,
-            '--served-model-name', 'llama3.1',
-            '--quantization', 'awq',
-            '--max-model-len', String(t.maxModelLen),
-          ],
+          cmd,
           resources: [
             { type: 'S3', url: t.s3Url, target: t.s3Target },
           ],
@@ -142,17 +147,24 @@ export async function createResearchDeployment(userId: string, tier: GpuTier): P
   const id = data.id as string | undefined;
   if (!id) throw new Error('Nosana response missing deployment ID');
 
-  // Deployment is created in DRAFT state — must call /start to submit to the network
-  const startRes = await fetch(`${NOSANA_API_BASE}/deployments/${id}/start`, {
-    method: 'POST',
-    headers: nosanaHeaders(),
-  });
-  if (!startRes.ok) {
-    const err = await startRes.text();
-    throw new Error(`Nosana start failed: ${startRes.status} ${err}`);
+  // Deployment is created in DRAFT state — must call /start to submit to the network.
+  // Nosana sometimes returns 500 if /start is called too quickly after create (race on their side).
+  // Retry up to 3 times with increasing delays.
+  let startErr = '';
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, 1500 * attempt));
+    }
+    const startRes = await fetch(`${NOSANA_API_BASE}/deployments/${id}/start`, {
+      method: 'POST',
+      headers: nosanaHeaders(),
+    });
+    if (startRes.ok) return id;
+    startErr = await startRes.text();
+    console.warn(`Nosana /start attempt ${attempt + 1} failed: ${startRes.status} ${startErr}`);
   }
 
-  return id;
+  throw new Error(`Nosana start failed after 3 attempts: ${startErr}`);
 }
 
 export async function getDeploymentState(deploymentId: string): Promise<{
