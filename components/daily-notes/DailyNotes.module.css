@@ -608,35 +608,20 @@
 
 .sessionHeader {
   display: flex;
-  align-items: stretch;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
   width: 100%;
 }
 
-.sessionBadgeFrame,
 .timerFrame {
-  width: 92px;
-  min-width: 92px;
-  height: 92px;
+  width: 72px;
+  min-width: 72px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: 20px;
-}
-
-.sessionBadgeGraphic {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.sessionBadgeImage {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
+  border-radius: 16px;
 }
 
 .sessionMeta {
@@ -653,6 +638,24 @@
   flex-direction: column;
   padding: 0 20px 12px;
   flex: 1;
+  position: relative;
+}
+
+.noteImageWrap {
+  position: absolute;
+  bottom: 28px;
+  left: 36px;
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.82;
+}
+
+.noteImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .promptPill {
@@ -667,6 +670,7 @@
   background: #0A84FF;
   border: none;
   border-radius: 18px;
+  transition: opacity 0.4s ease;
 }
 
 .timerFrame {
@@ -945,6 +949,62 @@
   0% { transform: rotate(0deg) scale(0.5); }
   50% { transform: rotate(15deg) scale(1.15); }
   100% { transform: rotate(0deg) scale(1); }
+}
+
+/* ─── Mobile: full-screen Apple Notes feel ─── */
+@media (max-width: 640px) {
+  .modalOverlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .modal {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 0;
+    min-height: 100dvh;
+    animation: none;
+  }
+
+  .timerDisplay {
+    padding: 16px 16px 6px;
+  }
+
+  .sessionHeader {
+    gap: 10px;
+  }
+
+  .timerFrame {
+    width: 60px;
+    min-width: 60px;
+    height: 60px;
+  }
+
+  .timerCountCompact {
+    font-size: 18px;
+  }
+
+  .writeArea {
+    padding: 0 16px 10px;
+  }
+
+  .textarea {
+    border-radius: 16px;
+    min-height: 0;
+    padding: 16px 16px 80px;
+  }
+
+  .noteImageWrap {
+    bottom: 22px;
+    left: 28px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .modalFooter {
+    position: sticky;
+    bottom: 0;
+  }
 }
 
 /* Responsive */

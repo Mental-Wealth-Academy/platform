@@ -23,6 +23,16 @@ interface DailyNotesProps {
   compact?: boolean;
 }
 
+const WRITING_MESSAGES = [
+  'morning pages helps free your mind',
+  'think of this as spiritual work',
+  'writing keeps my brain sharp',
+  'let your thoughts run free',
+  'words have a way of healing you',
+  'write it out, clear your head',
+  'no editing, just let it flow',
+];
+
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo
   '#7C3AED', // Week 2 — violet
@@ -58,6 +68,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [dataReady, setDataReady] = useState(false);
+  const [messageIndex, setMessageIndex] = useState(0);
 
   // Reset dataReady when enablePersistence changes
   useEffect(() => {
@@ -269,6 +280,15 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
+  // Cycle iMessage prompts
+  useEffect(() => {
+    if (!timerActive) return;
+    const interval = setInterval(() => {
+      setMessageIndex(i => (i + 1) % WRITING_MESSAGES.length);
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [timerActive]);
+
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
   const handleCompactClick = () => {
@@ -399,19 +419,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div className={styles.modalMain}>
               <div className={styles.timerDisplay}>
                 <div className={styles.sessionHeader}>
-                  <div className={styles.sessionBadgeFrame}>
-                    <div className={styles.sessionBadgeGraphic} aria-hidden="true">
-                      <Image
-                        src="/uploads/blueagent.png"
-                        alt=""
-                        width={92}
-                        height={92}
-                        className={styles.sessionBadgeImage}
-                      />
-                    </div>
-                  </div>
                   <div className={styles.sessionMeta}>
-                    <div className={styles.promptPill}>Write for 15 min. Think of this as your art. ✍️🌱</div>
+                    <div className={styles.promptPill}>{WRITING_MESSAGES[messageIndex]}</div>
                   </div>
                   <div className={styles.timerFrame}>
                     <div className={`${styles.timerCount} ${styles.timerCountCompact} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
@@ -424,12 +433,21 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="Write for 15 min. Think of this as your art."
+                  placeholder="start writing here, quickly..."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus
                   disabled={isPaused}
                 />
+                <div className={styles.noteImageWrap} aria-hidden="true">
+                  <Image
+                    src="/uploads/blueagent.png"
+                    alt=""
+                    width={64}
+                    height={64}
+                    className={styles.noteImage}
+                  />
+                </div>
               </div>
             </div>
 
