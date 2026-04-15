@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -47,10 +46,6 @@ function formatDateKey(date: Date) {
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
   const day = `${date.getDate()}`.padStart(2, '0');
   return `${year}-${month}-${day}`;
-}
-
-function getInitial(username: string | null) {
-  return (username?.trim()?.charAt(0) || 'A').toUpperCase();
 }
 
 export default function ProfilePage() {
@@ -157,7 +152,6 @@ export default function ProfilePage() {
   );
 
   const monthName = MONTH_LABEL.format(currentMonth);
-  const username = user?.username?.trim() || 'Anonymous';
   const completionMessage =
     streak > 0
       ? `Keep your morning-pages streak alive by writing again tomorrow.`
@@ -169,26 +163,6 @@ export default function ProfilePage() {
       <SideNavigation />
       <main className={styles.page}>
         <section className={styles.shell}>
-          <header className={styles.topMeta}>
-            <div className={styles.identity}>
-              {isLoading ? (
-                <div className={`${styles.avatarFallback} ${styles.skeletonBlock}`} />
-              ) : user?.avatarUrl ? (
-                <Image src={user.avatarUrl} alt={username} width={52} height={52} className={styles.avatar} />
-              ) : (
-                <div className={styles.avatarFallback}>{getInitial(user?.username ?? null)}</div>
-              )}
-              <div className={styles.identityCopy}>
-                <p className={styles.eyebrow}>Profile</p>
-                {isLoading ? (
-                  <span className={`${styles.skeletonTitle} ${styles.skeletonBlock}`} />
-                ) : (
-                  <h1 className={styles.title}>{username}</h1>
-                )}
-              </div>
-            </div>
-          </header>
-
           <section className={styles.streakPanel}>
             <div className={styles.streakCopy}>
               <div className={styles.streakValueRow}>

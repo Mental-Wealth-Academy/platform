@@ -37,44 +37,6 @@
   gap: 18px;
 }
 
-.topMeta {
-  padding-top: 4px;
-}
-
-.identity {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.avatar,
-.avatarFallback {
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
-  border: 2px solid rgba(26, 29, 51, 0.12);
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(210, 122, 59, 0.14);
-}
-
-.avatar {
-  object-fit: cover;
-}
-
-.avatarFallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-primary);
-  font-size: 20px;
-  font-weight: 700;
-  color: #d87041;
-}
-
-.identityCopy {
-  min-width: 0;
-}
-
 .skeletonBlock {
   position: relative;
   overflow: hidden;
@@ -92,7 +54,6 @@
   animation: shimmer 1.3s ease-in-out infinite;
 }
 
-.skeletonTitle,
 .skeletonStreakNumber,
 .skeletonStreakUnit,
 .skeletonTipLine,
@@ -102,12 +63,6 @@
 .skeletonStatLabel {
   display: block;
   border-radius: 999px;
-}
-
-.skeletonTitle {
-  width: 160px;
-  height: 30px;
-  margin-top: 8px;
 }
 
 .skeletonStreakNumber {
@@ -153,34 +108,14 @@
   height: 12px;
 }
 
-.eyebrow,
-.sectionLabel {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: 12px;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(44, 40, 57, 0.46);
-}
-
-.title {
-  margin: 8px 0 0;
-  font-family: var(--font-primary);
-  font-size: 28px;
-  line-height: 1.1;
-  font-weight: 800;
-  color: #373645;
-}
-
 .streakPanel,
 .tipCard,
 .calendarCard {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(220, 211, 195, 0.88);
+  border: 1px solid rgba(81, 104, 255, 0.12);
   border-radius: 28px;
   box-shadow:
-    0 10px 32px rgba(193, 154, 83, 0.12),
+    0 8px 24px rgba(81, 104, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
@@ -210,7 +145,7 @@
   line-height: 0.9;
   font-weight: 800;
   letter-spacing: -0.05em;
-  color: #df7547;
+  color: #5168FF;
 }
 
 .streakUnit {
@@ -218,7 +153,7 @@
   font-size: 28px;
   line-height: 1;
   font-weight: 700;
-  color: #df7547;
+  color: #5168FF;
 }
 
 .stickerShell {
@@ -230,7 +165,7 @@
 .sticker {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 12px 22px rgba(232, 133, 44, 0.18));
+  filter: drop-shadow(0 8px 16px rgba(81, 104, 255, 0.16));
 }
 
 .tipCard {
@@ -248,7 +183,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255, 235, 196, 0.8), rgba(255, 246, 224, 0.9));
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.1), rgba(81, 104, 255, 0.06));
 }
 
 .tipIcon {
@@ -307,7 +242,7 @@
 
 .monthButton:hover {
   transform: translateY(-1px);
-  border-color: rgba(230, 136, 72, 0.45);
+  border-color: rgba(81, 104, 255, 0.35);
   background: #ffffff;
 }
 
@@ -325,15 +260,15 @@
   gap: 4px;
   padding: 14px 16px;
   border-radius: 20px;
-  border: 1px solid rgba(222, 214, 201, 0.92);
+  border: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .calendarStat {
-  background: linear-gradient(180deg, #fff4e7 0%, #fffaf3 100%);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.07) 0%, rgba(81, 104, 255, 0.03) 100%);
 }
 
 .calendarStatMuted {
-  background: #fffdf9;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .calendarStatValue {
@@ -360,8 +295,8 @@
   margin-top: 18px;
   padding: 16px 8px 10px;
   border-radius: 24px;
-  background: linear-gradient(180deg, #fffdfa 0%, #fff9f1 100%);
-  border: 1px solid rgba(227, 219, 206, 0.9);
+  background: linear-gradient(180deg, #f9faff 0%, #f4f6ff 100%);
+  border: 1px solid rgba(81, 104, 255, 0.1);
 }
 
 .weekday {
@@ -391,15 +326,15 @@
 }
 
 .dayCompleted {
-  background: linear-gradient(180deg, #f2b33b 0%, #ef8f2f 48%, #e36643 100%);
+  background: linear-gradient(180deg, #6b7fff 0%, #5168FF 48%, #3d55f0 100%);
   box-shadow:
-    inset 0 2px 0 rgba(255, 242, 211, 0.55),
-    0 8px 18px rgba(225, 121, 47, 0.18);
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    0 6px 14px rgba(81, 104, 255, 0.22);
   color: #ffffff;
 }
 
 .dayToday {
-  outline: 2px solid rgba(233, 133, 69, 0.34);
+  outline: 2px solid rgba(81, 104, 255, 0.32);
   outline-offset: 2px;
 }
 
@@ -421,7 +356,7 @@
   width: 16px;
   height: 16px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #f2b33b 0%, #ef8f2f 48%, #e36643 100%);
+  background: linear-gradient(180deg, #6b7fff 0%, #5168FF 48%, #3d55f0 100%);
 }
 
 .legendText {
@@ -529,15 +464,6 @@
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
 
-:global([data-theme="dark"]) .avatar,
-:global([data-theme="dark"]) .avatarFallback {
-  border-color: rgba(150, 170, 255, 0.16);
-  background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 12px 28px rgba(3, 7, 22, 0.26);
-}
-
 :global([data-theme="dark"]) .skeletonBlock {
   background: rgba(255, 255, 255, 0.08);
 }
@@ -546,12 +472,6 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
 }
 
-:global([data-theme="dark"]) .eyebrow,
-:global([data-theme="dark"]) .sectionLabel {
-  color: rgba(227, 225, 238, 0.38);
-}
-
-:global([data-theme="dark"]) .title,
 :global([data-theme="dark"]) .calendarTitle,
 :global([data-theme="dark"]) .calendarStatValue {
   color: #eef3ff;
@@ -576,8 +496,8 @@
 }
 
 :global([data-theme="dark"]) .tipIconWrap {
-  background: linear-gradient(180deg, rgba(37, 52, 92, 0.92), rgba(23, 33, 63, 0.96));
-  border: 1px solid rgba(150, 170, 255, 0.14);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.18), rgba(81, 104, 255, 0.1));
+  border: 1px solid rgba(150, 170, 255, 0.18);
 }
 
 :global([data-theme="dark"]) .tipText,
@@ -626,15 +546,6 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :global([data-theme="system"]) .avatar,
-  :global([data-theme="system"]) .avatarFallback {
-    border-color: rgba(150, 170, 255, 0.16);
-    background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 12px 28px rgba(3, 7, 22, 0.26);
-  }
-
   :global([data-theme="system"]) .skeletonBlock {
     background: rgba(255, 255, 255, 0.08);
   }
@@ -643,12 +554,6 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
   }
 
-  :global([data-theme="system"]) .eyebrow,
-  :global([data-theme="system"]) .sectionLabel {
-    color: rgba(227, 225, 238, 0.38);
-  }
-
-  :global([data-theme="system"]) .title,
   :global([data-theme="system"]) .calendarTitle,
   :global([data-theme="system"]) .calendarStatValue {
     color: #eef3ff;
@@ -673,8 +578,8 @@
   }
 
   :global([data-theme="system"]) .tipIconWrap {
-    background: linear-gradient(180deg, rgba(37, 52, 92, 0.92), rgba(23, 33, 63, 0.96));
-    border: 1px solid rgba(150, 170, 255, 0.14);
+    background: linear-gradient(180deg, rgba(81, 104, 255, 0.18), rgba(81, 104, 255, 0.1));
+    border: 1px solid rgba(150, 170, 255, 0.18);
   }
 
   :global([data-theme="system"]) .tipText,

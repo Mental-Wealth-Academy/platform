@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
@@ -8,31 +8,13 @@ import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
-const TOOLS_ITEMS = [
-  { label: 'Credit Builder', href: '/credit-builder' },
-];
-
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const [toolsOpen, setToolsOpen] = useState(false);
   const { play } = useSound();
   const { theme, toggleTheme } = useTheme();
-  const toolsRef = useRef<HTMLDivElement>(null);
   const { login, authenticated } = usePrivy();
   const loginTriggered = useRef(false);
-
-  useEffect(() => {
-    if (!toolsOpen) return;
-    const handler = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (toolsOpen && toolsRef.current && !toolsRef.current.contains(target)) {
-        setToolsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [toolsOpen]);
 
   // After Privy login succeeds, redirect to /home
   useEffect(() => {
@@ -114,51 +96,6 @@ const TopNavigation: React.FC = () => {
               </svg>
             )}
           </button>
-          <div className={styles.dropdownWrapper} ref={toolsRef}>
-            <button
-              type="button"
-              className={styles.researchButton}
-              onClick={() => {
-                play(toolsOpen ? 'toggle-off' : 'toggle-on');
-                setToolsOpen(!toolsOpen);
-              }}
-              onMouseEnter={() => play('hover')}
-              aria-expanded={toolsOpen}
-            >
-              Tools
-              <svg
-                className={`${styles.researchChevron} ${toolsOpen ? styles.researchChevronOpen : ''}`}
-                width="12"
-                height="12"
-                viewBox="0 0 20 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 7.5L10 12.5L15 7.5" />
-              </svg>
-            </button>
-            {toolsOpen && (
-              <div className={styles.dropdown}>
-                {TOOLS_ITEMS.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className={styles.dropdownItem}
-                    onMouseEnter={() => play('hover')}
-                    onClick={() => {
-                      play('navigation');
-                      setToolsOpen(false);
-                    }}
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
           <button
             type="button"
             onClick={handleLogin}
