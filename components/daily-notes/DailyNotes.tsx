@@ -68,7 +68,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [dataReady, setDataReady] = useState(false);
-  const [messageIndex, setMessageIndex] = useState(0);
+  const dayMessageIndex = new Date().getDate() % WRITING_MESSAGES.length;
 
   // Reset dataReady when enablePersistence changes
   useEffect(() => {
@@ -280,14 +280,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   // Cleanup
   useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
 
-  // Cycle iMessage prompts
-  useEffect(() => {
-    if (!timerActive) return;
-    const interval = setInterval(() => {
-      setMessageIndex(i => (i + 1) % WRITING_MESSAGES.length);
-    }, 7000);
-    return () => clearInterval(interval);
-  }, [timerActive]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
 
@@ -417,37 +409,33 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <h3 id="morning-pages-session-title" className={styles.srOnly}>Morning Pages</h3>
 
             <div className={styles.modalMain}>
-              <div className={styles.timerDisplay}>
-                <div className={styles.sessionHeader}>
-                  <div className={styles.sessionMeta}>
-                    <div className={styles.promptPill}>{WRITING_MESSAGES[messageIndex]}</div>
-                  </div>
-                  <div className={styles.timerFrame}>
-                    <div className={`${styles.timerCount} ${styles.timerCountCompact} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                      {isPaused ? 'PAUSED' : formatTimer(timerSeconds)}
-                    </div>
-                  </div>
-                </div>
+              <div className={styles.modalHeader}>
+                <span className={styles.headerLabel}>morning pages</span>
+                <span className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                  {isPaused ? 'paused' : formatTimer(timerSeconds)}
+                </span>
               </div>
 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="start writing here, quickly..."
+                  placeholder="write for 15 minutes everyday, rule of thumb is to do as much as you can and stop if it's too much."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus
                   disabled={isPaused}
                 />
-                <div className={styles.noteImageWrap} aria-hidden="true">
-                  <Image
-                    src="/uploads/blueagent.png"
-                    alt=""
-                    width={64}
-                    height={64}
-                    className={styles.noteImage}
-                  />
-                </div>
+              </div>
+
+              <div className={styles.noteBottom}>
+                <Image
+                  src="/uploads/blueagent.png"
+                  alt=""
+                  width={52}
+                  height={52}
+                  className={styles.noteImage}
+                />
+                <div className={styles.promptBubble}>{WRITING_MESSAGES[dayMessageIndex]}</div>
               </div>
             </div>
 

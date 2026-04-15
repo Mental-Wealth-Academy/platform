@@ -549,34 +549,29 @@
   flex-direction: column;
 }
 
-.timerDisplay {
-  padding: 20px 20px 8px;
-  text-align: center;
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.07);
 }
 
-.sessionBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  margin-bottom: 12px;
+.headerLabel {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--week-color, #5168FF);
-  background: rgba(81, 104, 255, 0.1);
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  border-radius: 999px;
+  color: rgba(26, 29, 51, 0.35);
 }
 
 .timerCount {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: clamp(28px, 5vw, 42px);
+  font-size: 17px;
   font-weight: 700;
   color: #1A1D33;
-  letter-spacing: -1px;
+  letter-spacing: 0.02em;
   line-height: 1;
   transition: color 0.3s ease;
 }
@@ -586,13 +581,14 @@
 }
 
 .timerPaused {
-  color: #888;
-  font-size: 22px;
+  color: #aaa;
+  font-size: 11px;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .timerBar {
-  height: 8px;
+  height: 3px;
   background: rgba(26, 29, 51, 0.08);
   border: none;
   border-radius: 999px;
@@ -606,89 +602,56 @@
   transition: width 1s linear;
 }
 
-.sessionHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.timerFrame {
-  width: 72px;
-  min-width: 72px;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border-radius: 16px;
-}
-
-.sessionMeta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  flex: 1;
-  min-width: 0;
-}
-
 .writeArea {
-  display: flex;
-  flex-direction: column;
-  padding: 0 20px 12px;
   flex: 1;
-  position: relative;
+  display: flex;
+  padding: 12px 20px 8px;
+  min-height: 0;
 }
 
-.noteImageWrap {
-  position: absolute;
-  bottom: 28px;
-  left: 36px;
-  width: 64px;
-  height: 64px;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.82;
+.noteBottom {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 8px 20px 12px;
 }
 
 .noteImage {
-  width: 100%;
-  height: auto;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
-.promptPill {
-  width: 100%;
-  padding: 12px 16px;
+.promptBubble {
+  display: inline-block;
+  padding: 9px 13px;
   font-family: 'SF Pro Display', 'Inter', 'Helvetica Neue', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  line-height: 1.35;
-  text-align: left;
-  color: #FFFFFF;
-  background: #0A84FF;
-  border: none;
-  border-radius: 18px;
-  transition: opacity 0.4s ease;
-}
-
-.timerFrame {
-  padding: 10px;
+  line-height: 1.4;
+  color: #ffffff;
+  background: linear-gradient(148deg, #6272ff 0%, #3a7fff 48%, #7155ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.14),
+    0 4px 18px rgba(81, 104, 255, 0.38);
 }
 
 .textarea {
   width: 100%;
-  height: 100%;
-  min-height: 440px;
-  padding: 18px 18px 20px;
+  flex: 1;
+  padding: 16px 18px;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   line-height: 1.65;
   color: #1A1D33;
   background: #ffffff;
   border: 2px solid rgba(81, 104, 255, 0.16);
-  border-radius: 20px;
+  border-radius: 16px;
   resize: none;
   box-sizing: border-box;
   transition: border-color 0.15s ease;
@@ -723,13 +686,6 @@
   background: rgba(255, 255, 255, 0.72);
 }
 
-.timerCountCompact {
-  font-size: 22px;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  margin: 0;
-  text-align: center;
-}
 
 .pauseBtn {
   display: inline-flex;
@@ -962,43 +918,21 @@
     max-width: 100%;
     width: 100%;
     border-radius: 0;
-    min-height: 100dvh;
+    height: 100dvh;
+    min-height: 0;
     animation: none;
   }
 
-  .timerDisplay {
-    padding: 16px 16px 6px;
-  }
-
-  .sessionHeader {
-    gap: 10px;
-  }
-
-  .timerFrame {
-    width: 60px;
-    min-width: 60px;
-    height: 60px;
-  }
-
-  .timerCountCompact {
-    font-size: 18px;
+  .modalMain {
+    min-height: 0;
   }
 
   .writeArea {
-    padding: 0 16px 10px;
+    padding: 10px 16px 6px;
   }
 
-  .textarea {
-    border-radius: 16px;
-    min-height: 0;
-    padding: 16px 16px 80px;
-  }
-
-  .noteImageWrap {
-    bottom: 22px;
-    left: 28px;
-    width: 54px;
-    height: 54px;
+  .noteBottom {
+    padding: 6px 16px 10px;
   }
 
   .modalFooter {
