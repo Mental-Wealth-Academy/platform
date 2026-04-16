@@ -381,6 +381,56 @@
   color: rgba(11, 14, 40, 0.7);
 }
 
+.shardUpsell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0 16px 8px;
+  background:
+    linear-gradient(145deg, rgba(81, 104, 255, 0.12), rgba(192, 132, 252, 0.12));
+  border: 1.5px solid rgba(81, 104, 255, 0.24);
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(81, 104, 255, 0.12);
+  animation: messageSlideIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shardUpsellIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(81, 104, 255, 0.16);
+}
+
+.shardUpsellCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shardUpsellTitle {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(11, 14, 40, 0.86);
+}
+
+.shardUpsellBody {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(11, 14, 40, 0.58);
+}
+
+.shardUpsellActions {
+  display: flex;
+  gap: 8px;
+}
+
 /* Shard Counter — inline with quick actions */
 .shardCounter {
   display: flex;
@@ -1538,20 +1588,28 @@
 }
 
 :global(:root:not([data-theme="dark"])) .shardConfirm,
+:global(:root:not([data-theme="dark"])) .shardUpsell,
 :global(:root:not([data-theme="dark"])) .researchCards {
   background: rgba(81, 104, 255, 0.06);
   border-color: rgba(81, 104, 255, 0.16);
 }
 
 :global(:root:not([data-theme="dark"])) .shardConfirmText,
+:global(:root:not([data-theme="dark"])) .shardUpsellTitle,
 :global(:root:not([data-theme="dark"])) .researchCardTitle {
   color: rgba(26, 29, 51, 0.82);
 }
 
 :global(:root:not([data-theme="dark"])) .shardConfirmBalance,
+:global(:root:not([data-theme="dark"])) .shardUpsellBody,
 :global(:root:not([data-theme="dark"])) .researchLabel,
 :global(:root:not([data-theme="dark"])) .researchCardDesc {
   color: rgba(26, 29, 51, 0.44);
+}
+
+:global(:root:not([data-theme="dark"])) .shardUpsellIconWrap {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(81, 104, 255, 0.14);
 }
 
 :global(:root:not([data-theme="dark"])) .shardConfirmNo,

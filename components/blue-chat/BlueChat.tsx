@@ -61,6 +61,12 @@ interface BlueChatProps {
   onClose: () => void;
 }
 
+interface ShardUpsellState {
+  required: number;
+  current: number;
+  reason: 'chat' | 'research' | 'gpu' | 'credit';
+}
+
 interface TreasuryContext {
   balance: string | null;
   balanceUsd: number | null;
@@ -177,6 +183,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [shardCount, setShardCount] = useState<number | null>(null);
+  const [shardUpsell, setShardUpsell] = useState<ShardUpsellState | null>(null);
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [pendingType, setPendingType] = useState<'chat' | 'research'>('chat');
@@ -371,9 +378,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           } else {
             const hasShards = shardCount !== null && shardCount >= SHARD_COST;
             if (hasShards) {
-              setPendingMessage(text);
+              sendToEliza(text);
             } else {
-              addAzuraMessage(generateAzuraResponse(text));
+              openShardUpsell(SHARD_COST, 'chat');
             }
           }
         }, 300);
@@ -418,6 +425,24 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }, 800 + Math.random() * 800);
   };
 
+  const openShardUpsell = useCallback((required: number, reason: ShardUpsellState['reason'] = 'chat') => {
+    setShardUpsell({
+      required,
+      current: shardCount ?? 0,
+      reason,
+    });
+  }, [shardCount]);
+
+  const dismissShardUpsell = useCallback(() => {
+    setShardUpsell(null);
+  }, []);
+
+  const handlePurchaseMoreShards = useCallback(() => {
+    play('click');
+    setShardUpsell(null);
+    window.dispatchEvent(new Event('openPurchaseModal'));
+  }, [play]);
+
   const sendToEliza = async (
     text: string,
     mode?: 'research' | 'linkedin-professional',
@@ -425,13 +450,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     attachments?: UploadedAttachment[]
   ) => {
     setIsTyping(true);
+    setShardUpsell(null);
     showEmote('searching');
     try {
       const res = await fetch('/api/chat/blue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: text, confirm: true, mode, attachments }),
+        body: JSON.stringify({ message: text, mode, attachments }),
       });
       const data = await res.json();
 
@@ -445,7 +471,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (data.error === 'insufficient_shards') {
         setShardCount(data.shardCount);
         setIsTyping(false);
-        addAzuraMessage(generateAzuraResponse(text), action);
+        openShardUpsell(mode === 'research' ? RESEARCH_COST : SHARD_COST, mode === 'research' ? 'research' : 'chat');
         return;
       }
 
@@ -509,6 +535,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const handleSend = async () => {
     if (isTyping || isUploadingAttachment) return;
     if (!inputText.trim() && pendingAttachments.length === 0) return;
+    setShardUpsell(null);
 
     const text = inputText.trim() || 'Please review these attachments and help me continue.';
     const attachments = pendingAttachments;
@@ -549,11 +576,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     const hasShards = shardCount !== null && shardCount >= SHARD_COST;
 
     if (hasShards) {
-      // Show confirmation before spending shards
-      setPendingMessage(text);
+      sendToEliza(text, undefined, undefined, attachments);
     } else {
-      // No shards -- use local responses
-      addAzuraMessage(generateAzuraResponse(text));
+      openShardUpsell(SHARD_COST, 'chat');
     }
   };
 
@@ -751,43 +776,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const confirmShardSpend = async () => {
     if (!pendingMessage) return;
 
-    if (pendingType === 'research') {
-      setPendingMessage(null);
-      setPendingType('chat');
-      try {
-        const res = await fetch('/api/shards/deduct', {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: RESEARCH_COST, reason: 'research_activation' }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
-          setResearchMode(true);
-          addAzuraMessage("research mode activated. what topic do you want me to look into?");
-        } else {
-          addAzuraMessage("couldn't process the payment. try again.");
-        }
-      } catch {
-        addAzuraMessage("something went wrong. try again.");
-      }
-      return;
-    }
+    if (pendingType !== 'research') return;
 
-    const text = pendingMessage;
     setPendingMessage(null);
-    sendToEliza(text);
+    setPendingType('chat');
+    try {
+      const res = await fetch('/api/shards/deduct', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: RESEARCH_COST, reason: 'research_activation' }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
+        setResearchMode(true);
+        addAzuraMessage("research mode activated. what topic do you want me to look into?");
+      } else {
+        addAzuraMessage("couldn't process the payment. try again.");
+      }
+    } catch {
+      addAzuraMessage("something went wrong. try again.");
+    }
   };
 
   const cancelShardSpend = () => {
     if (!pendingMessage) return;
     setPendingMessage(null);
-    if (pendingType === 'research') {
-      setPendingType('chat');
-      return;
-    }
-    addAzuraMessage(generateAzuraResponse(pendingMessage));
+    setPendingType('chat');
   };
 
   const reclaimResearchShards = async () => {
@@ -862,7 +878,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const handleCreditPayment = async () => {
     // Deduct shards
     if (shardCount !== null && shardCount < 50) {
-      addAzuraMessage(`you need 50 shards to activate. you have ${shardCount}. keep showing up and earning, then come back.`);
+      openShardUpsell(50, 'credit');
       return;
     }
     setCreditStep('processing');
@@ -1024,7 +1040,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setPendingType('research');
         setPendingMessage('__research_activate__');
       } else {
-        addAzuraMessage(`research costs 1,000 shards to activate. you have ${shardCount ?? 0}. keep building and come back.`);
+        openShardUpsell(RESEARCH_COST, 'research');
       }
     } else if (action === 'gpu-research') {
       setResearchMode(false);
@@ -1039,7 +1055,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (shardCount !== null && shardCount >= GPU_TIER_INFO.focus.shards) {
         setGpuPickerStep('gate');
       } else {
-        addAzuraMessage(`gpu research starts at ${GPU_TIER_INFO.focus.shards.toLocaleString()} shards. you have ${shardCount ?? 0}. keep building.`);
+        openShardUpsell(GPU_TIER_INFO.focus.shards, 'gpu');
       }
     } else if (action === 'claude-professional') {
       send('Open LinkedIn professional mode', 'happy');
@@ -1083,6 +1099,18 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const canUseClaudeProfessional = ['volcano', 'jhinova_bay'].includes((viewerProfile?.username || '').trim().toLowerCase());
+  const shardUpsellTitle = (
+    shardUpsell?.reason === 'research'
+      ? 'Research mode needs more shards'
+      : shardUpsell?.reason === 'gpu'
+        ? 'GPU research needs more shards'
+        : shardUpsell?.reason === 'credit'
+          ? 'Credit Builder needs more shards'
+          : 'You are out of shards'
+  );
+  const shardUpsellBody = shardUpsell
+    ? `You need ${shardUpsell.required.toLocaleString()} shards to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
+    : '';
 
   const chatContent = (
     <>
@@ -1288,22 +1316,38 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       )}
 
       {/* Shard Confirmation */}
-      {pendingMessage && (
+      {pendingMessage && pendingType === 'research' && (
         <div className={styles.shardConfirm}>
           <div className={styles.shardConfirmText}>
-            {pendingType === 'research'
-              ? 'Activate research mode?'
-              : `Spend ${SHARD_COST} shards for a deep response?`}
+            Activate research mode?
             <span className={styles.shardConfirmBalance}>{shardCount} shards available</span>
           </div>
           <div className={styles.shardConfirmButtons}>
             <button className={styles.shardConfirmYes} onClick={confirmShardSpend} type="button">
-              {pendingType === 'research'
-                ? `Spend ${RESEARCH_COST.toLocaleString()} Shards`
-                : `Spend ${SHARD_COST} Shards`}
+              {`Spend ${RESEARCH_COST.toLocaleString()} Shards`}
             </button>
             <button className={styles.shardConfirmNo} onClick={cancelShardSpend} type="button">
-              {pendingType === 'research' ? 'Cancel' : 'Basic Response'}
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {shardUpsell && (
+        <div className={styles.shardUpsell} role="dialog" aria-modal="true" aria-label={shardUpsellTitle}>
+          <div className={styles.shardUpsellIconWrap} aria-hidden="true">
+            <Image src="/icons/ui-shard.svg" alt="" width={24} height={24} />
+          </div>
+          <div className={styles.shardUpsellCopy}>
+            <span className={styles.shardUpsellTitle}>{shardUpsellTitle}</span>
+            <span className={styles.shardUpsellBody}>{shardUpsellBody}</span>
+          </div>
+          <div className={styles.shardUpsellActions}>
+            <button className={styles.shardConfirmYes} onClick={handlePurchaseMoreShards} type="button">
+              Purchase More
+            </button>
+            <button className={styles.shardConfirmNo} onClick={dismissShardUpsell} type="button">
+              Not Now
             </button>
           </div>
         </div>
