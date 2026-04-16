@@ -19,11 +19,11 @@
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
-    padding-top: 66px; /* Account for mobile top bar (60px + 6px shadow) */
+    padding-top: 8px;
   }
 
   .page {
-    padding: 24px 16px;
+    padding: 0 16px 24px;
   }
 }
 
