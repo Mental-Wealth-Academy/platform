@@ -712,10 +712,10 @@ export default function Markets() {
 
           {/* ════ CENTER: Charts ════ */}
 
-          {/* Chart 1: Treasury Balance */}
+          {/* Chart 1: Market Treasury Balance */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Treasury Balance &middot; USDC &middot; Base Mainnet</span>
+              <span className={styles.panelTitle}>Markets Balance &middot; USDC &middot; Base Mainnet</span>
               <span className={styles.panelBadge}>on-chain</span>
             </div>
             <div className={styles.chartArea}>
@@ -728,7 +728,7 @@ export default function Markets() {
               {balance && (
                 <>
                   <div className={styles.balanceHero}>${balance.formatted}</div>
-                  <div className={styles.balanceLabel}>USDC Treasury Balance</div>
+                  <div className={styles.balanceLabel}>USDC Markets Balance</div>
                   <TickerLine stroke="var(--color-primary)" />
                   <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
                   <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />

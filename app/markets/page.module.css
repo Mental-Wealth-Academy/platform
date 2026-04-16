@@ -657,7 +657,7 @@
   font-size: 11px;
 }
 
-/* ── Treasury Balance Chart ── */
+/* ── Markets Balance Chart ── */
 .chartArea {
   flex: 1;
   display: flex;
@@ -871,4 +871,113 @@
   .positionsPanel {
     grid-column: 1;
   }
+}
+
+:global([data-theme="dark"]) .main {
+  background:
+    radial-gradient(circle at top, rgba(107, 128, 255, 0.14), transparent 34%),
+    linear-gradient(180deg, #0e1220 0%, #13192b 100%);
+}
+
+:global([data-theme="dark"]) .statusBar {
+  background: rgba(10, 14, 24, 0.88);
+  border-bottom-color: rgba(123, 132, 196, 0.28);
+}
+
+:global([data-theme="dark"]) .appleBar {
+  background: rgba(107, 128, 255, 0.08);
+  border-bottom-color: rgba(107, 128, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .grid,
+:global([data-theme="dark"]) .modelsColumn,
+:global([data-theme="dark"]) .marketsColumn {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .panel,
+:global([data-theme="dark"]) .modelPanel,
+:global([data-theme="dark"]) .marketRow {
+  background:
+    linear-gradient(180deg, rgba(19, 26, 43, 0.98) 0%, rgba(16, 21, 36, 0.98) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .panelTitle,
+:global([data-theme="dark"]) .modelName,
+:global([data-theme="dark"]) .signalLabel,
+:global([data-theme="dark"]) .chartStatLabel,
+:global([data-theme="dark"]) .marketMeta,
+:global([data-theme="dark"]) .logTime,
+:global([data-theme="dark"]) .logDetails,
+:global([data-theme="dark"]) .flowBarLabels,
+:global([data-theme="dark"]) .flowStatLabel,
+:global([data-theme="dark"]) .flowTradesLabel,
+:global([data-theme="dark"]) .flowTradeSize,
+:global([data-theme="dark"]) .flowTradeTime,
+:global([data-theme="dark"]) .positionAsset,
+:global([data-theme="dark"]) .positionEntry,
+:global([data-theme="dark"]) .positionStatus,
+:global([data-theme="dark"]) .balanceLabel,
+:global([data-theme="dark"]) .appleBarLabel,
+:global([data-theme="dark"]) .statusLabel,
+:global([data-theme="dark"]) .statusValue,
+:global([data-theme="dark"]) .lastUpdated {
+  color: rgba(202, 209, 235, 0.78);
+}
+
+:global([data-theme="dark"]) .paramValue,
+:global([data-theme="dark"]) .modelFormula,
+:global([data-theme="dark"]) .chartStatValue,
+:global([data-theme="dark"]) .marketSymbol,
+:global([data-theme="dark"]) .marketPrice,
+:global([data-theme="dark"]) .balanceHero,
+:global([data-theme="dark"]) .flowStatValue,
+:global([data-theme="dark"]) .flowTradePrice,
+:global([data-theme="dark"]) .polyQuestion,
+:global([data-theme="dark"]) .appleBarValue {
+  color: rgba(240, 244, 255, 0.96);
+}
+
+:global([data-theme="dark"]) .panelBadge {
+  background: rgba(107, 128, 255, 0.16);
+  border-color: rgba(107, 128, 255, 0.26);
+}
+
+:global([data-theme="dark"]) .signalRow {
+  background: rgba(116, 196, 101, 0.12);
+  border-color: rgba(116, 196, 101, 0.24);
+}
+
+:global([data-theme="dark"]) .chartPlaceholder {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .chartLine {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 10%, var(--color-primary) 50%, rgba(255, 255, 255, 0.08) 90%, transparent 100%);
+}
+
+:global([data-theme="dark"]) .flowBarWrap,
+:global([data-theme="dark"]) .polyBar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .flowTradesLabel {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="dark"]) .polymarketItem {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .polySectionLabel {
+  border-bottom-color: rgba(107, 128, 255, 0.22);
+}
+
+:global([data-theme="dark"]) .comingSoonText {
+  background: rgba(16, 21, 36, 0.92);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(230, 235, 255, 0.8);
 }
