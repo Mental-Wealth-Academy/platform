@@ -321,8 +321,16 @@ export default function HomePage() {
           </button>
         </section>
 
-        {/* ===== MORNING PAGE CARD ===== */}
-        <DailyNotes enablePersistence={isAuthenticated} compact />
+        {/* ===== MORNING PAGE CARD — inline on desktop, hidden on mobile (floats above bottom nav) ===== */}
+        <div className={styles.morningPagesInline}>
+          <DailyNotes enablePersistence={isAuthenticated} compact />
+        </div>
+
+        {/* ===== MORNING PAGE CARD — fixed above bottom nav on mobile ===== */}
+        <div className={styles.morningPagesFloat}>
+          <div className={styles.morningPagesGradient} />
+          <DailyNotes enablePersistence={isAuthenticated} compact />
+        </div>
 
         {/* ===== WEEK HEADER ===== */}
         <div className={styles.weekHeader}>
