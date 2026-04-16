@@ -436,6 +436,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                   className={styles.noteImage}
                 />
                 <div className={styles.promptBubble}>{WRITING_MESSAGES[dayMessageIndex]}</div>
+                <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
+                  {isPaused ? 'paused' : formatTimer(timerSeconds)}
+                </span>
               </div>
             </div>
 

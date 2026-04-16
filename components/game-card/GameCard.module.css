@@ -122,11 +122,11 @@
 
 .taskDescription {
   font-family: var(--font-primary, 'Poppins', sans-serif);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: rgba(26, 27, 36, 0.7);
   margin: 0;
-  line-height: 1.38;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -159,7 +159,8 @@
   font-size: 12px;
   font-weight: 600;
   color: #1A1B24;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.10em;
+  font-variant-numeric: tabular-nums;
 }
 
 .acceptButton {
@@ -178,6 +179,7 @@
 
 .card:hover .acceptBody {
   opacity: 1;
+  background: #1e2a52;
 }
 
 .card:active .acceptBody {
@@ -197,7 +199,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: opacity 0.15s, transform 0.1s;
+  opacity: 0.72;
+  transition: opacity 0.2s ease, background 0.2s ease, transform 0.1s;
 }
 
 .scanlines {
@@ -218,9 +221,9 @@
   position: relative;
   z-index: 2;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: #F6F8FF;
   text-transform: uppercase;
 }

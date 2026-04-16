@@ -6,6 +6,13 @@ import ProposalStages from '@/components/proposal-stages/ProposalStages';
 import { useSound } from '@/hooks/useSound';
 import styles from './ProposalCard.module.css';
 
+const REVIEW_LIMIT = 120;
+
+function truncate(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  return `${text.slice(0, limit).trimEnd()}…`;
+}
+
 interface ProposalReview {
   decision: 'approved' | 'rejected';
   reasoning: string;
@@ -62,6 +69,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   onChainData,
 }) => {
   const { play } = useSound();
+
+  const reviewFallback = 'Blue scores every proposal across six dimensions before it goes to vote.';
+  const reviewDisplay = truncate(review?.reasoning || reviewFallback, REVIEW_LIMIT);
 
   const getStage1Variant = () => {
     if (status === 'pending_review') {
@@ -225,9 +235,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
 
       <div className={styles.reviewSection}>
         <p className={styles.reviewLabel}>Blue&apos;s Review</p>
-        <p className={styles.reviewText}>
-          {review?.reasoning || 'Blue scores every proposal across six dimensions before it goes to vote.'}
-        </p>
+        <p className={styles.reviewText}>{reviewDisplay}</p>
       </div>
 
       <div className={styles.footer}>

@@ -641,6 +641,18 @@
     0 4px 18px rgba(81, 104, 255, 0.38);
 }
 
+.timerCountInline {
+  display: none;
+  flex-shrink: 0;
+  align-self: center;
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
 .textarea {
   width: 100%;
   flex: 1;
@@ -927,12 +939,50 @@
     min-height: 0;
   }
 
+  .modalHeader {
+    padding: 8px 16px 6px;
+    min-height: 0;
+  }
+
+  .headerLabel {
+    display: none;
+  }
+
+  .modalHeader .timerCount {
+    display: none;
+  }
+
   .writeArea {
-    padding: 10px 16px 6px;
+    padding: 8px 16px 4px;
   }
 
   .noteBottom {
-    padding: 6px 16px 10px;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 16px 8px;
+  }
+
+  .noteImage {
+    width: 42px;
+    height: 42px;
+  }
+
+  .promptBubble {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .timerCountInline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .textarea {
+    min-height: 0;
   }
 
   .modalFooter {
@@ -953,7 +1003,7 @@
   }
 
   .modal {
-    min-height: min(86vh, 760px);
+    min-height: min(82vh, 720px);
     border-radius: 22px;
   }
 
@@ -990,7 +1040,7 @@
   }
 
   .writeArea {
-    padding: 0 16px 16px;
+    padding: 0 16px 12px;
   }
 
   .promptPill {
@@ -1000,8 +1050,8 @@
   }
 
   .textarea {
-    min-height: 280px;
-    padding: 16px 16px 18px;
+    min-height: 220px;
+    padding: 14px 14px 16px;
     font-size: 15px;
   }
 

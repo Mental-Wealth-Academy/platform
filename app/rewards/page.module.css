@@ -8,7 +8,7 @@
   max-width: 1180px;
   width: 100%;
   margin: 0 auto;
-  padding: 6px 14px 32px;
+  padding: 6px 14px calc(32px + max(env(safe-area-inset-bottom, 0px), 16px));
   color: var(--color-text-dark);
 }
 
@@ -39,7 +39,7 @@
 .statChip {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 10px;
   min-width: 0;
   padding: 12px 14px;
@@ -50,7 +50,6 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
     0 10px 24px rgba(28, 44, 103, 0.08);
-  clip-path: polygon(0 8px, 8px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
   position: relative;
   overflow: hidden;
 }
@@ -107,10 +106,10 @@
 
 .statLabel {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: rgba(18, 25, 53, 0.48);
 }
@@ -124,10 +123,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
 }
 
 .profileChip {
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .profileAvatarShell {
@@ -175,7 +175,6 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     0 18px 34px rgba(18, 28, 62, 0.08);
-  clip-path: polygon(0 14px, 14px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
 }
 
 .heading::before {
@@ -219,8 +218,9 @@
 .headingCopy {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -263,13 +263,13 @@
 }
 
 .headingSubtitle {
-  margin: 0;
-  max-width: 36rem;
+  margin: 0 auto;
+  max-width: 44ch;
   color: rgba(18, 25, 53, 0.76);
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-size: 14px;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.5;
   text-wrap: pretty;
 }
 
@@ -277,6 +277,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 8px;
   min-height: 100%;
   padding: 14px 14px 12px;
@@ -298,20 +299,23 @@
 }
 
 .headingTimer {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  width: 100%;
   min-height: 50px;
   padding: 0 12px;
   border: 1px solid rgba(81, 104, 255, 0.16);
   border-radius: 12px;
   background: rgba(16, 24, 52, 0.94);
-  color: #121935;
+  color: #f2f6ff;
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #f2f6ff;
+  font-variant-numeric: tabular-nums;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     0 12px 24px rgba(14, 21, 45, 0.18);
@@ -335,6 +339,10 @@
 @media (max-width: 767px) {
   .pageLayout {
     margin-left: 0;
+  }
+
+  .page {
+    padding-bottom: calc(100px + max(env(safe-area-inset-bottom, 0px), 16px));
   }
 }
 
@@ -570,23 +578,39 @@
 
   .playerBarTrack {
     gap: 8px;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .statChip {
-    gap: 8px;
-    padding: 11px 12px;
+    gap: 6px;
+    padding: 10px 8px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .statCopy {
+    align-items: center;
   }
 
   .statIconShell,
   .profileAvatarShell {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border-radius: 10px;
+  }
+
+  .statLabel {
+    font-size: 8px;
   }
 
   .statValue {
     font-size: 14px;
+  }
+
+  .profileName {
+    font-size: 12px;
   }
 
   .headingContent {

@@ -214,10 +214,6 @@ export default function RewardsPage() {
               <div className={styles.headingHudLine} aria-hidden="true" />
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
-                  <div className={styles.headingMetaRow}>
-                    <span className={styles.headingMetaTag}>Quest Console</span>
-                    <span className={styles.headingMetaTag}>Live Season Feed</span>
-                  </div>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>
@@ -226,9 +222,7 @@ export default function RewardsPage() {
                   </p>
                 </div>
                 <div className={styles.headingTimerPanel}>
-                  <span className={styles.headingTimerLabel}>Refresh In</span>
                   <span className={styles.headingTimer}>{countdown}</span>
-                  <span className={styles.headingTimerHint}>Next mission board sync</span>
                 </div>
               </div>
             </div>

@@ -306,7 +306,7 @@ export default function VotingPage() {
               {communityView === 'overview' && (
                 <button
                   type="button"
-                  className={styles.proposalsEntryButton}
+                  className={`${styles.proposalsEntryButton} ${styles.overviewProposalsCta}`}
                   onClick={() => { play('click'); setCommunityView('proposals'); }}
                   onMouseEnter={() => play('hover')}
                 >
@@ -326,12 +326,37 @@ export default function VotingPage() {
             </div>
 
             <div className={styles.communityViewViewport}>
-              <div className={styles.communityViewMask}>
-              <div
-                className={styles.communityViewTrack}
-                style={{ transform: communityView === 'proposals' ? 'translateX(-50%)' : 'translateX(0%)' }}
-              >
+              {communityView === 'overview' && (
                 <section className={styles.communityViewPanel}>
+                <div className={styles.reserveCard}>
+                  <div className={styles.reserveHeader}>
+                    <div className={styles.reserveTitleSection}>
+                      <div className={styles.reserveIcon} aria-hidden="true">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="2" y="6" width="20" height="14" rx="2" fill="currentColor" />
+                          <rect x="2" y="9" width="20" height="3" fill="currentColor" opacity="0.7" />
+                          <circle cx="17" cy="16" r="2" fill="#ffffff" />
+                        </svg>
+                      </div>
+                      <div className={styles.reserveTitleText}>
+                        <span className={styles.reserveEyebrow}>Community Reserve</span>
+                        <span className={styles.reserveTitle}>Treasury</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.reserveAmountRow}>
+                    <span className={styles.reserveAmount}>$5,200</span>
+                    <span className={styles.reserveUnit}>USDC</span>
+                  </div>
+                  <div className={styles.reserveInfoSection}>
+                    <p className={styles.reserveDesc}>Pooled funds the community votes to deploy.</p>
+                  </div>
+                </div>
+
+                <div className={styles.overviewAngelSection}>
+                  <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
+                </div>
+
                 <section className={styles.fundingSection}>
                   <div className={styles.fundingCarouselViewport}>
                     <div className={styles.fundingCarouselMask}>
@@ -410,46 +435,10 @@ export default function VotingPage() {
                   </div>
                 </section>
 
-                <div className={styles.statCardsRow}>
-                  <div className={styles.statCardCompact}>
-                    <TreasuryDisplay
-                      contractAddress={CONTRACT_ADDRESS}
-                      usdcAddress={USDC_ADDRESS}
-                      className={styles.treasuryHeroCard}
-                    />
-                  </div>
-                  <div className={styles.statCardCompact}>
-                    <div className={`${styles.exchangeCard} ${styles.votingPowerCard} ${styles.staticInfoCard}`}>
-                      <div className={styles.exchangeHeader}>
-                        <div className={styles.exchangeIcon}>
-                          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 9.5H20" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-                            <path d="M6 14.5H18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-                            <circle cx="8" cy="9.5" r="1.8" fill="currentColor"/>
-                            <circle cx="16" cy="14.5" r="1.8" fill="currentColor"/>
-                          </svg>
-                        </div>
-                        <div className={styles.exchangeTitleText}>
-                          <span className={styles.exchangeLabel}>Community Reserve</span>
-                          <span className={styles.exchangeTitle}>Treasury</span>
-                        </div>
-                      </div>
-                      <div className={styles.exchangePriceRow}>
-                        <span className={styles.exchangePrice}>$5,200</span>
-                        <span className={styles.exchangeCurrency}>USDC available</span>
-                      </div>
-                      <p className={styles.exchangeDesc}>
-                        Shared community reserve for wellness support, platform infrastructure, creator rewards, and proposals the community votes to fund together over time.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={styles.overviewAngelSection}>
-                  <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-                </div>
                 </section>
+              )}
 
+              {communityView === 'proposals' && (
                 <section className={styles.communityViewPanel}>
                   <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
                     <button
@@ -482,6 +471,11 @@ export default function VotingPage() {
                         <span className={styles.proposalRewardValue}>-500</span>
                       </span>
                     </button>
+                    <TreasuryDisplay
+                      contractAddress={CONTRACT_ADDRESS}
+                      usdcAddress={USDC_ADDRESS}
+                      className={styles.treasuryHeroCard}
+                    />
                     {loading ? (
                       <div className={styles.proposalsGrid}>
                       {[...Array(3)].map((_, i) => (
@@ -554,9 +548,8 @@ export default function VotingPage() {
                   )}
                 </div>
                 </section>
-              </div>
+              )}
             </div>
-          </div>
           </div>
           </>
           )}

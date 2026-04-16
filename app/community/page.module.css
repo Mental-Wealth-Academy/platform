@@ -33,6 +33,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 24px;
   position: relative;
   z-index: 1;
@@ -87,7 +88,6 @@
   border: 1px solid rgba(81, 104, 255, 0.16);
   background: rgba(81, 104, 255, 0.08);
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .proposalRewardIcon {
@@ -330,40 +330,163 @@
 }
 
 :global(:root:not([data-theme="dark"])) .votingPowerCard {
-  background: linear-gradient(135deg, #fcfffb 0%, #f2fbf4 44%, #edf8f0 100%);
-  border-color: rgba(116, 196, 101, 0.18);
+  background: linear-gradient(135deg, #ffffff 0%, #f4f6ff 100%);
+  border-color: rgba(81, 104, 255, 0.16);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 16px 32px rgba(116, 196, 101, 0.12);
+    0 12px 28px rgba(81, 104, 255, 0.1);
 }
 
 :global(:root:not([data-theme="dark"])) .votingPowerCard:hover {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 20px 36px rgba(116, 196, 101, 0.16);
+    0 16px 32px rgba(81, 104, 255, 0.14);
 }
 
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeIcon {
-  background: rgba(116, 196, 101, 0.14);
-  border-color: rgba(116, 196, 101, 0.24);
+.reserveCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #fbfdff 48%, #f4f8ff 100%);
+  border: 2px solid #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 14px 28px rgba(81, 104, 255, 0.08);
+  text-align: left;
+  min-width: 0;
 }
 
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeTitle,
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangePrice {
-  color: #24513a;
+.reserveHeader {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeLabel,
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeDesc {
-  color: rgba(36, 81, 58, 0.56);
+.reserveTitleSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeDesc {
-  border-top-color: rgba(116, 196, 101, 0.14);
+.reserveIcon {
+  width: 28px;
+  height: 28px;
+  background: rgba(81, 104, 255, 0.12);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(81, 104, 255, 0.25);
+  flex-shrink: 0;
 }
 
-:global(:root:not([data-theme="dark"])) .votingPowerCard .exchangeCurrency {
-  color: rgba(47, 143, 60, 0.74);
+.reserveIcon svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary, #5168FF);
+}
+
+.reserveTitleText {
+  margin: 0;
+  min-width: 0;
+}
+
+.reserveEyebrow {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  font-family: var(--font-button);
+  color: var(--color-text-muted);
+  margin: 0 0 2px 0;
+}
+
+.reserveTitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.reserveAmountRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.reserveAmount {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  line-height: 1.2;
+}
+
+.reserveUnit {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(81, 104, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.reserveInfoSection {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.reserveDesc {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .reserveCard {
+    padding: 12px;
+    margin-top: 14px;
+  }
+
+  .reserveHeader {
+    margin-bottom: 8px;
+  }
+
+  .reserveEyebrow {
+    font-size: 9px;
+  }
+
+  .reserveTitle {
+    font-size: 12px;
+  }
+
+  .reserveAmount {
+    font-size: 20px;
+  }
+
+  .reserveUnit {
+    font-size: 10px;
+  }
+
+  .reserveInfoSection {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
 }
 
 .treasuryTypography {
@@ -409,6 +532,7 @@
 .exchangeCard {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   padding: 16px;
   background: var(--color-background);
   border: 2px solid #ffffff;
@@ -417,7 +541,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  text-align: left;
+  text-align: center;
   font: inherit;
   line-height: normal;
   text-transform: none;
@@ -431,9 +555,12 @@
 
 .exchangeHeader {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 12px;
+  text-align: center;
 }
 
 .exchangeIcon {
@@ -457,6 +584,8 @@
 .exchangeTitleText {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .statCardCompact .exchangeLabel {
@@ -482,6 +611,8 @@
 .exchangePriceRow {
   display: flex;
   align-items: baseline;
+  justify-content: center;
+  text-align: center;
 }
 
 .statCardCompact .exchangePrice {
@@ -515,6 +646,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   text-transform: none;
   letter-spacing: normal;
+  text-align: center;
 }
 
 .staticInfoCard {
@@ -756,7 +888,7 @@
 .communityMainWrapper {
   width: 100%;
   padding: 0 12px 22px;
-  margin: 0 -12px -22px;
+  margin: 0 auto -22px;
   box-sizing: border-box;
 }
 
@@ -790,7 +922,9 @@
 
 .proposalsEntryButton {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   width: 100%;
   padding: 14px 16px;
@@ -800,13 +934,15 @@
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: left;
+  text-align: center;
 }
 
 .proposalsEntryButton:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
+
+.overviewProposalsCta {}
 
 .proposalsEntryIcon {
   width: 40px;
@@ -828,9 +964,8 @@
 }
 
 .proposalsEntryContent {
-  flex: 1;
   min-width: 0;
-  text-align: left;
+  text-align: center;
 }
 
 .proposalsEntryLabel {
@@ -873,8 +1008,7 @@
 }
 
 .communityViewPanel {
-  width: 50%;
-  flex: 0 0 50%;
+  width: 100%;
   padding: 0 12px 18px;
   box-sizing: border-box;
 }
@@ -967,9 +1101,11 @@
 
 .fundingStateMetrics {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
 }
 
 .fundingStatePercent {
@@ -1583,7 +1719,7 @@
 /* Stat Cards Row — side by side under tabs */
 .statCardsRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   align-items: stretch;
 }
@@ -2203,6 +2339,10 @@
   .proposalsEntryButton {
     row-gap: 10px;
     padding: 14px;
+  }
+
+  .overviewProposalsCta {
+    display: none;
   }
 
   .primaryCta {
