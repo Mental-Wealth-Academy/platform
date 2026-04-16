@@ -55,7 +55,16 @@ export const HeroSection: React.FC = () => {
               <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
             </span>
           </button>
-
+        </div>
+        <div className={styles.heroImageCol}>
+          <Image
+            src="/images/hero-mockup.png"
+            alt="Mental Wealth Academy platform"
+            width={560}
+            height={420}
+            className={styles.heroMockup}
+            priority
+          />
         </div>
       </div>
 
