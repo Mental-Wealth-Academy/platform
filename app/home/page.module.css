@@ -674,13 +674,19 @@
   .morningPagesGradient {
     display: block;
     position: absolute;
-    bottom: 0;
+    bottom: calc(-1 * (74px + max(env(safe-area-inset-bottom, 0px), 16px)));
     left: 0;
     right: 0;
     height: 100px;
     transform: translateY(-100%);
     background: linear-gradient(to bottom, transparent 0%, var(--color-background, #FBF8FF) 100%);
     pointer-events: none;
+    z-index: 0;
+  }
+
+  .morningPagesFloat > :last-child {
+    position: relative;
+    z-index: 1;
   }
 }
 
