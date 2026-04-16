@@ -812,19 +812,25 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .backdrop {
+    background: transparent;
+    backdrop-filter: none;
+    pointer-events: none;
+  }
+
   .chatContainer {
-    left: 12px;
-    right: 12px;
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px) + 10px);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
     width: auto;
-    height: min(620px, calc(100dvh - 108px - max(env(safe-area-inset-bottom, 0px), 16px)));
-    max-height: min(620px, calc(100dvh - 108px - max(env(safe-area-inset-bottom, 0px), 16px)));
-    border-radius: 18px;
-    border: 1px solid rgba(81, 104, 255, 0.12);
-    box-shadow:
-      0 8px 24px rgba(81, 104, 255, 0.08),
-      0 24px 52px rgba(11, 14, 40, 0.2);
+    height: auto;
+    max-height: none;
+    background: #ffffff;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
 
   .messageBubble {
@@ -838,7 +844,7 @@
 
 @media (max-width: 480px) {
   .messagesArea {
-    padding: 56px 12px 8px;
+    padding: 56px 12px 10px;
   }
 
   .inputArea {
@@ -1473,6 +1479,17 @@
   background: linear-gradient(#ffffff, #ffffff) padding-box,
               linear-gradient(135deg, #ff6b6b, #f59e0b, #84cc16, #22c55e, #38bdf8, #8b5cf6, #ec4899) border-box;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.35), 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 1024px) {
+  :global(:root:not([data-theme="dark"])) .backdrop {
+    background: transparent;
+  }
+
+  :global(:root:not([data-theme="dark"])) .chatContainer {
+    background: #ffffff;
+    box-shadow: none;
+  }
 }
 
 :global(:root:not([data-theme="dark"])) .closeButton,

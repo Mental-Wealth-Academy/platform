@@ -272,7 +272,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
     const syncMobileState = (event?: MediaQueryListEvent) => {
       const mobile = event ? event.matches : mediaQuery.matches;
       setIsMobile(mobile);

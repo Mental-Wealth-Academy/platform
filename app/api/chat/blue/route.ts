@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import bluePersona from '@/lib/bluepersonality.json';
 
@@ -28,6 +29,17 @@ RULES:
 - Default to English unless the user switches.`;
 
 const RESEARCH_SYSTEM_PROMPT = `You are Blue in research mode. Synthesize the provided research sources into one concise, graduate-level paragraph. High-signal vocabulary, no fluff. Reference frameworks, findings, and theoretical models directly. No markdown. If sources are provided, ground your synthesis in them. If no sources, draw from your training on academic literature.`;
+
+const BLUE_MEMORY_EXTRACTION_PROMPT = `Extract only durable, high-signal memories about the user from this exchange.
+
+Return raw JSON only in this shape:
+{"facts":[{"category":"preference|goal|theme|follow_up|identity|habit","summary":"string","confidence":0.0}]}
+
+Rules:
+- Only include memories likely to matter in future conversations.
+- Keep summaries short, concrete, and reusable.
+- Do not store transient moods, raw private journal text, or broad psychological labels.
+- If nothing durable should be stored, return {"facts":[]}.`;
 
 const LINKEDIN_PROFESSIONAL_SYSTEM_PROMPT = `You are an elite LinkedIn and professional writing assistant for James Marsh.
 
@@ -67,6 +79,14 @@ interface ChatAttachment {
   mime: string;
   name?: string;
   extractedText?: string | null;
+}
+
+interface ElizaMessage {
+  role: 'system' | 'user' | 'assistant';
+  parts: Array<{
+    type: 'text';
+    text: string;
+  }>;
 }
 
 function isClaudeImageMime(mime: string) {
@@ -145,8 +165,7 @@ async function buildLinkedInClaudeMessage(
   ];
 }
 
-async function callElizaCloud(userMessage: string, mode?: string): Promise<string> {
-  const systemPrompt = mode === 'research' ? RESEARCH_SYSTEM_PROMPT : BLUE_SYSTEM_PROMPT;
+async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
   const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
     method: 'POST',
     headers: {
@@ -154,10 +173,7 @@ async function callElizaCloud(userMessage: string, mode?: string): Promise<strin
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      messages: [
-        { role: 'system', parts: [{ type: 'text', text: systemPrompt }] },
-        { role: 'user', parts: [{ type: 'text', text: userMessage }] },
-      ],
+      messages,
     }),
   });
 
@@ -183,6 +199,98 @@ async function callElizaCloud(userMessage: string, mode?: string): Promise<strin
   if (!fullText) throw new Error('Eliza Cloud returned empty response');
   console.log('Blue chat completed via Eliza Cloud');
   return fullText;
+}
+
+function buildBlueChatMessages(args: {
+  userMessage: string;
+  contextText: string;
+  recentMessages: Array<{ role: 'user' | 'assistant'; text: string }>;
+}): ElizaMessage[] {
+  const truncate = (text: string, maxLength: number) => (
+    text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text
+  );
+
+  const historyMessages: ElizaMessage[] = args.recentMessages.map((message) => ({
+    role: message.role,
+    parts: [{ type: 'text', text: truncate(message.text, 320) }],
+  }));
+
+  return [
+    {
+      role: 'system',
+      parts: [{
+        type: 'text',
+        text: `${BLUE_SYSTEM_PROMPT}\n\n${truncate(args.contextText, 4000)}`,
+      }],
+    },
+    ...historyMessages,
+    {
+      role: 'user',
+      parts: [{ type: 'text', text: args.userMessage }],
+    },
+  ];
+}
+
+function tryParseJsonObject<T>(raw: string): T | null {
+  const trimmed = raw.trim();
+  const withoutFences = trimmed
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/, '');
+
+  try {
+    return JSON.parse(withoutFences) as T;
+  } catch {
+    const firstBrace = withoutFences.indexOf('{');
+    const lastBrace = withoutFences.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) {
+      try {
+        return JSON.parse(withoutFences.slice(firstBrace, lastBrace + 1)) as T;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+}
+
+async function extractBlueMemories(args: {
+  userMessage: string;
+  assistantMessage: string;
+}) {
+  const extractionInput = [
+    `User message: ${args.userMessage}`,
+    `Blue response: ${args.assistantMessage}`,
+  ].join('\n');
+
+  const response = await callElizaCloud([
+    {
+      role: 'system',
+      parts: [{ type: 'text', text: BLUE_MEMORY_EXTRACTION_PROMPT }],
+    },
+    {
+      role: 'user',
+      parts: [{ type: 'text', text: extractionInput }],
+    },
+  ]);
+
+  const parsed = tryParseJsonObject<{ facts?: Array<{ category?: string; summary?: string; confidence?: number }> }>(response);
+  const facts = Array.isArray(parsed?.facts) ? parsed.facts : [];
+
+  return facts
+    .map((fact) => ({
+      category: fact.category,
+      summary: typeof fact.summary === 'string' ? fact.summary.trim() : '',
+      confidence: typeof fact.confidence === 'number' ? fact.confidence : 0.5,
+    }))
+    .filter((fact) => (
+      fact.summary
+      && ['preference', 'goal', 'theme', 'follow_up', 'identity', 'habit'].includes(String(fact.category))
+    )) as Array<{
+      category: 'preference' | 'goal' | 'theme' | 'follow_up' | 'identity' | 'habit';
+      summary: string;
+      confidence: number;
+    }>;
 }
 
 async function callClaudeLinkedInProfessional(
@@ -274,7 +382,10 @@ export async function POST(request: Request) {
   // Research mode fallback: synthesize from training (no x402 fetch here)
   if (isResearch) {
     try {
-      const response = await callElizaCloud(body.message, 'research');
+      const response = await callElizaCloud([
+        { role: 'system', parts: [{ type: 'text', text: RESEARCH_SYSTEM_PROMPT }] },
+        { role: 'user', parts: [{ type: 'text', text: body.message }] },
+      ]);
       return NextResponse.json({ response });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'AI error';
@@ -324,7 +435,59 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await callElizaCloud(body.message);
+    const blueContext = await buildBlueContext({
+      userId: user.id,
+      username: user.username ?? null,
+    });
+
+    const response = await callElizaCloud(buildBlueChatMessages({
+      userMessage: body.message,
+      contextText: blueContext.contextText,
+      recentMessages: blueContext.values.recentMessages,
+    }));
+
+    try {
+      const userChatMessage = await storeBlueChatMessage({
+        userId: user.id,
+        role: 'user',
+        text: body.message,
+        metadata: {
+          mode: 'chat',
+          attachmentCount: attachments.length,
+        },
+      });
+
+      await storeBlueChatMessage({
+        userId: user.id,
+        role: 'assistant',
+        text: response,
+        metadata: {
+          mode: 'chat',
+        },
+      });
+
+      await touchBlueRelationship({
+        userId: user.id,
+        lastUserMessage: body.message,
+        lastBlueResponse: response,
+      });
+
+      const extractedFacts = await extractBlueMemories({
+        userMessage: body.message,
+        assistantMessage: response,
+      });
+
+      if (extractedFacts.length) {
+        await upsertBlueFacts({
+          userId: user.id,
+          sourceMessageId: userChatMessage.id,
+          facts: extractedFacts,
+        });
+      }
+    } catch (memoryError: unknown) {
+      const msg = memoryError instanceof Error ? memoryError.message : 'unknown memory error';
+      console.error('Blue memory persistence error:', msg);
+    }
 
     return NextResponse.json({
       response,
