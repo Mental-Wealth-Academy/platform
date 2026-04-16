@@ -172,14 +172,20 @@ export default function RewardsPage() {
                   <div className={styles.statIconShell}>
                     <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.statShardIcon} />
                   </div>
-                  <span className={styles.statValue}>{playerProfile?.shardCount ?? 0}</span>
+                  <div className={styles.statCopy}>
+                    <span className={styles.statLabel}>Shards</span>
+                    <span className={styles.statValue}>{playerProfile?.shardCount ?? 0}</span>
+                  </div>
                 </div>
 
                 <div className={styles.statChip}>
                   <div className={styles.statIconShell}>
                     <Trophy size={18} weight="fill" className={styles.statTrophyIcon} />
                   </div>
-                  <span className={styles.statValue}>{completedQuestCount}</span>
+                  <div className={styles.statCopy}>
+                    <span className={styles.statLabel}>Cleared</span>
+                    <span className={styles.statValue}>{completedQuestCount}</span>
+                  </div>
                 </div>
 
                 <div className={`${styles.statChip} ${styles.profileChip}`}>
@@ -196,23 +202,33 @@ export default function RewardsPage() {
                       <div className={styles.profileFallbackAvatar}>{playerInitial}</div>
                     )}
                   </div>
+                  <div className={styles.statCopy}>
+                    <span className={styles.statLabel}>Player</span>
+                    <span className={styles.profileName}>{playerName}</span>
+                  </div>
                 </div>
               </div>
             </section>
 
             <div className={styles.heading}>
+              <div className={styles.headingHudLine} aria-hidden="true" />
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
+                  <div className={styles.headingMetaRow}>
+                    <span className={styles.headingMetaTag}>Quest Console</span>
+                    <span className={styles.headingMetaTag}>Live Season Feed</span>
+                  </div>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>
                   <p className={styles.headingSubtitle}>
                     Finish quests, claim shards, and keep your momentum visible.
                   </p>
-                  <div className={styles.headingTimerRow}>
-                    <span className={styles.headingTimerLabel}>refresh in</span>
-                    <span className={styles.headingTimer}>{countdown}</span>
-                  </div>
+                </div>
+                <div className={styles.headingTimerPanel}>
+                  <span className={styles.headingTimerLabel}>Refresh In</span>
+                  <span className={styles.headingTimer}>{countdown}</span>
+                  <span className={styles.headingTimerHint}>Next mission board sync</span>
                 </div>
               </div>
             </div>

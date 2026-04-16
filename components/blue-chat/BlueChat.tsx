@@ -175,6 +175,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
@@ -268,6 +269,24 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setViewerProfile({ username: data.user?.username ?? null });
       }
     } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const syncMobileState = (event?: MediaQueryListEvent) => {
+      const mobile = event ? event.matches : mediaQuery.matches;
+      setIsMobile(mobile);
+      if (mobile) {
+        setIsExpanded(false);
+      }
+    };
+
+    syncMobileState();
+    mediaQuery.addEventListener('change', syncMobileState);
+
+    return () => {
+      mediaQuery.removeEventListener('change', syncMobileState);
+    };
   }, []);
 
   useEffect(() => {
@@ -1395,7 +1414,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   );
 
   /* ── Expanded (fullscreen) layout ── */
-  if (isExpanded) {
+  if (isExpanded && !isMobile) {
     return (
       <>
         <div className={styles.backdrop} onClick={() => setIsExpanded(false)} />
@@ -1663,11 +1682,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       <div className={styles.chatContainer}>
         <div className={styles.compactControls}>
-          <button className={styles.expandButton} onClick={() => setIsExpanded(true)} type="button" aria-label="Expand to fullscreen">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-            </svg>
-          </button>
+          {!isMobile && (
+            <button className={styles.expandButton} onClick={() => setIsExpanded(true)} type="button" aria-label="Expand to fullscreen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+            </button>
+          )}
           <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close chat">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 6L6 18M6 6l12 12" />

@@ -673,13 +673,17 @@
   /* Gradient: fades page content out as it approaches the button */
   .morningPagesGradient {
     display: block;
-    position: absolute;
-    bottom: calc(-1 * (74px + max(env(safe-area-inset-bottom, 0px), 16px)));
+    position: fixed;
     left: 0;
     right: 0;
-    height: 100px;
-    transform: translateY(-100%);
-    background: linear-gradient(to bottom, transparent 0%, var(--color-background, #FBF8FF) 100%);
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
+    height: 120px;
+    background: linear-gradient(
+      to bottom,
+      rgba(251, 248, 255, 0) 0%,
+      rgba(251, 248, 255, 0.72) 62%,
+      rgba(251, 248, 255, 1) 100%
+    );
     pointer-events: none;
     z-index: 0;
   }
