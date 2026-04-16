@@ -11,6 +11,7 @@ import {
   House,
   IconProps,
   ImagesSquare,
+  Lightning,
   Microscope,
   UserCircle,
   UsersThree,
@@ -60,6 +61,7 @@ const navSections: NavSection[] = [
     id: 'extras',
     label: 'EXTRAS',
     items: [
+      { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

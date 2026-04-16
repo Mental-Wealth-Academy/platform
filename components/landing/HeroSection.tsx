@@ -8,26 +8,11 @@ import { useSound } from '@/hooks/useSound';
 
 export const HeroSection: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
   const { play } = useSound();
 
   const handleEnterAcademy = () => {
     play('click');
-    setShowPassword(true);
-    setPassword('');
-    setPasswordError(false);
-  };
-
-  const handlePasswordSubmit = () => {
-    if (password === 'letmein') {
-      play('click');
-      window.location.href = '/home';
-    } else {
-      setPasswordError(true);
-      play('error');
-    }
+    window.location.href = '/home';
   };
 
   const handleOnboardingComplete = () => {
@@ -70,31 +55,6 @@ export const HeroSection: React.FC = () => {
 
       {showOnboarding && (
         <MobileOnboarding onComplete={handleOnboardingComplete} />
-      )}
-
-      {showPassword && (
-        <div className={styles.passwordOverlay} onClick={() => setShowPassword(false)}>
-          <div className={styles.passwordModal} onClick={(e) => e.stopPropagation()}>
-            <p className={styles.passwordLabel}>Enter the password</p>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') handlePasswordSubmit(); }}
-              className={`${styles.passwordInput} ${passwordError ? styles.passwordInputError : ''}`}
-              placeholder="Password"
-              autoFocus
-            />
-            {passwordError && <p className={styles.passwordError}>Wrong password</p>}
-            <button
-              type="button"
-              className={styles.passwordSubmit}
-              onClick={handlePasswordSubmit}
-            >
-              Enter
-            </button>
-          </div>
-        </div>
       )}
     </>
   );
