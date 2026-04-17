@@ -37,6 +37,7 @@ import { SoundProvider } from '@/components/sound/SoundProvider';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import TopNavigation from '@/components/top-navigation/TopNavigation';
 import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
+import PwaRegistrar from '@/components/pwa/PwaRegistrar';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -45,8 +46,19 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
   description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
+  manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
+    apple: '/icons/badge-academy.png',
+  },
+  applicationName: 'Mental Wealth Academy',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black',
+    title: 'Mental Wealth Academy',
+  },
+  formatDetection: {
+    telephone: false,
   },
   openGraph: {
     title: 'Mental Wealth Academy',
@@ -182,6 +194,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <PwaRegistrar />
         <MiniAppProvider>
           <SoundProvider>
             <ConditionalWeb3Provider>

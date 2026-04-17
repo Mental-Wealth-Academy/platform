@@ -55,7 +55,7 @@ interface WeekTasksViewProps {
   isLocked?: boolean;
   initialIsSealed?: boolean;
   initialSealTxHash?: string | null;
-  onSealComplete?: (weekNumber: number, txHash: string) => void;
+  onSealComplete?: (weekNumber: number, txHash: string | null) => void;
 }
 
 export default function WeekTasksView({
@@ -92,7 +92,7 @@ export default function WeekTasksView({
   });
   const [isSealed, setIsSealed] = useState(initialIsSealed ?? false);
   const [isSealing, setIsSealing] = useState(false);
-  const [sealStep, setSealStep] = useState<'confirm' | 'verifying' | 'signing' | 'complete'>('confirm');
+  const [sealStep, setSealStep] = useState<'confirm' | 'sealing' | 'complete'>('confirm');
   const [showSealModal, setShowSealModal] = useState(false);
   const [sealTxHash, setSealTxHash] = useState<string | null>(initialSealTxHash ?? null);
   const [isLoading, setIsLoading] = useState(true);
@@ -232,25 +232,11 @@ export default function WeekTasksView({
     setLifePieValues(prev => ({ ...prev, [area]: value }));
   };
 
-  const generateContentHash = async (): Promise<string> => {
-    const data = new TextEncoder().encode(JSON.stringify({
-      weekNumber, sectionData, blurtEntries: blurtEntries.filter(e => e.blurt || e.affirmation),
-      checklistStates, enjoyListEntries: enjoyListEntries.filter(e => e.activity),
-      timeMapActivities: timeMapActivities.filter(a => a.activity), lifePieValues,
-      completedSections: Array.from(completedSections), timestamp: Date.now(),
-    }));
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-  };
-
   const handleSealWeek = async () => {
     if (!canSeal || isSealing) return;
     setIsSealing(true);
-    setSealStep('verifying');
+    setSealStep('sealing');
     try {
-      await generateContentHash();
-      await new Promise(r => setTimeout(r, 800));
-      setSealStep('signing');
       const authHeaders = await getAuthHeaders();
       const res = await fetch('/api/ethereal-progress', {
         method: 'POST',
@@ -260,10 +246,10 @@ export default function WeekTasksView({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Seal failed');
-      setSealTxHash(data.txHash);
+      setSealTxHash(data.txHash ?? null);
       setSealStep('complete');
       setIsSealed(true);
-      if (onSealComplete && data.txHash) onSealComplete(weekNumber, data.txHash);
+      if (onSealComplete) onSealComplete(weekNumber, data.txHash ?? null);
       if (typeof window !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 30, 50, 30, 100]);
     } catch (err) {
       console.error('Seal failed:', err);
@@ -634,16 +620,10 @@ export default function WeekTasksView({
                 </div>
               </>
             )}
-            {sealStep === 'verifying' && (
+            {sealStep === 'sealing' && (
               <div className={styles.sealModalProgress}>
                 <div className={styles.sealSpinner} />
-                <span>Verifying content...</span>
-              </div>
-            )}
-            {sealStep === 'signing' && (
-              <div className={styles.sealModalProgress}>
-                <div className={styles.sealSpinner} />
-                <span>Signing attestation...</span>
+                <span>Sealing week...</span>
               </div>
             )}
             {sealStep === 'complete' && (

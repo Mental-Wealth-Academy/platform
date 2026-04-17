@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createHash } from 'crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
-import { sealWeekOnChain, PATHWAY_CONTRACT_ADDRESS } from '@/lib/pathway-contract';
 import { getSeasonInfo } from '@/lib/season';
 
 export const runtime = 'nodejs';
@@ -123,46 +121,9 @@ export async function POST(request: Request) {
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
-    // Enforce sequential: all prior weeks must be sealed
-    if (weekNumber > 1) {
-      const priorUnsealedRows = await sqlQuery<Array<{ cnt: string }>>(
-        `SELECT COUNT(*) as cnt FROM weeks
-         WHERE user_id = :userId AND week_number >= 1 AND week_number < :weekNumber AND is_sealed = true`,
-        { userId: user.id, weekNumber }
-      );
-      const sealedPriorCount = parseInt(priorUnsealedRows[0]?.cnt || '0', 10);
-      if (sealedPriorCount < weekNumber - 1) {
-        return NextResponse.json(
-          { error: 'All prior weeks must be sealed first.' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Generate SHA-256 content hash server-side
-    const contentString = JSON.stringify({ weekNumber, progressData, userId: user.id });
-    const contentHash = createHash('sha256').update(contentString).digest('hex');
-
-    // Call contract to seal on-chain first (if contract is configured)
-    // This is done outside the transaction since it's an external call
-    let txHash: string | null = null;
-    if (PATHWAY_CONTRACT_ADDRESS && process.env.PATHWAY_OWNER_PRIVATE_KEY) {
-      try {
-        const result = await sealWeekOnChain(user.walletAddress, weekNumber, contentHash);
-        txHash = result.txHash;
-      } catch (err: any) {
-        console.error('On-chain seal failed:', err);
-        return NextResponse.json(
-          { error: 'On-chain seal transaction failed. Please try again.' },
-          { status: 500 }
-        );
-      }
-    } else {
-      // No contract configured — seal in DB only (dev/preview mode)
-      txHash = `0x${contentHash.slice(0, 64)}`;
-    }
-
-    // Upsert progress, mark sealed, and award shards atomically
+    // Upsert progress, mark sealed, and award shards atomically.
+    // Sealing is a normal system action and does not depend on prior weeks
+    // or an on-chain attestation.
     const pathwayCompleted = await withTransaction(async (client) => {
       // Upsert progress data
       await sqlQueryWithClient(
@@ -179,9 +140,9 @@ export async function POST(request: Request) {
       await sqlQueryWithClient(
         client,
         `UPDATE weeks
-         SET is_sealed = true, seal_tx_hash = :txHash, seal_content_hash = :contentHash, updated_at = CURRENT_TIMESTAMP
+         SET is_sealed = true, seal_tx_hash = NULL, seal_content_hash = NULL, updated_at = CURRENT_TIMESTAMP
          WHERE user_id = :userId AND week_number = :weekNumber`,
-        { txHash, contentHash, userId: user.id, weekNumber }
+        { userId: user.id, weekNumber }
       );
 
       // Award 700 shards for sealing a week
@@ -212,8 +173,8 @@ export async function POST(request: Request) {
       ok: true,
       sealed: true,
       weekNumber,
-      txHash,
-      contentHash,
+      txHash: null,
+      contentHash: null,
       pathwayCompleted,
     });
   }
