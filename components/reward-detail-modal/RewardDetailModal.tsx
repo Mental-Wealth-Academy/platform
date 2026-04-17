@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import styles from './RewardDetailModal.module.css';
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
@@ -39,6 +40,7 @@ const CloseIcon: React.FC = () => (
 const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, reward: quest }) => {
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const { getAccessToken } = usePrivy();
   const { address, isConnected } = useAccount();
   const [step1Completed, setStep1Completed] = useState(false);
   const [step2Completed, setStep2Completed] = useState(false);
@@ -49,6 +51,11 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
   const [shardsAwarded, setShardsAwarded] = useState(0);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
   const [startingShards, setStartingShards] = useState(0);
+
+  const getAuthHeaders = async (): Promise<HeadersInit> => {
+    const token = await getAccessToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -224,9 +231,11 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
 
     setIsCompleting(true);
     try {
+      const authHeaders = await getAuthHeaders();
       const meResponse = await fetch('/api/me', {
         cache: 'no-store',
         credentials: 'include',
+        headers: authHeaders,
       });
       const meData = await meResponse.json();
       const currentStartingShards = meData?.user?.shardCount ?? 0;
@@ -236,7 +245,7 @@ const QuestDetailModal: React.FC<RewardDetailModalProps> = ({ isOpen, onClose, r
       const response = await fetch('/api/quests/complete', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify({
           questId: quest.id,
           shards: shardReward,

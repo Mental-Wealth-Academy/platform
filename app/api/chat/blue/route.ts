@@ -340,7 +340,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  let body: { message: string; confirm?: boolean; mode?: string; attachments?: ChatAttachment[] };
+  let body: { message: string; mode?: string; attachments?: ChatAttachment[] };
   try {
     body = await request.json();
   } catch {
@@ -407,15 +407,6 @@ export async function POST(request: Request) {
       shardCount,
       cost: SHARD_COST,
     }, { status: 402 });
-  }
-
-  if (!body.confirm) {
-    return NextResponse.json({
-      needsConfirmation: true,
-      shardCount,
-      cost: SHARD_COST,
-      remaining: shardCount - SHARD_COST,
-    });
   }
 
   // Deduct shards atomically
