@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
 import { v4 as uuidv4 } from 'uuid';
@@ -159,6 +160,16 @@ export async function POST(request: Request) {
         hasLinkedAccount: !!shardRows[0]?.wallet_address,
       };
     });
+
+    try {
+      await recordBlueQuestCompletion({
+        userId: user.id,
+        questId: resolvedQuestId,
+      });
+    } catch (memoryError: unknown) {
+      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue quest memory error';
+      console.error('Blue quest memory error:', message);
+    }
 
     return NextResponse.json({
       ok: true,

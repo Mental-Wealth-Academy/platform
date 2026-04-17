@@ -79,6 +79,7 @@ async function _ensureBlueMemorySchemaImpl() {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_chat_messages_user_created ON blue_chat_messages(user_id, created_at DESC)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_memory_facts_user_updated ON blue_memory_facts(user_id, updated_at DESC)`);
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_memory_facts_user_category ON blue_memory_facts(user_id, category)`);
+    await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_memory_facts_user_event_key ON blue_memory_facts(user_id, (metadata->>'eventKey'))`);
   } catch {
     // Indexes may already exist.
   }
