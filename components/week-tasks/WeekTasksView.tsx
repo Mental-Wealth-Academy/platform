@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './WeekTasksView.module.css';
 import jStyles from '@/components/accordion-journal/AccordionJournalCard.module.css';
 import { weekSectionsMap } from '@/components/accordion-journal/weekSections';
@@ -70,6 +71,7 @@ export default function WeekTasksView({
   const weekColor = WEEK_COLORS[weekNumber] || '#5168FF';
 
   const { play } = useSound();
+  const { getAccessToken } = usePrivy();
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
   const [sectionData, setSectionData] = useState<Record<string, unknown>>({});
@@ -112,13 +114,22 @@ export default function WeekTasksView({
     completedSections: Array.from(completedSections),
   }), [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections]);
 
+  const getAuthHeaders = useCallback(async (): Promise<HeadersInit> => {
+    const token = await getAccessToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [getAccessToken]);
+
   // Load progress
   useEffect(() => {
     if (hasLoadedRef.current || !enablePersistence) { setIsLoading(false); return; }
     hasLoadedRef.current = true;
     (async () => {
       try {
-        const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, { credentials: 'include' });
+        const authHeaders = await getAuthHeaders();
+        const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, {
+          credentials: 'include',
+          headers: authHeaders,
+        });
         if (!res.ok) return;
         const data = await res.json();
         if (data.progressData && Object.keys(data.progressData).length > 0) {
@@ -136,7 +147,7 @@ export default function WeekTasksView({
       } catch {}
       finally { setIsLoading(false); }
     })();
-  }, [weekNumber, enablePersistence]);
+  }, [weekNumber, enablePersistence, getAuthHeaders]);
 
   // Auto-save
   useEffect(() => {
@@ -144,16 +155,17 @@ export default function WeekTasksView({
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(async () => {
       try {
+        const authHeaders = await getAuthHeaders();
         await fetch('/api/ethereal-progress', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders },
           credentials: 'include',
           body: JSON.stringify({ weekNumber, progressData: collectProgressData() }),
         });
       } catch { /* silent */ }
     }, 1500);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData, getAuthHeaders]);
 
   // Init checklists
   useEffect(() => {
@@ -239,9 +251,10 @@ export default function WeekTasksView({
       await generateContentHash();
       await new Promise(r => setTimeout(r, 800));
       setSealStep('signing');
+      const authHeaders = await getAuthHeaders();
       const res = await fetch('/api/ethereal-progress', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         credentials: 'include',
         body: JSON.stringify({ weekNumber, progressData: collectProgressData(), seal: true }),
       });

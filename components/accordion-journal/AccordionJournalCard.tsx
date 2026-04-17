@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './AccordionJournalCard.module.css';
 import { weekSectionsMap } from './weekSections';
 import { useSound } from '@/hooks/useSound';
@@ -301,6 +302,7 @@ export default function AccordionJournalCard({
   const journalSections = sections || weekSectionsMap[weekNumber] || (weekNumber === 2 ? week2Sections : week1Sections);
 
   const { play } = useSound();
+  const { getAccessToken } = usePrivy();
   const [isExpanded, setIsExpanded] = useState(false);
   const [letterModal, setLetterModal] = useState<{ title: string; content: string } | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
@@ -359,6 +361,11 @@ export default function AccordionJournalCard({
     };
   }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections]);
 
+  const getAuthHeaders = useCallback(async (): Promise<HeadersInit> => {
+    const token = await getAccessToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [getAccessToken]);
+
   // Load progress on mount (only if authenticated)
   useEffect(() => {
     if (hasLoadedRef.current || !enablePersistence) return;
@@ -366,7 +373,11 @@ export default function AccordionJournalCard({
 
     (async () => {
       try {
-        const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, { credentials: 'include' });
+        const authHeaders = await getAuthHeaders();
+        const res = await fetch(`/api/ethereal-progress?week=${weekNumber}`, {
+          credentials: 'include',
+          headers: authHeaders,
+        });
         if (!res.ok) return;
         const data = await res.json();
         if (!data.progressData || Object.keys(data.progressData).length === 0) return;
@@ -385,7 +396,7 @@ export default function AccordionJournalCard({
         // Server error — silent fail
       }
     })();
-  }, [weekNumber, enablePersistence]);
+  }, [weekNumber, enablePersistence, getAuthHeaders]);
 
   // Debounced auto-save (1.5s)
   useEffect(() => {
@@ -396,9 +407,10 @@ export default function AccordionJournalCard({
     saveTimerRef.current = setTimeout(async () => {
       setSaveStatus('saving');
       try {
+        const authHeaders = await getAuthHeaders();
         const res = await fetch('/api/ethereal-progress', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...authHeaders },
           credentials: 'include',
           body: JSON.stringify({
             weekNumber,
@@ -419,7 +431,7 @@ export default function AccordionJournalCard({
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
-  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData]);
+  }, [sectionData, blurtEntries, checklistStates, enjoyListEntries, timeMapActivities, lifePieValues, completedSections, weekNumber, isSealed, enablePersistence, collectProgressData, getAuthHeaders]);
 
   // Initialize checklist states (only if not loaded from DB)
   useEffect(() => {
@@ -504,9 +516,10 @@ export default function AccordionJournalCard({
       setSealStep('signing');
 
       // Step 2: Call API to seal (server handles on-chain tx)
+      const authHeaders = await getAuthHeaders();
       const res = await fetch('/api/ethereal-progress', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         credentials: 'include',
         body: JSON.stringify({
           weekNumber,
