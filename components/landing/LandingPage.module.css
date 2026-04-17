@@ -17,6 +17,7 @@
   z-index: 10;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
   width: 100%;
   pointer-events: auto;
@@ -27,29 +28,13 @@
 .heroContent {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  flex: 0 0 42%;
-  padding-left: clamp(32px, 6vw, 100px);
+  align-items: center;
+  text-align: center;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding-left: 32px;
   padding-right: 32px;
   min-width: 0;
-}
-
-.heroImageCol {
-  flex: 1 1 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.heroMockup {
-  width: 100%;
-  max-width: 780px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 20px 0 0 20px;
 }
 
 .heroStarform {
@@ -92,14 +77,14 @@
   line-height: 1.65;
   margin: 0 0 32px 0;
   color: rgba(255, 255, 255, 0.75);
-  max-width: 540px;
+  max-width: 620px;
   animation: heroFadeUp 0.45s ease-out 0.25s both;
 }
 
 .heroActions {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 14px;
   flex-wrap: nowrap;
 }
@@ -342,15 +327,11 @@
 /* Hero responsive styles */
 @media (max-width: 1200px) {
   .heroContent {
-    flex: 0 0 46%;
+    width: min(100%, 760px);
   }
 }
 
 @media (max-width: 1024px) {
-  .heroContent {
-    flex: 0 0 50%;
-  }
-
   .heroHeadline {
     font-size: 2.8rem;
   }
@@ -364,22 +345,11 @@
   }
 
   .heroContent {
-    flex: 0 0 auto;
     width: 100%;
     align-items: center;
     text-align: center;
     padding-left: 20px;
     padding-right: 20px;
-  }
-
-  .heroImageCol {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .heroMockup {
-    width: clamp(200px, 70vw, 360px);
-    border-radius: 16px;
   }
 
   .heroHeadline {
@@ -417,10 +387,6 @@
 
   .heroSubtext {
     font-size: 14px;
-  }
-
-  .heroMockup {
-    width: clamp(180px, 80vw, 300px);
   }
 }
 

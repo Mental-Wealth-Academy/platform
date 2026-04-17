@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
+    id: '/home',
     name: 'Mental Wealth Academy',
     short_name: 'MWA',
     description: 'Mental Wealth Academy installed on your home screen for faster access.',

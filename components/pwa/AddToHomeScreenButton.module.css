@@ -1,35 +1,165 @@
-.wrapper {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
+.isInstalled {
+  opacity: 0.82;
 }
 
-.instructions {
-  max-width: 320px;
+.sheetBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+  background: transparent;
+}
+
+.sheet {
+  position: relative;
+  width: min(460px, 100%);
+  padding: 24px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(14, 16, 28, 0.98) 0%, rgba(10, 12, 22, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  text-align: left;
+}
+
+.sheetClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sheetClose:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.sheetEyebrow {
+  margin: 0 0 8px;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(121, 198, 255, 0.9);
+}
+
+.sheetTitle {
+  margin: 0 0 8px;
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.12;
+  color: #ffffff;
+}
+
+.sheetBody {
+  margin: 0 0 12px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(121, 198, 255, 0.86);
+}
+
+.sheetSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin: 0;
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: rgba(16, 18, 31, 0.92);
+  padding: 0;
+  list-style: none;
+  counter-reset: install-steps;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1.45;
   color: rgba(255, 255, 255, 0.92);
+}
+
+.sheetStep {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 8px;
+  text-align: left;
+}
+
+.sheetStep::before {
+  counter-increment: install-steps;
+  content: counter(install-steps) ".";
+  font-weight: 700;
+  color: rgba(121, 198, 255, 0.92);
+}
+
+.sheetActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.sheetPrimary {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
   font-family: var(--font-primary);
   font-size: 13px;
-  line-height: 1.55;
-  text-align: left;
-  box-shadow: 0 12px 32px rgba(14, 17, 30, 0.24);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  flex: 1 1 auto;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, #5168ff 0%, #7b8fff 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(81, 104, 255, 0.28);
 }
 
-.isInstalled {
-  opacity: 0.72;
+.sheetPrimary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(81, 104, 255, 0.34);
 }
 
 @media (max-width: 768px) {
-  .wrapper {
-    width: 100%;
+  .sheetBackdrop {
+    padding: 12px;
+    align-items: flex-end;
   }
 
-  .instructions {
-    max-width: none;
+  .sheet {
+    width: 100%;
+    padding: 22px 18px 18px;
+    border-radius: 22px;
+  }
+
+  .sheetTitle {
+    font-size: 22px;
+    max-width: 260px;
+  }
+
+  .sheetActions {
+    flex-direction: column;
+  }
+
+  .sheetPrimary {
+    width: 100%;
   }
 }

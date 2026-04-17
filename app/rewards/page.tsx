@@ -214,6 +214,10 @@ export default function RewardsPage() {
               <div className={styles.headingHudLine} aria-hidden="true" />
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
+                  <div className={styles.headingMetaRow}>
+                    <span className={styles.headingMetaTag}>Blue-linked rewards</span>
+                    <span className={styles.headingMetaTag}>Daily task board</span>
+                  </div>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>
@@ -222,7 +226,9 @@ export default function RewardsPage() {
                   </p>
                 </div>
                 <div className={styles.headingTimerPanel}>
+                  <span className={styles.headingTimerLabel}>Next refresh</span>
                   <span className={styles.headingTimer}>{countdown}</span>
+                  <span className={styles.headingTimerHint}>Board sync countdown</span>
                 </div>
               </div>
             </div>

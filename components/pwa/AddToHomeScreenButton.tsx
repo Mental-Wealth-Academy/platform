@@ -11,18 +11,19 @@ interface BeforeInstallPromptEvent extends Event {
   }>;
 }
 
-type InstallState = 'idle' | 'available' | 'installing' | 'installed' | 'unsupported';
+type InstallState = 'idle' | 'available' | 'installing' | 'installed';
+type InstallPlatform = 'ios' | 'other';
 
-function isIosSafari() {
+const INSTALL_TARGET_URL = 'https://mentalwealthacademy.world/home';
+
+function isIosDevice() {
   if (typeof window === 'undefined') {
     return false;
   }
 
   const ua = window.navigator.userAgent;
-  const isIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
-
-  return isIos && isSafari;
+  return /iPad|iPhone|iPod/.test(ua)
+    || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
 }
 
 function isStandalone() {
@@ -30,7 +31,8 @@ function isStandalone() {
     return false;
   }
 
-  return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
+  return window.matchMedia('(display-mode: standalone)').matches
+    || (window.navigator as Navigator & { standalone?: boolean }).standalone === true;
 }
 
 type AddToHomeScreenButtonProps = {
@@ -40,16 +42,16 @@ type AddToHomeScreenButtonProps = {
 export default function AddToHomeScreenButton({ className }: AddToHomeScreenButtonProps) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installState, setInstallState] = useState<InstallState>('idle');
-  const [showInstructions, setShowInstructions] = useState(false);
+  const [installPlatform, setInstallPlatform] = useState<InstallPlatform>('other');
+  const [showInstallSheet, setShowInstallSheet] = useState(false);
 
   useEffect(() => {
-    if (isStandalone()) {
-      setInstallState('installed');
-      return;
+    if (isIosDevice()) {
+      setInstallPlatform('ios');
     }
 
-    if (isIosSafari()) {
-      setInstallState('unsupported');
+    if (isStandalone()) {
+      setInstallState('installed');
       return;
     }
 
@@ -62,7 +64,7 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
     const handleInstalled = () => {
       setDeferredPrompt(null);
       setInstallState('installed');
-      setShowInstructions(false);
+      setShowInstallSheet(false);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -74,60 +76,108 @@ export default function AddToHomeScreenButton({ className }: AddToHomeScreenButt
     };
   }, []);
 
-  const handleClick = async () => {
-    if (installState === 'installed') {
-      return;
-    }
-
-    if (isIosSafari()) {
-      setShowInstructions((current) => !current);
-      return;
-    }
-
-    if (!deferredPrompt) {
-      setShowInstructions((current) => !current);
-      return;
-    }
-
-    setInstallState('installing');
-
-    try {
-      await deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-
-      if (choice.outcome === 'accepted') {
-        setInstallState('installed');
-        setShowInstructions(false);
-      } else {
-        setInstallState('available');
-      }
-    } finally {
-      setDeferredPrompt(null);
-    }
+  const openAcademyHome = () => {
+    window.location.href = INSTALL_TARGET_URL;
   };
 
-  const label = installState === 'installed' ? 'App Added' : 'Add App';
-  const instructions = isIosSafari()
-    ? 'On iPhone or iPad, tap Share in Safari, then choose Add to Home Screen.'
-    : 'If your browser does not show the install prompt, open the browser menu and choose Install app or Create shortcut.';
+  const handleClick = async () => {
+    if (installState === 'installed') {
+      openAcademyHome();
+      return;
+    }
+
+    if (deferredPrompt) {
+      setInstallState('installing');
+
+      try {
+        await deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+
+        if (choice.outcome === 'accepted') {
+          setInstallState('installed');
+          setShowInstallSheet(false);
+        } else {
+          setInstallState('available');
+        }
+      } finally {
+        setDeferredPrompt(null);
+      }
+
+      return;
+    }
+
+    setShowInstallSheet(true);
+  };
+
+  const closeInstallSheet = () => {
+    setShowInstallSheet(false);
+  };
+
+  const label = installState === 'installed' ? 'Open App' : 'Add App';
+  const title = 'Install App';
+  const steps = installPlatform === 'ios'
+    ? [
+        'Tap Share.',
+        'Add to Home Screen.',
+        'Tap Add.',
+      ]
+    : [
+        'Open the menu.',
+        'Tap Install app.',
+        'Save it.',
+      ];
+  const helperText = installPlatform === 'ios'
+    ? 'In Safari on iPhone:'
+    : 'In your browser:';
 
   return (
-    <div className={styles.wrapper}>
+    <>
       <button
         type="button"
         className={[className, installState === 'installed' ? styles.isInstalled : ''].filter(Boolean).join(' ')}
         onClick={handleClick}
-        aria-expanded={showInstructions}
-        aria-controls="add-to-home-screen-help"
         disabled={installState === 'installing'}
       >
         {label}
       </button>
-      {showInstructions && installState !== 'installed' ? (
-        <p id="add-to-home-screen-help" className={styles.instructions}>
-          {instructions} No App Store required.
-        </p>
+
+      {showInstallSheet ? (
+        <div className={styles.sheetBackdrop} role="presentation" onClick={closeInstallSheet}>
+          <div
+            className={styles.sheet}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="install-sheet-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.sheetClose}
+              aria-label="Close install instructions"
+              onClick={closeInstallSheet}
+            >
+              ×
+            </button>
+            <div className={styles.sheetEyebrow}>Homescreen App</div>
+            <h3 id="install-sheet-title" className={styles.sheetTitle}>{title}</h3>
+            <p className={styles.sheetBody}>{helperText}</p>
+            <ol className={styles.sheetSteps}>
+              {steps.map((step) => (
+                <li key={step} className={styles.sheetStep}>{step}</li>
+              ))}
+            </ol>
+            <div className={styles.sheetActions}>
+              <button
+                type="button"
+                className={styles.sheetPrimary}
+                onClick={openAcademyHome}
+              >
+                Open Academy Home
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
-    </div>
+    </>
   );
 }
