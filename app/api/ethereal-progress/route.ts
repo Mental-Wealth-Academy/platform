@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { recordBlueWeekProgressEvent } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
 import { getSeasonInfo } from '@/lib/season';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+function parseCompletedSections(progressData: any): string[] {
+  if (!Array.isArray(progressData?.completedSections)) {
+    return [];
+  }
+
+  return progressData.completedSections.filter((sectionId: unknown): sectionId is string => typeof sectionId === 'string');
+}
 
 /**
  * GET /api/ethereal-progress?week=N
@@ -108,8 +117,8 @@ export async function POST(request: Request) {
   }
 
   // Check if week is already sealed
-  const existing = await sqlQuery<Array<{ is_sealed: boolean }>>(
-    `SELECT is_sealed FROM weeks
+  const existing = await sqlQuery<Array<{ is_sealed: boolean; progress_data: any }>>(
+    `SELECT is_sealed, progress_data FROM weeks
      WHERE user_id = :userId AND week_number = :weekNumber
      LIMIT 1`,
     { userId: user.id, weekNumber }
@@ -118,6 +127,9 @@ export async function POST(request: Request) {
   if (existing.length > 0 && existing[0].is_sealed) {
     return NextResponse.json({ error: 'This week is sealed and cannot be modified.' }, { status: 403 });
   }
+
+  const previousCompletedSections = parseCompletedSections(existing[0]?.progress_data);
+  const currentCompletedSections = parseCompletedSections(progressData);
 
   // ─── Seal Flow ─────────────────────────────────────────────────────
   if (seal) {
@@ -169,6 +181,20 @@ export async function POST(request: Request) {
       return completed;
     });
 
+    try {
+      await recordBlueWeekProgressEvent({
+        userId: user.id,
+        weekNumber,
+        previousCompletedSections,
+        currentCompletedSections,
+        sealed: true,
+        pathwayCompleted,
+      });
+    } catch (memoryError: unknown) {
+      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue week memory error';
+      console.error('Blue week seal memory error:', message);
+    }
+
     return NextResponse.json({
       ok: true,
       sealed: true,
@@ -188,6 +214,19 @@ export async function POST(request: Request) {
      WHERE weeks.is_sealed = false`,
     { userId: user.id, weekNumber, progressData: JSON.stringify(progressData) }
   );
+
+  try {
+    await recordBlueWeekProgressEvent({
+      userId: user.id,
+      weekNumber,
+      previousCompletedSections,
+      currentCompletedSections,
+      sealed: false,
+    });
+  } catch (memoryError: unknown) {
+    const message = memoryError instanceof Error ? memoryError.message : 'unknown blue week progress memory error';
+    console.error('Blue week progress memory error:', message);
+  }
 
   return NextResponse.json({ ok: true, weekNumber });
 }

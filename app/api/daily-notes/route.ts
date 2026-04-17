@@ -1,11 +1,32 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
 import { ensurePrayersSchema } from '@/lib/ensurePrayersSchema';
 import { encryptForUser, decryptForUser } from '@/lib/encrypt';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+function parseAllWeekPages(userId: string, progressData: any): Record<string, unknown[]> {
+  if (progressData?.encrypted && progressData?.data) {
+    try {
+      const decrypted = decryptForUser(userId, progressData.data);
+      const parsed = JSON.parse(decrypted);
+      return parsed.allWeekPages ?? {};
+    } catch {
+      return {};
+    }
+  }
+
+  return progressData?.allWeekPages ?? {};
+}
+
+function countMorningPageEntries(allWeekPages: Record<string, unknown[]>) {
+  return Object.values(allWeekPages).reduce((sum, pages) => {
+    return sum + (Array.isArray(pages) ? pages.length : 0);
+  }, 0);
+}
 
 
 /**
@@ -69,6 +90,13 @@ export async function POST(request: Request) {
 
   await ensurePrayersSchema();
 
+  const existingRows = await sqlQuery<Array<{ progress_data: any }>>(
+    `SELECT progress_data FROM prayers
+     WHERE user_id = :userId
+     LIMIT 1`,
+    { userId: user.id }
+  );
+
   let body: { allWeekPages: Record<string, unknown[]> };
   try {
     body = await request.json();
@@ -88,6 +116,24 @@ export async function POST(request: Request) {
      DO UPDATE SET progress_data = :progressData::jsonb, updated_at = CURRENT_TIMESTAMP`,
     { userId: user.id, progressData }
   );
+
+  const previousAllWeekPages = existingRows[0]
+    ? parseAllWeekPages(user.id, existingRows[0].progress_data)
+    : {};
+  const previousCount = countMorningPageEntries(previousAllWeekPages);
+  const nextCount = countMorningPageEntries(body.allWeekPages ?? {});
+
+  if (nextCount > previousCount) {
+    try {
+      await recordBlueMorningPagesEvent({
+        userId: user.id,
+        allWeekPages: body.allWeekPages ?? {},
+      });
+    } catch (memoryError: unknown) {
+      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue morning page memory error';
+      console.error('Blue morning page memory error:', message);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

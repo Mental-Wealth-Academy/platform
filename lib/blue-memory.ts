@@ -5,7 +5,7 @@ import { ensurePrayersSchema } from './ensurePrayersSchema';
 import { ensureWeeksSchema } from './ensureWeeksSchema';
 import { getQuestDefinitionForStoredQuestId } from './quest-definitions';
 
-type BlueFactCategory = 'preference' | 'goal' | 'theme' | 'follow_up' | 'identity' | 'habit';
+type BlueFactCategory = 'preference' | 'goal' | 'theme' | 'follow_up' | 'identity' | 'habit' | 'progress';
 
 interface BlueFactInput {
   category: BlueFactCategory;
@@ -45,6 +45,21 @@ interface BlueContextValues {
   recentMessages: BlueChatMessage[];
 }
 
+interface MorningPageEntryLike {
+  day?: number;
+  date?: string | null;
+  submittedAt?: number | null;
+}
+
+interface MorningPagePayloadSummary extends MorningPageSummary {
+  latestEntry: {
+    weekNumber: number;
+    day: number | null;
+    date: string | null;
+    submittedAt: number | null;
+  } | null;
+}
+
 function clampConfidence(value: number) {
   if (!Number.isFinite(value)) return 0.5;
   return Math.max(0, Math.min(1, value));
@@ -62,6 +77,76 @@ function prettifyQuestLabel(questId: string) {
     .replace(/^daily-notes-w(\d+)-d(\d+)$/, 'Morning Pages Week $1 Day $2')
     .replace(/[-_]+/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function prettifySectionLabel(sectionId: string) {
+  return sectionId
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .replace(/\bMp\b/g, 'MP');
+}
+
+function summarizeMorningPagesPayload(allWeekPages: Record<string, unknown[]>): MorningPagePayloadSummary {
+  const dates = new Set<string>();
+  let totalEntries = 0;
+  let latestEntry: MorningPagePayloadSummary['latestEntry'] = null;
+
+  for (const [weekKey, rawPages] of Object.entries(allWeekPages || {})) {
+    const weekNumber = parseInt(String(weekKey), 10);
+    const pages = Array.isArray(rawPages) ? rawPages : [];
+
+    for (const rawEntry of pages) {
+      const entry = rawEntry as MorningPageEntryLike;
+      if (!entry?.date) continue;
+
+      dates.add(entry.date);
+      totalEntries += 1;
+
+      const submittedAt = typeof entry.submittedAt === 'number' ? entry.submittedAt : null;
+      const shouldReplaceLatest = !latestEntry
+        || (submittedAt !== null && (latestEntry.submittedAt ?? -1) < submittedAt)
+        || (
+          submittedAt === null
+          && latestEntry.submittedAt === null
+          && entry.date > (latestEntry.date ?? '')
+        );
+
+      if (shouldReplaceLatest) {
+        latestEntry = {
+          weekNumber: Number.isNaN(weekNumber) ? 0 : weekNumber,
+          day: typeof entry.day === 'number' ? entry.day : null,
+          date: entry.date,
+          submittedAt,
+        };
+      }
+    }
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let streak = 0;
+  const checkDate = new Date(today);
+  const todayKey = today.toISOString().split('T')[0];
+
+  if (!dates.has(todayKey)) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  while (dates.has(checkDate.toISOString().split('T')[0])) {
+    streak += 1;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  const sortedDates = [...dates].sort();
+  const lastEntryDate = latestEntry?.date || (sortedDates.length ? sortedDates[sortedDates.length - 1] : null);
+
+  return {
+    totalEntries,
+    streak,
+    lastEntryDate,
+    latestEntry,
+  };
 }
 
 async function getMorningPageSummary(userId: string): Promise<MorningPageSummary> {
@@ -292,6 +377,286 @@ export async function upsertBlueFacts(args: {
   }
 }
 
+async function upsertBlueEventFact(args: {
+  userId: string;
+  eventKey: string;
+  category: BlueFactCategory;
+  summary: string;
+  confidence: number;
+  metadata?: Record<string, unknown>;
+}) {
+  await ensureBlueMemorySchema();
+
+  const summary = cleanSummary(args.summary);
+  if (!summary) return;
+
+  const metadata = {
+    ...(args.metadata ?? {}),
+    eventKey: args.eventKey,
+  };
+
+  const existingRows = await sqlQuery<Array<{ id: string }>>(
+    `SELECT id
+     FROM blue_memory_facts
+     WHERE user_id = :userId
+       AND metadata->>'eventKey' = :eventKey
+     LIMIT 1`,
+    {
+      userId: args.userId,
+      eventKey: args.eventKey,
+    }
+  );
+
+  if (existingRows.length > 0) {
+    await sqlQuery(
+      `UPDATE blue_memory_facts
+       SET category = :category,
+           summary = :summary,
+           confidence = :confidence,
+           occurrence_count = occurrence_count + 1,
+           metadata = :metadata::jsonb,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = :id`,
+      {
+        id: existingRows[0].id,
+        category: args.category,
+        summary,
+        confidence: clampConfidence(args.confidence),
+        metadata: JSON.stringify(metadata),
+      }
+    );
+    return;
+  }
+
+  await sqlQuery(
+    `INSERT INTO blue_memory_facts (
+       user_id,
+       category,
+       summary,
+       confidence,
+       metadata
+     )
+     VALUES (
+       :userId,
+       :category,
+       :summary,
+       :confidence,
+       :metadata::jsonb
+     )`,
+    {
+      userId: args.userId,
+      category: args.category,
+      summary,
+      confidence: clampConfidence(args.confidence),
+      metadata: JSON.stringify(metadata),
+    }
+  );
+}
+
+export async function recordBlueMorningPagesEvent(args: {
+  userId: string;
+  allWeekPages: Record<string, unknown[]>;
+}) {
+  const summary = summarizeMorningPagesPayload(args.allWeekPages);
+  if (!summary.totalEntries) return;
+  const latestEntrySummary = summary.latestEntry
+    ? `Latest morning pages entry: Week ${summary.latestEntry.weekNumber}${summary.latestEntry.day !== null ? ` Day ${summary.latestEntry.day}` : ''} on ${summary.latestEntry.date ?? 'unknown date'}.`
+    : null;
+
+  await Promise.all([
+    upsertBlueEventFact({
+      userId: args.userId,
+      eventKey: 'morning-pages-total',
+      category: 'progress',
+      summary: `User has written ${summary.totalEntries} morning pages so far.`,
+      confidence: 0.99,
+      metadata: {
+        totalEntries: summary.totalEntries,
+      },
+    }),
+    upsertBlueEventFact({
+      userId: args.userId,
+      eventKey: 'morning-pages-streak',
+      category: 'habit',
+      summary: `User's current morning pages streak is ${summary.streak} day(s).`,
+      confidence: 0.98,
+      metadata: {
+        streak: summary.streak,
+        lastEntryDate: summary.lastEntryDate,
+      },
+    }),
+    summary.latestEntry
+      ? upsertBlueEventFact({
+          userId: args.userId,
+          eventKey: 'morning-pages-latest-entry',
+          category: 'progress',
+          summary: latestEntrySummary || 'Latest morning pages entry recorded.',
+          confidence: 0.96,
+          metadata: {
+            weekNumber: summary.latestEntry.weekNumber,
+            day: summary.latestEntry.day,
+            date: summary.latestEntry.date,
+            submittedAt: summary.latestEntry.submittedAt,
+          },
+        })
+      : Promise.resolve(),
+  ]);
+}
+
+export async function recordBlueQuestCompletion(args: {
+  userId: string;
+  questId: string;
+}) {
+  const questSummary = await getQuestSummary(args.userId);
+  const questLabel = prettifyQuestLabel(args.questId);
+
+  await Promise.all([
+    upsertBlueEventFact({
+      userId: args.userId,
+      eventKey: 'quest-total',
+      category: 'progress',
+      summary: `User has completed ${questSummary.completedQuestCount} quests so far.`,
+      confidence: 0.99,
+      metadata: {
+        completedQuestCount: questSummary.completedQuestCount,
+      },
+    }),
+    upsertBlueEventFact({
+      userId: args.userId,
+      eventKey: 'quest-latest',
+      category: 'progress',
+      summary: `Most recent completed quest: ${questLabel}.`,
+      confidence: 0.97,
+      metadata: {
+        questId: args.questId,
+        questLabel,
+      },
+    }),
+  ]);
+}
+
+export async function recordBlueWeekProgressEvent(args: {
+  userId: string;
+  weekNumber: number;
+  previousCompletedSections?: string[];
+  currentCompletedSections?: string[];
+  sealed?: boolean;
+  pathwayCompleted?: boolean;
+}) {
+  const previousCompleted = new Set(
+    (args.previousCompletedSections ?? []).filter((sectionId): sectionId is string => typeof sectionId === 'string')
+  );
+  const currentCompleted = (args.currentCompletedSections ?? []).filter(
+    (sectionId): sectionId is string => typeof sectionId === 'string'
+  );
+  const newlyCompleted = currentCompleted.filter((sectionId) => !previousCompleted.has(sectionId));
+  const previousCount = previousCompleted.size;
+  const currentCount = currentCompleted.length;
+
+  const updates: Promise<void>[] = [];
+
+  if (currentCount > 0 && (currentCount !== previousCount || args.sealed)) {
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: `course-week-${args.weekNumber}-progress`,
+        category: 'progress',
+        summary: `Week ${args.weekNumber} progress: ${currentCount} course task(s) completed.`,
+        confidence: 0.97,
+        metadata: {
+          weekNumber: args.weekNumber,
+          completedTaskCount: currentCount,
+          completedSections: currentCompleted,
+        },
+      })
+    );
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: 'course-current-focus',
+        category: 'progress',
+        summary: `User is currently working through Week ${args.weekNumber}.`,
+        confidence: 0.93,
+        metadata: {
+          weekNumber: args.weekNumber,
+          completedTaskCount: currentCount,
+        },
+      })
+    );
+  }
+
+  if (currentCount > 0 && (newlyCompleted.length > 0 || currentCount !== previousCount)) {
+    const recentTaskLabels = currentCompleted.slice(-3).map(prettifySectionLabel);
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: `course-week-${args.weekNumber}-recent-tasks`,
+        category: 'progress',
+        summary: `Recent completed tasks in Week ${args.weekNumber}: ${recentTaskLabels.join(', ')}.`,
+        confidence: 0.94,
+        metadata: {
+          weekNumber: args.weekNumber,
+          recentTaskIds: currentCompleted.slice(-3),
+          recentTaskLabels,
+        },
+      })
+    );
+  }
+
+  if (newlyCompleted.length > 0) {
+    const latestTaskId = newlyCompleted[newlyCompleted.length - 1];
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: 'course-latest-task',
+        category: 'progress',
+        summary: `Most recently completed course task: Week ${args.weekNumber} ${prettifySectionLabel(latestTaskId)}.`,
+        confidence: 0.97,
+        metadata: {
+          weekNumber: args.weekNumber,
+          taskId: latestTaskId,
+          taskLabel: prettifySectionLabel(latestTaskId),
+        },
+      })
+    );
+  }
+
+  if (args.sealed) {
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: `course-week-${args.weekNumber}-sealed`,
+        category: 'progress',
+        summary: `Week ${args.weekNumber} has been sealed.`,
+        confidence: 0.99,
+        metadata: {
+          weekNumber: args.weekNumber,
+          completedTaskCount: currentCount,
+        },
+      })
+    );
+  }
+
+  if (args.pathwayCompleted) {
+    updates.push(
+      upsertBlueEventFact({
+        userId: args.userId,
+        eventKey: 'course-pathway-complete',
+        category: 'progress',
+        summary: 'User has sealed the full academy pathway.',
+        confidence: 0.99,
+        metadata: {
+          weekNumber: args.weekNumber,
+        },
+      })
+    );
+  }
+
+  if (updates.length) {
+    await Promise.all(updates);
+  }
+}
+
 export async function getBlueRecentMessages(userId: string, limit = 8): Promise<BlueChatMessage[]> {
   await ensureBlueMemorySchema();
 
@@ -337,7 +702,7 @@ export async function buildBlueContext(args: {
        FROM blue_memory_facts
        WHERE user_id = :userId
        ORDER BY updated_at DESC, confidence DESC
-       LIMIT 8`,
+       LIMIT 12`,
       { userId: args.userId }
     ),
     getBlueRecentMessages(args.userId, 8),
