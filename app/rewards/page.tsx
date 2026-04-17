@@ -34,7 +34,7 @@ export default function RewardsPage() {
   const [questCounts, setQuestCounts] = useState<Record<string, number>>({});
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [showIntroLoader, setShowIntroLoader] = useState(true);
-  const [countdown, setCountdown] = useState('12:41:32');
+  const [countdown, setCountdown] = useState('--:--:--');
   const { play } = useSound();
 
   const refreshQuestData = useCallback(async () => {
@@ -98,14 +98,28 @@ export default function RewardsPage() {
   }, [refreshQuestData]);
 
   useEffect(() => {
-    const targetTime = Date.now() + ((12 * 60 * 60) + (41 * 60) + 32) * 1000;
+    const seasonStart = new Date(
+      process.env.NEXT_PUBLIC_SEASON_START_DATE || '2026-03-02T00:00:00Z'
+    ).getTime();
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
 
     const tick = () => {
-      const remaining = Math.max(0, targetTime - Date.now());
+      const now = Date.now();
+      const elapsed = now - seasonStart;
+      if (elapsed < 0) {
+        const remaining = Math.abs(elapsed);
+        const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
+        const hours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / 3_600_000);
+        const minutes = Math.floor((remaining % 3_600_000) / 60_000);
+        setCountdown(`${days}D ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`);
+        return;
+      }
+      const weekIndex = Math.floor(elapsed / weekMs);
+      const nextBoundary = seasonStart + (weekIndex + 1) * weekMs;
+      const remaining = Math.max(0, nextBoundary - now);
       const hours = Math.floor(remaining / 3_600_000);
       const minutes = Math.floor((remaining % 3_600_000) / 60_000);
       const seconds = Math.floor((remaining % 60_000) / 1000);
-
       setCountdown(
         `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
       );
@@ -184,7 +198,10 @@ export default function RewardsPage() {
                   </div>
                   <div className={styles.statCopy}>
                     <span className={styles.statLabel}>Cleared</span>
-                    <span className={styles.statValue}>{completedQuestCount}</span>
+                    <span className={styles.statValue}>
+                      {completedQuestCount}
+                      <span className={styles.statValueMuted}>/{quests.length}</span>
+                    </span>
                   </div>
                 </div>
 
@@ -214,10 +231,6 @@ export default function RewardsPage() {
               <div className={styles.headingHudLine} aria-hidden="true" />
               <div className={styles.headingContent}>
                 <div className={styles.headingCopy}>
-                  <div className={styles.headingMetaRow}>
-                    <span className={styles.headingMetaTag}>Blue-linked rewards</span>
-                    <span className={styles.headingMetaTag}>Daily task board</span>
-                  </div>
                   <div className={styles.headingInner}>
                     <h1 className={styles.headingTitle}>QUESTS</h1>
                   </div>
@@ -226,9 +239,14 @@ export default function RewardsPage() {
                   </p>
                 </div>
                 <div className={styles.headingTimerPanel}>
-                  <span className={styles.headingTimerLabel}>Next refresh</span>
-                  <span className={styles.headingTimer}>{countdown}</span>
-                  <span className={styles.headingTimerHint}>Board sync countdown</span>
+                  <span className={styles.headingTimerLabel}>Next week in</span>
+                  <span
+                    className={styles.headingTimer}
+                    aria-live="polite"
+                    aria-label={`Next week unlocks in ${countdown}`}
+                  >
+                    {countdown}
+                  </span>
                 </div>
               </div>
             </div>

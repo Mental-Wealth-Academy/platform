@@ -109,6 +109,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.statValueMuted {
+  color: rgba(18, 25, 53, 0.42);
+  font-weight: 600;
+}
+
 .profileChip {
   justify-content: flex-start;
 }
@@ -198,29 +203,6 @@
   min-width: 0;
 }
 
-.headingMetaRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.headingMetaTag {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
-  border: 1px solid rgba(81, 104, 255, 0.16);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.52);
-  color: rgba(18, 25, 53, 0.62);
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 .headingInner {
   min-width: 0;
 }
@@ -294,15 +276,6 @@
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     0 12px 24px rgba(14, 21, 45, 0.18);
-}
-
-.headingTimerHint {
-  color: rgba(18, 25, 53, 0.56);
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .cardList {
@@ -406,20 +379,17 @@
   box-shadow: 0 18px 34px rgba(3, 7, 22, 0.26);
 }
 
-:global([data-theme="dark"]) .headingMetaTag {
-  border-color: rgba(150, 170, 255, 0.16);
-  background: rgba(24, 34, 66, 0.72);
-  color: rgba(226, 234, 255, 0.68);
-}
-
 :global([data-theme="dark"]) .headingSubtitle {
   color: rgba(226, 234, 255, 0.72);
 }
 
 :global([data-theme="dark"]) .headingTimerLabel,
-:global([data-theme="dark"]) .headingTimerHint,
 :global([data-theme="dark"]) .statLabel {
   color: rgba(226, 234, 255, 0.54);
+}
+
+:global([data-theme="dark"]) .statValueMuted {
+  color: rgba(226, 234, 255, 0.38);
 }
 
 :global([data-theme="dark"]) .headingTimerPanel {
@@ -464,20 +434,17 @@
     box-shadow: 0 18px 34px rgba(3, 7, 22, 0.26);
   }
 
-  :global([data-theme="system"]) .headingMetaTag {
-    border-color: rgba(150, 170, 255, 0.16);
-    background: rgba(24, 34, 66, 0.72);
-    color: rgba(226, 234, 255, 0.68);
-  }
-
   :global([data-theme="system"]) .headingSubtitle {
     color: rgba(226, 234, 255, 0.72);
   }
 
   :global([data-theme="system"]) .headingTimerLabel,
-  :global([data-theme="system"]) .headingTimerHint,
   :global([data-theme="system"]) .statLabel {
     color: rgba(226, 234, 255, 0.54);
+  }
+
+  :global([data-theme="system"]) .statValueMuted {
+    color: rgba(226, 234, 255, 0.38);
   }
 
   :global([data-theme="system"]) .headingTimerPanel {
@@ -524,10 +491,6 @@
   .headingCopy {
     align-items: center;
     text-align: center;
-  }
-
-  .headingMetaRow {
-    justify-content: center;
   }
 
   .headingTitle {
@@ -601,8 +564,7 @@
     padding: 12px;
   }
 
-  .headingTimerLabel,
-  .headingTimerHint {
+  .headingTimerLabel {
     font-size: 10px;
   }
 }
