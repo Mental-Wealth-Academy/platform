@@ -169,6 +169,17 @@
   white-space: pre-wrap;
 }
 
+.messageContentWrap {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  max-width: 100%;
+}
+
+.messageContentWrapDebug .messageContent {
+  padding-right: 34px;
+}
+
 .userMessage .messageContent {
   background: linear-gradient(148deg, #ff8fc2 0%, #f06bb1 46%, #d95aa5 100%);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -198,6 +209,53 @@
   color: rgba(11, 14, 40, 0.32);
   padding: 0 6px;
   line-height: 1;
+}
+
+.debugInfoButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.94);
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.debugInfoButton:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.debugPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: min(100%, 420px);
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(11, 14, 40, 0.04);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+}
+
+.debugLine {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  line-height: 1.45;
+  color: rgba(11, 14, 40, 0.64);
+  word-break: break-word;
 }
 
 .messageAttachments {
@@ -1559,6 +1617,26 @@
 
 :global(:root:not([data-theme="dark"])) .messageTime {
   color: rgba(26, 29, 51, 0.38);
+}
+
+:global(:root:not([data-theme="dark"])) .debugInfoButton {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: rgba(255, 255, 255, 0.96);
+}
+
+:global(:root:not([data-theme="dark"])) .debugInfoButton:hover {
+  background: rgba(255, 255, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.46);
+}
+
+:global(:root:not([data-theme="dark"])) .debugPanel {
+  background: rgba(81, 104, 255, 0.06);
+  border-color: rgba(81, 104, 255, 0.14);
+}
+
+:global(:root:not([data-theme="dark"])) .debugLine {
+  color: rgba(26, 29, 51, 0.62);
 }
 
 :global(:root:not([data-theme="dark"])) .messagesArea::-webkit-scrollbar-thumb {

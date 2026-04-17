@@ -96,6 +96,14 @@
   animation: heroFadeUp 0.45s ease-out 0.25s both;
 }
 
+.heroActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  flex-wrap: nowrap;
+}
+
 .heroButton {
   position: relative;
   padding: 18px 52px;
@@ -113,6 +121,11 @@
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: heroFadeUp 0.45s ease-out 0.5s both;
   overflow: hidden;
+}
+
+.heroButtonSecondary {
+  background: #050505;
+  box-shadow: 0 4px 14px rgba(5, 5, 5, 0.24);
 }
 
 .heroButton::before {
@@ -171,6 +184,11 @@
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: 0 6px 20px rgba(81, 104, 255, 0.35);
+}
+
+.heroButtonSecondary:hover:not(:disabled) {
+  background: #141414;
+  box-shadow: 0 6px 20px rgba(5, 5, 5, 0.34);
 }
 
 .heroButton:hover:not(:disabled)::before {
@@ -374,9 +392,16 @@
     margin-bottom: 28px;
   }
 
+  .heroActions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .heroButton {
     padding: 12px 24px;
     font-size: 0.875rem;
+    width: 100%;
   }
 }
 

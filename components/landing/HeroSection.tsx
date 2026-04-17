@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import MobileOnboarding from '../mobile-onboarding/MobileOnboarding';
+import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
 import { useSound } from '@/hooks/useSound';
 
 export const HeroSection: React.FC = () => {
@@ -29,17 +30,20 @@ export const HeroSection: React.FC = () => {
           <p className={styles.heroSubtext}>
             A 12-week micro-university where your AI companion memorizes, adapts, and builds your learning experience.
           </p>
-          <button
-            type="button"
-            onClick={handleEnterAcademy}
-            onMouseEnter={() => play('hover')}
-            className={styles.heroButton}
-          >
-            <span className={styles.heroSlideWrap}>
-              <span className={styles.heroSlideText}>Enter The Academy</span>
-              <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
-            </span>
-          </button>
+          <div className={styles.heroActions}>
+            <button
+              type="button"
+              onClick={handleEnterAcademy}
+              onMouseEnter={() => play('hover')}
+              className={styles.heroButton}
+            >
+              <span className={styles.heroSlideWrap}>
+                <span className={styles.heroSlideText}>Enter The Academy</span>
+                <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Enter The Academy</span>
+              </span>
+            </button>
+            <AddToHomeScreenButton className={`${styles.heroButton} ${styles.heroButtonSecondary}`} />
+          </div>
         </div>
         <div className={styles.heroImageCol}>
           <Image

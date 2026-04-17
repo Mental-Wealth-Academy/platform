@@ -41,6 +41,24 @@ interface Message {
   timestamp: Date;
   action?: 'research-reclaim';
   attachments?: UploadedAttachment[];
+  debug?: MessageDebugInfo;
+}
+
+interface MessageDebugInfo {
+  source: 'eliza' | 'local-fallback';
+  mode: 'chat' | 'research' | 'linkedin-professional';
+  shardsDeducted: number;
+  memory?: {
+    recentMessages: number;
+    recentFacts: number;
+    streak: number;
+    completedQuestCount: number;
+    completedTaskCount: number;
+    sealedWeeks: number;
+    highestWeekTouched: number | null;
+  };
+  extractedFactsCount?: number;
+  notes?: string[];
 }
 
 interface ViewerProfile {
@@ -220,6 +238,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
+  const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -399,7 +418,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     recognition.start();
   };
 
-  const addAzuraMessage = (text: string, action?: Message['action']) => {
+  const addAzuraMessage = (text: string, action?: Message['action'], debug?: MessageDebugInfo) => {
     setIsTyping(true);
     setTimeout(() => {
       setMessages((prev) => [
@@ -410,6 +429,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           sender: 'azura',
           timestamp: new Date(),
           action,
+          debug,
         },
       ]);
       setIsTyping(false);
@@ -464,7 +484,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (res.ok && data.response) {
         setShardCount(data.shardsRemaining ?? shardCount);
         setIsTyping(false);
-        addAzuraMessage(data.response, action);
+        addAzuraMessage(data.response, action, data.debug);
         return;
       }
 
@@ -477,10 +497,20 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       // AI unavailable -- fallback to local
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text), action);
+      addAzuraMessage(generateAzuraResponse(text), action, {
+        source: 'local-fallback',
+        mode: mode ?? 'chat',
+        shardsDeducted: 0,
+        notes: ['API returned a non-success response without usable assistant text.'],
+      });
     } catch {
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text), action);
+      addAzuraMessage(generateAzuraResponse(text), action, {
+        source: 'local-fallback',
+        mode: mode ?? 'chat',
+        shardsDeducted: 0,
+        notes: ['Network or runtime error on /api/chat/blue.'],
+      });
     }
   };
 
@@ -1098,6 +1128,34 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const toggleDebugMessage = (messageId: string) => {
+    setOpenDebugMessageId((current) => (current === messageId ? null : messageId));
+  };
+
+  const formatDebugSummary = (debug: MessageDebugInfo) => {
+    const lines = [
+      `source: ${debug.source}`,
+      `mode: ${debug.mode}`,
+      `shards: ${debug.shardsDeducted}`,
+    ];
+
+    if (debug.memory) {
+      lines.push(
+        `memory: ${debug.memory.recentMessages} msgs, ${debug.memory.recentFacts} facts, streak ${debug.memory.streak}, quests ${debug.memory.completedQuestCount}, tasks ${debug.memory.completedTaskCount}, sealed ${debug.memory.sealedWeeks}, highest week ${debug.memory.highestWeekTouched ?? 'none'}`
+      );
+    }
+
+    if (typeof debug.extractedFactsCount === 'number') {
+      lines.push(`facts extracted: ${debug.extractedFactsCount}`);
+    }
+
+    if (debug.notes?.length) {
+      lines.push(...debug.notes.map((note) => `note: ${note}`));
+    }
+
+    return lines;
+  };
+
   const canUseClaudeProfessional = ['volcano', 'jhinova_bay'].includes((viewerProfile?.username || '').trim().toLowerCase());
   const shardUpsellTitle = (
     shardUpsell?.reason === 'research'
@@ -1123,7 +1181,24 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               message.sender === 'user' ? styles.userMessage : styles.azuraMessage
             }`}
           >
-            <div className={styles.messageContent}>{message.text}</div>
+            <div
+              className={`${styles.messageContentWrap} ${
+                message.sender === 'azura' && message.debug ? styles.messageContentWrapDebug : ''
+              }`}
+            >
+              <div className={styles.messageContent}>{message.text}</div>
+              {message.sender === 'azura' && message.debug && (
+                <button
+                  type="button"
+                  className={styles.debugInfoButton}
+                  aria-label="Show debug info"
+                  aria-expanded={openDebugMessageId === message.id}
+                  onClick={() => toggleDebugMessage(message.id)}
+                >
+                  i
+                </button>
+              )}
+            </div>
             {message.attachments && message.attachments.length > 0 && (
               <div className={styles.messageAttachments}>
                 {message.attachments.map((attachment) => (
@@ -1152,6 +1227,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <div className={styles.messageTime}>
               {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
+            {message.sender === 'azura' && message.debug && openDebugMessageId === message.id && (
+              <div className={styles.debugPanel}>
+                {formatDebugSummary(message.debug).map((line) => (
+                  <div key={line} className={styles.debugLine}>{line}</div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 

@@ -153,10 +153,17 @@ export default function HomePage() {
     })();
   }, [ready, authenticated, getAccessToken]);
 
-  const handleSealComplete = useCallback((weekNumber: number, txHash: string) => {
-    setWeekStatuses(prev =>
-      prev.map(w => w.weekNumber === weekNumber ? { ...w, isSealed: true, sealTxHash: txHash } : w)
-    );
+  const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
+    setWeekStatuses(prev => {
+      const hasWeek = prev.some(w => w.weekNumber === weekNumber);
+      if (!hasWeek) {
+        return [...prev, { weekNumber, isSealed: true, sealTxHash: txHash }].sort((a, b) => a.weekNumber - b.weekNumber);
+      }
+
+      return prev.map(w =>
+        w.weekNumber === weekNumber ? { ...w, isSealed: true, sealTxHash: txHash } : w
+      );
+    });
   }, []);
 
   const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);

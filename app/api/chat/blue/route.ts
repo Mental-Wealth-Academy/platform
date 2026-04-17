@@ -89,6 +89,22 @@ interface ElizaMessage {
   }>;
 }
 
+interface BlueDebugInfo {
+  source: 'eliza' | 'local-fallback';
+  mode: 'chat' | 'research' | 'linkedin-professional';
+  shardsDeducted: number;
+  memory: {
+    recentMessages: number;
+    recentFacts: number;
+    streak: number;
+    completedQuestCount: number;
+    completedTaskCount: number;
+    sealedWeeks: number;
+    highestWeekTouched: number | null;
+  };
+  extractedFactsCount: number;
+}
+
 function isClaudeImageMime(mime: string) {
   return ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(mime);
 }
@@ -202,6 +218,7 @@ async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
 }
 
 function buildBlueChatMessages(args: {
+  systemPrompt: string;
   userMessage: string;
   contextText: string;
   recentMessages: Array<{ role: 'user' | 'assistant'; text: string }>;
@@ -220,7 +237,7 @@ function buildBlueChatMessages(args: {
       role: 'system',
       parts: [{
         type: 'text',
-        text: `${BLUE_SYSTEM_PROMPT}\n\n${truncate(args.contextText, 4000)}`,
+        text: `${args.systemPrompt}\n\n${truncate(args.contextText, 4000)}`,
       }],
     },
     ...historyMessages,
@@ -291,6 +308,107 @@ async function extractBlueMemories(args: {
       summary: string;
       confidence: number;
     }>;
+}
+
+function buildBlueDebugInfo(args: {
+  mode: 'chat' | 'research' | 'linkedin-professional';
+  shardsDeducted: number;
+  contextValues: Awaited<ReturnType<typeof buildBlueContext>>['values'];
+  extractedFactsCount: number;
+}): BlueDebugInfo {
+  return {
+    source: 'eliza',
+    mode: args.mode,
+    shardsDeducted: args.shardsDeducted,
+    memory: {
+      recentMessages: args.contextValues.recentMessages.length,
+      recentFacts: args.contextValues.recentFacts.length,
+      streak: args.contextValues.morningPages.streak,
+      completedQuestCount: args.contextValues.completedQuestCount,
+      completedTaskCount: args.contextValues.completedTaskCount,
+      sealedWeeks: args.contextValues.sealedWeeks.length,
+      highestWeekTouched: args.contextValues.highestWeekTouched,
+    },
+    extractedFactsCount: args.extractedFactsCount,
+  };
+}
+
+async function runBlueMemoryAwareTurn(args: {
+  userId: string;
+  username?: string | null;
+  userMessage: string;
+  mode: 'chat' | 'research';
+  attachmentsCount?: number;
+  shardsDeducted: number;
+}) {
+  const blueContext = await buildBlueContext({
+    userId: args.userId,
+    username: args.username ?? null,
+  });
+
+  const response = await callElizaCloud(buildBlueChatMessages({
+    systemPrompt: args.mode === 'research' ? RESEARCH_SYSTEM_PROMPT : BLUE_SYSTEM_PROMPT,
+    userMessage: args.userMessage,
+    contextText: blueContext.contextText,
+    recentMessages: blueContext.values.recentMessages,
+  }));
+
+  let extractedFactsCount = 0;
+
+  try {
+    const userChatMessage = await storeBlueChatMessage({
+      userId: args.userId,
+      role: 'user',
+      text: args.userMessage,
+      metadata: {
+        mode: args.mode,
+        attachmentCount: args.attachmentsCount ?? 0,
+      },
+    });
+
+    await storeBlueChatMessage({
+      userId: args.userId,
+      role: 'assistant',
+      text: response,
+      metadata: {
+        mode: args.mode,
+      },
+    });
+
+    await touchBlueRelationship({
+      userId: args.userId,
+      lastUserMessage: args.userMessage,
+      lastBlueResponse: response,
+    });
+
+    const extractedFacts = await extractBlueMemories({
+      userMessage: args.userMessage,
+      assistantMessage: response,
+    });
+
+    extractedFactsCount = extractedFacts.length;
+
+    if (extractedFacts.length) {
+      await upsertBlueFacts({
+        userId: args.userId,
+        sourceMessageId: userChatMessage.id,
+        facts: extractedFacts,
+      });
+    }
+  } catch (memoryError: unknown) {
+    const msg = memoryError instanceof Error ? memoryError.message : 'unknown memory error';
+    console.error('Blue memory persistence error:', msg);
+  }
+
+  return {
+    response,
+    debug: buildBlueDebugInfo({
+      mode: args.mode,
+      shardsDeducted: args.shardsDeducted,
+      contextValues: blueContext.values,
+      extractedFactsCount,
+    }),
+  };
 }
 
 async function callClaudeLinkedInProfessional(
@@ -382,11 +500,15 @@ export async function POST(request: Request) {
   // Research mode fallback: synthesize from training (no x402 fetch here)
   if (isResearch) {
     try {
-      const response = await callElizaCloud([
-        { role: 'system', parts: [{ type: 'text', text: RESEARCH_SYSTEM_PROMPT }] },
-        { role: 'user', parts: [{ type: 'text', text: body.message }] },
-      ]);
-      return NextResponse.json({ response });
+      const result = await runBlueMemoryAwareTurn({
+        userId: user.id,
+        username: user.username ?? null,
+        userMessage: body.message,
+        mode: 'research',
+        attachmentsCount: attachments.length,
+        shardsDeducted: 0,
+      });
+      return NextResponse.json(result);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'AI error';
       console.error('Blue research error:', msg);
@@ -426,62 +548,18 @@ export async function POST(request: Request) {
   }
 
   try {
-    const blueContext = await buildBlueContext({
+    const result = await runBlueMemoryAwareTurn({
       userId: user.id,
       username: user.username ?? null,
+      userMessage: body.message,
+      mode: 'chat',
+      attachmentsCount: attachments.length,
+      shardsDeducted: SHARD_COST,
     });
 
-    const response = await callElizaCloud(buildBlueChatMessages({
-      userMessage: body.message,
-      contextText: blueContext.contextText,
-      recentMessages: blueContext.values.recentMessages,
-    }));
-
-    try {
-      const userChatMessage = await storeBlueChatMessage({
-        userId: user.id,
-        role: 'user',
-        text: body.message,
-        metadata: {
-          mode: 'chat',
-          attachmentCount: attachments.length,
-        },
-      });
-
-      await storeBlueChatMessage({
-        userId: user.id,
-        role: 'assistant',
-        text: response,
-        metadata: {
-          mode: 'chat',
-        },
-      });
-
-      await touchBlueRelationship({
-        userId: user.id,
-        lastUserMessage: body.message,
-        lastBlueResponse: response,
-      });
-
-      const extractedFacts = await extractBlueMemories({
-        userMessage: body.message,
-        assistantMessage: response,
-      });
-
-      if (extractedFacts.length) {
-        await upsertBlueFacts({
-          userId: user.id,
-          sourceMessageId: userChatMessage.id,
-          facts: extractedFacts,
-        });
-      }
-    } catch (memoryError: unknown) {
-      const msg = memoryError instanceof Error ? memoryError.message : 'unknown memory error';
-      console.error('Blue memory persistence error:', msg);
-    }
-
     return NextResponse.json({
-      response,
+      response: result.response,
+      debug: result.debug,
       shardsRemaining: updated[0].shard_count,
       shardsDeducted: SHARD_COST,
     });
