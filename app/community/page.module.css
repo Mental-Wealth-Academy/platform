@@ -347,7 +347,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  gap: 16px;
+  padding: 20px;
   margin-top: 12px;
   background: linear-gradient(135deg, #ffffff 0%, #fbfdff 48%, #f4f8ff 100%);
   border: 2px solid #ffffff;
@@ -362,20 +363,24 @@
 .reserveHeader {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  gap: 16px;
   position: relative;
   z-index: 1;
+  min-width: 0;
 }
 
-.reserveTitleSection {
+.reserveHeaderLeft {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .reserveIcon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   background: rgba(81, 104, 255, 0.12);
   border-radius: var(--radius-md);
   display: flex;
@@ -386,106 +391,329 @@
 }
 
 .reserveIcon svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--color-primary, #5168FF);
 }
 
 .reserveTitleText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   margin: 0;
   min-width: 0;
-}
-
-.reserveEyebrow {
-  display: block;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  font-family: var(--font-button);
-  color: var(--color-text-muted);
-  margin: 0 0 2px 0;
 }
 
 .reserveTitle {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-text-dark);
+  line-height: 1.2;
   margin: 0;
 }
 
-.reserveAmountRow {
+.reserveAmountCol {
   display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
-  gap: 4px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  text-align: right;
   min-width: 0;
 }
 
 .reserveAmount {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 700;
-  font-family: var(--font-primary);
-  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
+  color: var(--color-text-dark);
   margin: 0;
-  position: relative;
-  z-index: 1;
-  line-height: 1.2;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .reserveUnit {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(81, 104, 255, 0.7);
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-button);
+  color: rgba(81, 104, 255, 0.85);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reserveInsightsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 14px;
+}
+
+.reserveInsightCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(81, 104, 255, 0.05);
+  border: 1px solid rgba(81, 104, 255, 0.12);
+}
+
+.reserveInsightHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reserveInsightLabel,
+.reserveInsightMeta,
+.reserveSentimentValue,
+.reserveFundingAmount {
+  font-family: var(--font-button);
+}
+
+.reserveInsightLabel,
+.reserveInsightMeta {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reserveInsightLabel {
+  color: var(--color-text-dark);
+}
+
+.reserveInsightMeta {
+  color: var(--color-text-muted);
+}
+
+.reserveAvatarRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.reserveAvatar {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 14px rgba(81, 104, 255, 0.16);
   flex-shrink: 0;
 }
 
-.reserveInfoSection {
-  margin-top: 12px;
-  padding-top: 12px;
+.reserveAvatar + .reserveAvatar {
+  margin-left: -8px;
+}
+
+.reserveAvatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+}
+
+.reserveAvatarInitials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.reserveAvatarBlue {
+  background: linear-gradient(135deg, #5168FF 0%, #79c6ff 100%);
+}
+
+.reserveAvatarViolet {
+  background: linear-gradient(135deg, #7c63ff 0%, #b0a7ff 100%);
+}
+
+.reserveAvatarWarm {
+  background: linear-gradient(135deg, #ff6b87 0%, #ffb38e 100%);
+}
+
+.reserveAvatarTeal {
+  background: linear-gradient(135deg, #2FB7A0 0%, #79e4d0 100%);
+}
+
+.reserveAvatarAmber {
+  background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+}
+
+.reserveAvatarEmpty {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.reserveInsightText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
+}
+
+.reserveSentimentValue {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+  text-transform: none;
+}
+
+.reserveSentimentChart {
+  width: 100%;
+  height: 84px;
+  border-radius: 12px;
+  background: rgba(238, 240, 250, 0.6);
+  padding: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.reserveSentimentChart svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+.reserveSentimentLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.reserveSentimentLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.reserveSentimentLegendDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.reserveFundingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.reserveDesc {
+.reserveFundingList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reserveFundingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(81, 104, 255, 0.1);
+}
+
+.reserveFundingTitle {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.reserveFundingNote {
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
   color: var(--color-text-muted);
-  max-width: 100%;
+}
+
+.reserveFundingAmount {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
   .reserveCard {
-    padding: 12px;
+    padding: 16px;
     margin-top: 14px;
+    gap: 14px;
   }
 
   .reserveHeader {
-    margin-bottom: 8px;
-  }
-
-  .reserveEyebrow {
-    font-size: 9px;
+    align-items: center;
+    gap: 12px;
   }
 
   .reserveTitle {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .reserveAmount {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .reserveUnit {
-    font-size: 10px;
+    font-size: 9px;
   }
 
-  .reserveInfoSection {
-    margin-top: 10px;
-    padding-top: 10px;
+  .reserveInsightsGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .reserveInsightCard {
+    padding: 14px;
+  }
+
+  .reserveSentimentChart {
+    height: 72px;
+  }
+
+  .reserveFundingItem {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -2468,6 +2696,65 @@
   background: rgba(22, 23, 31, 0.95);
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow-md);
+}
+
+:global([data-theme="dark"]) .reserveCard {
+  background:
+    radial-gradient(circle at top right, rgba(107, 128, 255, 0.18), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(116, 196, 101, 0.1), transparent 26%),
+    linear-gradient(180deg, rgba(15, 17, 26, 0.98) 0%, rgba(18, 21, 31, 0.98) 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 42px rgba(0, 0, 0, 0.34);
+}
+
+:global([data-theme="dark"]) .reserveInsightMeta,
+:global([data-theme="dark"]) .reserveInsightText,
+:global([data-theme="dark"]) .reserveSentimentLegend,
+:global([data-theme="dark"]) .reserveFundingNote {
+  color: rgba(227, 225, 238, 0.62);
+}
+
+:global([data-theme="dark"]) .reserveTitle,
+:global([data-theme="dark"]) .reserveAmount,
+:global([data-theme="dark"]) .reserveInsightLabel,
+:global([data-theme="dark"]) .reserveFundingTitle {
+  color: rgba(245, 244, 250, 0.96);
+}
+
+:global([data-theme="dark"]) .reserveUnit,
+:global([data-theme="dark"]) .reserveFundingAmount,
+:global([data-theme="dark"]) .reserveSentimentValue {
+  color: rgba(167, 180, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .reserveFundingSection {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .reserveInsightCard {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+:global([data-theme="dark"]) .reserveSentimentChart {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:global([data-theme="dark"]) .reserveSentimentChart svg {
+  mix-blend-mode: screen;
+}
+
+:global([data-theme="dark"]) .reserveAvatar {
+  border-color: rgba(20, 22, 30, 0.96);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="dark"]) .reserveFundingItem {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .proposalsEntryIcon {

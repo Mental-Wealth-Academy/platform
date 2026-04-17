@@ -13,6 +13,35 @@ function truncate(text: string, limit: number): string {
   return `${text.slice(0, limit).trimEnd()}…`;
 }
 
+function shortenWallet(address: string): string {
+  if (!address || address.length < 10) return address || '';
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+function relativeTime(iso: string): string {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return '';
+  const diff = Date.now() - then;
+  if (diff < 0) return 'just now';
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  if (diff < minute) return 'just now';
+  if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
+  if (diff < day) return `${Math.floor(diff / hour)}h ago`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
+  if (diff < 30 * day) return `${Math.floor(diff / (7 * day))}w ago`;
+  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function formatVoteCount(raw: string): string {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return '0';
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}K`;
+  return Math.round(n).toLocaleString();
+}
+
 interface ProposalReview {
   decision: 'approved' | 'rejected';
   reasoning: string;
@@ -49,6 +78,7 @@ interface ProposalCardProps {
   };
   review: ProposalReview | null;
   onViewDetails?: (id: string) => void;
+  /** @deprecated author byline is always shown now */
   showAvatar?: boolean;
   onChainProposalId?: number | null;
   onChainData?: OnChainData | null;
@@ -64,7 +94,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   user,
   review,
   onViewDetails,
-  showAvatar = false,
   onChainProposalId,
   onChainData,
 }) => {
@@ -162,12 +191,24 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     }
   };
 
+  const statusLabel = getStatusLabel();
+  const statusClass = getStatusClass();
+  const authorName = user.username ? `@${user.username}` : shortenWallet(walletAddress);
+  const authorInitial = (user.username?.[0] || walletAddress?.replace(/^0x/i, '')[0] || '?').toUpperCase();
+  const timestamp = relativeTime(createdAt);
+
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.headerTop}>
           <div className={styles.titleSection}>
-            <p className={styles.eyebrow}>Proposal</p>
+            <div className={styles.eyebrowRow}>
+              <span className={styles.eyebrow}>Proposal</span>
+              <span className={`${styles.statusPill} ${styles[`status_${statusClass}`]}`}>
+                <span className={styles.statusDot} aria-hidden="true" />
+                {statusLabel}
+              </span>
+            </div>
             <h3 className={styles.title}>{title}</h3>
           </div>
           <Image
@@ -175,29 +216,30 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             alt="Shard"
             width={44}
             height={44}
-            className={`${styles.headerGem} ${styles[`gem_${getStatusClass()}`]}`}
+            className={`${styles.headerGem} ${styles[`gem_${statusClass}`]}`}
             unoptimized
           />
         </div>
         <div className={styles.meta}>
-          {showAvatar && (
-            <div className={styles.metaItem}>
-              {user.avatarUrl ? (
-                <Image
-                  src={user.avatarUrl}
-                  alt={user.username || 'User'}
-                  width={24}
-                  height={24}
-                  className={styles.avatarImage}
-                  unoptimized
-                />
-              ) : (
-                <div className={styles.avatar}>
-                  {user.username?.[0]?.toUpperCase() || '?'}
-                </div>
-              )}
-              <strong>@{user.username || 'anonymous'}</strong>
-            </div>
+          <div className={styles.metaItem}>
+            {user.avatarUrl ? (
+              <Image
+                src={user.avatarUrl}
+                alt={user.username || 'Proposer'}
+                width={24}
+                height={24}
+                className={styles.avatarImage}
+                unoptimized
+              />
+            ) : (
+              <div className={styles.avatar}>{authorInitial}</div>
+            )}
+            <strong>{authorName}</strong>
+          </div>
+          {timestamp && (
+            <span className={styles.metaTime} title={new Date(createdAt).toLocaleString()}>
+              {timestamp}
+            </span>
           )}
         </div>
       </div>
@@ -212,7 +254,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         />
       </div>
 
-      {/* Voting bar for proposals with on-chain vote data */}
       {onChainData && (() => {
         const forVotes = parseFloat(onChainData.forVotes);
         const againstVotes = parseFloat(onChainData.againstVotes);
@@ -221,7 +262,13 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         const noPct = totalVotes > 0 ? 100 - yesPct : 0;
         return (
           <div className={styles.voteBarSection}>
-            <div className={styles.voteBarTrack}>
+            <div className={styles.voteBarHead}>
+              <span className={styles.voteBarTitle}>Community vote</span>
+              <span className={styles.voteBarTotal}>
+                {totalVotes > 0 ? `${formatVoteCount(onChainData.forVotes)} for · ${formatVoteCount(onChainData.againstVotes)} against` : 'No votes yet'}
+              </span>
+            </div>
+            <div className={styles.voteBarTrack} role="img" aria-label={`Yes ${yesPct} percent, No ${noPct} percent`}>
               <div className={styles.voteBarYes} style={{ width: `${yesPct}%` }} />
               <div className={styles.voteBarNo} style={{ width: `${noPct}%` }} />
             </div>
@@ -234,11 +281,14 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       })()}
 
       <div className={styles.reviewSection}>
-        <p className={styles.reviewLabel}>Blue&apos;s Review</p>
+        <p className={styles.reviewLabel}>Blue&apos;s review</p>
         <p className={styles.reviewText}>{reviewDisplay}</p>
       </div>
 
       <div className={styles.footer}>
+        <span className={styles.footerMeta} title={new Date(createdAt).toLocaleString()}>
+          Submitted {timestamp || 'recently'}
+        </span>
         <button
           className={styles.viewButton}
           onClick={() => { play('click'); onViewDetails?.(id); }}

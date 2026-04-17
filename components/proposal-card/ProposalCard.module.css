@@ -37,6 +37,14 @@
   min-width: 0;
 }
 
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 8px 0;
+}
+
 .eyebrow {
   font-family: var(--font-primary);
   font-size: 11px;
@@ -44,7 +52,72 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-primary);
-  margin: 0 0 8px 0;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  font-family: var(--font-primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  line-height: 1;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.status_pending {
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.22);
+}
+
+.status_pending .statusDot {
+  animation: statusDotPulse 1.8s ease-in-out infinite;
+}
+
+.status_approved {
+  color: #2F9E6D;
+  background: rgba(47, 158, 109, 0.1);
+  border-color: rgba(47, 158, 109, 0.22);
+}
+
+.status_active {
+  color: var(--color-primary);
+  background: rgba(81, 104, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.22);
+}
+
+.status_rejected {
+  color: #C54545;
+  background: rgba(197, 69, 69, 0.08);
+  border-color: rgba(197, 69, 69, 0.22);
+}
+
+.status_expired {
+  color: #6B7280;
+  background: rgba(107, 114, 128, 0.1);
+  border-color: rgba(107, 114, 128, 0.22);
+}
+
+@keyframes statusDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status_pending .statusDot { animation: none; }
 }
 
 .title {
@@ -104,6 +177,16 @@
 .metaItem strong {
   color: var(--color-text-dark);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.metaTime {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  padding-left: 8px;
+  margin-left: auto;
 }
 
 .avatar {
@@ -143,32 +226,55 @@
 }
 
 .voteBarSection {
-  padding: 12px 24px;
+  padding: 14px 24px 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.voteBarHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.voteBarTitle {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+
+.voteBarTotal {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .voteBarTrack {
   display: flex;
   width: 100%;
-  height: 22px;
-  border-radius: 4px;
+  height: 10px;
+  border-radius: 999px;
   overflow: hidden;
-  background: rgba(81, 104, 255, 0.08);
-  border: 2px solid rgba(81, 104, 255, 0.12);
+  background: rgba(26, 29, 51, 0.06);
   gap: 2px;
 }
 
 .voteBarYes {
   height: 100%;
-  background: #4CAF50;
+  background: linear-gradient(90deg, #5168FF 0%, #8a7dff 100%);
   transition: width 0.4s ease;
 }
 
 .voteBarNo {
   height: 100%;
-  background: #F44336;
+  background: linear-gradient(90deg, #E85D9F 0%, #F97A3F 100%);
   transition: width 0.4s ease;
 }
 
@@ -176,6 +282,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .voteBarYesLabel {
@@ -183,13 +290,15 @@
   font-weight: 700;
   font-family: var(--font-primary);
   color: var(--color-primary);
+  letter-spacing: 0.02em;
 }
 
 .voteBarNoLabel {
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
-  color: #F44336;
+  color: #C54570;
+  letter-spacing: 0.02em;
 }
 
 .tokenSection {
@@ -284,53 +393,72 @@
 }
 
 .footer {
-  padding: 16px 24px;
-  background: rgba(81, 104, 255, 0.04);
-  border-top: 2px solid rgba(81, 104, 255, 0.12);
+  padding: 14px 24px;
+  background: rgba(81, 104, 255, 0.035);
+  border-top: 1px solid rgba(81, 104, 255, 0.08);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 12px;
   margin-top: auto;
 }
 
-.timestamp {
-  display: none;
+.footerMeta {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .viewButton {
-  padding: 10px 20px;
+  padding: 9px 16px;
   background: var(--color-primary);
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.15s ease;
-  display: flex;
+  transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 2px 2px 0 rgba(81, 104, 255, 0.3);
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(81, 104, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .viewButton:hover {
   background: #3a50e0;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(81, 104, 255, 0.28);
 }
 
 .viewButton:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 rgba(81, 104, 255, 0.2);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(81, 104, 255, 0.22);
+}
+
+.viewButton:focus-visible {
+  outline: 2px solid rgba(81, 104, 255, 0.5);
+  outline-offset: 2px;
 }
 
 .viewButton svg {
   width: 14px;
   height: 14px;
+  transition: transform 150ms ease;
+}
+
+.viewButton:hover svg {
+  transform: translateX(2px);
 }
 
 /* Carousel */
@@ -449,7 +577,7 @@
 
 @media (max-width: 768px) {
   .card {
-    box-shadow: 3px 3px 0 rgba(81, 104, 255, 0.15);
+    box-shadow: 0 4px 14px rgba(81, 104, 255, 0.08);
   }
 
   .header {
@@ -459,7 +587,8 @@
   .headerTop {
     flex-direction: row;
     align-items: flex-start;
-    gap: 8px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
   .title {
@@ -472,9 +601,12 @@
   }
 
   .meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .metaTime {
+    font-size: 11px;
+    padding-left: 0;
   }
 
   .stagesSection {
@@ -495,7 +627,12 @@
   }
 
   .voteBarSection {
-    padding: 12px 16px;
+    padding: 12px 16px 14px;
+  }
+
+  .voteBarHead {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 
   .reviewSection {
@@ -505,14 +642,15 @@
 
   .footer {
     padding: 12px 16px;
-    flex-direction: column;
-    align-items: stretch;
+    gap: 10px;
+  }
+
+  .footerMeta {
+    font-size: 10px;
   }
 
   .viewButton {
-    width: 100%;
-    justify-content: center;
-    padding: 12px 20px;
+    padding: 9px 14px;
   }
 }
 
@@ -546,7 +684,43 @@
 }
 
 :global([data-theme="dark"]) .voteBarTrack {
-  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .voteBarTotal,
+:global([data-theme="dark"]) .metaTime,
+:global([data-theme="dark"]) .footerMeta {
+  color: rgba(227, 225, 238, 0.6);
+}
+
+:global([data-theme="dark"]) .status_pending {
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #B69BFF;
+}
+
+:global([data-theme="dark"]) .status_approved {
+  background: rgba(47, 158, 109, 0.18);
+  border-color: rgba(47, 158, 109, 0.32);
+  color: #5FD49E;
+}
+
+:global([data-theme="dark"]) .status_active {
+  background: rgba(107, 128, 255, 0.16);
+  border-color: rgba(107, 128, 255, 0.32);
+  color: #A4B3FF;
+}
+
+:global([data-theme="dark"]) .status_rejected {
+  background: rgba(197, 69, 69, 0.14);
+  border-color: rgba(197, 69, 69, 0.3);
+  color: #F4887A;
+}
+
+:global([data-theme="dark"]) .status_expired {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(227, 225, 238, 0.7);
 }
 
 :global([data-theme="dark"]) .tokenSection {

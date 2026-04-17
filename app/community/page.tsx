@@ -117,6 +117,108 @@ const FUNDING_PODS = [
 const FUNDING_CAROUSEL_REPEAT_COUNT = 4;
 const FUNDING_CAROUSEL_START_INDEX = FUNDING_PODS.length;
 
+const SENTIMENT_CHART_WIDTH = 100;
+const SENTIMENT_CHART_HEIGHT = 60;
+
+type SentimentSeries = { label: string; color: string; values: number[] };
+
+const SENTIMENT_SERIES: SentimentSeries[] = [
+  {
+    label: 'Ascension',
+    color: '#79c6ff',
+    values: [0.30, 0.34, 0.42, 0.48, 0.44, 0.38, 0.36, 0.42, 0.50, 0.54, 0.58, 0.52, 0.46, 0.50],
+  },
+  {
+    label: 'Abundance',
+    color: '#5168FF',
+    values: [0.46, 0.52, 0.55, 0.52, 0.48, 0.54, 0.62, 0.68, 0.70, 0.64, 0.58, 0.62, 0.66, 0.70],
+  },
+  {
+    label: 'Radiance',
+    color: '#8a7dff',
+    values: [0.58, 0.66, 0.74, 0.68, 0.60, 0.54, 0.64, 0.78, 0.92, 0.96, 0.88, 0.80, 0.74, 0.78],
+  },
+  {
+    label: 'Expansion',
+    color: '#74C465',
+    values: [0.38, 0.42, 0.48, 0.52, 0.54, 0.48, 0.44, 0.50, 0.56, 0.60, 0.56, 0.50, 0.48, 0.52],
+  },
+  {
+    label: 'Benevolence',
+    color: '#E85D9F',
+    values: [0.24, 0.28, 0.32, 0.34, 0.36, 0.40, 0.44, 0.46, 0.50, 0.52, 0.54, 0.56, 0.55, 0.58],
+  },
+  {
+    label: 'Charity',
+    color: '#F97A3F',
+    values: [0.26, 0.24, 0.22, 0.30, 0.40, 0.46, 0.50, 0.42, 0.36, 0.42, 0.50, 0.56, 0.50, 0.42],
+  },
+];
+
+function buildStreamLayers(series: SentimentSeries[], width: number, height: number) {
+  const n = series[0].values.length;
+  const totals = Array.from({ length: n }, (_, i) =>
+    series.reduce((acc, s) => acc + s.values[i], 0)
+  );
+  const maxTotal = Math.max(...totals);
+  const scale = (height - 6) / maxTotal;
+  const center = height / 2;
+  const xs = Array.from({ length: n }, (_, i) => (i / (n - 1)) * width);
+
+  return series.map((s, layerIdx) => {
+    const points = xs.map((x, i) => {
+      const stackedBelow = series.slice(0, layerIdx).reduce((acc, ss) => acc + ss.values[i], 0);
+      const y0 = center - (totals[i] / 2 - stackedBelow) * scale;
+      const y1 = y0 - s.values[i] * scale;
+      return { x, y0, y1 };
+    });
+    return { label: s.label, color: s.color, points };
+  });
+}
+
+function smoothBetween(points: { x: number; y: number }[]): string {
+  if (points.length === 0) return '';
+  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const cx = ((p1.x + p2.x) / 2).toFixed(2);
+    d += ` C ${cx} ${p1.y.toFixed(2)}, ${cx} ${p2.y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+  return d;
+}
+
+function streamLayerPath(points: { x: number; y0: number; y1: number }[]): string {
+  const top = points.map((p) => ({ x: p.x, y: p.y1 }));
+  const bottom = points.map((p) => ({ x: p.x, y: p.y0 })).reverse();
+  const topPath = smoothBetween(top);
+  const bottomSegments = bottom
+    .slice(1)
+    .map((point, index) => {
+      const prev = bottom[index];
+      const cx = ((prev.x + point.x) / 2).toFixed(2);
+      return `C ${cx} ${prev.y.toFixed(2)}, ${cx} ${point.y.toFixed(2)}, ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
+    })
+    .join(' ');
+  return `${topPath} L ${bottom[0].x.toFixed(2)} ${bottom[0].y.toFixed(2)} ${bottomSegments} Z`;
+}
+
+const SENTIMENT_STREAM_LAYERS = buildStreamLayers(
+  SENTIMENT_SERIES,
+  SENTIMENT_CHART_WIDTH,
+  SENTIMENT_CHART_HEIGHT,
+).map((layer) => ({ ...layer, d: streamLayerPath(layer.points) }));
+
+const VOTER_TONES = ['Blue', 'Violet', 'Warm', 'Teal', 'Amber'] as const;
+
+function deriveInitials(value: string | null | undefined): string {
+  if (!value) return '··';
+  const trimmed = value.replace(/^0x/i, '').trim();
+  if (!trimmed) return '··';
+  const letters = trimmed.replace(/[^a-z0-9]/gi, '');
+  return (letters.slice(0, 2) || trimmed.slice(0, 2)).toUpperCase();
+}
+
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
@@ -239,6 +341,32 @@ export default function VotingPage() {
     }
   };
 
+  const recentVoters = (() => {
+    const seen = new Set<string>();
+    const picks: {
+      id: string;
+      avatarUrl: string | null;
+      name: string;
+      initials: string;
+      tone: (typeof VOTER_TONES)[number];
+    }[] = [];
+    for (const p of proposals) {
+      if (!(p.user.username || p.user.avatarUrl || p.walletAddress)) continue;
+      const key = (p.walletAddress || p.user.username || p.id).toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      picks.push({
+        id: p.id,
+        avatarUrl: p.user.avatarUrl,
+        name: p.user.username || p.walletAddress || 'Community member',
+        initials: deriveInitials(p.user.username || p.walletAddress),
+        tone: VOTER_TONES[picks.length % VOTER_TONES.length],
+      });
+      if (picks.length === VOTER_TONES.length) break;
+    }
+    return picks;
+  })();
+
   const fundingSlides = Array.from(
     { length: FUNDING_CAROUSEL_REPEAT_COUNT },
     () => FUNDING_PODS
@@ -302,35 +430,14 @@ export default function VotingPage() {
                   Proposals
                 </button>
               </div>
-
-              {communityView === 'overview' && (
-                <button
-                  type="button"
-                  className={`${styles.proposalsEntryButton} ${styles.overviewProposalsCta}`}
-                  onClick={() => { play('click'); setCommunityView('proposals'); }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  <div className={styles.proposalsEntryIcon}>
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                      <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                      <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                      <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
-                    </svg>
-                  </div>
-                  <div className={styles.proposalsEntryContent}>
-                    <span className={styles.proposalsEntryLabel}>Proposals</span>
-                  </div>
-                </button>
-              )}
             </div>
 
             <div className={styles.communityViewViewport}>
               {communityView === 'overview' && (
                 <section className={styles.communityViewPanel}>
                 <div className={styles.reserveCard}>
-                  <div className={styles.reserveHeader}>
-                    <div className={styles.reserveTitleSection}>
+                  <header className={styles.reserveHeader}>
+                    <div className={styles.reserveHeaderLeft}>
                       <div className={styles.reserveIcon} aria-hidden="true">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <rect x="2" y="6" width="20" height="14" rx="2" fill="currentColor" />
@@ -339,17 +446,115 @@ export default function VotingPage() {
                         </svg>
                       </div>
                       <div className={styles.reserveTitleText}>
-                        <span className={styles.reserveEyebrow}>Community Reserve</span>
-                        <span className={styles.reserveTitle}>Treasury</span>
+                        <span className={styles.reserveTitle}>Community Treasury</span>
                       </div>
                     </div>
+                    <div className={styles.reserveAmountCol}>
+                      <span className={styles.reserveAmount}>$5,200</span>
+                      <span className={styles.reserveUnit}>USDC pooled</span>
+                    </div>
+                  </header>
+                  <div className={styles.reserveInsightsGrid}>
+                    <section className={styles.reserveInsightCard}>
+                      <div className={styles.reserveInsightHeader}>
+                        <span className={styles.reserveInsightLabel}>Recent Votes</span>
+                        <span className={styles.reserveInsightMeta}>{recentVoters.length || 0} members</span>
+                      </div>
+                      <div className={styles.reserveAvatarRow} aria-label="Recent voter activity">
+                        {recentVoters.length === 0 ? (
+                          <span className={styles.reserveAvatarEmpty}>No votes yet</span>
+                        ) : (
+                          recentVoters.map((voter) => (
+                            <span
+                              key={voter.id}
+                              className={`${styles.reserveAvatar} ${styles[`reserveAvatar${voter.tone}`]}`}
+                              title={voter.name}
+                            >
+                              {voter.avatarUrl ? (
+                                <Image
+                                  src={voter.avatarUrl}
+                                  alt={voter.name}
+                                  width={34}
+                                  height={34}
+                                  className={styles.reserveAvatarImage}
+                                  unoptimized
+                                />
+                              ) : (
+                                <span className={styles.reserveAvatarInitials}>{voter.initials}</span>
+                              )}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                      <p className={styles.reserveInsightText}>A calm majority is forming around care and research tools.</p>
+                    </section>
+
+                    <section className={styles.reserveInsightCard}>
+                      <div className={styles.reserveInsightHeader}>
+                        <span className={styles.reserveInsightLabel}>Sentiment</span>
+                        <span className={styles.reserveSentimentValue}>Radiant</span>
+                      </div>
+                      <div
+                        className={styles.reserveSentimentChart}
+                        role="img"
+                        aria-label={`Stacked sentiment flow across ${SENTIMENT_SERIES.map((s) => s.label).join(', ')}`}
+                      >
+                        <svg
+                          viewBox={`0 0 ${SENTIMENT_CHART_WIDTH} ${SENTIMENT_CHART_HEIGHT}`}
+                          preserveAspectRatio="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          {SENTIMENT_STREAM_LAYERS.map((layer) => (
+                            <path
+                              key={layer.label}
+                              d={layer.d}
+                              fill={layer.color}
+                              fillOpacity="0.88"
+                            />
+                          ))}
+                        </svg>
+                      </div>
+                      <div className={styles.reserveSentimentLegend} aria-hidden="true">
+                        {SENTIMENT_SERIES.map((facet) => (
+                          <span key={facet.label} className={styles.reserveSentimentLegendItem}>
+                            <span
+                              className={styles.reserveSentimentLegendDot}
+                              style={{ backgroundColor: facet.color }}
+                            />
+                            {facet.label}
+                          </span>
+                        ))}
+                      </div>
+                    </section>
                   </div>
-                  <div className={styles.reserveAmountRow}>
-                    <span className={styles.reserveAmount}>$5,200</span>
-                    <span className={styles.reserveUnit}>USDC</span>
-                  </div>
-                  <div className={styles.reserveInfoSection}>
-                    <p className={styles.reserveDesc}>Pooled funds the community votes to deploy.</p>
+                  <div className={styles.reserveFundingSection}>
+                    <div className={styles.reserveInsightHeader}>
+                      <span className={styles.reserveInsightLabel}>Recently Funded</span>
+                      <span className={styles.reserveInsightMeta}>Last 3 approvals</span>
+                    </div>
+                    <div className={styles.reserveFundingList}>
+                      <article className={styles.reserveFundingItem}>
+                        <div>
+                          <p className={styles.reserveFundingTitle}>Peer support sprint</p>
+                          <p className={styles.reserveFundingNote}>Member care pod</p>
+                        </div>
+                        <span className={styles.reserveFundingAmount}>$1.2k</span>
+                      </article>
+                      <article className={styles.reserveFundingItem}>
+                        <div>
+                          <p className={styles.reserveFundingTitle}>Research library credits</p>
+                          <p className={styles.reserveFundingNote}>Knowledge tools</p>
+                        </div>
+                        <span className={styles.reserveFundingAmount}>$640</span>
+                      </article>
+                      <article className={styles.reserveFundingItem}>
+                        <div>
+                          <p className={styles.reserveFundingTitle}>Emergency relief grant</p>
+                          <p className={styles.reserveFundingNote}>Fast-track aid</p>
+                        </div>
+                        <span className={styles.reserveFundingAmount}>$400</span>
+                      </article>
+                    </div>
                   </div>
                 </div>
 
