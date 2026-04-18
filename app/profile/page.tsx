@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
-import { CaretLeft, CaretRight } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, UserCircle } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
+import YourAccountsModal from '@/components/nav-buttons/YourAccountsModal';
 import styles from './page.module.css';
 
 interface ProfileUser {
@@ -50,12 +51,13 @@ function formatDateKey(date: Date) {
 }
 
 export default function ProfilePage() {
-  const { ready, authenticated, getAccessToken } = usePrivy();
+  const { ready, authenticated, getAccessToken, login } = usePrivy();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [streak, setStreak] = useState(0);
   const [completedDates, setCompletedDates] = useState<Set<string>>(new Set());
   const [currentMonth, setCurrentMonth] = useState(() => startOfMonth(new Date()));
   const [isLoading, setIsLoading] = useState(true);
+  const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
 
   const refreshProfile = useCallback(async () => {
     if (!ready || !authenticated) {
@@ -157,6 +159,15 @@ export default function ProfilePage() {
     streak > 0
       ? `Keep your morning-pages streak alive by writing again tomorrow.`
       : 'Write morning pages daily to start building your streak.';
+  const accountName =
+    user?.username && !user.username.startsWith('user_')
+      ? `@${user.username}`
+      : authenticated
+        ? 'Signed in'
+        : 'Sign in';
+  const accountHint = authenticated
+    ? 'Open your connected accounts and login details.'
+    : 'Log in here to access your account details on mobile.';
 
   return (
     <div className={styles.pageLayout}>
@@ -164,6 +175,58 @@ export default function ProfilePage() {
       <SideNavigation />
       <main className={styles.page}>
         <section className={styles.shell}>
+          <section className={styles.accountPanel}>
+            <div className={styles.accountIdentity}>
+              {user?.avatarUrl ? (
+                <Image
+                  src={user.avatarUrl}
+                  alt={user.username || 'Profile avatar'}
+                  width={56}
+                  height={56}
+                  className={styles.accountAvatar}
+                  unoptimized
+                />
+              ) : (
+                <div className={styles.accountIconWrap} aria-hidden="true">
+                  <UserCircle size={34} weight="fill" />
+                </div>
+              )}
+
+              <div className={styles.accountCopyBlock}>
+                {isLoading ? (
+                  <>
+                    <span className={`${styles.skeletonAccountEyebrow} ${styles.skeletonBlock}`} />
+                    <span className={`${styles.skeletonAccountName} ${styles.skeletonBlock}`} />
+                    <span className={`${styles.skeletonAccountHint} ${styles.skeletonBlock}`} />
+                  </>
+                ) : (
+                  <>
+                    <span className={styles.accountEyebrow}>Account</span>
+                    <span className={styles.accountName}>{accountName}</span>
+                    <span className={styles.accountHint}>{accountHint}</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className={styles.accountAction}
+              onClick={() => {
+                if (!authenticated) {
+                  login();
+                  return;
+                }
+
+                setIsAccountsModalOpen(true);
+              }}
+              disabled={!ready}
+            >
+              <span>{authenticated ? 'Account details' : 'Sign In'}</span>
+              <CaretRight size={16} weight="bold" />
+            </button>
+          </section>
+
           <section className={styles.streakPanel}>
             <div className={styles.streakCopy}>
               <div className={styles.streakValueRow}>
@@ -291,6 +354,10 @@ export default function ProfilePage() {
           </section>
         </section>
       </main>
+
+      {isAccountsModalOpen && (
+        <YourAccountsModal onClose={() => setIsAccountsModalOpen(false)} />
+      )}
     </div>
   );
 }

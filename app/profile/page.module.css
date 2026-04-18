@@ -65,6 +65,13 @@
   border-radius: 999px;
 }
 
+.skeletonAccountEyebrow,
+.skeletonAccountName,
+.skeletonAccountHint {
+  display: block;
+  border-radius: 999px;
+}
+
 .skeletonStreakNumber {
   width: 108px;
   height: 58px;
@@ -98,6 +105,23 @@
   margin-top: 8px;
 }
 
+.skeletonAccountEyebrow {
+  width: 64px;
+  height: 12px;
+}
+
+.skeletonAccountName {
+  width: 132px;
+  height: 22px;
+  margin-top: 8px;
+}
+
+.skeletonAccountHint {
+  width: 220px;
+  height: 14px;
+  margin-top: 10px;
+}
+
 .skeletonStatValue {
   width: 46px;
   height: 28px;
@@ -117,6 +141,114 @@
   box-shadow:
     0 8px 24px rgba(81, 104, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.accountPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  border-radius: 28px;
+  box-shadow:
+    0 8px 24px rgba(81, 104, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.accountIdentity {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.accountIconWrap,
+.accountAvatar {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.accountIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14), rgba(81, 104, 255, 0.08));
+  color: #5168FF;
+  border: 1px solid rgba(81, 104, 255, 0.14);
+}
+
+.accountAvatar {
+  object-fit: cover;
+  border: 2px solid rgba(81, 104, 255, 0.16);
+}
+
+.accountCopyBlock {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.accountEyebrow {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(68, 66, 79, 0.52);
+}
+
+.accountName {
+  margin-top: 7px;
+  font-family: var(--font-primary);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #44424f;
+}
+
+.accountHint {
+  margin-top: 8px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(68, 66, 79, 0.68);
+}
+
+.accountAction {
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.1) 0%, rgba(81, 104, 255, 0.06) 100%);
+  color: #5168FF;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.accountAction:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(81, 104, 255, 0.3);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14) 0%, rgba(81, 104, 255, 0.08) 100%);
+}
+
+.accountAction:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .streakPanel {
@@ -390,17 +522,36 @@
     gap: 16px;
   }
 
+  .accountPanel {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .accountIconWrap,
+  .accountAvatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .accountName {
+    font-size: 20px;
+  }
+
+  .accountHint {
+    font-size: 13px;
+  }
+
   .streakPanel {
     grid-template-columns: 1fr 92px;
     padding: 18px 18px 18px;
   }
 
   .streakNumber {
-    font-size: 58px;
+    font-size: 48px;
   }
 
   .streakUnit {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .calendarCard {
@@ -425,6 +576,24 @@
 
   .shell {
     max-width: 430px;
+  }
+
+  .accountPanel {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+  }
+
+  .accountIdentity {
+    align-items: center;
+    flex: 1;
+  }
+
+  .accountAction {
+    width: auto;
+    min-width: 156px;
+    flex-shrink: 0;
   }
 
   .streakPanel {
@@ -477,6 +646,15 @@
   color: #eef3ff;
 }
 
+:global([data-theme="dark"]) .accountEyebrow {
+  color: rgba(226, 234, 255, 0.48);
+}
+
+:global([data-theme="dark"]) .accountName {
+  color: #eef3ff;
+}
+
+:global([data-theme="dark"]) .accountPanel,
 :global([data-theme="dark"]) .streakPanel,
 :global([data-theme="dark"]) .tipCard,
 :global([data-theme="dark"]) .calendarCard {
@@ -491,8 +669,30 @@
   color: #ffffff;
 }
 
+:global([data-theme="dark"]) .accountHint,
 :global([data-theme="dark"]) .streakUnit {
   color: rgba(227, 225, 238, 0.72);
+}
+
+:global([data-theme="dark"]) .accountIconWrap {
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.22), rgba(81, 104, 255, 0.12));
+  border-color: rgba(150, 170, 255, 0.18);
+  color: #d9e2ff;
+}
+
+:global([data-theme="dark"]) .accountAvatar {
+  border-color: rgba(150, 170, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .accountAction {
+  border-color: rgba(150, 170, 255, 0.18);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0.1) 100%);
+  color: #eef3ff;
+}
+
+:global([data-theme="dark"]) .accountAction:hover:not(:disabled) {
+  border-color: rgba(150, 170, 255, 0.32);
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.22) 0%, rgba(81, 104, 255, 0.14) 100%);
 }
 
 :global([data-theme="dark"]) .tipIconWrap {
@@ -559,6 +759,15 @@
     color: #eef3ff;
   }
 
+  :global([data-theme="system"]) .accountEyebrow {
+    color: rgba(226, 234, 255, 0.48);
+  }
+
+  :global([data-theme="system"]) .accountName {
+    color: #eef3ff;
+  }
+
+  :global([data-theme="system"]) .accountPanel,
   :global([data-theme="system"]) .streakPanel,
   :global([data-theme="system"]) .tipCard,
   :global([data-theme="system"]) .calendarCard {
@@ -573,8 +782,30 @@
     color: #ffffff;
   }
 
+  :global([data-theme="system"]) .accountHint,
   :global([data-theme="system"]) .streakUnit {
     color: rgba(227, 225, 238, 0.72);
+  }
+
+  :global([data-theme="system"]) .accountIconWrap {
+    background: linear-gradient(180deg, rgba(81, 104, 255, 0.22), rgba(81, 104, 255, 0.12));
+    border-color: rgba(150, 170, 255, 0.18);
+    color: #d9e2ff;
+  }
+
+  :global([data-theme="system"]) .accountAvatar {
+    border-color: rgba(150, 170, 255, 0.2);
+  }
+
+  :global([data-theme="system"]) .accountAction {
+    border-color: rgba(150, 170, 255, 0.18);
+    background: linear-gradient(180deg, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0.1) 100%);
+    color: #eef3ff;
+  }
+
+  :global([data-theme="system"]) .accountAction:hover:not(:disabled) {
+    border-color: rgba(150, 170, 255, 0.32);
+    background: linear-gradient(180deg, rgba(81, 104, 255, 0.22) 0%, rgba(81, 104, 255, 0.14) 100%);
   }
 
   :global([data-theme="system"]) .tipIconWrap {
