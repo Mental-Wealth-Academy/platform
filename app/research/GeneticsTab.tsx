@@ -139,17 +139,19 @@ export default function GeneticsTab() {
     <div className={styles.content}>
       {/* Hero */}
       <div className={styles.hero}>
-        {dbStats && !isDbLoading && (
-          <div className={styles.statBadge}>
-            {dbStats.totalSNPs.toLocaleString()} SNPs in database
+        <div>
+          {dbStats && !isDbLoading && (
+            <div className={styles.statBadge}>
+              {dbStats.totalSNPs.toLocaleString()} SNPs in database
+            </div>
+          )}
+          <div className={styles.heroContent}>
+            <p className={styles.eyebrow}>Genomics Lab</p>
+            <h1 className={styles.title}>Genetics Browser</h1>
+            <p className={styles.subtitle}>
+              Explore genetic variants from SNPedia and match with your DNA data. All processing happens in your browser — no data is sent to any server.
+            </p>
           </div>
-        )}
-        <div className={styles.heroContent}>
-          <p className={styles.eyebrow}>Genomics Lab</p>
-          <h1 className={styles.title}>Genetics Browser</h1>
-          <p className={styles.subtitle}>
-            Explore genetic variants from SNPedia and match with your DNA data. All processing happens in your browser — no data is sent to any server.
-          </p>
         </div>
 
         {!isDbLoading && !hasError && !hasResults && !isProcessing && (

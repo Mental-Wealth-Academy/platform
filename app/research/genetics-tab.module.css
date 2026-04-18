@@ -1,7 +1,7 @@
 .content {
   max-width: 1180px;
   width: 100%;
-  margin: 0 auto;
+  margin: 80px auto 0;
   padding: 0 0 64px;
   display: flex;
   flex-direction: column;
@@ -10,18 +10,20 @@
 
 /* Hero Section */
 .hero {
-  background: var(--color-background, #FBF8FF);
+  background: linear-gradient(135deg, #FBF8FF 0%, rgba(81, 104, 255, 0.03) 100%);
   border: 3px solid #1A1D33;
   border-radius: var(--radius-xl);
   box-shadow: 6px 6px 0 #1A1D33;
   padding: 40px 48px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .heroContent {
   position: relative;
   z-index: 2;
+  flex: 1;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -31,7 +33,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #666666;
+  color: #5168FF;
 }
 
 .title {
@@ -49,7 +51,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   line-height: 1.6;
-  color: #666666;
+  color: #555555;
   max-width: 600px;
 }
 
@@ -58,9 +60,9 @@
   top: 20px;
   right: 20px;
   padding: 8px 12px;
-  background: rgba(80, 89, 155, 0.15);
-  color: #50599B;
-  border: 2px solid #1A1D33;
+  background: rgba(81, 104, 255, 0.1);
+  color: #4050E0;
+  border: 2px solid #4050E0;
   border-radius: var(--radius-md);
   font-family: var(--font-primary);
   font-size: 11px;
@@ -74,12 +76,16 @@
 .modeToggle {
   display: inline-flex;
   gap: 4px;
-  margin-top: 20px;
   padding: 4px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
   border: 3px solid #1A1D33;
   border-radius: var(--radius-lg);
   box-shadow: 3px 3px 0 #1A1D33;
+  flex-shrink: 0;
+  position: absolute;
+  bottom: 40px;
+  right: 48px;
+  backdrop-filter: blur(8px);
 }
 
 .modeButton {
@@ -91,14 +97,14 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
-  background: transparent;
-  color: #666666;
+  background: rgba(81, 104, 255, 0.06);
+  color: #50599B;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .modeButton:hover {
-  background: rgba(81, 104, 255, 0.08);
+  background: rgba(81, 104, 255, 0.12);
   color: #1A1D33;
 }
 
@@ -110,7 +116,7 @@
 }
 
 .modeButtonActive:hover {
-  background: var(--color-primary);
+  background: #4050E0;
   color: #ffffff;
 }
 
@@ -331,6 +337,7 @@
   .hero {
     padding: 24px;
     box-shadow: 4px 4px 0 #1A1D33;
+    padding-bottom: 100px;
   }
 
   .title {
@@ -338,7 +345,9 @@
   }
 
   .modeToggle {
+    position: static;
     width: 100%;
+    margin-top: 16px;
   }
 
   .modeButton {
