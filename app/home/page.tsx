@@ -48,13 +48,13 @@ interface LeaderboardUser {
 
 const WEEKLY_READINGS = [
   { title: 'Art is a Spiritual Warfare', author: '', description: 'This week initiates your creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
-  { title: 'Recovering a Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: 'https://i.imgur.com/sRcnrJB.mp4', slug: 'recovering-safety', markdownPath: '/readings/recovering-safety.md' },
+  { title: 'Recovering a Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/scene-02.png', slug: 'recovering-safety', markdownPath: '/readings/recovering-safety.md' },
   { title: 'Recovering a Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'week-two', markdownPath: '/readings/week-two.md' },
   { title: 'Recovering a Sense of Power', author: '', description: 'Anger, synchronicity, and shame surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'recovering-power', markdownPath: '/readings/recovering-power.md' },
   { title: 'Recovering a Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'recovering-integrity', markdownPath: '/readings/recovering-integrity.md' },
-  { title: 'Recovering a Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: 'https://i.imgur.com/rHLvipb.mp4', slug: 'recovering-possibility', markdownPath: '/readings/recovering-possibility.md' },
+  { title: 'Recovering a Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/scene-04.png', slug: 'recovering-possibility', markdownPath: '/readings/recovering-possibility.md' },
   { title: 'Recovering a Sense of Abundance', author: '', description: 'Scarcity is a story. Rewrite it. True abundance flows from creative alignment.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'recovering-abundance', markdownPath: '/readings/recovering-abundance.md' },
-  { title: 'Recovering a Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: 'https://i.imgur.com/Nk7ppHa.mp4', slug: 'recovering-connection', markdownPath: '/readings/recovering-connection.md' },
+  { title: 'Recovering a Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/scene-05.png', slug: 'recovering-connection', markdownPath: '/readings/recovering-connection.md' },
   { title: 'Recovering a Sense of Strength', author: '', description: 'Surviving loss of faith. The creative life demands resilience — this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'recovering-strength', markdownPath: '/readings/recovering-strength.md' },
   { title: 'Recovering a Sense of Compassion', author: '', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'recovering-compassion', markdownPath: '/readings/recovering-compassion.md' },
   { title: 'Recovering a Sense of Self-Protection', author: '', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'recovering-self-protection', markdownPath: '/readings/recovering-self-protection.md' },
@@ -302,7 +302,6 @@ export default function HomePage() {
 
   const resolvedViewWeek = viewWeek ?? 1;
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
-  const isReadingVideo = weekReading.imageUrl.endsWith('.mp4');
   const handleOpenReading = useCallback((index: number) => {
     const reading = WEEKLY_READINGS[index];
     if (reading?.slug === 'recovering-safety') {
@@ -471,14 +470,10 @@ export default function HomePage() {
                 onMouseEnter={() => play('hover')}
               >
                 <div className={styles.readingMedia}>
-                  {isReadingVideo ? (
-                    <video src={weekReading.imageUrl} autoPlay loop muted playsInline className={styles.readingImg} />
-                  ) : (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
-                    </>
-                  )}
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
+                  </>
                 </div>
                 <div className={styles.readingInfo}>
                   <span className={styles.readingCategory}>{weekReading.category}</span>
