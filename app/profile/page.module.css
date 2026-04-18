@@ -57,7 +57,6 @@
 .skeletonStreakNumber,
 .skeletonStreakUnit,
 .skeletonTipLine,
-.skeletonTipLineShort,
 .skeletonMonthTitle,
 .skeletonStatValue,
 .skeletonStatLabel {
@@ -65,9 +64,7 @@
   border-radius: 999px;
 }
 
-.skeletonAccountEyebrow,
-.skeletonAccountName,
-.skeletonAccountHint {
+.skeletonAccountBadge {
   display: block;
   border-radius: 999px;
 }
@@ -82,20 +79,8 @@
   height: 24px;
 }
 
-.tipSkeletonStack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
 .skeletonTipLine {
-  width: 100%;
-  height: 16px;
-}
-
-.skeletonTipLineShort {
-  width: 72%;
+  width: min(100%, 220px);
   height: 16px;
 }
 
@@ -105,21 +90,9 @@
   margin-top: 8px;
 }
 
-.skeletonAccountEyebrow {
-  width: 64px;
-  height: 12px;
-}
-
-.skeletonAccountName {
-  width: 132px;
-  height: 22px;
-  margin-top: 8px;
-}
-
-.skeletonAccountHint {
-  width: 220px;
+.skeletonAccountBadge {
+  width: 92px;
   height: 14px;
-  margin-top: 10px;
 }
 
 .skeletonStatValue {
@@ -144,29 +117,40 @@
 }
 
 .accountPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 18px;
+  align-self: flex-start;
+}
+
+.accountBadge {
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px 8px 8px;
+  border: 1px solid rgba(81, 104, 255, 0.16);
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(81, 104, 255, 0.14);
-  border-radius: 28px;
   box-shadow:
     0 8px 24px rgba(81, 104, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
-.accountIdentity {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  min-width: 0;
+.accountBadge:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(81, 104, 255, 0.28);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.accountBadge:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .accountIconWrap,
 .accountAvatar {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   border-radius: 999px;
 }
@@ -185,70 +169,21 @@
   border: 2px solid rgba(81, 104, 255, 0.16);
 }
 
-.accountCopyBlock {
-  display: flex;
-  flex-direction: column;
+.accountBadgeLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5168FF;
+  white-space: nowrap;
   min-width: 0;
 }
 
-.accountEyebrow {
-  font-family: var(--font-primary);
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(68, 66, 79, 0.52);
-}
-
-.accountName {
-  margin-top: 7px;
-  font-family: var(--font-primary);
-  font-size: 22px;
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #44424f;
-}
-
-.accountHint {
-  margin-top: 8px;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(68, 66, 79, 0.68);
-}
-
-.accountAction {
-  width: 100%;
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 18px;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.1) 0%, rgba(81, 104, 255, 0.06) 100%);
-  color: #5168FF;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-}
-
-.accountAction:hover:not(:disabled) {
-  transform: translateY(-1px);
-  border-color: rgba(81, 104, 255, 0.3);
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14) 0%, rgba(81, 104, 255, 0.08) 100%);
-}
-
-.accountAction:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
+.accountBadgeCaret {
+  color: rgba(81, 104, 255, 0.78);
+  flex-shrink: 0;
 }
 
 .streakPanel {
@@ -303,33 +238,39 @@
 .tipCard {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 18px 18px 18px 16px;
+  gap: 12px;
+  padding: 14px 16px;
 }
 
 .tipIconWrap {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.1), rgba(81, 104, 255, 0.06));
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.14), rgba(81, 104, 255, 0.08));
+  border: 1px solid rgba(81, 104, 255, 0.14);
 }
 
 .tipIcon {
-  width: 24px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .tipText {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.1;
   font-weight: 600;
   color: #66616e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .calendarCard {
@@ -522,23 +463,20 @@
     gap: 16px;
   }
 
-  .accountPanel {
-    padding: 16px;
-    gap: 14px;
+  .accountBadge {
+    min-height: 50px;
+    gap: 8px;
+    padding: 7px 12px 7px 7px;
   }
 
   .accountIconWrap,
   .accountAvatar {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
   }
 
-  .accountName {
-    font-size: 20px;
-  }
-
-  .accountHint {
-    font-size: 13px;
+  .accountBadgeLabel {
+    font-size: 11px;
   }
 
   .streakPanel {
@@ -578,22 +516,8 @@
     max-width: 430px;
   }
 
-  .accountPanel {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 22px;
-  }
-
-  .accountIdentity {
-    align-items: center;
-    flex: 1;
-  }
-
-  .accountAction {
-    width: auto;
-    min-width: 156px;
-    flex-shrink: 0;
+  .accountBadge {
+    padding-right: 16px;
   }
 
   .streakPanel {
@@ -646,15 +570,6 @@
   color: #eef3ff;
 }
 
-:global([data-theme="dark"]) .accountEyebrow {
-  color: rgba(226, 234, 255, 0.48);
-}
-
-:global([data-theme="dark"]) .accountName {
-  color: #eef3ff;
-}
-
-:global([data-theme="dark"]) .accountPanel,
 :global([data-theme="dark"]) .streakPanel,
 :global([data-theme="dark"]) .tipCard,
 :global([data-theme="dark"]) .calendarCard {
@@ -669,9 +584,17 @@
   color: #ffffff;
 }
 
-:global([data-theme="dark"]) .accountHint,
+:global([data-theme="dark"]) .accountBadge {
+  border-color: rgba(150, 170, 255, 0.18);
+  background: linear-gradient(180deg, rgba(14, 19, 39, 0.92) 0%, rgba(20, 28, 54, 0.96) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 36px rgba(3, 7, 22, 0.28);
+}
+
+:global([data-theme="dark"]) .accountBadgeLabel,
 :global([data-theme="dark"]) .streakUnit {
-  color: rgba(227, 225, 238, 0.72);
+  color: rgba(227, 225, 238, 0.8);
 }
 
 :global([data-theme="dark"]) .accountIconWrap {
@@ -684,15 +607,13 @@
   border-color: rgba(150, 170, 255, 0.2);
 }
 
-:global([data-theme="dark"]) .accountAction {
-  border-color: rgba(150, 170, 255, 0.18);
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0.1) 100%);
-  color: #eef3ff;
+:global([data-theme="dark"]) .accountBadgeCaret {
+  color: rgba(227, 225, 238, 0.72);
 }
 
-:global([data-theme="dark"]) .accountAction:hover:not(:disabled) {
+:global([data-theme="dark"]) .accountBadge:hover:not(:disabled) {
   border-color: rgba(150, 170, 255, 0.32);
-  background: linear-gradient(180deg, rgba(81, 104, 255, 0.22) 0%, rgba(81, 104, 255, 0.14) 100%);
+  background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
 }
 
 :global([data-theme="dark"]) .tipIconWrap {
@@ -759,15 +680,6 @@
     color: #eef3ff;
   }
 
-  :global([data-theme="system"]) .accountEyebrow {
-    color: rgba(226, 234, 255, 0.48);
-  }
-
-  :global([data-theme="system"]) .accountName {
-    color: #eef3ff;
-  }
-
-  :global([data-theme="system"]) .accountPanel,
   :global([data-theme="system"]) .streakPanel,
   :global([data-theme="system"]) .tipCard,
   :global([data-theme="system"]) .calendarCard {
@@ -782,9 +694,17 @@
     color: #ffffff;
   }
 
-  :global([data-theme="system"]) .accountHint,
+  :global([data-theme="system"]) .accountBadge {
+    border-color: rgba(150, 170, 255, 0.18);
+    background: linear-gradient(180deg, rgba(14, 19, 39, 0.92) 0%, rgba(20, 28, 54, 0.96) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 36px rgba(3, 7, 22, 0.28);
+  }
+
+  :global([data-theme="system"]) .accountBadgeLabel,
   :global([data-theme="system"]) .streakUnit {
-    color: rgba(227, 225, 238, 0.72);
+    color: rgba(227, 225, 238, 0.8);
   }
 
   :global([data-theme="system"]) .accountIconWrap {
@@ -797,15 +717,13 @@
     border-color: rgba(150, 170, 255, 0.2);
   }
 
-  :global([data-theme="system"]) .accountAction {
-    border-color: rgba(150, 170, 255, 0.18);
-    background: linear-gradient(180deg, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0.1) 100%);
-    color: #eef3ff;
+  :global([data-theme="system"]) .accountBadgeCaret {
+    color: rgba(227, 225, 238, 0.72);
   }
 
-  :global([data-theme="system"]) .accountAction:hover:not(:disabled) {
+  :global([data-theme="system"]) .accountBadge:hover:not(:disabled) {
     border-color: rgba(150, 170, 255, 0.32);
-    background: linear-gradient(180deg, rgba(81, 104, 255, 0.22) 0%, rgba(81, 104, 255, 0.14) 100%);
+    background: linear-gradient(180deg, rgba(20, 29, 58, 0.98) 0%, rgba(15, 22, 46, 0.98) 100%);
   }
 
   :global([data-theme="system"]) .tipIconWrap {

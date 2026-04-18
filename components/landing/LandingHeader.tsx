@@ -1,11 +1,33 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { usePrivy } from '@privy-io/react-auth';
 import styles from './LandingHeader.module.css';
 import { useSound } from '@/hooks/useSound';
+
+const LandingAuthButtons = dynamic(
+  () => import('./LandingAuthButtons').then((mod) => mod.LandingAuthButtons),
+  {
+    ssr: false,
+    loading: () => (
+      <>
+        <a href="/home" className={styles.loginButton}>
+          <span className={styles.slideWrap}>
+            <span className={styles.slideText}>Login</span>
+            <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
+          </span>
+        </a>
+        <a href="/home" className={styles.joinButton}>
+          <span className={styles.slideWrap}>
+            <span className={styles.slideText}>Join Now</span>
+            <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>
+          </span>
+        </a>
+      </>
+    ),
+  }
+);
 
 const TOOLS_ITEMS = [
   { label: 'What is Wealth?', href: '/learn#wealth' },
@@ -17,9 +39,6 @@ export const LandingHeader: React.FC = () => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const { play } = useSound();
   const toolsRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const { login, authenticated } = usePrivy();
-  const loginTriggered = useRef(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -27,14 +46,6 @@ export const LandingHeader: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  // After Privy login succeeds on landing, redirect to /home
-  useEffect(() => {
-    if (authenticated && loginTriggered.current) {
-      loginTriggered.current = false;
-      router.push('/home');
-    }
-  }, [authenticated, router]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -48,15 +59,6 @@ export const LandingHeader: React.FC = () => {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [toolsOpen]);
-
-  const handleLogin = () => {
-    loginTriggered.current = true;
-    login();
-  };
-
-  const handleJoinNow = () => {
-    login();
-  };
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
@@ -118,28 +120,7 @@ export const LandingHeader: React.FC = () => {
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={handleLogin}
-            onMouseEnter={() => play('hover')}
-            className={styles.loginButton}
-          >
-            <span className={styles.slideWrap}>
-              <span className={styles.slideText}>Login</span>
-              <span className={`${styles.slideText} ${styles.slideClone}`}>Login</span>
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={handleJoinNow}
-            onMouseEnter={() => play('hover')}
-            className={styles.joinButton}
-          >
-            <span className={styles.slideWrap}>
-              <span className={styles.slideText}>Join Now</span>
-              <span className={`${styles.slideText} ${styles.slideClone}`}>Join Now</span>
-            </span>
-          </button>
+          <LandingAuthButtons />
         </nav>
       </div>
     </header>

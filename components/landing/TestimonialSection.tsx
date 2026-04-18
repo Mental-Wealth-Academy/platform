@@ -42,7 +42,8 @@ const SPEED_SLOW = 0.15;   // px per frame on hover
 const LERP = 0.04;         // how fast speed transitions (lower = smoother)
 
 export const TestimonialSection: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [hasEnteredView, setHasEnteredView] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
@@ -54,7 +55,12 @@ export const TestimonialSection: React.FC = () => {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setHasEnteredView(true);
+        }
+      },
       { threshold: 0.15 }
     );
     observer.observe(el);
@@ -81,9 +87,14 @@ export const TestimonialSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!isInView || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      cancelAnimationFrame(rafRef.current);
+      return;
+    }
+
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [tick]);
+  }, [isInView, tick]);
 
   const handleMouseEnter = () => { targetSpeedRef.current = SPEED_SLOW; };
   const handleMouseLeave = () => { targetSpeedRef.current = SPEED_NORMAL; };
@@ -92,7 +103,7 @@ export const TestimonialSection: React.FC = () => {
   const items = [...testimonials, ...testimonials];
 
   return (
-    <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
+    <section ref={sectionRef} className={`${styles.section} ${hasEnteredView ? styles.sectionVisible : ''}`}>
       <div className={styles.container}>
         <div className={styles.eyebrow}>Hear what academy members have to say</div>
         <div

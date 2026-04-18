@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono } from 'next/font/google';
 import { cookies } from 'next/headers';
 import '@/styles/globals.css';
+import { RouteShell } from '@/components/layout/RouteShell';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -32,13 +33,8 @@ const spaceMono = Space_Mono({
   display: 'swap',
 });
 
-import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provider';
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
-import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import { SidebarStateProvider } from '@/components/side-navigation/SidebarStateProvider';
-import TopNavigation from '@/components/top-navigation/TopNavigation';
-import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import PwaRegistrar from '@/components/pwa/PwaRegistrar';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
@@ -231,19 +227,13 @@ export default async function RootLayout({
       </head>
       <body>
         <PwaRegistrar />
-        <SidebarStateProvider initialCollapsed={initialSidebarCollapsed}>
-          <MiniAppProvider>
-            <SoundProvider>
-              <ConditionalWeb3Provider>
-                <ThemeProvider>
-                  <TopNavigation />
-                  {children}
-                  <MobileBottomNav />
-                </ThemeProvider>
-              </ConditionalWeb3Provider>
-            </SoundProvider>
-          </MiniAppProvider>
-        </SidebarStateProvider>
+        <MiniAppProvider>
+          <SoundProvider>
+            <RouteShell initialCollapsed={initialSidebarCollapsed}>
+              {children}
+            </RouteShell>
+          </SoundProvider>
+        </MiniAppProvider>
         <SpeedInsights />
         <Analytics />
       </body>

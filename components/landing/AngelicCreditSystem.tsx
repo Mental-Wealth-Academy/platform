@@ -77,7 +77,6 @@ export default function AngelicCreditSystem() {
               alt="Blue Agent"
               fill
               className={styles.azuraBgImg}
-              priority
             />
           </div>
           <div className={styles.azuraContent}>

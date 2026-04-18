@@ -115,7 +115,6 @@ export const FeaturesSection: React.FC = () => {
                   fill
                   sizes="(max-width: 768px) 42vw, 320px"
                   className={styles.phoneImage}
-                  priority
                 />
               </div>
 
@@ -126,7 +125,6 @@ export const FeaturesSection: React.FC = () => {
                   fill
                   sizes="(max-width: 768px) 46vw, 360px"
                   className={styles.phoneImage}
-                  priority
                 />
               </div>
             </div>

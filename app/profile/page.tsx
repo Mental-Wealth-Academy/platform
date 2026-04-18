@@ -157,17 +157,9 @@ export default function ProfilePage() {
   const monthName = MONTH_LABEL.format(currentMonth);
   const completionMessage =
     streak > 0
-      ? `Keep your morning-pages streak alive by writing again tomorrow.`
-      : 'Write morning pages daily to start building your streak.';
-  const accountName =
-    user?.username && !user.username.startsWith('user_')
-      ? `@${user.username}`
-      : authenticated
-        ? 'Signed in'
-        : 'Sign in';
-  const accountHint = authenticated
-    ? 'Open your connected accounts and login details.'
-    : 'Log in here to access your account details on mobile.';
+      ? 'Write tomorrow to keep streak up.'
+      : 'Write today to start your streak.';
+  const accountActionLabel = authenticated ? 'Connections' : 'Sign in';
 
   return (
     <div className={styles.pageLayout}>
@@ -176,42 +168,9 @@ export default function ProfilePage() {
       <main className={styles.page}>
         <section className={styles.shell}>
           <section className={styles.accountPanel}>
-            <div className={styles.accountIdentity}>
-              {user?.avatarUrl ? (
-                <Image
-                  src={user.avatarUrl}
-                  alt={user.username || 'Profile avatar'}
-                  width={56}
-                  height={56}
-                  className={styles.accountAvatar}
-                  unoptimized
-                />
-              ) : (
-                <div className={styles.accountIconWrap} aria-hidden="true">
-                  <UserCircle size={34} weight="fill" />
-                </div>
-              )}
-
-              <div className={styles.accountCopyBlock}>
-                {isLoading ? (
-                  <>
-                    <span className={`${styles.skeletonAccountEyebrow} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.skeletonAccountName} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.skeletonAccountHint} ${styles.skeletonBlock}`} />
-                  </>
-                ) : (
-                  <>
-                    <span className={styles.accountEyebrow}>Account</span>
-                    <span className={styles.accountName}>{accountName}</span>
-                    <span className={styles.accountHint}>{accountHint}</span>
-                  </>
-                )}
-              </div>
-            </div>
-
             <button
               type="button"
-              className={styles.accountAction}
+              className={styles.accountBadge}
               onClick={() => {
                 if (!authenticated) {
                   login();
@@ -221,9 +180,29 @@ export default function ProfilePage() {
                 setIsAccountsModalOpen(true);
               }}
               disabled={!ready}
+              aria-label={accountActionLabel}
             >
-              <span>{authenticated ? 'Account details' : 'Sign In'}</span>
-              <CaretRight size={16} weight="bold" />
+              {user?.avatarUrl ? (
+                <Image
+                  src={user.avatarUrl}
+                  alt={user.username || 'Profile avatar'}
+                  width={40}
+                  height={40}
+                  className={styles.accountAvatar}
+                  unoptimized
+                />
+              ) : (
+                <div className={styles.accountIconWrap} aria-hidden="true">
+                  <UserCircle size={22} weight="fill" />
+                </div>
+              )}
+
+              {isLoading ? (
+                <span className={`${styles.skeletonAccountBadge} ${styles.skeletonBlock}`} />
+              ) : (
+                <span className={styles.accountBadgeLabel}>{accountActionLabel}</span>
+              )}
+              <CaretRight size={14} weight="bold" className={styles.accountBadgeCaret} />
             </button>
           </section>
 
@@ -258,13 +237,10 @@ export default function ProfilePage() {
 
           <section className={styles.tipCard}>
             <div className={styles.tipIconWrap} aria-hidden="true">
-              <Image src="/stickers/streak.svg" alt="" width={28} height={28} className={styles.tipIcon} />
+              <Image src="/uploads/blueagent.png" alt="" width={36} height={36} className={styles.tipIcon} />
             </div>
             {isLoading ? (
-              <div className={styles.tipSkeletonStack}>
-                <span className={`${styles.skeletonTipLine} ${styles.skeletonBlock}`} />
-                <span className={`${styles.skeletonTipLineShort} ${styles.skeletonBlock}`} />
-              </div>
+              <span className={`${styles.skeletonTipLine} ${styles.skeletonBlock}`} />
             ) : (
               <p className={styles.tipText}>{completionMessage}</p>
             )}

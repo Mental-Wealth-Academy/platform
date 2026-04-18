@@ -16,6 +16,13 @@ interface ProposalStagesProps {
   tokenAllocation?: number | null;
 }
 
+const EMOTE_ASSETS = {
+  happy: '/uploads/HappyEmote.png',
+  confused: '/uploads/ConfusedEmote.png',
+  sad: '/uploads/SadEmote.png',
+  pain: '/uploads/PainEmote.png',
+} as const;
+
 const ProposalStages: React.FC<ProposalStagesProps> = ({
   stage1,
   stage2,
@@ -59,23 +66,23 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
   const getStage1Image = () => {
     switch (stage1) {
-      case 'approved': return 'https://i.imgur.com/3Y3KrnJ.png';
-      case 'rejected': return 'https://i.imgur.com/XIe1jZy.png';
-      case 'analyzing': return 'https://i.imgur.com/ePrWP7A.png';
-      default: return 'https://i.imgur.com/ePrWP7A.png';
+      case 'approved': return EMOTE_ASSETS.happy;
+      case 'rejected': return EMOTE_ASSETS.sad;
+      case 'analyzing': return EMOTE_ASSETS.confused;
+      default: return EMOTE_ASSETS.confused;
     }
   };
 
   const getStage2Image = () => {
-    if (stage2 === 'success') return 'https://i.imgur.com/3Y3KrnJ.png';
-    if (stage2 === 'failed') return 'https://i.imgur.com/ZYpNkse.png';
-    return 'https://i.imgur.com/ePrWP7A.png';
+    if (stage2 === 'success') return EMOTE_ASSETS.happy;
+    if (stage2 === 'failed') return EMOTE_ASSETS.pain;
+    return EMOTE_ASSETS.confused;
   };
 
   const getStage3Image = () => {
-    if (stage3 === 'completed') return 'https://i.imgur.com/4FsFcDO.png';
-    if (stage3 === 'defeated' || stage3 === 'expired') return 'https://i.imgur.com/XIe1jZy.png';
-    return 'https://i.imgur.com/ePrWP7A.png';
+    if (stage3 === 'completed') return EMOTE_ASSETS.happy;
+    if (stage3 === 'defeated' || stage3 === 'expired') return EMOTE_ASSETS.sad;
+    return EMOTE_ASSETS.confused;
   };
 
   const isStage1Done = stage1 === 'approved' || stage1 === 'rejected';
@@ -94,7 +101,6 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
             width={72}
             height={72}
             className={styles.stageImage}
-            unoptimized
           />
         </div>
         <div className={styles.stageCopy}>
@@ -128,7 +134,6 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
             width={72}
             height={72}
             className={styles.stageImage}
-            unoptimized
           />
         </div>
         <div className={styles.stageCopy}>
@@ -162,7 +167,6 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
             width={72}
             height={72}
             className={styles.stageImage}
-            unoptimized
           />
         </div>
         <div className={styles.stageCopy}>
