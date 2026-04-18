@@ -55,7 +55,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
-      { id: 'rewards', label: 'Quests', href: '/rewards', icon: Gift },
+      { id: 'rewards', label: 'Tasks', href: '/rewards', icon: Gift },
       { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
     ],
   },
