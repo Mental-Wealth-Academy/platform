@@ -1,205 +1,22 @@
 'use client';
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useRef, useEffect, memo, useState } from "react";
+import { useRef, useEffect, memo, useState } from "react";
 import * as THREE from "three";
 
-import { cubeFragmentShader, cubeVertexShader } from './cubeShaders';
 import './scene.css';
-
-const getDPR = () => {
-  if (typeof window === 'undefined') return 1;
-  return Math.min(window.devicePixelRatio || 1, 2);
-};
 
 // ── Shared mouse state (NDC: -1 to 1) ──────────────────────
 const mouseNDC = { x: 0, y: 0 };
 
-// ── Cube with cursor interaction ────────────────────────────
-const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly }: {
-  position: [number, number, number];
-  rotationSpeed: [number, number, number];
-  scale: number;
-  verticalSpeed: number;
-  horizontalOnly: boolean;
-}) => {
-  const mesh = useRef<THREE.Mesh>(null);
-  const dprRef = useRef(getDPR());
-  const textureRef = useRef<THREE.Texture | null>(null);
-  const basePosition = useRef<[number, number, number]>(position);
-
-  useEffect(() => {
-    if (!textureRef.current && typeof window !== 'undefined') {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
-        ctx.fillRect(0, 0, 256, 256);
-        textureRef.current = new THREE.CanvasTexture(canvas);
-        textureRef.current.needsUpdate = true;
-        if (mesh.current?.material) {
-          const material = mesh.current.material as THREE.ShaderMaterial;
-          if (material.uniforms?.utexture) {
-            material.uniforms.utexture.value = textureRef.current;
-          }
-        }
-      }
-    }
-  }, []);
-
-  const uniforms = useRef({
-    time: { value: 0.0 },
-    rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
-    horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) },
-    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) },
-    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) },
-    ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
-    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) },
-    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) },
-    asciicode: { value: 100.0 },
-    utexture: { value: null as THREE.Texture | null },
-    uAsciiImageTexture: { value: new THREE.Texture() },
-    uBackgroundColor: { value: new THREE.Vector3(0.53, 0.73, 0.98) },
-    brightness: { value: 1.3 },
-    asciiu: { value: 1.0 },
-    resolution: {
-      value: new THREE.Vector2(
-        typeof window !== 'undefined' ? window.innerWidth * dprRef.current : 1920,
-        typeof window !== 'undefined' ? window.innerHeight * dprRef.current : 1080
-      ),
-    },
-  }).current;
-
-  useEffect(() => {
-    if (textureRef.current && uniforms.utexture) {
-      uniforms.utexture.value = textureRef.current;
-    }
-  }, [uniforms]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const updateResolution = () => {
-      dprRef.current = getDPR();
-      if (uniforms.resolution.value && window.innerWidth > 0 && window.innerHeight > 0) {
-        uniforms.resolution.value.set(
-          window.innerWidth * dprRef.current,
-          window.innerHeight * dprRef.current
-        );
-      }
-    };
-    updateResolution();
-    window.addEventListener('resize', updateResolution);
-    return () => window.removeEventListener('resize', updateResolution);
-  }, [uniforms]);
-
-  useFrame((state) => {
-    const { clock, camera } = state;
-    if (!mesh.current) return;
-
-    const material = mesh.current.material as THREE.ShaderMaterial;
-    if (material.uniforms) {
-      material.uniforms.time.value = clock.getElapsedTime();
-    }
-
-    const time = clock.getElapsedTime();
-    const yOffset = Math.sin(time * verticalSpeed) * 1.5;
-    mesh.current.position.y = basePosition.current[1] + yOffset;
-
-    // Cursor repulsion — cubes drift away from mouse in world space
-    const mouseWorld = new THREE.Vector3(mouseNDC.x, mouseNDC.y, 0.5).unproject(camera);
-    const dir = mouseWorld.sub(camera.position).normalize();
-    const dist = -camera.position.z / dir.z;
-    const mousePos = camera.position.clone().add(dir.multiplyScalar(dist));
-
-    const dx = mesh.current.position.x - mousePos.x;
-    const dy = mesh.current.position.y - mousePos.y;
-    const d = Math.sqrt(dx * dx + dy * dy);
-    const influence = 6;
-
-    if (d < influence && d > 0.01) {
-      const force = ((influence - d) / influence) * 0.8;
-      mesh.current.position.x += (dx / d) * force * 0.15;
-      mesh.current.position.y += (dy / d) * force * 0.15;
-    }
-
-    // Gently drift back to base position
-    mesh.current.position.x += (basePosition.current[0] - mesh.current.position.x) * 0.02;
-  });
-
-  return (
-    <mesh ref={mesh} position={position} scale={scale}>
-      <boxGeometry args={[1.0, 1.0, 1.0]} />
-      <shaderMaterial
-        fragmentShader={cubeFragmentShader}
-        vertexShader={cubeVertexShader}
-        uniforms={uniforms}
-      />
-    </mesh>
-  );
-});
-
-RotatingCube.displayName = 'RotatingCube';
-
-// ── Cube distribution ───────────────────────────────────────
-const CubesScene = memo(() => {
-  const cubes = [];
-  const count = 12;
-  const cameraZ = 10;
-  const fov = 75;
-  const aspect = typeof window !== 'undefined' ? window.innerWidth / window.innerHeight : 16 / 9;
-  const fovRad = (fov * Math.PI) / 180;
-  const visibleHeight = 2 * Math.tan(fovRad / 2) * cameraZ;
-  const visibleWidth = visibleHeight * aspect;
-  const gridSize = Math.ceil(Math.sqrt(count));
-
-  for (let i = 0; i < count; i++) {
-    const gridX = (i % gridSize) / (gridSize - 1);
-    const gridY = Math.floor(i / gridSize) / (gridSize - 1);
-    const baseX = (gridX - 0.5) * visibleWidth * 0.8;
-    const baseY = (gridY - 0.5) * visibleHeight * 0.8;
-    let x = baseX + (Math.random() - 0.5) * visibleWidth * 0.3;
-    let y = baseY + (Math.random() - 0.5) * visibleHeight * 0.3;
-
-    const deadZoneX = visibleWidth * 0.42;
-    const deadZoneY = visibleHeight * 0.30;
-    if (Math.abs(x) < deadZoneX && Math.abs(y) < deadZoneY) {
-      if (Math.abs(x) / deadZoneX < Math.abs(y) / deadZoneY) {
-        y = y >= 0 ? deadZoneY + Math.random() * 2 : -deadZoneY - Math.random() * 2;
-      } else {
-        x = x >= 0 ? deadZoneX + Math.random() * 2 : -deadZoneX - Math.random() * 2;
-      }
-    }
-
-    cubes.push({
-      position: [x, y, (Math.random() - 0.5) * 8] as [number, number, number],
-      rotationSpeed: [(Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5] as [number, number, number],
-      scale: 1.8 + Math.random() * 2.2,
-      verticalSpeed: (Math.random() - 0.5) * 1.0,
-      horizontalOnly: Math.random() < 0.4,
-    });
-  }
-
-  return (
-    <>
-      {cubes.map((cube, i) => (
-        <RotatingCube key={i} {...cube} />
-      ))}
-    </>
-  );
-});
-
-CubesScene.displayName = 'CubesScene';
-
 // ── Realistic blue sky with drifting clouds ─────────────────
-const SkyBackground = memo(() => {
+const SkyBackground = memo(({ reducedMotion = false }: { reducedMotion?: boolean }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { scene } = useThree();
 
   const skyUniforms = useRef({
     time: { value: 0.0 },
+    motionFactor: { value: reducedMotion ? 0.0 : 1.0 },
   }).current;
 
   const skyVertex = `
@@ -212,7 +29,10 @@ const SkyBackground = memo(() => {
 
   const skyFragment = `
     uniform float time;
+    uniform float motionFactor;
     varying vec2 vUv;
+
+    const float PI = 3.14159265359;
 
     // FBM noise for realistic clouds
     float hash(vec2 p) {
@@ -248,27 +68,90 @@ const SkyBackground = memo(() => {
       return mix(base, detail, 0.35);
     }
 
-    void main() {
-      // Sky gradient — deep blue top to lighter horizon
-      vec3 skyTop = vec3(0.18, 0.35, 0.75);     // deep blue
-      vec3 skyMid = vec3(0.30, 0.52, 0.88);     // rich blue
-      vec3 skyHorizon = vec3(0.55, 0.72, 0.94); // lighter blue horizon
+    void getSkyPalette(
+      float idx,
+      out vec3 skyTop,
+      out vec3 skyMid,
+      out vec3 skyHorizon,
+      out vec3 sunColor,
+      out vec2 sunPos
+    ) {
+      if (idx < 0.5) {
+        skyTop = vec3(0.18, 0.35, 0.75);
+        skyMid = vec3(0.30, 0.52, 0.88);
+        skyHorizon = vec3(0.55, 0.72, 0.94);
+        sunColor = vec3(1.0, 0.95, 0.82);
+        sunPos = vec2(0.65, 0.8);
+      } else if (idx < 1.5) {
+        skyTop = vec3(0.26, 0.23, 0.52);
+        skyMid = vec3(0.45, 0.38, 0.70);
+        skyHorizon = vec3(0.80, 0.69, 0.92);
+        sunColor = vec3(1.0, 0.82, 0.68);
+        sunPos = vec2(0.34, 0.72);
+      } else {
+        skyTop = vec3(0.09, 0.28, 0.46);
+        skyMid = vec3(0.22, 0.54, 0.62);
+        skyHorizon = vec3(0.71, 0.87, 0.88);
+        sunColor = vec3(0.88, 0.98, 1.0);
+        sunPos = vec2(0.76, 0.67);
+      }
+    }
 
-      float t = vUv.y;
+    void main() {
+      float motionTime = time * mix(0.18, 1.0, motionFactor);
+      float phaseClock = motionTime * 0.075;
+      float phaseIndex = floor(mod(phaseClock, 3.0));
+      float nextPhase = mod(phaseIndex + 1.0, 3.0);
+      float phaseProgress = fract(phaseClock);
+      float transition = smoothstep(0.68, 0.95, phaseProgress);
+      float transitionPulse = sin(transition * PI);
+      float glitchPulse = transitionPulse * motionFactor;
+
+      vec2 uv = vUv;
+      float lineNoise = noise(vec2(vUv.y * 52.0, motionTime * 2.4));
+      float scanDrift = sin(vUv.y * 120.0 + motionTime * 18.0) * 0.0035;
+      uv.x += ((lineNoise - 0.5) * 0.085 + scanDrift) * glitchPulse;
+      uv.y += sin(vUv.x * 26.0 + motionTime * 8.0) * 0.005 * glitchPulse;
+      uv = clamp(uv, 0.0, 1.0);
+
+      vec3 skyTopA;
+      vec3 skyMidA;
+      vec3 skyHorizonA;
+      vec3 sunColorA;
+      vec2 sunPosA;
+      getSkyPalette(phaseIndex, skyTopA, skyMidA, skyHorizonA, sunColorA, sunPosA);
+
+      vec3 skyTopB;
+      vec3 skyMidB;
+      vec3 skyHorizonB;
+      vec3 sunColorB;
+      vec2 sunPosB;
+      getSkyPalette(nextPhase, skyTopB, skyMidB, skyHorizonB, sunColorB, sunPosB);
+
+      vec3 skyTop = mix(skyTopA, skyTopB, transition);
+      vec3 skyMid = mix(skyMidA, skyMidB, transition);
+      vec3 skyHorizon = mix(skyHorizonA, skyHorizonB, transition);
+      vec3 sunColor = mix(sunColorA, sunColorB, transition);
+      vec2 sunPos = mix(sunPosA, sunPosB, transition);
+
+      float t = uv.y;
       vec3 sky = mix(skyHorizon, skyMid, smoothstep(0.0, 0.4, t));
       sky = mix(sky, skyTop, smoothstep(0.4, 1.0, t));
+
+      float glitchBand = smoothstep(0.62, 0.98, noise(vec2(floor(uv.y * 28.0), motionTime * 5.6)));
+      sky += vec3(0.02, 0.04, 0.08) * glitchPulse * glitchBand;
 
       vec3 cloudHighlight = vec3(1.0, 0.995, 0.985);
       vec3 cloudBody = vec3(0.92, 0.95, 1.0);
       vec3 cloudShadow = vec3(0.56, 0.68, 0.88);
 
       // ── Far clouds — small, slow, faded, biased to the left + lower ──
-      vec2 uvFar = vUv * vec2(2.0, 1.5) + vec2(time * 0.006, time * 0.002);
+      vec2 uvFar = uv * vec2(2.0, 1.5) + vec2(motionTime * 0.006, motionTime * 0.002);
       float farField = cloudShape(uvFar, 3.7);
       float farCloud = smoothstep(0.42, 0.72, farField) * 0.5;
       float farCore = smoothstep(0.54, 0.8, farField) * 0.28;
       // Fade: strongest bottom-left, fades toward top-right
-      float farBias = smoothstep(0.8, 0.2, vUv.x) * smoothstep(0.7, 0.15, vUv.y);
+      float farBias = smoothstep(0.8, 0.2, uv.x) * smoothstep(0.7, 0.15, uv.y);
       farCloud *= farBias;
       farCore *= farBias;
       // Haze tint — distant clouds pick up sky color
@@ -277,7 +160,7 @@ const SkyBackground = memo(() => {
       sky = mix(sky, cloudHighlight, farCore * 0.22);
 
       // ── Mid clouds — moderate, medium speed ──
-      vec2 uvMid = vUv * vec2(3.0, 2.0) + vec2(time * 0.012, time * 0.004);
+      vec2 uvMid = uv * vec2(3.0, 2.0) + vec2(motionTime * 0.012, motionTime * 0.004);
       float midField = cloudShape(uvMid, 7.1);
       float midCloud = smoothstep(0.4, 0.69, midField) * 0.66;
       float midCore = smoothstep(0.51, 0.79, midField) * 0.46;
@@ -291,13 +174,13 @@ const SkyBackground = memo(() => {
       sky = mix(sky, cloudShadow, midShadow * 0.34);
 
       // ── Near clouds — larger, faster, more opaque, biased top-right ──
-      vec2 uvNear = vUv * vec2(1.4, 1.0) + vec2(time * 0.025, -time * 0.006);
+      vec2 uvNear = uv * vec2(1.4, 1.0) + vec2(motionTime * 0.025, -motionTime * 0.006);
       float nearField = cloudShape(uvNear, 11.2);
       float nearCloud = smoothstep(0.35, 0.62, nearField) * 0.92;
       float nearCore = smoothstep(0.47, 0.76, nearField) * 0.68;
       float nearShadow = smoothstep(0.3, 0.58, nearField) * (1.0 - smoothstep(0.5, 0.77, nearField)) * 0.76;
       // Fade: strongest top-right, fades toward bottom-left
-      float nearBias = smoothstep(0.2, 0.85, vUv.x) * smoothstep(0.3, 0.9, vUv.y);
+      float nearBias = smoothstep(0.2, 0.85, uv.x) * smoothstep(0.3, 0.9, uv.y);
       nearCloud *= nearBias;
       nearCore *= nearBias;
       nearShadow *= nearBias;
@@ -307,13 +190,13 @@ const SkyBackground = memo(() => {
       sky = mix(sky, cloudShadow, nearShadow * 0.42);
 
       // Clear center for hero text
-      float centerClear = 1.0 - smoothstep(0.15, 0.4, length(vUv - vec2(0.5, 0.5)));
+      float centerClear = 1.0 - smoothstep(0.15, 0.4, length(uv - vec2(0.5, 0.5)));
       sky = mix(sky, mix(skyHorizon, skyMid, t), centerClear * 0.3);
 
-      // Subtle sun glow — upper area
-      float sun = 1.0 - length((vUv - vec2(0.65, 0.8)) * vec2(1.5, 1.0));
-      sun = pow(max(sun, 0.0), 5.0) * 0.15;
-      sky += vec3(sun * 1.0, sun * 0.95, sun * 0.8);
+      // Subtle sun glow — shifts with the current phase
+      float sun = 1.0 - length((uv - sunPos) * vec2(1.5, 1.0));
+      sun = pow(max(sun, 0.0), 5.0) * 0.16;
+      sky += sunColor * sun;
 
       gl_FragColor = vec4(sky, 1.0);
     }
@@ -322,6 +205,10 @@ const SkyBackground = memo(() => {
   useEffect(() => {
     scene.background = null;
   }, [scene]);
+
+  useEffect(() => {
+    skyUniforms.motionFactor.value = reducedMotion ? 0.0 : 1.0;
+  }, [reducedMotion, skyUniforms]);
 
   useFrame(({ clock }) => {
     skyUniforms.time.value = clock.getElapsedTime();
@@ -344,12 +231,13 @@ const SkyBackground = memo(() => {
 SkyBackground.displayName = 'SkyBackground';
 
 // ── Barrel-distorted iridescent wireframe overlay ───────────
-const GasLeakWire = memo(() => {
+const GasLeakWire = memo(({ reducedMotion = false }: { reducedMotion?: boolean }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   const wireUniforms = useRef({
     time: { value: 0.0 },
     mouse: { value: new THREE.Vector2(0.5, 0.5) },
+    motionFactor: { value: reducedMotion ? 0.0 : 1.0 },
   }).current;
 
   const wireVertex = `
@@ -363,6 +251,7 @@ const GasLeakWire = memo(() => {
   const wireFragment = `
     uniform float time;
     uniform vec2 mouse;
+    uniform float motionFactor;
     varying vec2 vUv;
 
     // Barrel distortion
@@ -393,8 +282,9 @@ const GasLeakWire = memo(() => {
     }
 
     void main() {
+      float motionTime = time * mix(0.18, 1.0, motionFactor);
       vec2 center = mix(vec2(0.5), mouse, 0.25);
-      float breathe = sin(time * 0.35) * 0.1;
+      float breathe = sin(motionTime * 0.35) * 0.1;
       float k1 = 1.4 + breathe;
       float k2 = 0.9 + breathe * 0.4;
 
@@ -404,16 +294,16 @@ const GasLeakWire = memo(() => {
       vec2 uvB = barrel(vUv, center, k1 * 0.94, k2 * 0.92);
 
       // Caustics per channel — each sees slightly different distortion
-      float cR = caustic(uvR, time);
-      float cG = caustic(uvG, time + 0.3);
-      float cB = caustic(uvB, time + 0.6);
+      float cR = caustic(uvR, motionTime);
+      float cG = caustic(uvG, motionTime + 0.3);
+      float cB = caustic(uvB, motionTime + 0.6);
 
       // Iridescent color shift based on angle + distance
       vec2 p = vUv - 0.5;
       float angle = atan(p.y, p.x);
       float dist = length(p);
 
-      float hueShift = angle * 0.3 + dist * 2.5 + time * 0.08;
+      float hueShift = angle * 0.3 + dist * 2.5 + motionTime * 0.08;
       vec3 iri = vec3(
         0.5 + 0.5 * sin(hueShift * 6.2832),
         0.5 + 0.5 * sin(hueShift * 6.2832 + 2.094),
@@ -438,11 +328,15 @@ const GasLeakWire = memo(() => {
       // Wide vignette — caustics live mostly in the periphery, not center
       float vignette = smoothstep(0.0, 0.25, dist) * (1.0 - smoothstep(0.5, 0.95, dist));
 
-      float alpha = max(color.r, max(color.g, color.b)) * 0.13 * vignette;
+      float alpha = max(color.r, max(color.g, color.b)) * mix(0.08, 0.13, motionFactor) * vignette;
 
       gl_FragColor = vec4(color, alpha);
     }
   `;
+
+  useEffect(() => {
+    wireUniforms.motionFactor.value = reducedMotion ? 0.0 : 1.0;
+  }, [reducedMotion, wireUniforms]);
 
   useFrame(({ clock }) => {
     wireUniforms.time.value = clock.getElapsedTime();
@@ -488,6 +382,24 @@ MouseTracker.displayName = 'MouseTracker';
 // ── Main scene ──────────────────────────────────────────────
 const Scene = memo(() => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   return (
     <Canvas
@@ -505,8 +417,8 @@ const Scene = memo(() => {
       performance={{ min: 0.5 }}
     >
       <MouseTracker />
-      <SkyBackground />
-      <GasLeakWire />
+      <SkyBackground reducedMotion={prefersReducedMotion} />
+      <GasLeakWire reducedMotion={prefersReducedMotion} />
     </Canvas>
   );
 });

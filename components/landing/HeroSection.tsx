@@ -17,8 +17,10 @@ export const HeroSection: React.FC = () => {
   return (
     <div className={styles.heroSection}>
       <div className={styles.heroContent}>
-        <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
-        <h1 className={styles.heroHeadline}>Learn W/ <em>Blue AI</em></h1>
+        <div className={styles.heroStarformWrap}>
+          <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
+        </div>
+        <h1 className={styles.heroHeadline}>Evangelic <em>Spirituality</em></h1>
         <p className={styles.heroSubtext}>
           A 12-week micro-university where your AI companion memorizes, adapts, and builds your learning experience.
         </p>

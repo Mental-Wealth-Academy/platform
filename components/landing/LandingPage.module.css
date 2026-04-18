@@ -4,6 +4,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
+  --hero-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 
@@ -11,16 +12,15 @@
 .heroSection {
   position: absolute;
   top: 50vh;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  pointer-events: auto;
+  width: min(calc(100% - 40px), 980px);
+  pointer-events: none;
   box-sizing: border-box;
   cursor: none;
 }
@@ -30,18 +30,31 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: min(100%, 820px);
+  width: 100%;
+  max-width: 820px;
   margin: 0 auto;
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: clamp(20px, 3vw, 32px);
+  padding-right: clamp(20px, 3vw, 32px);
   min-width: 0;
+  pointer-events: auto;
+}
+
+.heroStarformWrap {
+  width: min(100%, 480px);
+  margin-bottom: 12px;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+  animation: heroStarformReveal 0.72s var(--hero-ease-out) 0.04s both;
 }
 
 .heroStarform {
   width: 100%;
-  max-width: 480px;
   height: auto;
-  margin-bottom: 12px;
+  display: block;
+  filter: drop-shadow(0 16px 40px rgba(24, 49, 140, 0.18));
+  transform-origin: 50% 55%;
+  will-change: transform;
+  animation: heroStarformFloat 8.5s cubic-bezier(0.37, 0, 0.63, 1) 0.85s infinite;
 }
 
 .heroHeadline {
@@ -54,7 +67,7 @@
   color: #ffffff;
   text-transform: uppercase;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
-  animation: heroFadeUp 0.45s ease-out both;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) both;
 }
 
 .heroSubheadline {
@@ -66,7 +79,7 @@
   letter-spacing: 0.04em;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.1);
-  animation: heroFadeUp 0.45s ease-out 0.12s both;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.12s both;
 }
 
 
@@ -78,7 +91,7 @@
   margin: 0 0 32px 0;
   color: rgba(255, 255, 255, 0.75);
   max-width: 620px;
-  animation: heroFadeUp 0.45s ease-out 0.25s both;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.25s both;
 }
 
 .heroActions {
@@ -104,7 +117,7 @@
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(81, 104, 255, 0.25);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: heroFadeUp 0.45s ease-out 0.5s both;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.5s both;
   overflow: hidden;
 }
 
@@ -162,6 +175,29 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes heroStarformReveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.92) rotate(-4deg);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroStarformFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0) scale(1.018);
   }
 }
 
@@ -342,6 +378,7 @@
     flex-direction: column;
     align-items: center;
     top: 50vh;
+    width: min(calc(100% - 24px), 100%);
   }
 
   .heroContent {
@@ -376,6 +413,10 @@
 }
 
 @media (max-width: 480px) {
+  .heroSection {
+    width: min(calc(100% - 16px), 100%);
+  }
+
   .heroContent {
     padding-left: 16px;
     padding-right: 16px;
@@ -1962,13 +2003,35 @@
   color: rgba(26, 27, 36, 0.55);
   margin: 20px 0 0 0;
   text-align: center;
-  animation: heroFadeUp 0.45s ease-out 0.7s both;
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.7s both;
 }
 
 @media (max-width: 768px) {
   .heroQuote {
     font-size: 0.75rem;
     margin-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroStarformWrap,
+  .heroStarform,
+  .heroHeadline,
+  .heroSubheadline,
+  .heroSubtext,
+  .heroButton,
+  .heroQuote {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .heroButton,
+  .heroButton::before,
+  .heroSlideText,
+  .heroSlideClone {
+    transition: none !important;
   }
 }
 
