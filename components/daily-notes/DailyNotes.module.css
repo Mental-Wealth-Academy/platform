@@ -491,150 +491,132 @@
 .authPromptOverlay {
   position: fixed;
   inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1100;
-  padding: 20px;
-}
-
-.authPromptBackdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(9, 13, 24, 0.58);
-  backdrop-filter: blur(10px) saturate(135%);
+  padding: 24px;
 }
 
 .authPromptDialog {
   position: relative;
-  width: min(100%, 420px);
-  padding: 28px 24px 22px;
-  border-radius: 28px;
-  background:
-    radial-gradient(circle at top center, rgba(110, 128, 255, 0.22), transparent 42%),
-    linear-gradient(180deg, rgba(16, 20, 36, 0.98) 0%, rgba(11, 15, 28, 0.98) 100%);
-  border: 1px solid rgba(129, 145, 255, 0.22);
+  width: min(100%, 520px);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #f8f9ff 0%, #f4f5fe 100%);
+  border: 2px solid #ffffff;
   box-shadow:
-    0 26px 80px rgba(3, 7, 18, 0.54),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 24px 48px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(81, 104, 255, 0.1);
   overflow: hidden;
 }
 
-.authPromptGlow {
-  position: absolute;
-  inset: -32% auto auto 50%;
-  width: 240px;
-  height: 240px;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 104, 255, 0.34) 0%, rgba(81, 104, 255, 0) 72%);
-  pointer-events: none;
+.authPromptContent {
+  padding: 48px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.authPromptEyebrow {
-  position: relative;
-  display: inline-flex;
+.authPromptClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 14px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(168, 179, 255, 0.92);
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--color-text-dark);
+  transition: all 0.2s ease;
+  z-index: 10;
+  padding: 0;
+}
+
+.authPromptClose:hover:not(:disabled) {
+  background: #ffffff;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .authPromptTitle {
-  position: relative;
   margin: 0;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 28px;
+  font-family: var(--font-secondary);
+  font-size: 24px;
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  color: #F7F9FF;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  color: var(--color-text-dark);
+  text-align: center;
 }
 
 .authPromptCopy {
-  position: relative;
-  margin: 14px 0 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  line-height: 1.7;
-  color: rgba(231, 236, 255, 0.74);
-}
-
-.authPromptBenefits {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.authPromptBenefit {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(129, 145, 255, 0.18);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(235, 240, 255, 0.78);
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+  text-align: center;
+  opacity: 0.72;
 }
 
 .authPromptActions {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 22px;
+  gap: 12px;
 }
 
 .authPromptPrimary,
 .authPromptSecondary {
   width: 100%;
-  min-height: 48px;
-  border-radius: 16px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  height: 44px;
+  border-radius: 8px;
+  font-family: var(--font-button);
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .authPromptPrimary {
   color: #ffffff;
-  background: linear-gradient(135deg, #5168FF 0%, #7082FF 48%, #8E6BFF 100%);
-  border: 1px solid rgba(130, 146, 255, 0.28);
-  box-shadow:
-    0 16px 28px rgba(81, 104, 255, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background-color: var(--color-primary);
+  border: none;
+  box-shadow: none;
 }
 
 .authPromptPrimary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow:
-    0 20px 34px rgba(81, 104, 255, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  background-color: #3d52e6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
 }
 
 .authPromptPrimary:disabled {
-  cursor: wait;
-  opacity: 0.72;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .authPromptSecondary {
-  color: rgba(239, 242, 255, 0.84);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
 }
 
-.authPromptSecondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+.authPromptSecondary:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(81, 104, 255, 0.3);
 }
 
 /* Timer Modal */
@@ -1216,12 +1198,12 @@
   }
 
   .authPromptDialog {
-    padding: 24px 20px 18px;
+    padding: 44px 20px 20px;
     border-radius: 24px;
   }
 
   .authPromptTitle {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .modalOverlay {
@@ -1332,7 +1314,7 @@
   }
 
   .authPromptTitle {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .authPromptCopy {

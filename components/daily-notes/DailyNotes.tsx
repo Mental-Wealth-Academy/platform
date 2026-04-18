@@ -367,7 +367,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [authPending, login, play, ready]);
 
   const handleCompactClick = () => {
-    if (compact && canStart) {
+    if (!compact || !dataReady || authPending) return;
+    if (!enablePersistence) {
+      setShowAuthPrompt(true);
+      return;
+    }
+    if (canStart) {
       handleAttemptStart(availableDayIndex);
     }
   };
@@ -384,7 +389,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <CyberpunkDataViz />
           </div>
         )}
-        <div className={styles.cardButton} onClick={handleCompactClick}>
+        <button
+          type="button"
+          className={styles.cardButton}
+          onClick={handleCompactClick}
+          aria-label="Open Morning Pages"
+        >
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
               <Image
@@ -415,7 +425,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               </span>
             )}
           </div>
-        </div>
+        </button>
 
         {!compact && isExpanded && (
           <div className={styles.expandedContent}>
@@ -494,7 +504,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
       {showAuthPrompt && typeof window !== 'undefined' && createPortal(
         <div className={styles.authPromptOverlay} onClick={() => setShowAuthPrompt(false)}>
-          <div className={styles.authPromptBackdrop} />
           <div
             className={styles.authPromptDialog}
             role="dialog"
@@ -502,45 +511,45 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             aria-labelledby="morning-pages-auth-title"
             onClick={event => event.stopPropagation()}
           >
-            <div className={styles.authPromptGlow} />
-            <span className={styles.authPromptEyebrow}>
-              {authPending ? 'Opening your access' : 'Start the course'}
-            </span>
-            <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
-              {authPending ? 'Your account is almost ready.' : 'Create an account to unlock Morning Pages.'}
-            </h3>
-            <p className={styles.authPromptCopy}>
-              {authPending
-                ? 'We are finishing your course setup so your pages, streak, and week progress can save correctly.'
-                : 'Morning Pages is the main practice inside the course. Create your account to save every session, build your streak, and unlock each new week with Blue.'}
-            </p>
+            <button
+              type="button"
+              className={styles.authPromptClose}
+              onClick={() => setShowAuthPrompt(false)}
+              aria-label="Close account prompt"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className={styles.authPromptContent}>
+              <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
+                {authPending ? 'Your account is almost ready.' : 'Create an account to continue.'}
+              </h3>
+              <p className={styles.authPromptCopy}>
+                {authPending
+                  ? 'We are finishing your setup so Morning Pages can save to your account.'
+                  : 'Morning Pages saves your progress to your course account. Sign in to start writing and keep your progress.'}
+              </p>
 
-            {!authPending && (
-              <div className={styles.authPromptBenefits}>
-                <span className={styles.authPromptBenefit}>Save every page</span>
-                <span className={styles.authPromptBenefit}>Keep your streak</span>
-                <span className={styles.authPromptBenefit}>Unlock the weeks ahead</span>
-              </div>
-            )}
-
-            <div className={styles.authPromptActions}>
-              {!authPending && (
+              <div className={styles.authPromptActions}>
+                {!authPending && (
+                  <button
+                    type="button"
+                    className={styles.authPromptPrimary}
+                    onClick={handleGuestCta}
+                    disabled={!ready}
+                  >
+                    {ready ? 'Create account' : 'Loading sign-in...'}
+                  </button>
+                )}
                 <button
                   type="button"
-                  className={styles.authPromptPrimary}
-                  onClick={handleGuestCta}
-                  disabled={!ready}
+                  className={styles.authPromptSecondary}
+                  onClick={() => setShowAuthPrompt(false)}
                 >
-                  {ready ? 'Create my account' : 'Loading sign-in...'}
+                  {authPending ? 'Close' : 'Not now'}
                 </button>
-              )}
-              <button
-                type="button"
-                className={styles.authPromptSecondary}
-                onClick={() => setShowAuthPrompt(false)}
-              >
-                {authPending ? 'Close' : 'Maybe later'}
-              </button>
+              </div>
             </div>
           </div>
         </div>,

@@ -667,8 +667,9 @@
     left: 0;
     right: 0;
     bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 12px));
-    z-index: 997;
+    z-index: 1002;
     padding: 0 var(--morning-pages-pad) 10px;
+    pointer-events: none;
   }
 
   /* Gradient: fades page content out as it approaches the button */
@@ -678,12 +679,12 @@
     left: calc(-1 * var(--morning-pages-pad));
     right: calc(-1 * var(--morning-pages-pad));
     bottom: 0;
-    height: 152px;
+    height: 188px;
     background: linear-gradient(
       to bottom,
-      rgba(251, 248, 255, 0) 0%,
-      rgba(251, 248, 255, 0.54) 48%,
-      rgba(251, 248, 255, 0.86) 74%,
+      rgba(251, 248, 255, 0.25) 0%,
+      rgba(251, 248, 255, 0.68) 42%,
+      rgba(251, 248, 255, 0.92) 72%,
       rgba(251, 248, 255, 1) 100%
     );
     pointer-events: none;
@@ -693,6 +694,7 @@
   .morningPagesShell > :last-child {
     position: relative;
     z-index: 1;
+    pointer-events: auto;
   }
 }
 
@@ -907,9 +909,9 @@
   :global([data-theme="dark"]) .morningPagesGradient {
     background: linear-gradient(
       to bottom,
-      rgba(10, 12, 20, 0) 0%,
-      rgba(10, 12, 20, 0.5) 48%,
-      rgba(10, 12, 20, 0.84) 74%,
+      rgba(10, 12, 20, 0.25) 0%,
+      rgba(10, 12, 20, 0.66) 42%,
+      rgba(10, 12, 20, 0.9) 72%,
       rgba(10, 12, 20, 1) 100%
     );
   }
