@@ -1,24 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import styles from './page.module.css';
 
-// Asset imports from Figma
-const FIGMA_ASSETS = {
-  frameHero1: 'https://www.figma.com/api/mcp/asset/c9f5a7f9-a1eb-4e45-9fe1-2709009512ad',
-  frameHero2: 'https://www.figma.com/api/mcp/asset/66537faf-70b4-4809-bbcb-c8d5d2fa6b97',
-  frameGradient: 'https://www.figma.com/api/mcp/asset/30d7310b-a9d5-43b1-a549-c21add451f92',
-  bgPattern1: 'https://www.figma.com/api/mcp/asset/ee0c351b-20b4-4123-960a-aa1fb732e1a4',
-  bgPattern2: 'https://www.figma.com/api/mcp/asset/c6caeeb4-c17e-4885-8c17-8e52911dd477',
-  sidebarBg: 'https://www.figma.com/api/mcp/asset/638a01aa-42be-4de1-ad3b-3930e13f9908',
-  bgCard: 'https://www.figma.com/api/mcp/asset/95fb31be-9db0-499c-9f24-93d58143c2b7',
-  subtract: 'https://www.figma.com/api/mcp/asset/872182de-2977-4300-82aa-3b3f0b6333d0',
-  icon: 'https://www.figma.com/api/mcp/asset/8e59e433-0673-47eb-bf97-d29faeb09a42',
-  line: 'https://www.figma.com/api/mcp/asset/6f198261-7347-4206-8b1f-5911da99dc65',
-  searchIcon: 'https://www.figma.com/api/mcp/asset/3f280e4d-f86e-47f2-9d37-f02406cc8d64',
-  iconRight: 'https://www.figma.com/api/mcp/asset/699b42e8-b249-40c5-a4e4-604552030d03',
-};
+const SAMPLE_SKILLS = [
+  { name: 'SKILLS', model: 'CLAUDE', api: 'API', users: '0.00', rating: '0.0%', calls: '0.0%' },
+  { name: 'BLOCKCHAIN', model: '10/01/2025', api: 'SOL', users: '2,345', rating: '4.8%', calls: '12.3%' },
+  { name: 'WEB3', model: '09/15/2025', api: 'ETH', users: '1,892', rating: '4.6%', calls: '9.8%' },
+  { name: 'DEFI', model: '08/30/2025', api: 'USDC', users: '945', rating: '4.9%', calls: '15.2%' },
+  { name: 'SMART CONTRACTS', model: '08/22/2025', api: 'CONTRACT', users: '567', rating: '4.7%', calls: '8.5%' },
+  { name: 'WALLET SECURITY', model: '08/10/2025', api: 'SECURE', users: '3,421', rating: '4.5%', calls: '11.7%' },
+  { name: 'TRADING', model: '07/28/2025', api: 'TRADE', users: '2,156', rating: '4.8%', calls: '14.9%' },
+  { name: 'GOVERNANCE', model: '07/15/2025', api: 'DAO', users: '834', rating: '4.6%', calls: '10.2%' },
+  { name: 'NFT', model: '06/30/2025', api: 'NFT', users: '1,654', rating: '4.4%', calls: '7.3%' },
+];
 
 const CATEGORY_BADGES = [
   { label: 'My Favorite (0)', highlighted: true },
@@ -35,137 +30,149 @@ const CATEGORY_BADGES = [
 
 export default function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState('My Favorite (0)');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredSkills = SAMPLE_SKILLS.filter(skill =>
+    skill.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className={styles.container}>
-      {/* Navbar Hero Section */}
-      <div className={styles.navbar}>
-        <div className={styles.heroCard}>
-          <div className={styles.heroImageWrapper}>
-            <img
-              src={FIGMA_ASSETS.frameHero1}
-              alt="Library Hero"
-              className={styles.heroImage}
-            />
-            <img
-              src={FIGMA_ASSETS.frameHero2}
-              alt="Library Accent"
-              className={styles.heroImage}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Hero Title Bar */}
-      <div className={styles.titleBar}>
-        <div className={styles.titleBackdrop}>
-          <img
-            src={FIGMA_ASSETS.frameGradient}
-            alt=""
-            className={styles.titleBgImage}
-          />
-        </div>
-        <p className={styles.titleText}>
+      {/* Top Banner */}
+      <div className={styles.topBanner}>
+        <p className={styles.bannerText}>
           The Onchain Digital Library Built To Reward Quality Information.
         </p>
       </div>
 
-      {/* Main Content Area */}
-      <div className={styles.mainContent}>
-        <div className={styles.contentWrapper}>
-          <div className={styles.patternBg}>
-            <img src={FIGMA_ASSETS.bgPattern1} alt="" />
-          </div>
-
-          {/* Sidebar */}
-          <div className={styles.sidebar}>
-            {/* Marketplace Details */}
-            <div className={styles.detailsSection}>
-              <div className={styles.tabsHeader}>
-                <span>Details</span>
-                <span>Collectors</span>
-                <span>Links</span>
-              </div>
-
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>Contract Address</p>
-                <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
-              </div>
-
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>Blockchain</p>
-                <p className={styles.detailValue}>Ethereum</p>
-              </div>
-
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>Creator Royalties</p>
-                <p className={styles.detailValue}>12.32%</p>
-              </div>
-
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>Mint vector ID</p>
-                <p className={styles.detailValue}>
-                  0x0erj0w34jr03489jrth0w384erfow90erw9e8rh0w
-                </p>
-              </div>
+      {/* Main Content Wrapper */}
+      <div className={styles.contentWrapper}>
+        {/* Left Content Area */}
+        <div className={styles.mainArea}>
+          {/* Header Section */}
+          <div className={styles.headerSection}>
+            <div className={styles.titleGroup}>
+              <h1 className={styles.title}>Skill Library</h1>
+              <button className={styles.scanButton}>Scan Prompts</button>
             </div>
-
-            {/* Description */}
-            <p className={styles.descriptionText}>
-              We use a community-driven consensus model to verify eligibility of creative work.{' '}
-              <strong>Read more</strong> about how our DAO ensures ethical responsibility and
-              representation of all digital work on the Mental Wealth Academy platform.
-            </p>
-          </div>
-
-          {/* Main Library Section */}
-          <div className={styles.librarySection}>
-            {/* Search & Filters */}
-            <div className={styles.filterCard}>
-              <div className={styles.searchBox}>
-                <img src={FIGMA_ASSETS.searchIcon} alt="Search" className={styles.searchIcon} />
-                <input
-                  type="text"
-                  placeholder="Search for books & classes"
-                  className={styles.searchInput}
-                />
-              </div>
-
-              {/* Category Badges */}
-              <div className={styles.badgesContainer}>
-                {CATEGORY_BADGES.map((badge) => (
-                  <button
-                    key={typeof badge === 'string' ? badge : badge.label}
-                    onClick={() =>
-                      setSelectedCategory(typeof badge === 'string' ? badge : badge.label)
-                    }
-                    className={`${styles.badge} ${
-                      (typeof badge === 'string' ? badge : badge.label) === selectedCategory
-                        ? styles.badgeActive
-                        : styles.badgeInactive
-                    }`}
-                  >
-                    {typeof badge === 'string' ? (
-                      badge
-                    ) : (
-                      <>
-                        <img src={FIGMA_ASSETS.icon} alt="Favorite Icon" />
-                        {badge.label}
-                      </>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Prompt Library Grid */}
-            <div className={styles.libraryGrid}>
-              {/* Placeholder content - will be populated with actual library items */}
-              <div className={styles.emptyState}>
-                <p>Library content coming soon</p>
-              </div>
+            <div className={styles.scanDetails}>
+              <p className={styles.scanLabel}>MIRROR-S1 SCAN DETAILS</p>
+              <p className={styles.scanInfo}>
+                <span>Azure V.12</span> - 3.5MB - July 20, 2025
+              </p>
             </div>
           </div>
+
+          {/* Search & Filter Section */}
+          <div className={styles.filterSection}>
+            <div className={styles.searchBox}>
+              <svg
+                className={styles.searchIcon}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search for books & classes"
+                className={styles.searchInput}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            {/* Category Badges */}
+            <div className={styles.badgesContainer}>
+              {CATEGORY_BADGES.map((badge) => (
+                <button
+                  key={typeof badge === 'string' ? badge : badge.label}
+                  onClick={() =>
+                    setSelectedCategory(typeof badge === 'string' ? badge : badge.label)
+                  }
+                  className={`${styles.badge} ${
+                    (typeof badge === 'string' ? badge : badge.label) === selectedCategory
+                      ? styles.badgeActive
+                      : styles.badgeInactive
+                  }`}
+                >
+                  {typeof badge === 'string' ? badge : badge.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Excel Sheet Styled Skills Table */}
+          <div className={styles.tableContainer}>
+            <div className={styles.tableScroll}>
+              <table className={styles.skillsTable}>
+                <thead>
+                  <tr>
+                    <th>SKILLS</th>
+                    <th>MODEL</th>
+                    <th>API</th>
+                    <th>USERS</th>
+                    <th>RATING</th>
+                    <th>CALLS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSkills.map((skill, idx) => (
+                    <tr key={idx} className={idx === 0 ? styles.headerRow : ''}>
+                      <td>{skill.name}</td>
+                      <td>{skill.model}</td>
+                      <td>{skill.api}</td>
+                      <td>{skill.users}</td>
+                      <td>{skill.rating}</td>
+                      <td>{skill.calls}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className={styles.sidebar}>
+          <div className={styles.detailsSection}>
+            <div className={styles.tabsHeader}>
+              <span>Details</span>
+              <span>Collectors</span>
+              <span>Links</span>
+            </div>
+
+            <div className={styles.detailItem}>
+              <p className={styles.detailLabel}>Contract Address</p>
+              <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
+            </div>
+
+            <div className={styles.detailItem}>
+              <p className={styles.detailLabel}>Blockchain</p>
+              <p className={styles.detailValue}>Ethereum</p>
+            </div>
+
+            <div className={styles.detailItem}>
+              <p className={styles.detailLabel}>Creator Royalties</p>
+              <p className={styles.detailValue}>12.32%</p>
+            </div>
+
+            <div className={styles.detailItem}>
+              <p className={styles.detailLabel}>Mint vector ID</p>
+              <p className={styles.detailValue}>
+                0x0erj0w34jr03489jrth0w384erfow90erw9e8rh0w
+              </p>
+            </div>
+          </div>
+
+          <p className={styles.descriptionText}>
+            We use a community-driven consensus model to verify eligibility of creative work.{' '}
+            <strong>Read more</strong> about how our DAO ensures ethical responsibility and
+            representation of all digital work on the Mental Wealth Academy platform.
+          </p>
         </div>
       </div>
     </div>
