@@ -69,8 +69,44 @@ export async function GET(request: NextRequest) {
   const requestedWeek = Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 12
     ? weekParam
     : null;
+  const currentMode = request.nextUrl.searchParams.get('mode') === 'current';
 
   const buildWeekResponse = (allWeekPages: Record<string, unknown[]>) => {
+    if (currentMode) {
+      let resolvedWeek = 1;
+      let resolvedEntries: unknown[] = [];
+      let resolvedPreviousWeekCount = 7;
+
+      for (let week = 1; week <= 12; week += 1) {
+        const entries = Array.isArray(allWeekPages[String(week)]) ? allWeekPages[String(week)] : [];
+        const previousCount = week === 1
+          ? 7
+          : Array.isArray(allWeekPages[String(week - 1)])
+            ? allWeekPages[String(week - 1)].length
+            : 0;
+        const unlocked = previousCount >= 7;
+
+        if (unlocked) {
+          resolvedWeek = week;
+          resolvedEntries = entries;
+          resolvedPreviousWeekCount = previousCount;
+        }
+
+        if (unlocked && entries.length < 7) {
+          resolvedWeek = week;
+          resolvedEntries = entries;
+          resolvedPreviousWeekCount = previousCount;
+          break;
+        }
+      }
+
+      return NextResponse.json({
+        weekNumber: resolvedWeek,
+        entries: resolvedEntries,
+        previousWeekCount: resolvedPreviousWeekCount,
+      });
+    }
+
     if (requestedWeek === null) {
       return NextResponse.json({ allWeekPages });
     }

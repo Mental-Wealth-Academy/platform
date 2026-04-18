@@ -276,32 +276,39 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }
   };
 
-  const loadWeek = useCallback(async (weekNumber: number) => {
+  const loadWeek = useCallback(async (weekNumber: number, mode: 'week' | 'current' = 'week') => {
     if (!enablePersistence) return;
 
     try {
       const token = await getAccessToken();
       const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`/api/daily-notes?week=${weekNumber}`, {
+      const res = await fetch(
+        mode === 'current' ? '/api/daily-notes?mode=current' : `/api/daily-notes?week=${weekNumber}`,
+        {
         credentials: 'include',
         headers: authHeaders,
-      });
+        }
+      );
       if (!res.ok) return;
 
       const data = await res.json();
+      const resolvedWeekNumber = typeof data.weekNumber === 'number' ? data.weekNumber : weekNumber;
       setAllWeekPages(prev => ({
         ...prev,
-        [weekNumber]: Array.isArray(data.entries) ? data.entries : [],
+        [resolvedWeekNumber]: Array.isArray(data.entries) ? data.entries : [],
       }));
       setPreviousWeekCounts(prev => ({
         ...prev,
-        [weekNumber]: typeof data.previousWeekCount === 'number' ? data.previousWeekCount : prev[weekNumber] ?? 0,
+        [resolvedWeekNumber]: typeof data.previousWeekCount === 'number' ? data.previousWeekCount : prev[resolvedWeekNumber] ?? 0,
       }));
-      loadedWeeksRef.current.add(weekNumber);
+      loadedWeeksRef.current.add(resolvedWeekNumber);
+      if (resolvedWeekNumber !== currentWeek) {
+        setCurrentWeek(resolvedWeekNumber);
+      }
     } catch {
       // silent
     }
-  }, [enablePersistence, getAccessToken]);
+  }, [currentWeek, enablePersistence, getAccessToken]);
 
   useEffect(() => {
     if (!enablePersistence) return;
@@ -310,7 +317,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     setDataReady(false);
 
     (async () => {
-      if (!loadedWeeksRef.current.has(currentWeek)) {
+      if (loadedWeeksRef.current.size === 0) {
+        await loadWeek(currentWeek, 'current');
+      } else if (!loadedWeeksRef.current.has(currentWeek)) {
         await loadWeek(currentWeek);
       }
       if (!cancelled) {
@@ -432,7 +441,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       <div
         className={`${styles.card} ${compact ? styles.cardCompact : ''} ${compact && todayDone ? styles.cardDone : ''}`}
         style={{ '--week-color': weekColor } as React.CSSProperties}
-        onMouseEnter={() => play('hum')}
       >
         <div className={styles.cardBorder} aria-hidden="true" />
         <div className={styles.cardSurface} aria-hidden="true" />
@@ -445,6 +453,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           type="button"
           className={styles.cardButton}
           onClick={handleCompactClick}
+          onMouseEnter={() => play('hover')}
           aria-label="Open Morning Pages"
         >
           <div className={styles.cardLeft}>

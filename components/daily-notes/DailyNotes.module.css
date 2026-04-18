@@ -1138,10 +1138,11 @@
 
   .cardCompact .cardBorder {
     inset: 0;
-    padding: 1px;
+    padding: 2px;
     opacity: 1;
     background-size: 160% 100%;
     z-index: 1;
+    filter: saturate(1.12) brightness(1.05);
   }
 
   .cardCompact .cardSurface {
