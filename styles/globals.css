@@ -177,6 +177,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
+  --sidebar-width: 265px;
 }
 
 /* ============================================
@@ -865,4 +866,3 @@ h6 { font-size: var(--font-size-xs); }
 [data-theme="dark"] .introjs-progress {
   background-color: rgba(107, 128, 255, 0.15);
 }
-

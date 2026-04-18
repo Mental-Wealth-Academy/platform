@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -26,6 +26,7 @@ import YourAccountsModal from '../nav-buttons/YourAccountsModal';
 import OnboardingModal from '../onboarding/OnboardingModal';
 import LootBoxModal from '../loot-box/LootBoxModal';
 import { useSound } from '@/hooks/useSound';
+import { useInitialSidebarCollapsed } from './SidebarStateProvider';
 
 interface NavItem {
   id: string;
@@ -76,6 +77,26 @@ interface SideNavigationProps {
   onExternalMobileClose?: () => void;
 }
 
+const SIDEBAR_EXPANDED_WIDTH = '265px';
+const SIDEBAR_COLLAPSED_WIDTH = '72px';
+
+function syncSidebarPreference(collapsed: boolean) {
+  if (typeof document === 'undefined') return;
+
+  const value = collapsed ? 'true' : 'false';
+  const width = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH;
+  document.documentElement.setAttribute('data-sidebar-collapsed', value);
+  document.documentElement.style.setProperty('--sidebar-width', width);
+
+  try {
+    localStorage.setItem('sideNavCollapsed', value);
+  } catch {
+    // Ignore unavailable storage and still keep the in-memory layout stable.
+  }
+
+  document.cookie = `sideNavCollapsed=${value}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 const NavIconMark: React.FC<{
   icon: NavItem['icon'];
   isActive?: boolean;
@@ -90,6 +111,7 @@ const NavIconMark: React.FC<{
 );
 
 const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onExternalMobileClose }) => {
+  const initialCollapsed = useInitialSidebarCollapsed();
   const pathname = usePathname();
   const router = useRouter();
   const { address, isConnected } = useAccount();
@@ -103,10 +125,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpenInternal] = useState(false);
 
-  const setIsMobileMenuOpen = (open: boolean) => {
+  const setIsMobileMenuOpen = useCallback((open: boolean) => {
     setIsMobileMenuOpenInternal(open);
     if (!open && onExternalMobileClose) onExternalMobileClose();
-  };
+  }, [onExternalMobileClose]);
 
   useEffect(() => {
     if (externalMobileOpen) setIsMobileMenuOpenInternal(true);
@@ -116,7 +138,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isYourAccountsModalOpen, setIsYourAccountsModalOpen] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isLootBoxOpen, setIsLootBoxOpen] = useState(false);
   const [userLoadComplete, setUserLoadComplete] = useState(false);
@@ -128,21 +150,18 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const [accountMenuStyle, setAccountMenuStyle] = useState<React.CSSProperties>({});
 
-  // Load collapsed state from localStorage and sync CSS variable
   useEffect(() => {
-    const saved = localStorage.getItem('sideNavCollapsed');
-    const collapsed = saved === 'true';
+    const collapsed = document.documentElement.getAttribute('data-sidebar-collapsed') === 'true';
     setIsCollapsed(collapsed);
-    document.documentElement.style.setProperty('--sidebar-width', collapsed ? '72px' : '265px');
+    syncSidebarPreference(collapsed);
   }, []);
 
-  const toggleCollapsed = () => {
+  const toggleCollapsed = useCallback(() => {
     const next = !isCollapsed;
     play(next ? 'toggle-off' : 'toggle-on');
     setIsCollapsed(next);
-    localStorage.setItem('sideNavCollapsed', String(next));
-    document.documentElement.style.setProperty('--sidebar-width', next ? '72px' : '265px');
-  };
+    syncSidebarPreference(next);
+  }, [isCollapsed, play]);
 
   // Listen for toggle from TopNavigation / MobileBottomNav menu button
   useEffect(() => {
@@ -167,7 +186,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       window.removeEventListener('toggleSidebar', handler);
       window.removeEventListener('toggleBlueChat', blueChatHandler);
     };
-  });
+  }, [onExternalMobileClose, toggleCollapsed]);
 
   const { data: proTokenBalance } = useReadContract({
     address: PRO_TOKEN_ADDRESS,
@@ -380,12 +399,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         document.body.style.overflow = '';
       };
     }
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, setIsMobileMenuOpen]);
 
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [pathname]);
+  }, [pathname, setIsMobileMenuOpen]);
 
   const handleAvatarClick = () => {
     setIsAccountMenuOpen(false);

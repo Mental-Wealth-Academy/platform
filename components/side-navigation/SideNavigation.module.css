@@ -6,7 +6,7 @@
 }
 
 .sideNav {
-  width: 265px;
+  width: var(--sidebar-width, 265px);
   height: calc(100vh - 72px);
   background: #f5f5f5;
   border-right: none;

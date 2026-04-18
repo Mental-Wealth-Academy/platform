@@ -651,32 +651,32 @@
 /* MORNING PAGES FLOAT (mobile fixed above nav) */
 /* ============================================ */
 
-/* Desktop: inline version visible, float hidden */
-.morningPagesInline { display: block; }
-.morningPagesFloat  { display: none; }
+/* Desktop: inline card, mobile: dock above bottom nav */
+.morningPagesShell {
+  display: block;
+  --morning-pages-pad: 14px;
+}
+
 .morningPagesGradient { display: none; }
 
 @media (max-width: 768px) {
-  /* Hide inline, show fixed float */
-  .morningPagesInline { display: none; }
-
-  .morningPagesFloat {
+  .morningPagesShell {
     display: block;
     position: fixed;
     left: 0;
     right: 0;
     bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
     z-index: 997;
-    padding: 0 14px 8px;
+    padding: 0 var(--morning-pages-pad) 8px;
   }
 
   /* Gradient: fades page content out as it approaches the button */
   .morningPagesGradient {
     display: block;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
+    position: absolute;
+    left: calc(-1 * var(--morning-pages-pad));
+    right: calc(-1 * var(--morning-pages-pad));
+    bottom: 0;
     height: 120px;
     background: linear-gradient(
       to bottom,
@@ -688,7 +688,7 @@
     z-index: 0;
   }
 
-  .morningPagesFloat > :last-child {
+  .morningPagesShell > :last-child {
     position: relative;
     z-index: 1;
   }

@@ -2,14 +2,21 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
-import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
-import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
 import styles from './DailyNotes.module.css';
+
+const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
+  ssr: false,
+  loading: () => null,
+});
+const IntroLoaderOverlay = dynamic(() => import('@/components/intro-loader/IntroLoaderOverlay'), {
+  ssr: false,
+});
 
 interface MorningPageEntry {
   day: number;
@@ -297,7 +304,11 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
         style={{ '--week-color': weekColor } as React.CSSProperties}
         onMouseEnter={() => play('hum')}
       >
-        <div className={styles.vizBg}><CyberpunkDataViz /></div>
+        {!compact && (
+          <div className={styles.vizBg}>
+            <CyberpunkDataViz />
+          </div>
+        )}
         <div className={styles.cardButton} onClick={handleCompactClick}>
           <div className={styles.cardLeft}>
             <div className={styles.icon}>

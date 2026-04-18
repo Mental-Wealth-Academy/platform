@@ -44,6 +44,19 @@ function timeAgo(ts: number): string {
   return Math.floor(s / 60) + 'm ago';
 }
 
+function useLiveTick(intervalMs: number, enabled = true) {
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const id = setInterval(() => setTick((value) => value + 1), intervalMs);
+    return () => clearInterval(id);
+  }, [enabled, intervalMs]);
+
+  return tick;
+}
+
 // ── Model Constants ──
 
 const SIGMA = 0.50;
@@ -241,8 +254,8 @@ function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
     : coin.usd >= 1 ? coin.usd * 0.0002
     : coin.usd * 0.001;
 
-  // Deterministic-ish jitter seeded by tick so it changes every 300ms
-  const jittered = coin.usd + (Math.sin(tick * 0.7 + coin.symbol.charCodeAt(0)) * 0.5 + (Math.random() - 0.5)) * jitterScale;
+  // Deterministic jitter keeps the display alive without forcing noisy full-page churn.
+  const jittered = coin.usd + Math.sin(tick * 0.5 + coin.symbol.charCodeAt(0)) * jitterScale;
 
   const change = formatChange(coin.usd_24h_change);
 
@@ -264,6 +277,14 @@ function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
       </div>
     </div>
   );
+}
+
+function LastUpdatedLabel({ timestamp }: { timestamp: number }) {
+  useLiveTick(5000, timestamp > 0);
+
+  if (timestamp <= 0) return null;
+
+  return <span className={styles.lastUpdated}>updated {timeAgo(timestamp)}</span>;
 }
 
 // ── Page ──
@@ -383,36 +404,23 @@ export default function Markets() {
     };
   }, [fetchAppleStats, fetchExecutionLogs]);
 
-  // Refresh the "last updated" display
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setTick((n) => n + 1), 5000);
-    return () => clearInterval(t);
-  }, []);
-
   // Fast tick for live model parameter animation
-  const [modelTick, setModelTick] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setModelTick((n) => n + 1), 300);
-    return () => clearInterval(t);
-  }, []);
+  const modelTick = useLiveTick(1200);
 
   // ── Derived values from live prices + Polymarket ──
   const derived = useMemo(() => {
-    void modelTick; // trigger recomputation on tick
-
-    // Micro-noise for live visualization
-    const jitter = (base: number, scale: number) => base + (Math.random() - 0.5) * 2 * scale;
+    const jitter = (base: number, scale: number, seed: number) =>
+      base + Math.sin(modelTick * 0.55 + seed) * scale;
 
     // Jittered model parameters
-    const sigma = jitter(SIGMA, 0.005);
-    const sigma_b = jitter(SIGMA_B, 0.003);
-    const lambda_jump = jitter(2.46, 0.05);
-    const mu_J = jitter(0.071, 0.003);
-    const q_inv = Math.round(jitter(-1187, 15));
+    const sigma = jitter(SIGMA, 0.005, 0.7);
+    const sigma_b = jitter(SIGMA_B, 0.003, 1.3);
+    const lambda_jump = jitter(2.46, 0.05, 2.1);
+    const mu_J = jitter(0.071, 0.003, 2.9);
+    const q_inv = Math.round(jitter(-1187, 15, 3.6));
 
     // Step 1-2: Spot & strike (ATM) with micro-movement
-    const S = jitter(prices?.find(c => c.symbol === 'BTC')?.usd ?? 66235, 8);
+    const S = jitter(prices?.find(c => c.symbol === 'BTC')?.usd ?? 66235, 8, 4.2);
     const K = S;
 
     // Step 3: d2 (ATM: ln(S/K)=0)
@@ -474,8 +482,12 @@ export default function Markets() {
             <span className={styles.statusValue}>200,000</span>
           </div>
           <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>refresh:</span>
-            <span className={styles.statusValue}>100-500ms</span>
+            <span className={styles.statusLabel}>feeds:</span>
+            <span className={styles.statusValue}>30-60s</span>
+          </div>
+          <div className={styles.statusItem}>
+            <span className={styles.statusLabel}>pulse:</span>
+            <span className={styles.statusValue}>1.2s</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>edge_threshold:</span>
@@ -487,7 +499,7 @@ export default function Markets() {
           </div>
           {lastPriceUpdate > 0 && (
             <div className={styles.statusItem}>
-              <span className={styles.lastUpdated}>updated {timeAgo(lastPriceUpdate)}</span>
+              <LastUpdatedLabel timestamp={lastPriceUpdate} />
             </div>
           )}
           <div className={styles.statusItem}>

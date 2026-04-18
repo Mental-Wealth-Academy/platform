@@ -1,20 +1,37 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
-import BookReaderModal from '@/components/book-reader/BookReaderModal';
-import WeekOneVisualNovel from '@/components/visual-novel/WeekOneVisualNovel';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
-import DailyReadPopup from '@/components/daily-read/DailyReadPopup';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
-import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
-import MintModal from '@/components/mint-modal/MintModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
+
+const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
+  ssr: false,
+  loading: () => null,
+});
+const DailyReadPopup = dynamic(() => import('@/components/daily-read/DailyReadPopup'), {
+  ssr: false,
+  loading: () => null,
+});
+const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
+  ssr: false,
+});
+const WeekOneVisualNovel = dynamic(() => import('@/components/visual-novel/WeekOneVisualNovel'), {
+  ssr: false,
+});
+const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/AngelMintSection'), {
+  ssr: false,
+  loading: () => null,
+});
+const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
+  ssr: false,
+});
 
 interface WeekStatus {
   weekNumber: number;
@@ -54,6 +71,7 @@ const WEEK_TITLES = [
 export default function HomePage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showAmbientViz, setShowAmbientViz] = useState(false);
   const [seasonLoading, setSeasonLoading] = useState(true);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
@@ -84,6 +102,28 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let idleId: number | null = null;
+
+    const revealAmbientViz = () => setShowAmbientViz(true);
+
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(revealAmbientViz, { timeout: 1200 });
+    } else {
+      timeoutId = setTimeout(revealAmbientViz, 300);
+    }
+
+    return () => {
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     fetch('/api/season', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
@@ -99,7 +139,7 @@ export default function HomePage() {
       .finally(() => {
         setSeasonLoading(false);
       });
-  }, []);
+  }, [getAccessToken]);
 
   const refreshAuth = useCallback(async () => {
     if (!ready || !authenticated) return;
@@ -192,7 +232,7 @@ export default function HomePage() {
         }
       } catch {}
     })();
-  }, []);
+  }, [getAccessToken]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -275,9 +315,13 @@ export default function HomePage() {
 
   return (
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
-    <DailyReadPopup activeWeek={activeWeek} />
+    {activeWeek > 0 && <DailyReadPopup activeWeek={activeWeek} />}
     <div className={styles.pageLayout}>
-      <div className={styles.bgViz}><CyberpunkDataViz /></div>
+      {showAmbientViz && (
+        <div className={styles.bgViz}>
+          <CyberpunkDataViz />
+        </div>
+      )}
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
 
@@ -313,7 +357,10 @@ export default function HomePage() {
                   <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
                     <div className={styles.podiumAvatarRing}>
                       {u.avatarUrl ? (
-                        <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={u.avatarUrl} alt={u.username} className={styles.podiumAvatarImg} />
+                        </>
                       ) : (
                         <div className={styles.podiumAvatar} style={{ background: avatarColor(u.username) }}>
                           {u.username[0]?.toUpperCase() ?? '?'}
@@ -328,13 +375,7 @@ export default function HomePage() {
           </button>
         </section>
 
-        {/* ===== MORNING PAGE CARD — inline on desktop, hidden on mobile (floats above bottom nav) ===== */}
-        <div className={styles.morningPagesInline}>
-          <DailyNotes enablePersistence={isAuthenticated} compact />
-        </div>
-
-        {/* ===== MORNING PAGE CARD — fixed above bottom nav on mobile ===== */}
-        <div className={styles.morningPagesFloat}>
+        <div className={styles.morningPagesShell}>
           <div className={styles.morningPagesGradient} />
           <DailyNotes enablePersistence={isAuthenticated} compact />
         </div>
@@ -431,7 +472,10 @@ export default function HomePage() {
                   {isReadingVideo ? (
                     <video src={weekReading.imageUrl} autoPlay loop muted playsInline className={styles.readingImg} />
                   ) : (
-                    <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
+                    </>
                   )}
                 </div>
                 <div className={styles.readingInfo}>
@@ -489,7 +533,10 @@ export default function HomePage() {
                 <div key={u.rank} className={styles.leagueRow}>
                   <span className={styles.leagueRank}>{u.rank}</span>
                   {u.avatarUrl ? (
-                    <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={u.avatarUrl} alt={u.username} className={styles.leagueAvatarImg} />
+                    </>
                   ) : (
                     <div className={styles.leagueAvatar} style={{ background: avatarColor(u.username) }}>
                       {u.username[0]?.toUpperCase() ?? '?'}
@@ -507,19 +554,23 @@ export default function HomePage() {
         </div>
       )}
 
-      <BookReaderModal
-        isOpen={isReaderOpen}
-        onClose={() => setIsReaderOpen(false)}
-        title={currentReading.title}
-        author={currentReading.author}
-        markdownPath={currentReading.markdownPath}
-        slug={currentReading.slug}
-      />
-      <WeekOneVisualNovel
-        isOpen={isWeekOneNovelOpen}
-        onClose={() => setIsWeekOneNovelOpen(false)}
-      />
-      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
+      {isReaderOpen && (
+        <BookReaderModal
+          isOpen={isReaderOpen}
+          onClose={() => setIsReaderOpen(false)}
+          title={currentReading.title}
+          author={currentReading.author}
+          markdownPath={currentReading.markdownPath}
+          slug={currentReading.slug}
+        />
+      )}
+      {isWeekOneNovelOpen && (
+        <WeekOneVisualNovel
+          isOpen={isWeekOneNovelOpen}
+          onClose={() => setIsWeekOneNovelOpen(false)}
+        />
+      )}
+      {showMintModal && <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />}
 
     </div>
     </HomeWelcomeFlow>

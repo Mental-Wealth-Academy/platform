@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono } from 'next/font/google';
+import { cookies } from 'next/headers';
 import '@/styles/globals.css';
 
 const poppins = Poppins({
@@ -35,6 +36,7 @@ import { ConditionalWeb3Provider } from '@/components/web3/ConditionalWeb3Provid
 import { MiniAppProvider } from '@/components/miniapp/MiniAppProvider';
 import { SoundProvider } from '@/components/sound/SoundProvider';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { SidebarStateProvider } from '@/components/side-navigation/SidebarStateProvider';
 import TopNavigation from '@/components/top-navigation/TopNavigation';
 import MobileBottomNav from '@/components/mobile-bottom-nav/MobileBottomNav';
 import PwaRegistrar from '@/components/pwa/PwaRegistrar';
@@ -97,19 +99,53 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const initialSidebarCollapsed = cookieStore.get('sideNavCollapsed')?.value === 'true';
+  const initialSidebarWidth = initialSidebarCollapsed ? '72px' : '265px';
+
   return (
-    <html lang="en" className={`${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable}`}
+      data-sidebar-collapsed={initialSidebarCollapsed ? 'true' : 'false'}
+      style={{ '--sidebar-width': initialSidebarWidth } as CSSProperties}
+      suppressHydrationWarning
+    >
       <head>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
         />
         <meta name="base:app_id" content="695b13d2c63ad876c908212a" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var root = document.documentElement;
+                  var stored = localStorage.getItem('sideNavCollapsed');
+                  var collapsed = stored === null
+                    ? root.getAttribute('data-sidebar-collapsed') === 'true'
+                    : stored === 'true';
+
+                  root.setAttribute('data-sidebar-collapsed', collapsed ? 'true' : 'false');
+                  root.style.setProperty('--sidebar-width', collapsed ? '72px' : '265px');
+
+                  if (stored === null) {
+                    localStorage.setItem('sideNavCollapsed', collapsed ? 'true' : 'false');
+                  }
+
+                  document.cookie = 'sideNavCollapsed=' + (collapsed ? 'true' : 'false') + '; path=/; max-age=31536000; SameSite=Lax';
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -195,17 +231,19 @@ export default function RootLayout({
       </head>
       <body>
         <PwaRegistrar />
-        <MiniAppProvider>
-          <SoundProvider>
-            <ConditionalWeb3Provider>
-              <ThemeProvider>
-                <TopNavigation />
-                {children}
-                <MobileBottomNav />
-              </ThemeProvider>
-            </ConditionalWeb3Provider>
-          </SoundProvider>
-        </MiniAppProvider>
+        <SidebarStateProvider initialCollapsed={initialSidebarCollapsed}>
+          <MiniAppProvider>
+            <SoundProvider>
+              <ConditionalWeb3Provider>
+                <ThemeProvider>
+                  <TopNavigation />
+                  {children}
+                  <MobileBottomNav />
+                </ThemeProvider>
+              </ConditionalWeb3Provider>
+            </SoundProvider>
+          </MiniAppProvider>
+        </SidebarStateProvider>
         <SpeedInsights />
         <Analytics />
       </body>

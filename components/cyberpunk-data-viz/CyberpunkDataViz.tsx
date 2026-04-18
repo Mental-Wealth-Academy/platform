@@ -25,6 +25,8 @@ export default function CyberpunkDataViz() {
   const animRef = useRef<number>(0);
   const timeRef = useRef(0);
   const gridDataRef = useRef<GridCell[] | null>(null);
+  const pausedRef = useRef(false);
+  const reducedMotionRef = useRef(false);
 
   const initGrid = useCallback((w: number, h: number): GridCell[] => {
     const cellSize = 14;
@@ -58,25 +60,67 @@ export default function CyberpunkDataViz() {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    const context = ctx;
 
-    const dpr = window.devicePixelRatio || 1;
-    const W = parent.offsetWidth;
-    const H = parent.offsetHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.scale(dpr, dpr);
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reducedMotionRef.current = motionQuery.matches;
 
-    gridDataRef.current = initGrid(W, H);
-    const grid = gridDataRef.current;
+    let width = 0;
+    let height = 0;
+
+    const drawStaticFrame = () => {
+      const grid = gridDataRef.current;
+      if (!grid) return;
+      context.clearRect(0, 0, width, height);
+
+      for (const cell of grid) {
+        let color;
+        if (cell.hue === 320) {
+          color = 'rgba(81, 104, 255, 0.22)';
+        } else if (cell.hue === 280) {
+          color = 'rgba(140, 100, 220, 0.18)';
+        } else {
+          color = 'rgba(26, 29, 51, 0.12)';
+        }
+
+        context.fillStyle = color;
+        context.font = `${cell.size}px "Courier New", monospace`;
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(cell.char, cell.x, cell.y);
+      }
+    };
+
+    const syncCanvas = () => {
+      const dpr = window.devicePixelRatio || 1;
+      width = parent.offsetWidth;
+      height = parent.offsetHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.scale(dpr, dpr);
+      gridDataRef.current = initGrid(width, height);
+
+      if (reducedMotionRef.current) {
+        drawStaticFrame();
+      }
+    };
+
+    syncCanvas();
 
     function drawFrame(t: number) {
+      if (pausedRef.current || reducedMotionRef.current) {
+        animRef.current = 0;
+        return;
+      }
+
       timeRef.current = t * 0.001;
       const time = timeRef.current;
-      ctx!.clearRect(0, 0, W, H);
-
-      ctx!.clearRect(0, 0, W, H);
+      const grid = gridDataRef.current;
+      if (!grid) return;
+      context.clearRect(0, 0, width, height);
 
       for (const cell of grid) {
         const pulse = Math.sin(time * 1.5 + cell.pulseOffset) * 0.15;
@@ -92,43 +136,81 @@ export default function CyberpunkDataViz() {
           color = `rgba(26, 29, 51, ${alpha * 0.15})`;
         }
 
-        ctx!.fillStyle = color;
-        ctx!.font = `${cell.size}px "Courier New", monospace`;
-        ctx!.textAlign = 'center';
-        ctx!.textBaseline = 'middle';
-        ctx!.fillText(cell.char, cell.x, cell.y);
+        context.fillStyle = color;
+        context.font = `${cell.size}px "Courier New", monospace`;
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(cell.char, cell.x, cell.y);
 
         if (alpha > 0.7 && cell.hue === 320) {
-          ctx!.shadowColor = 'rgba(81, 104, 255, 0.3)';
-          ctx!.shadowBlur = 6;
-          ctx!.fillText(cell.char, cell.x, cell.y);
-          ctx!.shadowBlur = 0;
+          context.shadowColor = 'rgba(81, 104, 255, 0.3)';
+          context.shadowBlur = 6;
+          context.fillText(cell.char, cell.x, cell.y);
+          context.shadowBlur = 0;
         }
       }
 
-      for (let sy = 0; sy < H; sy += 3) {
-        ctx!.fillStyle = `rgba(81, 104, 255, ${0.02 + Math.sin(time * 2 + sy * 0.1) * 0.01})`;
-        ctx!.fillRect(0, sy, W, 1);
+      for (let sy = 0; sy < height; sy += 3) {
+        context.fillStyle = `rgba(81, 104, 255, ${0.02 + Math.sin(time * 2 + sy * 0.1) * 0.01})`;
+        context.fillRect(0, sy, width, 1);
       }
 
       const floatingNums = [
-        { text: '8.21', x: W * 0.65, y: H * 0.22 },
-        { text: '0.37', x: W * 0.30, y: H * 0.50 },
-        { text: '8.21', x: W * 0.55, y: H * 0.45 },
+        { text: '8.21', x: width * 0.65, y: height * 0.22 },
+        { text: '0.37', x: width * 0.30, y: height * 0.50 },
+        { text: '8.21', x: width * 0.55, y: height * 0.45 },
       ];
       for (const fn of floatingNums) {
         const fAlpha = 0.3 + Math.sin(time * 1.2 + fn.x) * 0.2;
-        ctx!.fillStyle = `rgba(81, 104, 255, ${fAlpha})`;
-        ctx!.font = '10px "Courier New", monospace';
-        ctx!.textAlign = 'center';
-        ctx!.fillText(fn.text, fn.x, fn.y + Math.sin(time + fn.x) * 3);
+        context.fillStyle = `rgba(81, 104, 255, ${fAlpha})`;
+        context.font = '10px "Courier New", monospace';
+        context.textAlign = 'center';
+        context.fillText(fn.text, fn.x, fn.y + Math.sin(time + fn.x) * 3);
       }
 
       animRef.current = requestAnimationFrame(drawFrame);
     }
 
-    animRef.current = requestAnimationFrame(drawFrame);
+    const handleVisibilityChange = () => {
+      pausedRef.current = document.visibilityState !== 'visible';
+
+      if (!pausedRef.current && !reducedMotionRef.current && animRef.current === 0) {
+        animRef.current = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    const handleMotionChange = (event: MediaQueryListEvent) => {
+      reducedMotionRef.current = event.matches;
+      if (event.matches) {
+        if (animRef.current) {
+          cancelAnimationFrame(animRef.current);
+          animRef.current = 0;
+        }
+        drawStaticFrame();
+        return;
+      }
+
+      if (!pausedRef.current && animRef.current === 0) {
+        animRef.current = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+      syncCanvas();
+    });
+
+    resizeObserver.observe(parent);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    motionQuery.addEventListener('change', handleMotionChange);
+
+    if (!reducedMotionRef.current) {
+      animRef.current = requestAnimationFrame(drawFrame);
+    }
+
     return () => {
+      resizeObserver.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      motionQuery.removeEventListener('change', handleMotionChange);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
   }, [initGrid]);

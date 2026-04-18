@@ -1,23 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { providers } from 'ethers';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
-import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
-import MintModal from '@/components/mint-modal/MintModal';
-import StillTutorial, { TutorialStep } from '@/components/still-tutorial/StillTutorial';
+import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
-import ProposalDetailsModal from '@/components/proposal-card/ProposalDetailsModal';
-import SubmitProposalModal from '@/components/voting/SubmitProposalModal';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
-import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
-import {
-  fetchProposal
-} from '@/lib/azura-contract';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
+
+const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/AngelMintSection'), {
+  ssr: false,
+  loading: () => null,
+});
+const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
+  ssr: false,
+});
+const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
+  ssr: false,
+});
+const ProposalDetailsModal = dynamic(() => import('@/components/proposal-card/ProposalDetailsModal'), {
+  ssr: false,
+});
+const SubmitProposalModal = dynamic(() => import('@/components/voting/SubmitProposalModal'), {
+  ssr: false,
+});
 
 interface ProposalReview {
   decision: 'approved' | 'rejected';
@@ -224,29 +233,18 @@ export default function VotingPage() {
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedProposal, setSelectedProposal] = useState<MergedProposal | null>(null);
+  const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [isContentLoading, setIsContentLoading] = useState(true);
   const [showMintModal, setShowMintModal] = useState(false);
-  const [showDemo, setShowDemo] = useState(false);
   const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
   const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
-  const [showIntroLoader, setShowIntroLoader] = useState(true);
   const { play } = useSound();
-
-  useEffect(() => {
-    // Show skeleton briefly, then reveal content
-    const timer = setTimeout(() => {
-      setIsContentLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    fetchProposals();
-  }, []);
+  const selectedProposal = selectedProposalId
+    ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
+    : null;
+  const isPageLoading = loading && proposals.length === 0;
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -266,7 +264,71 @@ export default function VotingPage() {
     }
   }, [isFundingTransitionEnabled]);
 
-  const fetchProposals = async () => {
+  const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
+    const proposalsNeedingChainData = dbProposals.filter((proposal) =>
+      proposal.review?.onChainProposalId &&
+      (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
+    );
+
+    if (proposalsNeedingChainData.length === 0) return;
+
+    try {
+      const [{ providers }, { fetchProposal }] = await Promise.all([
+        import('ethers'),
+        import('@/lib/azura-contract'),
+      ]);
+
+      const provider = typeof window.ethereum !== 'undefined'
+        ? new providers.Web3Provider(window.ethereum)
+        : new providers.JsonRpcProvider('https://mainnet.base.org');
+
+      const updates = await Promise.all(
+        proposalsNeedingChainData.map(async (proposal) => {
+          try {
+            const onChainProposal = await fetchProposal(
+              CONTRACT_ADDRESS,
+              parseInt(proposal.review!.onChainProposalId!, 10),
+              provider as any,
+            );
+
+            return {
+              id: proposal.id,
+              onChainData: {
+                forVotes: onChainProposal.forVotes,
+                againstVotes: onChainProposal.againstVotes,
+                votingDeadline: onChainProposal.votingDeadline,
+                azuraLevel: onChainProposal.azuraLevel,
+                executed: onChainProposal.executed,
+              },
+            };
+          } catch (chainError) {
+            console.error(`Error fetching on-chain data for proposal ${proposal.id}:`, chainError);
+            return null;
+          }
+        }),
+      );
+
+      const updatesById = new Map(
+        updates
+          .filter((update): update is NonNullable<typeof update> => update !== null)
+          .map((update) => [update.id, update.onChainData]),
+      );
+
+      if (updatesById.size === 0) return;
+
+      setProposals((current) =>
+        current.map((proposal) =>
+          updatesById.has(proposal.id)
+            ? { ...proposal, onChainData: updatesById.get(proposal.id) }
+            : proposal,
+        ),
+      );
+    } catch (chainError) {
+      console.error('Error enriching proposals with on-chain data:', chainError);
+    }
+  }, []);
+
+  const fetchProposals = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -279,54 +341,19 @@ export default function VotingPage() {
 
       const dbData = await dbResponse.json();
       const dbProposals: DatabaseProposal[] = dbData.proposals || [];
-
-      // For proposals with on_chain_proposal_id, fetch on-chain data
-      const mergedProposals: MergedProposal[] = await Promise.all(
-        dbProposals.map(async (proposal) => {
-          // If proposal has on-chain ID, fetch on-chain data
-          if (
-            proposal.review?.onChainProposalId &&
-            (proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed')
-          ) {
-            try {
-              // Use wallet provider if available, otherwise fall back to public RPC
-              const provider = typeof window.ethereum !== 'undefined'
-                ? new providers.Web3Provider(window.ethereum)
-                : new providers.JsonRpcProvider('https://mainnet.base.org');
-              const onChainProposal = await fetchProposal(
-                CONTRACT_ADDRESS,
-                parseInt(proposal.review.onChainProposalId),
-                provider as providers.Web3Provider
-              );
-
-              return {
-                ...proposal,
-                onChainData: {
-                  forVotes: onChainProposal.forVotes,
-                  againstVotes: onChainProposal.againstVotes,
-                  votingDeadline: onChainProposal.votingDeadline,
-                  azuraLevel: onChainProposal.azuraLevel,
-                  executed: onChainProposal.executed,
-                },
-              };
-            } catch (error) {
-              console.error(`Error fetching on-chain data for proposal ${proposal.id}:`, error);
-              // Continue without on-chain data
-            }
-          }
-
-          return proposal as MergedProposal;
-        })
-      );
-
-      setProposals(mergedProposals);
+      setProposals(dbProposals as MergedProposal[]);
+      void enrichProposals(dbProposals);
     } catch (error) {
       console.error('Error fetching proposals:', error);
       setError('Failed to load proposals');
     } finally {
       setLoading(false);
     }
-  };
+  }, [enrichProposals]);
+
+  useEffect(() => {
+    void fetchProposals();
+  }, [fetchProposals]);
 
   const handleTutorialComplete = () => {
     localStorage.setItem('hasSeenAdminTutorial', 'true');
@@ -336,7 +363,7 @@ export default function VotingPage() {
   const handleViewDetails = (proposalId: string) => {
     const proposal = proposals.find((p) => p.id === proposalId);
     if (proposal) {
-      setSelectedProposal(proposal);
+      setSelectedProposalId(proposalId);
       setIsModalOpen(true);
     }
   };
@@ -382,27 +409,21 @@ export default function VotingPage() {
 
   return (
     <>
-      {showIntroLoader && (
-        <IntroLoaderOverlay
-          src="/loaders/Treasure%20Chest.lottie"
-          label="Opening community"
-          onFinish={() => setShowIntroLoader(false)}
+      {showTutorial && (
+        <StillTutorial
+          steps={getTutorialSteps()}
+          isOpen={showTutorial}
+          onClose={() => setShowTutorial(false)}
+          onComplete={handleTutorialComplete}
+          title="Voting Guide"
+          showProgress={true}
         />
       )}
-
-      <StillTutorial
-        steps={getTutorialSteps()}
-        isOpen={showTutorial}
-        onClose={() => setShowTutorial(false)}
-        onComplete={handleTutorialComplete}
-        title="Voting Guide"
-        showProgress={true}
-      />
       <div className={styles.pageLayout}>
         <SideNavigation />
         <main className={styles.page}>
         <div className={styles.content}>
-          {isContentLoading ? (
+          {isPageLoading ? (
             <VotingPageSkeleton />
           ) : (
           <>
@@ -681,19 +702,11 @@ export default function VotingPage() {
                       usdcAddress={USDC_ADDRESS}
                       className={styles.treasuryHeroCard}
                     />
-                    {loading ? (
+                    {loading && proposals.length > 0 ? (
                       <div className={styles.proposalsGrid}>
                       {[...Array(3)].map((_, i) => (
                         <ProposalCardSkeleton key={i} />
                       ))}
-                    </div>
-                  ) : proposals.length === 0 ? (
-                    <div className={styles.emptyState}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                      <h3>No proposals yet</h3>
-                      <p>Be the first to submit a proposal to the community!</p>
                     </div>
                   ) : error ? (
                     <div className={styles.errorState}>
@@ -702,9 +715,17 @@ export default function VotingPage() {
                       </svg>
                       <h3>Error Loading Proposals</h3>
                       <p>{error}</p>
-                      <button onClick={() => { play('click'); window.location.reload(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">
+                      <button onClick={() => { play('click'); void fetchProposals(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">
                         Retry
                       </button>
+                    </div>
+                  ) : proposals.length === 0 ? (
+                    <div className={styles.emptyState}>
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                      <h3>No proposals yet</h3>
+                      <p>Be the first to submit a proposal to the community!</p>
                     </div>
                   ) : (
                     <div className={styles.proposalsGrid} data-tutorial-target="submission">
@@ -761,14 +782,14 @@ export default function VotingPage() {
         </div>
       </main>
       </div>
-      <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
+      {showMintModal && <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />}
 
       {selectedProposal && (
         <ProposalDetailsModal
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
-            setSelectedProposal(null);
+            setSelectedProposalId(null);
           }}
           proposal={selectedProposal}
           onChainProposalId={selectedProposal.review?.onChainProposalId ? parseInt(selectedProposal.review.onChainProposalId) : null}
@@ -777,39 +798,12 @@ export default function VotingPage() {
         />
       )}
 
-      <SubmitProposalModal
-        isOpen={isSubmitModalOpen}
-        onClose={() => setIsSubmitModalOpen(false)}
-        onSuccess={fetchProposals}
-      />
-
-      {showDemo && (
-        <div className={styles.demoOverlay} onClick={() => setShowDemo(false)}>
-          <div className={styles.demoContainer} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.demoHeader}>
-              <span className={styles.demoLabel}>DEMO // TRANSMISSION</span>
-              <button
-                className={styles.demoClose}
-                onClick={() => { play('click'); setShowDemo(false); }}
-                onMouseEnter={() => play('hover')}
-                type="button"
-                aria-label="Close demo"
-              >
-                &times;
-              </button>
-            </div>
-            <div className={styles.demoVideoWrapper}>
-              <iframe
-                src="https://www.youtube.com/embed/_i2itVBQSX4?autoplay=1&mute=1"
-                title="Demo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className={styles.demoVideo}
-              />
-            </div>
-            <div className={styles.demoScanline} />
-          </div>
-        </div>
+      {isSubmitModalOpen && (
+        <SubmitProposalModal
+          isOpen={isSubmitModalOpen}
+          onClose={() => setIsSubmitModalOpen(false)}
+          onSuccess={fetchProposals}
+        />
       )}
     </>
   );
