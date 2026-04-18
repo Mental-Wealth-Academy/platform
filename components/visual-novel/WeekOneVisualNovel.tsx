@@ -28,17 +28,17 @@ const SCENES: Scene[] = [
   },
   {
     id: 'the-monsters',
-    body: 'She dials the helmet to her fifteenth year and finds the voice \u2014 the room, the person, the expression that had loved her and been afraid at the same time. She writes the name down and it looks smaller on paper than it ever sounded in her head. \u201cNot mine,\u201d she says. \u201cBorrowed. And I can give it back.\u201d',
+    body: 'She remembers the exact afternoon she stopped \u2014 someone she trusted looked at what she\u2019d made and said \u201calmost,\u201d not cruel, just certain, the way only someone who\u2019d already given up themselves could be. She put the work away that day. She didn\u2019t take it back out for eleven years.',
     image: '/stories/week-01/scene-03.png',
   },
   {
     id: 'the-censor',
-    body: 'She writes \u201cI am \u2014\u201d and stops \u2014 something in her has been waiting for exactly that word and arrives with a different ending, ugly and specific. She writes that down too: the interruption, its origin, how old she was when she first heard it. \u201cWrite the blurt,\u201d she says. \u201cIt shrinks the moment it leaves your head.\u201d',
+    body: 'The mirror in the helmet shows her the version that said yes \u2014 same face, same hands, a different door taken at seventeen. Behind her reflection a painter is still working, that particular posture of someone who forgot to be afraid. Blue keeps her palm against the glass for a long time.',
     image: '/stories/week-01/scene-04.png',
   },
   {
     id: 'morning-pages',
-    body: 'Before the helmet goes on she writes \u2014 three pages, badly, everything that built up overnight: the argument almost had, the thing made and hated, the self performed yesterday and how tired that left her. By the second page the weight is different; not gone, just outside her now. \u201cThis first,\u201d she says. \u201cBefore the day tells you who to be.\u201d',
+    body: 'A few days later the corridor again \u2014 the old tightness gone from her chest, but now she counts six doors, maybe seven, all of them lit. She thought the hard part was surviving the wound. She didn\u2019t know the harder part was choosing.',
     image: '/stories/week-01/scene-05.png',
   },
 ];
