@@ -662,12 +662,13 @@
 @media (max-width: 768px) {
   .morningPagesShell {
     display: block;
+    --morning-pages-pad: 12px;
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 12px));
     z-index: 997;
-    padding: 0 var(--morning-pages-pad) 8px;
+    padding: 0 var(--morning-pages-pad) 10px;
   }
 
   /* Gradient: fades page content out as it approaches the button */
@@ -677,11 +678,12 @@
     left: calc(-1 * var(--morning-pages-pad));
     right: calc(-1 * var(--morning-pages-pad));
     bottom: 0;
-    height: 120px;
+    height: 152px;
     background: linear-gradient(
       to bottom,
       rgba(251, 248, 255, 0) 0%,
-      rgba(251, 248, 255, 0.72) 62%,
+      rgba(251, 248, 255, 0.54) 48%,
+      rgba(251, 248, 255, 0.86) 74%,
       rgba(251, 248, 255, 1) 100%
     );
     pointer-events: none;
@@ -899,6 +901,18 @@
 
 :global([data-theme="dark"]) .readingTitle {
   color: rgba(227, 225, 238, 0.95);
+}
+
+@media (max-width: 768px) {
+  :global([data-theme="dark"]) .morningPagesGradient {
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 12, 20, 0) 0%,
+      rgba(10, 12, 20, 0.5) 48%,
+      rgba(10, 12, 20, 0.84) 74%,
+      rgba(10, 12, 20, 1) 100%
+    );
+  }
 }
 
 :global([data-theme="dark"]) .readingAuthor {

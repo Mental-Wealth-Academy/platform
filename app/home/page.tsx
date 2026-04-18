@@ -76,6 +76,7 @@ export default function HomePage() {
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authFlowSettled, setAuthFlowSettled] = useState(false);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
   const [isWeekOneNovelOpen, setIsWeekOneNovelOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
@@ -214,6 +215,7 @@ export default function HomePage() {
   }, [play]);
 
   const handleWelcomeAuthenticated = useCallback(() => {
+    setIsAuthenticated(true);
     (async () => {
       try {
         const token = await getAccessToken();
@@ -221,8 +223,7 @@ export default function HomePage() {
         const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
-          setIsAuthenticated(true);
-            const uname = meData.user.username;
+          const uname = meData.user.username;
           if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
           if (res.ok) {
@@ -314,8 +315,8 @@ export default function HomePage() {
   }, []);
 
   return (
-    <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated}>
-    {activeWeek > 0 && <DailyReadPopup activeWeek={activeWeek} />}
+    <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated} onSettled={() => setAuthFlowSettled(true)}>
+    {authFlowSettled && activeWeek > 0 && <DailyReadPopup activeWeek={activeWeek} />}
     <div className={styles.pageLayout}>
       {showAmbientViz && (
         <div className={styles.bgViz}>

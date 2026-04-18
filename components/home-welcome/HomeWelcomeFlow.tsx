@@ -10,6 +10,7 @@ import OnboardingModal from '@/components/onboarding/OnboardingModal';
 interface HomeWelcomeFlowProps {
   children: React.ReactNode;
   onAuthenticated?: () => void;
+  onSettled?: () => void;
 }
 
 /**
@@ -19,7 +20,7 @@ interface HomeWelcomeFlowProps {
  * - Privy-authenticated: auto-creates server session via wallet-signup.
  * - No auth: renders page content (no redirect).
  */
-export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelcomeFlowProps) {
+export default function HomeWelcomeFlow({ children, onAuthenticated, onSettled }: HomeWelcomeFlowProps) {
   const router = useRouter();
   const { ready, authenticated, getAccessToken, user } = usePrivy();
   const { initLoginToMiniApp, loginToMiniApp } = useLoginToMiniApp();
@@ -122,6 +123,10 @@ export default function HomeWelcomeFlow({ children, onAuthenticated }: HomeWelco
       }
     })();
   }, [ready, authenticated]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (authState !== 'checking') onSettled?.();
+  }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOnboardingComplete = useCallback((username: string) => {
     setAuthState('ready');

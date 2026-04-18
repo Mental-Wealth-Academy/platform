@@ -16,6 +16,7 @@ interface BlueDialogueProps {
   onSkip?: () => void;
   avatarSrc?: string;
   fixedHeight?: boolean;
+  variant?: 'default' | 'overlay';
 }
 
 const emotionImages: Record<BlueEmotion, string> = {
@@ -37,6 +38,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   onSkip,
   avatarSrc,
   fixedHeight = false,
+  variant = 'default',
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -133,10 +135,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   };
 
 
+  const isOverlayVariant = variant === 'overlay';
+
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${isOverlayVariant ? styles.containerOverlay : ''}`}>
       <div className={styles.avatarContainer}>
-        <div className={styles.avatarWrapper}>
+        <div className={`${styles.avatarWrapper} ${isOverlayVariant ? styles.avatarWrapperOverlay : ''}`}>
           <Image
             src={avatarSrc ?? DEFAULT_BLUE_AVATAR}
             alt={`Blue ${currentEmotion}`}
@@ -152,8 +156,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         </div>
       </div>
       <div className={styles.dialogueBox}>
-        <div className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''}`}>
-          <p className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''}`}>
+        <div
+          className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''} ${isOverlayVariant ? styles.dialogueContentOverlay : ''}`}
+        >
+          <p
+            className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''} ${isOverlayVariant ? styles.messageOverlay : ''}`}
+          >
             {displayedText}
             {isTyping && <span className={styles.cursor}>|</span>}
           </p>

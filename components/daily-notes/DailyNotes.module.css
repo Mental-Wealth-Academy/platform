@@ -120,6 +120,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  flex: 1;
+  min-width: 0;
 }
 
 .icon {
@@ -483,6 +485,156 @@
   font-size: 12px;
   font-weight: 600;
   color: rgba(227, 225, 238, 0.45);
+}
+
+/* Auth Prompt */
+.authPromptOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 20px;
+}
+
+.authPromptBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 13, 24, 0.58);
+  backdrop-filter: blur(10px) saturate(135%);
+}
+
+.authPromptDialog {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 28px 24px 22px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top center, rgba(110, 128, 255, 0.22), transparent 42%),
+    linear-gradient(180deg, rgba(16, 20, 36, 0.98) 0%, rgba(11, 15, 28, 0.98) 100%);
+  border: 1px solid rgba(129, 145, 255, 0.22);
+  box-shadow:
+    0 26px 80px rgba(3, 7, 18, 0.54),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.authPromptGlow {
+  position: absolute;
+  inset: -32% auto auto 50%;
+  width: 240px;
+  height: 240px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.34) 0%, rgba(81, 104, 255, 0) 72%);
+  pointer-events: none;
+}
+
+.authPromptEyebrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(168, 179, 255, 0.92);
+}
+
+.authPromptTitle {
+  position: relative;
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: #F7F9FF;
+}
+
+.authPromptCopy {
+  position: relative;
+  margin: 14px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(231, 236, 255, 0.74);
+}
+
+.authPromptBenefits {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.authPromptBenefit {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(129, 145, 255, 0.18);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(235, 240, 255, 0.78);
+}
+
+.authPromptActions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.authPromptPrimary,
+.authPromptSecondary {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.authPromptPrimary {
+  color: #ffffff;
+  background: linear-gradient(135deg, #5168FF 0%, #7082FF 48%, #8E6BFF 100%);
+  border: 1px solid rgba(130, 146, 255, 0.28);
+  box-shadow:
+    0 16px 28px rgba(81, 104, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.authPromptPrimary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 20px 34px rgba(81, 104, 255, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.authPromptPrimary:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.authPromptSecondary {
+  color: rgba(239, 242, 255, 0.84);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.authPromptSecondary:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Timer Modal */
@@ -998,6 +1150,80 @@
     flex-wrap: wrap;
   }
 
+  .cardCompact {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 42px rgba(32, 42, 83, 0.18),
+      0 6px 18px rgba(81, 104, 255, 0.08);
+  }
+
+  .cardCompact::before {
+    inset: -1px;
+    padding: 1px;
+    opacity: 0.74;
+  }
+
+  .cardCompact::after {
+    filter: contrast(1.08) saturate(1.05);
+    opacity: 1;
+  }
+
+  .cardCompact .cardButton {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 17px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+    backdrop-filter: blur(18px);
+  }
+
+  .cardCompact .icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 10px 24px rgba(26, 29, 51, 0.18);
+  }
+
+  .cardCompact .label {
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+
+  .cardCompact .sublabel {
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .cardCompact .cardRight {
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .cardCompact .shardBadge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    border-color: rgba(232, 67, 147, 0.18);
+    box-shadow: 0 10px 22px rgba(26, 29, 51, 0.08);
+  }
+
+  .authPromptOverlay {
+    padding: 16px;
+  }
+
+  .authPromptDialog {
+    padding: 24px 20px 18px;
+    border-radius: 24px;
+  }
+
+  .authPromptTitle {
+    font-size: 24px;
+  }
+
   .modalOverlay {
     padding: 12px;
   }
@@ -1067,6 +1293,20 @@
 }
 
 @media (max-width: 480px) {
+  .cardCompact {
+    border-radius: 22px;
+  }
+
+  .cardCompact .cardButton {
+    padding: 14px 15px;
+  }
+
+  .cardCompact .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
   .sessionHeader {
     gap: 10px;
   }
@@ -1089,6 +1329,14 @@
 
   .label {
     font-size: 14px;
+  }
+
+  .authPromptTitle {
+    font-size: 22px;
+  }
+
+  .authPromptCopy {
+    font-size: 13px;
   }
 
   .dayDots {
@@ -1194,4 +1442,23 @@
 
 :global([data-theme="dark"]) .counter {
   color: rgba(210, 218, 235, 0.58);
+}
+
+.saveConfirm {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #74C465;
+  margin: 4px 0 0;
+  opacity: 0;
+  animation: saveConfirmFade 2.5s ease forwards;
+}
+
+@keyframes saveConfirmFade {
+  0%   { opacity: 0; transform: translateY(4px); }
+  15%  { opacity: 1; transform: translateY(0); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
 }

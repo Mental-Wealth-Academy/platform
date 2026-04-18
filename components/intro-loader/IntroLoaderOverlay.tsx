@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './IntroLoaderOverlay.module.css';
 
 interface IntroLoaderOverlayProps {
@@ -17,6 +18,7 @@ export default function IntroLoaderOverlay({
   durationMs = 450,
   onFinish,
 }: IntroLoaderOverlayProps) {
+  useScrollLock(true);
   const finishedRef = useRef(false);
 
   const finish = () => {

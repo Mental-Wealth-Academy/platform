@@ -8,6 +8,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { ShardAnimation } from '@/components/quests/ShardAnimation';
 import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
 
 const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
@@ -57,7 +58,7 @@ const WEEK_COLORS = [
 
 export default function DailyNotes({ enablePersistence = false, compact = false }: DailyNotesProps) {
   const { play } = useSound();
-  const { getAccessToken } = usePrivy();
+  const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
   const [timerActive, setTimerActive] = useState(false);
@@ -70,9 +71,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number; startingShards: number } | null>(null);
   const [introDayIndex, setIntroDayIndex] = useState<number | null>(null);
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedRef = useRef(false);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const saveConfirmTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [dataReady, setDataReady] = useState(false);
   const dayMessageIndex = new Date().getDate() % WRITING_MESSAGES.length;
@@ -86,9 +90,31 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }
   }, [enablePersistence]);
 
+  useEffect(() => {
+    if (enablePersistence) {
+      setShowAuthPrompt(false);
+    }
+  }, [enablePersistence]);
+
+  useEffect(() => {
+    if (!showAuthPrompt) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowAuthPrompt(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showAuthPrompt]);
+
   const morningPages = allWeekPages[currentWeek] ?? [];
   const todayDateStr = new Date().toISOString().split('T')[0];
   const weekColor = WEEK_COLORS[(currentWeek - 1) % WEEK_COLORS.length];
+  const authPending = authenticated && !enablePersistence;
+
+  useScrollLock(showAuthPrompt || timerActive);
 
   const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
 
@@ -126,9 +152,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     startTimerInterval();
   };
 
-  const startTimer = (dayIndex: number) => {
+  const startTimer = useCallback((dayIndex: number) => {
     setIntroDayIndex(dayIndex);
-  };
+  }, []);
 
   const pauseTimer = () => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -159,6 +185,11 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   const submitMorningPages = async () => {
     if (activeDayIndex === null) return;
+    if (!enablePersistence) {
+      closeSession();
+      setShowAuthPrompt(true);
+      return;
+    }
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     const newEntry: MorningPageEntry = {
       day: activeDayIndex + 1,
@@ -178,6 +209,18 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     setTimerText('');
 
     play('success');
+
+    if (enablePersistence) {
+      const saveKey = `morningPagesSavedToday_${todayDateStr}`;
+      const alreadyShown = localStorage.getItem(saveKey);
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!alreadyShown && !reducedMotion) {
+        localStorage.setItem(saveKey, '1');
+        setShowSaveConfirm(true);
+        if (saveConfirmTimerRef.current) clearTimeout(saveConfirmTimerRef.current);
+        saveConfirmTimerRef.current = setTimeout(() => setShowSaveConfirm(false), 2500);
+      }
+    }
 
     // Award shards via API
     if (enablePersistence) {
@@ -285,15 +328,47 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [timerActive]);
 
   // Cleanup
-  useEffect(() => () => { if (timerIntervalRef.current) clearInterval(timerIntervalRef.current); }, []);
+  useEffect(() => () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    if (saveConfirmTimerRef.current) clearTimeout(saveConfirmTimerRef.current);
+  }, []);
 
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
+  const cardSubLabel = !dataReady
+    ? 'Loading...'
+    : compact && todayDone
+      ? 'Completed today'
+      : authPending
+        ? 'Finishing your course access...'
+        : !enablePersistence
+          ? 'Create an account to start the course.'
+          : compact && canStart
+            ? 'Tap to start'
+            : 'All entries are encrypted.';
+
+  const handleAttemptStart = useCallback((dayIndex: number) => {
+    if (!enablePersistence) {
+      play('click');
+      setShowAuthPrompt(true);
+      return;
+    }
+
+    play('click');
+    startTimer(dayIndex);
+  }, [enablePersistence, play, startTimer]);
+
+  const handleGuestCta = useCallback(() => {
+    if (!ready || authPending) return;
+
+    play('click');
+    setShowAuthPrompt(false);
+    login();
+  }, [authPending, login, play, ready]);
 
   const handleCompactClick = () => {
     if (compact && canStart) {
-      play('click');
-      startTimer(availableDayIndex);
+      handleAttemptStart(availableDayIndex);
     }
   };
 
@@ -322,7 +397,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div>
               <span className={styles.label}>Morning Pages</span>
               <span className={styles.sublabel}>
-                {compact && !dataReady ? 'Loading...' : compact && todayDone ? 'Completed today' : compact && canStart ? 'Tap to start' : 'All entries are encrypted.'}
+                {cardSubLabel}
               </span>
             </div>
           </div>
@@ -357,7 +432,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                     key={i}
                     type="button"
                     className={`${styles.dayBtn} ${done ? styles.dayBtnDone : isAvailable ? styles.dayBtnAvailable : styles.dayBtnLocked}`}
-                    onClick={() => { if (isAvailable) { play('click'); startTimer(i); } }}
+                    onClick={() => { if (isAvailable) handleAttemptStart(i); }}
                     disabled={!isAvailable}
                     title={done ? `Day ${i + 1} complete — ${done.date}` : isAvailable ? `Start Day ${i + 1}` : `Day ${i + 1} locked`}
                   >
@@ -372,6 +447,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                 );
               })}
             </div>
+
+            {showSaveConfirm && (
+              <p className={styles.saveConfirm} aria-live="polite">Saved</p>
+            )}
 
             <div className={styles.weekNav}>
               <button
@@ -411,6 +490,61 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             }
           }}
         />
+      )}
+
+      {showAuthPrompt && typeof window !== 'undefined' && createPortal(
+        <div className={styles.authPromptOverlay} onClick={() => setShowAuthPrompt(false)}>
+          <div className={styles.authPromptBackdrop} />
+          <div
+            className={styles.authPromptDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="morning-pages-auth-title"
+            onClick={event => event.stopPropagation()}
+          >
+            <div className={styles.authPromptGlow} />
+            <span className={styles.authPromptEyebrow}>
+              {authPending ? 'Opening your access' : 'Start the course'}
+            </span>
+            <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
+              {authPending ? 'Your account is almost ready.' : 'Create an account to unlock Morning Pages.'}
+            </h3>
+            <p className={styles.authPromptCopy}>
+              {authPending
+                ? 'We are finishing your course setup so your pages, streak, and week progress can save correctly.'
+                : 'Morning Pages is the main practice inside the course. Create your account to save every session, build your streak, and unlock each new week with Blue.'}
+            </p>
+
+            {!authPending && (
+              <div className={styles.authPromptBenefits}>
+                <span className={styles.authPromptBenefit}>Save every page</span>
+                <span className={styles.authPromptBenefit}>Keep your streak</span>
+                <span className={styles.authPromptBenefit}>Unlock the weeks ahead</span>
+              </div>
+            )}
+
+            <div className={styles.authPromptActions}>
+              {!authPending && (
+                <button
+                  type="button"
+                  className={styles.authPromptPrimary}
+                  onClick={handleGuestCta}
+                  disabled={!ready}
+                >
+                  {ready ? 'Create my account' : 'Loading sign-in...'}
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.authPromptSecondary}
+                onClick={() => setShowAuthPrompt(false)}
+              >
+                {authPending ? 'Close' : 'Maybe later'}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {timerActive && typeof window !== 'undefined' && createPortal(

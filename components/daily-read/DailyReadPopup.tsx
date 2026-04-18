@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import BlueDialogue, { BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyReadPopup.module.css';
 
 const PRINCIPLES = [
@@ -62,6 +63,8 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
   const { play } = useSound();
   const [visible, setVisible] = useState(false);
 
+  useScrollLock(visible);
+
   useEffect(() => {
     if (activeWeek <= 0) return;
     const lastSeen = localStorage.getItem(STORAGE_KEY);
@@ -70,6 +73,15 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
       play('navigation');
     }
   }, [activeWeek, play]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleDismiss();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDismiss = () => {
     play('success');
@@ -88,12 +100,19 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
 
   return (
     <div className={styles.overlay} onClick={handleDismiss}>
-      <div className={styles.card} onClick={e => e.stopPropagation()}>
+      <div
+        className={styles.card}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="daily-read-popup-title"
+      >
         <div className={styles.dialogueWrap}>
           <BlueDialogue
             key={activeWeek}
             message={weekDialogue.message}
             emotion={weekDialogue.emotion}
+            variant="overlay"
             fixedHeight
             showSkip={false}
           />
@@ -101,7 +120,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
 
         <div className={`${styles.header} ${styles.headerVisible}`}>
           <p className={styles.eyebrow}>Week {activeWeek}</p>
-          <h2 className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
+          <h2 id="daily-read-popup-title" className={styles.title}>{weekIntro ? weekIntro.title : 'Basic Principles'}</h2>
           <p className={styles.subtitle}>
             {weekIntro
               ? 'Let this frame the week, then keep the thread alive in your morning pages.'
@@ -131,7 +150,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </span>
-            Continue To Morning Pages
+            Open Morning Pages
           </button>
         </div>
       </div>
