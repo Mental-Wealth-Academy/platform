@@ -92,6 +92,7 @@ export default function HomePage() {
   const [showMintModal, setShowMintModal] = useState(false);
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
+  const canPersistMorningPages = isAuthenticated || (authFlowSettled && ready && authenticated);
 
   // Swipe refs
   const touchStartX = useRef(0);
@@ -378,7 +379,7 @@ export default function HomePage() {
 
         <div className={styles.morningPagesShell}>
           <div className={styles.morningPagesGradient} />
-          <DailyNotes enablePersistence={isAuthenticated} compact />
+          <DailyNotes enablePersistence={canPersistMorningPages} compact />
         </div>
 
         {/* ===== WEEK HEADER ===== */}

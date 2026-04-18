@@ -5,12 +5,18 @@ import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
-import { ShardAnimation } from '@/components/quests/ShardAnimation';
-import { ConfettiCelebration } from '@/components/quests/ConfettiCelebration';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
 
+const ShardAnimation = dynamic(() => import('@/components/quests/ShardAnimation').then(mod => mod.ShardAnimation), {
+  ssr: false,
+  loading: () => null,
+});
+const ConfettiCelebration = dynamic(() => import('@/components/quests/ConfettiCelebration').then(mod => mod.ConfettiCelebration), {
+  ssr: false,
+  loading: () => null,
+});
 const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
   ssr: false,
   loading: () => null,
@@ -61,6 +67,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const [currentWeek, setCurrentWeek] = useState(1);
   const [allWeekPages, setAllWeekPages] = useState<Record<number, MorningPageEntry[]>>({});
+  const [previousWeekCounts, setPreviousWeekCounts] = useState<Record<number, number>>({});
   const [timerActive, setTimerActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(900);
@@ -74,17 +81,21 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const hasLoadedRef = useRef(false);
+  const loadedWeeksRef = useRef<Set<number>>(new Set());
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const saveConfirmTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [dataReady, setDataReady] = useState(false);
+  const [queuedCompactStart, setQueuedCompactStart] = useState(false);
   const dayMessageIndex = new Date().getDate() % WRITING_MESSAGES.length;
 
   // Reset dataReady when enablePersistence changes
   useEffect(() => {
     if (enablePersistence) {
       setDataReady(false);
+      loadedWeeksRef.current.clear();
+      setAllWeekPages({});
+      setPreviousWeekCounts({});
     } else {
       setDataReady(true);
     }
@@ -116,7 +127,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   useScrollLock(showAuthPrompt || timerActive);
 
-  const isWeekUnlocked = currentWeek === 1 || (allWeekPages[currentWeek - 1]?.length ?? 0) >= 7;
+  const previousWeekCount = currentWeek === 1
+    ? 7
+    : previousWeekCounts[currentWeek] ?? allWeekPages[currentWeek - 1]?.length ?? 0;
+  const isWeekUnlocked = previousWeekCount >= 7;
 
   const availableDayIndex = (() => {
     if (!isWeekUnlocked) return -1;
@@ -201,6 +215,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       ...prev,
       [currentWeek]: [...(prev[currentWeek] ?? []), newEntry],
     }));
+    setPreviousWeekCounts(prev => ({
+      ...prev,
+      [currentWeek + 1]: (allWeekPages[currentWeek]?.length ?? 0) + 1,
+    }));
     setTimerActive(false);
     setIsPaused(false);
     setShowConfirmDialog(false);
@@ -258,31 +276,52 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }
   };
 
-  // Load all weeks from DB
+  const loadWeek = useCallback(async (weekNumber: number) => {
+    if (!enablePersistence) return;
+
+    try {
+      const token = await getAccessToken();
+      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`/api/daily-notes?week=${weekNumber}`, {
+        credentials: 'include',
+        headers: authHeaders,
+      });
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setAllWeekPages(prev => ({
+        ...prev,
+        [weekNumber]: Array.isArray(data.entries) ? data.entries : [],
+      }));
+      setPreviousWeekCounts(prev => ({
+        ...prev,
+        [weekNumber]: typeof data.previousWeekCount === 'number' ? data.previousWeekCount : prev[weekNumber] ?? 0,
+      }));
+      loadedWeeksRef.current.add(weekNumber);
+    } catch {
+      // silent
+    }
+  }, [enablePersistence, getAccessToken]);
+
   useEffect(() => {
-    if (hasLoadedRef.current || !enablePersistence) return;
-    hasLoadedRef.current = true;
+    if (!enablePersistence) return;
+
+    let cancelled = false;
+    setDataReady(false);
 
     (async () => {
-      try {
-        const token = await getAccessToken();
-        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch('/api/daily-notes', { credentials: 'include', headers: authHeaders });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.allWeekPages) setAllWeekPages(data.allWeekPages);
-      } catch {
-        // silent
-      } finally {
+      if (!loadedWeeksRef.current.has(currentWeek)) {
+        await loadWeek(currentWeek);
+      }
+      if (!cancelled) {
         setDataReady(true);
       }
     })();
-  }, [enablePersistence, getAccessToken]);
 
-  // Debounced auto-save
-  const save = useCallback(() => {
-    return { allWeekPages };
-  }, [allWeekPages]);
+    return () => {
+      cancelled = true;
+    };
+  }, [currentWeek, enablePersistence, loadWeek]);
 
   useEffect(() => {
     if (!dataReady || !enablePersistence) return;
@@ -296,7 +335,10 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...authHeaders },
           credentials: 'include',
-          body: JSON.stringify(save()),
+          body: JSON.stringify({
+            weekNumber: currentWeek,
+            entries: allWeekPages[currentWeek] ?? [],
+          }),
         });
       } catch {
         // silent
@@ -304,7 +346,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     }, 1500);
 
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [allWeekPages, enablePersistence, dataReady, save, getAccessToken]);
+  }, [allWeekPages, currentWeek, enablePersistence, dataReady, getAccessToken]);
 
   // Pause timer and show confirm dialog when user leaves tab
   useEffect(() => {
@@ -334,19 +376,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, []);
 
 
-  const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
-  const cardSubLabel = !dataReady
-    ? 'Loading...'
-    : compact && todayDone
-      ? 'Completed today'
-      : authPending
-        ? 'Finishing your course access...'
-        : !enablePersistence
-          ? 'Create an account to start the course.'
-          : compact && canStart
-            ? 'Tap to start'
-            : 'All entries are encrypted.';
-
   const handleAttemptStart = useCallback((dayIndex: number) => {
     if (!enablePersistence) {
       play('click');
@@ -358,6 +387,9 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     startTimer(dayIndex);
   }, [enablePersistence, play, startTimer]);
 
+  const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
+  const cardSubLabel = '15 minutes of free writing';
+
   const handleGuestCta = useCallback(() => {
     if (!ready || authPending) return;
 
@@ -366,12 +398,30 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     login();
   }, [authPending, login, play, ready]);
 
+  useEffect(() => {
+    if (!queuedCompactStart || !enablePersistence || !dataReady) return;
+
+    setQueuedCompactStart(false);
+    if (canStart) {
+      handleAttemptStart(availableDayIndex);
+    }
+  }, [availableDayIndex, canStart, dataReady, enablePersistence, handleAttemptStart, queuedCompactStart]);
+
   const handleCompactClick = () => {
-    if (!compact || !dataReady || authPending) return;
+    if (!compact) return;
+
     if (!enablePersistence) {
+      play('click');
       setShowAuthPrompt(true);
       return;
     }
+
+    if (!dataReady) {
+      play('click');
+      setQueuedCompactStart(true);
+      return;
+    }
+
     if (canStart) {
       handleAttemptStart(availableDayIndex);
     }
@@ -384,6 +434,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
         style={{ '--week-color': weekColor } as React.CSSProperties}
         onMouseEnter={() => play('hum')}
       >
+        <div className={styles.cardBorder} aria-hidden="true" />
+        <div className={styles.cardSurface} aria-hidden="true" />
         {!compact && (
           <div className={styles.vizBg}>
             <CyberpunkDataViz />

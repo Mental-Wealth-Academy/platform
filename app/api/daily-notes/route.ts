@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { recordBlueMorningPagesEvent } from '@/lib/blue-memory';
@@ -31,9 +31,9 @@ function countMorningPageEntries(allWeekPages: Record<string, unknown[]>) {
 
 /**
  * GET /api/daily-notes
- * Load all 12 weeks of morning pages (decrypted) for the authenticated user
+ * Load all morning pages or a specific week for the authenticated user
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!isDbConfigured()) {
     return NextResponse.json({ error: 'Database not configured.' }, { status: 503 });
   }
@@ -53,30 +53,70 @@ export async function GET() {
   );
 
   if (rows.length === 0) {
+    const weekParam = Number(request.nextUrl.searchParams.get('week'));
+    if (Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 12) {
+      return NextResponse.json({
+        weekNumber: weekParam,
+        entries: [],
+        previousWeekCount: weekParam === 1 ? 7 : 0,
+      });
+    }
     return NextResponse.json({ allWeekPages: {} });
   }
 
   const pd = rows[0].progress_data;
+  const weekParam = Number(request.nextUrl.searchParams.get('week'));
+  const requestedWeek = Number.isInteger(weekParam) && weekParam >= 1 && weekParam <= 12
+    ? weekParam
+    : null;
+
+  const buildWeekResponse = (allWeekPages: Record<string, unknown[]>) => {
+    if (requestedWeek === null) {
+      return NextResponse.json({ allWeekPages });
+    }
+
+    const currentEntries = Array.isArray(allWeekPages[String(requestedWeek)])
+      ? allWeekPages[String(requestedWeek)]
+      : [];
+    const previousWeekCount = requestedWeek === 1
+      ? 7
+      : Array.isArray(allWeekPages[String(requestedWeek - 1)])
+        ? allWeekPages[String(requestedWeek - 1)].length
+        : 0;
+
+    return NextResponse.json({
+      weekNumber: requestedWeek,
+      entries: currentEntries,
+      previousWeekCount,
+    });
+  };
 
   // If encrypted, decrypt
   if (pd?.encrypted && pd?.data) {
     try {
       const decrypted = decryptForUser(user.id, pd.data);
       const parsed = JSON.parse(decrypted);
-      return NextResponse.json({ allWeekPages: parsed.allWeekPages ?? {} });
+      return buildWeekResponse(parsed.allWeekPages ?? {});
     } catch {
+      if (requestedWeek !== null) {
+        return NextResponse.json({
+          weekNumber: requestedWeek,
+          entries: [],
+          previousWeekCount: requestedWeek === 1 ? 7 : 0,
+        });
+      }
       return NextResponse.json({ allWeekPages: {} });
     }
   }
 
   // Legacy unencrypted data — return as-is
-  return NextResponse.json({ allWeekPages: pd?.allWeekPages ?? {} });
+  return buildWeekResponse(pd?.allWeekPages ?? {});
 }
 
 /**
  * POST /api/daily-notes
- * Save all 12 weeks of morning pages (encrypted at rest)
- * Body: { allWeekPages: Record<number, MorningPageEntry[]> }
+ * Save morning pages (encrypted at rest)
+ * Body: { allWeekPages: Record<number, MorningPageEntry[]> } or { weekNumber: number, entries: MorningPageEntry[] }
  */
 export async function POST(request: Request) {
   if (!isDbConfigured()) {
@@ -97,15 +137,36 @@ export async function POST(request: Request) {
     { userId: user.id }
   );
 
-  let body: { allWeekPages: Record<string, unknown[]> };
+  let body: { allWeekPages?: Record<string, unknown[]>; weekNumber?: number; entries?: unknown[] };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
+  const previousAllWeekPages = existingRows[0]
+    ? parseAllWeekPages(user.id, existingRows[0].progress_data)
+    : {};
+
+  let nextAllWeekPages: Record<string, unknown[]>;
+  if (body.allWeekPages) {
+    nextAllWeekPages = body.allWeekPages;
+  } else if (
+    Number.isInteger(body.weekNumber) &&
+    (body.weekNumber as number) >= 1 &&
+    (body.weekNumber as number) <= 12 &&
+    Array.isArray(body.entries)
+  ) {
+    nextAllWeekPages = {
+      ...previousAllWeekPages,
+      [String(body.weekNumber)]: body.entries,
+    };
+  } else {
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
+  }
+
   // Encrypt the content before storing
-  const plaintext = JSON.stringify({ allWeekPages: body.allWeekPages });
+  const plaintext = JSON.stringify({ allWeekPages: nextAllWeekPages });
   const encrypted = encryptForUser(user.id, plaintext);
   const progressData = JSON.stringify({ encrypted: true, data: encrypted });
 
@@ -117,17 +178,14 @@ export async function POST(request: Request) {
     { userId: user.id, progressData }
   );
 
-  const previousAllWeekPages = existingRows[0]
-    ? parseAllWeekPages(user.id, existingRows[0].progress_data)
-    : {};
   const previousCount = countMorningPageEntries(previousAllWeekPages);
-  const nextCount = countMorningPageEntries(body.allWeekPages ?? {});
+  const nextCount = countMorningPageEntries(nextAllWeekPages);
 
   if (nextCount > previousCount) {
     try {
       await recordBlueMorningPagesEvent({
         userId: user.id,
-        allWeekPages: body.allWeekPages ?? {},
+        allWeekPages: nextAllWeekPages,
       });
     } catch (memoryError: unknown) {
       const message = memoryError instanceof Error ? memoryError.message : 'unknown blue morning page memory error';

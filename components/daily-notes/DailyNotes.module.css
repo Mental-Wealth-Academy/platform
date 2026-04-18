@@ -11,9 +11,7 @@
   position: relative;
 }
 
-/* Animated gradient border */
-.card::before {
-  content: '';
+.cardBorder {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
@@ -33,12 +31,10 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  z-index: 3;
+  z-index: 0;
 }
 
-/* Complex layered background */
-.card::after {
-  content: '';
+.cardSurface {
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -208,7 +204,7 @@
   box-shadow: 0 14px 34px rgba(74, 93, 160, 0.14);
 }
 
-:global(:root:not([data-theme="dark"])) .card::after {
+:global(:root:not([data-theme="dark"])) .cardSurface {
   background:
     linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
     repeating-linear-gradient(
@@ -1140,13 +1136,15 @@
       0 6px 18px rgba(81, 104, 255, 0.08);
   }
 
-  .cardCompact::before {
-    inset: -1px;
+  .cardCompact .cardBorder {
+    inset: 0;
     padding: 1px;
-    opacity: 0.74;
+    opacity: 1;
+    background-size: 160% 100%;
+    z-index: 1;
   }
 
-  .cardCompact::after {
+  .cardCompact .cardSurface {
     filter: contrast(1.08) saturate(1.05);
     opacity: 1;
   }
@@ -1158,6 +1156,7 @@
     padding: 15px 17px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
     backdrop-filter: blur(18px);
+    border: 1px solid transparent;
   }
 
   .cardCompact .icon {
