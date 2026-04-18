@@ -507,7 +507,6 @@ export default function VotingPage() {
                           ))
                         )}
                       </div>
-                      <p className={styles.reserveInsightText}>A calm majority is forming around care and research tools.</p>
                     </section>
 
                     <section className={styles.reserveInsightCard}>
@@ -547,35 +546,6 @@ export default function VotingPage() {
                         ))}
                       </div>
                     </section>
-                  </div>
-                  <div className={styles.reserveFundingSection}>
-                    <div className={styles.reserveInsightHeader}>
-                      <span className={styles.reserveInsightLabel}>Recently Funded</span>
-                      <span className={styles.reserveInsightMeta}>Last 3 approvals</span>
-                    </div>
-                    <div className={styles.reserveFundingList}>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Peer support sprint</p>
-                          <p className={styles.reserveFundingNote}>Member care pod</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$1.2k</span>
-                      </article>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Research library credits</p>
-                          <p className={styles.reserveFundingNote}>Knowledge tools</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$640</span>
-                      </article>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Emergency relief grant</p>
-                          <p className={styles.reserveFundingNote}>Fast-track aid</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$400</span>
-                      </article>
-                    </div>
                   </div>
                 </div>
 
