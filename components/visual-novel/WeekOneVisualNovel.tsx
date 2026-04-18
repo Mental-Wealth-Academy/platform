@@ -18,27 +18,27 @@ interface Scene {
 const SCENES: Scene[] = [
   {
     id: 'shadow-artist',
-    body: 'The paintings have no signatures. Azura notices this in the second room, or maybe the third. Every frame hung too high \u2014 you\u2019d need to stand on something to see them properly. She picks up a small one leaning against the baseboard. A harbor, grey and careful. Someone\u2019s brushwork, thick at the edges where the paint was running out. She sets it back down. There is a man here who knows every piece by name. He can tell you who made them, when, what was said about them. He has spent years learning to hold other people\u2019s fire. She walks to the window. Outside: the same grey harbor the painting was made from. She wonders if he ever stands here in the dark. If the wanting still comes. \u201cWhat would you have made,\u201d she says quietly, \u201cif you\u2019d believed you were allowed to?\u201d',
+    body: 'Every painting in the room is hung just too high to see properly. She picks one up from the baseboard \u2014 a grey harbor, someone\u2019s careful brushwork \u2014 and sets it back down. \u201cWhat would you have made,\u201d Azura says to the empty room, \u201cif you\u2019d believed you were allowed to?\u201d',
     image: '/stories/week-01/scene-01.png',
   },
   {
     id: 'artist-child',
-    body: 'The child is drawing on the floor. Azura finds her through a doorway she wasn\u2019t looking for \u2014 she stands at the threshold, doesn\u2019t cross it. The room smells like chalk dust and something closed. The child doesn\u2019t look up. She is drawing a bird, or trying to. The lines keep going wrong and she keeps going anyway. There is someone else in the room, near the far wall. Not moving. Azura doesn\u2019t look at them directly. She watches the child\u2019s hands instead. How carefully they move. How quietly \u2014 like the drawing is something that has to stay secret to stay safe. The chalk makes a small sound against the floor. The bird is still wrong. The child doesn\u2019t stop. Azura thinks: she has been waiting a long time for someone to come and not say anything. She stays in the doorway. The light from the drawing is enough.',
+    body: 'The child is drawing a bird on the floor \u2014 the lines keep going wrong and she keeps going anyway. Azura stands at the threshold and doesn\u2019t go in. She has been waiting a long time for someone to come and not say anything.',
     image: '/stories/week-01/scene-02.png',
   },
   {
     id: 'the-monsters',
-    body: 'The figure near the wall speaks. Not to the child \u2014 not exactly. It\u2019s more like the room has a temperature. Azura hears the shape of it: the particular certainty, the weight that lands on you and stays. She has heard it before, in different voices. It always sounds like someone who loved you. That\u2019s the part that makes it difficult. The child\u2019s hand goes still. The chalk rests on the floor. Azura crosses the room and crouches beside her. She doesn\u2019t say anything. She picks up a piece of chalk \u2014 a blunter one \u2014 and holds it out. The child looks at it for a long time. The voice hasn\u2019t stopped. It keeps going, patient, the way things go when they\u2019ve had years to practice. The child takes the chalk. Makes one careful line. Then another. The voice is still there. But the lines are also there. \u201cIt had a year it started,\u201d Azura says. \u201cIt wasn\u2019t always yours.\u201d',
+    body: 'The voice in the room sounds like someone who loved you \u2014 that\u2019s what makes it difficult. Azura puts the chalk back in the child\u2019s hand without a word. \u201cIt had a year it started,\u201d she says. \u201cIt wasn\u2019t always yours.\u201d',
     image: '/stories/week-01/scene-03.png',
   },
   {
     id: 'the-censor',
-    body: 'The page has one sentence on it. Or most of one \u2014 it breaks off in the middle, pressure marks where the pen lifted. Azura sits across from it. She can see what it was trying to say: I am \u2014 and then nothing. She knows what happened at that word. The moment it lands on the page, something else wakes up. Something that has been waiting for exactly this, and now leans in with a different ending. She picks up the pen. She writes what the page was trying to say. Then she writes what came after \u2014 the interruption, the specific words, the tone, the year it probably started. When she\u2019s done the page is full. She reads it back. It looks ordinary. Smaller than it sounded in the room. \u201cWrite the interruption down too,\u201d she says. \u201cIt has less power once you can see the whole shape of it.\u201d',
+    body: 'The page says \u201cI am \u2014\u201d and then nothing, pressure marks where the pen lifted. Azura writes it out in full \u2014 the claim, then the interruption, then the year it probably started \u2014 until the page is full and the whole thing looks ordinary. \u201cWrite the blurt down too,\u201d she says. \u201cIt\u2019s smaller once you can see it.\u201d',
     image: '/stories/week-01/scene-04.png',
   },
   {
     id: 'morning-pages',
-    body: 'The corridor is still. Azura is here before any of the doors open \u2014 before the day has started talking. She takes out the notebook. Not because she has something to say. Because she has everything to say, all of it tangled: the leftover argument, the thing she almost wrote yesterday and didn\u2019t, the version of herself she performed last night and how tired that made her. She writes all of it. Badly, quickly, without looking back. Somewhere in the second page something loosens. Not fixed \u2014 nothing is fixed. But the weight of it changes when it\u2019s outside her. It starts looking like what it actually is, which is just weather. Things that passed through. She closes the notebook. One of the doors is brighter than the others now. She wasn\u2019t sure which one she\u2019d choose \u2014 now she is. \u201cBefore the day starts,\u201d she says. \u201cWrite first. Before you have time to perform.\u201d',
+    body: 'Azura opens the notebook before any of the doors open \u2014 before the day has started talking. She writes badly, quickly, all of it: the leftover argument, the thing she didn\u2019t say, the version of herself she performed yesterday. \u201cWrite before you have time to perform,\u201d she says. \u201cThe rest follows.\u201d',
     image: '/stories/week-01/scene-05.png',
   },
 ];
