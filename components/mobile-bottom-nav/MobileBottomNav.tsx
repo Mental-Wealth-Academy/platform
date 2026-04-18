@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
   { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
   { id: 'home', label: 'Home', href: '/home', icon: House },
-  { id: 'quests', label: 'Quests', href: '/rewards', icon: Gift },
+  { id: 'tasks', label: 'Tasks', href: '/rewards', icon: Gift },
 ] as const;
 
 const NavIconMark: React.FC<{
