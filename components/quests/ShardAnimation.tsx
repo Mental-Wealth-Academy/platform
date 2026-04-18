@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import styles from './ShardAnimation.module.css';
@@ -21,61 +21,62 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
   const [displayShards, setDisplayShards] = useState(0);
   const [displayTotal, setDisplayTotal] = useState(startingShards);
   const [showMeter, setShowMeter] = useState(false);
+  const frameRef = useRef<number | null>(null);
+  const meterSoundPlayedRef = useRef(false);
 
   useEffect(() => {
     setIsAnimating(true);
     play('celebration');
     setDisplayShards(0);
     setDisplayTotal(startingShards);
-    
-    // First phase: show the earned shards animation
-    const duration = 1500;
-    const steps = 30;
-    const increment = shards / steps;
-    let current = 0;
-    let step = 0;
+    setShowMeter(false);
+    meterSoundPlayedRef.current = false;
 
-    const interval = setInterval(() => {
-      step++;
-      current = Math.min(shards, current + increment);
-      setDisplayShards(Math.floor(current));
+    const finalTotal = startingShards + shards;
+    const earnedDuration = 900;
+    const meterDelay = 240;
+    const meterDuration = 920;
+    const outroDelay = 620;
+    const start = performance.now();
 
-      if (step >= steps) {
-        setDisplayShards(shards);
-        clearInterval(interval);
-        
-        // Second phase: show the meter filling animation
-        setTimeout(() => {
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animate = (now: number) => {
+      const elapsed = now - start;
+      const earnedProgress = Math.min(elapsed / earnedDuration, 1);
+      const easedEarned = easeOutCubic(earnedProgress);
+      setDisplayShards(Math.round(shards * easedEarned));
+
+      if (elapsed >= meterDelay) {
+        if (!meterSoundPlayedRef.current) {
           setShowMeter(true);
           play('success');
-          
-          // Animate total from starting to final
-          const finalTotal = startingShards + shards;
-          const meterDuration = 1200;
-          const meterSteps = 40;
-          const meterIncrement = shards / meterSteps;
-          let meterCurrent = startingShards;
-          let meterStep = 0;
+          meterSoundPlayedRef.current = true;
+        }
 
-          const meterInterval = setInterval(() => {
-            meterStep++;
-            meterCurrent = Math.min(finalTotal, meterCurrent + meterIncrement);
-            setDisplayTotal(Math.floor(meterCurrent));
+        const meterProgress = Math.min((elapsed - meterDelay) / meterDuration, 1);
+        const easedMeter = easeOutCubic(meterProgress);
+        setDisplayTotal(Math.round(startingShards + shards * easedMeter));
 
-            if (meterStep >= meterSteps) {
-              setDisplayTotal(finalTotal);
-              clearInterval(meterInterval);
-              setTimeout(() => {
-                setIsAnimating(false);
-                onComplete?.();
-              }, 800);
-            }
-          }, meterDuration / meterSteps);
-        }, 300);
+        if (earnedProgress === 1 && meterProgress === 1) {
+          window.setTimeout(() => {
+            setIsAnimating(false);
+            onComplete?.();
+          }, outroDelay);
+          return;
+        }
       }
-    }, duration / steps);
 
-    return () => clearInterval(interval);
+      frameRef.current = window.requestAnimationFrame(animate);
+    };
+
+    frameRef.current = window.requestAnimationFrame(animate);
+
+    return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
   }, [shards, startingShards, onComplete, play]);
 
   if (!isAnimating) return null;
@@ -103,7 +104,18 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
       
       {showMeter && (
         <div className={styles.meterContainer}>
-          <div className={styles.meterLabel}>Total Shards</div>
+          <div className={styles.meterHeader}>
+            <span className={styles.meterLabel}>Total Shards</span>
+            <span className={styles.meterIconWrap}>
+              <Image
+                src="/icons/ui-shard.svg"
+                alt=""
+                width={18}
+                height={18}
+                className={styles.meterIcon}
+              />
+            </span>
+          </div>
           <div className={styles.meterBar}>
             <div 
               className={styles.meterFill}
@@ -118,4 +130,3 @@ export const ShardAnimation: React.FC<ShardAnimationProps> = ({
     </div>
   );
 };
-

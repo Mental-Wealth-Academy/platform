@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import {
+  Dna,
   Gift,
   House,
   IconProps,
@@ -64,6 +65,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
+      { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },

@@ -583,6 +583,28 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               </svg>
             </button>
             <div className={styles.authPromptContent}>
+              <div className={styles.authPromptHero} aria-hidden="true">
+                <div className={styles.authPromptGlowOrb} />
+                <div className={styles.authPromptBubble}>
+                  <span className={styles.authPromptBubbleSender}>Blue</span>
+                  <p className={styles.authPromptBubbleText}>
+                    {authPending
+                      ? 'I’m getting your space ready so your pages save properly.'
+                      : 'Create your account and I’ll keep your Morning Pages, streak, and weekly progress in one place.'}
+                  </p>
+                </div>
+                <div className={styles.authPromptAvatarStage}>
+                  <div className={styles.authPromptAvatarHalo} />
+                  <div className={styles.authPromptAvatarBase} />
+                  <Image
+                    src="/uploads/blueagent.png"
+                    alt=""
+                    width={220}
+                    height={260}
+                    className={styles.authPromptAvatar}
+                  />
+                </div>
+              </div>
               <h3 id="morning-pages-auth-title" className={styles.authPromptTitle}>
                 {authPending ? 'Your account is almost ready.' : 'Create an account to continue.'}
               </h3>
@@ -626,6 +648,14 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             <div className={styles.modalMain}>
               <div className={styles.modalHeader}>
                 <span className={styles.headerLabel}>morning pages</span>
+                <button
+                  type="button"
+                  className={styles.modalCloseBtn}
+                  onClick={() => { play('click'); requestClose(); }}
+                  onMouseEnter={() => play('hover')}
+                >
+                  Close
+                </button>
                 <span className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
                   {isPaused ? 'paused' : formatTimer(timerSeconds)}
                 </span>
@@ -634,7 +664,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="write for 15 minutes everyday, rule of thumb is to do as much as you can and stop if it's too much."
+                  placeholder="Begin journaling here to earn shards and build your digital golem."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus
