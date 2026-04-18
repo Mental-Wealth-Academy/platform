@@ -18,27 +18,27 @@ interface Scene {
 const SCENES: Scene[] = [
   {
     id: 'shadow-artist',
-    body: 'Every painting in the room is hung just too high to see properly. She picks one up from the baseboard \u2014 a grey harbor, someone\u2019s careful brushwork \u2014 and sets it back down. \u201cWhat would you have made,\u201d Azura says to the empty room, \u201cif you\u2019d believed you were allowed to?\u201d',
+    body: 'Through the helmet, she can see herself at twenty-six \u2014 standing outside someone else\u2019s studio, not going in, carrying their finished work home like it was hers to protect. She used to do that for years. \u201cI stood that close to it,\u201d she says. \u201cI just never walked through the door.\u201d',
     image: '/stories/week-01/scene-01.png',
   },
   {
     id: 'artist-child',
-    body: 'The child is drawing a bird on the floor \u2014 the lines keep going wrong and she keeps going anyway. Azura stands at the threshold and doesn\u2019t go in. She has been waiting a long time for someone to come and not say anything.',
+    body: 'The helmet shows her at seven, drawing on the floor of a room that smelled like chalk and someone else\u2019s rules \u2014 lines going wrong, kept going anyway. She\u2019d forgotten that part. \u201cShe was in there the whole time,\u201d Blue says. \u201cJust waiting to see if the room was safe.\u201d',
     image: '/stories/week-01/scene-02.png',
   },
   {
     id: 'the-monsters',
-    body: 'The voice in the room sounds like someone who loved you \u2014 that\u2019s what makes it difficult. Azura puts the chalk back in the child\u2019s hand without a word. \u201cIt had a year it started,\u201d she says. \u201cIt wasn\u2019t always yours.\u201d',
+    body: 'She dials the helmet to her fifteenth year and finds the voice \u2014 the room, the person, the expression that had loved her and been afraid at the same time. She writes the name down and it looks smaller on paper than it ever sounded in her head. \u201cNot mine,\u201d she says. \u201cBorrowed. And I can give it back.\u201d',
     image: '/stories/week-01/scene-03.png',
   },
   {
     id: 'the-censor',
-    body: 'The page says \u201cI am \u2014\u201d and then nothing, pressure marks where the pen lifted. Azura writes it out in full \u2014 the claim, then the interruption, then the year it probably started \u2014 until the page is full and the whole thing looks ordinary. \u201cWrite the blurt down too,\u201d she says. \u201cIt\u2019s smaller once you can see it.\u201d',
+    body: 'She writes \u201cI am \u2014\u201d and stops \u2014 something in her has been waiting for exactly that word and arrives with a different ending, ugly and specific. She writes that down too: the interruption, its origin, how old she was when she first heard it. \u201cWrite the blurt,\u201d she says. \u201cIt shrinks the moment it leaves your head.\u201d',
     image: '/stories/week-01/scene-04.png',
   },
   {
     id: 'morning-pages',
-    body: 'Azura opens the notebook before any of the doors open \u2014 before the day has started talking. She writes badly, quickly, all of it: the leftover argument, the thing she didn\u2019t say, the version of herself she performed yesterday. \u201cWrite before you have time to perform,\u201d she says. \u201cThe rest follows.\u201d',
+    body: 'Before the helmet goes on she writes \u2014 three pages, badly, everything that built up overnight: the argument almost had, the thing made and hated, the self performed yesterday and how tired that left her. By the second page the weight is different; not gone, just outside her now. \u201cThis first,\u201d she says. \u201cBefore the day tells you who to be.\u201d',
     image: '/stories/week-01/scene-05.png',
   },
 ];
