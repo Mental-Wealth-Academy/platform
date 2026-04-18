@@ -46,6 +46,21 @@ const SCENES: Scene[] = [
     body: 'This week is not about talent. It\'s about showing up once, small, without violence toward yourself. You are not trying to be impressive. You are trying to become someone your artist can trust. That trust is built one kept appointment at a time. Show up. Let it be bad. Keep the channel open. The signal gets stronger on its own.',
     image: '/stories/week-01/scene-06.png',
   },
+  {
+    id: 'shadow-careers',
+    body: 'Erin was a children\'s therapist. Gifted, genuinely. For two decades she poured everything she had into other people\'s children — their drawings, their stories, their play. It took her that long to see it. She had been feeding her artist through everyone else\'s work. Pouring into a borrowed vessel because she didn\'t believe she was allowed her own. The art was always there. It just wasn\'t allowed to be hers.',
+    image: '/stories/week-01/scene-07.png',
+  },
+  {
+    id: 'artist-date',
+    body: 'Once a week, take yourself somewhere. Not productive. Not useful. A five-and-dime store. A matinee alone. A hardware store just to look at the colors of paint chips. Your artist is a child, and children need to play without purpose. The artist date is not a reward for good work. It is the work. You are restocking the well you draw from. Go alone. Let yourself be delighted by something small.',
+    image: '/stories/week-01/scene-08.png',
+  },
+  {
+    id: 'imaginary-lives',
+    body: 'If you could have five other lives, what would they be? A jazz singer in a small room. A marine biologist. A woman who makes furniture by hand. Write them down. Don\'t explain or justify. Then pick one — just one — and do a single small thing connected to it this week. Buy the field guide. Learn one chord. Walk into the woodshop and smell the sawdust. The life you didn\'t live is still trying to tell you something.',
+    image: '/stories/week-01/scene-09.png',
+  },
 ];
 
 type ScreenOrientationWithLock = ScreenOrientation & {

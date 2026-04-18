@@ -156,8 +156,8 @@
 }
 
 .dot {
-  width: 24px;
-  height: 5px;
+  width: 18px;
+  height: 4px;
   border: none;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.32);
@@ -166,7 +166,7 @@
 }
 
 .dotActive {
-  width: 40px;
+  width: 32px;
   background: #fff;
 }
 
