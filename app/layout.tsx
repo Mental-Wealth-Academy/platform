@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
-    apple: '/icons/badge-academy.png',
+    apple: '/icons/apple-touch-icon.png',
   },
   applicationName: 'Mental Wealth Academy',
   appleWebApp: {
