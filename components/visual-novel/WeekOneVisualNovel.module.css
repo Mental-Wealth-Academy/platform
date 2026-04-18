@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 1098;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
@@ -31,22 +31,21 @@
   transform: scale(1);
 }
 
-/* Full-screen background image */
+/* Background image */
 .bgImage {
   object-fit: cover;
   object-position: center;
-  transition: opacity 0.35s ease;
 }
 
-/* Gradient shades: darken top-left and bottom for readability */
+/* Gradient overlay — darkens top-left and bottom edge for text legibility */
 .shade {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.1) 55%, transparent 100%),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, transparent 40%);
   pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.18) 50%, transparent 100%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.52) 0%, transparent 35%);
 }
 
 /* Close button */
@@ -61,7 +60,7 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  background: rgba(0, 0, 0, 0.36);
+  background: rgba(0, 0, 0, 0.38);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   cursor: pointer;
@@ -70,81 +69,84 @@
 }
 
 .closeButton:hover {
-  background: rgba(0, 0, 0, 0.56);
+  background: rgba(0, 0, 0, 0.6);
 }
 
-/* Text overlay — top-left quadrant, generously inset */
+/* Text overlay: top-left, generously inset from corner */
 .overlay {
   position: absolute;
   z-index: 2;
   top: 18%;
   left: 7%;
-  max-width: min(420px, 52vw);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.chapter {
-  margin: 0;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #fff;
-  text-shadow:
-    0 0 8px rgba(0, 0, 0, 0.9),
-    0 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-.title {
-  margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(1.6rem, 4vw, 2.8rem);
-  line-height: 1.05;
-  color: #fff;
-  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.6);
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.7),
-    1px -1px 0 rgba(0, 0, 0, 0.7),
-    -1px 1px 0 rgba(0, 0, 0, 0.7),
-    1px 1px 0 rgba(0, 0, 0, 0.7),
-    0 4px 16px rgba(0, 0, 0, 0.6);
+  max-width: min(460px, 52vw);
+  pointer-events: none;
 }
 
 .body {
   margin: 0;
-  font-size: clamp(0.9rem, 1.4vw, 1.08rem);
-  line-height: 1.7;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.05rem, 1.6vw, 1.28rem);
+  line-height: 1.75;
   color: #fff;
   text-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.9),
-    0 2px 12px rgba(0, 0, 0, 0.6);
+    -1px -1px 0 rgba(0, 0, 0, 0.75),
+    1px -1px 0 rgba(0, 0, 0, 0.75),
+    -1px 1px 0 rgba(0, 0, 0, 0.75),
+    1px 1px 0 rgba(0, 0, 0, 0.75),
+    0 3px 18px rgba(0, 0, 0, 0.65);
 }
 
-.cue {
-  margin: 0;
-  font-size: clamp(0.82rem, 1.2vw, 0.96rem);
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
-  font-style: italic;
-  text-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.9),
-    0 2px 12px rgba(0, 0, 0, 0.6);
+/* Blinking cursor shown while text is animating */
+.cursor {
+  display: inline-block;
+  margin-left: 1px;
+  animation: blink 0.75s step-end infinite;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Bottom navigation bar */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Invisible tap zones for prev / next */
+.tapPrev,
+.tapNext {
+  position: absolute;
+  top: 0;
+  bottom: 5rem;
+  z-index: 3;
+  width: 40%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tapPrev {
+  left: 0;
+}
+
+.tapNext {
+  right: 0;
+}
+
+.tapPrev:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Bottom bar — dots centered */
 .bottomBar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  justify-content: center;
+  padding: 1.25rem;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
 }
 
 .dots {
@@ -154,70 +156,73 @@
 }
 
 .dot {
-  width: 28px;
-  height: 6px;
+  width: 24px;
+  height: 5px;
   border: none;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.32);
   cursor: pointer;
   transition: background 0.2s ease, width 0.2s ease;
 }
 
 .dotActive {
-  width: 44px;
+  width: 40px;
   background: #fff;
 }
 
-.navBtn {
-  width: 48px;
-  height: 48px;
+/* Portrait hard-block overlay */
+.portraitOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.36);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: background 0.18s ease, transform 0.18s ease;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.92);
+  pointer-events: all;
 }
 
-.navBtn:hover {
-  background: rgba(0, 0, 0, 0.56);
-  transform: scale(1.06);
+.rotateIcon {
+  opacity: 0.85;
+  animation: rotateHint 2.4s ease-in-out infinite;
 }
 
-.navBtn:disabled {
-  opacity: 0.28;
-  cursor: not-allowed;
-  transform: none;
+@keyframes rotateHint {
+  0%, 100% { transform: rotate(0deg);   }
+  40%       { transform: rotate(90deg);  }
+  60%       { transform: rotate(90deg);  }
 }
 
-/* Mobile portrait — stack text lower so image hero is visible */
+.portraitText {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.88);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* On small landscape screens, shift text down a touch */
+@media (max-height: 480px) {
+  .overlay {
+    top: 12%;
+  }
+}
+
+/* On mobile portrait — the JS portrait overlay handles blocking,
+   but also shrink font so the rotate message fits */
 @media (max-width: 600px) {
   .overlay {
     top: auto;
-    bottom: 7rem;
+    bottom: 6rem;
     left: 1.5rem;
     right: 1.5rem;
     max-width: none;
   }
 
-  .title {
-    font-size: clamp(1.4rem, 6vw, 2rem);
-  }
-
   .body {
-    font-size: 0.9rem;
-  }
-
-  .cue {
-    font-size: 0.82rem;
-  }
-
-  .bottomBar {
-    padding: 1rem 1.25rem;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    font-size: 1rem;
   }
 }
