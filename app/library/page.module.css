@@ -67,12 +67,6 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.titleGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .title {
   margin: 0;
   font-family: var(--font-primary);
@@ -109,53 +103,6 @@
   background: rgba(81, 104, 255, 0.05);
 }
 
-.scanDetails {
-  display: none;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  background: linear-gradient(180deg, #ececff 0%, #e1e1fe 100%);
-  border: 1px solid #1f2937;
-  border-radius: 4px;
-  min-width: max-content;
-  font-size: 10px;
-}
-
-.scanLabel {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: 9px;
-  font-weight: 400;
-  color: #2e1e71;
-  letter-spacing: -0.1px;
-  text-transform: uppercase;
-}
-
-[data-theme='dark'] .scanLabel {
-  color: rgba(147, 197, 253, 0.8);
-}
-
-.scanInfo {
-  margin: 0;
-  font-family: var(--font-code);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--color-text-dark);
-  letter-spacing: -0.1px;
-}
-
-[data-theme='dark'] .scanInfo {
-  color: var(--color-text-foreground-dark);
-}
-
-.scanInfo span {
-  color: #5f5f5f;
-}
-
-[data-theme='dark'] .scanInfo span {
-  color: rgba(228, 228, 228, 0.6);
-}
-
 /* Filter Section */
 .filterSection {
   display: flex;
@@ -168,26 +115,32 @@
   align-items: center;
   gap: 10px;
   background: var(--color-card-light);
-  border: 1px solid var(--color-border);
+  border: 2px solid #5168ff;
   border-radius: 8px;
   padding: 8px 10px;
   box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
 [data-theme='dark'] .searchBox {
   background: var(--color-card-dark);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(81, 104, 255, 0.6);
+}
+
+.searchBox:focus-within {
+  border-color: #6b7dff;
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.1);
 }
 
 .searchIcon {
   width: 14px;
   height: 14px;
-  color: #939393;
+  color: #5168ff;
   flex-shrink: 0;
 }
 
 [data-theme='dark'] .searchIcon {
-  color: #666;
+  color: #93c5fd;
 }
 
 .searchInput {
@@ -212,44 +165,144 @@
   color: rgba(228, 228, 228, 0.4);
 }
 
-.badgesContainer {
+/* Filter Dropdown */
+.filterDropdown {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
 }
 
-.badge {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 20px;
+.filterButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  color: var(--color-text-dark);
   font-family: var(--font-primary);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.badgeActive {
-  background: #6366f1;
-  color: white;
-}
-
-.badgeInactive {
-  background: var(--color-background);
-  color: var(--color-text-dark);
-  border: 1px solid var(--color-border);
-}
-
-[data-theme='dark'] .badgeInactive {
+[data-theme='dark'] .filterButton {
   background: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-foreground-dark);
   border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-foreground-dark);
 }
 
-.badgeInactive:hover {
-  background: var(--color-primary);
-  color: white;
+.filterButton:hover {
+  border-color: #5168ff;
+  background: rgba(81, 104, 255, 0.05);
+}
+
+.filterLabel {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filterChevron {
+  transition: transform 0.2s ease;
+  color: #9ca3af;
+}
+
+.filterDropdown.open .filterChevron {
+  transform: rotate(180deg);
+}
+
+.filterMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  background: var(--color-card-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+[data-theme='dark'] .filterMenu {
+  background: var(--color-card-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  border-radius: 6px;
+}
+
+[data-theme='dark'] .filterOption {
+  color: var(--color-text-foreground-dark);
+}
+
+.filterOption:hover {
+  background: rgba(81, 104, 255, 0.08);
+}
+
+.filterOptionActive {
+  background: rgba(81, 104, 255, 0.15);
+  color: #5168ff;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .filterOptionActive {
+  background: rgba(81, 104, 255, 0.2);
+  color: #93c5fd;
+}
+
+.filterOptionActive svg {
+  color: #5168ff;
+}
+
+[data-theme='dark'] .filterOptionActive svg {
+  color: #93c5fd;
+}
+
+/* Results Info */
+.resultsInfo {
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resultsText {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+[data-theme='dark'] .resultsText {
+  color: rgba(228, 228, 228, 0.5);
 }
 
 /* Table Container */
@@ -327,6 +380,7 @@
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.15s ease;
+  font-size: 11px;
 }
 
 [data-theme='dark'] .skillsTable td {
@@ -338,12 +392,32 @@
   border-right: none;
 }
 
+.categoryCell {
+  color: #737373 !important;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .categoryCell {
+  color: rgba(228, 228, 228, 0.7) !important;
+}
+
 .tableRow:hover td {
   background: var(--color-background);
 }
 
 [data-theme='dark'] .tableRow:hover td {
   background: rgba(81, 104, 255, 0.1);
+}
+
+.emptyState {
+  text-align: center;
+  color: #9ca3af;
+  padding: 40px 12px !important;
+  font-style: italic;
+}
+
+[data-theme='dark'] .emptyState {
+  color: rgba(228, 228, 228, 0.4);
 }
 
 /* Sidebar - Slide In Modal */
@@ -416,6 +490,16 @@
   font-weight: 600;
   color: white;
   word-break: break-word;
+}
+
+.skillCategory {
+  margin: 4px 0 12px 0;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .detailsSection {
@@ -498,6 +582,7 @@
 
   .mainArea {
     padding: 16px;
+    border-radius: 8px;
   }
 
   .title {
@@ -510,12 +595,38 @@
     gap: 8px;
   }
 
-  .badgesContainer {
-    gap: 5px;
+  .scanButton {
+    align-self: flex-end;
+    padding: 6px 10px;
+    font-size: 11px;
   }
 
-  .badge {
-    padding: 4px 8px;
+  .filterSection {
+    gap: 8px;
+  }
+
+  .searchBox {
+    padding: 7px 8px;
+    gap: 8px;
+  }
+
+  .searchInput {
+    font-size: 12px;
+  }
+
+  .filterButton {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .filterMenu {
+    max-width: 180px;
+    left: auto;
+    right: 0;
+  }
+
+  .filterOption {
+    padding: 6px 8px;
     font-size: 11px;
   }
 
@@ -528,7 +639,133 @@
     padding: 7px 8px;
   }
 
+  .skillsTable th {
+    font-size: 9px;
+  }
+
   .sidebar {
     width: 100%;
+    padding: 16px;
+  }
+
+  .skillTitle {
+    font-size: 16px;
+  }
+
+  .skillCategory {
+    font-size: 10px;
+  }
+
+  .tabsHeader {
+    gap: 16px;
+    font-size: 9px;
+  }
+
+  .detailLabel {
+    font-size: 9px;
+  }
+
+  .detailValue {
+    font-size: 10px;
+  }
+
+  .descriptionText {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topBanner {
+    padding: 6px 12px;
+  }
+
+  .bannerText {
+    font-size: 11px;
+  }
+
+  .contentWrapper {
+    padding: 8px 12px;
+  }
+
+  .mainArea {
+    padding: 12px;
+    gap: 8px;
+    border-radius: 6px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .headerSection {
+    padding-bottom: 8px;
+  }
+
+  .scanButton {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .searchBox {
+    padding: 6px 8px;
+  }
+
+  .searchIcon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .searchInput {
+    font-size: 12px;
+  }
+
+  .filterButton {
+    padding: 6px 8px;
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .filterLabel {
+    display: none;
+  }
+
+  .filterMenu {
+    min-width: 150px;
+  }
+
+  .filterOption {
+    padding: 5px 6px;
+    font-size: 10px;
+  }
+
+  .skillsTable th,
+  .skillsTable td {
+    padding: 6px 6px;
+  }
+
+  .skillsTable th {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+
+  .skillsTable {
+    font-size: 9px;
+  }
+
+  .categoryCell {
+    display: none;
+  }
+
+  .sidebar {
+    padding: 12px;
+  }
+
+  .closeButton {
+    padding: 2px;
+  }
+
+  .closeButton svg {
+    width: 16px;
+    height: 16px;
   }
 }
