@@ -507,6 +507,17 @@ export default function VotingPage() {
                           ))
                         )}
                       </div>
+                      <div className={styles.recentVotesChart}>
+                        {[65, 78, 52, 89, 72, 85, 68, 76, 91, 63, 84, 77].map((height, i) => (
+                          <div
+                            key={i}
+                            className={styles.recentVotesBar}
+                            style={{ height: `${(height / 100) * 100}%`, minHeight: `${height * 0.4}px` }}
+                            title={`${height}% activity`}
+                          />
+                        ))}
+                      </div>
+                      <p className={styles.reserveInsightText}>A calm majority is forming around care and research tools.</p>
                     </section>
 
                     <section className={styles.reserveInsightCard}>
