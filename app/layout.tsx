@@ -147,7 +147,10 @@ export default async function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('mwa-theme') || 'light';
+                  var theme = localStorage.getItem('mwa-theme') || 'dark';
+                  if (!localStorage.getItem('mwa-theme')) {
+                    localStorage.setItem('mwa-theme', 'dark');
+                  }
                   if (theme === 'dark' && window.location.pathname !== '/') {
                     document.documentElement.setAttribute('data-theme', 'dark');
                   }
