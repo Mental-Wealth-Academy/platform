@@ -14,6 +14,7 @@ import {
   ImagesSquare,
   Lightning,
   Microscope,
+  Binoculars,
   UserCircle,
   UsersThree,
 } from '@phosphor-icons/react';
@@ -66,6 +67,7 @@ const navSections: NavSection[] = [
       { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
+      { id: 'field-research', label: 'Field Research', href: '/field-research', icon: Binoculars },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
