@@ -63,7 +63,7 @@ export default function AngelicCreditSystem() {
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Edutainment</h2>
+          <h2 className={styles.title}>Conscious Momentum</h2>
           <p className={styles.subtitle}>
             Simple tools and lessons that make growth feel fun.
           </p>
@@ -73,7 +73,7 @@ export default function AngelicCreditSystem() {
         <div className={styles.azuraCard}>
           <div className={styles.azuraBg}>
             <Image
-              src="https://i.imgur.com/Ehf0XUt.png"
+              src="/starboard-card.png"
               alt="Blue Agent"
               fill
               className={styles.azuraBgImg}
