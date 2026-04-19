@@ -32,6 +32,18 @@ const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/A
 const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
   ssr: false,
 });
+const RecentlyFunded = dynamic(() => import('@/components/recently-funded/RecentlyFunded'), {
+  ssr: false,
+  loading: () => null,
+});
+const CreditScore = dynamic(() => import('@/components/credit-score/CreditScore'), {
+  ssr: false,
+  loading: () => null,
+});
+const Starboard = dynamic(() => import('@/components/starboard/Starboard'), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface WeekStatus {
   weekNumber: number;
@@ -380,6 +392,10 @@ export default function HomePage() {
           <div className={styles.morningPagesGradient} />
           <DailyNotes enablePersistence={canPersistMorningPages} compact />
         </div>
+
+        <RecentlyFunded />
+        <CreditScore />
+        <Starboard weekNumber={resolvedViewWeek} />
 
         {/* ===== WEEK HEADER ===== */}
         <div className={styles.weekHeader}>

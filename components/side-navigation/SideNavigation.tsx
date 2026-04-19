@@ -11,7 +11,7 @@ import {
   House,
   IconProps,
   ImagesSquare,
-  Pulse,
+  ChartLine,
   UserCircle,
   UsersThree,
   Book,
@@ -54,10 +54,10 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: Pulse },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'library', label: 'Library', href: '/library', icon: Book },
-      { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
+      { id: 'community', label: 'DAO', href: '/community', icon: UsersThree },
     ],
   },
   {
