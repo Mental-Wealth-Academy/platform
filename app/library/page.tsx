@@ -26,20 +26,20 @@ const ART_STYLES: ArtStyle[] = [
   {
     id: 'lab-aesthetic',
     name: 'Lab Aesthetic',
-    description: 'Desaturated environment, almost grayscale rooms — library, research desk, dimly lit hallway. Azura always in the white lab coat. Single accent color per scene (her blue hair, a lamp\'s warm glow, a glowing monitor). No crowd scenes. No dramatic weather. Just her, thinking, observing, moving through quiet spaces.',
+    description: 'Desaturated environment, almost grayscale rooms — library, research desk, dimly lit hallway. Character always in a white lab coat. Single accent color per scene (character\'s distinctive feature, a lamp\'s warm glow, a glowing monitor). No crowd scenes. No dramatic weather. Just them, thinking, observing, moving through quiet spaces.',
     mood: 'Contemplative, Quiet',
     accent: 'Single bright color',
   },
   {
     id: 'surveillance-aesthetic',
     name: 'Surveillance Aesthetic',
-    description: 'Cinematic aerial drone shot looking through the window at Azura in her classroom taking notes. POV is from outside the school window, she is in the back of the classroom with other students. She\'s writing in a notebook at her desk, completely unaware she\'s being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
+    description: 'Cinematic aerial drone shot looking through the window at a character in their classroom taking notes. POV is from outside the school window, they are in the back of the classroom with other students. They\'re writing in a notebook at their desk, completely unaware they\'re being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
     mood: 'Cold, Intrusive, Calculated',
     accent: 'Data overlays & scan lines',
   },
   {
     id: 'bright-anime',
-    name: 'Bright Anime Style',
+    name: 'Academy Story Style',
     description: 'Purely bright digital illustration, anime-influenced. Top-down close-up angle, character\'s head and face filling 70% of frame. Animated brown-skinned elf woman with long blue hair, blue eyebrows, purple eyes looking up directly at camera, one hand scratching her head, confused expression. White mechanical headset with red crescent moon on right side of head. Gold hoop earrings, gold chain star necklace, white dress shirt over atomic symbol graphic tee. Below her: desk covered in scattered research papers with black redacted government text. Background: space station laboratory, dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Cinematic lighting, cool tones, detailed digital comic art.',
     mood: 'Bright, Curious, Tech',
     accent: 'Blue, purple & gold accents',
@@ -135,10 +135,25 @@ const CATEGORY_FILTERS = [
 export default function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const { play } = useSound();
+
+  const showNotification = () => {
+    setShowCopyNotification(true);
+    setIsFadingOut(false);
+    setTimeout(() => {
+      setIsFadingOut(true);
+      setTimeout(() => {
+        setShowCopyNotification(false);
+      }, 300);
+    }, 2000);
+  };
+
+  const formatSkillPrompt = (skill: Skill): string => {
+    return `**${skill.name}**\nCategory: ${skill.category}\nType: ${skill.type}\nUsers: ${skill.users}\nRating: ${skill.rating}`;
+  };
 
   const filteredSkills = SKILLS.filter((skill) => {
     const matchesSearch = skill.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -146,17 +161,6 @@ export default function LibraryPage() {
       selectedCategory === 'All Categories' || skill.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const handleSkillClick = (skill: Skill) => {
-    setSelectedSkill(skill);
-    setSidebarOpen(true);
-    play('click');
-  };
-
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
-    play('click');
-  };
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -169,11 +173,22 @@ export default function LibraryPage() {
       <SideNavigation />
       <main className={styles.pageLayout}>
         <div className={styles.container}>
-          {/* Top Banner */}
+          {/* Top Banner - Stock Ticker Style */}
           <div className={styles.topBanner}>
-            <p className={styles.bannerText}>
-              Decentralized Skills Marketplace — {SKILLS.length}+ Verified Skills
-            </p>
+            <div className={styles.bannerTickerContainer}>
+              <div className={styles.bannerTicker}>
+                {[...SKILLS.slice(0, 12), ...SKILLS.slice(0, 12)].map((skill, idx) => (
+                  <span key={idx} className={styles.tickerItem}>
+                    <span className={styles.tickerName}>{skill.name}</span>
+                    <span className={styles.tickerSep}> | </span>
+                    <span className={styles.tickerRating}>{skill.rating}</span>
+                    <span className={styles.tickerSep}> | </span>
+                    <span className={styles.tickerUsers}>{skill.users} users</span>
+                    <span className={styles.tickerGap}></span>
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Main Content Area */}
@@ -182,16 +197,28 @@ export default function LibraryPage() {
             <div className={styles.mainArea}>
               {/* Header Section */}
               <div className={styles.headerSection}>
-                <h1 className={styles.title}>Skills</h1>
+                <div>
+                  <h1 className={styles.title}>Prompt Library</h1>
+                  <p className={styles.subtitle}>Browse verified prompts and AI art styles. Click any item to copy to clipboard.</p>
+                </div>
                 <button className={styles.scanButton}>New Scan</button>
               </div>
 
               {/* Featured Art Styles Section */}
               <div className={styles.featuredSection}>
-                <h2 className={styles.featuredTitle}>Blue's AI Artstyles</h2>
+                <h2 className={styles.featuredTitle}>ART STYLE PROMPTS</h2>
                 <div className={styles.artStylesContainer}>
                   {ART_STYLES.map((style) => (
-                    <div key={style.id} className={styles.artStyleCard}>
+                    <div
+                      key={style.id}
+                      className={styles.artStyleCard}
+                      onClick={() => {
+                        navigator.clipboard.writeText(style.description);
+                        play('click');
+                        showNotification();
+                      }}
+                      title="Click to copy"
+                    >
                       <div className={styles.artStyleHeader}>
                         <h3 className={styles.artStyleName}>{style.name}</h3>
                         <span className={styles.artStyleMood}>{style.mood}</span>
@@ -297,8 +324,13 @@ export default function LibraryPage() {
                         filteredSkills.map((skill, idx) => (
                           <tr
                             key={idx}
-                            onClick={() => handleSkillClick(skill)}
+                            onClick={() => {
+                              navigator.clipboard.writeText(formatSkillPrompt(skill));
+                              play('click');
+                              showNotification();
+                            }}
                             className={styles.tableRow}
+                            title="Click to copy"
                           >
                             <td>{skill.name}</td>
                             <td className={styles.categoryCell}>{skill.category}</td>
@@ -323,60 +355,11 @@ export default function LibraryPage() {
           </div>
         </div>
 
-        {/* Details Sidebar - Slide In Modal */}
-        <div className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOpen : ''}`} onClick={handleCloseSidebar} />
-        <div className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-          {selectedSkill && (
-            <>
-              <button className={styles.closeButton} onClick={handleCloseSidebar}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
-              <div className={styles.detailsSection}>
-                <h2 className={styles.skillTitle}>{selectedSkill.name}</h2>
-                <p className={styles.skillCategory}>{selectedSkill.category}</p>
-
-                <div className={styles.tabsHeader}>
-                  <span>Details</span>
-                  <span>Docs</span>
-                  <span>Links</span>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Contract</p>
-                  <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Chain</p>
-                  <p className={styles.detailValue}>Ethereum</p>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Royalties</p>
-                  <p className={styles.detailValue}>12.32%</p>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Users</p>
-                  <p className={styles.detailValue}>{selectedSkill.users}</p>
-                </div>
-
-                <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Rating</p>
-                  <p className={styles.detailValue}>{selectedSkill.rating}</p>
-                </div>
-              </div>
-
-              <p className={styles.descriptionText}>
-                Community-verified skill. <strong>Learn more</strong> about how the DAO ensures quality.
-              </p>
-            </>
-          )}
-        </div>
+        {showCopyNotification && (
+          <div className={`${styles.copyNotification} ${isFadingOut ? styles.fadeOut : ''}`}>
+            ✓ Copied to clipboard
+          </div>
+        )}
       </main>
     </>
   );
