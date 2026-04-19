@@ -55,7 +55,7 @@ const navSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
-      { id: 'rewards', label: 'Tasks', href: '/rewards', icon: Gift },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
     ],
   },
@@ -63,8 +63,8 @@ const navSections: NavSection[] = [
     id: 'extras',
     label: 'EXTRAS',
     items: [
+      { id: 'library', label: 'Library', href: '/library', icon: Microscope },
       { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
