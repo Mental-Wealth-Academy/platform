@@ -54,17 +54,16 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
-      { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: Pulse },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'library', label: 'Library', href: '/library', icon: Book },
+      { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
     ],
   },
   {
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: Pulse },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
