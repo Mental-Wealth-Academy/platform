@@ -116,6 +116,7 @@
   grid-template-columns: repeat(12, 1fr);
   gap: 16px;
   grid-auto-flow: dense;
+  grid-auto-rows: 240px;
 }
 
 @media (max-width: 768px) {
@@ -610,6 +611,7 @@
   .bentoGrid {
     grid-template-columns: repeat(6, 1fr);
     gap: 10px;
+    grid-auto-rows: 180px;
   }
 
   .cardHero {
@@ -710,6 +712,7 @@
   .bentoGrid {
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
+    grid-auto-rows: 140px;
   }
 
   .cardHero,
