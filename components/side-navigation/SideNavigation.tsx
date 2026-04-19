@@ -11,10 +11,11 @@ import {
   House,
   IconProps,
   ImagesSquare,
-  TrendingUp,
+  BarChart,
   UserCircle,
   UsersThree,
-  Books,
+  Book,
+  Microscope,
 } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import BlueChat from '../blue-chat/BlueChat';
@@ -55,15 +56,15 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
       { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
-      { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
+      { id: 'library', label: 'Library', href: '/library', icon: Book },
     ],
   },
   {
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'library', label: 'Library', href: '/library', icon: Books },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: TrendingUp },
+      { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: BarChart },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
