@@ -1,10 +1,21 @@
 'use client';
 
 import { useState } from 'react';
+import SideNavigation from '@/components/side-navigation/SideNavigation';
+import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
-const SAMPLE_SKILLS = [
-  { name: 'SKILLS', model: 'CLAUDE', api: 'API', users: '0.00', rating: '0.0%', calls: '0.0%' },
+interface Skill {
+  name: string;
+  model: string;
+  api: string;
+  users: string;
+  rating: string;
+  calls: string;
+}
+
+const SAMPLE_SKILLS: Skill[] = [
+  { name: 'SKILLS', model: 'MODEL', api: 'API', users: 'USERS', rating: 'RATING', calls: 'CALLS' },
   { name: 'BLOCKCHAIN', model: '10/01/2025', api: 'SOL', users: '2,345', rating: '4.8%', calls: '12.3%' },
   { name: 'WEB3', model: '09/15/2025', api: 'ETH', users: '1,892', rating: '4.6%', calls: '9.8%' },
   { name: 'DEFI', model: '08/30/2025', api: 'USDC', users: '945', rating: '4.9%', calls: '15.2%' },
@@ -16,7 +27,7 @@ const SAMPLE_SKILLS = [
 ];
 
 const CATEGORY_BADGES = [
-  { label: 'My Favorite (0)', highlighted: true },
+  'My Favorite (0)',
   'Customer Service',
   'Finance & Accounts',
   'HR & Recruitment',
@@ -31,150 +42,186 @@ const CATEGORY_BADGES = [
 export default function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState('My Favorite (0)');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { play } = useSound();
 
-  const filteredSkills = SAMPLE_SKILLS.filter(skill =>
-    skill.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSkills = SAMPLE_SKILLS.filter(
+    (skill) => skill.name.toLowerCase().includes(searchTerm.toLowerCase()) && skill !== SAMPLE_SKILLS[0]
   );
 
+  const handleSkillClick = (skill: Skill) => {
+    setSelectedSkill(skill);
+    setSidebarOpen(true);
+    play('click');
+  };
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false);
+    play('click');
+  };
+
   return (
-    <div className={styles.container}>
-      {/* Top Banner */}
-      <div className={styles.topBanner}>
-        <p className={styles.bannerText}>
-          The Onchain Digital Library Built To Reward Quality Information.
-        </p>
-      </div>
-
-      {/* Main Content Wrapper */}
-      <div className={styles.contentWrapper}>
-        {/* Left Content Area */}
-        <div className={styles.mainArea}>
-          {/* Header Section */}
-          <div className={styles.headerSection}>
-            <div className={styles.titleGroup}>
-              <h1 className={styles.title}>Skill Library</h1>
-              <button className={styles.scanButton}>Scan Prompts</button>
-            </div>
-            <div className={styles.scanDetails}>
-              <p className={styles.scanLabel}>MIRROR-S1 SCAN DETAILS</p>
-              <p className={styles.scanInfo}>
-                <span>Azure V.12</span> - 3.5MB - July 20, 2025
-              </p>
-            </div>
+    <>
+      <SideNavigation />
+      <main className={styles.pageLayout}>
+        <div className={styles.container}>
+          {/* Top Banner */}
+          <div className={styles.topBanner}>
+            <p className={styles.bannerText}>
+              The Onchain Digital Library Built To Reward Quality Information.
+            </p>
           </div>
 
-          {/* Search & Filter Section */}
-          <div className={styles.filterSection}>
-            <div className={styles.searchBox}>
-              <svg
-                className={styles.searchIcon}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search for books & classes"
-                className={styles.searchInput}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          {/* Main Content Area */}
+          <div className={styles.contentWrapper}>
+            {/* Left Content Area */}
+            <div className={styles.mainArea}>
+              {/* Header Section */}
+              <div className={styles.headerSection}>
+                <div className={styles.titleGroup}>
+                  <h1 className={styles.title}>Skill Library</h1>
+                  <button className={styles.scanButton}>Scan Prompts</button>
+                </div>
+                <div className={styles.scanDetails}>
+                  <p className={styles.scanLabel}>MIRROR-S1 SCAN DETAILS</p>
+                  <p className={styles.scanInfo}>
+                    <span>Azure V.12</span> - 3.5MB - July 20, 2025
+                  </p>
+                </div>
+              </div>
 
-            {/* Category Badges */}
-            <div className={styles.badgesContainer}>
-              {CATEGORY_BADGES.map((badge) => (
-                <button
-                  key={typeof badge === 'string' ? badge : badge.label}
-                  onClick={() =>
-                    setSelectedCategory(typeof badge === 'string' ? badge : badge.label)
-                  }
-                  className={`${styles.badge} ${
-                    (typeof badge === 'string' ? badge : badge.label) === selectedCategory
-                      ? styles.badgeActive
-                      : styles.badgeInactive
-                  }`}
-                >
-                  {typeof badge === 'string' ? badge : badge.label}
-                </button>
-              ))}
-            </div>
-          </div>
+              {/* Search & Filter Section */}
+              <div className={styles.filterSection}>
+                <div className={styles.searchBox}>
+                  <svg
+                    className={styles.searchIcon}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search for books & classes"
+                    className={styles.searchInput}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
 
-          {/* Excel Sheet Styled Skills Table */}
-          <div className={styles.tableContainer}>
-            <div className={styles.tableScroll}>
-              <table className={styles.skillsTable}>
-                <thead>
-                  <tr>
-                    <th>SKILLS</th>
-                    <th>MODEL</th>
-                    <th>API</th>
-                    <th>USERS</th>
-                    <th>RATING</th>
-                    <th>CALLS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSkills.map((skill, idx) => (
-                    <tr key={idx} className={idx === 0 ? styles.headerRow : ''}>
-                      <td>{skill.name}</td>
-                      <td>{skill.model}</td>
-                      <td>{skill.api}</td>
-                      <td>{skill.users}</td>
-                      <td>{skill.rating}</td>
-                      <td>{skill.calls}</td>
-                    </tr>
+                {/* Category Badges */}
+                <div className={styles.badgesContainer}>
+                  {CATEGORY_BADGES.map((badge) => (
+                    <button
+                      key={badge}
+                      onClick={() => {
+                        setSelectedCategory(badge);
+                        play('hover');
+                      }}
+                      className={`${styles.badge} ${
+                        badge === selectedCategory ? styles.badgeActive : styles.badgeInactive
+                      }`}
+                    >
+                      {badge}
+                    </button>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
+
+              {/* Excel Sheet Styled Skills Table */}
+              <div className={styles.tableContainer}>
+                <div className={styles.tableScroll}>
+                  <table className={styles.skillsTable}>
+                    <thead>
+                      <tr>
+                        <th>SKILLS</th>
+                        <th>MODEL</th>
+                        <th>API</th>
+                        <th>USERS</th>
+                        <th>RATING</th>
+                        <th>CALLS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSkills.map((skill, idx) => (
+                        <tr
+                          key={idx}
+                          onClick={() => handleSkillClick(skill)}
+                          className={styles.tableRow}
+                        >
+                          <td>{skill.name}</td>
+                          <td>{skill.model}</td>
+                          <td>{skill.api}</td>
+                          <td>{skill.users}</td>
+                          <td>{skill.rating}</td>
+                          <td>{skill.calls}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Sidebar */}
-        <div className={styles.sidebar}>
-          <div className={styles.detailsSection}>
-            <div className={styles.tabsHeader}>
-              <span>Details</span>
-              <span>Collectors</span>
-              <span>Links</span>
-            </div>
+        {/* Details Sidebar - Slide In Modal */}
+        <div className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOpen : ''}`} onClick={handleCloseSidebar} />
+        <div className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
+          {selectedSkill && (
+            <>
+              <button className={styles.closeButton} onClick={handleCloseSidebar}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
 
-            <div className={styles.detailItem}>
-              <p className={styles.detailLabel}>Contract Address</p>
-              <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
-            </div>
+              <div className={styles.detailsSection}>
+                <h2 className={styles.skillTitle}>{selectedSkill.name}</h2>
 
-            <div className={styles.detailItem}>
-              <p className={styles.detailLabel}>Blockchain</p>
-              <p className={styles.detailValue}>Ethereum</p>
-            </div>
+                <div className={styles.tabsHeader}>
+                  <span>Details</span>
+                  <span>Collectors</span>
+                  <span>Links</span>
+                </div>
 
-            <div className={styles.detailItem}>
-              <p className={styles.detailLabel}>Creator Royalties</p>
-              <p className={styles.detailValue}>12.32%</p>
-            </div>
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>Contract Address</p>
+                  <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
+                </div>
 
-            <div className={styles.detailItem}>
-              <p className={styles.detailLabel}>Mint vector ID</p>
-              <p className={styles.detailValue}>
-                0x0erj0w34jr03489jrth0w384erfow90erw9e8rh0w
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>Blockchain</p>
+                  <p className={styles.detailValue}>Ethereum</p>
+                </div>
+
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>Creator Royalties</p>
+                  <p className={styles.detailValue}>12.32%</p>
+                </div>
+
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>Mint vector ID</p>
+                  <p className={styles.detailValue}>
+                    0x0erj0w34jr03489jrth0w384erfow90erw9e8rh0w
+                  </p>
+                </div>
+              </div>
+
+              <p className={styles.descriptionText}>
+                We use a community-driven consensus model to verify eligibility of creative work.{' '}
+                <strong>Read more</strong> about how our DAO ensures ethical responsibility and
+                representation of all digital work on the Mental Wealth Academy platform.
               </p>
-            </div>
-          </div>
-
-          <p className={styles.descriptionText}>
-            We use a community-driven consensus model to verify eligibility of creative work.{' '}
-            <strong>Read more</strong> about how our DAO ensures ethical responsibility and
-            representation of all digital work on the Mental Wealth Academy platform.
-          </p>
+            </>
+          )}
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 }
