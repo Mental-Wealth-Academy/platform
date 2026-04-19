@@ -11,7 +11,7 @@ import {
   House,
   IconProps,
   ImagesSquare,
-  BarChart,
+  Pulse,
   UserCircle,
   UsersThree,
   Book,
@@ -64,7 +64,7 @@ const navSections: NavSection[] = [
     label: 'EXTRAS',
     items: [
       { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: BarChart },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: Pulse },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
