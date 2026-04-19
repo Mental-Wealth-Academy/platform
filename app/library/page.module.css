@@ -12,30 +12,30 @@
   background: var(--color-background);
 }
 
-/* Top Banner */
+/* Top Banner - Minimal */
 .topBanner {
   width: 100%;
   background: linear-gradient(90deg, #5168ff 0%, #6b7dff 50%, #5168ff 100%);
-  padding: 12px 24px;
+  padding: 8px 24px;
   box-sizing: border-box;
-  border-bottom: 2px solid #5168ff;
+  border-bottom: 1px solid #5168ff;
 }
 
 .bannerText {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #f3f3f3;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-align: center;
 }
 
 /* Content Wrapper */
 .contentWrapper {
   display: flex;
-  gap: 20px;
-  padding: 28px;
+  gap: 16px;
+  padding: 20px 24px;
   flex: 1;
   min-height: 0;
 }
@@ -45,11 +45,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   min-width: 0;
   background: var(--color-card-light);
-  border-radius: 20px;
-  padding: 24px;
+  border-radius: 12px;
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -60,9 +60,9 @@
 /* Header Section */
 .headerSection {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--color-border);
 }
@@ -70,13 +70,13 @@
 .titleGroup {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--color-text-dark);
 }
@@ -86,17 +86,18 @@
 }
 
 .scanButton {
-  padding: 10px 16px;
+  padding: 8px 14px;
   border: 1px solid rgba(81, 104, 255, 0.8);
-  border-radius: 8px;
+  border-radius: 6px;
   background: transparent;
   font-family: var(--font-code);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: rgba(81, 104, 255, 0.8);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 [data-theme='dark'] .scanButton {
@@ -109,25 +110,21 @@
 }
 
 .scanDetails {
-  display: flex;
+  display: none;
   flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
+  gap: 2px;
+  padding: 8px 10px;
   background: linear-gradient(180deg, #ececff 0%, #e1e1fe 100%);
   border: 1px solid #1f2937;
-  border-radius: 5px;
+  border-radius: 4px;
   min-width: max-content;
-}
-
-[data-theme='dark'] .scanDetails {
-  background: linear-gradient(180deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%);
-  border-color: rgba(99, 102, 241, 0.3);
+  font-size: 10px;
 }
 
 .scanLabel {
   margin: 0;
   font-family: var(--font-code);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
   color: #2e1e71;
   letter-spacing: -0.1px;
@@ -140,11 +137,11 @@
 
 .scanInfo {
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: 13px;
+  font-family: var(--font-code);
+  font-size: 10px;
   font-weight: 500;
   color: var(--color-text-dark);
-  letter-spacing: -0.13px;
+  letter-spacing: -0.1px;
 }
 
 [data-theme='dark'] .scanInfo {
@@ -163,17 +160,17 @@
 .filterSection {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: var(--color-card-light);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 8px 10px;
   box-sizing: border-box;
 }
 
@@ -183,8 +180,8 @@
 }
 
 .searchIcon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: #939393;
   flex-shrink: 0;
 }
@@ -199,7 +196,7 @@
   outline: none;
   background: transparent;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-dark);
 }
 
@@ -218,15 +215,15 @@
 .badgesContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .badge {
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: none;
-  border-radius: 24px;
+  border-radius: 20px;
   font-family: var(--font-primary);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -281,7 +278,7 @@
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-code);
-  font-size: 12px;
+  font-size: 11px;
   background: var(--color-card-light);
 }
 
@@ -293,7 +290,7 @@
   position: sticky;
   top: 0;
   background: var(--color-background);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   z-index: 10;
 }
 
@@ -302,14 +299,14 @@
 }
 
 .skillsTable th {
-  padding: 12px 16px;
+  padding: 10px 12px;
   text-align: left;
   font-weight: 600;
   color: #5f5f5f;
   border-right: 1px solid var(--color-border);
   white-space: nowrap;
-  font-size: 11px;
-  letter-spacing: 0.5px;
+  font-size: 10px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
 }
 
@@ -323,7 +320,7 @@
 }
 
 .skillsTable td {
-  padding: 10px 16px;
+  padding: 9px 12px;
   border-bottom: 1px solid var(--color-border);
   border-right: 1px solid var(--color-border);
   color: #5168ff;
@@ -369,13 +366,13 @@
   right: 0;
   top: 0;
   bottom: 0;
-  width: 380px;
+  width: 360px;
   background: #1f2937;
-  padding: 24px;
+  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -398,6 +395,9 @@
   cursor: pointer;
   padding: 4px;
   transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 [data-theme='dark'] .closeButton {
@@ -410,27 +410,29 @@
 
 .skillTitle {
   margin: 0;
+  padding-right: 24px;
   font-family: var(--font-primary);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: white;
+  word-break: break-word;
 }
 
 .detailsSection {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .tabsHeader {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   font-family: var(--font-secondary);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   color: #b7b7b7;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid #101823;
   text-transform: capitalize;
 }
@@ -438,25 +440,25 @@
 .detailItem {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-bottom: 10px;
+  gap: 4px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #101823;
 }
 
 .detailLabel {
   margin: 0;
   font-family: var(--font-secondary);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   color: #b7b7b7;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .detailValue {
   margin: 0;
   font-family: var(--font-code);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   color: white;
   word-break: break-all;
@@ -466,7 +468,7 @@
 .descriptionText {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   line-height: 1.5;
   color: #9ca3af;
@@ -474,7 +476,7 @@
 
 .descriptionText strong {
   font-weight: 600;
-  color: white;
+  color: #e4e4e7;
 }
 
 /* Responsive Design */
@@ -490,8 +492,8 @@
   }
 
   .contentWrapper {
-    padding: 16px;
-    gap: 16px;
+    padding: 12px 16px;
+    gap: 12px;
   }
 
   .mainArea {
@@ -504,25 +506,26 @@
 
   .headerSection {
     flex-direction: column;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .badgesContainer {
-    gap: 6px;
+    gap: 5px;
   }
 
   .badge {
-    padding: 4px 10px;
-    font-size: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
   }
 
   .skillsTable {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .skillsTable th,
   .skillsTable td {
-    padding: 8px 10px;
+    padding: 7px 8px;
   }
 
   .sidebar {

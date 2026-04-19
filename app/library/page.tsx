@@ -15,39 +15,36 @@ interface Skill {
 }
 
 const SAMPLE_SKILLS: Skill[] = [
-  { name: 'SKILLS', model: 'MODEL', api: 'API', users: 'USERS', rating: 'RATING', calls: 'CALLS' },
-  { name: 'BLOCKCHAIN', model: '10/01/2025', api: 'SOL', users: '2,345', rating: '4.8%', calls: '12.3%' },
-  { name: 'WEB3', model: '09/15/2025', api: 'ETH', users: '1,892', rating: '4.6%', calls: '9.8%' },
-  { name: 'DEFI', model: '08/30/2025', api: 'USDC', users: '945', rating: '4.9%', calls: '15.2%' },
-  { name: 'SMART CONTRACTS', model: '08/22/2025', api: 'CONTRACT', users: '567', rating: '4.7%', calls: '8.5%' },
-  { name: 'WALLET SECURITY', model: '08/10/2025', api: 'SECURE', users: '3,421', rating: '4.5%', calls: '11.7%' },
-  { name: 'TRADING', model: '07/28/2025', api: 'TRADE', users: '2,156', rating: '4.8%', calls: '14.9%' },
-  { name: 'GOVERNANCE', model: '07/15/2025', api: 'DAO', users: '834', rating: '4.6%', calls: '10.2%' },
-  { name: 'NFT', model: '06/30/2025', api: 'NFT', users: '1,654', rating: '4.4%', calls: '7.3%' },
+  { name: 'Self-Improving Skill Loop', model: '10/01/2025', api: 'AUTO', users: '2,345', rating: '4.8%', calls: '12.3%' },
+  { name: 'Workflow Orchestration', model: '09/15/2025', api: 'MULTI', users: '1,892', rating: '4.6%', calls: '9.8%' },
+  { name: 'Web Search & Data Extraction', model: '08/30/2025', api: 'WEB', users: '945', rating: '4.9%', calls: '15.2%' },
+  { name: 'Code Generation & Execution', model: '08/22/2025', api: 'CODE', users: '567', rating: '4.7%', calls: '8.5%' },
+  { name: 'Manim Animation Generation', model: '08/10/2025', api: 'VIZ', users: '3,421', rating: '4.5%', calls: '11.7%' },
+  { name: 'Terminal/System Control', model: '07/28/2025', api: 'SYS', users: '2,156', rating: '4.8%', calls: '14.9%' },
+  { name: 'BrowserAct Skills', model: '07/15/2025', api: 'BROWSER', users: '834', rating: '4.6%', calls: '10.2%' },
+  { name: 'Architecture Diagram Generator', model: '06/30/2025', api: 'ARCH', users: '1,654', rating: '4.4%', calls: '7.3%' },
+  { name: 'Context Management', model: '06/15/2025', api: 'CTX', users: '1,200', rating: '4.7%', calls: '13.5%' },
 ];
 
 const CATEGORY_BADGES = [
-  'My Favorite (0)',
-  'Customer Service',
-  'Finance & Accounts',
-  'HR & Recruitment',
-  'Human Resources',
-  'Marketing',
-  'Operations & Support',
-  'Project Management',
-  'Sales',
-  'Strategy & Leadership',
+  'Top Skills',
+  'Native/Core',
+  'Marketplace',
+  'Behavioral',
+  'Trusted',
+  'Popular',
+  'Recent',
 ];
 
 export default function LibraryPage() {
-  const [selectedCategory, setSelectedCategory] = useState('My Favorite (0)');
+  const [selectedCategory, setSelectedCategory] = useState('Top Skills');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { play } = useSound();
 
-  const filteredSkills = SAMPLE_SKILLS.filter(
-    (skill) => skill.name.toLowerCase().includes(searchTerm.toLowerCase()) && skill !== SAMPLE_SKILLS[0]
+  const filteredSkills = SAMPLE_SKILLS.filter((skill) =>
+    skill.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSkillClick = (skill: Skill) => {
@@ -69,7 +66,7 @@ export default function LibraryPage() {
           {/* Top Banner */}
           <div className={styles.topBanner}>
             <p className={styles.bannerText}>
-              The Onchain Digital Library Built To Reward Quality Information.
+              The Onchain Digital Library — Decentralized Skills &amp; Marketplace
             </p>
           </div>
 
@@ -79,16 +76,8 @@ export default function LibraryPage() {
             <div className={styles.mainArea}>
               {/* Header Section */}
               <div className={styles.headerSection}>
-                <div className={styles.titleGroup}>
-                  <h1 className={styles.title}>Skill Library</h1>
-                  <button className={styles.scanButton}>Scan Prompts</button>
-                </div>
-                <div className={styles.scanDetails}>
-                  <p className={styles.scanLabel}>MIRROR-S1 SCAN DETAILS</p>
-                  <p className={styles.scanInfo}>
-                    <span>Azure V.12</span> - 3.5MB - July 20, 2025
-                  </p>
-                </div>
+                <h1 className={styles.title}>Skills</h1>
+                <button className={styles.scanButton}>New Scan</button>
               </div>
 
               {/* Search & Filter Section */}
@@ -106,7 +95,7 @@ export default function LibraryPage() {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Search for books & classes"
+                    placeholder="Search skills..."
                     className={styles.searchInput}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -138,12 +127,12 @@ export default function LibraryPage() {
                   <table className={styles.skillsTable}>
                     <thead>
                       <tr>
-                        <th>SKILLS</th>
-                        <th>MODEL</th>
-                        <th>API</th>
+                        <th>SKILL</th>
+                        <th>ADDED</th>
+                        <th>TYPE</th>
                         <th>USERS</th>
                         <th>RATING</th>
-                        <th>CALLS</th>
+                        <th>USAGE</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -175,7 +164,7 @@ export default function LibraryPage() {
           {selectedSkill && (
             <>
               <button className={styles.closeButton} onClick={handleCloseSidebar}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -186,27 +175,27 @@ export default function LibraryPage() {
 
                 <div className={styles.tabsHeader}>
                   <span>Details</span>
-                  <span>Collectors</span>
+                  <span>Docs</span>
                   <span>Links</span>
                 </div>
 
                 <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Contract Address</p>
+                  <p className={styles.detailLabel}>Contract</p>
                   <p className={styles.detailValue}>0x99879dswe2d3rdewer8hg98...345345</p>
                 </div>
 
                 <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Blockchain</p>
+                  <p className={styles.detailLabel}>Chain</p>
                   <p className={styles.detailValue}>Ethereum</p>
                 </div>
 
                 <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Creator Royalties</p>
+                  <p className={styles.detailLabel}>Royalties</p>
                   <p className={styles.detailValue}>12.32%</p>
                 </div>
 
                 <div className={styles.detailItem}>
-                  <p className={styles.detailLabel}>Mint vector ID</p>
+                  <p className={styles.detailLabel}>Mint ID</p>
                   <p className={styles.detailValue}>
                     0x0erj0w34jr03489jrth0w384erfow90erw9e8rh0w
                   </p>
@@ -214,9 +203,7 @@ export default function LibraryPage() {
               </div>
 
               <p className={styles.descriptionText}>
-                We use a community-driven consensus model to verify eligibility of creative work.{' '}
-                <strong>Read more</strong> about how our DAO ensures ethical responsibility and
-                representation of all digital work on the Mental Wealth Academy platform.
+                Community-verified skill. <strong>Learn more</strong> about how the DAO ensures quality.
               </p>
             </>
           )}
