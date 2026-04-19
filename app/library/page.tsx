@@ -37,6 +37,13 @@ const ART_STYLES: ArtStyle[] = [
     mood: 'Cold, Intrusive, Calculated',
     accent: 'Data overlays & scan lines',
   },
+  {
+    id: 'bright-anime',
+    name: 'Bright Anime Style',
+    description: 'Purely bright digital illustration, anime-influenced. Top-down close-up angle, character\'s head and face filling 70% of frame. Animated brown-skinned elf woman with long blue hair, blue eyebrows, purple eyes looking up directly at camera, one hand scratching her head, confused expression. White mechanical headset with red crescent moon on right side of head. Gold hoop earrings, gold chain star necklace, white dress shirt over atomic symbol graphic tee. Below her: desk covered in scattered research papers with black redacted government text. Background: space station laboratory, dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Cinematic lighting, cool tones, detailed digital comic art.',
+    mood: 'Bright, Curious, Tech',
+    accent: 'Blue, purple & gold accents',
+  },
 ];
 
 const SKILLS: Skill[] = [
