@@ -124,11 +124,16 @@
   min-height: 400px;
   overflow: hidden;
   background: rgba(244, 245, 254, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .azuraBgImg {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
+  width: 100%;
+  height: 100%;
 }
 
 .azuraOverlay {
@@ -724,7 +729,12 @@
   }
 
   .azuraBg {
-    min-height: 240px;
+    min-height: 300px;
+  }
+
+  .azuraBgImg {
+    width: 90%;
+    height: auto;
   }
 
   .azuraContent {
