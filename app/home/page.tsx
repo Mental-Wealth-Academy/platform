@@ -36,10 +36,6 @@ const CreditScore = dynamic(() => import('@/components/credit-score/CreditScore'
   ssr: false,
   loading: () => null,
 });
-const Starboard = dynamic(() => import('@/components/starboard/Starboard'), {
-  ssr: false,
-  loading: () => null,
-});
 
 interface WeekStatus {
   weekNumber: number;
@@ -390,7 +386,6 @@ export default function HomePage() {
         </div>
 
         <CreditScore />
-        <Starboard weekNumber={resolvedViewWeek} />
 
         {/* ===== WEEK HEADER ===== */}
         <div className={styles.weekHeader}>
