@@ -112,7 +112,7 @@
   overflow: hidden;
   margin-bottom: 32px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   min-height: 400px;
   background: #FFFFFF;
   border: 1px solid rgba(26, 27, 36, 0.08);

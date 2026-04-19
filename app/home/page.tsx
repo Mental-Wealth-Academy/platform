@@ -32,10 +32,6 @@ const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/A
 const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
   ssr: false,
 });
-const RecentlyFunded = dynamic(() => import('@/components/recently-funded/RecentlyFunded'), {
-  ssr: false,
-  loading: () => null,
-});
 const CreditScore = dynamic(() => import('@/components/credit-score/CreditScore'), {
   ssr: false,
   loading: () => null,
@@ -393,7 +389,6 @@ export default function HomePage() {
           <DailyNotes enablePersistence={canPersistMorningPages} compact />
         </div>
 
-        <RecentlyFunded />
         <CreditScore />
         <Starboard weekNumber={resolvedViewWeek} />
 
