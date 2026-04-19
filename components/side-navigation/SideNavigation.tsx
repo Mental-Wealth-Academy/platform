@@ -8,14 +8,13 @@ import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import {
   Dna,
-  Gift,
   House,
   IconProps,
   ImagesSquare,
-  Lightning,
-  Microscope,
+  TrendingUp,
   UserCircle,
   UsersThree,
+  Books,
 } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import BlueChat from '../blue-chat/BlueChat';
@@ -63,8 +62,8 @@ const navSections: NavSection[] = [
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'library', label: 'Library', href: '/library', icon: Microscope },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
+      { id: 'library', label: 'Library', href: '/library', icon: Books },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: TrendingUp },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

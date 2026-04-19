@@ -7,7 +7,7 @@ import {
   ChatCircleDots,
   House,
   IconProps,
-  Microscope,
+  Books,
   UserCircle,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
@@ -16,7 +16,7 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
 
 const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
-  { id: 'library', label: 'Library', href: '/library', icon: Microscope },
+  { id: 'library', label: 'Library', href: '/library', icon: Books },
   { id: 'home', label: 'Home', href: '/home', icon: House },
 ] as const;
 
