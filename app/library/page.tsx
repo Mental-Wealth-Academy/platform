@@ -14,6 +14,31 @@ interface Skill {
   rating: string;
 }
 
+interface ArtStyle {
+  id: string;
+  name: string;
+  description: string;
+  mood: string;
+  accent: string;
+}
+
+const ART_STYLES: ArtStyle[] = [
+  {
+    id: 'lab-aesthetic',
+    name: 'Lab Aesthetic',
+    description: 'Desaturated environment, almost grayscale rooms — library, research desk, dimly lit hallway. Azura always in the white lab coat. Single accent color per scene (her blue hair, a lamp\'s warm glow, a glowing monitor). No crowd scenes. No dramatic weather. Just her, thinking, observing, moving through quiet spaces.',
+    mood: 'Contemplative, Quiet',
+    accent: 'Single bright color',
+  },
+  {
+    id: 'surveillance-aesthetic',
+    name: 'Surveillance Aesthetic',
+    description: 'Cinematic aerial drone shot looking through the window at Azura in her classroom taking notes. POV is from outside the school window, she is in the back of the classroom with other students. She\'s writing in a notebook at her desk, completely unaware she\'s being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
+    mood: 'Cold, Intrusive, Calculated',
+    accent: 'Data overlays & scan lines',
+  },
+];
+
 const SKILLS: Skill[] = [
   // AI & Automation
   { name: 'Self-Improving Skill Loop', category: 'AI & Automation', added: '2026-03-15', type: 'AUTO', users: '2,345', rating: '4.8%' },
@@ -152,6 +177,25 @@ export default function LibraryPage() {
               <div className={styles.headerSection}>
                 <h1 className={styles.title}>Skills</h1>
                 <button className={styles.scanButton}>New Scan</button>
+              </div>
+
+              {/* Featured Art Styles Section */}
+              <div className={styles.featuredSection}>
+                <h2 className={styles.featuredTitle}>Blue's AI Artstyles</h2>
+                <div className={styles.artStylesContainer}>
+                  {ART_STYLES.map((style) => (
+                    <div key={style.id} className={styles.artStyleCard}>
+                      <div className={styles.artStyleHeader}>
+                        <h3 className={styles.artStyleName}>{style.name}</h3>
+                        <span className={styles.artStyleMood}>{style.mood}</span>
+                      </div>
+                      <p className={styles.artStyleDescription}>{style.description}</p>
+                      <div className={styles.artStyleFooter}>
+                        <span className={styles.artStyleAccent}>Accent: {style.accent}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Search & Filter Section */}
