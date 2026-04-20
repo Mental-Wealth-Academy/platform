@@ -452,14 +452,6 @@ export default function HomePage() {
         >
           {seasonLoading || viewWeek === null ? (
             <>
-              <div className={styles.readingCardSkeleton}>
-                <div className={`${styles.readingMedia} ${styles.skeletonBlock}`} />
-                <div className={styles.readingInfo}>
-                  <span className={`${styles.readingCategory} ${styles.skeletonText} ${styles.skeletonBlock}`} />
-                  <span className={`${styles.readingTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-                  <span className={`${styles.readingAuthor} ${styles.skeletonTextShort} ${styles.skeletonBlock}`} />
-                </div>
-              </div>
               <div className={styles.weekTasksSkeleton}>
                 <div className={`${styles.weekTaskBar} ${styles.skeletonBlock}`} />
                 <div className={`${styles.weekTaskPanel} ${styles.skeletonBlock}`} />

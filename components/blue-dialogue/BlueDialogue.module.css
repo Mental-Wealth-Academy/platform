@@ -1,14 +1,18 @@
-/* BlueDialogue - Brutalist Flat Design */
+/* BlueDialogue - Digital Codec Transmission Aesthetic */
 
 .container {
   display: flex;
-  gap: 20px;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
   padding: 20px;
-  background: #ffffff;
-  border-radius: 4px;
-  border: 3px solid #1A1D33;
-  box-shadow: 4px 4px 0 #1A1D33;
+  background: linear-gradient(180deg, rgba(10, 15, 35, 0.98) 0%, rgba(5, 8, 20, 0.98) 100%);
+  border-radius: 2px;
+  border: 2px solid rgba(81, 104, 255, 0.4);
+  box-shadow:
+    0 0 20px rgba(81, 104, 255, 0.2),
+    inset 0 0 20px rgba(81, 104, 255, 0.05),
+    0 0 40px rgba(81, 104, 255, 0.1);
   max-width: 100%;
   width: 100%;
 }
@@ -16,85 +20,64 @@
 .containerOverlay {
   gap: 14px;
   padding: 16px;
-  border-radius: 24px;
-  border: 1px solid rgba(81, 104, 255, 0.14);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 255, 0.92) 100%);
+  border-radius: 16px;
+  border: 1.5px solid rgba(81, 104, 255, 0.5);
+  background: linear-gradient(180deg, rgba(20, 30, 60, 0.92) 0%, rgba(10, 15, 40, 0.92) 100%);
   box-shadow:
-    0 18px 40px rgba(30, 41, 82, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-.avatarContainer {
-  display: flex;
+    0 0 30px rgba(81, 104, 255, 0.25),
+    inset 0 0 20px rgba(81, 104, 255, 0.08);
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
 }
 
 .avatarWrapper {
   width: 72px;
   height: 72px;
-  border-radius: 4px;
+  min-width: 72px;
+  min-height: 72px;
+  flex-shrink: 0;
+  border-radius: 50%;
   overflow: hidden;
-  background: var(--color-primary);
-  border: 3px solid #1A1D33;
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(81, 104, 255, 0.05) 100%);
+  border: 2px solid rgba(81, 104, 255, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 3px 3px 0 #1A1D33;
+  box-shadow:
+    0 0 20px rgba(81, 104, 255, 0.4),
+    inset 0 0 20px rgba(81, 104, 255, 0.1),
+    0 0 40px rgba(81, 104, 255, 0.2);
 }
 
 .avatarWrapperOverlay {
   width: 60px;
   height: 60px;
-  border-width: 1px;
-  border-radius: 18px;
+  min-width: 60px;
+  min-height: 60px;
+  flex-shrink: 0;
+  border-width: 1.5px;
+  border-radius: 50%;
+  border-color: rgba(81, 104, 255, 0.6);
   box-shadow:
-    0 12px 26px rgba(81, 104, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 0 20px rgba(81, 104, 255, 0.3),
+    inset 0 0 15px rgba(81, 104, 255, 0.1);
 }
 
 .avatar {
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
   object-fit: contain;
-  padding: 4px;
-  background: #ffffff;
-  border: 2px solid #1A1D33;
-  border-radius: 2px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(81, 104, 255, 0.3);
+  border-radius: 50%;
   box-sizing: border-box;
-}
-
-.nameTag {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.name {
-  font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 12px;
-  color: #1A1D33;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.role {
-  font-family: var(--font-primary);
-  font-weight: 500;
-  font-size: 10px;
-  color: #666666;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  filter: brightness(1.1) contrast(1.1);
 }
 
 .dialogueBox {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -102,22 +85,26 @@
 }
 
 .dialogueContent {
-  background: rgba(81, 104, 255, 0.06);
-  border-radius: 4px;
+  background: linear-gradient(148deg, #6272ff 0%, #3a7fff 48%, #7155ff 100%);
+  border-radius: 18px;
   padding: 16px 20px;
-  border: 2px solid #1A1D33;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   position: relative;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.14),
+    0 4px 18px rgba(81, 104, 255, 0.38);
 }
 
 .dialogueContentOverlay {
   padding: 14px 16px;
-  border-width: 1px;
-  border-color: rgba(81, 104, 255, 0.16);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(237, 242, 255, 0.92) 0%, rgba(243, 246, 255, 0.84) 100%);
+  border-width: 1.5px;
+  border-color: rgba(81, 104, 255, 0.5);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(40, 50, 80, 0.85) 0%, rgba(25, 35, 65, 0.85) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
-    0 10px 24px rgba(81, 104, 255, 0.08);
+    0 0 20px rgba(81, 104, 255, 0.2),
+    inset 0 0 15px rgba(81, 104, 255, 0.08);
 }
 
 .dialogueContentFixed {
@@ -128,26 +115,27 @@
 .dialogueContent::before {
   content: '';
   position: absolute;
-  left: -10px;
+  left: -9px;
   top: 20px;
   width: 0;
   height: 0;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-  border-right: 10px solid rgba(81, 104, 255, 0.06);
+  border-right: 9px solid rgba(81, 104, 255, 0.3);
+  z-index: 0;
 }
 
 .dialogueContent::after {
   content: '';
   position: absolute;
-  left: -12px;
-  top: 18px;
+  left: -8px;
+  top: 21px;
   width: 0;
   height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 12px solid #1A1D33;
-  z-index: -1;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 8px solid rgba(99, 114, 255, 1);
+  z-index: 1;
 }
 
 .dialogueContentOverlay::before {
@@ -155,7 +143,7 @@
   top: 20px;
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
-  border-right: 9px solid rgba(237, 242, 255, 0.92);
+  border-right: 9px solid rgba(40, 50, 80, 0.85);
 }
 
 .dialogueContentOverlay::after {
@@ -167,15 +155,17 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.7;
-  color: #1A1D33;
+  color: rgba(220, 230, 255, 0.95);
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  text-shadow: 0 0 8px rgba(81, 104, 255, 0.3);
 }
 
 .messageOverlay {
-  color: rgba(26, 29, 51, 0.82);
+  color: rgba(230, 240, 255, 0.94);
   line-height: 1.62;
+  text-shadow: 0 0 6px rgba(81, 104, 255, 0.25);
 }
 
 .messageScrollable {
@@ -250,36 +240,51 @@
 }
 
 :global([data-theme="dark"]) .container {
-  background: #f7f8ff;
+  background: linear-gradient(180deg, rgba(10, 15, 35, 0.98) 0%, rgba(5, 8, 20, 0.98) 100%);
+  border: 2px solid rgba(81, 104, 255, 0.4);
+  box-shadow:
+    0 0 20px rgba(81, 104, 255, 0.2),
+    inset 0 0 20px rgba(81, 104, 255, 0.05),
+    0 0 40px rgba(81, 104, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .name {
-  color: #1A1D33;
-}
-
-:global([data-theme="dark"]) .role {
-  color: rgba(26, 29, 51, 0.72);
+:global([data-theme="dark"]) .avatarWrapper {
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(81, 104, 255, 0.05) 100%);
+  border: 2px solid rgba(81, 104, 255, 0.6);
+  box-shadow:
+    0 0 20px rgba(81, 104, 255, 0.4),
+    inset 0 0 20px rgba(81, 104, 255, 0.1),
+    0 0 40px rgba(81, 104, 255, 0.2);
 }
 
 :global([data-theme="dark"]) .dialogueContent {
-  background: rgba(81, 104, 255, 0.08);
+  background: linear-gradient(180deg, rgba(30, 40, 70, 0.8) 0%, rgba(20, 25, 50, 0.8) 100%);
+  border: 1.5px solid rgba(81, 104, 255, 0.4);
+  box-shadow:
+    0 0 15px rgba(81, 104, 255, 0.15),
+    inset 0 0 15px rgba(81, 104, 255, 0.05);
 }
 
 :global([data-theme="dark"]) .dialogueContent::before {
-  border-right-color: rgba(81, 104, 255, 0.08);
+  border-right-color: rgba(30, 40, 70, 0.8);
 }
 
 :global([data-theme="dark"]) .message {
-  color: #1A1D33;
+  color: rgba(220, 230, 255, 0.95);
+  text-shadow: 0 0 8px rgba(81, 104, 255, 0.3);
 }
 
 :global([data-theme="dark"]) .skipButton {
-  background-color: #ffffff;
-  color: #1A1D33;
+  background-color: rgba(81, 104, 255, 0.2);
+  color: rgba(220, 230, 255, 0.95);
+  border-color: rgba(81, 104, 255, 0.4);
+  box-shadow: 0 0 12px rgba(81, 104, 255, 0.2);
 }
 
 :global([data-theme="dark"]) .skipButton:hover {
-  background-color: #f3f4fb;
+  background-color: rgba(81, 104, 255, 0.3);
+  color: rgba(220, 230, 255, 1);
+  box-shadow: 0 0 16px rgba(81, 104, 255, 0.3);
 }
 
 /* Responsive adjustments */
@@ -338,54 +343,37 @@
   }
 
   .containerOverlay {
-    flex-direction: row;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     gap: 12px;
     padding: 14px;
     border-radius: 20px;
   }
 
-  .containerOverlay .avatarContainer {
-    gap: 8px;
-    width: 60px;
-  }
-
   .containerOverlay .avatarWrapper {
-    width: 50px;
-    height: 50px;
-    border-radius: 16px;
-  }
-
-  .containerOverlay .name {
-    font-size: 10px;
-  }
-
-  .containerOverlay .role {
-    font-size: 8px;
-    letter-spacing: 0.08em;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
   }
 
   .containerOverlay .dialogueContent {
     padding: 12px 14px;
-    border-radius: 16px;
+    border-radius: 12px;
+    width: 100%;
   }
 
   .containerOverlay .dialogueContentFixed {
-    min-height: 104px;
+    min-height: 100px;
     height: auto;
   }
 
   .containerOverlay .messageScrollable {
     height: auto;
-    max-height: 116px;
+    max-height: 100px;
   }
 
   .containerOverlay .dialogueContent::before {
-    top: 18px;
-    left: -8px;
-    border-left: none;
-    border-right: 8px solid rgba(237, 242, 255, 0.92);
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
+    display: none;
   }
 }

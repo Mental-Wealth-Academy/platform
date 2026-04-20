@@ -3,6 +3,12 @@
   width: 100%;
 }
 
+@media (max-width: 1200px) {
+  .container {
+    display: none !important;
+  }
+}
+
 .card {
   background: rgba(22, 23, 31, 0.95);
   border: 1px solid rgba(107, 128, 255, 0.15);
