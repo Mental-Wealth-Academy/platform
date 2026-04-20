@@ -517,31 +517,33 @@
 
 .authPromptHero {
   position: relative;
-  min-height: 280px;
+  min-height: 300px;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-top: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 32px 0 0;
 }
 
 .authPromptGlowOrb {
   position: absolute;
-  top: 8px;
+  top: 40px;
   left: 50%;
-  width: 240px;
-  height: 240px;
+  width: 280px;
+  height: 280px;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(81, 104, 255, 0.32) 0%, rgba(81, 104, 255, 0.08) 48%, rgba(81, 104, 255, 0) 78%);
-  filter: blur(12px);
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.28) 0%, rgba(81, 104, 255, 0.06) 52%, rgba(81, 104, 255, 0) 82%);
+  filter: blur(14px);
   animation: authPromptOrbFloat 5.8s ease-in-out infinite;
+  z-index: 1;
 }
 
 .authPromptBubble {
   position: absolute;
   top: 16px;
-  left: 0;
-  max-width: 260px;
+  left: 8px;
+  max-width: 280px;
   padding: 12px 15px 12px 16px;
   border-radius: 20px 20px 20px 8px;
   background: linear-gradient(148deg, #6272ff 0%, #3a7fff 48%, #7155ff 100%);
@@ -551,6 +553,7 @@
     inset -2px -2px 5px rgba(0, 0, 0, 0.12),
     0 8px 24px rgba(81, 104, 255, 0.28);
   animation: authPromptBubbleBob 4.6s ease-in-out infinite;
+  z-index: 3;
 }
 
 .authPromptBubble::after {
@@ -589,12 +592,12 @@
 .authPromptAvatarStage {
   position: relative;
   width: 100%;
-  max-width: 260px;
+  max-width: 280px;
   height: 240px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin: 0 auto;
+  z-index: 2;
 }
 
 .authPromptAvatarHalo {
@@ -1430,29 +1433,30 @@
   }
 
   .authPromptHero {
-    min-height: 240px;
+    min-height: 260px;
+    padding: 24px 0 0;
   }
 
   .authPromptGlowOrb {
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
+    top: 32px;
   }
 
   .authPromptBubble {
-    left: 0;
-    right: 0;
-    max-width: 240px;
+    max-width: 260px;
+    left: 6px;
+    top: 14px;
     padding: 11px 14px 11px 15px;
-    margin: 0 auto;
   }
 
   .authPromptAvatarStage {
-    max-width: 220px;
-    height: 200px;
+    max-width: 260px;
+    height: 220px;
   }
 
   .authPromptAvatar {
-    max-width: 200px;
+    max-width: 230px;
   }
 
   .authPromptTitle {
