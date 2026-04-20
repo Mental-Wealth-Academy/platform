@@ -116,10 +116,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.accountPanel {
-  align-self: flex-start;
-}
-
 .accountBadge {
   min-height: 56px;
   display: inline-flex;
@@ -198,12 +194,18 @@
   min-width: 0;
 }
 
+.streakTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .streakValueRow {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
-  margin-top: 10px;
+  margin-top: 16px;
 }
 
 .streakNumber {
@@ -484,6 +486,10 @@
     padding: 18px 18px 18px;
   }
 
+  .streakValueRow {
+    margin-top: 14px;
+  }
+
   .streakNumber {
     font-size: 48px;
   }
@@ -529,6 +535,7 @@
     flex-direction: row;
     align-items: baseline;
     gap: 12px;
+    margin-top: 18px;
   }
 
   .streakNumber {

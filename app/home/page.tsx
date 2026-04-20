@@ -88,10 +88,8 @@ export default function HomePage() {
   const [viewWeek, setViewWeek] = useState<number | null>(null);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
-  const [displayName, setDisplayName] = useState<string | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [streakCount, setStreakCount] = useState(0);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
   const [showMintModal, setShowMintModal] = useState(false);
   const { play } = useSound();
@@ -156,8 +154,6 @@ export default function HomePage() {
       const meData = await meRes.json().catch(() => ({ user: null }));
       if (!meData?.user) return;
       setIsAuthenticated(true);
-      const uname = meData.user.username;
-      if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
       const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
       if (res.ok) {
         const data = await res.json();
@@ -191,13 +187,22 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!ready || !authenticated) return;
-    (async () => {
-      const token = await getAccessToken();
-      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-      fetch('/api/daily-notes/streak', { credentials: 'include', headers: authHeaders }).then(r => r.json()).then(d => setStreakCount(d.streak ?? 0)).catch(() => {});
-    })();
-  }, [ready, authenticated, getAccessToken]);
+    if (!showLeaderboard) return;
+
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalDocumentOverflow = document.documentElement.style.overflow;
+    const originalBodyTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalDocumentOverflow;
+      document.body.style.touchAction = originalBodyTouchAction;
+    };
+  }, [showLeaderboard]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
     setWeekStatuses(prev => {
@@ -228,8 +233,6 @@ export default function HomePage() {
         const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
-          const uname = meData.user.username;
-          if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
           if (res.ok) {
             const data = await res.json();
@@ -239,13 +242,6 @@ export default function HomePage() {
       } catch {}
     })();
   }, [getAccessToken]);
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    const timeOfDay = hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening';
-    if (displayName) return `Good ${timeOfDay}, ${displayName}`;
-    return `Good ${timeOfDay}`;
-  };
 
   const avatarColor = (name: string) => {
     const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
@@ -330,36 +326,32 @@ export default function HomePage() {
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
 
-        {/* ===== GREETING + STREAK + LEADERBOARD (compact row) ===== */}
+        {/* ===== TOP LEADERBOARD ===== */}
         <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-          <div className={styles.heroLeft}>
-            <p className={styles.greeting}>{getGreeting()}</p>
-            <div className={styles.streakRow}>
-              <span className={styles.streakNumber}>{streakCount}</span>
-              <span className={styles.streakUnit}>day streak</span>
-            </div>
-          </div>
           <button
             type="button"
             className={styles.topLeaderboard}
             onClick={() => { play('click'); setShowLeaderboard(true); }}
           >
+            <div className={styles.topLeaderboardHeader}>
+              <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} className={styles.topLeaderboardIcon} />
+              <span className={styles.topLeaderboardTitle}>WEEKLY LEADERBOARD</span>
+            </div>
             <div className={styles.topLeaderboardPodium}>
               {leaderboardLoading ? (
-                [1, 2, 3].map(rank => (
-                  <div
-                    key={rank}
-                    className={`${styles.podiumSlot} ${rank === 1 ? styles.podiumFirst : rank === 2 ? styles.podiumSecond : styles.podiumThird}`}
-                  >
-                    <div className={`${styles.podiumAvatarRing} ${styles.skeletonBlock}`}>
+                [1, 2, 3, 4, 5].map(rank => (
+                  <div key={rank} className={styles.podiumSlot}>
+                    <div className={styles.podiumAvatarRing}>
                       <div className={`${styles.podiumAvatar} ${styles.skeletonBlock}`} />
                     </div>
-                    <span className={`${styles.podiumName} ${styles.skeletonText} ${styles.skeletonBlock}`} />
                   </div>
                 ))
               ) : (
-                leaderboard.slice(0, 3).map(u => (
-                  <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
+                leaderboard.slice(0, 5).map(u => (
+                  <div
+                    key={u.rank}
+                    className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : u.rank === 3 ? styles.podiumThird : ''}`}
+                  >
                     <div className={styles.podiumAvatarRing}>
                       {u.avatarUrl ? (
                         <>
@@ -372,7 +364,6 @@ export default function HomePage() {
                         </div>
                       )}
                     </div>
-                    <span className={styles.podiumName}>{u.username}</span>
                   </div>
                 ))
               )}
@@ -385,7 +376,7 @@ export default function HomePage() {
           <DailyNotes enablePersistence={canPersistMorningPages} compact />
         </div>
 
-        <CreditScore />
+        <CreditScore showLoader={false} />
 
         {/* ===== WEEK HEADER ===== */}
         <div className={styles.weekHeader}>
@@ -452,11 +443,19 @@ export default function HomePage() {
         >
           {seasonLoading || viewWeek === null ? (
             <>
+              <div className={styles.readingCardSkeleton}>
+                <div className={`${styles.readingMediaSkeleton} ${styles.skeletonBlock}`} />
+                <div className={styles.readingInfo}>
+                  <span className={`${styles.readingCategorySkeletonLine} ${styles.skeletonBlock}`} />
+                  <span className={`${styles.readingTitleSkeletonLine} ${styles.skeletonBlock}`} />
+                  <span className={`${styles.readingAuthorSkeletonLine} ${styles.skeletonBlock}`} />
+                </div>
+              </div>
               <div className={styles.weekTasksSkeleton}>
-                <div className={`${styles.weekTaskBar} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskPanel} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskPanel} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskButton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.sealButtonSkeleton} ${styles.skeletonBlock}`} />
               </div>
             </>
           ) : (
@@ -508,7 +507,7 @@ export default function HomePage() {
             <div className={styles.modalHeader}>
               <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
               <div>
-                <strong className={styles.modalTitle}>TOP ACADEMICS</strong>
+                <strong className={styles.modalTitle}>Leaderboard</strong>
                 <span className={styles.modalSub}>
                   {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
                 </span>

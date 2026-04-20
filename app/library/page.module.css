@@ -192,6 +192,9 @@
 }
 
 .scanButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 14px;
   border: 1px solid rgba(81, 104, 255, 0.8);
   border-radius: 6px;
@@ -205,6 +208,12 @@
   white-space: nowrap;
   flex-shrink: 0;
   align-self: flex-start;
+}
+
+.scanButton svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
 }
 
 [data-theme='dark'] .scanButton {

@@ -11,7 +11,11 @@ interface CreditScoreData {
   change: number;
 }
 
-export default function CreditScore() {
+interface CreditScoreProps {
+  showLoader?: boolean;
+}
+
+export default function CreditScore({ showLoader = true }: CreditScoreProps) {
   const [scoreData, setScoreData] = useState<CreditScoreData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,9 +38,28 @@ export default function CreditScore() {
   }, []);
 
   if (loading) {
+    if (!showLoader) return null;
+
     return (
       <div className={styles.container}>
-        <div className={styles.skeleton} />
+        <div className={styles.header}>
+          <span className={`${styles.skeletonLine} ${styles.skeletonTitle}`} />
+          <span className={`${styles.skeletonLine} ${styles.skeletonChange}`} />
+        </div>
+        <div className={styles.info}>
+          <div className={styles.infoRow}>
+            <span className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+            <span className={`${styles.skeletonLine} ${styles.skeletonValue}`} />
+          </div>
+          <div className={styles.infoRow}>
+            <span className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+            <span className={`${styles.skeletonLine} ${styles.skeletonValue}`} />
+          </div>
+          <div className={styles.infoRow}>
+            <span className={`${styles.skeletonLine} ${styles.skeletonLabelWide}`} />
+            <span className={`${styles.skeletonLine} ${styles.skeletonValue}`} />
+          </div>
+        </div>
       </div>
     );
   }

@@ -397,7 +397,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [enablePersistence, play, startTimer]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
-  const cardSubLabel = '15 minutes of free writing';
+  const cardSubLabel = 'daily reflection and notes';
 
   const handleGuestCta = useCallback(() => {
     if (!ready || authPending) return;

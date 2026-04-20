@@ -2,11 +2,11 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
+import CreditScore from '@/components/credit-score/CreditScore';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -218,16 +218,6 @@ const SENTIMENT_STREAM_LAYERS = buildStreamLayers(
   SENTIMENT_CHART_HEIGHT,
 ).map((layer) => ({ ...layer, d: streamLayerPath(layer.points) }));
 
-const VOTER_TONES = ['Blue', 'Violet', 'Warm', 'Teal', 'Amber'] as const;
-
-function deriveInitials(value: string | null | undefined): string {
-  if (!value) return '··';
-  const trimmed = value.replace(/^0x/i, '').trim();
-  if (!trimmed) return '··';
-  const letters = trimmed.replace(/[^a-z0-9]/gi, '');
-  return (letters.slice(0, 2) || trimmed.slice(0, 2)).toUpperCase();
-}
-
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
@@ -368,32 +358,6 @@ export default function VotingPage() {
     }
   };
 
-  const recentVoters = (() => {
-    const seen = new Set<string>();
-    const picks: {
-      id: string;
-      avatarUrl: string | null;
-      name: string;
-      initials: string;
-      tone: (typeof VOTER_TONES)[number];
-    }[] = [];
-    for (const p of proposals) {
-      if (!(p.user.username || p.user.avatarUrl || p.walletAddress)) continue;
-      const key = (p.walletAddress || p.user.username || p.id).toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      picks.push({
-        id: p.id,
-        avatarUrl: p.user.avatarUrl,
-        name: p.user.username || p.walletAddress || 'Community member',
-        initials: deriveInitials(p.user.username || p.walletAddress),
-        tone: VOTER_TONES[picks.length % VOTER_TONES.length],
-      });
-      if (picks.length === VOTER_TONES.length) break;
-    }
-    return picks;
-  })();
-
   const fundingSlides = Array.from(
     { length: FUNDING_CAROUSEL_REPEAT_COUNT },
     () => FUNDING_PODS
@@ -477,47 +441,7 @@ export default function VotingPage() {
                   </header>
                   <div className={styles.reserveInsightsGrid}>
                     <section className={styles.reserveInsightCard}>
-                      <div className={styles.reserveInsightHeader}>
-                        <span className={styles.reserveInsightLabel}>Recent Votes</span>
-                        <span className={styles.reserveInsightMeta}>{recentVoters.length || 0} members</span>
-                      </div>
-                      <div className={styles.reserveAvatarRow} aria-label="Recent voter activity">
-                        {recentVoters.length === 0 ? (
-                          <span className={styles.reserveAvatarEmpty}>No votes yet</span>
-                        ) : (
-                          recentVoters.map((voter) => (
-                            <span
-                              key={voter.id}
-                              className={`${styles.reserveAvatar} ${styles[`reserveAvatar${voter.tone}`]}`}
-                              title={voter.name}
-                            >
-                              {voter.avatarUrl ? (
-                                <Image
-                                  src={voter.avatarUrl}
-                                  alt={voter.name}
-                                  width={34}
-                                  height={34}
-                                  className={styles.reserveAvatarImage}
-                                  unoptimized
-                                />
-                              ) : (
-                                <span className={styles.reserveAvatarInitials}>{voter.initials}</span>
-                              )}
-                            </span>
-                          ))
-                        )}
-                      </div>
-                      <div className={styles.recentVotesChart}>
-                        {[65, 78, 52, 89, 72, 85, 68, 76, 91, 63, 84, 77].map((height, i) => (
-                          <div
-                            key={i}
-                            className={styles.recentVotesBar}
-                            style={{ height: `${(height / 100) * 100}%`, minHeight: `${height * 0.4}px` }}
-                            title={`${height}% activity`}
-                          />
-                        ))}
-                      </div>
-                      <p className={styles.reserveInsightText}>A calm majority is forming around care and research tools.</p>
+                      <CreditScore />
                     </section>
 
                     <section className={styles.reserveInsightCard}>

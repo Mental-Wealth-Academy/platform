@@ -9,11 +9,41 @@
   margin: 16px 0;
 }
 
-.skeleton {
-  height: 200px;
+.skeletonLine,
+.skeletonCircle {
+  position: relative;
+  overflow: hidden;
   background: rgba(26, 29, 51, 0.08);
-  border-radius: 8px;
+  display: inline-block;
+}
+
+.skeletonLine::after,
+.skeletonCircle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
   animation: shimmer 1.3s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.skeletonTitle { width: 96px; height: 14px; }
+.skeletonChange { width: 42px; height: 20px; border-radius: 6px; }
+.skeletonLabel { width: 72px; }
+.skeletonLabelWide { width: 104px; }
+.skeletonValue { width: 56px; }
+
+.skeletonCircle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
 }
 
 .header {
