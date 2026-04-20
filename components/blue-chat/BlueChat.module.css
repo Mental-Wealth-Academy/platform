@@ -23,7 +23,7 @@
   height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: #1a1c28;
   border: 1px solid rgba(81, 104, 255, 0.14);
   border-radius: 20px;
   box-shadow:
@@ -935,7 +935,7 @@
     width: auto;
     height: auto;
     max-height: none;
-    background: #ffffff;
+    background: #1a1c28;
     border-radius: 0;
     border: none;
     box-shadow: none;
