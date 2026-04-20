@@ -1,9 +1,9 @@
 .container {
   padding: 16px;
-  background: var(--color-background);
-  border: 2px solid #ffffff;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: #f9f9fa;
+  border: 1px solid rgba(17, 17, 18, 0.14);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
   position: relative;
   min-width: 180px;
 }
@@ -49,35 +49,38 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
-  font-family: var(--font-button);
-  color: var(--color-text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  color: rgba(26, 27, 36, 0.52);
   margin: 0 0 2px 0;
 }
 
 .title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
-  font-family: var(--font-primary);
+  font-family: 'Space Grotesk', sans-serif;
   color: var(--color-text-dark);
   margin: 0;
 }
 
 .balance {
-  font-size: 24px;
+  font-size: 36px;
   font-weight: 700;
-  font-family: var(--font-primary);
-  color: var(--color-text-muted, rgba(26, 27, 36, 0.6));
+  font-family: 'Space Grotesk', sans-serif;
+  color: #1a1d33;
   margin: 0;
   position: relative;
   z-index: 1;
-  line-height: 1.2;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .currency {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(81, 104, 255, 0.7);
-  margin-left: 4px;
+  color: rgba(26, 27, 36, 0.46);
+  margin-left: 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .balanceRow {
@@ -100,25 +103,25 @@
   justify-content: center;
   width: 26px;
   height: 26px;
-  background: transparent;
-  border: 1.5px solid rgba(81, 104, 255, 0.2);
-  border-radius: 6px;
+  background: rgba(17, 17, 18, 0.04);
+  border: 1px solid rgba(17, 17, 18, 0.12);
+  border-radius: 8px;
   cursor: pointer;
-  color: rgba(81, 104, 255, 0.5);
+  color: rgba(26, 27, 36, 0.56);
   padding: 0;
   transition: all 0.15s ease;
 }
 
 .actionButton:hover {
-  background: rgba(81, 104, 255, 0.08);
-  border-color: rgba(81, 104, 255, 0.4);
-  color: var(--color-primary, #5168FF);
+  background: rgba(17, 17, 18, 0.08);
+  border-color: rgba(17, 17, 18, 0.2);
+  color: #1a1d33;
 }
 
 .powerSection {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(17, 17, 18, 0.08);
 }
 
 .powerHeader {
@@ -133,13 +136,13 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
-  font-family: var(--font-button);
-  color: var(--color-text-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  color: rgba(26, 27, 36, 0.52);
 }
 
 .powerValue {
-  font-family: var(--font-secondary, 'Space Grotesk', sans-serif);
-  font-size: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
   font-weight: 800;
   color: var(--color-text-dark);
   line-height: 1;
@@ -149,9 +152,9 @@
 .powerBar {
   position: relative;
   width: 100%;
-  height: 8px;
+  height: 10px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(17, 17, 18, 0.08);
   overflow: visible;
 }
 
@@ -176,8 +179,8 @@
   height: 14px;
   border-radius: 50%;
   background: #16171F;
-  border: 2px solid rgba(255, 255, 255, 0.72);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 0 0 1px rgba(17, 17, 18, 0.08);
 }
 
 .loading {
@@ -209,11 +212,11 @@
   }
 
   .title {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .balance {
-    font-size: 20px;
+    font-size: 28px;
   }
 
   .currency {
@@ -234,6 +237,7 @@
 
 :global([data-theme="dark"]) .container {
   border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .icon svg {
@@ -241,17 +245,17 @@
 }
 
 :global([data-theme="dark"]) .balance {
-  color: rgba(227, 225, 238, 0.55);
+  color: #1a1d33;
 }
 
 :global([data-theme="dark"]) .actionButton {
-  border-color: rgba(81, 104, 255, 0.15);
-  color: rgba(81, 104, 255, 0.4);
+  border-color: rgba(17, 17, 18, 0.12);
+  color: rgba(26, 27, 36, 0.56);
 }
 
 :global([data-theme="dark"]) .actionButton:hover {
-  background: rgba(81, 104, 255, 0.1);
-  color: rgba(81, 104, 255, 0.8);
+  background: rgba(17, 17, 18, 0.08);
+  color: #1a1d33;
 }
 
 :global([data-theme="dark"]) .powerSection {
@@ -259,13 +263,13 @@
 }
 
 :global([data-theme="dark"]) .powerLabel {
-  color: rgba(227, 225, 238, 0.5);
+  color: rgba(26, 27, 36, 0.52);
 }
 
 :global([data-theme="dark"]) .powerValue {
-  color: rgba(227, 225, 238, 0.92);
+  color: #1a1d33;
 }
 
 :global([data-theme="dark"]) .powerBar {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(17, 17, 18, 0.08);
 }

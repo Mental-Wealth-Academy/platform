@@ -4,13 +4,14 @@
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
+  background: #d4d4d6;
 }
 
 .page {
-  max-width: 1180px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 28px 24px 40px;
   color: var(--color-text-dark);
   position: relative;
   overflow: visible;
@@ -28,12 +29,12 @@
 }
 
 .content {
-  max-width: 1180px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 24px;
   position: relative;
   z-index: 1;
@@ -83,10 +84,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px 6px 8px;
+  padding: 8px 12px 8px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(81, 104, 255, 0.16);
-  background: rgba(81, 104, 255, 0.08);
+  border: 1px solid rgba(17, 17, 18, 0.14);
+  background: #f1f1f2;
   flex-shrink: 0;
 }
 
@@ -97,15 +98,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(81, 104, 255, 0.14);
+  background: rgba(216, 231, 65, 0.18);
 }
 
 .proposalRewardValue {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #1c1c1f;
 }
 
 .primaryCta:hover {
@@ -347,13 +348,13 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   padding: 18px;
-  margin-top: 8px;
-  background: linear-gradient(135deg, #faf9fb 0%, #f8f6fc 100%);
-  border: 1px solid rgba(81, 104, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border-radius: 8px;
+  margin-top: 0;
+  background: #f6f6f7;
+  border: 1px solid rgba(17, 17, 18, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
   text-align: left;
   min-width: 0;
   position: relative;
@@ -457,13 +458,13 @@
 .reserveInsightCard {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 24px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #faf9fb 0%, #f8f6fc 100%);
-  border: 1px solid rgba(81, 104, 255, 0.08);
+  gap: 12px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(17, 17, 18, 0.14);
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 [data-theme='dark'] .reserveInsightCard {
@@ -472,7 +473,7 @@
 }
 
 .reserveInsightCard:first-child {
-  padding-top: 32px;
+  padding-top: 18px;
 }
 
 .reserveInsightHeader {
@@ -1303,79 +1304,322 @@
 .communityTopbar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
 }
 
 .communityMainWrapper {
   width: 100%;
-  padding: 0 12px 22px;
-  margin: 0 auto -22px;
+  padding: 0 4px 22px;
+  margin: 0 auto;
   box-sizing: border-box;
+}
+
+.dashboardChrome {
+  width: 100%;
+  background: linear-gradient(180deg, #1d1d1f 0%, #232325 100%);
+  border-radius: 26px;
+  border: 1px solid rgba(17, 17, 18, 0.72);
+  overflow: hidden;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dashboardMasthead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboardBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dashboardBrandMark {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.dashboardBrandMark span {
+  background: linear-gradient(180deg, #fafafa 0%, #a6a6a9 100%);
+  border-radius: 999px;
+}
+
+.dashboardBrandMark span:nth-child(1) {
+  height: 75%;
+  align-self: end;
+}
+
+.dashboardBrandMark span:nth-child(2) {
+  height: 100%;
+}
+
+.dashboardBrandMark span:nth-child(3) {
+  height: 52%;
+  align-self: center;
+}
+
+.dashboardBrandText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dashboardBrandName {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.02em;
+}
+
+.dashboardBrandMeta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.dashboardSearch {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.52);
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  min-width: 0;
+}
+
+.dashboardSearch svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.dashboardSearch span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboardPresence {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  min-width: 0;
+}
+
+.dashboardAvatar {
+  width: 34px;
+  height: 34px;
+  margin-left: -8px;
+  border-radius: 999px;
+  border: 2px solid #1d1d1f;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+  background: #5a5a61;
+}
+
+.dashboardAvatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dashboardAvatarImageWrap {
+  background: #424247;
+}
+
+.dashboardAvatarBlue {
+  background: linear-gradient(135deg, #5f6ee8 0%, #3e4fb4 100%);
+}
+
+.dashboardAvatarWarm {
+  background: linear-gradient(135deg, #d8a878 0%, #ae7249 100%);
+}
+
+.dashboardAvatarSlate {
+  background: linear-gradient(135deg, #868b94 0%, #61656c 100%);
+}
+
+.dashboardTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 22px 12px;
+}
+
+.dashboardTitleBlock {
+  min-width: 0;
+}
+
+.dashboardTitle {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.dashboardTitleAccent {
+  color: #d7d7db;
+}
+
+.dashboardSubtitle {
+  margin: 6px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.dashboardStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-top: 6px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.84);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dashboardStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d8e741;
+  box-shadow: 0 0 0 4px rgba(216, 231, 65, 0.14);
+}
+
+.dashboardFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 22px 16px;
+}
+
+.dashboardFilterPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.84);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.01em;
 }
 
 .communityTabs {
   display: flex;
-  align-items: flex-end;
-  border-bottom: 1px solid rgba(26, 27, 36, 0.1);
+  align-items: center;
+  gap: 2px;
+  padding: 0 18px;
+  background: rgba(10, 10, 11, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .communityTab {
-  flex: 1 1 50%;
-  min-height: 48px;
-  padding: 10px 0 14px;
+  min-height: 46px;
+  padding: 10px 16px 12px;
   border: 0;
-  border-bottom: 2px solid transparent;
   background: transparent;
-  font-family: var(--font-button);
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(26, 27, 36, 0.45);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.46);
   cursor: pointer;
   text-align: center;
+  position: relative;
 }
 
 .communityTabActive {
-  color: rgba(26, 27, 36, 0.86);
-  border-bottom-color: var(--color-primary);
+  color: #d8e741;
+}
+
+.communityTabActive::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #d8e741;
 }
 
 .proposalsEntryButton {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid rgba(26, 27, 36, 0.12);
-  border-radius: var(--radius-md);
-  background: var(--card-background);
-  box-shadow: var(--shadow-md);
+  padding: 18px 18px;
+  border: 1px solid rgba(17, 17, 18, 0.14);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  text-align: left;
 }
 
 .proposalsEntryButton:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  border-color: rgba(17, 17, 18, 0.24);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
 }
 
 .overviewProposalsCta {}
 
 .proposalsEntryIcon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  background: rgba(81, 104, 255, 0.1);
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  color: var(--color-primary);
+  background: #202022;
+  border: 1px solid #2f2f33;
+  color: #f3f3f4;
   flex-shrink: 0;
 }
 
@@ -1386,12 +1630,13 @@
 
 .proposalsEntryContent {
   min-width: 0;
-  text-align: center;
+  text-align: left;
+  flex: 1 1 auto;
 }
 
 .proposalsEntryLabel {
-  font-family: var(--font-primary);
-  font-size: 15px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.15;
   white-space: nowrap;
@@ -1414,6 +1659,49 @@
 .communityViewViewport {
   width: 100%;
   overflow: visible;
+  background: linear-gradient(180deg, #efefef 0%, #dddddf 100%);
+}
+
+.dashboardMetricRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px 18px 0;
+}
+
+.dashboardMetricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 112px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: #f7f7f8;
+  border: 1px solid rgba(17, 17, 18, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.dashboardMetricLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(26, 27, 36, 0.52);
+}
+
+.dashboardMetricValue {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #1a1d33;
+}
+
+.dashboardMetricDetail {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: rgba(26, 27, 36, 0.62);
 }
 
 .communityViewMask {
@@ -1430,7 +1718,7 @@
 
 .communityViewPanel {
   width: 100%;
-  padding: 0 12px 18px;
+  padding: 18px 18px 20px;
   box-sizing: border-box;
 }
 
@@ -1443,7 +1731,7 @@
 }
 
 .proposalsTabContent {
-  padding-top: 14px;
+  padding-top: 0;
 }
 
 
@@ -1457,7 +1745,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 18px;
+  margin-top: 0;
 }
 
 .fundingCarouselViewport {
@@ -1488,9 +1776,9 @@
 
 .fundingStateCard {
   width: 100%;
-  background: linear-gradient(135deg, #fbfcff 0%, #f2f6ff 46%, #edf2fb 100%);
-  border-color: rgba(109, 138, 214, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  background: #ffffff;
+  border: 1px solid rgba(17, 17, 18, 0.14);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 .fundingStateIcon {
@@ -2154,7 +2442,10 @@
   flex: 1;
 }
 
-.treasuryHeroCard {}
+.treasuryHeroCard {
+  border-radius: 16px;
+  overflow: hidden;
+}
 
 .votingPowerCard {}
 
@@ -2218,10 +2509,10 @@
 
 .proposalsGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
   width: 100%;
-  padding: 12px 0 0;
+  padding: 0;
 }
 
 /* Loading State */
@@ -2538,11 +2829,49 @@
 
 @media (max-width: 768px) {
   .page {
-    padding: 0 16px;
+    padding: 0 12px 24px;
   }
 
   .content {
     gap: 20px;
+  }
+
+  .communityMainWrapper {
+    padding: 0 0 18px;
+  }
+
+  .dashboardChrome {
+    border-radius: 20px;
+  }
+
+  .dashboardMasthead {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px 16px 12px;
+  }
+
+  .dashboardPresence {
+    justify-content: flex-start;
+  }
+
+  .dashboardTitleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px 10px;
+  }
+
+  .dashboardTitle {
+    font-size: 24px;
+  }
+
+  .dashboardSubtitle {
+    font-size: 12px;
+  }
+
+  .dashboardFilters {
+    padding: 0 16px 14px;
+    gap: 8px;
   }
 
   .grid {
@@ -2555,19 +2884,40 @@
   }
 
   .communityViewPanel {
-    padding: 0 8px 18px;
+    padding: 14px 14px 18px;
   }
 
-  .communityTabs {
-    gap: 0;
+  .dashboardMetricRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px 14px 0;
   }
 
-  .proposalsEntryButton {
+  .dashboardMetricCard {
+    min-height: 94px;
     padding: 14px;
   }
 
+  .dashboardMetricValue {
+    font-size: 30px;
+  }
+
+  .communityTabs {
+    padding: 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .communityTabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .proposalsEntryButton {
+    padding: 16px;
+  }
+
   .proposalsEntryLabel {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .proposalsEntryMeta {
@@ -2576,6 +2926,7 @@
 
   .communityTab {
     font-size: 10px;
+    white-space: nowrap;
   }
 
   .primaryCta {
@@ -2749,12 +3100,26 @@
 }
 
 @media (max-width: 480px) {
+  .page {
+    padding: 0 10px 24px;
+  }
+
   .communityTopbar {
     gap: 10px;
   }
 
-  .communityTabs {
-    gap: 0;
+  .dashboardTitle {
+    font-size: 20px;
+  }
+
+  .dashboardSearch {
+    min-height: 40px;
+    font-size: 11px;
+  }
+
+  .dashboardFilterPill {
+    min-height: 30px;
+    font-size: 10px;
   }
 
   .proposalsEntryButton {
@@ -2772,7 +3137,30 @@
   }
 
   .communityViewPanel {
-    padding: 0 6px 18px;
+    padding: 12px 12px 18px;
+  }
+
+  .dashboardMetricRail {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px 12px 0;
+  }
+
+  .dashboardMetricCard {
+    min-height: 88px;
+    padding: 12px;
+  }
+
+  .dashboardMetricLabel {
+    font-size: 9px;
+  }
+
+  .dashboardMetricValue {
+    font-size: 24px;
+  }
+
+  .dashboardMetricDetail {
+    font-size: 11px;
   }
 
   .proposalsEntryIcon {
@@ -2815,6 +3203,10 @@
   .bountyGrid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .proposalsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2873,6 +3265,7 @@
 }
 
 :global([data-theme="dark"]) .communityTabs {
+  background: rgba(5, 5, 6, 0.32);
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -2881,45 +3274,39 @@
 }
 
 :global([data-theme="dark"]) .communityTabActive {
-  color: rgba(227, 225, 238, 0.92);
-  border-bottom-color: var(--color-primary);
+  color: #d8e741;
 }
 
 :global([data-theme="dark"]) .proposalsEntryButton {
-  background: rgba(22, 23, 31, 0.95);
+  background: #f2f2f3;
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .reserveCard {
-  background:
-    radial-gradient(circle at top right, rgba(107, 128, 255, 0.18), transparent 34%),
-    radial-gradient(circle at bottom left, rgba(116, 196, 101, 0.1), transparent 26%),
-    linear-gradient(180deg, rgba(15, 17, 26, 0.98) 0%, rgba(18, 21, 31, 0.98) 100%);
+  background: #f2f2f3;
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 20px 42px rgba(0, 0, 0, 0.34);
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .reserveInsightMeta,
 :global([data-theme="dark"]) .reserveInsightText,
 :global([data-theme="dark"]) .reserveSentimentLegend,
 :global([data-theme="dark"]) .reserveFundingNote {
-  color: rgba(227, 225, 238, 0.62);
+  color: rgba(26, 29, 51, 0.62);
 }
 
 :global([data-theme="dark"]) .reserveTitle,
 :global([data-theme="dark"]) .reserveAmount,
 :global([data-theme="dark"]) .reserveInsightLabel,
 :global([data-theme="dark"]) .reserveFundingTitle {
-  color: rgba(245, 244, 250, 0.96);
+  color: #1a1d33;
 }
 
 :global([data-theme="dark"]) .reserveUnit,
 :global([data-theme="dark"]) .reserveFundingAmount,
 :global([data-theme="dark"]) .reserveSentimentValue {
-  color: rgba(167, 180, 255, 0.92);
+  color: rgba(81, 104, 255, 0.92);
 }
 
 :global([data-theme="dark"]) .reserveFundingSection {
@@ -2927,17 +3314,17 @@
 }
 
 :global([data-theme="dark"]) .reserveInsightCard {
-  background: rgba(255, 255, 255, 0.03);
+  background: #ffffff;
   border-color: rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .reserveSentimentChart {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(238, 240, 250, 0.8) 0%, rgba(245, 240, 255, 0.6) 100%);
 }
 
 :global([data-theme="dark"]) .reserveSentimentChart svg {
-  mix-blend-mode: screen;
+  mix-blend-mode: normal;
 }
 
 :global([data-theme="dark"]) .reserveAvatar {
@@ -2951,42 +3338,42 @@
 }
 
 :global([data-theme="dark"]) .proposalsEntryIcon {
-  background: rgba(107, 128, 255, 0.12);
-  border-color: rgba(107, 128, 255, 0.2);
-  color: rgba(132, 148, 255, 0.95);
+  background: #202022;
+  border-color: #2f2f33;
+  color: #f3f3f4;
 }
 
 :global([data-theme="dark"]) .proposalsEntryLabel {
-  color: rgba(227, 225, 238, 0.95);
+  color: #1a1d33;
 }
 
 :global([data-theme="dark"]) .proposalsEntryMeta {
-  color: rgba(227, 225, 238, 0.58);
+  color: rgba(26, 27, 36, 0.58);
 }
 
 :global([data-theme="dark"]) .fundingStateCard {
-  background: rgba(22, 23, 31, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: #ffffff;
+  border-color: rgba(17, 17, 18, 0.14);
   box-shadow: none;
 }
 
 :global([data-theme="dark"]) .fundingStateCard .exchangeTitle,
 :global([data-theme="dark"]) .fundingStateCard .exchangePrice {
-  color: rgba(227, 225, 238, 0.95);
+  color: #21304f;
 }
 
 :global([data-theme="dark"]) .fundingStateCard .exchangeLabel,
 :global([data-theme="dark"]) .fundingStateCard .exchangeDesc,
 :global([data-theme="dark"]) .fundingStatePercent {
-  color: rgba(227, 225, 238, 0.5);
+  color: rgba(33, 48, 79, 0.56);
 }
 
 :global([data-theme="dark"]) .fundingStateCard .exchangeDesc {
-  border-top-color: rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(109, 138, 214, 0.1);
 }
 
 :global([data-theme="dark"]) .fundingStateProgress {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(33, 48, 79, 0.08);
 }
 
 :global([data-theme="dark"]) .fundingIndicator {
