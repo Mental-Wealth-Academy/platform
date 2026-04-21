@@ -1,9 +1,3 @@
-# Recovering a Sense of Abundance
-
----
-
-## The God You Can Afford
-
 There is a limit to how much you will let yourself receive, and that limit was installed before you could question it.
 
 I noticed this in a conversation with a friend who told me, with total sincerity, "I believe in God. I just don't believe God gets involved with money." She didn't recognize the double bind she was in. She believed God was good -- too good to touch something as dirty as money -- and she believed money was bad. Two beliefs, working together in perfect silence, keeping her broke and blocked.

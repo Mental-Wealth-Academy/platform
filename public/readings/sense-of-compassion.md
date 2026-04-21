@@ -1,7 +1,3 @@
-# Recovering a Sense of Compassion
-
----
-
 This week finds us facing the internal blocks to creativity. It may be tempting to abandon ship at this point. Do not. We will explore and acknowledge the emotional difficulties that beset us in the past as we made creative efforts. We will undertake healing the shame of past failures. We will gain in compassion as we reparent the frightened artist child who yearns for creative accomplishment.
 
 ## Fear

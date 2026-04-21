@@ -1,9 +1,3 @@
-# Recovering a Sense of Connection
-
----
-
-## Listening
-
 This week turns to the practice of right attitudes for creativity. The emphasis is on your receptive as well as active skills. The essays, exercises, and tasks are meant to excavate areas of genuine creative interest as you reconnect with your personal dreams.
 
 The ability to listen is a skill we are honing with both our morning pages and our artist dates. The pages train us to hear past our Censor. The artist dates help us pick up the voice of inspiration. While both of these activities may appear unrelated to the actual act of making art, they are critical to the creative process.

@@ -52,18 +52,18 @@ interface LeaderboardUser {
 
 const WEEKLY_READINGS = [
   { title: 'Art is a Spiritual Warfare', author: '', description: 'This week initiates your creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
-  { title: 'Recovering a Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/scene-02.png', slug: 'recovering-safety', markdownPath: '/readings/recovering-safety.md' },
-  { title: 'Recovering a Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'week-two', markdownPath: '/readings/week-two.md' },
-  { title: 'Recovering a Sense of Power', author: '', description: 'Anger, synchronicity, and shame surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'recovering-power', markdownPath: '/readings/recovering-power.md' },
-  { title: 'Recovering a Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'recovering-integrity', markdownPath: '/readings/recovering-integrity.md' },
-  { title: 'Recovering a Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/scene-04.png', slug: 'recovering-possibility', markdownPath: '/readings/recovering-possibility.md' },
-  { title: 'Recovering a Sense of Abundance', author: '', description: 'Scarcity is a story. Rewrite it. True abundance flows from creative alignment.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'recovering-abundance', markdownPath: '/readings/recovering-abundance.md' },
-  { title: 'Recovering a Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/scene-05.png', slug: 'recovering-connection', markdownPath: '/readings/recovering-connection.md' },
-  { title: 'Recovering a Sense of Strength', author: '', description: 'Surviving loss of faith. The creative life demands resilience — this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'recovering-strength', markdownPath: '/readings/recovering-strength.md' },
-  { title: 'Recovering a Sense of Compassion', author: '', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'recovering-compassion', markdownPath: '/readings/recovering-compassion.md' },
-  { title: 'Recovering a Sense of Self-Protection', author: '', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'recovering-self-protection', markdownPath: '/readings/recovering-self-protection.md' },
-  { title: 'Recovering a Sense of Autonomy', author: '', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'recovering-autonomy', markdownPath: '/readings/recovering-autonomy.md' },
-  { title: 'Recovering a Sense of Faith', author: '', description: 'Trust the path. Faith is what remains when the evidence hasn\'t arrived yet.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'recovering-faith', markdownPath: '/readings/recovering-faith.md' },
+  { title: 'A Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/scene-02.png', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md' },
+  { title: 'A Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
+  { title: 'A Sense of Power', author: '', description: 'Anger, synchronicity, and shame surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
+  { title: 'A Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
+  { title: 'A Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/scene-04.png', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md' },
+  { title: 'A Sense of Abundance', author: '', description: 'Scarcity is a story. Rewrite it. True abundance flows from creative alignment.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md' },
+  { title: 'A Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/scene-05.png', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md' },
+  { title: 'A Sense of Strength', author: '', description: 'Surviving loss of faith. The creative life demands resilience — this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md' },
+  { title: 'A Sense of Compassion', author: '', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md' },
+  { title: 'A Sense of Self-Protection', author: '', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md' },
+  { title: 'A Sense of Autonomy', author: '', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md' },
+  { title: 'A Sense of Faith', author: '', description: 'Trust the path. Faith is what remains when the evidence hasn\'t arrived yet.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md' },
 ];
 
 const WEEK_TITLES = [
@@ -304,7 +304,7 @@ export default function HomePage() {
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
   const handleOpenReading = useCallback((index: number) => {
     const reading = WEEKLY_READINGS[index];
-    if (reading?.slug === 'recovering-safety') {
+    if (reading?.slug === 'sense-of-safety') {
       setReaderIndex(index);
       setIsWeekOneNovelOpen(true);
       return;
@@ -457,17 +457,11 @@ export default function HomePage() {
               <button
                 type="button"
                 className={styles.readingCard}
+                style={{ '--reading-card-bg': `url(${JSON.stringify(weekReading.imageUrl)})` } as React.CSSProperties}
                 onClick={() => { play('click'); handleOpenReading(Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)); }}
                 onMouseEnter={() => play('hover')}
               >
-                <div className={styles.readingMedia}>
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
-                  </>
-                </div>
                 <div className={styles.readingInfo}>
-                  <span className={styles.readingCategory}>{weekReading.category}</span>
                   <span className={styles.readingTitle}>{weekReading.title}</span>
                   <span className={styles.readingAuthor}>{weekReading.author}</span>
                 </div>
@@ -476,7 +470,11 @@ export default function HomePage() {
                 </svg>
               </button>
 
-              <h2 className={styles.missionsHeading}>Missions</h2>
+              <div className={styles.missionsHeadingRow} aria-hidden="true">
+                <span className={styles.missionsDivider} />
+                <h2 className={styles.missionsHeading}>Missions</h2>
+                <span className={styles.missionsDivider} />
+              </div>
 
               <WeekTasksView
                 key={resolvedViewWeek}

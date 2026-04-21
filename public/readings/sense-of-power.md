@@ -1,7 +1,3 @@
-# Recovering a Sense of Power
-
----
-
 This week may find you dealing with unaccustomed bursts of energy and sharp peaks of anger, joy, and grief. You are coming into your power as the illusory hold of your previously accepted limits is shaken. You will be asked to consciously experiment with spiritual open-mindedness.
 
 ## Anger

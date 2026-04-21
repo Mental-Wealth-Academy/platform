@@ -441,25 +441,22 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           onMouseEnter={() => play('hover')}
           aria-label="Open Morning Note"
         >
-          <div className={styles.cardLeft}>
-            <div className={styles.icon}>
-              <Image
-                src="/icons/notebook-writing.svg"
-                alt="Notebook writing icon"
-                width={40}
-                height={40}
-              />
-            </div>
-            <div>
-              <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
-                {compact ? 'MORNING NOTE' : 'Morning Pages'}
+          <img
+            className={styles.icon}
+            src="/icons/notebook-writing.svg"
+            alt="Notebook writing icon"
+            width={36}
+            height={36}
+          />
+          <div className={styles.cardText}>
+            <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
+              {compact ? 'Morning Note' : 'Morning Pages'}
+            </span>
+            {!compact && (
+              <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
+                {cardSubLabel}
               </span>
-              {!compact && (
-                <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
-                  {cardSubLabel}
-                </span>
-              )}
-            </div>
+            )}
           </div>
           <div className={styles.cardRight}>
             {compact && todayDone ? (
@@ -541,7 +538,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       {introDayIndex !== null && (
         <IntroLoaderOverlay
           src="/loaders/Sandy%20Loading.lottie"
-          label="Opening morning pages"
+          label="Opening notes"
+          durationMs={580}
           onFinish={() => {
             const dayIndex = introDayIndex;
             setIntroDayIndex(null);
@@ -653,7 +651,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="Begin journaling here to earn shards and build your digital golem."
+                  placeholder="Every word is a step closer to the new you."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus

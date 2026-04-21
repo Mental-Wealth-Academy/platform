@@ -4,7 +4,9 @@
   width: 100%;
   background: transparent;
   border: none;
-  border-radius: 12px;
+  --card-radius: 12px;
+  --card-border-width: 3px;
+  border-radius: var(--card-radius);
   overflow: visible;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
@@ -13,31 +15,34 @@
 
 .cardBorder {
   position: absolute;
-  inset: -2px;
+  inset: 0;
   border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(
-    90deg,
-    #5168FF,
-    #74C465,
-    #E8556D,
-    #F2A0B5,
-    #a78bfa,
-    #5168FF
-  );
+  border: var(--card-border-width) solid transparent;
+  background:
+    linear-gradient(transparent, transparent) padding-box,
+    linear-gradient(
+      90deg,
+      #5168FF,
+      #74C465,
+      #E8556D,
+      #F2A0B5,
+      #a78bfa,
+      #5168FF
+    ) border-box;
   background-size: 200% 100%;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  -webkit-background-clip: padding-box, border-box;
   animation: cardBorderShift 6s linear infinite;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
   pointer-events: none;
   z-index: 0;
+  filter: saturate(1.18) brightness(1.06);
 }
 
 .cardSurface {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  inset: var(--card-border-width);
+  border-radius: calc(var(--card-radius) - var(--card-border-width));
   overflow: hidden;
   background:
     linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%),
@@ -95,7 +100,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   padding: 16px 20px;
   background: none;
@@ -105,40 +110,32 @@
   transition: background 0.15s ease;
   position: relative;
   z-index: 2;
-  border-radius: 12px;
+  border-radius: inherit;
 }
 
 .cardButton:hover {
   background: rgba(255, 255, 255, 0.04);
 }
 
-.cardLeft {
+.cardText {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
 
 .icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%);
-  color: #FFFFFF;
-  border: none;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  display: block;
   flex-shrink: 0;
-  overflow: hidden;
-}
-
-.icon img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  border-radius: 0 !important;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  object-fit: contain;
 }
 
 .label {
@@ -182,6 +179,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-left: auto;
 }
 
 .dayDots {
@@ -1294,8 +1292,17 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .cardSurface {
+    opacity: 0.9;
+  }
+
+  .cardButton {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
   .labelCompact {
-    font-size: 17px;
+    font-size: 14px;
+    letter-spacing: 0.01em;
   }
 
   .cardButton {
@@ -1311,9 +1318,10 @@
   }
 
   .cardCompact .icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    flex: 0 0 36px;
   }
 
   .cardCompact .label {
@@ -1457,18 +1465,30 @@
 }
 
 @media (max-width: 480px) {
+  .cardSurface {
+    opacity: 0.94;
+  }
+
+  .cardButton {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (max-width: 480px) {
   .cardCompact {
-    border-radius: 22px;
+    border-radius: var(--card-radius);
   }
 
   .cardCompact .cardButton {
-    padding: 12px 14px;
+    padding: 11px 12px;
+    gap: 10px;
   }
 
   .cardCompact .icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    flex: 0 0 36px;
   }
 
   .sessionHeader {
@@ -1492,7 +1512,7 @@
   }
 
   .sublabelCompact {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .authPromptContent {

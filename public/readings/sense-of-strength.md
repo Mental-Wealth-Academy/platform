@@ -1,6 +1,3 @@
-# Recovering a Sense of Strength
-
----
 
 This week tackles another major creative block: time. You will explore the ways in which you have used your perception of time to preclude taking creative risks. You will identify immediate and practical changes you can make in your current life. You will excavate the early conditioning that may have encouraged you to settle for far less than you desire creatively.
 
