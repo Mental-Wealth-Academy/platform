@@ -975,12 +975,12 @@
   display: none;
   flex-shrink: 0;
   align-self: center;
-  padding: 8px 10px;
+  padding: 0;
   font-size: 13px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .textarea {
@@ -1263,8 +1263,8 @@
   }
 
   .modalBackdrop {
-    background: rgba(4, 7, 14, 0.66);
-    backdrop-filter: blur(12px);
+    background: transparent;
+    backdrop-filter: none;
   }
 
   .modal {
