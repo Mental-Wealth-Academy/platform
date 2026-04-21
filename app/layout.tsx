@@ -1,9 +1,16 @@
 import type { Metadata } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
-import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono } from 'next/font/google';
+import { Poppins, Space_Grotesk, IBM_Plex_Mono, Space_Mono, Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -107,7 +114,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable}`}
+      className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} ${spaceMono.variable}`}
       data-sidebar-collapsed={initialSidebarCollapsed ? 'true' : 'false'}
       style={{ '--sidebar-width': initialSidebarWidth } as CSSProperties}
       suppressHydrationWarning

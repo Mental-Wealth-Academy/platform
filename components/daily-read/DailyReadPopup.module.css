@@ -85,11 +85,11 @@
 }
 
 .subtitle {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.6;
+  font-family: var(--font-body, 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.55;
   margin: 10px 0 0;
 }
 
@@ -158,21 +158,22 @@
 }
 
 .principleText {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.65;
+  font-family: var(--font-body, 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.55;
   margin: 0;
 }
 
 /* Week intro body (non-list weeks) */
 .weekIntroBody {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.72);
-  line-height: 1.72;
+  font-family: var(--font-body, 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 58ch;
   margin: 0;
   white-space: pre-line;
 }
@@ -283,7 +284,7 @@
   }
 
   .principleText {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .footer {
@@ -323,7 +324,7 @@
 }
 
 :global([data-theme="dark"]) .subtitle {
-  color: rgba(214, 223, 242, 0.7);
+  color: rgba(214, 223, 242, 0.86);
 }
 
 :global([data-theme="dark"]) .principleNumber {
@@ -332,11 +333,11 @@
 }
 
 :global([data-theme="dark"]) .principleText {
-  color: rgba(236, 241, 252, 0.84);
+  color: rgba(236, 241, 252, 0.93);
 }
 
 :global([data-theme="dark"]) .weekIntroBody {
-  color: rgba(236, 241, 252, 0.84);
+  color: rgba(236, 241, 252, 0.93);
 }
 
 :global([data-theme="dark"]) .principlesWrap {

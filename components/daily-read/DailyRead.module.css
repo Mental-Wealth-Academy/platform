@@ -157,11 +157,12 @@
 }
 
 .readingDesc {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.7);
-  line-height: 1.6;
+  font-family: var(--font-body, 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.82);
+  line-height: 1.55;
+  max-width: 58ch;
   margin: 0 0 12px;
 }
 
@@ -342,7 +343,7 @@
 }
 
 :global([data-theme="dark"]) .readingDesc {
-  color: rgba(227, 225, 238, 0.6);
+  color: rgba(227, 225, 238, 0.86);
 }
 
 :global([data-theme="dark"]) .chevron {

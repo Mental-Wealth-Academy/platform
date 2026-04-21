@@ -1,6 +1,6 @@
 /* Primary font loading via next/font/google in layout.tsx */
 /* Fallback @import ensures hardcoded font-family references still resolve */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
 /**
  * Academy V3 Design System
@@ -51,6 +51,7 @@
   /* ============================================
      Typography
      ============================================ */
+  --font-body: var(--font-inter), 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
   --font-primary: var(--font-poppins), 'Poppins', sans-serif;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-button: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
