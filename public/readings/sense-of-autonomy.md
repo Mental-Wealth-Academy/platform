@@ -1,7 +1,3 @@
-# Recovering a Sense of Autonomy
-
----
-
 This week we focus on artistic autonomy. We examine the ongoing ways in which we must nurture and accept ourselves as artists. We explore the behaviors that strengthen our spiritual base and, therefore, our creative power. We also look at the ways success must be handled so that we do not sabotage our freedom.
 
 ## Acceptance

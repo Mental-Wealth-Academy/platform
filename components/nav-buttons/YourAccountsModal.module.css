@@ -36,6 +36,23 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  transform: translateY(0);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.modalDragging {
+  transition: none;
+}
+
+.sheetHandleZone {
+  display: none;
+}
+
+.sheetHandle {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.24);
 }
 
 .modalHeader {
@@ -392,21 +409,24 @@
     border-bottom: none;
     box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.28);
     animation: sheetSlideUp 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
 
-  .modal::before {
-    content: '';
-    width: 48px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(81, 104, 255, 0.24);
-    margin: 10px auto 0;
-    display: block;
-    flex-shrink: 0;
+  .sheetHandleZone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px 2px;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .modalDragging .sheetHandleZone {
+    cursor: grabbing;
   }
 
   .modalHeader {
-    padding: 14px 20px 16px;
+    padding: 12px 20px 16px;
   }
 
   .modalTitle {
@@ -430,6 +450,10 @@
 :global([data-theme="dark"]) .modal {
   background: #16171F;
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sheetHandle {
+  background: rgba(227, 234, 255, 0.26);
 }
 
 :global([data-theme="dark"]) .connectionsModal {

@@ -32,6 +32,10 @@ const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/A
 const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
   ssr: false,
 });
+const CreditScore = dynamic(() => import('@/components/credit-score/CreditScore'), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface WeekStatus {
   weekNumber: number;
@@ -48,24 +52,24 @@ interface LeaderboardUser {
 
 const WEEKLY_READINGS = [
   { title: 'Art is a Spiritual Warfare', author: '', description: 'This week initiates your creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
-  { title: 'Recovering a Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/scene-02.png', slug: 'recovering-safety', markdownPath: '/readings/recovering-safety.md' },
-  { title: 'Recovering a Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'week-two', markdownPath: '/readings/week-two.md' },
-  { title: 'Recovering a Sense of Power', author: '', description: 'Anger, synchronicity, and shame surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'recovering-power', markdownPath: '/readings/recovering-power.md' },
-  { title: 'Recovering a Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'recovering-integrity', markdownPath: '/readings/recovering-integrity.md' },
-  { title: 'Recovering a Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/scene-04.png', slug: 'recovering-possibility', markdownPath: '/readings/recovering-possibility.md' },
-  { title: 'Recovering a Sense of Abundance', author: '', description: 'Scarcity is a story. Rewrite it. True abundance flows from creative alignment.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'recovering-abundance', markdownPath: '/readings/recovering-abundance.md' },
-  { title: 'Recovering a Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/scene-05.png', slug: 'recovering-connection', markdownPath: '/readings/recovering-connection.md' },
-  { title: 'Recovering a Sense of Strength', author: '', description: 'Surviving loss of faith. The creative life demands resilience — this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'recovering-strength', markdownPath: '/readings/recovering-strength.md' },
-  { title: 'Recovering a Sense of Compassion', author: '', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'recovering-compassion', markdownPath: '/readings/recovering-compassion.md' },
-  { title: 'Recovering a Sense of Self-Protection', author: '', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'recovering-self-protection', markdownPath: '/readings/recovering-self-protection.md' },
-  { title: 'Recovering a Sense of Autonomy', author: '', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'recovering-autonomy', markdownPath: '/readings/recovering-autonomy.md' },
-  { title: 'Recovering a Sense of Faith', author: '', description: 'Trust the path. Faith is what remains when the evidence hasn\'t arrived yet.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'recovering-faith', markdownPath: '/readings/recovering-faith.md' },
+  { title: 'A Sense of Safety', author: '', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/scene-02.png', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md' },
+  { title: 'A Sense of Identity', author: '', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: 'https://i.imgur.com/0gghyGS.jpeg', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
+  { title: 'A Sense of Power', author: '', description: 'Anger, synchronicity, and shame surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: 'https://i.imgur.com/MMb9MTw.png', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
+  { title: 'A Sense of Integrity', author: '', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: 'https://i.imgur.com/sRNfQyg.png', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
+  { title: 'A Sense of Possibility', author: '', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/scene-04.png', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md' },
+  { title: 'A Sense of Abundance', author: '', description: 'Scarcity is a story. Rewrite it. True abundance flows from creative alignment.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md' },
+  { title: 'A Sense of Connection', author: '', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/scene-05.png', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md' },
+  { title: 'A Sense of Strength', author: '', description: 'Surviving loss of faith. The creative life demands resilience — this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md' },
+  { title: 'A Sense of Compassion', author: '', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md' },
+  { title: 'A Sense of Self-Protection', author: '', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md' },
+  { title: 'A Sense of Autonomy', author: '', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md' },
+  { title: 'A Sense of Faith', author: '', description: 'Trust the path. Faith is what remains when the evidence hasn\'t arrived yet.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md' },
 ];
 
 const WEEK_TITLES = [
-  'Introduction', 'Safety', 'Identity', 'Power', 'Integrity',
-  'Possibility', 'Abundance', 'Connection', 'Strength',
-  'Compassion', 'Protection', 'Autonomy', 'Faith', 'Epilogue',
+  'Week 0', 'Week 1', 'Week 2', 'Week 3', 'Week 4',
+  'Week 5', 'Week 6', 'Week 7', 'Week 8',
+  'Week 9', 'Week 10', 'Week 11', 'Week 12', 'Week 13',
 ];
 
 export default function HomePage() {
@@ -84,10 +88,8 @@ export default function HomePage() {
   const [viewWeek, setViewWeek] = useState<number | null>(null);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [seasonActive, setSeasonActive] = useState(false);
-  const [displayName, setDisplayName] = useState<string | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [streakCount, setStreakCount] = useState(0);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
   const [showMintModal, setShowMintModal] = useState(false);
   const { play } = useSound();
@@ -152,8 +154,6 @@ export default function HomePage() {
       const meData = await meRes.json().catch(() => ({ user: null }));
       if (!meData?.user) return;
       setIsAuthenticated(true);
-      const uname = meData.user.username;
-      if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
       const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
       if (res.ok) {
         const data = await res.json();
@@ -187,13 +187,22 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!ready || !authenticated) return;
-    (async () => {
-      const token = await getAccessToken();
-      const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
-      fetch('/api/daily-notes/streak', { credentials: 'include', headers: authHeaders }).then(r => r.json()).then(d => setStreakCount(d.streak ?? 0)).catch(() => {});
-    })();
-  }, [ready, authenticated, getAccessToken]);
+    if (!showLeaderboard) return;
+
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalDocumentOverflow = document.documentElement.style.overflow;
+    const originalBodyTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalDocumentOverflow;
+      document.body.style.touchAction = originalBodyTouchAction;
+    };
+  }, [showLeaderboard]);
 
   const handleSealComplete = useCallback((weekNumber: number, txHash: string | null) => {
     setWeekStatuses(prev => {
@@ -224,8 +233,6 @@ export default function HomePage() {
         const meRes = await fetch('/api/me', { credentials: 'include', cache: 'no-store', headers: authHeaders });
         const meData = await meRes.json().catch(() => ({ user: null }));
         if (meData?.user) {
-          const uname = meData.user.username;
-          if (uname && !uname.startsWith('user_')) setDisplayName(uname.charAt(0).toUpperCase() + uname.slice(1));
           const res = await fetch('/api/ethereal-progress/all', { credentials: 'include', headers: authHeaders });
           if (res.ok) {
             const data = await res.json();
@@ -235,13 +242,6 @@ export default function HomePage() {
       } catch {}
     })();
   }, [getAccessToken]);
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    const timeOfDay = hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening';
-    if (displayName) return `Good ${timeOfDay}, ${displayName}`;
-    return `Good ${timeOfDay}`;
-  };
 
   const avatarColor = (name: string) => {
     const colors = ['#5168FF', '#E85D3A', '#62BE8F', '#9B7ED9', '#F5A623'];
@@ -304,7 +304,7 @@ export default function HomePage() {
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
   const handleOpenReading = useCallback((index: number) => {
     const reading = WEEKLY_READINGS[index];
-    if (reading?.slug === 'recovering-safety') {
+    if (reading?.slug === 'sense-of-safety') {
       setReaderIndex(index);
       setIsWeekOneNovelOpen(true);
       return;
@@ -326,36 +326,32 @@ export default function HomePage() {
       <SideNavigation />
       <main className={styles.content} onFocus={handleFocus}>
 
-        {/* ===== GREETING + STREAK + LEADERBOARD (compact row) ===== */}
+        {/* ===== TOP LEADERBOARD ===== */}
         <section className={`${styles.hero} ${isLoaded ? styles.heroLoaded : ''}`}>
-          <div className={styles.heroLeft}>
-            <p className={styles.greeting}>{getGreeting()}</p>
-            <div className={styles.streakRow}>
-              <span className={styles.streakNumber}>{streakCount}</span>
-              <span className={styles.streakUnit}>day streak</span>
-            </div>
-          </div>
           <button
             type="button"
             className={styles.topLeaderboard}
             onClick={() => { play('click'); setShowLeaderboard(true); }}
           >
+            <div className={styles.topLeaderboardHeader}>
+              <Image src="/icons/ui-shard.svg" alt="" width={12} height={12} className={styles.topLeaderboardIcon} />
+              <span className={styles.topLeaderboardTitle}>WEEKLY LEADERBOARD</span>
+            </div>
             <div className={styles.topLeaderboardPodium}>
               {leaderboardLoading ? (
-                [1, 2, 3].map(rank => (
-                  <div
-                    key={rank}
-                    className={`${styles.podiumSlot} ${rank === 1 ? styles.podiumFirst : rank === 2 ? styles.podiumSecond : styles.podiumThird}`}
-                  >
-                    <div className={`${styles.podiumAvatarRing} ${styles.skeletonBlock}`}>
+                [1, 2, 3, 4, 5].map(rank => (
+                  <div key={rank} className={styles.podiumSlot}>
+                    <div className={styles.podiumAvatarRing}>
                       <div className={`${styles.podiumAvatar} ${styles.skeletonBlock}`} />
                     </div>
-                    <span className={`${styles.podiumName} ${styles.skeletonText} ${styles.skeletonBlock}`} />
                   </div>
                 ))
               ) : (
-                leaderboard.slice(0, 3).map(u => (
-                  <div key={u.rank} className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : styles.podiumThird}`}>
+                leaderboard.slice(0, 5).map(u => (
+                  <div
+                    key={u.rank}
+                    className={`${styles.podiumSlot} ${u.rank === 1 ? styles.podiumFirst : u.rank === 2 ? styles.podiumSecond : u.rank === 3 ? styles.podiumThird : ''}`}
+                  >
                     <div className={styles.podiumAvatarRing}>
                       {u.avatarUrl ? (
                         <>
@@ -368,7 +364,6 @@ export default function HomePage() {
                         </div>
                       )}
                     </div>
-                    <span className={styles.podiumName}>{u.username}</span>
                   </div>
                 ))
               )}
@@ -380,6 +375,8 @@ export default function HomePage() {
           <div className={styles.morningPagesGradient} />
           <DailyNotes enablePersistence={canPersistMorningPages} compact />
         </div>
+
+        <CreditScore showLoader={false} />
 
         {/* ===== WEEK HEADER ===== */}
         <div className={styles.weekHeader}>
@@ -396,15 +393,9 @@ export default function HomePage() {
           </button>
           <div className={styles.weekHeaderCenter}>
             {seasonLoading ? (
-              <>
-                <span className={`${styles.weekLabel} ${styles.skeletonText} ${styles.skeletonBlock}`} />
-                <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-              </>
+              <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
             ) : (
-              <>
-                <span className={styles.weekLabel}>WEEK {resolvedViewWeek}</span>
-                <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
-              </>
+              <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
             )}
           </div>
           <button
@@ -447,18 +438,18 @@ export default function HomePage() {
           {seasonLoading || viewWeek === null ? (
             <>
               <div className={styles.readingCardSkeleton}>
-                <div className={`${styles.readingMedia} ${styles.skeletonBlock}`} />
+                <div className={`${styles.readingMediaSkeleton} ${styles.skeletonBlock}`} />
                 <div className={styles.readingInfo}>
-                  <span className={`${styles.readingCategory} ${styles.skeletonText} ${styles.skeletonBlock}`} />
-                  <span className={`${styles.readingTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-                  <span className={`${styles.readingAuthor} ${styles.skeletonTextShort} ${styles.skeletonBlock}`} />
+                  <span className={`${styles.readingCategorySkeletonLine} ${styles.skeletonBlock}`} />
+                  <span className={`${styles.readingTitleSkeletonLine} ${styles.skeletonBlock}`} />
+                  <span className={`${styles.readingAuthorSkeletonLine} ${styles.skeletonBlock}`} />
                 </div>
               </div>
               <div className={styles.weekTasksSkeleton}>
-                <div className={`${styles.weekTaskBar} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskPanel} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskPanel} ${styles.skeletonBlock}`} />
-                <div className={`${styles.weekTaskButton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
+                <div className={`${styles.sealButtonSkeleton} ${styles.skeletonBlock}`} />
               </div>
             </>
           ) : (
@@ -466,17 +457,11 @@ export default function HomePage() {
               <button
                 type="button"
                 className={styles.readingCard}
+                style={{ '--reading-card-bg': `url(${JSON.stringify(weekReading.imageUrl)})` } as React.CSSProperties}
                 onClick={() => { play('click'); handleOpenReading(Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)); }}
                 onMouseEnter={() => play('hover')}
               >
-                <div className={styles.readingMedia}>
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={weekReading.imageUrl} alt={weekReading.title} className={styles.readingImg} />
-                  </>
-                </div>
                 <div className={styles.readingInfo}>
-                  <span className={styles.readingCategory}>{weekReading.category}</span>
                   <span className={styles.readingTitle}>{weekReading.title}</span>
                   <span className={styles.readingAuthor}>{weekReading.author}</span>
                 </div>
@@ -484,6 +469,12 @@ export default function HomePage() {
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
+
+              <div className={styles.missionsHeadingRow} aria-hidden="true">
+                <span className={styles.missionsDivider} />
+                <h2 className={styles.missionsHeading}>Missions</h2>
+                <span className={styles.missionsDivider} />
+              </div>
 
               <WeekTasksView
                 key={resolvedViewWeek}
@@ -510,7 +501,7 @@ export default function HomePage() {
             <div className={styles.modalHeader}>
               <Image src="/icons/ui-shard.svg" alt="" width={28} height={28} />
               <div>
-                <strong className={styles.modalTitle}>TOP ACADEMICS</strong>
+                <strong className={styles.modalTitle}>Leaderboard</strong>
                 <span className={styles.modalSub}>
                   {seasonActive ? `Week ${activeWeek} of 12` : 'Season inactive'}
                 </span>

@@ -1,0 +1,146 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.05), rgba(155, 126, 217, 0.05));
+  border-radius: 12px;
+  border: 1px solid rgba(81, 104, 255, 0.1);
+  margin: 16px 0;
+}
+
+.skeletonLine,
+.skeletonCircle {
+  position: relative;
+  overflow: hidden;
+  background: rgba(26, 29, 51, 0.08);
+  display: inline-block;
+}
+
+.skeletonLine::after,
+.skeletonCircle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+.skeletonLine {
+  height: 12px;
+  border-radius: 999px;
+}
+
+.skeletonTitle { width: 96px; height: 14px; }
+.skeletonChange { width: 42px; height: 20px; border-radius: 6px; }
+.skeletonLabel { width: 72px; }
+.skeletonLabelWide { width: 104px; }
+.skeletonValue { width: 56px; }
+
+.skeletonCircle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1d33;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.change {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(98, 190, 143, 0.1);
+  color: #62be8f;
+}
+
+.change.negative {
+  background: rgba(232, 93, 58, 0.1);
+  color: #e85d3a;
+}
+
+.scoreCircle {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.circleRing {
+  width: 100%;
+  height: 100%;
+}
+
+.scoreValue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.score {
+  font-size: 32px;
+  font-weight: 700;
+  color: #5168FF;
+}
+
+.max {
+  font-size: 11px;
+  color: #999;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(81, 104, 255, 0.1);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1d33;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

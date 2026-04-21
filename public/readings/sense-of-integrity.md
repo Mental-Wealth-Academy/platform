@@ -1,7 +1,3 @@
-# Recovering a Sense of Integrity
-
----
-
 This week may find you grappling with changing self-definition. The essays, tasks, and exercises are designed to catapult you into productive introspection and integration of new self-awareness. This may be both difficult and exciting for you. Warning: do not skip the tool of reading deprivation.
 
 ## Honest Changes

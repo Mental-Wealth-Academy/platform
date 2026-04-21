@@ -1,7 +1,3 @@
-# Awaken The Creativity Sleeping Inside You
-
----
-## Introduction: How You Choose To Forget
 Before the world was technolyzed, I grew up watching a show called Digimon. I was enthralled by watching kids my age, jump into a alternate digital world, and commandeer deities and pocket-gods inside them with a fierce certainty.
 
 It's like watching a dream where wild imagination pours out of the brain and fills the world with hero's we connect with not through wires and cables, but spiritually.

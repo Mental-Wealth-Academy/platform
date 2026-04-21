@@ -23,7 +23,7 @@
   height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: #1a1c28;
   border: 1px solid rgba(81, 104, 255, 0.14);
   border-radius: 20px;
   box-shadow:
@@ -935,7 +935,7 @@
     width: auto;
     height: auto;
     max-height: none;
-    background: #ffffff;
+    background: #1a1c28;
     border-radius: 0;
     border: none;
     box-shadow: none;
@@ -1359,13 +1359,10 @@
   min-height: 0;
   padding-top: 48px;
   background:
-    radial-gradient(circle at 20% 18%, rgba(81, 104, 255, 0.18) 0%, transparent 26%),
-    radial-gradient(circle at 80% 12%, rgba(232, 85, 109, 0.12) 0%, transparent 24%),
-    radial-gradient(circle at 48% 78%, rgba(116, 196, 101, 0.1) 0%, transparent 28%),
-    radial-gradient(circle, rgba(126, 154, 255, 0.1) 1px, transparent 1.8px),
-    linear-gradient(180deg, #000000 0%, #000000 100%);
-  background-size: auto, auto, auto, 22px 22px, auto;
-  background-position: center, center, center, 0 0, center;
+    radial-gradient(circle, rgba(126, 154, 255, 0.08) 1px, transparent 1.8px),
+    #000000;
+  background-size: 22px 22px, auto;
+  background-position: 0 0, center;
 }
 
 /* Left panel — Full body with grid + radial light */
@@ -1378,15 +1375,10 @@
   border-right: 1px solid rgba(81, 104, 255, 0.08);
   overflow: hidden;
   background:
-    radial-gradient(circle at 18% 14%, rgba(81, 104, 255, 0.22) 0%, transparent 24%),
-    radial-gradient(circle at 78% 16%, rgba(232, 85, 109, 0.16) 0%, transparent 22%),
-    radial-gradient(circle at 46% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 26%),
-    radial-gradient(circle, rgba(128, 154, 255, 0.12) 1px, transparent 1.8px),
-    radial-gradient(ellipse 70% 50% at 50% 60%, rgba(81, 104, 255, 0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 50% 80%, rgba(100, 80, 180, 0.06) 0%, transparent 70%),
-    linear-gradient(180deg, #000000 0%, #000000 100%);
-  background-size: auto, auto, auto, 24px 24px, auto, auto, auto;
-  background-position: center, center, center, 0 0, center, center, center;
+    radial-gradient(circle, rgba(128, 154, 255, 0.1) 1px, transparent 1.8px),
+    #000000;
+  background-size: 24px 24px, auto;
+  background-position: 0 0, center;
 }
 
 .fullBodyWrap {
@@ -2132,4 +2124,111 @@
   background:
     repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(81, 104, 255, 0.03) 31px, rgba(81, 104, 255, 0.03) 32px),
     linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
+}
+
+/* ── Dark mode overrides ─────────────────────────────────────────────────── */
+/* Small chat container bg is #1a1c28 and expanded bg is #000. Defaults still
+   use dark ink that's invisible on dark bg — these overrides fix contrast. */
+
+:global(:root[data-theme="dark"]) .closeButton,
+:global(:root[data-theme="dark"]) .expandButton {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+:global(:root[data-theme="dark"]) .closeButton:hover,
+:global(:root[data-theme="dark"]) .expandButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+:global(:root[data-theme="dark"]) .messageTime {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+:global(:root[data-theme="dark"]) .debugPanel {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(81, 104, 255, 0.22);
+}
+
+:global(:root[data-theme="dark"]) .debugLine {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:global(:root[data-theme="dark"]) .messageAttachmentName,
+:global(:root[data-theme="dark"]) .pendingAttachmentName {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:global(:root[data-theme="dark"]) .pendingAttachmentRemove {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(:root[data-theme="dark"]) .shardConfirmText,
+:global(:root[data-theme="dark"]) .shardUpsellTitle {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+:global(:root[data-theme="dark"]) .shardConfirmBalance,
+:global(:root[data-theme="dark"]) .shardUpsellBody {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:global(:root[data-theme="dark"]) .shardUpsellIconWrap {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(:root[data-theme="dark"]) .shardConfirmNo,
+:global(:root[data-theme="dark"]) .quickAction,
+:global(:root[data-theme="dark"]) .targetButton,
+:global(:root[data-theme="dark"]) .liquidityCancel,
+:global(:root[data-theme="dark"]) .voiceButton {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(:root[data-theme="dark"]) .shardConfirmNo:hover,
+:global(:root[data-theme="dark"]) .quickAction:hover:not(:disabled),
+:global(:root[data-theme="dark"]) .targetButton:hover:not(:disabled),
+:global(:root[data-theme="dark"]) .liquidityCancel:hover:not(:disabled),
+:global(:root[data-theme="dark"]) .voiceButton:hover {
+  background: rgba(81, 104, 255, 0.14);
+  border-color: rgba(81, 104, 255, 0.3);
+  color: #ffffff;
+}
+
+:global(:root[data-theme="dark"]) .liquidityCancel:hover:not(:disabled) {
+  background: rgba(255, 80, 80, 0.18);
+  border-color: rgba(255, 80, 80, 0.4);
+  color: #ff7070;
+}
+
+:global(:root[data-theme="dark"]) .quickActions {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global(:root[data-theme="dark"]) .inputArea {
+  border-top-color: rgba(255, 255, 255, 0.07);
+}
+
+:global(:root[data-theme="dark"]) .liquidityInput,
+:global(:root[data-theme="dark"]) .input {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:global(:root[data-theme="dark"]) .liquidityInput::placeholder,
+:global(:root[data-theme="dark"]) .input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+:global(:root[data-theme="dark"]) .input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-primary, #5168FF);
 }

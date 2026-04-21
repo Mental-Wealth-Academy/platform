@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAccount } from 'wagmi';
 import styles from './YourAccountsModal.module.css';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
@@ -23,6 +23,12 @@ const YourAccountsModal: React.FC<YourAccountsModalProps> = ({ onClose }) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [serviceUnavailable, setServiceUnavailable] = useState(false);
   const [showConnectingModal, setShowConnectingModal] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDraggingSheet, setIsDraggingSheet] = useState(false);
+  const dragStateRef = useRef<{ startY: number; pointerId: number | null }>({
+    startY: 0,
+    pointerId: null,
+  });
 
   // Handle Escape key to close modal
   useEffect(() => {
@@ -37,6 +43,18 @@ const YourAccountsModal: React.FC<YourAccountsModalProps> = ({ onClose }) => {
       document.removeEventListener('keydown', handleEscape);
     };
   }, [onClose]);
+
+  useEffect(() => {
+    if (!isDraggingSheet) return;
+
+    document.body.style.userSelect = 'none';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.userSelect = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isDraggingSheet]);
 
   const [syncedWalletAddress, setSyncedWalletAddress] = useState<string | null>(null);
 
@@ -248,9 +266,65 @@ const YourAccountsModal: React.FC<YourAccountsModalProps> = ({ onClose }) => {
     setXAccount(null);
   };
 
+  const handleSheetDragStart = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    dragStateRef.current = {
+      startY: e.clientY,
+      pointerId: e.pointerId,
+    };
+    setIsDraggingSheet(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleSheetDragMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingSheet || dragStateRef.current.pointerId !== e.pointerId) return;
+
+    const nextOffset = Math.max(0, e.clientY - dragStateRef.current.startY);
+    setDragOffset(nextOffset);
+  };
+
+  const finishSheetDrag = (pointerId?: number) => {
+    const shouldClose = dragOffset > 120;
+
+    setIsDraggingSheet(false);
+    dragStateRef.current.pointerId = null;
+
+    if (shouldClose) {
+      onClose();
+      return;
+    }
+
+    setDragOffset(0);
+  };
+
+  const handleSheetDragEnd = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStateRef.current.pointerId !== e.pointerId) return;
+
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+
+    finishSheetDrag(e.pointerId);
+  };
+
   return (
     <div className={styles.modalWrapper} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={`${styles.modal} ${isDraggingSheet ? styles.modalDragging : ''}`}
+        style={{ transform: `translateY(${dragOffset}px)` }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className={styles.sheetHandleZone}
+          onPointerDown={handleSheetDragStart}
+          onPointerMove={handleSheetDragMove}
+          onPointerUp={handleSheetDragEnd}
+          onPointerCancel={handleSheetDragEnd}
+        >
+          <div className={styles.sheetHandle} aria-hidden="true" />
+        </div>
+
         <div className={styles.modalHeader}>
           <div className={styles.modalTitle}>
             <span>链接</span>Edit Connections
@@ -420,4 +494,3 @@ const YourAccountsModal: React.FC<YourAccountsModalProps> = ({ onClose }) => {
 };
 
 export default YourAccountsModal;
-

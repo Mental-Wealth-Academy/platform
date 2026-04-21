@@ -1,7 +1,3 @@
-# Recovering a Sense of Faith
-
----
-
 In this final week, we acknowledge the inherently mysterious spiritual heart of creativity. We address the fact that creativity requires receptivity and profound trust, capacities you have been developing through the work. We set our creative aims, take a special look at last-minute sabotage, and renew our commitment to the tools.
 
 ## Trusting

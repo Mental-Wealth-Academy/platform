@@ -37,15 +37,7 @@ interface DailyNotesProps {
   compact?: boolean;
 }
 
-const WRITING_MESSAGES = [
-  'morning pages helps free your mind',
-  'think of this as spiritual work',
-  'writing keeps my brain sharp',
-  'let your thoughts run free',
-  'words have a way of healing you',
-  'write it out, clear your head',
-  'no editing, just let it flow',
-];
+const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
 
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo
@@ -87,8 +79,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   const [dataReady, setDataReady] = useState(false);
   const [queuedCompactStart, setQueuedCompactStart] = useState(false);
-  const dayMessageIndex = new Date().getDate() % WRITING_MESSAGES.length;
-
   // Reset dataReady when enablePersistence changes
   useEffect(() => {
     if (enablePersistence) {
@@ -169,11 +159,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   const startTimer = useCallback((dayIndex: number) => {
     setIntroDayIndex(dayIndex);
   }, []);
-
-  const pauseTimer = () => {
-    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-    setIsPaused(true);
-  };
 
   const resumeTimer = () => {
     setIsPaused(false);
@@ -397,7 +382,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
   }, [enablePersistence, play, startTimer]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
-  const cardSubLabel = '15 minutes of free writing';
+  const cardSubLabel = 'daily reflection and notes';
 
   const handleGuestCta = useCallback(() => {
     if (!ready || authPending) return;
@@ -454,23 +439,24 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           className={styles.cardButton}
           onClick={handleCompactClick}
           onMouseEnter={() => play('hover')}
-          aria-label="Open Morning Pages"
+          aria-label="Open Morning Note"
         >
-          <div className={styles.cardLeft}>
-            <div className={styles.icon}>
-              <Image
-                src="/icons/notebook-writing.svg"
-                alt="Notebook writing icon"
-                width={40}
-                height={40}
-              />
-            </div>
-            <div>
-              <span className={styles.label}>Morning Pages</span>
-              <span className={styles.sublabel}>
+          <img
+            className={styles.icon}
+            src="/icons/notebook-writing.svg"
+            alt="Notebook writing icon"
+            width={36}
+            height={36}
+          />
+          <div className={styles.cardText}>
+            <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
+              {compact ? 'Morning Note' : 'Morning Pages'}
+            </span>
+            {!compact && (
+              <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
                 {cardSubLabel}
               </span>
-            </div>
+            )}
           </div>
           <div className={styles.cardRight}>
             {compact && todayDone ? (
@@ -552,7 +538,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
       {introDayIndex !== null && (
         <IntroLoaderOverlay
           src="/loaders/Sandy%20Loading.lottie"
-          label="Opening morning pages"
+          label="Opening notes"
+          durationMs={580}
           onFinish={() => {
             const dayIndex = introDayIndex;
             setIntroDayIndex(null);
@@ -647,24 +634,24 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
             <div className={styles.modalMain}>
               <div className={styles.modalHeader}>
-                <span className={styles.headerLabel}>morning pages</span>
                 <button
                   type="button"
                   className={styles.modalCloseBtn}
                   onClick={() => { play('click'); requestClose(); }}
                   onMouseEnter={() => play('hover')}
+                  aria-label="Back"
                 >
-                  Close
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Back</span>
                 </button>
-                <span className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                  {isPaused ? 'paused' : formatTimer(timerSeconds)}
-                </span>
               </div>
 
               <div className={styles.writeArea}>
                 <textarea
                   className={styles.textarea}
-                  placeholder="Begin journaling here to earn shards and build your digital golem."
+                  placeholder="Every word is a step closer to the new you."
                   value={timerText}
                   onChange={(e) => setTimerText(e.target.value)}
                   autoFocus
@@ -680,7 +667,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                   height={52}
                   className={styles.noteImage}
                 />
-                <div className={styles.promptBubble}>{WRITING_MESSAGES[dayMessageIndex]}</div>
+                <div className={styles.promptBubble}>{MOBILE_PROMPT_MESSAGE}</div>
                 <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
                   {isPaused ? 'paused' : formatTimer(timerSeconds)}
                 </span>
@@ -688,32 +675,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
 
             <div className={styles.modalFooter}>
-              <div className={styles.footerTimer}>
-                <div className={styles.timerBar}>
-                  <div
-                    className={styles.timerBarFill}
-                    style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
-                  />
-                </div>
-              </div>
-              <button
-                type="button"
-                className={styles.pauseBtn}
-                onClick={() => { play('click'); isPaused ? resumeTimer() : pauseTimer(); }}
-                onMouseEnter={() => play('hover')}
-              >
-                {isPaused ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    Resume
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    Pause
-                  </>
-                )}
-              </button>
               <button
                 type="button"
                 className={styles.submitBtn}

@@ -1,6 +1,3 @@
-# Recovering a Sense of Self-Protection
-
----
 
 This week we explore the perils that can ambush us on our creative path. Because creativity is a spiritual issue, many of the perils are spiritual perils. In the essays, tasks, and exercises of this week, we search out the toxic patterns we cling to that block our creative flow.
 

@@ -26,17 +26,30 @@ export const LandingScene: React.FC = () => {
       return;
     }
 
+    let hasActivated = false;
     const activateScene = () => {
-      setShowScene(true);
+      if (!hasActivated) {
+        setShowScene(true);
+        hasActivated = true;
+      }
     };
 
+    const onMouseMove = () => activateScene();
+    window.addEventListener('mousemove', onMouseMove, { once: true });
+
     if (typeof window.requestIdleCallback === 'function') {
-      const idleId = window.requestIdleCallback(activateScene, { timeout: 1500 });
-      return () => window.cancelIdleCallback(idleId);
+      const idleId = window.requestIdleCallback(activateScene, { timeout: 2000 });
+      return () => {
+        window.cancelIdleCallback(idleId);
+        window.removeEventListener('mousemove', onMouseMove);
+      };
     }
 
-    const timeoutId = window.setTimeout(activateScene, 900);
-    return () => window.clearTimeout(timeoutId);
+    const timeoutId = window.setTimeout(activateScene, 2000);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener('mousemove', onMouseMove);
+    };
   }, []);
 
   useEffect(() => {

@@ -8,14 +8,14 @@ import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import {
   Dna,
-  Gift,
   House,
   IconProps,
   ImagesSquare,
-  Lightning,
-  Microscope,
+  ChartLine,
   UserCircle,
   UsersThree,
+  Book,
+  Microscope,
 } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import BlueChat from '../blue-chat/BlueChat';
@@ -54,17 +54,16 @@ const navSections: NavSection[] = [
     label: 'SPIRITUAL WORK',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
-      { id: 'community', label: 'Community', href: '/community', icon: UsersThree },
-      { id: 'rewards', label: 'Quests', href: '/rewards', icon: Gift },
-      { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
+      { id: 'library', label: 'Library', href: '/library', icon: Book },
+      { id: 'community', label: 'DAO', href: '/community', icon: UsersThree },
     ],
   },
   {
     id: 'extras',
     label: 'EXTRAS',
     items: [
-      { id: 'markets', label: 'Markets', href: '/markets', icon: Lightning },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

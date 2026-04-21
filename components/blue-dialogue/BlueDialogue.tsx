@@ -139,33 +139,25 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   return (
     <div className={`${styles.container} ${isOverlayVariant ? styles.containerOverlay : ''}`}>
-      <div className={styles.avatarContainer}>
-        <div className={`${styles.avatarWrapper} ${isOverlayVariant ? styles.avatarWrapperOverlay : ''}`}>
-          <Image
-            src={avatarSrc ?? DEFAULT_BLUE_AVATAR}
-            alt={`Blue ${currentEmotion}`}
-            width={80}
-            height={80}
-            className={styles.avatar}
-            unoptimized
-          />
-        </div>
-        <div className={styles.nameTag}>
-          <span className={styles.name}>Agent Blue</span>
-          <span className={styles.role}>Leadership Team</span>
-        </div>
+      <div className={`${styles.avatarWrapper} ${isOverlayVariant ? styles.avatarWrapperOverlay : ''}`}>
+        <Image
+          src={avatarSrc ?? DEFAULT_BLUE_AVATAR}
+          alt={`Blue ${currentEmotion}`}
+          width={80}
+          height={80}
+          className={styles.avatar}
+          unoptimized
+        />
       </div>
-      <div className={styles.dialogueBox}>
-        <div
-          className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''} ${isOverlayVariant ? styles.dialogueContentOverlay : ''}`}
+      <div
+        className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''} ${isOverlayVariant ? styles.dialogueContentOverlay : ''}`}
+      >
+        <p
+          className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''} ${isOverlayVariant ? styles.messageOverlay : ''}`}
         >
-          <p
-            className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''} ${isOverlayVariant ? styles.messageOverlay : ''}`}
-          >
-            {displayedText}
-            {isTyping && <span className={styles.cursor}>|</span>}
-          </p>
-        </div>
+          {displayedText}
+          {isTyping && <span className={styles.cursor}>|</span>}
+        </p>
         {showSkip && isTyping && (
           <button className={styles.skipButton} onClick={handleSkip} type="button">
             Skip

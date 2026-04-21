@@ -1,12 +1,13 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { useState, useEffect, useCallback } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
+import CreditScore from '@/components/credit-score/CreditScore';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -218,15 +219,27 @@ const SENTIMENT_STREAM_LAYERS = buildStreamLayers(
   SENTIMENT_CHART_HEIGHT,
 ).map((layer) => ({ ...layer, d: streamLayerPath(layer.points) }));
 
-const VOTER_TONES = ['Blue', 'Violet', 'Warm', 'Teal', 'Amber'] as const;
+const DASHBOARD_FILTERS = [
+  'Treasury Cycle 01',
+  'Proposal Status Active',
+  'Updated Live',
+] as const;
 
-function deriveInitials(value: string | null | undefined): string {
-  if (!value) return '··';
-  const trimmed = value.replace(/^0x/i, '').trim();
-  if (!trimmed) return '··';
-  const letters = trimmed.replace(/[^a-z0-9]/gi, '');
-  return (letters.slice(0, 2) || trimmed.slice(0, 2)).toUpperCase();
-}
+const KPI_CARD_META = [
+  { label: 'Treasury Reserve', detail: 'USDC available', value: '$5.2K' },
+  { label: 'Support Pods', detail: 'Active allocations', value: `${FUNDING_PODS.length}` },
+] as const;
+
+const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
+  label: string;
+  accent: string;
+  image?: string;
+}> = [
+  { label: 'Blue', image: '/library/CharacterBlue.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'AZ', accent: styles.dashboardAvatarBlue },
+  { label: 'MW', accent: styles.dashboardAvatarWarm },
+  { label: 'OP', accent: styles.dashboardAvatarSlate },
+];
 
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
@@ -368,38 +381,19 @@ export default function VotingPage() {
     }
   };
 
-  const recentVoters = (() => {
-    const seen = new Set<string>();
-    const picks: {
-      id: string;
-      avatarUrl: string | null;
-      name: string;
-      initials: string;
-      tone: (typeof VOTER_TONES)[number];
-    }[] = [];
-    for (const p of proposals) {
-      if (!(p.user.username || p.user.avatarUrl || p.walletAddress)) continue;
-      const key = (p.walletAddress || p.user.username || p.id).toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      picks.push({
-        id: p.id,
-        avatarUrl: p.user.avatarUrl,
-        name: p.user.username || p.walletAddress || 'Community member',
-        initials: deriveInitials(p.user.username || p.walletAddress),
-        tone: VOTER_TONES[picks.length % VOTER_TONES.length],
-      });
-      if (picks.length === VOTER_TONES.length) break;
-    }
-    return picks;
-  })();
-
   const fundingSlides = Array.from(
     { length: FUNDING_CAROUSEL_REPEAT_COUNT },
     () => FUNDING_PODS
   ).flat();
   const fundingSlideWidth = 100 / fundingSlides.length;
   const activeFundingIndicator = activeFundingSlide % FUNDING_PODS.length;
+  const approvedProposalsCount = proposals.filter((proposal) => proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed').length;
+  const pendingProposalsCount = proposals.filter((proposal) => proposal.status === 'pending_review').length;
+  const dashboardMetrics = [
+    ...KPI_CARD_META,
+    { label: 'Live Proposals', detail: 'Approved or on-chain', value: approvedProposalsCount.toString().padStart(2, '0') },
+    { label: 'In Review', detail: 'Awaiting decision', value: pendingProposalsCount.toString().padStart(2, '0') },
+  ];
   const handleFundingTrackTransitionEnd = () => {
     if (activeFundingSlide >= fundingSlides.length - FUNDING_PODS.length) {
       setIsFundingTransitionEnabled(false);
@@ -428,6 +422,72 @@ export default function VotingPage() {
           ) : (
           <>
           <div className={styles.communityMainWrapper}>
+            <div className={styles.dashboardChrome}>
+              <header className={styles.dashboardMasthead}>
+                <div className={styles.dashboardBrand}>
+                  <div className={styles.dashboardBrandMark} aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <div className={styles.dashboardBrandText}>
+                    <span className={styles.dashboardBrandName}>Mental Wealth Academy</span>
+                    <span className={styles.dashboardBrandMeta}>Decision Room</span>
+                  </div>
+                </div>
+                <div className={styles.dashboardSearch} aria-label="Dashboard search">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M11 5a6 6 0 1 0 0 12a6 6 0 0 0 0-12Zm8 14l-3.4-3.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                  <span>Search proposals, treasury activity, and member signals</span>
+                </div>
+                <div className={styles.dashboardPresence} aria-label="Active members">
+                  {DASHBOARD_PARTICIPANTS.map((participant) => (
+                    <span
+                      key={participant.label}
+                      className={`${styles.dashboardAvatar} ${participant.accent}`}
+                      title={participant.label}
+                    >
+                      {participant.image ? (
+                        <Image
+                          src={participant.image}
+                          alt={participant.label}
+                          width={34}
+                          height={34}
+                          className={styles.dashboardAvatarImage}
+                          unoptimized
+                        />
+                      ) : (
+                        participant.label
+                      )}
+                    </span>
+                  ))}
+                </div>
+              </header>
+
+              <div className={styles.dashboardTitleRow}>
+                <div className={styles.dashboardTitleBlock}>
+                  <h1 className={styles.dashboardTitle}>
+                    Azura Community <span className={styles.dashboardTitleAccent}>Decision Room</span>
+                  </h1>
+                  <p className={styles.dashboardSubtitle}>
+                    Treasury proposals, member support allocations, and live community funding signals.
+                  </p>
+                </div>
+                <div className={styles.dashboardStatus}>
+                  <span className={styles.dashboardStatusDot} />
+                  Governance live
+                </div>
+              </div>
+
+              <div className={styles.dashboardFilters} aria-label="Community dashboard filters">
+                {DASHBOARD_FILTERS.map((filter) => (
+                  <span key={filter} className={styles.dashboardFilterPill}>
+                    {filter}
+                  </span>
+                ))}
+              </div>
+
             <div className={styles.communityTopbar}>
               <div className={styles.communityTabs} role="tablist" aria-label="Community views">
                 <button
@@ -454,6 +514,16 @@ export default function VotingPage() {
             </div>
 
             <div className={styles.communityViewViewport}>
+              <section className={styles.dashboardMetricRail} aria-label="Community performance metrics">
+                {dashboardMetrics.map((metric) => (
+                  <article key={metric.label} className={styles.dashboardMetricCard}>
+                    <span className={styles.dashboardMetricLabel}>{metric.label}</span>
+                    <strong className={styles.dashboardMetricValue}>{metric.value}</strong>
+                    <span className={styles.dashboardMetricDetail}>{metric.detail}</span>
+                  </article>
+                ))}
+              </section>
+
               {communityView === 'overview' && (
                 <section className={styles.communityViewPanel}>
                 <div className={styles.reserveCard}>
@@ -477,37 +547,7 @@ export default function VotingPage() {
                   </header>
                   <div className={styles.reserveInsightsGrid}>
                     <section className={styles.reserveInsightCard}>
-                      <div className={styles.reserveInsightHeader}>
-                        <span className={styles.reserveInsightLabel}>Recent Votes</span>
-                        <span className={styles.reserveInsightMeta}>{recentVoters.length || 0} members</span>
-                      </div>
-                      <div className={styles.reserveAvatarRow} aria-label="Recent voter activity">
-                        {recentVoters.length === 0 ? (
-                          <span className={styles.reserveAvatarEmpty}>No votes yet</span>
-                        ) : (
-                          recentVoters.map((voter) => (
-                            <span
-                              key={voter.id}
-                              className={`${styles.reserveAvatar} ${styles[`reserveAvatar${voter.tone}`]}`}
-                              title={voter.name}
-                            >
-                              {voter.avatarUrl ? (
-                                <Image
-                                  src={voter.avatarUrl}
-                                  alt={voter.name}
-                                  width={34}
-                                  height={34}
-                                  className={styles.reserveAvatarImage}
-                                  unoptimized
-                                />
-                              ) : (
-                                <span className={styles.reserveAvatarInitials}>{voter.initials}</span>
-                              )}
-                            </span>
-                          ))
-                        )}
-                      </div>
-                      <p className={styles.reserveInsightText}>A calm majority is forming around care and research tools.</p>
+                      <CreditScore />
                     </section>
 
                     <section className={styles.reserveInsightCard}>
@@ -547,35 +587,6 @@ export default function VotingPage() {
                         ))}
                       </div>
                     </section>
-                  </div>
-                  <div className={styles.reserveFundingSection}>
-                    <div className={styles.reserveInsightHeader}>
-                      <span className={styles.reserveInsightLabel}>Recently Funded</span>
-                      <span className={styles.reserveInsightMeta}>Last 3 approvals</span>
-                    </div>
-                    <div className={styles.reserveFundingList}>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Peer support sprint</p>
-                          <p className={styles.reserveFundingNote}>Member care pod</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$1.2k</span>
-                      </article>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Research library credits</p>
-                          <p className={styles.reserveFundingNote}>Knowledge tools</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$640</span>
-                      </article>
-                      <article className={styles.reserveFundingItem}>
-                        <div>
-                          <p className={styles.reserveFundingTitle}>Emergency relief grant</p>
-                          <p className={styles.reserveFundingNote}>Fast-track aid</p>
-                        </div>
-                        <span className={styles.reserveFundingAmount}>$400</span>
-                      </article>
-                    </div>
                   </div>
                 </div>
 
@@ -775,6 +786,7 @@ export default function VotingPage() {
                 </div>
                 </section>
               )}
+            </div>
             </div>
           </div>
           </>

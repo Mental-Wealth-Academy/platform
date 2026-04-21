@@ -1,6 +1,3 @@
-WEEK 1
-Recovering a Sense of Safety
-
 [cite_start]This week initiates your creative recovery. [cite: 1, 2, 3] [cite_start]You may feel both giddy and defiant, hopeful and skeptical. [cite: 3] [cite_start]The readings, tasks, and exercises aim at allowing you to establish a sense of safety, which will enable you to explore your creativity with less fear. [cite: 4]
 
 ---

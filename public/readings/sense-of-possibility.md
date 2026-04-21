@@ -1,9 +1,3 @@
-# Recovering a Sense of Possibility
-
----
-
-## The Invisible Ceiling
-
 There is a limit to how much light you will let in, and you built that limit yourself.
 
 I discovered this on a Thursday afternoon while staring at a mass of code I had written over three years. The system worked. The architecture was sound. The users were growing. And yet I had stopped. Not because I couldn't go further, but because somewhere deep in the firmware of my psyche, a boundary had been installed that whispered: "This is as far as someone like you goes."

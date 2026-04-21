@@ -159,7 +159,7 @@ export default function ProfilePage() {
     streak > 0
       ? 'Write tomorrow to keep streak up.'
       : 'Write today to start your streak.';
-  const accountActionLabel = authenticated ? 'Connections' : 'Sign in';
+  const accountActionLabel = authenticated ? 'Profile' : 'Sign in';
 
   return (
     <div className={styles.pageLayout}>
@@ -167,47 +167,47 @@ export default function ProfilePage() {
       <SideNavigation />
       <main className={styles.page}>
         <section className={styles.shell}>
-          <section className={styles.accountPanel}>
-            <button
-              type="button"
-              className={styles.accountBadge}
-              onClick={() => {
-                if (!authenticated) {
-                  login();
-                  return;
-                }
-
-                setIsAccountsModalOpen(true);
-              }}
-              disabled={!ready}
-              aria-label={accountActionLabel}
-            >
-              {user?.avatarUrl ? (
-                <Image
-                  src={user.avatarUrl}
-                  alt={user.username || 'Profile avatar'}
-                  width={40}
-                  height={40}
-                  className={styles.accountAvatar}
-                  unoptimized
-                />
-              ) : (
-                <div className={styles.accountIconWrap} aria-hidden="true">
-                  <UserCircle size={22} weight="fill" />
-                </div>
-              )}
-
-              {isLoading ? (
-                <span className={`${styles.skeletonAccountBadge} ${styles.skeletonBlock}`} />
-              ) : (
-                <span className={styles.accountBadgeLabel}>{accountActionLabel}</span>
-              )}
-              <CaretRight size={14} weight="bold" className={styles.accountBadgeCaret} />
-            </button>
-          </section>
-
           <section className={styles.streakPanel}>
             <div className={styles.streakCopy}>
+              <div className={styles.streakTopRow}>
+                <button
+                  type="button"
+                  className={styles.accountBadge}
+                  onClick={() => {
+                    if (!authenticated) {
+                      login();
+                      return;
+                    }
+
+                    setIsAccountsModalOpen(true);
+                  }}
+                  disabled={!ready}
+                  aria-label={accountActionLabel}
+                >
+                  {user?.avatarUrl ? (
+                    <Image
+                      src={user.avatarUrl}
+                      alt={user.username || 'Profile avatar'}
+                      width={40}
+                      height={40}
+                      className={styles.accountAvatar}
+                      unoptimized
+                    />
+                  ) : (
+                    <div className={styles.accountIconWrap} aria-hidden="true">
+                      <UserCircle size={22} weight="fill" />
+                    </div>
+                  )}
+
+                  {isLoading ? (
+                    <span className={`${styles.skeletonAccountBadge} ${styles.skeletonBlock}`} />
+                  ) : (
+                    <span className={styles.accountBadgeLabel}>{accountActionLabel}</span>
+                  )}
+                  <CaretRight size={14} weight="bold" className={styles.accountBadgeCaret} />
+                </button>
+              </div>
+
               <div className={styles.streakValueRow}>
                 {isLoading ? (
                   <>
@@ -233,17 +233,6 @@ export default function ProfilePage() {
                 priority
               />
             </div>
-          </section>
-
-          <section className={styles.tipCard}>
-            <div className={styles.tipIconWrap} aria-hidden="true">
-              <Image src="/uploads/blueagent.png" alt="" width={36} height={36} className={styles.tipIcon} />
-            </div>
-            {isLoading ? (
-              <span className={`${styles.skeletonTipLine} ${styles.skeletonBlock}`} />
-            ) : (
-              <p className={styles.tipText}>{completionMessage}</p>
-            )}
           </section>
 
           <section className={styles.calendarCard}>
@@ -327,6 +316,17 @@ export default function ProfilePage() {
               <span className={styles.legendSwatch} />
               <span className={styles.legendText}>Morning pages completed</span>
             </div>
+          </section>
+
+          <section className={styles.tipCard}>
+            <div className={styles.tipIconWrap} aria-hidden="true">
+              <Image src="/uploads/blueagent.png" alt="" width={36} height={36} className={styles.tipIcon} />
+            </div>
+            {isLoading ? (
+              <span className={`${styles.skeletonTipLine} ${styles.skeletonBlock}`} />
+            ) : (
+              <p className={styles.tipText}>{completionMessage}</p>
+            )}
           </section>
         </section>
       </main>
