@@ -813,8 +813,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
+  background: #000000;
+  backdrop-filter: none;
 }
 
 .modal {
@@ -822,14 +822,11 @@
   width: 100%;
   max-width: 640px;
   min-height: min(78vh, 760px);
-  background:
-    radial-gradient(circle at top right, rgba(81, 104, 255, 0.18), transparent 26%),
-    radial-gradient(circle at top left, rgba(42, 56, 116, 0.12), transparent 32%),
-    linear-gradient(180deg, #212737 0%, #181e2b 100%);
-  border: 1px solid rgba(123, 153, 255, 0.12);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 24px;
   box-shadow:
-    0 30px 90px rgba(3, 8, 20, 0.52),
+    0 30px 90px rgba(0, 0, 0, 0.62),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
   overflow: hidden;
   display: flex;
@@ -917,21 +914,6 @@
   text-transform: uppercase;
 }
 
-.timerBar {
-  height: 3px;
-  background: rgba(106, 129, 196, 0.16);
-  border: none;
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.timerBarFill {
-  height: 100%;
-  background: var(--week-color, #5168FF);
-  border-radius: 999px;
-  transition: width 1s linear;
-}
-
 .writeArea {
   flex: 1;
   display: flex;
@@ -991,20 +973,18 @@
   font-size: 16px;
   line-height: 1.65;
   color: rgba(244, 247, 255, 0.94);
-  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
-  border: 1px solid rgba(126, 156, 255, 0.16);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   resize: none;
   box-sizing: border-box;
   transition: border-color 0.15s ease;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.02),
-    0 12px 30px rgba(4, 8, 18, 0.28);
+  box-shadow: none;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: rgba(126, 156, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .textarea::placeholder {
@@ -1012,44 +992,9 @@
 }
 
 .modalFooter {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  gap: 0;
+  display: flex;
   padding: 10px 14px 14px;
-  border-top: 1px solid rgba(123, 153, 255, 0.12);
-  background: linear-gradient(180deg, rgba(21, 26, 37, 0.98) 0%, rgba(15, 18, 27, 0.98) 100%);
-}
-
-.modalFooter > .timerBar {
-  grid-column: 1 / -1;
-  margin: 0 2px 10px;
-}
-
-
-.pauseBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 18px 20px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(236, 241, 252, 0.9);
-  background: linear-gradient(180deg, rgba(34, 41, 58, 0.96) 0%, rgba(27, 32, 46, 0.96) 100%);
-  border: 0;
-  border-right: 1px solid rgba(123, 153, 255, 0.1);
-  border-radius: 16px 0 0 16px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  flex: 1;
-}
-
-.pauseBtn:hover {
-  background: linear-gradient(180deg, rgba(40, 47, 66, 0.98) 0%, rgba(31, 37, 53, 0.98) 100%);
+  background: transparent;
 }
 
 .submitBtn {
@@ -1069,10 +1014,11 @@
   background: var(--color-primary, #5168FF);
   border: none;
   overflow: hidden;
-  border-radius: 0 16px 16px 0;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
+  width: 100%;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
@@ -1329,7 +1275,7 @@
     padding: 18px 18px 22px;
     font-size: 17px;
     line-height: 1.72;
-    background: #161b23;
+    background: #000000;
     border-left: none;
     border-right: none;
     box-shadow: none;
@@ -1337,25 +1283,12 @@
 
   .modalFooter {
     padding: 10px 14px 14px;
-    backdrop-filter: blur(14px);
+    backdrop-filter: none;
   }
 
-  .modalFooter > .timerBar {
-    margin: 0 2px 10px;
-  }
-
-  .pauseBtn,
   .submitBtn {
     min-height: 58px;
     font-size: 13px;
-  }
-
-  .pauseBtn {
-    border-radius: 15px 0 0 15px;
-  }
-
-  .submitBtn {
-    border-radius: 0 15px 15px 0;
   }
 }
 
@@ -1483,10 +1416,6 @@
     padding: 8px;
   }
 
-  .modalFooter > .timerBar {
-    padding: 10px 16px 8px;
-  }
-
   .timerCount {
     font-size: clamp(24px, 7vw, 34px);
   }
@@ -1509,7 +1438,7 @@
     min-height: 220px;
     padding: 14px 16px 16px;
     font-size: 15px;
-    background: #161b23;
+    background: #000000;
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -1734,13 +1663,10 @@
 
 
 :global([data-theme="dark"]) .modal {
-  background:
-    radial-gradient(circle at top right, rgba(69, 123, 255, 0.16), transparent 26%),
-    radial-gradient(circle at top left, rgba(27, 67, 166, 0.12), transparent 32%),
-    linear-gradient(180deg, #171b24 0%, #141923 100%);
-  border-color: rgba(123, 153, 255, 0.12);
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.04);
   box-shadow:
-    0 30px 90px rgba(3, 8, 20, 0.62),
+    0 30px 90px rgba(0, 0, 0, 0.62),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -1755,17 +1681,11 @@
   text-shadow: 0 0 18px rgba(10, 132, 255, 0.12);
 }
 
-:global([data-theme="dark"]) .timerBar {
-  background: rgba(106, 129, 196, 0.16);
-}
-
 :global([data-theme="dark"]) .textarea {
-  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  background: #000000;
   color: rgba(244, 247, 255, 0.94);
-  border-color: rgba(126, 156, 255, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.02),
-    0 12px 30px rgba(4, 8, 18, 0.28);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
 }
 
 :global([data-theme="dark"]) .textarea::placeholder {
@@ -1773,7 +1693,7 @@
 }
 
 :global([data-theme="dark"]) .textarea:focus {
-  border-color: rgba(126, 156, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 @media (max-width: 768px) {
@@ -1790,7 +1710,7 @@
   }
 
   :global([data-theme="dark"]) .modal {
-    box-shadow: none;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62);
   }
 
   :global([data-theme="dark"]) .authPromptPrimary {
@@ -1800,7 +1720,7 @@
   }
 
   :global([data-theme="dark"]) .textarea {
-    background: #161b23;
+    background: #000000;
     border-left: none;
     border-right: none;
     box-shadow: none;
@@ -1816,23 +1736,7 @@
 }
 
 :global([data-theme="dark"]) .modalFooter {
-  border-top-color: rgba(123, 153, 255, 0.12);
-  background: linear-gradient(180deg, rgba(21, 26, 37, 0.98) 0%, rgba(15, 18, 27, 0.98) 100%);
-}
-
-:global([data-theme="dark"]) .modalFooter > .timerBar {
-  border-bottom-color: rgba(123, 153, 255, 0.1);
-  background: linear-gradient(180deg, rgba(27, 33, 47, 0.96) 0%, rgba(20, 24, 35, 0.96) 100%);
-}
-
-:global([data-theme="dark"]) .pauseBtn {
-  color: rgba(236, 241, 252, 0.9);
-  background: linear-gradient(180deg, rgba(34, 41, 58, 0.96) 0%, rgba(27, 32, 46, 0.96) 100%);
-  border-right-color: rgba(123, 153, 255, 0.1);
-}
-
-:global([data-theme="dark"]) .pauseBtn:hover {
-  background: linear-gradient(180deg, rgba(40, 47, 66, 0.98) 0%, rgba(31, 37, 53, 0.98) 100%);
+  background: transparent;
 }
 
 :global([data-theme="dark"]) .submitBtn {

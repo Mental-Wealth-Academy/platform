@@ -160,11 +160,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
     setIntroDayIndex(dayIndex);
   }, []);
 
-  const pauseTimer = () => {
-    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-    setIsPaused(true);
-  };
-
   const resumeTimer = () => {
     setIsPaused(false);
     setShowConfirmDialog(false);
@@ -682,33 +677,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
 
             <div className={styles.modalFooter}>
-              <div
-                className={styles.timerBar}
-                aria-hidden="true"
-              >
-                <div
-                  className={styles.timerBarFill}
-                  style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
-                />
-              </div>
-              <button
-                type="button"
-                className={styles.pauseBtn}
-                onClick={() => { play('click'); isPaused ? resumeTimer() : pauseTimer(); }}
-                onMouseEnter={() => play('hover')}
-              >
-                {isPaused ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    Resume
-                  </>
-                ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    Pause
-                  </>
-                )}
-              </button>
               <button
                 type="button"
                 className={styles.submitBtn}

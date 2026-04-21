@@ -67,9 +67,9 @@ const WEEKLY_READINGS = [
 ];
 
 const WEEK_TITLES = [
-  'Introduction', 'Safety', 'Identity', 'Power', 'Integrity',
-  'Possibility', 'Abundance', 'Connection', 'Strength',
-  'Compassion', 'Protection', 'Autonomy', 'Faith', 'Epilogue',
+  'Week 0', 'Week 1', 'Week 2', 'Week 3', 'Week 4',
+  'Week 5', 'Week 6', 'Week 7', 'Week 8',
+  'Week 9', 'Week 10', 'Week 11', 'Week 12', 'Week 13',
 ];
 
 export default function HomePage() {
@@ -393,15 +393,9 @@ export default function HomePage() {
           </button>
           <div className={styles.weekHeaderCenter}>
             {seasonLoading ? (
-              <>
-                <span className={`${styles.weekLabel} ${styles.skeletonText} ${styles.skeletonBlock}`} />
-                <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
-              </>
+              <span className={`${styles.weekTitle} ${styles.skeletonTextWide} ${styles.skeletonBlock}`} />
             ) : (
-              <>
-                <span className={styles.weekLabel}>WEEK {resolvedViewWeek}</span>
-                <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
-              </>
+              <span className={styles.weekTitle}>{WEEK_TITLES[resolvedViewWeek]}</span>
             )}
           </div>
           <button
@@ -481,6 +475,8 @@ export default function HomePage() {
                   <path d="M9 18l6-6-6-6"/>
                 </svg>
               </button>
+
+              <h2 className={styles.missionsHeading}>Missions</h2>
 
               <WeekTasksView
                 key={resolvedViewWeek}

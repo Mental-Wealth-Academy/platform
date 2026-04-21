@@ -436,6 +436,19 @@
   flex-shrink: 0;
 }
 
+.missionsHeading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1D33;
+  letter-spacing: -0.01em;
+  margin: 8px 4px 0;
+}
+
+:global([data-theme="dark"]) .missionsHeading {
+  color: rgba(227, 225, 238, 0.95);
+}
+
 .weekTasksSkeleton {
   display: flex;
   flex-direction: column;
@@ -746,9 +759,7 @@
     background: linear-gradient(
       180deg,
       rgb(var(--morning-pages-filter-light) / 0%) 0%,
-      rgb(var(--morning-pages-filter-light) / 50%) 24%,
-      rgb(var(--morning-pages-filter-light) / 52%) 52%,
-      rgb(var(--morning-pages-filter-light) / 100%) 82%,
+      rgb(var(--morning-pages-filter-light) / 0%) 50%,
       rgb(var(--morning-pages-filter-light) / 100%) 100%
     );
   }
@@ -946,9 +957,7 @@
     background: linear-gradient(
       180deg,
       rgb(var(--morning-pages-filter-dark) / 0%) 0%,
-      rgb(var(--morning-pages-filter-dark) / 50%) 24%,
-      rgb(var(--morning-pages-filter-dark) / 52%) 52%,
-      rgb(var(--morning-pages-filter-dark) / 100%) 82%,
+      rgb(var(--morning-pages-filter-dark) / 0%) 50%,
       rgb(var(--morning-pages-filter-dark) / 100%) 100%
     );
   }
