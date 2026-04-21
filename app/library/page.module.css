@@ -3,6 +3,7 @@
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
   position: relative;
+  overflow-x: clip;
 }
 
 .copyNotification {
@@ -53,6 +54,7 @@
   width: 100%;
   min-height: 100vh;
   background: var(--color-background);
+  overflow-x: clip;
 }
 
 /* Top Banner - Minimal */
@@ -138,6 +140,9 @@
   padding: 20px 24px;
   flex: 1;
   min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 /* Main Area */
@@ -165,6 +170,11 @@
   gap: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--color-border);
+}
+
+.headerCopy {
+  flex: 1;
+  min-width: 0;
 }
 
 .title {
@@ -223,6 +233,33 @@
 
 .scanButton:hover {
   background: rgba(81, 104, 255, 0.05);
+}
+
+.mobileFeatureRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mobileFeatureTile {
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(107, 125, 255, 0.14) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 20px rgba(81, 104, 255, 0.08);
+}
+
+[data-theme='dark'] .mobileFeatureTile {
+  border-color: rgba(81, 104, 255, 0.24);
+  background:
+    linear-gradient(135deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.2) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 22px rgba(0, 0, 0, 0.24);
 }
 
 /* Featured Art Styles Section */
@@ -854,9 +891,12 @@
   }
 
   .headerSection {
-    flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  .headerCopy {
+    max-width: min(100%, 34rem);
   }
 
   .artStylesContainer {
@@ -877,7 +917,7 @@
   }
 
   .scanButton {
-    align-self: flex-end;
+    align-self: flex-start;
     padding: 6px 10px;
     font-size: 11px;
   }
@@ -954,6 +994,13 @@
 }
 
 @media (max-width: 600px) {
+  .pageLayout,
+  .container,
+  .contentWrapper,
+  .mainArea {
+    overflow-x: clip;
+  }
+
   .topBanner {
     padding: 6px 0;
     flex-wrap: wrap;
@@ -991,7 +1038,29 @@
   }
 
   .headerSection {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px;
     padding-bottom: 8px;
+  }
+
+  .headerCopy {
+    max-width: none;
+  }
+
+  .subtitle {
+    max-width: 28ch;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .mobileFeatureRow {
+    gap: 8px;
+  }
+
+  .mobileFeatureTile {
+    border-radius: 8px;
   }
 
   .featuredSection {
@@ -1039,8 +1108,15 @@
   }
 
   .scanButton {
+    justify-self: end;
+    align-self: start;
     padding: 5px 8px;
     font-size: 10px;
+  }
+
+  .scanButton svg {
+    width: 12px;
+    height: 12px;
   }
 
   .searchBox {
@@ -1087,6 +1163,11 @@
 
   .skillsTable {
     font-size: 9px;
+  }
+
+  .tableContainer,
+  .tableScroll {
+    max-width: 100%;
   }
 
   .categoryCell {

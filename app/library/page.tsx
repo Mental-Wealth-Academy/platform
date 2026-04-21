@@ -197,7 +197,7 @@ export default function LibraryPage() {
             <div className={styles.mainArea}>
               {/* Header Section */}
               <div className={styles.headerSection}>
-                <div>
+                <div className={styles.headerCopy}>
                   <h1 className={styles.title}>Prompt Library</h1>
                   <p className={styles.subtitle}>Browse verified prompts and AI art styles. Click any item to copy to clipboard.</p>
                 </div>
@@ -220,6 +220,12 @@ export default function LibraryPage() {
                   </svg>
                   Character
                 </button>
+              </div>
+
+              <div className={styles.mobileFeatureRow} aria-hidden="true">
+                <div className={styles.mobileFeatureTile} />
+                <div className={styles.mobileFeatureTile} />
+                <div className={styles.mobileFeatureTile} />
               </div>
 
               {/* Featured Art Styles Section */}

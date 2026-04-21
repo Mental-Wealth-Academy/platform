@@ -466,8 +466,8 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               />
             </div>
             <div>
-              <span className={styles.label}>Morning Pages</span>
-              <span className={styles.sublabel}>
+              {!compact && <span className={styles.label}>Morning Pages</span>}
+              <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
                 {cardSubLabel}
               </span>
             </div>
@@ -647,7 +647,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
             <div className={styles.modalMain}>
               <div className={styles.modalHeader}>
-                <span className={styles.headerLabel}>morning pages</span>
                 <button
                   type="button"
                   className={styles.modalCloseBtn}
@@ -656,9 +655,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                 >
                   Close
                 </button>
-                <span className={`${styles.timerCount} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-                  {isPaused ? 'paused' : formatTimer(timerSeconds)}
-                </span>
               </div>
 
               <div className={styles.writeArea}>
@@ -688,13 +684,14 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
             </div>
 
             <div className={styles.modalFooter}>
-              <div className={styles.footerTimer}>
-                <div className={styles.timerBar}>
-                  <div
-                    className={styles.timerBarFill}
-                    style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
-                  />
-                </div>
+              <div
+                className={styles.timerBar}
+                aria-hidden="true"
+              >
+                <div
+                  className={styles.timerBarFill}
+                  style={{ width: `${((900 - timerSeconds) / 900) * 100}%` }}
+                />
               </div>
               <button
                 type="button"
