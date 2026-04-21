@@ -149,6 +149,11 @@
   color: rgba(227, 225, 238, 0.95);
 }
 
+.labelCompact {
+  font-size: 14px;
+  line-height: 1.1;
+}
+
 .sublabel {
   display: flex;
   align-items: center;
@@ -793,7 +798,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 20px;
 }
 
@@ -813,11 +818,14 @@
   max-width: 640px;
   min-height: min(78vh, 760px);
   background:
-    radial-gradient(circle at top right, rgba(81, 104, 255, 0.12), transparent 28%),
-    linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
-  border: 1px solid rgba(26, 29, 51, 0.08);
+    radial-gradient(circle at top right, rgba(81, 104, 255, 0.18), transparent 26%),
+    radial-gradient(circle at top left, rgba(42, 56, 116, 0.12), transparent 32%),
+    linear-gradient(180deg, #212737 0%, #181e2b 100%);
+  border: 1px solid rgba(123, 153, 255, 0.12);
   border-radius: 24px;
-  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.18);
+  box-shadow:
+    0 30px 90px rgba(3, 8, 20, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -852,8 +860,9 @@
   align-items: center;
   justify-content: flex-end;
   padding: 12px 20px 10px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.07);
+  border-bottom: 1px solid rgba(123, 153, 255, 0.1);
   gap: 12px;
+  background: linear-gradient(180deg, rgba(23, 28, 40, 0.98) 0%, rgba(21, 26, 37, 0.94) 100%);
 }
 
 .modalCloseBtn {
@@ -869,16 +878,16 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #1A1D33;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  color: rgba(244, 247, 255, 0.88);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .modalCloseBtn:hover {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
   border-color: rgba(81, 104, 255, 0.24);
 }
 
@@ -886,7 +895,7 @@
   font-family: 'IBM Plex Mono', monospace;
   font-size: 17px;
   font-weight: 700;
-  color: #1A1D33;
+  color: rgba(244, 247, 255, 0.94);
   letter-spacing: 0.02em;
   line-height: 1;
   transition: color 0.3s ease;
@@ -905,7 +914,7 @@
 
 .timerBar {
   height: 3px;
-  background: rgba(26, 29, 51, 0.08);
+  background: rgba(106, 129, 196, 0.16);
   border: none;
   border-radius: 999px;
   overflow: hidden;
@@ -976,22 +985,25 @@
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   line-height: 1.65;
-  color: #1A1D33;
-  background: #ffffff;
-  border: 2px solid rgba(81, 104, 255, 0.16);
+  color: rgba(244, 247, 255, 0.94);
+  background: linear-gradient(180deg, #202637 0%, #1c2230 100%);
+  border: 1px solid rgba(126, 156, 255, 0.16);
   border-radius: 16px;
   resize: none;
   box-sizing: border-box;
   transition: border-color 0.15s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 12px 30px rgba(4, 8, 18, 0.28);
 }
 
 .textarea:focus {
   outline: none;
-  border-color: rgba(81, 104, 255, 0.16);
+  border-color: rgba(126, 156, 255, 0.22);
 }
 
 .textarea::placeholder {
-  color: rgba(26, 29, 51, 0.38);
+  color: rgba(214, 223, 242, 0.44);
 }
 
 .modalFooter {
@@ -999,16 +1011,14 @@
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
   gap: 0;
-  padding: 0;
-  border-top: 1px solid rgba(26, 29, 51, 0.08);
-  background: rgba(255, 255, 255, 0.78);
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(123, 153, 255, 0.12);
+  background: linear-gradient(180deg, rgba(21, 26, 37, 0.98) 0%, rgba(15, 18, 27, 0.98) 100%);
 }
 
 .modalFooter > .timerBar {
   grid-column: 1 / -1;
-  padding: 12px 20px 10px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
-  background: rgba(255, 255, 255, 0.72);
+  margin: 0 2px 10px;
 }
 
 
@@ -1023,18 +1033,18 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #1A1D33;
-  background: linear-gradient(180deg, #F5F7FF 0%, #EBEEFF 100%);
+  color: rgba(236, 241, 252, 0.9);
+  background: linear-gradient(180deg, rgba(34, 41, 58, 0.96) 0%, rgba(27, 32, 46, 0.96) 100%);
   border: 0;
-  border-right: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 0;
+  border-right: 1px solid rgba(123, 153, 255, 0.1);
+  border-radius: 16px 0 0 16px;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
 }
 
 .pauseBtn:hover {
-  background: linear-gradient(180deg, #EEF2FF 0%, #E0E7FF 100%);
+  background: linear-gradient(180deg, rgba(40, 47, 66, 0.98) 0%, rgba(31, 37, 53, 0.98) 100%);
 }
 
 .submitBtn {
@@ -1050,12 +1060,14 @@
   letter-spacing: 0.05em;
   color: #FFFFFF;
   background: var(--color-primary, #5168FF);
-  border: 2px solid #1A1D33;
-  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0 16px 16px 0;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 24px rgba(10, 132, 255, 0.18);
 }
 
 .submitBtn:hover {
@@ -1235,27 +1247,27 @@
 /* ─── Mobile: true full-screen journal view ─── */
 @media (max-width: 768px) {
   .modalOverlay {
-    padding: 0;
-    align-items: stretch;
+    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px) + 10px);
+    padding: max(env(safe-area-inset-top, 0px), 8px) 0 var(--mobile-nav-clearance);
+    align-items: flex-end;
   }
 
   .modalBackdrop {
-    background: rgba(248, 249, 255, 0.92);
-    backdrop-filter: blur(14px);
+    background: rgba(4, 7, 14, 0.66);
+    backdrop-filter: blur(12px);
   }
 
   .modal {
     max-width: 100%;
-    width: 100%;
-    border-radius: 0;
-    height: 100dvh;
+    width: calc(100% - 20px);
+    border-radius: 26px 26px 22px 22px;
+    height: calc(100dvh - var(--mobile-nav-clearance) - max(env(safe-area-inset-top, 0px), 8px));
     min-height: 0;
     animation: none;
-    box-shadow: none;
-    border: none;
-    background:
-      radial-gradient(circle at top right, rgba(81, 104, 255, 0.1), transparent 32%),
-      linear-gradient(180deg, #fbfcff 0%, #f3f6ff 100%);
+    margin: 0 auto;
+    box-shadow:
+      0 26px 60px rgba(3, 8, 20, 0.48),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .modalMain {
@@ -1263,23 +1275,21 @@
   }
 
   .modalHeader {
-    position: sticky;
-    top: 0;
     z-index: 3;
-    padding: calc(max(env(safe-area-inset-top, 0px), 12px) + 4px) 16px 10px;
-    min-height: 56px;
-    background: rgba(251, 252, 255, 0.92);
-    backdrop-filter: blur(16px);
+    padding: 14px 16px 10px;
+    min-height: 0;
+    background: linear-gradient(180deg, rgba(23, 28, 40, 0.98) 0%, rgba(21, 26, 37, 0.94) 100%);
+    backdrop-filter: blur(14px);
   }
 
   .writeArea {
-    padding: 14px 16px 0;
+    padding: 10px 16px 0;
   }
 
   .noteBottom {
     align-items: flex-start;
     gap: 8px;
-    padding: 10px 16px 12px;
+    padding: 10px 16px 10px;
   }
 
   .noteImage {
@@ -1303,33 +1313,34 @@
 
   .textarea {
     min-height: 0;
-    border-radius: 20px;
+    border-radius: 22px;
     border-width: 1px;
     padding: 18px 18px 22px;
     font-size: 17px;
     line-height: 1.72;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.92),
-      0 16px 34px rgba(81, 104, 255, 0.08);
   }
 
   .modalFooter {
-    position: sticky;
-    bottom: 0;
-    padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
-    background: rgba(251, 252, 255, 0.95);
-    backdrop-filter: blur(16px);
+    padding: 10px 14px 14px;
+    backdrop-filter: blur(14px);
   }
 
   .modalFooter > .timerBar {
-    padding: 10px 16px 8px;
+    margin: 0 2px 10px;
   }
 
   .pauseBtn,
   .submitBtn {
     min-height: 58px;
     font-size: 13px;
+  }
+
+  .pauseBtn {
+    border-radius: 15px 0 0 15px;
+  }
+
+  .submitBtn {
+    border-radius: 0 15px 15px 0;
   }
 }
 
@@ -1351,6 +1362,10 @@
     width: 42px;
     height: 42px;
     border-radius: 15px;
+  }
+
+  .cardCompact .label {
+    margin-bottom: 2px;
   }
 
   .cardCompact .sublabel {

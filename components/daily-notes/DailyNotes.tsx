@@ -466,7 +466,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               />
             </div>
             <div>
-              {!compact && <span className={styles.label}>Morning Pages</span>}
+              <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>Morning Pages</span>
               <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
                 {cardSubLabel}
               </span>
