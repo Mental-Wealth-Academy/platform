@@ -150,8 +150,9 @@
 }
 
 .labelCompact {
-  font-size: 14px;
-  line-height: 1.1;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0.02em;
 }
 
 .sublabel {
@@ -707,8 +708,11 @@
 
 .authPromptPrimary,
 .authPromptSecondary {
+  position: relative;
   width: 100%;
   height: 48px;
+  overflow: hidden;
+  isolation: isolate;
   border-radius: 12px;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -725,8 +729,9 @@
 .authPromptPrimary {
   color: #ffffff;
   background: linear-gradient(135deg, #5168FF 0%, #6F7DFF 48%, #7B63FF 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border: none;
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.24),
     0 8px 20px rgba(81, 104, 255, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
@@ -734,8 +739,8 @@
 .authPromptPrimary::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: 12px;
+  inset: 1px;
+  border-radius: 11px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
   pointer-events: none;
 }
@@ -858,37 +863,37 @@
 .modalHeader {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 12px 20px 10px;
-  border-bottom: 1px solid rgba(123, 153, 255, 0.1);
+  justify-content: flex-start;
+  padding: 12px 20px 8px;
+  border-bottom: none;
   gap: 12px;
-  background: linear-gradient(180deg, rgba(23, 28, 40, 0.98) 0%, rgba(21, 26, 37, 0.94) 100%);
+  background: transparent;
 }
 
 .modalCloseBtn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 56px;
-  height: 34px;
-  padding: 0 12px;
-  margin-left: auto;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(244, 247, 255, 0.88);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
+  justify-content: flex-start;
+  gap: 6px;
+  min-width: 0;
+  height: 28px;
+  padding: 0;
+  margin-left: 0;
+  font-family: 'SF Pro Text', 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: rgba(226, 232, 240, 0.84);
+  background: transparent;
+  border: none;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .modalCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(81, 104, 255, 0.24);
+  color: rgba(244, 247, 255, 0.96);
 }
 
 .timerCount {
@@ -1051,6 +1056,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  isolation: isolate;
   gap: 6px;
   padding: 18px 20px;
   font-family: 'IBM Plex Mono', monospace;
@@ -1060,12 +1067,14 @@
   letter-spacing: 0.05em;
   color: #FFFFFF;
   background: var(--color-primary, #5168FF);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: none;
+  overflow: hidden;
   border-radius: 0 16px 16px 0;
   cursor: pointer;
   transition: all 0.15s ease;
   flex: 1;
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 12px 24px rgba(10, 132, 255, 0.18);
 }
@@ -1247,9 +1256,10 @@
 /* ─── Mobile: true full-screen journal view ─── */
 @media (max-width: 768px) {
   .modalOverlay {
-    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px) + 10px);
-    padding: max(env(safe-area-inset-top, 0px), 8px) 0 var(--mobile-nav-clearance);
-    align-items: flex-end;
+    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
+    padding: 0 0 var(--mobile-nav-clearance);
+    align-items: stretch;
+    justify-content: stretch;
   }
 
   .modalBackdrop {
@@ -1259,15 +1269,16 @@
 
   .modal {
     max-width: 100%;
-    width: calc(100% - 20px);
-    border-radius: 26px 26px 22px 22px;
-    height: calc(100dvh - var(--mobile-nav-clearance) - max(env(safe-area-inset-top, 0px), 8px));
+    width: 100%;
+    border-radius: 0;
+    height: 100%;
     min-height: 0;
     animation: none;
-    margin: 0 auto;
-    box-shadow:
-      0 26px 60px rgba(3, 8, 20, 0.48),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: none;
   }
 
   .modalMain {
@@ -1276,14 +1287,14 @@
 
   .modalHeader {
     z-index: 3;
-    padding: 14px 16px 10px;
+    padding: max(env(safe-area-inset-top, 0px), 10px) 16px 6px;
     min-height: 0;
-    background: linear-gradient(180deg, rgba(23, 28, 40, 0.98) 0%, rgba(21, 26, 37, 0.94) 100%);
-    backdrop-filter: blur(14px);
+    background: transparent;
+    backdrop-filter: none;
   }
 
   .writeArea {
-    padding: 10px 16px 0;
+    padding: 0;
   }
 
   .noteBottom {
@@ -1300,8 +1311,8 @@
   .promptBubble {
     flex: 1;
     min-width: 0;
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 7px 10px;
+    font-size: 10px;
     line-height: 1.35;
   }
 
@@ -1313,11 +1324,15 @@
 
   .textarea {
     min-height: 0;
-    border-radius: 22px;
+    border-radius: 0;
     border-width: 1px;
     padding: 18px 18px 22px;
     font-size: 17px;
     line-height: 1.72;
+    background: #161b23;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
   }
 
   .modalFooter {
@@ -1346,6 +1361,10 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .labelCompact {
+    font-size: 17px;
+  }
+
   .cardButton {
     padding: 14px 16px;
     flex-wrap: wrap;
@@ -1439,13 +1458,9 @@
     font-size: 14px;
   }
 
-  .modalOverlay {
-    padding: 12px;
-  }
-
   .modal {
-    min-height: min(82vh, 720px);
-    border-radius: 22px;
+    min-height: 0;
+    border-radius: 0;
   }
 
   .timerDisplay {
@@ -1481,7 +1496,7 @@
   }
 
   .writeArea {
-    padding: 0 16px 12px;
+    padding: 0;
   }
 
   .promptPill {
@@ -1492,8 +1507,13 @@
 
   .textarea {
     min-height: 220px;
-    padding: 14px 14px 16px;
+    padding: 14px 16px 16px;
     font-size: 15px;
+    background: #161b23;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
   }
 
   .dayDots {
@@ -1754,6 +1774,37 @@
 
 :global([data-theme="dark"]) .textarea:focus {
   border-color: rgba(126, 156, 255, 0.22);
+}
+
+@media (max-width: 768px) {
+  .authPromptPrimary {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+      0 8px 18px rgba(81, 104, 255, 0.22);
+  }
+
+  .authPromptPrimary::before {
+    inset: 2px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 52%);
+  }
+
+  :global([data-theme="dark"]) .modal {
+    box-shadow: none;
+  }
+
+  :global([data-theme="dark"]) .authPromptPrimary {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+      0 8px 18px rgba(81, 104, 255, 0.18);
+  }
+
+  :global([data-theme="dark"]) .textarea {
+    background: #161b23;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+  }
 }
 
 :global([data-theme="dark"]) .promptPill {

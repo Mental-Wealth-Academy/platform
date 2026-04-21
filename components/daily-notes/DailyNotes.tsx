@@ -37,15 +37,7 @@ interface DailyNotesProps {
   compact?: boolean;
 }
 
-const WRITING_MESSAGES = [
-  'morning pages helps free your mind',
-  'think of this as spiritual work',
-  'writing keeps my brain sharp',
-  'let your thoughts run free',
-  'words have a way of healing you',
-  'write it out, clear your head',
-  'no editing, just let it flow',
-];
+const MOBILE_PROMPT_MESSAGE = 'Dumping out my brain...';
 
 const WEEK_COLORS = [
   '#5168FF', // Week 1 — indigo
@@ -87,8 +79,6 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
 
   const [dataReady, setDataReady] = useState(false);
   const [queuedCompactStart, setQueuedCompactStart] = useState(false);
-  const dayMessageIndex = new Date().getDate() % WRITING_MESSAGES.length;
-
   // Reset dataReady when enablePersistence changes
   useEffect(() => {
     if (enablePersistence) {
@@ -454,7 +444,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
           className={styles.cardButton}
           onClick={handleCompactClick}
           onMouseEnter={() => play('hover')}
-          aria-label="Open Morning Pages"
+          aria-label="Open Morning Note"
         >
           <div className={styles.cardLeft}>
             <div className={styles.icon}>
@@ -466,10 +456,14 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               />
             </div>
             <div>
-              <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>Morning Pages</span>
-              <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
-                {cardSubLabel}
+              <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
+                {compact ? 'MORNING NOTE' : 'Morning Pages'}
               </span>
+              {!compact && (
+                <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
+                  {cardSubLabel}
+                </span>
+              )}
             </div>
           </div>
           <div className={styles.cardRight}>
@@ -652,8 +646,12 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                   className={styles.modalCloseBtn}
                   onClick={() => { play('click'); requestClose(); }}
                   onMouseEnter={() => play('hover')}
+                  aria-label="Back"
                 >
-                  Close
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Back</span>
                 </button>
               </div>
 
@@ -676,7 +674,7 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
                   height={52}
                   className={styles.noteImage}
                 />
-                <div className={styles.promptBubble}>{WRITING_MESSAGES[dayMessageIndex]}</div>
+                <div className={styles.promptBubble}>{MOBILE_PROMPT_MESSAGE}</div>
                 <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
                   {isPaused ? 'paused' : formatTimer(timerSeconds)}
                 </span>
