@@ -24,7 +24,7 @@
   max-width: 680px;
   max-height: min(90vh, calc(100dvh - 48px));
   background:
-    linear-gradient(180deg, rgba(15, 20, 40, 0.98) 0%, rgba(10, 12, 25, 0.98) 100%);
+    linear-gradient(180deg, rgba(10, 13, 28, 0.99) 0%, rgba(7, 9, 20, 0.99) 100%);
   border: 1.5px solid rgba(81, 104, 255, 0.25);
   border-radius: 28px;
   box-shadow:
@@ -307,12 +307,12 @@
 
 :global([data-theme="dark"]) .card {
   background:
-    radial-gradient(circle at top right, rgba(69, 123, 255, 0.14), transparent 24%),
-    linear-gradient(180deg, #171b24 0%, #141923 100%);
-  border-color: rgba(123, 153, 255, 0.18);
+    radial-gradient(circle at top right, rgba(69, 123, 255, 0.1), transparent 24%),
+    linear-gradient(180deg, #0c0f18 0%, #090c14 100%);
+  border-color: rgba(123, 153, 255, 0.15);
   box-shadow:
-    0 28px 64px rgba(3, 8, 20, 0.52),
-    0 24px 64px rgba(3, 8, 20, 0.5);
+    0 28px 64px rgba(2, 4, 14, 0.72),
+    0 24px 64px rgba(2, 4, 14, 0.65);
 }
 
 :global([data-theme="dark"]) .eyebrow {
