@@ -1,0 +1,60 @@
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  background: #000000;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: auto;
+}
+
+.splashHiding {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 360px;
+  height: 360px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.06) 45%, transparent 72%);
+  filter: blur(56px);
+  pointer-events: none;
+  animation: pulse 3.2s ease-in-out infinite;
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  width: 220px;
+  height: auto;
+  filter: drop-shadow(0 0 24px rgba(81, 104, 255, 0.35)) drop-shadow(0 0 10px rgba(81, 104, 255, 0.25));
+  animation: logoIn 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes logoIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (min-width: 769px) {
+  .splash {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow { animation: none; }
+  .logo { animation: none; }
+}

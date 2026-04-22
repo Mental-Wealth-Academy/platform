@@ -8,6 +8,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
+import MobileSplash from '@/components/mobile-splash/MobileSplash';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 
@@ -315,6 +316,8 @@ export default function HomePage() {
   }, []);
 
   return (
+    <>
+    <MobileSplash />
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated} onSettled={() => setAuthFlowSettled(true)}>
     {authFlowSettled && activeWeek > 0 && <DailyReadPopup activeWeek={activeWeek} />}
     <div className={styles.pageLayout}>
@@ -562,5 +565,6 @@ export default function HomePage() {
 
     </div>
     </HomeWelcomeFlow>
+    </>
   );
 }

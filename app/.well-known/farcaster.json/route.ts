@@ -12,7 +12,7 @@ export async function GET() {
       name: "Mental Wealth Academy",
       homeUrl: URL,
       iconUrl: `${URL}/icons/logo-mwa.png`,
-      splashImageUrl: "https://i.imgur.com/vJeuvKU.png",
+      splashImageUrl: `${URL}/splashlogo.png`,
       splashBackgroundColor: "#000000",
       webhookUrl: `${URL}/api/webhook`,
       subtitle: "Next Gen Micro-University",

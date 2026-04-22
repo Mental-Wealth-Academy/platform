@@ -94,7 +94,7 @@ export const metadata: Metadata = {
           type: 'launch_miniapp',
           name: 'Mental Wealth Academy',
           url: APP_URL,
-          splashImageUrl: 'https://i.imgur.com/vJeuvKU.png',
+          splashImageUrl: `${APP_URL}/splashlogo.png`,
           splashBackgroundColor: '#000000',
         },
       },
@@ -125,6 +125,7 @@ export default async function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
         />
         <meta name="base:app_id" content="695b13d2c63ad876c908212a" />
+        <link rel="preload" as="image" href="/splashlogo.png" fetchPriority="high" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
