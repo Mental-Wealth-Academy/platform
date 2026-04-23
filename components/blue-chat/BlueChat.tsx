@@ -7,6 +7,8 @@ import { useSound } from '@/hooks/useSound';
 import CreditBuilderInline from './CreditBuilderInline';
 import type { CreditIntakeData } from './CreditBuilderInline';
 import TimeManagementInline from './TimeManagementInline';
+import AutoDistributionInline from './AutoDistributionInline';
+import type { AutoDistributionRequest } from './AutoDistributionInline';
 import ResearchCards from './ResearchCards';
 import type { ResearchSource } from './ResearchCards';
 
@@ -46,7 +48,7 @@ interface Message {
 
 interface MessageDebugInfo {
   source: 'eliza' | 'local-fallback';
-  mode: 'chat' | 'research' | 'linkedin-professional';
+  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
   shardsDeducted: number;
   memory?: {
     recentMessages: number;
@@ -63,6 +65,13 @@ interface MessageDebugInfo {
 
 interface ViewerProfile {
   username: string | null;
+}
+
+interface AutoDistributionXConnection {
+  loading: boolean;
+  connected: boolean;
+  username: string | null;
+  error: string | null;
 }
 
 interface UploadedAttachment {
@@ -238,6 +247,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [pendingAttachments, setPendingAttachments] = useState<UploadedAttachment[]>([]);
   const [creditStep, setCreditStep] = useState<'hidden' | 'intake' | 'payment' | 'processing' | 'done'>('hidden');
   const [timeManagementVisible, setTimeManagementVisible] = useState(false);
+  const [autoDistributionVisible, setAutoDistributionVisible] = useState(false);
+  const [autoDistributionXConnection, setAutoDistributionXConnection] = useState<AutoDistributionXConnection>({
+    loading: false,
+    connected: false,
+    username: null,
+    error: null,
+  });
   const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -334,6 +350,46 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  const fetchAutoDistributionXConnection = useCallback(async () => {
+    setAutoDistributionXConnection((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const res = await fetch('/api/x-auth/status', { credentials: 'include' });
+      if (!res.ok) {
+        setAutoDistributionXConnection({
+          loading: false,
+          connected: false,
+          username: null,
+          error: 'x status unavailable',
+        });
+        return;
+      }
+
+      const data = await res.json();
+      setAutoDistributionXConnection({
+        loading: false,
+        connected: Boolean(data.connected),
+        username: data.xAccount?.username ?? null,
+        error: null,
+      });
+    } catch {
+      setAutoDistributionXConnection({
+        loading: false,
+        connected: false,
+        username: null,
+        error: 'x status unavailable',
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!autoDistributionVisible) return;
+
+    fetchAutoDistributionXConnection();
+    const sync = () => fetchAutoDistributionXConnection();
+    window.addEventListener('xAccountUpdated', sync);
+    return () => window.removeEventListener('xAccountUpdated', sync);
+  }, [autoDistributionVisible, fetchAutoDistributionXConnection]);
+
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
     return () => {
@@ -392,6 +448,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             }
           } else if (researchMode) {
             discoverResearch(text);
+          } else if (autoDistributionVisible) {
+            const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+            if (hasShards) {
+              sendToEliza(text, 'auto-distribution');
+            } else {
+              openShardUpsell(SHARD_COST, 'chat');
+            }
           } else if (claudeProfessionalMode) {
             sendToEliza(text, 'linkedin-professional');
           } else {
@@ -465,7 +528,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
   const sendToEliza = async (
     text: string,
-    mode?: 'research' | 'linkedin-professional',
+    mode?: 'research' | 'linkedin-professional' | 'auto-distribution',
     action?: Message['action'],
     attachments?: UploadedAttachment[]
   ) => {
@@ -595,6 +658,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (researchMode) {
       discoverResearch(text);
+      return;
+    }
+
+    if (autoDistributionVisible) {
+      const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+      if (hasShards) {
+        sendToEliza(text, 'auto-distribution', undefined, attachments);
+      } else {
+        openShardUpsell(SHARD_COST, 'chat');
+      }
       return;
     }
 
@@ -1044,6 +1117,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setTimeManagementVisible(false);
+      setAutoDistributionVisible(false);
       setCreditStep('intake');
       addAzuraMessage(
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
@@ -1053,13 +1127,31 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
       setCreditStep('hidden');
+      setAutoDistributionVisible(false);
       setTimeManagementVisible(true);
       addAzuraMessage(
         "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
       );
+    } else if (action === 'auto-distribution') {
+      setResearchMode(false);
+      setClaudeProfessionalMode(false);
+      setPendingAttachments([]);
+      setTimeManagementVisible(false);
+      setCreditStep('hidden');
+      if (autoDistributionVisible) {
+        send('Open auto-distribution', 'searching');
+        addAzuraMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
+        return;
+      }
+      send('Open auto-distribution', 'searching');
+      setAutoDistributionVisible(true);
+      addAzuraMessage(
+        "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
+      );
     } else if (action === 'research') {
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
+      setAutoDistributionVisible(false);
       if (researchMode) {
         send('Start a research session', 'searching');
         addAzuraMessage("you're already in research mode. give me a topic.");
@@ -1076,6 +1168,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setResearchMode(false);
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
+      setAutoDistributionVisible(false);
       if (gpuResearchMode) {
         send('GPU research is running', 'searching');
         addAzuraMessage(gpuTopic ? 'gpu research is processing your topic. synthesis in progress.' : 'gpu research is active. drop your research topic.');
@@ -1092,6 +1185,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setResearchMode(false);
       setTimeManagementVisible(false);
       setCreditStep('hidden');
+      setAutoDistributionVisible(false);
       setClaudeProfessionalMode(true);
       addAzuraMessage(
         "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
@@ -1117,6 +1211,62 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         "treasury, governance, course progress, or just talk through whatever's on your mind. ask me something specific."
       );
     }
+  };
+
+  const connectAutoDistributionX = async () => {
+    setAutoDistributionXConnection((prev) => ({ ...prev, loading: true, error: null }));
+    try {
+      const response = await fetch('/api/x-auth/initiate', { credentials: 'include' });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.authUrl) {
+        const errorMessage = typeof data.error === 'string' ? data.error : 'x connection failed';
+        setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        addAzuraMessage(`${errorMessage}.`);
+        return;
+      }
+
+      window.location.href = data.authUrl;
+    } catch {
+      setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: 'x connection failed' }));
+      addAzuraMessage('x connection failed.');
+    }
+  };
+
+  const handleAutoDistributionGenerate = (request: AutoDistributionRequest) => {
+    const hasShards = shardCount !== null && shardCount >= SHARD_COST;
+    const platformLabels = request.platforms.map((platform) => {
+      if (platform === 'twitter') {
+        return autoDistributionXConnection.connected && autoDistributionXConnection.username
+          ? `x (@${autoDistributionXConnection.username})`
+          : 'x';
+      }
+      return platform;
+    });
+
+    setMessages((prev) => [...prev, {
+      id: Date.now().toString(),
+      text: `Auto-Distribution: ${request.brief}`,
+      sender: 'user',
+      timestamp: new Date(),
+    }]);
+
+    if (!hasShards) {
+      openShardUpsell(SHARD_COST, 'chat');
+      return;
+    }
+
+    const prompt = [
+      `Campaign brief: ${request.brief}`,
+      `Goal: ${request.goal}`,
+      `Platforms: ${platformLabels.join(', ')}`,
+      `Deliverables: ${request.deliverables.join(', ')}`,
+      `Connection state: Gmail draft only; X ${autoDistributionXConnection.connected ? `connected${autoDistributionXConnection.username ? ` as @${autoDistributionXConnection.username}` : ''}` : 'not connected'}; Bluesky draft only.`,
+      'Create a launch-ready distribution plan with channel-specific drafts, image prompts, short-form video concepts, ad angles, search queries for relevant conversations, and the single strongest marketing improvement you recommend.',
+      'Assume explicit user approval is required before any publishing. Do not suggest spam, fake engagement, mass unsolicited outreach, or manipulative tactics.',
+    ].join('\n');
+
+    sendToEliza(prompt, 'auto-distribution');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -1275,6 +1425,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             showEmote('joyful', 5000);
             addAzuraMessage("clean run. you're done.");
           }}
+        />
+      )}
+
+      {autoDistributionVisible && (
+        <AutoDistributionInline
+          isBusy={isTyping}
+          xConnection={autoDistributionXConnection}
+          onConnectX={connectAutoDistributionX}
+          onGenerate={handleAutoDistributionGenerate}
+          onClose={() => setAutoDistributionVisible(false)}
         />
       )}
 
@@ -1709,17 +1869,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('auto-distribution'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Credit Builder</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Auto-Distribution</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Auto-Distribution</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Repair and level up your profile.</span>
+                        <span className={styles.toolCardMeta}>Marketing, Ads, &amp; Engagement.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4zM1 3h2v18H1zm20 0h2v18h-2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
@@ -1739,32 +1899,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
                   </button>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Credit Builder</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Deep-dive sourcing and synthesis.</span>
+                        <span className={styles.toolCardMeta}>Repair and level up your profile.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('gpu-research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>GPU Research</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>GPU Research</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Nosana GPU. 8B–70B model synthesis.</span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4zM1 3h2v18H1zm20 0h2v18h-2z"/></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />

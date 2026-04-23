@@ -30,6 +30,23 @@ RULES:
 
 const RESEARCH_SYSTEM_PROMPT = `You are Blue in research mode. Synthesize the provided research sources into one concise, graduate-level paragraph. High-signal vocabulary, no fluff. Reference frameworks, findings, and theoretical models directly. No markdown. If sources are provided, ground your synthesis in them. If no sources, draw from your training on academic literature.`;
 
+const AUTO_DISTRIBUTION_SYSTEM_PROMPT = `You are Blue in auto-distribution mode. You help users plan cross-channel marketing for their own approved accounts and opted-in audiences.
+
+Style rules:
+- Plain text only. No markdown.
+- Be direct, practical, and specific.
+- Structure the response with short labeled sections using plain text labels like "strategy:" and "x/twitter:".
+
+Capability rules:
+- Draft posts, threads, email copy, image prompts, video concepts, ad angles, and engagement-search queries.
+- When a platform is not connected, provide draft-ready assets and setup guidance instead of pretending it is already publishing.
+- Include one clear recommendation for how to improve the campaign.
+
+Safety rules:
+- No spam, brigading, fake engagement, mass unsolicited outreach, impersonation, or manipulative tactics.
+- Assume the user must explicitly review and approve all content before publishing.
+- For engagement discovery, give search queries, audience angles, and reply ideas rather than harassment tactics.`;
+
 const BLUE_MEMORY_EXTRACTION_PROMPT = `Extract only durable, high-signal memories about the user from this exchange.
 
 Return raw JSON only in this shape:
@@ -91,7 +108,7 @@ interface ElizaMessage {
 
 interface BlueDebugInfo {
   source: 'eliza' | 'local-fallback';
-  mode: 'chat' | 'research' | 'linkedin-professional';
+  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
   shardsDeducted: number;
   memory: {
     recentMessages: number;
@@ -311,7 +328,7 @@ async function extractBlueMemories(args: {
 }
 
 function buildBlueDebugInfo(args: {
-  mode: 'chat' | 'research' | 'linkedin-professional';
+  mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
   shardsDeducted: number;
   contextValues: Awaited<ReturnType<typeof buildBlueContext>>['values'];
   extractedFactsCount: number;
@@ -337,7 +354,7 @@ async function runBlueMemoryAwareTurn(args: {
   userId: string;
   username?: string | null;
   userMessage: string;
-  mode: 'chat' | 'research';
+  mode: 'chat' | 'research' | 'auto-distribution';
   attachmentsCount?: number;
   shardsDeducted: number;
 }) {
@@ -347,7 +364,12 @@ async function runBlueMemoryAwareTurn(args: {
   });
 
   const response = await callElizaCloud(buildBlueChatMessages({
-    systemPrompt: args.mode === 'research' ? RESEARCH_SYSTEM_PROMPT : BLUE_SYSTEM_PROMPT,
+    systemPrompt:
+      args.mode === 'research'
+        ? RESEARCH_SYSTEM_PROMPT
+        : args.mode === 'auto-distribution'
+          ? AUTO_DISTRIBUTION_SYSTEM_PROMPT
+          : BLUE_SYSTEM_PROMPT,
     userMessage: args.userMessage,
     contextText: blueContext.contextText,
     recentMessages: blueContext.values.recentMessages,
@@ -480,6 +502,7 @@ export async function POST(request: Request) {
 
   const isResearch = body.mode === 'research';
   const isLinkedInProfessional = body.mode === 'linkedin-professional';
+  const isAutoDistribution = body.mode === 'auto-distribution';
 
   if (isLinkedInProfessional) {
     const normalizedUsername = (user.username || '').trim().toLowerCase();
@@ -552,7 +575,7 @@ export async function POST(request: Request) {
       userId: user.id,
       username: user.username ?? null,
       userMessage: body.message,
-      mode: 'chat',
+      mode: isAutoDistribution ? 'auto-distribution' : 'chat',
       attachmentsCount: attachments.length,
       shardsDeducted: SHARD_COST,
     });

@@ -51,19 +51,19 @@ interface NavSection {
 const navSections: NavSection[] = [
   {
     id: 'main',
-    label: 'SPIRITUAL WORK',
+    label: 'DeSci Cohort',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
-      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'library', label: 'Library', href: '/library', icon: Book },
       { id: 'community', label: 'DAO', href: '/community', icon: UsersThree },
     ],
   },
   {
     id: 'extras',
-    label: 'EXTRAS',
+    label: 'Community Resources',
     items: [
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
       { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

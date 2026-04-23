@@ -236,40 +236,60 @@
 /* ==================== DARK MODE ==================== */
 
 :global([data-theme="dark"]) .container {
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: none;
+  background: linear-gradient(180deg, rgba(23, 26, 34, 0.94) 0%, rgba(17, 20, 28, 0.96) 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+:global([data-theme="dark"]) .icon {
+  background: rgba(81, 104, 255, 0.16);
+  border-color: rgba(129, 141, 255, 0.28);
 }
 
 :global([data-theme="dark"]) .icon svg {
-  color: rgba(81, 104, 255, 0.7);
+  color: rgba(166, 180, 255, 0.92);
+}
+
+:global([data-theme="dark"]) .label,
+:global([data-theme="dark"]) .currency,
+:global([data-theme="dark"]) .powerLabel {
+  color: rgba(227, 225, 238, 0.58);
+}
+
+:global([data-theme="dark"]) .title,
+:global([data-theme="dark"]) .balance,
+:global([data-theme="dark"]) .powerValue {
+  color: rgba(244, 244, 248, 0.96);
 }
 
 :global([data-theme="dark"]) .balance {
-  color: #1a1d33;
+  text-shadow: none;
 }
 
 :global([data-theme="dark"]) .actionButton {
-  border-color: rgba(17, 17, 18, 0.12);
-  color: rgba(26, 27, 36, 0.56);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(227, 225, 238, 0.62);
 }
 
 :global([data-theme="dark"]) .actionButton:hover {
-  background: rgba(17, 17, 18, 0.08);
-  color: #1a1d33;
+  background: rgba(81, 104, 255, 0.14);
+  border-color: rgba(129, 141, 255, 0.28);
+  color: rgba(244, 244, 248, 0.96);
 }
 
 :global([data-theme="dark"]) .powerSection {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .powerLabel {
-  color: rgba(26, 27, 36, 0.52);
-}
-
-:global([data-theme="dark"]) .powerValue {
-  color: #1a1d33;
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme="dark"]) .powerBar {
-  background: rgba(17, 17, 18, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .powerBarIndicator {
+  background: #0f1219;
+  border-color: rgba(227, 225, 238, 0.92);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }

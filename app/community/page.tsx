@@ -7,7 +7,6 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
-import CreditScore from '@/components/credit-score/CreditScore';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -100,25 +99,26 @@ const getTutorialSteps = (): TutorialStep[] => [
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
+const TREASURY_BALANCE = 5200;
 const FUNDING_PODS = [
   {
     title: 'Brand Awareness',
     amount: 2100,
-    total: 5200,
+    total: TREASURY_BALANCE,
     desc: 'Outreach, partnerships, and marketing that drives community growth',
     accent: 'var(--color-primary)',
   },
   {
     title: 'Internal Research',
     amount: 1820,
-    total: 5200,
+    total: TREASURY_BALANCE,
     desc: 'R&D, tooling, and knowledge infrastructure for the academy',
     accent: '#2FB7A0',
   },
   {
     title: 'Emergency Individual Support',
     amount: 1280,
-    total: 5200,
+    total: TREASURY_BALANCE,
     desc: 'Safety net for members facing unexpected hardship',
     accent: '#E85D3A',
   },
@@ -223,11 +223,6 @@ const DASHBOARD_FILTERS = [
   'Treasury Cycle 01',
   'Proposal Status Active',
   'Updated Live',
-] as const;
-
-const KPI_CARD_META = [
-  { label: 'Treasury Reserve', detail: 'USDC available', value: '$5.2K' },
-  { label: 'Support Pods', detail: 'Active allocations', value: `${FUNDING_PODS.length}` },
 ] as const;
 
 const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
@@ -389,11 +384,26 @@ export default function VotingPage() {
   const activeFundingIndicator = activeFundingSlide % FUNDING_PODS.length;
   const approvedProposalsCount = proposals.filter((proposal) => proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed').length;
   const pendingProposalsCount = proposals.filter((proposal) => proposal.status === 'pending_review').length;
-  const dashboardMetrics = [
-    ...KPI_CARD_META,
-    { label: 'Live Proposals', detail: 'Approved or on-chain', value: approvedProposalsCount.toString().padStart(2, '0') },
-    { label: 'In Review', detail: 'Awaiting decision', value: pendingProposalsCount.toString().padStart(2, '0') },
-  ];
+  const treasuryAllocated = FUNDING_PODS.reduce((sum, pod) => sum + pod.amount, 0);
+  const treasuryReserveBuffer = Math.max(TREASURY_BALANCE - treasuryAllocated, 0);
+  const treasuryProgrammedPct = Math.round((treasuryAllocated / TREASURY_BALANCE) * 100);
+  const treasuryPulse = [
+    {
+      label: 'Treasury programmed',
+      value: `${treasuryProgrammedPct}%`,
+      detail: treasuryReserveBuffer > 0 ? `${treasuryReserveBuffer.toLocaleString()} USDC remains flexible` : 'Every active dollar is assigned to a live support pod',
+    },
+    {
+      label: 'Community-backed',
+      value: approvedProposalsCount.toString().padStart(2, '0'),
+      detail: 'Approved or on-chain proposals shaping the current cycle',
+    },
+    {
+      label: 'Awaiting review',
+      value: pendingProposalsCount.toString().padStart(2, '0'),
+      detail: 'Member submissions still moving through evaluation',
+    },
+  ] as const;
   const handleFundingTrackTransitionEnd = () => {
     if (activeFundingSlide >= fundingSlides.length - FUNDING_PODS.length) {
       setIsFundingTransitionEnabled(false);
@@ -468,10 +478,10 @@ export default function VotingPage() {
               <div className={styles.dashboardTitleRow}>
                 <div className={styles.dashboardTitleBlock}>
                   <h1 className={styles.dashboardTitle}>
-                    Azura Community <span className={styles.dashboardTitleAccent}>Decision Room</span>
+                    Mental Wealth Academy <span className={styles.dashboardTitleAccent}>Decision Room</span>
                   </h1>
                   <p className={styles.dashboardSubtitle}>
-                    Treasury proposals, member support allocations, and live community funding signals.
+                    Community treasury proposals, support allocations, and live governance signals for the DeSci cohort.
                   </p>
                 </div>
                 <div className={styles.dashboardStatus}>
@@ -514,40 +524,66 @@ export default function VotingPage() {
             </div>
 
             <div className={styles.communityViewViewport}>
-              <section className={styles.dashboardMetricRail} aria-label="Community performance metrics">
-                {dashboardMetrics.map((metric) => (
-                  <article key={metric.label} className={styles.dashboardMetricCard}>
-                    <span className={styles.dashboardMetricLabel}>{metric.label}</span>
-                    <strong className={styles.dashboardMetricValue}>{metric.value}</strong>
-                    <span className={styles.dashboardMetricDetail}>{metric.detail}</span>
-                  </article>
-                ))}
-              </section>
-
               {communityView === 'overview' && (
                 <section className={styles.communityViewPanel}>
                 <div className={styles.reserveCard}>
-                  <header className={styles.reserveHeader}>
-                    <div className={styles.reserveHeaderLeft}>
-                      <div className={styles.reserveIcon} aria-hidden="true">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <rect x="2" y="6" width="20" height="14" rx="2" fill="currentColor" />
-                          <rect x="2" y="9" width="20" height="3" fill="currentColor" opacity="0.7" />
-                          <circle cx="17" cy="16" r="2" fill="#ffffff" />
-                        </svg>
-                      </div>
-                      <div className={styles.reserveTitleText}>
-                        <span className={styles.reserveTitle}>Community Treasury</span>
-                      </div>
+                  <div className={styles.reserveIntro}>
+                    <article className={`${styles.reservePulseCard} ${styles.reserveBalanceCard}`}>
+                      <span className={styles.reserveBalanceEyebrow}>Treasury reserve</span>
+                      <strong className={styles.reserveBalanceValue}>${TREASURY_BALANCE.toLocaleString()}</strong>
+                      <span className={styles.reserveBalanceMeta}>USDC pooled for the current community funding cycle.</span>
+                    </article>
+                    <div className={styles.reservePulseGrid}>
+                      {treasuryPulse.map((item) => (
+                        <article key={item.label} className={styles.reservePulseCard}>
+                          <span className={styles.reservePulseLabel}>{item.label}</span>
+                          <strong className={styles.reservePulseValue}>{item.value}</strong>
+                          <span className={styles.reservePulseDetail}>{item.detail}</span>
+                        </article>
+                      ))}
                     </div>
-                    <div className={styles.reserveAmountCol}>
-                      <span className={styles.reserveAmount}>$5,200</span>
-                      <span className={styles.reserveUnit}>USDC pooled</span>
-                    </div>
-                  </header>
+                  </div>
                   <div className={styles.reserveInsightsGrid}>
-                    <section className={styles.reserveInsightCard}>
-                      <CreditScore />
+                    <section className={`${styles.reserveInsightCard} ${styles.reserveInsightCardWide}`}>
+                      <div className={styles.reserveAllocationColumn}>
+                        <div className={styles.reserveInsightHeader}>
+                          <span className={styles.reserveInsightLabel}>Allocation mix</span>
+                          <p className={styles.reserveInsightText}>
+                            Current treasury commitments across each live pod.
+                          </p>
+                        </div>
+                        <div className={styles.reserveAllocationList}>
+                          {FUNDING_PODS.map((pod) => {
+                            const allocationShare = Math.round((pod.amount / TREASURY_BALANCE) * 100);
+
+                            return (
+                              <article key={pod.title} className={styles.reserveAllocationRow}>
+                                <div className={styles.reserveAllocationHeader}>
+                                  <div className={styles.reserveAllocationCopy}>
+                                    <h3 className={styles.reserveAllocationTitle}>{pod.title}</h3>
+                                    <p className={styles.reserveAllocationDesc}>{pod.desc}</p>
+                                  </div>
+                                  <div className={styles.reserveAllocationValueGroup}>
+                                    <strong className={styles.reserveAllocationValue}>
+                                      ${pod.amount.toLocaleString()}
+                                    </strong>
+                                    <span className={styles.reserveAllocationShare}>{allocationShare}%</span>
+                                  </div>
+                                </div>
+                                <div className={styles.reserveAllocationBar}>
+                                  <span
+                                    className={styles.reserveAllocationBarFill}
+                                    style={{
+                                      width: `${allocationShare}%`,
+                                      ['--allocation-accent' as string]: pod.accent,
+                                    }}
+                                  />
+                                </div>
+                              </article>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </section>
 
                     <section className={styles.reserveInsightCard}>
@@ -585,6 +621,18 @@ export default function VotingPage() {
                             {facet.label}
                           </span>
                         ))}
+                      </div>
+                      <div className={styles.reserveSignalGrid}>
+                        <article className={styles.reserveSignalStat}>
+                          <span className={styles.reserveSignalLabel}>Dominant tone</span>
+                          <strong className={styles.reserveSignalValue}>Radiant</strong>
+                          <span className={styles.reserveSignalDetail}>Constructive support remains the strongest shared signal.</span>
+                        </article>
+                        <article className={styles.reserveSignalStat}>
+                          <span className={styles.reserveSignalLabel}>Live pods</span>
+                          <strong className={styles.reserveSignalValue}>{FUNDING_PODS.length}</strong>
+                          <span className={styles.reserveSignalDetail}>Every active allocation track is currently funded.</span>
+                        </article>
                       </div>
                     </section>
                   </div>

@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import type { FormEvent } from 'react';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import styles from './page.module.css';
-import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, PolymarketTrade, OrderFlowMetrics, AppleTokenStats } from '@/lib/market-api';
+import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
 // ── Helpers ──
 
@@ -21,11 +23,6 @@ function formatVol(raw: number | string | null): string {
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
   if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
   return '$' + n.toFixed(0);
-}
-
-function formatChange(c: number | null): { text: string; positive: boolean } {
-  if (c === null || c === undefined) return { text: '--', positive: true };
-  return { text: (c >= 0 ? '+' : '') + c.toFixed(2) + '%', positive: c >= 0 };
 }
 
 function parseOutcomePrices(raw: string): [number, number] {
@@ -88,6 +85,12 @@ interface LivePosition {
   status: string;
 }
 
+interface TradeChatMessage {
+  role: 'user' | 'blue';
+  text: string;
+  timestamp: number;
+}
+
 // ── Math Helpers ──
 
 /** Abramowitz & Stegun approximation for the standard normal CDF */
@@ -114,56 +117,6 @@ function findBtcMarket(markets: CategorizedMarkets | null): number | null {
   return yes > 0 ? yes * 100 : null;
 }
 
-/** Compute OrderFlowMetrics from raw trades */
-function computeFlowMetrics(trades: PolymarketTrade[]): OrderFlowMetrics {
-  let takerBuyCount = 0;
-  let takerSellCount = 0;
-  let takerBuyVolume = 0;
-  let takerSellVolume = 0;
-
-  for (const t of trades) {
-    const size = Number(t.size) || 0;
-    if (t.side === 'BUY') {
-      takerBuyCount++;
-      takerBuyVolume += size;
-    } else {
-      takerSellCount++;
-      takerSellVolume += size;
-    }
-  }
-
-  const totalVolume = takerBuyVolume + takerSellVolume;
-  const takerBuyRatio = totalVolume > 0 ? takerBuyVolume / totalVolume : 0.5;
-  const flowDirection: OrderFlowMetrics['flowDirection'] =
-    takerBuyRatio > 0.55 ? 'BULLISH' : takerBuyRatio < 0.45 ? 'BEARISH' : 'NEUTRAL';
-
-  // Maker edge: interpolate +0.77% to +1.25% based on avg price distance from 50c
-  const avgPrice = trades.length > 0
-    ? trades.reduce((s, t) => s + (Number(t.price) || 0.5), 0) / trades.length
-    : 0.5;
-  const distFrom50 = Math.abs(avgPrice - 0.5);
-  const makerEdgeEstimate = 0.77 + (distFrom50 / 0.5) * (1.25 - 0.77);
-
-  const recentTrades = trades.slice(0, 8).map(t => ({
-    price: t.price,
-    size: t.size,
-    side: t.side,
-    ts: String(t.timestamp),
-  }));
-
-  return {
-    takerBuyCount,
-    takerSellCount,
-    takerBuyVolume,
-    takerSellVolume,
-    totalTrades: trades.length,
-    takerBuyRatio,
-    flowDirection,
-    makerEdgeEstimate,
-    recentTrades,
-  };
-}
-
 function formatTradeTime(ts: string): string {
   try {
     const d = new Date(Number(ts) * 1000 || ts);
@@ -179,6 +132,20 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
   sports: 'SPORTS',
   politics: 'POLITICS',
 };
+
+const TRADE_CHAT_SUGGESTIONS = [
+  'Scan the strongest edge right now.',
+  'Size a conservative BTC signal.',
+  'What would you trade next?',
+];
+
+const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
+  {
+    role: 'blue',
+    text: "Hey, what's up?",
+    timestamp: Date.now(),
+  },
+];
 
 // ── Live Ticker Line ──
 
@@ -246,39 +213,6 @@ function TickerLine({ drift = TICKER_DRIFT, vol = TICKER_VOL, stroke = 'var(--co
   );
 }
 
-// ── Live Market Row (real-time micro-jitter) ──
-
-function LiveMarketRow({ coin, tick }: { coin: CoinPrice; tick: number }) {
-  // Jitter scale relative to price magnitude — feels real without drifting
-  const jitterScale = coin.usd >= 1000 ? coin.usd * 0.00003
-    : coin.usd >= 1 ? coin.usd * 0.0002
-    : coin.usd * 0.001;
-
-  // Deterministic jitter keeps the display alive without forcing noisy full-page churn.
-  const jittered = coin.usd + Math.sin(tick * 0.5 + coin.symbol.charCodeAt(0)) * jitterScale;
-
-  const change = formatChange(coin.usd_24h_change);
-
-  return (
-    <div className={styles.marketRow}>
-      <div>
-        <div className={styles.marketSymbol}>{coin.symbol}</div>
-      </div>
-      <div>
-        <div className={`${styles.marketPrice} ${styles.priceTick}`} key={tick}>
-          {formatPrice(jittered)}
-        </div>
-        <div className={styles.marketMeta}>
-          <span className={change.positive ? styles.changePositive : styles.changeNegative}>
-            {change.text}
-          </span>
-          {' '}vol:{formatVol(coin.usd_24h_vol)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function LastUpdatedLabel({ timestamp }: { timestamp: number }) {
   useLiveTick(5000, timestamp > 0);
 
@@ -293,14 +227,16 @@ export default function Markets() {
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
   const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
-  const [orderFlow, setOrderFlow] = useState<OrderFlowMetrics | null>(null);
-  const [appleStats, setAppleStats] = useState<AppleTokenStats | null>(null);
+  const [shardStats, setShardStats] = useState<ShardTokenStats | null>(null);
   const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
   const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
-  const [priceError, setPriceError] = useState(false);
   const [balanceError, setBalanceError] = useState(false);
   const [polyError, setPolyError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
+  const [tradeChatMessages, setTradeChatMessages] = useState<TradeChatMessage[]>(INITIAL_TRADE_CHAT);
+  const [tradeChatInput, setTradeChatInput] = useState('');
+  const [isTradeChatSending, setIsTradeChatSending] = useState(false);
+  const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -308,10 +244,9 @@ export default function Markets() {
       if (!res.ok) throw new Error();
       const data: CoinPrice[] = await res.json();
       setPrices(data);
-      setPriceError(false);
       setLastPriceUpdate(Date.now());
     } catch {
-      setPriceError(true);
+      // The pricing model has stable fallbacks, so the page can keep operating.
     }
   }, []);
 
@@ -339,21 +274,12 @@ export default function Markets() {
     }
   }, []);
 
-  const fetchTrades = useCallback(async () => {
-    try {
-      const res = await fetch('/api/treasury/trades');
-      if (!res.ok) return;
-      const trades: PolymarketTrade[] = await res.json();
-      if (trades.length > 0) setOrderFlow(computeFlowMetrics(trades));
-    } catch { /* silent */ }
-  }, []);
-
-  const fetchAppleStats = useCallback(async () => {
+  const fetchShardStats = useCallback(async () => {
     try {
       const res = await fetch('/api/treasury/apple-stats');
       if (!res.ok) return;
-      const data: AppleTokenStats = await res.json();
-      setAppleStats(data);
+      const data: ShardTokenStats = await res.json();
+      setShardStats(data);
     } catch { /* silent */ }
   }, []);
 
@@ -385,24 +311,17 @@ export default function Markets() {
     };
   }, [fetchPrices, fetchBalance, fetchPoly]);
 
-  // Fetch trades on mount and poll every 30s
+  // Fetch SHARDS stats and execution logs
   useEffect(() => {
-    fetchTrades();
-    const tradesInterval = setInterval(fetchTrades, 30_000);
-    return () => clearInterval(tradesInterval);
-  }, [fetchTrades]);
-
-  // Fetch APPLE stats and execution logs
-  useEffect(() => {
-    fetchAppleStats();
+    fetchShardStats();
     fetchExecutionLogs();
-    const appleInterval = setInterval(fetchAppleStats, 60_000);
+    const shardInterval = setInterval(fetchShardStats, 60_000);
     const logsInterval = setInterval(fetchExecutionLogs, 30_000);
     return () => {
-      clearInterval(appleInterval);
+      clearInterval(shardInterval);
       clearInterval(logsInterval);
     };
-  }, [fetchAppleStats, fetchExecutionLogs]);
+  }, [fetchShardStats, fetchExecutionLogs]);
 
   // Fast tick for live model parameter animation
   const modelTick = useLiveTick(1200);
@@ -462,6 +381,134 @@ export default function Markets() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prices, polymarkets, modelTick]);
 
+  useEffect(() => {
+    const node = tradeChatScrollRef.current;
+    if (!node) return;
+    node.scrollTop = node.scrollHeight;
+  }, [tradeChatMessages, isTradeChatSending]);
+
+  const buildBlueTradingMessage = useCallback((userMessage: string) => {
+    const priceSnapshot = prices?.slice(0, 6).map((coin) => (
+      `${coin.symbol}: ${formatPrice(coin.usd)}, 24h volume ${formatVol(coin.usd_24h_vol)}`
+    )).join('\n') || 'price feed not loaded';
+
+    const signalMarkets = polymarkets
+      ? (['crypto', 'ai', 'sports', 'politics'] as MarketCategory[])
+        .flatMap((cat) => (polymarkets[cat] || []).slice(0, 2).map((market) => {
+          const [yes, no] = parseOutcomePrices(market.outcomePrices);
+          return `${CATEGORY_LABELS[cat]}: ${market.question} | yes ${Math.round(yes * 100)}% no ${Math.round(no * 100)}% volume ${formatVol(market.volume)}`;
+        }))
+        .slice(0, 6)
+        .join('\n')
+      : 'Polymarket feed not loaded';
+
+    const recentExecution = executionLogs.slice(0, 5).map((log) => (
+      `${formatTradeTime(String(log.timestamp / 1000))} ${log.action}${log.asset ? ` ${log.asset}` : ''}: ${log.details}`
+    )).join('\n') || 'no recent execution logs';
+
+    const openPositionSummary = livePositions.length > 0
+      ? livePositions.map((position) => (
+        `${position.asset} ${position.side} @ ${Math.round(parseFloat(position.price) * 100)}c size ${position.sizeMatched || position.size} status ${position.status}`
+      )).join('\n')
+      : 'no open positions';
+
+    return [
+      'You are Blue responding inside the /markets trading desk.',
+      'The user wants Blue to trade for them. Treat direct trade requests as trading instructions for the protected trading engine.',
+      'Do not claim an order filled unless the execution log confirms it. If execution is not confirmed, say you are routing, monitoring, or preparing the trade.',
+      'When useful, answer with the intended market, direction, sizing posture, risk check, and next execution step. Keep it concise and conversational.',
+      '',
+      'Live model snapshot:',
+      `signal: ${derived.signal}`,
+      `model fair: ${derived.model_fair.toFixed(2)}%`,
+      `market price: ${derived.mkt_price.toFixed(2)}%`,
+      `divergence: ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%`,
+      `kelly cap: 0.25x`,
+      `USDC markets balance: ${balance ? '$' + balance.formatted : 'not loaded'}`,
+      `SHARDS price: ${shardStats ? formatPrice(shardStats.price) : 'not loaded'}`,
+      '',
+      'Price snapshot:',
+      priceSnapshot,
+      '',
+      'Signal markets:',
+      signalMarkets,
+      '',
+      'Open positions:',
+      openPositionSummary,
+      '',
+      'Recent execution:',
+      recentExecution,
+      '',
+      `User command: ${userMessage}`,
+    ].join('\n');
+  }, [shardStats, balance, derived, executionLogs, livePositions, polymarkets, prices]);
+
+  const generateLocalTradeResponse = useCallback((userMessage: string) => {
+    const command = userMessage.toLowerCase();
+    const posture = Math.abs(derived.divergence) > EDGE_THRESHOLD ? 'actionable' : 'below threshold';
+    const direction = derived.divergence >= 0 ? 'yes/upside' : 'no/downside';
+
+    if (command.includes('trade') || command.includes('buy') || command.includes('sell') || command.includes('size')) {
+      return `i'm reading this as a ${direction} instruction, but the signal is ${posture}: model fair ${derived.model_fair.toFixed(2)}% vs market ${derived.mkt_price.toFixed(2)}%. i'll keep it kelly-capped at 0.25x and only route once the protected execution path confirms the order.`;
+    }
+
+    return `current read: ${derived.signal.toLowerCase()}, fair ${derived.model_fair.toFixed(2)}%, market ${derived.mkt_price.toFixed(2)}%, divergence ${derived.divergence >= 0 ? '+' : ''}${derived.divergence.toFixed(2)}%. ask me to trade, size, hedge, or wait and i'll translate it into the next engine step.`;
+  }, [derived]);
+
+  const sendTradeChatMessage = useCallback(async (rawText: string) => {
+    const text = rawText.trim();
+    if (!text || isTradeChatSending) return;
+
+    setTradeChatMessages((current) => [
+      ...current,
+      { role: 'user', text, timestamp: Date.now() },
+    ]);
+    setTradeChatInput('');
+    setIsTradeChatSending(true);
+
+    try {
+      const res = await fetch('/api/chat/blue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: buildBlueTradingMessage(text),
+          mode: 'chat',
+        }),
+      });
+
+      const data: { response?: string; error?: string; shardCount?: number; cost?: number; message?: string } = await res.json();
+      let responseText = data.response;
+
+      if (!res.ok || !responseText) {
+        if (res.status === 401) {
+          responseText = 'sign in first, then i can keep your trading context and route commands through your account.';
+        } else if (data.error === 'insufficient_shards') {
+          responseText = `i need ${data.cost ?? 10} shards for this trading chat turn. you currently have ${data.shardCount ?? 0}.`;
+        } else {
+          responseText = generateLocalTradeResponse(text);
+        }
+      }
+
+      setTradeChatMessages((current) => [
+        ...current,
+        { role: 'blue', text: responseText, timestamp: Date.now() },
+      ]);
+    } catch {
+      setTradeChatMessages((current) => [
+        ...current,
+        { role: 'blue', text: generateLocalTradeResponse(text), timestamp: Date.now() },
+      ]);
+    } finally {
+      setIsTradeChatSending(false);
+    }
+  }, [buildBlueTradingMessage, generateLocalTradeResponse, isTradeChatSending]);
+
+  const handleTradeChatSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void sendTradeChatMessage(tradeChatInput);
+  };
+
   return (
     <main className={styles.main}>
       <SideNavigation />
@@ -507,30 +554,30 @@ export default function Markets() {
           </div>
         </div>
 
-        {/* ── APPLE Stats Bar ── */}
-        <div className={styles.appleBar}>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>$APPLE</span>
-            <span className={styles.appleBarValue}>
-              {appleStats ? formatPrice(appleStats.price) : '--'}
+        {/* ── SHARDS Stats Bar ── */}
+        <div className={styles.shardBar}>
+          <div className={styles.shardBarItem}>
+            <span className={styles.shardBarLabel}>$SHARDS</span>
+            <span className={styles.shardBarValue}>
+              {shardStats ? formatPrice(shardStats.price) : '--'}
             </span>
           </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>holders</span>
-            <span className={styles.appleBarValue}>
-              {appleStats ? appleStats.holders.toLocaleString() : '--'}
+          <div className={styles.shardBarItem}>
+            <span className={styles.shardBarLabel}>holders</span>
+            <span className={styles.shardBarValue}>
+              {shardStats ? shardStats.holders.toLocaleString() : '--'}
             </span>
           </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>epoch P&L</span>
-            <span className={`${styles.appleBarValue} ${appleStats && appleStats.epochPnL >= 0 ? styles.appleBarPositive : styles.appleBarNegative}`}>
-              {appleStats ? (appleStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(appleStats.epochPnL).toFixed(2) : '--'}
+          <div className={styles.shardBarItem}>
+            <span className={styles.shardBarLabel}>epoch P&L</span>
+            <span className={`${styles.shardBarValue} ${shardStats && shardStats.epochPnL >= 0 ? styles.shardBarPositive : styles.shardBarNegative}`}>
+              {shardStats ? (shardStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(shardStats.epochPnL).toFixed(2) : '--'}
             </span>
           </div>
-          <div className={styles.appleBarItem}>
-            <span className={styles.appleBarLabel}>next distribution</span>
-            <span className={styles.appleBarValue}>
-              {appleStats?.nextDistribution || '--'}
+          <div className={styles.shardBarItem}>
+            <span className={styles.shardBarLabel}>next distribution</span>
+            <span className={styles.shardBarValue}>
+              {shardStats?.nextDistribution || '--'}
             </span>
           </div>
         </div>
@@ -824,111 +871,98 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* ════ RIGHT COLUMN: Live Markets ════ */}
-          <div className={styles.marketsColumn}>
-            <div className={styles.panel}>
-              <div className={styles.panelTitle}>Live 5-Min Markets</div>
+          {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
+          <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
+            <div className={styles.blueTradeHeader}>
+              <div>
+                <div className={styles.panelTitle}>Trading Agent</div>
+                <h2 className={styles.blueTradeTitle}>Ask About Trades</h2>
+              </div>
+              <div className={`${styles.blueSignalPill} ${derived.signal === 'TRADE' ? styles.blueSignalTrade : styles.blueSignalSkip}`}>
+                {derived.signal}
+              </div>
             </div>
-            {!prices && !priceError && (
-              <div className={styles.marketRow}>
-                <span className={styles.loadingText}>Loading prices...</span>
-              </div>
-            )}
-            {priceError && !prices && (
-              <div className={styles.marketRow}>
-                <span className={styles.errorText}>Failed to load prices</span>
-              </div>
-            )}
-            {prices && prices.map((coin) => (
-              <LiveMarketRow key={coin.symbol} coin={coin} tick={modelTick} />
-            ))}
-          </div>
 
-          {/* Order Flow · Maker vs Taker */}
-          <div className={`${styles.panel} ${styles.flowPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Order Flow &middot; Maker vs Taker</span>
-              <span className={styles.panelBadge}>live</span>
+            <div className={styles.blueTradeVitals}>
+              <div className={styles.blueVital}>
+                <span>fair</span>
+                <strong>{derived.model_fair.toFixed(2)}%</strong>
+              </div>
+              <div className={styles.blueVital}>
+                <span>mkt</span>
+                <strong>{derived.mkt_price.toFixed(2)}%</strong>
+              </div>
+              <div className={styles.blueVital}>
+                <span>edge</span>
+                <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
+              </div>
             </div>
-            {!orderFlow ? (
-              <span className={styles.loadingText}>Loading flow data...</span>
-            ) : (
-              <>
-                <div className={`${styles.flowDirection} ${
-                  orderFlow.flowDirection === 'BULLISH' ? styles.flowBullish
-                    : orderFlow.flowDirection === 'BEARISH' ? styles.flowBearish
-                    : styles.flowNeutral
-                }`}>
-                  {orderFlow.flowDirection === 'BULLISH' ? '\u2191' : orderFlow.flowDirection === 'BEARISH' ? '\u2193' : '\u2194'}
-                  {' '}{orderFlow.flowDirection}
-                </div>
-                <div className={styles.flowBarWrap}>
-                  <div className={styles.flowBuy} style={{ width: `${Math.round(orderFlow.takerBuyRatio * 100)}%` }} />
-                  <div className={styles.flowSell} style={{ width: `${Math.round((1 - orderFlow.takerBuyRatio) * 100)}%` }} />
-                </div>
-                <div className={styles.flowBarLabels}>
-                  <span>Buy {Math.round(orderFlow.takerBuyRatio * 100)}%</span>
-                  <span>Sell {Math.round((1 - orderFlow.takerBuyRatio) * 100)}%</span>
-                </div>
-                <div className={styles.flowStats}>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Taker Buy Vol</span>
-                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerBuyVolume)}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Taker Sell Vol</span>
-                    <span className={styles.flowStatValue}>{formatVol(orderFlow.takerSellVolume)}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Total Trades</span>
-                    <span className={styles.flowStatValue}>{orderFlow.totalTrades}</span>
-                  </div>
-                  <div className={styles.flowStatItem}>
-                    <span className={styles.flowStatLabel}>Maker Edge Est.</span>
-                    <span className={styles.flowStatValue}>+{orderFlow.makerEdgeEstimate.toFixed(2)}%</span>
-                  </div>
-                </div>
-                <div className={styles.flowTradesLabel}>Recent Trades</div>
-                <div className={styles.flowTrades}>
-                  {orderFlow.recentTrades.map((t, i) => (
-                    <div key={i} className={styles.flowTradeRow}>
-                      <span className={`${styles.flowTradeBadge} ${t.side === 'BUY' ? styles.flowTradeBuy : styles.flowTradeSell}`}>
-                        {t.side}
-                      </span>
-                      <span className={styles.flowTradePrice}>{(t.price * 100).toFixed(1)}&cent;</span>
-                      <span className={styles.flowTradeSize}>{formatVol(t.size)}</span>
-                      <span className={styles.flowTradeTime}>{formatTradeTime(t.ts)}</span>
+
+            <div className={styles.blueRouteCard}>
+              <span className={styles.blueRouteDot} aria-hidden="true" />
+              <span>Blue checks live markets, Kelly sizing, open positions, and the protected order router before acting.</span>
+            </div>
+
+            <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
+              {tradeChatMessages.map((message, index) => (
+                <div
+                  key={`${message.timestamp}-${index}`}
+                  className={`${styles.blueChatBubble} ${message.role === 'user' ? styles.blueChatUser : styles.blueChatBlue}`}
+                >
+                  {message.role === 'blue' && (
+                    <div className={styles.blueAvatar} aria-hidden="true">
+                      <Image src="/uploads/blueagent.png" alt="" width={28} height={28} className={styles.blueAvatarImage} />
                     </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Positions / Kelly Sized */}
-          <div className={`${styles.panel} ${styles.positionsPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Positions &middot; Kelly Sized</span>
-              <span className={styles.panelBadge}>live</span>
-            </div>
-            <div className={styles.positionsEntries}>
-              {livePositions.length === 0 && (
-                <span className={styles.loadingText}>No open positions</span>
-              )}
-              {livePositions.map((pos, i) => (
-                <div key={i} className={styles.positionRow}>
-                  <span className={styles.positionAsset}>{pos.asset}</span>
-                  <span className={`${styles.positionSide} ${pos.side === 'BUY' ? styles.positionLong : styles.positionShort}`}>
-                    {pos.side === 'BUY' ? 'UP' : 'DN'}
-                  </span>
-                  <span className={styles.positionEntry}>
-                    {Math.round(parseFloat(pos.price) * 100)}&cent; ${pos.sizeMatched || pos.size}
-                  </span>
-                  <span className={styles.positionStatus}>{pos.status}</span>
+                  )}
+                  <div className={styles.blueBubbleText}>{message.text}</div>
                 </div>
               ))}
+              {isTradeChatSending && (
+                <div className={`${styles.blueChatBubble} ${styles.blueChatBlue}`}>
+                  <div className={styles.blueAvatar} aria-hidden="true">
+                    <Image src="/uploads/blueagent.png" alt="" width={28} height={28} className={styles.blueAvatarImage} />
+                  </div>
+                  <div className={styles.blueTyping}>
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+
+            <div className={styles.blueQuickActions} aria-label="Suggested trading prompts">
+              {TRADE_CHAT_SUGGESTIONS.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => void sendTradeChatMessage(suggestion)}
+                  disabled={isTradeChatSending}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+
+            <form className={styles.blueTradeComposer} onSubmit={handleTradeChatSubmit}>
+              <textarea
+                value={tradeChatInput}
+                onChange={(event) => setTradeChatInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    void sendTradeChatMessage(tradeChatInput);
+                  }
+                }}
+                placeholder="Ask about markets..."
+                rows={3}
+                disabled={isTradeChatSending}
+              />
+              <button type="submit" disabled={!tradeChatInput.trim() || isTradeChatSending}>
+                Send
+              </button>
+            </form>
+          </section>
 
         </div>
       </div>

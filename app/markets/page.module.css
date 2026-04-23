@@ -1,13 +1,21 @@
 .main {
-  min-height: 100vh;
+  --markets-status-height: 42px;
+  --markets-shard-height: 34px;
+  --markets-top-bars-height: calc(var(--markets-status-height) + var(--markets-shard-height));
+  height: calc(100dvh - 72px);
+  max-height: calc(100dvh - 72px);
   margin-left: var(--sidebar-width, 272px);
   background: #F4F5FE;
+  overflow: hidden;
 }
 
 .pageLayout {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
   padding: 0;
   gap: 0;
 }
@@ -16,6 +24,8 @@
 .statusBar {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  height: var(--markets-status-height);
   gap: 24px;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.95);
@@ -48,10 +58,12 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* ── APPLE Stats Bar ── */
-.appleBar {
+/* ── SHARDS Stats Bar ── */
+.shardBar {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  height: var(--markets-shard-height);
   gap: 28px;
   padding: 8px 20px;
   background: rgba(81, 104, 255, 0.04);
@@ -62,13 +74,13 @@
   white-space: nowrap;
 }
 
-.appleBarItem {
+.shardBarItem {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.appleBarLabel {
+.shardBarLabel {
   color: var(--color-secondary);
   font-weight: var(--font-weight-regular);
   text-transform: uppercase;
@@ -76,17 +88,17 @@
   font-size: 10px;
 }
 
-.appleBarValue {
+.shardBarValue {
   color: var(--color-text-dark);
   font-weight: var(--font-weight-bold);
   font-size: 12px;
 }
 
-.appleBarPositive {
+.shardBarPositive {
   color: var(--color-tertiary);
 }
 
-.appleBarNegative {
+.shardBarNegative {
   color: #E2567B;
 }
 
@@ -107,8 +119,10 @@
   grid-template-columns: 280px 1fr 1fr 300px;
   grid-template-rows: auto auto auto;
   gap: 2px;
+  flex: 1;
   background: rgba(26, 29, 51, 0.08);
-  min-height: calc(100vh - 42px);
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* ── Panel Base ── */
@@ -297,14 +311,314 @@
   font-weight: var(--font-weight-bold);
 }
 
-/* ── Right Column: Live Markets ── */
-.marketsColumn {
+/* ── Right Column: Blue Trading Chat ── */
+.blueTradeColumn {
   grid-column: 4;
-  grid-row: 1 / 2;
+  grid-row: 1 / 4;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: calc(72px + var(--markets-top-bars-height));
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  background:
+    radial-gradient(circle at 78% 0%, rgba(81, 104, 255, 0.15), transparent 34%),
+    linear-gradient(180deg, #F4F5FE 0%, #EAEDFF 100%);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.blueTradeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.1);
+}
+
+.blueTradeTitle {
+  margin: 4px 0 0;
+  font-family: var(--font-secondary);
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-text-dark);
+  letter-spacing: -0.03em;
+}
+
+.blueSignalPill {
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+}
+
+.blueSignalTrade {
+  background: rgba(116, 196, 101, 0.14);
+  color: var(--color-tertiary);
+  border-color: rgba(116, 196, 101, 0.24);
+}
+
+.blueSignalSkip {
+  background: rgba(226, 86, 123, 0.1);
+  color: #E2567B;
+  border-color: rgba(226, 86, 123, 0.2);
+}
+
+.blueTradeVitals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(26, 29, 51, 0.08);
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.blueVital {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: rgba(26, 29, 51, 0.08);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.54);
+}
+
+.blueVital span {
+  font-family: var(--font-button);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+}
+
+.blueVital strong {
+  font-family: var(--font-button);
+  font-size: 14px;
+  color: var(--color-text-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.blueRouteCard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  margin: 14px 16px 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  font-family: var(--font-button);
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--color-secondary);
+}
+
+.blueRouteDot {
+  width: 8px;
+  height: 8px;
+  margin-top: 3px;
+  border-radius: 999px;
+  background: var(--color-tertiary);
+  box-shadow: 0 0 0 4px rgba(116, 196, 101, 0.14);
+}
+
+.blueChatMessages {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px;
+}
+
+.blueChatBubble {
+  display: flex;
+  gap: 8px;
+  max-width: 92%;
+  animation: chatBubbleIn 0.24s ease-out;
+}
+
+.blueChatBlue {
+  align-self: flex-start;
+}
+
+.blueChatUser {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.blueAvatar {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(81, 104, 255, 0.12);
+  border: 1px solid rgba(81, 104, 255, 0.18);
+}
+
+.blueAvatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blueBubbleText {
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-family: var(--font-button);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-dark);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+  box-shadow: 0 8px 24px rgba(26, 29, 51, 0.05);
+}
+
+.blueChatUser .blueBubbleText {
+  color: #F7F8FF;
+  background: var(--color-primary);
+  border-color: rgba(81, 104, 255, 0.4);
+}
+
+.blueTyping {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.blueTyping span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: typingPulse 1s ease-in-out infinite;
+}
+
+.blueTyping span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.blueTyping span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.blueQuickActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 12px;
+}
+
+.blueQuickActions button {
+  border: 1px solid rgba(81, 104, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-default), background var(--duration-fast) var(--ease-default);
+}
+
+.blueQuickActions button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.blueQuickActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.blueTradeComposer {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(26, 29, 51, 0.08);
+  background: rgba(244, 245, 254, 0.92);
+}
+
+.blueTradeComposer textarea {
+  min-width: 0;
+  height: 58px;
+  resize: none;
+  border: 1px solid rgba(26, 29, 51, 0.12);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-dark);
+  font-family: var(--font-button);
+  font-size: 12px;
+  line-height: 1.4;
+  outline: none;
+}
+
+.blueTradeComposer textarea:focus {
+  border-color: rgba(81, 104, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(81, 104, 255, 0.1);
+}
+
+.blueTradeComposer button {
+  align-self: end;
+  height: 58px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #F7F8FF;
+  font-family: var(--font-button);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  padding: 0 16px;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-default), opacity var(--duration-fast) var(--ease-default);
+}
+
+.blueTradeComposer button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.blueTradeComposer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@keyframes chatBubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typingPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
 }
 
 .marketRow {
@@ -782,6 +1096,10 @@
   .grid {
     grid-template-columns: 240px 1fr 1fr 260px;
   }
+
+  .blueTradeColumn {
+    width: 260px;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -810,16 +1128,14 @@
     grid-column: 1 / 3;
   }
 
-  .marketsColumn {
+  .blueTradeColumn {
     grid-column: 1 / 3;
     grid-row: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .marketRow {
-    flex: 1;
-    min-width: 140px;
+    position: static;
+    width: auto;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
   }
 
   .flowPanel {
@@ -836,6 +1152,8 @@
 @media (max-width: 900px) {
   .main {
     margin-left: 0;
+    height: calc(100dvh - 72px);
+    max-height: calc(100dvh - 72px);
     padding-top: 66px;
   }
 
@@ -860,8 +1178,9 @@
     grid-column: 1;
   }
 
-  .marketsColumn {
+  .blueTradeColumn {
     grid-column: 1;
+    min-height: 0;
   }
 
   .orderbookPanel {
@@ -884,14 +1203,14 @@
   border-bottom-color: rgba(123, 132, 196, 0.28);
 }
 
-:global([data-theme="dark"]) .appleBar {
+:global([data-theme="dark"]) .shardBar {
   background: rgba(107, 128, 255, 0.08);
   border-bottom-color: rgba(107, 128, 255, 0.16);
 }
 
 :global([data-theme="dark"]) .grid,
 :global([data-theme="dark"]) .modelsColumn,
-:global([data-theme="dark"]) .marketsColumn {
+:global([data-theme="dark"]) .blueTradeColumn {
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -919,10 +1238,12 @@
 :global([data-theme="dark"]) .positionEntry,
 :global([data-theme="dark"]) .positionStatus,
 :global([data-theme="dark"]) .balanceLabel,
-:global([data-theme="dark"]) .appleBarLabel,
+:global([data-theme="dark"]) .shardBarLabel,
 :global([data-theme="dark"]) .statusLabel,
 :global([data-theme="dark"]) .statusValue,
-:global([data-theme="dark"]) .lastUpdated {
+:global([data-theme="dark"]) .lastUpdated,
+:global([data-theme="dark"]) .blueVital span,
+:global([data-theme="dark"]) .blueRouteCard {
   color: rgba(202, 209, 235, 0.78);
 }
 
@@ -935,7 +1256,10 @@
 :global([data-theme="dark"]) .flowStatValue,
 :global([data-theme="dark"]) .flowTradePrice,
 :global([data-theme="dark"]) .polyQuestion,
-:global([data-theme="dark"]) .appleBarValue {
+:global([data-theme="dark"]) .shardBarValue,
+:global([data-theme="dark"]) .blueTradeTitle,
+:global([data-theme="dark"]) .blueVital strong,
+:global([data-theme="dark"]) .blueBubbleText {
   color: rgba(240, 244, 255, 0.96);
 }
 
@@ -947,6 +1271,45 @@
 :global([data-theme="dark"]) .signalRow {
   background: rgba(116, 196, 101, 0.12);
   border-color: rgba(116, 196, 101, 0.24);
+}
+
+:global([data-theme="dark"]) .blueTradeColumn {
+  background:
+    radial-gradient(circle at 78% 0%, rgba(107, 128, 255, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(19, 26, 43, 0.98) 0%, rgba(16, 21, 36, 0.98) 100%);
+}
+
+:global([data-theme="dark"]) .blueTradeHeader,
+:global([data-theme="dark"]) .blueTradeComposer {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .blueTradeVitals {
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .blueVital,
+:global([data-theme="dark"]) .blueBubbleText,
+:global([data-theme="dark"]) .blueTyping,
+:global([data-theme="dark"]) .blueQuickActions button,
+:global([data-theme="dark"]) .blueTradeComposer textarea {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .blueRouteCard {
+  background: rgba(107, 128, 255, 0.08);
+  border-color: rgba(107, 128, 255, 0.16);
+}
+
+:global([data-theme="dark"]) .blueChatUser .blueBubbleText,
+:global([data-theme="dark"]) .blueTradeComposer button {
+  color: rgba(247, 248, 255, 0.98);
+}
+
+:global([data-theme="dark"]) .blueTradeComposer {
+  background: rgba(16, 21, 36, 0.92);
 }
 
 :global([data-theme="dark"]) .chartPlaceholder {

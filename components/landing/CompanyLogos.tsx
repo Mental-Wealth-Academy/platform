@@ -6,9 +6,9 @@ import styles from './LandingPage.module.css';
 
 const LOGOS = [
   { src: '/companylogos/ethereum-logo-dark.svg', alt: 'Ethereum logo', width: 50 },
-  { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 140 },
+  { src: '/companylogos/American_Psychological_Association_logo.svg.png', alt: 'American Psychological Association logo', width: 240, className: styles.apaLogo },
   { src: '/companylogos/charmverse.png', alt: 'CharmVerse logo', width: 120 },
-  { src: '/companylogos/artizen.svg', alt: 'Artizen logo', width: 120 },
+  { src: '/companylogos/artizen.svg', alt: 'Artizen logo', width: 96 },
   { src: '/companylogos/foundation-dark.webp', alt: 'Foundation logo', width: 120 },
   { src: '/companylogos/full-aragon-logo.webp', alt: 'Aragon logo', width: 120 },
   { src: '/companylogos/gitcoin.webp', alt: 'Gitcoin logo', width: 120 },

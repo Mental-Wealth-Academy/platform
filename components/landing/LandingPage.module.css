@@ -1971,6 +1971,10 @@
   max-height: 50px;
 }
 
+.logoItem .apaLogo {
+  max-height: 52px;
+}
+
 @media (max-width: 768px) {
   .companyLogosSection {
     padding: 0 16px 32px 16px;
@@ -1991,6 +1995,10 @@
   
   .logoItem .optimismLogo {
     max-height: 40px;
+  }
+
+  .logoItem .apaLogo {
+    max-height: 42px;
   }
 }
 

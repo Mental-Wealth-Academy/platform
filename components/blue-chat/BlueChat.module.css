@@ -1571,8 +1571,276 @@
   padding: 4px 0;
 }
 
+/* ── Auto Distribution ─────────────────────────────────────── */
+
+.autoDistributionPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0 16px 4px;
+  background:
+    radial-gradient(circle at top right, rgba(81, 104, 255, 0.16), transparent 36%),
+    rgba(20, 20, 32, 0.94);
+  border: 1.5px solid rgba(81, 104, 255, 0.24);
+  border-radius: 14px;
+  animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.autoDistributionTitle {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.autoDistributionDesc {
+  margin: 0;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.autoDistributionGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.autoDistributionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.autoDistributionCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.autoDistributionChannel {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.autoDistributionStatus {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border-radius: 999px;
+}
+
+.autoDistributionStatusConnected {
+  background: rgba(74, 222, 128, 0.16);
+  color: #86efac;
+}
+
+.autoDistributionStatusReady {
+  background: rgba(81, 104, 255, 0.16);
+  color: #9cabff;
+}
+
+.autoDistributionStatusPending {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.autoDistributionMeta {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.autoDistributionHint,
+.autoDistributionError {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.autoDistributionHint {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.autoDistributionError {
+  color: #ff9ab0;
+}
+
+.autoDistributionActionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.autoDistributionConnect {
+  padding: 8px 10px;
+  background: rgba(81, 104, 255, 0.14);
+  border: 1.5px solid rgba(81, 104, 255, 0.3);
+  border-radius: 8px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: #dce1ff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.autoDistributionConnect:hover:not(:disabled) {
+  background: rgba(81, 104, 255, 0.22);
+  border-color: rgba(81, 104, 255, 0.42);
+}
+
+.autoDistributionConnect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.autoDistributionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.autoDistributionLabel {
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.autoDistributionPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.autoDistributionPill {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.autoDistributionPill:hover:not(:disabled) {
+  border-color: rgba(81, 104, 255, 0.28);
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.autoDistributionPillActive {
+  background: rgba(81, 104, 255, 0.18);
+  border-color: rgba(81, 104, 255, 0.36);
+  color: #ffffff;
+}
+
+.autoDistributionPill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.autoDistributionTextarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  font-family: var(--font-primary, 'IBM Plex Mono', monospace);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+  outline: none;
+}
+
+.autoDistributionTextarea::placeholder {
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.autoDistributionTextarea:focus {
+  border-color: rgba(81, 104, 255, 0.38);
+  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.12);
+}
+
+.autoDistributionFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.autoDistributionButtons {
+  display: flex;
+  gap: 8px;
+}
+
 :global(:root:not([data-theme="dark"])) .backdrop {
   background: rgba(0, 0, 0, 0.72);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionPanel {
+  background:
+    radial-gradient(circle at top right, rgba(81, 104, 255, 0.12), transparent 38%),
+    rgba(245, 246, 255, 0.96);
+  border-color: rgba(81, 104, 255, 0.2);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionTitle,
+:global(:root:not([data-theme="dark"])) .autoDistributionLabel {
+  color: rgba(26, 29, 51, 0.45);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionDesc,
+:global(:root:not([data-theme="dark"])) .autoDistributionChannel {
+  color: rgba(26, 29, 51, 0.82);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionCard,
+:global(:root:not([data-theme="dark"])) .autoDistributionTextarea,
+:global(:root:not([data-theme="dark"])) .autoDistributionPill {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(81, 104, 255, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionMeta {
+  color: rgba(26, 29, 51, 0.58);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionHint {
+  color: rgba(26, 29, 51, 0.42);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionTextarea {
+  color: rgba(26, 29, 51, 0.88);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionTextarea::placeholder {
+  color: rgba(26, 29, 51, 0.34);
+}
+
+:global(:root:not([data-theme="dark"])) .autoDistributionPill {
+  color: rgba(26, 29, 51, 0.58);
 }
 
 :global(:root:not([data-theme="dark"])) .chatContainer {
