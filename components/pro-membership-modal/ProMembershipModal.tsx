@@ -73,9 +73,14 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
               ))}
             </ul>
 
-            <button className={styles.ctaButton} disabled style={{ opacity: 0.6, cursor: 'not-allowed' }}>
-              <span>Coming Soon</span>
-            </button>
+            <a
+              href="https://opensea.io/collection/soul-key"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaButton}
+            >
+              <span>Unlock Everything</span>
+            </a>
           </div>
         </div>
       </div>
