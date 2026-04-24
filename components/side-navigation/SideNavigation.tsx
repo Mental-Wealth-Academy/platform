@@ -53,10 +53,10 @@ const desktopNavSections: NavSection[] = [
     id: 'main',
     label: 'DeSci Cohort',
     items: [
-      { id: 'community', label: 'Community Funds', href: '/community', icon: UsersThree },
-      { id: 'markets', label: 'Markets/Trades', href: '/markets', icon: ChartLine },
-      { id: 'voting', label: 'Laboratory 01', href: '/home', icon: House },
-      { id: 'library', label: 'Study Hall', href: '/library', icon: Book },
+      { id: 'community', label: 'DAO Decisions', href: '/community', icon: UsersThree },
+      { id: 'markets', label: 'Auto-Trader', href: '/markets', icon: ChartLine },
+      { id: 'voting', label: 'Test 01', href: '/home', icon: House },
+      { id: 'library', label: 'Prompt Library', href: '/library', icon: Book },
     ],
   },
   {
@@ -64,8 +64,8 @@ const desktopNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'gallery', label: 'Art Gallery', href: '/gallery', icon: ImagesSquare },
-      { id: 'dna', label: 'Laboratory 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'dna', label: 'Test 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -76,9 +76,9 @@ const mobileNavSections: NavSection[] = [
     label: 'DeSci Cohort',
     items: [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
-      { id: 'markets', label: 'Markets/Trades', href: '/markets', icon: ChartLine },
-      { id: 'library', label: 'Study Hall', href: '/library', icon: Book },
-      { id: 'community', label: 'Community Funds', href: '/community', icon: UsersThree },
+      { id: 'markets', label: 'Auto-Trader', href: '/markets', icon: ChartLine },
+      { id: 'library', label: 'Prompt Library', href: '/library', icon: Book },
+      { id: 'community', label: 'DAO Decisions', href: '/community', icon: UsersThree },
     ],
   },
   {
@@ -86,8 +86,8 @@ const mobileNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'gallery', label: 'Art Gallery', href: '/gallery', icon: ImagesSquare },
-      { id: 'dna', label: 'Laboratory 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'dna', label: 'Test 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -644,7 +644,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                     {!isCollapsed && (
                       <div className={styles.shinyCardText}>
                         <span className={styles.shinyCardTitle}>Blue Agent</span>
-                        <span className={styles.shinyCardSub}>Funds, Votes, Chat</span>
+                        <span className={styles.shinyCardSub}>FLAGSHIP MODEL 2.0</span>
                       </div>
                     )}
                   </div>
