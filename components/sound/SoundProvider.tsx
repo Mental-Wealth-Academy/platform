@@ -7,9 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { usePathname } from 'next/navigation';
 import { SoundEngine, type SoundType } from '@/lib/sound-engine';
-import SoundToggle from './SoundToggle';
 
 interface SoundContextValue {
   play: (type: SoundType) => void;
@@ -42,7 +40,6 @@ function readVolumePref(): number {
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const engineRef = useRef<SoundEngine | null>(null);
   const initedRef = useRef(false);
-  const pathname = usePathname();
 
   const [muted, setMutedRaw] = useState(readMutedPref);
   const [volume, setVolumeRaw] = useState(readVolumePref);
@@ -132,7 +129,6 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   return (
     <SoundContext.Provider value={{ play, muted, setMuted, volume, setVolume }}>
       {children}
-      <SoundToggle />
     </SoundContext.Provider>
   );
 }

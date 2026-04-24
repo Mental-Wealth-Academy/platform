@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
+import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
@@ -135,9 +136,11 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
 
 const TRADE_CHAT_SUGGESTIONS = [
   'Scan the strongest edge right now.',
-  'Size a conservative BTC signal.',
-  'What would you trade next?',
+  'Size a conservative BTC entry.',
+  'Stage the highest-conviction trade.',
 ];
+
+const MEMBER_COUNT = 3;
 
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
@@ -236,6 +239,7 @@ export default function Markets() {
   const [tradeChatMessages, setTradeChatMessages] = useState<TradeChatMessage[]>(INITIAL_TRADE_CHAT);
   const [tradeChatInput, setTradeChatInput] = useState('');
   const [isTradeChatSending, setIsTradeChatSending] = useState(false);
+  const [isMembershipOpen, setIsMembershipOpen] = useState(false);
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPrices = useCallback(async () => {
@@ -467,28 +471,16 @@ export default function Markets() {
     setIsTradeChatSending(true);
 
     try {
-      const res = await fetch('/api/chat/blue', {
+      const res = await fetch('/api/chat/blue-markets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           message: buildBlueTradingMessage(text),
-          mode: 'chat',
         }),
       });
 
-      const data: { response?: string; error?: string; shardCount?: number; cost?: number; message?: string } = await res.json();
-      let responseText = data.response;
-
-      if (!res.ok || !responseText) {
-        if (res.status === 401) {
-          responseText = 'sign in first, then i can keep your trading context and route commands through your account.';
-        } else if (data.error === 'insufficient_shards') {
-          responseText = `i need ${data.cost ?? 10} shards for this trading chat turn. you currently have ${data.shardCount ?? 0}.`;
-        } else {
-          responseText = generateLocalTradeResponse(text);
-        }
-      }
+      const data: { response?: string; error?: string; message?: string } = await res.json();
+      const responseText = (res.ok && data.response) ? data.response : generateLocalTradeResponse(text);
 
       setTradeChatMessages((current) => [
         ...current,
@@ -875,11 +867,13 @@ export default function Markets() {
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
             <div className={styles.blueTradeHeader}>
               <div>
-                <div className={styles.panelTitle}>Trading Agent</div>
-                <h2 className={styles.blueTradeTitle}>Ask About Trades</h2>
+                <div className={styles.panelTitle}>Current Members</div>
+                <h2 className={styles.blueTradeTitle}>Start Trading</h2>
               </div>
-              <div className={`${styles.blueSignalPill} ${derived.signal === 'TRADE' ? styles.blueSignalTrade : styles.blueSignalSkip}`}>
-                {derived.signal}
+              <div className={styles.blueMemberPill} aria-label={`${MEMBER_COUNT} current members`}>
+                <span className={styles.blueMemberDot} aria-hidden="true" />
+                <span className={styles.blueMemberCount}>{MEMBER_COUNT}</span>
+                <span className={styles.blueMemberLabel}>members</span>
               </div>
             </div>
 
@@ -904,19 +898,33 @@ export default function Markets() {
             </div>
 
             <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
-              {tradeChatMessages.map((message, index) => (
-                <div
-                  key={`${message.timestamp}-${index}`}
-                  className={`${styles.blueChatBubble} ${message.role === 'user' ? styles.blueChatUser : styles.blueChatBlue}`}
-                >
-                  {message.role === 'blue' && (
-                    <div className={styles.blueAvatar} aria-hidden="true">
-                      <Image src="/uploads/blueagent.png" alt="" width={28} height={28} className={styles.blueAvatarImage} />
+              {tradeChatMessages.map((message, index) => {
+                const canExecute = message.role === 'blue' && index > 0 && tradeChatMessages[index - 1].role === 'user';
+                return (
+                  <div
+                    key={`${message.timestamp}-${index}`}
+                    className={`${styles.blueChatBubble} ${message.role === 'user' ? styles.blueChatUser : styles.blueChatBlue}`}
+                  >
+                    {message.role === 'blue' && (
+                      <div className={styles.blueAvatar} aria-hidden="true">
+                        <Image src="/uploads/blueagent.png" alt="" width={28} height={28} className={styles.blueAvatarImage} />
+                      </div>
+                    )}
+                    <div className={styles.blueBubbleStack}>
+                      <div className={styles.blueBubbleText}>{message.text}</div>
+                      {canExecute && (
+                        <button
+                          type="button"
+                          className={styles.blueExecuteButton}
+                          onClick={() => setIsMembershipOpen(true)}
+                        >
+                          Execute this trade
+                        </button>
+                      )}
                     </div>
-                  )}
-                  <div className={styles.blueBubbleText}>{message.text}</div>
-                </div>
-              ))}
+                  </div>
+                );
+              })}
               {isTradeChatSending && (
                 <div className={`${styles.blueChatBubble} ${styles.blueChatBlue}`}>
                   <div className={styles.blueAvatar} aria-hidden="true">
@@ -966,6 +974,7 @@ export default function Markets() {
 
         </div>
       </div>
+      <ProMembershipModal isOpen={isMembershipOpen} onClose={() => setIsMembershipOpen(false)} />
     </main>
   );
 }

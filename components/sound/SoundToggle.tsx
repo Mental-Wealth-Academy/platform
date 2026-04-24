@@ -10,6 +10,7 @@ export default function SoundToggle() {
     <button
       className={styles.toggle}
       onClick={() => setMuted(!muted)}
+      aria-pressed={muted}
       aria-label={muted ? 'Unmute sounds' : 'Mute sounds'}
       title={muted ? 'Unmute' : 'Mute'}
       type="button"

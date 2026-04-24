@@ -7,6 +7,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import SoundToggle from '@/components/sound/SoundToggle';
 
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
@@ -68,6 +69,7 @@ const TopNavigation: React.FC = () => {
         </a>
 
         <nav className={styles.nav}>
+          <SoundToggle />
           <button
             type="button"
             className={styles.themeToggle}

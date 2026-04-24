@@ -372,6 +372,41 @@
   border-color: rgba(226, 86, 123, 0.2);
 }
 
+.blueMemberPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 8px;
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.08);
+  border: 1px solid rgba(81, 104, 255, 0.2);
+  font-family: var(--font-button);
+  line-height: 1;
+}
+
+.blueMemberDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-tertiary);
+  box-shadow: 0 0 0 3px rgba(116, 196, 101, 0.18);
+}
+
+.blueMemberCount {
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.blueMemberLabel {
+  font-size: 9px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
 .blueTradeVitals {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -470,6 +505,14 @@
   object-fit: cover;
 }
 
+.blueBubbleStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .blueBubbleText {
   padding: 10px 12px;
   border-radius: 16px;
@@ -480,6 +523,39 @@
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(26, 29, 51, 0.08);
   box-shadow: 0 8px 24px rgba(26, 29, 51, 0.05);
+}
+
+.blueExecuteButton {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #F7F8FF;
+  font-family: var(--font-button);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-default), box-shadow var(--duration-fast) var(--ease-default);
+}
+
+.blueExecuteButton::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
+}
+
+.blueExecuteButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(81, 104, 255, 0.28);
 }
 
 .blueChatUser .blueBubbleText {
@@ -1343,4 +1419,28 @@
   background: rgba(16, 21, 36, 0.92);
   border-color: rgba(255, 255, 255, 0.12);
   color: rgba(230, 235, 255, 0.8);
+}
+
+:global([data-theme="dark"]) .blueMemberPill {
+  background: rgba(107, 128, 255, 0.12);
+  border-color: rgba(107, 128, 255, 0.28);
+}
+
+:global([data-theme="dark"]) .blueMemberCount {
+  color: #B8C4FF;
+}
+
+:global([data-theme="dark"]) .blueMemberLabel {
+  color: rgba(230, 235, 255, 0.55);
+}
+
+:global([data-theme="dark"]) .blueExecuteButton {
+  border-color: rgba(107, 128, 255, 0.4);
+  background: rgba(107, 128, 255, 0.22);
+  color: #F0F4FF;
+}
+
+:global([data-theme="dark"]) .blueExecuteButton:hover {
+  background: rgba(107, 128, 255, 0.32);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }

@@ -47,12 +47,12 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
         <div className={styles.content}>
           <div className={styles.imageWrapper}>
             <Image
-              src="https://i.imgur.com/0dzmoMc.gif"
-              alt="Pro Membership Card NFT"
-              width={280}
-              height={280}
+              src="/uploads/soul-key-membership.png"
+              alt="Soul Key Membership Card"
+              width={1050}
+              height={655}
               className={styles.membershipImage}
-              unoptimized
+              priority
             />
           </div>
 
