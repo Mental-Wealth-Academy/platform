@@ -48,7 +48,29 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
-const navSections: NavSection[] = [
+const desktopNavSections: NavSection[] = [
+  {
+    id: 'main',
+    label: 'DeSci Cohort',
+    items: [
+      { id: 'community', label: 'Community DAO', href: '/community', icon: UsersThree },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'voting', label: 'Curriculum', href: '/home', icon: House },
+      { id: 'library', label: 'Library', href: '/library', icon: Book },
+    ],
+  },
+  {
+    id: 'extras',
+    label: 'Community Resources',
+    items: [
+      { id: 'gallery', label: 'Gallery', href: '/gallery', icon: ImagesSquare },
+      { id: 'dna', label: 'DNA', href: '/genetics', icon: Dna },
+      { id: 'research', label: 'DeSci Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+    ],
+  },
+];
+
+const mobileNavSections: NavSection[] = [
   {
     id: 'main',
     label: 'DeSci Cohort',
@@ -56,7 +78,7 @@ const navSections: NavSection[] = [
       { id: 'voting', label: 'Home', href: '/home', icon: House },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
       { id: 'library', label: 'Library', href: '/library', icon: Book },
-      { id: 'community', label: 'DAO', href: '/community', icon: UsersThree },
+      { id: 'community', label: 'Community DAO', href: '/community', icon: UsersThree },
     ],
   },
   {
@@ -459,6 +481,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
+  const navSections = isMobileMenuOpen ? mobileNavSections : desktopNavSections;
   const mainSection = navSections.find((section) => section.id === 'main');
   const extrasSection = navSections.find((section) => section.id === 'extras');
 

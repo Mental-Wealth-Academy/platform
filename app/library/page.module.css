@@ -246,17 +246,19 @@
   min-width: 0;
   border-radius: 10px;
   border: 1px solid rgba(81, 104, 255, 0.18);
-  background:
-    linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(107, 125, 255, 0.14) 100%);
+  background-size: cover;
+  background-position: center;
+  background-color: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(107, 125, 255, 0.14) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
     0 8px 20px rgba(81, 104, 255, 0.08);
+  overflow: hidden;
 }
 
 [data-theme='dark'] .mobileFeatureTile {
   border-color: rgba(81, 104, 255, 0.24);
-  background:
-    linear-gradient(135deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.2) 100%);
+  background-size: cover;
+  background-position: center;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 10px 22px rgba(0, 0, 0, 0.24);

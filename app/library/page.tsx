@@ -223,9 +223,9 @@ export default function LibraryPage() {
               </div>
 
               <div className={styles.mobileFeatureRow} aria-hidden="true">
-                <div className={styles.mobileFeatureTile} />
-                <div className={styles.mobileFeatureTile} />
-                <div className={styles.mobileFeatureTile} />
+                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/lab-aesthetic.png)' }} />
+                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/surveillance-aesthetic.png)' }} />
+                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/academy-story.png)' }} />
               </div>
 
               {/* Featured Art Styles Section */}
