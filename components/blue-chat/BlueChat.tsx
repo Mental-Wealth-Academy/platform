@@ -1399,6 +1399,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           </div>
         )}
 
+        {autoDistributionVisible && (
+          <AutoDistributionInline
+            isBusy={isTyping}
+            xConnection={autoDistributionXConnection}
+            onConnectX={connectAutoDistributionX}
+            onGenerate={handleAutoDistributionGenerate}
+            onClose={() => setAutoDistributionVisible(false)}
+          />
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -1425,16 +1435,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             showEmote('joyful', 5000);
             addAzuraMessage("clean run. you're done.");
           }}
-        />
-      )}
-
-      {autoDistributionVisible && (
-        <AutoDistributionInline
-          isBusy={isTyping}
-          xConnection={autoDistributionXConnection}
-          onConnectX={connectAutoDistributionX}
-          onGenerate={handleAutoDistributionGenerate}
-          onClose={() => setAutoDistributionVisible(false)}
         />
       )}
 
