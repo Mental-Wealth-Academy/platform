@@ -1587,6 +1587,47 @@
   animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.autoDistributionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.autoDistributionMinimizedChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 12px;
+  margin: 0 16px 4px auto;
+  background:
+    radial-gradient(circle at top right, rgba(81, 104, 255, 0.16), transparent 60%),
+    rgba(20, 20, 32, 0.94);
+  border: 1.5px solid rgba(81, 104, 255, 0.24);
+  border-radius: 20px;
+  animation: messageSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: fit-content;
+}
+
+.autoDistributionMinimizeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.autoDistributionMinimizeBtn:hover {
+  color: rgba(255, 255, 255, 0.78);
+}
+
 .autoDistributionTitle {
   font-family: var(--font-primary, 'IBM Plex Mono', monospace);
   font-size: 11px;
