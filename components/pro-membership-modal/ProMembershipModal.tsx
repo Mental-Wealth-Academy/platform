@@ -74,7 +74,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
             </ul>
 
             <a
-              href="https://opensea.io/collection/soul-key"
+              href="https://opensea.io/item/base/0x5da79055cf8ca6482c997df58822e08e5707d6fc/1"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.ctaButton}
