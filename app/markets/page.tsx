@@ -1124,8 +1124,8 @@ export default function Markets() {
                     void sendTradeChatMessage(tradeChatInput);
                   }
                 }}
-                placeholder="Ask Blue to size or route a VIP trade..."
-                rows={3}
+                placeholder="Ask Blue to trade.."
+                rows={2}
                 disabled={isTradeChatSending || isTradeExecuting}
               />
               <button type="submit" disabled={!tradeChatInput.trim() || isTradeChatSending || isTradeExecuting}>
