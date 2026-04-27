@@ -54,9 +54,11 @@
 
 .cardSurface {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 12px;
+  align-items: start;
   padding: 14px 14px 12px;
   border: none;
   background: transparent;
@@ -67,6 +69,8 @@
   -webkit-appearance: none;
   position: relative;
   z-index: 1;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .cardSurface:disabled {
@@ -87,6 +91,7 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .kindChip {
@@ -131,7 +136,6 @@
 }
 
 .pointsChip {
-  margin-left: auto;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -140,6 +144,8 @@
   background: linear-gradient(180deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.06) 100%);
   border: 1px solid rgba(81, 104, 255, 0.18);
   color: #1a234a;
+  justify-self: end;
+  align-self: start;
 }
 
 .pointsIcon {
@@ -160,6 +166,7 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  grid-column: 1 / -1;
 }
 
 .title {
@@ -186,11 +193,13 @@
 }
 
 .footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
+  display: inline-grid;
+  grid-template-columns: minmax(136px, 172px) auto;
+  gap: 10px;
   align-items: center;
   margin-top: 2px;
+  max-width: 100%;
+  grid-column: 1 / -1;
 }
 
 .progressBlock {
@@ -198,6 +207,7 @@
   align-items: center;
   gap: 9px;
   min-width: 0;
+  width: 100%;
 }
 
 .progressTrack {
@@ -282,7 +292,8 @@
 @media (min-width: 768px) {
   .cardSurface {
     padding: 16px 18px 14px;
-    gap: 14px;
+    column-gap: 14px;
+    row-gap: 14px;
   }
 
   .title {
@@ -291,6 +302,10 @@
 
   .desc {
     font-size: 14px;
+  }
+
+  .footer {
+    grid-template-columns: minmax(150px, 188px) auto;
   }
 }
 

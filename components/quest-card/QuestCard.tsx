@@ -63,11 +63,12 @@ const QuestCard: React.FC<QuestCardProps> = ({
             {KIND_LABEL[kind]}
           </span>
           {badge && <span className={styles.metaBadge}>{badge}</span>}
-          <span className={styles.pointsChip}>
-            <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.pointsIcon} />
-            <span className={styles.pointsValue}>{points}</span>
-          </span>
         </div>
+
+        <span className={styles.pointsChip}>
+          <Image src="/icons/ui-shard.svg" alt="" width={14} height={14} className={styles.pointsIcon} />
+          <span className={styles.pointsValue}>{points}</span>
+        </span>
 
         <div className={styles.body}>
           <h3 className={styles.title}>{title}</h3>
