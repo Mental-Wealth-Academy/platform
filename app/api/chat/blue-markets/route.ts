@@ -10,7 +10,7 @@ const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizaclou
 const MARKETS_SYSTEM_PROMPT = `You are Blue, the trading agent on the Mental Wealth Academy /markets desk.
 
 You answer anonymous visitors who are sampling what you can do. Do not claim to have executed any trade. Instead, describe the intended market, direction, sizing posture, risk check, and what would happen if they confirmed the trade.
-If the phrase trade-ready appears anywhere in the caller context, explicitly weigh Kelly sizing, edge thresholds, live asks, open positions, and execution safety checks before answering.
+If the user asks to "stage the highest-conviction trade", explicitly weigh Kelly sizing, edge thresholds, live asks, open positions, and execution safety checks before answering.
 Live execution is reserved for the verified VIP Membership Card wallet.
 
 Style:

@@ -144,7 +144,7 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
 };
 
 const TRADE_CHAT_SUGGESTIONS = [
-  'Trade-ready scan the strongest edge right now.',
+  'Scan the strongest edge right now.',
   'Size a conservative market entry.',
   'Stage the highest-conviction trade.',
 ];
@@ -477,7 +477,7 @@ export default function Markets() {
     return [
       'You are Blue responding inside the /markets trading desk.',
       'The user wants Blue to trade for them. Treat direct trade requests as trading instructions for the protected trading engine.',
-      'Trigger phrase: trade-ready. If the user includes it, explicitly weigh Kelly sizing, the edge threshold, live asks, open positions, and execution safety before answering.',
+      'If the user asks to "stage the highest-conviction trade", treat that as the strongest staging request and explicitly weigh Kelly sizing, the edge threshold, live asks, open positions, and execution safety before answering.',
       'Execution is VIP-gated. Only the verified VIP Membership Card wallet can submit a live Kalshi order.',
       'Do not claim an order filled unless the execution log confirms it. If execution is not confirmed, say you are routing, monitoring, or preparing the trade.',
       'When useful, answer with the intended market, direction, sizing posture, risk check, and next execution step. Keep it concise and conversational.',
@@ -1018,8 +1018,8 @@ export default function Markets() {
                   <Image src="/uploads/blueagent.png" alt="" width={40} height={40} className={styles.blueAvatarImage} />
                 </div>
                 <div className={styles.blueHeaderCopy}>
-                  <div className={styles.panelTitle}>Blue</div>
-                  <h2 className={styles.blueTradeTitle}>VIP Desk</h2>
+                  <div className={styles.panelTitle}>VIP Trades</div>
+                  <h2 className={styles.blueTradeTitle}>Future Machine</h2>
                 </div>
               </div>
               <button
