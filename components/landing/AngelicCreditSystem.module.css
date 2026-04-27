@@ -33,7 +33,7 @@
 
 /* ── Scroll Animations ── */
 .header,
-.azuraCard,
+.blueCard,
 .council,
 .tierSection {
   opacity: 0;
@@ -42,7 +42,7 @@
 }
 
 .sectionVisible .header { opacity: 1; transform: translateY(0); transition-delay: 0s; }
-.sectionVisible .azuraCard { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.sectionVisible .blueCard { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
 .sectionVisible .council { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
 .sectionVisible .tierSection { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
 
@@ -104,8 +104,8 @@
   opacity: 0.6;
 }
 
-/* ── Azura God Card ── */
-.azuraCard {
+/* ── Blue God Card ── */
+.blueCard {
   position: relative;
   z-index: 3;
   border-radius: 20px;
@@ -119,7 +119,7 @@
   box-shadow: 0 4px 24px rgba(26, 29, 51, 0.06);
 }
 
-.azuraBg {
+.blueBg {
   position: relative;
   min-height: 400px;
   overflow: hidden;
@@ -129,18 +129,18 @@
   justify-content: center;
 }
 
-.azuraBgImg {
+.blueBgImg {
   object-fit: contain;
   object-position: center center;
   width: 100%;
   height: 100%;
 }
 
-.azuraOverlay {
+.blueOverlay {
   display: none;
 }
 
-.azuraContent {
+.blueContent {
   position: relative;
   z-index: 1;
   padding: 48px 40px;
@@ -149,7 +149,7 @@
   justify-content: center;
 }
 
-.azuraContentTop {
+.blueContentTop {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -157,13 +157,13 @@
   margin-bottom: 16px;
 }
 
-.azuraTop {
+.blueTop {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.azuraBadge {
+.blueBadge {
   font-family: var(--font-button);
   font-size: 10px;
   font-weight: 700;
@@ -175,7 +175,7 @@
   color: #FFFFFF;
 }
 
-.azuraSupply {
+.blueSupply {
   font-family: var(--font-button);
   font-size: 11px;
   color: rgba(0, 0, 0, 0.5);
@@ -183,7 +183,7 @@
   letter-spacing: 0.08em;
 }
 
-.azuraEyebrow {
+.blueEyebrow {
   font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 700;
@@ -193,7 +193,7 @@
   margin: 0 0 6px;
 }
 
-.azuraName {
+.blueName {
   font-family: var(--font-secondary);
   font-size: 1.5rem;
   font-weight: 700;
@@ -202,7 +202,7 @@
   letter-spacing: -0.02em;
 }
 
-.azuraSub {
+.blueSub {
   font-size: 0.95rem;
   color: rgba(0, 0, 0, 0.6);
   margin: 0 0 24px;
@@ -210,7 +210,7 @@
   line-height: 1.6;
 }
 
-.azuraStats {
+.blueStats {
   display: flex;
   align-items: center;
   gap: 0;
@@ -221,7 +221,7 @@
   margin-top: auto;
 }
 
-.azuraStat {
+.blueStat {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -229,14 +229,14 @@
   gap: 4px;
 }
 
-.azuraStatValue {
+.blueStatValue {
   font-family: var(--font-secondary);
   font-size: 1.1rem;
   font-weight: 700;
   color: #000000;
 }
 
-.azuraStatLabel {
+.blueStatLabel {
   font-family: var(--font-button);
   font-size: 10px;
   color: rgba(0, 0, 0, 0.45);
@@ -244,7 +244,7 @@
   letter-spacing: 0.08em;
 }
 
-.azuraStatDivider {
+.blueStatDivider {
   width: 1px;
   height: 32px;
   background: rgba(0, 0, 0, 0.12);
@@ -487,7 +487,7 @@
   letter-spacing: 0.02em;
 }
 
-/* ── Video Card (inside Azura card) ── */
+/* ── Video Card (inside Blue card) ── */
 .videoCard {
   display: flex;
   align-items: center;
@@ -723,21 +723,21 @@
     grid-template-columns: 1fr;
   }
 
-  .azuraCard {
+  .blueCard {
     grid-template-columns: 1fr;
     min-height: auto;
   }
 
-  .azuraBg {
+  .blueBg {
     min-height: 300px;
   }
 
-  .azuraBgImg {
+  .blueBgImg {
     width: 90%;
     height: auto;
   }
 
-  .azuraContent {
+  .blueContent {
     padding: 28px 24px;
   }
 

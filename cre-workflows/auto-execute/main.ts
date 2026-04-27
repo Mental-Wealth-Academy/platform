@@ -3,7 +3,7 @@
  *
  * Runs on a cron schedule (every 10 minutes). For each active proposal that has
  * reached the 50% vote threshold but hasn't been executed yet, it generates a
- * DON-signed report and delivers it to AzuraKillStreak.onReport() via the
+ * DON-signed report and delivers it to BlueKillStreak.onReport() via the
  * KeystoneForwarder.
  *
  * Action type 1 = auto-execute

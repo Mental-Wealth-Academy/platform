@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAppleHolders } from '@/lib/apple-holders';
-import { azuraWallet } from '@/lib/azura-wallet';
-import { getClobBalance } from '@/lib/polymarket-clob';
+import { blueWallet } from '@/lib/blue-wallet';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -55,7 +54,7 @@ export async function POST(request: Request) {
       .filter(r => BigInt(r.amount) > 0n);
 
     // Execute batch distribution
-    const { txHashes, failed } = await azuraWallet.distributeUSDC(recipients);
+    const { txHashes, failed } = await blueWallet.distributeUSDC(recipients);
 
     return NextResponse.json({
       success: true,

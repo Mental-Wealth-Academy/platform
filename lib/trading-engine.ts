@@ -1,36 +1,43 @@
 /**
- * Trading Engine — Edge Detection + Execution
+ * Trading Engine — Edge Detection (dry-run)
  *
- * Scans Polymarket crypto markets for model-vs-market divergence,
- * sizes positions via fractional Kelly, and executes via CLOB.
+ * Scans Kalshi markets for model-vs-market divergence and emits
+ * sized SIGNAL entries. Execution is intentionally not wired in
+ * this build — Kalshi requires RSA-signed requests and a separate
+ * funding rail, both of which are out of scope until we wire a real
+ * trading desk.
+ *
+ * The output of runTradingCycle() is consumed by the /markets page
+ * via execution-log-store and rendered live.
  */
 
-import { fetchPrices, fetchCategorizedMarkets, type CoinPrice, type PolymarketMarket } from './market-api';
-import { placeOrder, getOpenOrders, getClobBalance, type ClobOrder } from './polymarket-clob';
+import {
+  fetchPrices,
+  fetchCategorizedMarkets,
+  type CoinPrice,
+  type MarketRow,
+} from './market-api';
 
-// ── Model Constants (mirrored from treasury page) ──
+// ── Model Constants (mirrored from /markets page) ──
 
 const SIGMA = 0.50;
 const T_EXP = 0.0000095;
 const R_FREE = 0.0433;
-const GAMMA = 0.10;
 const SIGMA_B = 0.328;
-const K_DECAY = 1.50;
 const EDGE_THRESHOLD = 3.0;
 const KELLY_FRACTION = 0.25;
 
-// ── Risk Limits ──
+// ── Risk Limits (kept for reference / sizing math) ──
 
-const MAX_POSITION_PCT = 0.05;      // 5% of trading balance per position
+const MAX_POSITION_PCT = 0.05;       // 5% of trading balance per position
 const MAX_TOTAL_EXPOSURE_PCT = 0.40; // 40% total exposure
-const STOP_LOSS_PCT = 0.15;          // 15% stop loss per position
-const MAX_DRAWDOWN_PCT = 0.20;       // 20% max drawdown halts trading
+const NOTIONAL_BALANCE = 5000;       // dry-run notional in USD for sizing
 
 // ── Types ──
 
 export interface EdgeSignal {
   asset: string;
-  market: PolymarketMarket;
+  market: MarketRow;
   modelFair: number;
   mktPrice: number;
   divergence: number;
@@ -46,21 +53,14 @@ export interface SizedPosition {
   shares: number;
 }
 
-export interface TradeResult {
-  position: SizedPosition;
-  orderID: string;
-  status: string;
-  timestamp: number;
-}
-
 export interface TradingLog {
-  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR';
+  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR' | 'SIGNAL';
   asset?: string;
   details: string;
   timestamp: number;
 }
 
-// ── Math (identical to treasury page) ──
+// ── Math ──
 
 function normalCDF(x: number): number {
   const a1 = 0.254829592;
@@ -87,9 +87,7 @@ function parseOutcomePrices(raw: string): [number, number] {
 
 // ── Engine ──
 
-/**
- * Scan all categorized crypto markets for edge opportunities.
- */
+/** Scan all categorized crypto markets for edge opportunities. */
 export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: TradingLog[] }> {
   const logs: TradingLog[] = [];
   const signals: EdgeSignal[] = [];
@@ -97,23 +95,18 @@ export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: Trad
   const [prices, markets] = await Promise.all([fetchPrices(), fetchCategorizedMarkets()]);
   const cryptoMarkets = markets.crypto;
 
-  const symbolMap: Record<string, string> = {
-    bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', ripple: 'XRP',
-  };
-
   for (const market of cryptoMarkets) {
     const [yesPrice] = parseOutcomePrices(market.outcomePrices);
     if (yesPrice <= 0.02 || yesPrice >= 0.98) continue;
 
     const mktPrice = yesPrice * 100;
 
-    // Match market to a spot asset for IV calibration
-    const matchedCoin = prices.find(p =>
+    // Match market to a spot asset via question text
+    const matchedCoin: CoinPrice | undefined = prices.find((p) =>
       market.question.toLowerCase().includes(p.symbol.toLowerCase()) ||
       market.question.toLowerCase().includes(p.id.toLowerCase()),
     );
 
-    const S = matchedCoin?.usd ?? 66235;
     const asset = matchedCoin?.symbol ?? 'BTC';
 
     // BS binary pricing
@@ -137,9 +130,9 @@ export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: Trad
       signals.push({ asset, market, modelFair, mktPrice, divergence, side, d2, Nd2 });
 
       logs.push({
-        action: 'TRADE',
+        action: 'SIGNAL',
         asset,
-        details: `${side} edge:${Math.abs(divergence).toFixed(2)}% model:${modelFair.toFixed(2)}% mkt:${mktPrice.toFixed(2)}%`,
+        details: `${side} ${market.ticker} edge:${Math.abs(divergence).toFixed(2)}% model:${modelFair.toFixed(2)}% mkt:${mktPrice.toFixed(2)}%`,
         timestamp: Date.now(),
       });
     } else {
@@ -155,49 +148,16 @@ export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: Trad
   return { signals, logs };
 }
 
-/**
- * Apply Kelly criterion (0.25x) + risk limits to size positions.
- */
-export async function sizePositions(
-  signals: EdgeSignal[],
-): Promise<{ positions: SizedPosition[]; logs: TradingLog[] }> {
-  const logs: TradingLog[] = [];
+/** Apply quarter-Kelly + risk limits to size positions (notional, dry-run). */
+export function sizePositions(signals: EdgeSignal[]): SizedPosition[] {
   const positions: SizedPosition[] = [];
-
-  let balanceData: { balance: string };
-  try {
-    balanceData = await getClobBalance();
-  } catch {
-    logs.push({ action: 'ERROR', details: 'Failed to fetch CLOB balance', timestamp: Date.now() });
-    return { positions, logs };
-  }
-
-  const balance = parseFloat(balanceData.balance) || 0;
-  if (balance <= 0) {
-    logs.push({ action: 'HALT', details: 'Zero trading balance', timestamp: Date.now() });
-    return { positions, logs };
-  }
-
+  const balance = NOTIONAL_BALANCE;
   const maxPerPosition = balance * MAX_POSITION_PCT;
   let totalExposure = 0;
 
-  // Check existing open orders for exposure
-  try {
-    const openOrders = await getOpenOrders();
-    for (const order of openOrders) {
-      totalExposure += parseFloat(order.original_size) * parseFloat(order.price);
-    }
-  } catch {
-    // Continue with estimated exposure = 0
-  }
-
   for (const signal of signals) {
-    if (totalExposure >= balance * MAX_TOTAL_EXPOSURE_PCT) {
-      logs.push({ action: 'HALT', details: `Max exposure reached: ${(totalExposure / balance * 100).toFixed(1)}%`, timestamp: Date.now() });
-      break;
-    }
+    if (totalExposure >= balance * MAX_TOTAL_EXPOSURE_PCT) break;
 
-    // Kelly fraction: f* = (p*b - q) / b where p=model prob, b=odds, q=1-p
     const p = signal.modelFair / 100;
     const mktP = signal.mktPrice / 100;
     const b = signal.side === 'BUY' ? (1 / mktP - 1) : (1 / (1 - mktP) - 1);
@@ -212,104 +172,20 @@ export async function sizePositions(
     const shares = Math.floor(sizeUSD / price);
 
     if (shares <= 0) continue;
-
     positions.push({ signal, kellyFraction, sizeUSD, shares });
     totalExposure += sizeUSD;
   }
 
-  return { positions, logs };
+  return positions;
 }
 
 /**
- * Execute trades via Polymarket CLOB.
- */
-export async function executeTrades(
-  positions: SizedPosition[],
-): Promise<{ results: TradeResult[]; logs: TradingLog[] }> {
-  const logs: TradingLog[] = [];
-  const results: TradeResult[] = [];
-
-  for (const pos of positions) {
-    const [yesPrice] = parseOutcomePrices(pos.signal.market.outcomePrices);
-    const price = pos.signal.side === 'BUY' ? yesPrice : (1 - yesPrice);
-
-    const order: ClobOrder = {
-      tokenID: pos.signal.market.id,
-      price: Math.round(price * 100) / 100,
-      size: pos.shares,
-      side: pos.signal.side,
-    };
-
-    try {
-      const response = await placeOrder(order);
-      results.push({
-        position: pos,
-        orderID: response.orderID,
-        status: response.status,
-        timestamp: Date.now(),
-      });
-
-      logs.push({
-        action: 'TRADE',
-        asset: pos.signal.asset,
-        details: `${pos.signal.side} @${(price * 100).toFixed(0)}c $${Math.round(pos.sizeUSD)} edge:${Math.abs(pos.signal.divergence).toFixed(2)}% kelly:${(pos.kellyFraction * 100).toFixed(1)}% orderID:${response.orderID}`,
-        timestamp: Date.now(),
-      });
-    } catch (err) {
-      logs.push({
-        action: 'ERROR',
-        asset: pos.signal.asset,
-        details: `Order failed: ${err instanceof Error ? err.message : 'Unknown'}`,
-        timestamp: Date.now(),
-      });
-    }
-  }
-
-  return { results, logs };
-}
-
-/**
- * Check positions for stop losses and exits.
- */
-export async function monitorPositions(): Promise<TradingLog[]> {
-  const logs: TradingLog[] = [];
-
-  try {
-    const openOrders = await getOpenOrders();
-
-    for (const order of openOrders) {
-      const entryPrice = parseFloat(order.price);
-      const sizeMatched = parseFloat(order.size_matched);
-
-      if (sizeMatched > 0) {
-        // Estimate current P&L — would need current market price for real calculation
-        // For now, log monitoring status
-        logs.push({
-          action: 'SCAN',
-          details: `Monitoring ${order.asset_id} ${order.side} @${(entryPrice * 100).toFixed(0)}c matched:${sizeMatched.toFixed(0)}`,
-          timestamp: Date.now(),
-        });
-      }
-    }
-  } catch (err) {
-    logs.push({
-      action: 'ERROR',
-      details: `Monitor failed: ${err instanceof Error ? err.message : 'Unknown'}`,
-      timestamp: Date.now(),
-    });
-  }
-
-  return logs;
-}
-
-/**
- * Full trading cycle: scan -> size -> execute -> monitor.
- * Returns all logs for the execution.
+ * Full trading cycle (dry-run): scan -> size -> log.
+ * No order placement — Kalshi execution is not wired.
  */
 export async function runTradingCycle(): Promise<TradingLog[]> {
   const allLogs: TradingLog[] = [];
 
-  // Scan
   const { signals, logs: scanLogs } = await scanForEdge();
   allLogs.push(...scanLogs);
 
@@ -318,22 +194,16 @@ export async function runTradingCycle(): Promise<TradingLog[]> {
     return allLogs;
   }
 
-  // Size
-  const { positions, logs: sizeLogs } = await sizePositions(signals);
-  allLogs.push(...sizeLogs);
+  const positions = sizePositions(signals);
 
-  if (positions.length === 0) {
-    allLogs.push({ action: 'SKIP', details: 'No positions sized (risk limits or zero balance)', timestamp: Date.now() });
-    return allLogs;
+  for (const pos of positions) {
+    allLogs.push({
+      action: 'SIGNAL',
+      asset: pos.signal.asset,
+      details: `${pos.signal.side} ${pos.signal.market.ticker} kelly:${(pos.kellyFraction * 100).toFixed(2)}% notional:$${Math.round(pos.sizeUSD)} shares:${pos.shares}`,
+      timestamp: Date.now(),
+    });
   }
-
-  // Execute
-  const { logs: execLogs } = await executeTrades(positions);
-  allLogs.push(...execLogs);
-
-  // Monitor existing
-  const monitorLogs = await monitorPositions();
-  allLogs.push(...monitorLogs);
 
   return allLogs;
 }

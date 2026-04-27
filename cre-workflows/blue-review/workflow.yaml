@@ -1,14 +1,14 @@
 # ==========================================================================
-# CRE WORKFLOW SETTINGS: azura-review-proposals
+# CRE WORKFLOW SETTINGS: blue-review-proposals
 # ==========================================================================
 # Event-triggered workflow that listens for ProposalCreated events on
-# AzuraKillStreak. When a new proposal appears, it calls the Eliza AI API
-# for scoring, computes the azuraLevel (0-4), and submits a DON-signed review
+# BlueKillStreak. When a new proposal appears, it calls the Eliza AI API
+# for scoring, computes the blueLevel (0-4), and submits a DON-signed review
 # on-chain via onReport().
 
 production-settings:
   user-workflow:
-    workflow-name: "azura-review-proposals"
+    workflow-name: "blue-review-proposals"
   workflow-artifacts:
     workflow-path: "./main.ts"
     config-path: "./config.production.json"
@@ -16,7 +16,7 @@ production-settings:
 
 staging-settings:
   user-workflow:
-    workflow-name: "azura-review-proposals-staging"
+    workflow-name: "blue-review-proposals-staging"
   workflow-artifacts:
     workflow-path: "./main.ts"
     config-path: "./config.production.json"

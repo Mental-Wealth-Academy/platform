@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS proposals (
   CONSTRAINT valid_status CHECK (status IN ('pending_review', 'approved', 'rejected', 'active', 'completed', 'expired', 'on_chain_pending', 'on_chain_active', 'executed'))
 );
 
--- Proposal reviews table - Stores Azura's analysis and decisions
+-- Proposal reviews table - Stores Blue's analysis and decisions
 CREATE TABLE IF NOT EXISTS proposal_reviews (
   id CHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
   proposal_id CHAR(36) NOT NULL,

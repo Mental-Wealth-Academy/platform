@@ -192,7 +192,7 @@
   margin-bottom: var(--space-4);
 }
 
-.azuraAvatar {
+.blueAvatar {
   position: relative;
   width: 56px;
   height: 56px;
@@ -205,7 +205,7 @@
   flex-shrink: 0;
 }
 
-.azuraImage {
+.blueImage {
   object-fit: cover;
 }
 

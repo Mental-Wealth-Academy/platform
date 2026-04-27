@@ -1,23 +1,23 @@
 import { Contract, providers } from 'ethers';
 
 /**
- * AzuraKillStreak Contract Interface
+ * BlueKillStreak Contract Interface
  * Frontend library for interacting with the on-chain governance contract
  */
 
 // Contract ABI (only the functions we need)
-export const AZURA_KILLSTREAK_ABI = [
+export const BLUE_KILLSTREAK_ABI = [
   // Read functions
-  'function getProposal(uint256 _proposalId) external view returns (tuple(uint256 id, address proposer, address recipient, uint256 usdcAmount, string title, string description, uint256 createdAt, uint256 votingDeadline, uint8 status, uint256 forVotes, uint256 againstVotes, uint256 azuraLevel, bool azuraApproved, bool executed, uint256 snapshotBlock))',
+  'function getProposal(uint256 _proposalId) external view returns (tuple(uint256 id, address proposer, address recipient, uint256 usdcAmount, string title, string description, uint256 createdAt, uint256 votingDeadline, uint8 status, uint256 forVotes, uint256 againstVotes, uint256 blueLevel, bool blueApproved, bool executed, uint256 snapshotBlock))',
   'function getVotingProgress(uint256 _proposalId) external view returns (uint256 forVotes, uint256 againstVotes, uint256 percentageFor)',
   'function hasReachedThreshold(uint256 _proposalId) external view returns (bool)',
   'function getVotingPower(address _voter) external view returns (uint256)',
   'function proposalCount() external view returns (uint256)',
-  'function azuraAgent() external view returns (address)',
+  'function blueAgent() external view returns (address)',
   
   // Write functions
   'function createProposal(address _recipient, uint256 _usdcAmount, string _title, string _description, uint256 _votingPeriod) external returns (uint256)',
-  'function azuraReview(uint256 _proposalId, uint256 _level) external',
+  'function blueReview(uint256 _proposalId, uint256 _level) external',
   'function vote(uint256 _proposalId, bool _support) external',
   'function executeProposal(uint256 _proposalId) external',
   'function onReport(bytes calldata metadata, bytes calldata report) external',
@@ -26,7 +26,7 @@ export const AZURA_KILLSTREAK_ABI = [
   
   // Events
   'event ProposalCreated(uint256 indexed proposalId, address indexed proposer, address indexed recipient, uint256 usdcAmount, string title, uint256 votingDeadline)',
-  'event AzuraReview(uint256 indexed proposalId, uint256 azuraLevel, bool approved, uint256 voteWeight)',
+  'event BlueReview(uint256 indexed proposalId, uint256 blueLevel, bool approved, uint256 voteWeight)',
   'event VoteCast(uint256 indexed proposalId, address indexed voter, bool support, uint256 weight)',
   'event ProposalExecuted(uint256 indexed proposalId, address indexed recipient, uint256 usdcAmount)',
 ];
@@ -43,8 +43,8 @@ export interface OnChainProposal {
   status: ProposalStatus;
   forVotes: string;
   againstVotes: string;
-  azuraLevel: number;
-  azuraApproved: boolean;
+  blueLevel: number;
+  blueApproved: boolean;
   executed: boolean;
   snapshotBlock: number;
 }
@@ -103,22 +103,22 @@ export async function ensureBaseNetwork(provider: providers.Web3Provider): Promi
 /**
  * Get contract instance
  */
-export function getAzuraKillStreakContract(
+export function getBlueKillStreakContract(
   contractAddress: string,
   provider: providers.Web3Provider
 ): Contract {
-  return new Contract(contractAddress, AZURA_KILLSTREAK_ABI, provider);
+  return new Contract(contractAddress, BLUE_KILLSTREAK_ABI, provider);
 }
 
 /**
  * Get contract instance with signer (for write operations)
  */
-export async function getAzuraKillStreakContractWithSigner(
+export async function getBlueKillStreakContractWithSigner(
   contractAddress: string,
   provider: providers.Web3Provider
 ): Promise<Contract> {
   const signer = provider.getSigner();
-  return new Contract(contractAddress, AZURA_KILLSTREAK_ABI, signer);
+  return new Contract(contractAddress, BLUE_KILLSTREAK_ABI, signer);
 }
 
 /**
@@ -129,7 +129,7 @@ export async function fetchProposal(
   proposalId: number,
   provider: providers.Web3Provider
 ): Promise<OnChainProposal> {
-  const contract = getAzuraKillStreakContract(contractAddress, provider);
+  const contract = getBlueKillStreakContract(contractAddress, provider);
   const proposal = await contract.getProposal(proposalId);
   
   return {
@@ -144,8 +144,8 @@ export async function fetchProposal(
     status: proposal.status,
     forVotes: proposal.forVotes.toString(),
     againstVotes: proposal.againstVotes.toString(),
-    azuraLevel: Number(proposal.azuraLevel),
-    azuraApproved: proposal.azuraApproved,
+    blueLevel: Number(proposal.blueLevel),
+    blueApproved: proposal.blueApproved,
     executed: proposal.executed,
     snapshotBlock: Number(proposal.snapshotBlock),
   };
@@ -158,7 +158,7 @@ export async function fetchAllProposals(
   contractAddress: string,
   provider: providers.Web3Provider
 ): Promise<OnChainProposal[]> {
-  const contract = getAzuraKillStreakContract(contractAddress, provider);
+  const contract = getBlueKillStreakContract(contractAddress, provider);
   const count = await contract.proposalCount();
   const totalCount = Number(count);
   
@@ -184,7 +184,7 @@ export async function getVotingProgress(
   proposalId: number,
   provider: providers.Web3Provider
 ): Promise<VotingProgress> {
-  const contract = getAzuraKillStreakContract(contractAddress, provider);
+  const contract = getBlueKillStreakContract(contractAddress, provider);
   const [forVotes, againstVotes, percentageFor] = await contract.getVotingProgress(proposalId);
   
   return {
@@ -202,7 +202,7 @@ export async function getUserVotingPower(
   userAddress: string,
   provider: providers.Web3Provider
 ): Promise<string> {
-  const contract = getAzuraKillStreakContract(contractAddress, provider);
+  const contract = getBlueKillStreakContract(contractAddress, provider);
   const power = await contract.getVotingPower(userAddress);
   return power.toString();
 }
@@ -219,7 +219,7 @@ export async function createProposalOnChain(
   votingPeriodDays: number,
   provider: providers.Web3Provider
 ): Promise<{ proposalId: number; txHash: string }> {
-  const contract = await getAzuraKillStreakContractWithSigner(contractAddress, provider);
+  const contract = await getBlueKillStreakContractWithSigner(contractAddress, provider);
   
   const votingPeriodSeconds = votingPeriodDays * 24 * 60 * 60;
   
@@ -286,7 +286,7 @@ export async function voteOnProposal(
   support: boolean,
   provider: providers.Web3Provider
 ): Promise<string> {
-  const contract = await getAzuraKillStreakContractWithSigner(contractAddress, provider);
+  const contract = await getBlueKillStreakContractWithSigner(contractAddress, provider);
   
   const tx = await contract.vote(proposalId, support);
   const receipt = await tx.wait();
@@ -295,35 +295,35 @@ export async function voteOnProposal(
 }
 
 /**
- * Azura reviews a proposal and assigns a level (0-4)
+ * Blue reviews a proposal and assigns a level (0-4)
  */
-export async function azuraReviewProposal(
+export async function blueReviewProposal(
   contractAddress: string,
   proposalId: number,
   level: number,
   provider: providers.Web3Provider
 ): Promise<string> {
-  const contract = await getAzuraKillStreakContractWithSigner(contractAddress, provider);
+  const contract = await getBlueKillStreakContractWithSigner(contractAddress, provider);
 
-  const tx = await contract.azuraReview(proposalId, level);
+  const tx = await contract.blueReview(proposalId, level);
   const receipt = await tx.wait();
 
   return receipt.hash;
 }
 
 /**
- * Server-side Azura review using a Wallet signer directly
- * Used by API routes where we have Azura's private key
+ * Server-side Blue review using a Wallet signer directly
+ * Used by API routes where we have Blue's private key
  */
-export async function azuraReviewProposalWithWallet(
+export async function blueReviewProposalWithWallet(
   contractAddress: string,
   proposalId: number,
   level: number,
   wallet: providers.JsonRpcSigner | import('ethers').Wallet
 ): Promise<string> {
-  const contract = new Contract(contractAddress, AZURA_KILLSTREAK_ABI, wallet);
+  const contract = new Contract(contractAddress, BLUE_KILLSTREAK_ABI, wallet);
 
-  const tx = await contract.azuraReview(proposalId, level);
+  const tx = await contract.blueReview(proposalId, level);
   const receipt = await tx.wait();
 
   return receipt.hash;
@@ -337,7 +337,7 @@ export async function executeProposal(
   proposalId: number,
   provider: providers.Web3Provider
 ): Promise<string> {
-  const contract = await getAzuraKillStreakContractWithSigner(contractAddress, provider);
+  const contract = await getBlueKillStreakContractWithSigner(contractAddress, provider);
   
   const tx = await contract.executeProposal(proposalId);
   const receipt = await tx.wait();
@@ -365,9 +365,9 @@ export function formatUSDC(amount: string): string {
 }
 
 /**
- * Get Azura level label
+ * Get Blue level label
  */
-export function getAzuraLevelLabel(level: number): string {
+export function getBlueLevelLabel(level: number): string {
   switch (level) {
     case 0: return 'Killed (0%)';
     case 1: return 'Level 1 (10%)';
@@ -383,7 +383,7 @@ export function getAzuraLevelLabel(level: number): string {
  */
 export function getStatusLabel(status: ProposalStatus): string {
   switch (status) {
-    case ProposalStatus.Pending: return 'Pending Azura Review';
+    case ProposalStatus.Pending: return 'Pending Blue Review';
     case ProposalStatus.Active: return 'Active Voting';
     case ProposalStatus.Executed: return 'Executed ✅';
     case ProposalStatus.Rejected: return 'Rejected ❌';

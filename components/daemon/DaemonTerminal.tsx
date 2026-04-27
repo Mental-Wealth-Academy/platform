@@ -7,7 +7,7 @@ import styles from './DaemonTerminal.module.css';
 type Mode = 'rewrite' | 'tone' | 'critique' | 'summarize';
 type Tone = 'concise' | 'warm' | 'formal' | 'friendly' | 'direct';
 type View = 'toolGrid' | 'terminal' | 'editAgents';
-type Agent = 'azura' | 'guy';
+type Agent = 'blue' | 'guy';
 
 const ICON_ARROW = '/icons/ui-arrow.svg';
 
@@ -131,8 +131,8 @@ export function DaemonTerminal() {
   const agents = useMemo(
     () => [
       {
-        id: 'azura' as const,
-        name: 'Azura',
+        id: 'blue' as const,
+        name: 'Blue',
         desc: 'Warm and supportive AI companion focused on emotional wellness.',
         avatar: 'https://i.imgur.com/1q1EfBX.png',
       },

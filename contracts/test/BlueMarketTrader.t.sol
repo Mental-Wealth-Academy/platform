@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/AzuraMarketTrader.sol";
+import "../src/BlueMarketTrader.sol";
 import "../src/MockPredictionMarket.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -16,8 +16,8 @@ contract MockUSDC is ERC20 {
     }
 }
 
-contract AzuraMarketTraderTest is Test {
-    AzuraMarketTrader public trader;
+contract BlueMarketTraderTest is Test {
+    BlueMarketTrader public trader;
     MockPredictionMarket public market;
     MockUSDC public usdc;
 
@@ -41,7 +41,7 @@ contract AzuraMarketTraderTest is Test {
 
         usdc = new MockUSDC(1_000_000 * 1e6);
         market = new MockPredictionMarket(address(usdc));
-        trader = new AzuraMarketTrader(address(usdc));
+        trader = new BlueMarketTrader(address(usdc));
 
         trader.setPredictionMarket(address(market));
         trader.setKeystoneForwarder(forwarder);
@@ -86,7 +86,7 @@ contract AzuraMarketTraderTest is Test {
         assertEq(no, 0);
 
         // Verify trade record
-        AzuraMarketTrader.Trade memory t = trader.getTrade(1);
+        BlueMarketTrader.Trade memory t = trader.getTrade(1);
         assertEq(t.marketId, marketId);
         assertEq(t.isYes, true);
         assertEq(t.usdcAmount, amount);
@@ -128,14 +128,14 @@ contract AzuraMarketTraderTest is Test {
     function test_RevertWhen_ZeroAmount() public {
         uint256 marketId = market.createMarket("Test?");
 
-        vm.expectRevert(AzuraMarketTrader.InvalidAmount.selector);
+        vm.expectRevert(BlueMarketTrader.InvalidAmount.selector);
         trader.executeTrade(marketId, true, 0);
     }
 
     function test_RevertWhen_InsufficientBalance() public {
         uint256 marketId = market.createMarket("Test?");
 
-        vm.expectRevert(AzuraMarketTrader.InsufficientBalance.selector);
+        vm.expectRevert(BlueMarketTrader.InsufficientBalance.selector);
         trader.executeTrade(marketId, true, TREASURY_FUND + 1);
     }
 
@@ -143,7 +143,7 @@ contract AzuraMarketTraderTest is Test {
         trader.setPredictionMarket(address(0));
         uint256 marketId = 1; // doesn't matter, will fail before call
 
-        vm.expectRevert(AzuraMarketTrader.InvalidMarket.selector);
+        vm.expectRevert(BlueMarketTrader.InvalidMarket.selector);
         trader.executeTrade(marketId, true, 1000 * 1e6);
     }
 
@@ -183,7 +183,7 @@ contract AzuraMarketTraderTest is Test {
         bytes memory report = abi.encode(uint256(1), true, uint256(1000 * 1e6));
 
         vm.prank(user);
-        vm.expectRevert(AzuraMarketTrader.Unauthorized.selector);
+        vm.expectRevert(BlueMarketTrader.Unauthorized.selector);
         trader.onReport("", report);
     }
 
@@ -200,7 +200,7 @@ contract AzuraMarketTraderTest is Test {
     }
 
     function test_RevertWhen_DepositZero() public {
-        vm.expectRevert(AzuraMarketTrader.InvalidAmount.selector);
+        vm.expectRevert(BlueMarketTrader.InvalidAmount.selector);
         trader.deposit(0);
     }
 
@@ -221,7 +221,7 @@ contract AzuraMarketTraderTest is Test {
     }
 
     function test_RevertWhen_WithdrawExceedsBalance() public {
-        vm.expectRevert(AzuraMarketTrader.InsufficientBalance.selector);
+        vm.expectRevert(BlueMarketTrader.InsufficientBalance.selector);
         trader.withdraw(TREASURY_FUND + 1);
     }
 

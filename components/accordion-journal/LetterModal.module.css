@@ -56,7 +56,7 @@
   gap: 10px;
 }
 
-.azuraIcon {
+.blueIcon {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -122,7 +122,7 @@
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .azuraIcon {
+:global([data-theme="dark"]) .blueIcon {
   border-color: rgba(255, 255, 255, 0.2);
 }
 

@@ -1,8 +1,8 @@
-# AzuraKillStreak Deployment Guide
+# BlueKillStreak Deployment Guide
 
 ## 🎯 Overview
 
-Deploy the AzuraKillStreak governance contract to Base network with Azura holding 40% of governance tokens.
+Deploy the BlueKillStreak governance contract to Base network with Blue holding 40% of governance tokens.
 
 ## ✅ Test Results
 
@@ -14,7 +14,7 @@ Gas Usage: Optimized
 
 ### Test Summary:
 - ✅ Proposal creation
-- ✅ Azura review (Levels 0-4)
+- ✅ Blue review (Levels 0-4)
 - ✅ Token-weighted voting
 - ✅ 50% threshold auto-execution
 - ✅ USDC transfers
@@ -32,8 +32,8 @@ Create `.env` in `/contracts` directory:
 # Private key for deployment (DO NOT COMMIT)
 PRIVATE_KEY=0x...
 
-# Azura AI agent wallet address
-AZURA_AGENT_ADDRESS=0x...
+# Blue AI agent wallet address
+BLUE_AGENT_ADDRESS=0x...
 
 # Base Sepolia RPC (testnet)
 BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
@@ -111,9 +111,9 @@ DEPLOYMENT COMPLETE
 ==============================================
 Network: Base Sepolia
 Governance Token: 0x...
-AzuraKillStreak: 0x...
+BlueKillStreak: 0x...
 USDC Token: 0x036CbD53842c5426634e7929541eC2318f3dCF7e
-Azura Agent: 0x...
+Blue Agent: 0x...
 ==============================================
 ```
 
@@ -131,7 +131,7 @@ cast send 0x036CbD...USDC \
   --private-key $PRIVATE_KEY
 ```
 
-Or send USDC via wallet UI to the AzuraKillStreak contract address.
+Or send USDC via wallet UI to the BlueKillStreak contract address.
 
 ### Step 5: Verify on BaseScan
 
@@ -140,7 +140,7 @@ Or send USDC via wallet UI to the AzuraKillStreak contract address.
 3. Verify:
    - Contract is verified ✅
    - Governance tokens distributed correctly
-   - Azura has 40% (40,000 tokens)
+   - Blue has 40% (40,000 tokens)
    - Contract has USDC balance
 
 ## 🧪 Testing on Base Sepolia
@@ -160,16 +160,16 @@ cast send 0xYOUR_GOVERNANCE_CONTRACT \
   --private-key $PRIVATE_KEY
 ```
 
-### Azura Reviews Proposal
+### Blue Reviews Proposal
 
 ```bash
-# From Azura's wallet
+# From Blue's wallet
 cast send 0xYOUR_GOVERNANCE_CONTRACT \
-  "azuraReview(uint256,uint256)" \
+  "blueReview(uint256,uint256)" \
   1 \  # Proposal ID
   2 \  # Level 2 (20% confidence)
   --rpc-url $BASE_SEPOLIA_RPC_URL \
-  --private-key $AZURA_PRIVATE_KEY
+  --private-key $BLUE_PRIVATE_KEY
 ```
 
 ### Community Votes
@@ -212,7 +212,7 @@ From test reports:
 | Function | Avg Gas | Cost (~$0.001/gas) |
 |----------|---------|-------------------|
 | `createProposal()` | ~210k | ~$0.21 |
-| `azuraReview()` | ~143k | ~$0.14 |
+| `blueReview()` | ~143k | ~$0.14 |
 | `vote()` | ~88k | ~$0.09 |
 | `executeProposal()` | Included in last vote | - |
 
@@ -223,7 +223,7 @@ From test reports:
 - [ ] Contracts deployed to Base Sepolia
 - [ ] Contracts verified on BaseScan
 - [ ] Governance tokens minted (100k total)
-- [ ] 40% tokens transferred to Azura
+- [ ] 40% tokens transferred to Blue
 - [ ] Contract funded with test USDC
 - [ ] Remaining 60% tokens distributed to admins
 - [ ] Test proposal created and voted on
@@ -249,7 +249,7 @@ From test reports:
 ## 🎮 Game Mechanics Summary
 
 ```
-Azura's Confidence Levels:
+Blue's Confidence Levels:
 ├─ Level 0: Kill (0% weight)   → Proposal rejected
 ├─ Level 1: 10% weight         → Needs 40% from community
 ├─ Level 2: 20% weight         → Needs 30% from community
@@ -264,7 +264,7 @@ Auto-execution: When threshold reached via voting
 
 ### Contract Events to Watch:
 - `ProposalCreated` - New proposal submitted
-- `AzuraReview` - Azura assigns confidence level
+- `BlueReview` - Blue assigns confidence level
 - `VoteCast` - Someone votes
 - `ProposalExecuted` - USDC transferred
 - `ProposalRejected` - Killed or failed

@@ -1,8 +1,8 @@
 import { Coinbase, Wallet, WalletData } from "@coinbase/coinbase-sdk";
 
 /**
- * Azura Wallet Manager
- * Manages Azura's blockchain wallet for token distribution to approved proposals
+ * Blue Wallet Manager
+ * Manages Blue's blockchain wallet for token distribution to approved proposals
  */
 
 interface TokenAllocation {
@@ -13,8 +13,8 @@ interface TokenAllocation {
   txHash: string;
 }
 
-class AzuraWalletManager {
-  private static instance: AzuraWalletManager;
+class BlueWalletManager {
+  private static instance: BlueWalletManager;
   private wallet: Wallet | null = null;
   private coinbase: Coinbase | null = null;
   private initialized = false;
@@ -24,7 +24,7 @@ class AzuraWalletManager {
 
   private constructor() {
     this.tokenContractAddress = process.env.VOTING_TOKEN_CONTRACT_ADDRESS || '';
-    const poolSize = process.env.AZURA_TOTAL_TOKEN_POOL || '1000000';
+    const poolSize = process.env.BLUE_TOTAL_TOKEN_POOL || '1000000';
     const decimals = parseInt(process.env.VOTING_TOKEN_DECIMALS || '18');
     this.totalTokenPool = BigInt(poolSize) * BigInt(10 ** decimals);
   }
@@ -32,15 +32,15 @@ class AzuraWalletManager {
   /**
    * Get singleton instance
    */
-  public static getInstance(): AzuraWalletManager {
-    if (!AzuraWalletManager.instance) {
-      AzuraWalletManager.instance = new AzuraWalletManager();
+  public static getInstance(): BlueWalletManager {
+    if (!BlueWalletManager.instance) {
+      BlueWalletManager.instance = new BlueWalletManager();
     }
-    return AzuraWalletManager.instance;
+    return BlueWalletManager.instance;
   }
 
   /**
-   * Initialize Azura's wallet
+   * Initialize Blue's wallet
    */
   public async initialize(): Promise<void> {
     if (this.initialized) {
@@ -66,43 +66,43 @@ class AzuraWalletManager {
         privateKey: apiKeyPrivateKey,
       });
 
-      // Load or create Azura's wallet
-      const walletId = process.env.AZURA_WALLET_ID;
-      const walletSeed = process.env.AZURA_WALLET_SEED;
+      // Load or create Blue's wallet
+      const walletId = process.env.BLUE_WALLET_ID;
+      const walletSeed = process.env.BLUE_WALLET_SEED;
 
       if (walletId && walletSeed) {
         // Import existing wallet
-        console.log('Loading existing Azura wallet...');
+        console.log('Loading existing Blue wallet...');
         this.wallet = await Wallet.import({
           walletId,
           seed: walletSeed,
         });
       } else {
         // Create new wallet
-        console.log('Creating new Azura wallet...');
+        console.log('Creating new Blue wallet...');
         this.wallet = await Wallet.create({
           networkId: 'base-mainnet', // or 'base-sepolia' for testnet
         });
 
         const address = await this.wallet.getDefaultAddress();
-        console.log(`New Azura wallet created: ${address}`);
-        console.warn('AZURA_WALLET_ID and AZURA_WALLET_SEED must be set in env vars. Check wallet setup script.');
+        console.log(`New Blue wallet created: ${address}`);
+        console.warn('BLUE_WALLET_ID and BLUE_WALLET_SEED must be set in env vars. Check wallet setup script.');
       }
 
       this.initialized = true;
-      console.log('✅ Azura wallet initialized successfully');
+      console.log('✅ Blue wallet initialized successfully');
       
       // Log current balance
       const balance = await this.getTokenBalance();
-      console.log(`Azura token balance: ${this.formatTokenAmount(balance)} tokens`);
+      console.log(`Blue token balance: ${this.formatTokenAmount(balance)} tokens`);
     } catch (error) {
-      console.error('Failed to initialize Azura wallet:', error);
+      console.error('Failed to initialize Blue wallet:', error);
       throw error;
     }
   }
 
   /**
-   * Get Azura's wallet address
+   * Get Blue's wallet address
    */
   public async getWalletAddress(): Promise<string> {
     if (!this.wallet) {
@@ -343,4 +343,4 @@ class AzuraWalletManager {
 }
 
 // Export singleton instance
-export const azuraWallet = AzuraWalletManager.getInstance();
+export const blueWallet = BlueWalletManager.getInstance();

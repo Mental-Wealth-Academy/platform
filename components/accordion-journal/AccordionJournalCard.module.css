@@ -975,7 +975,7 @@
   margin-bottom: 16px;
 }
 
-.sealAzuraIcon {
+.sealBlueIcon {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -984,7 +984,7 @@
   flex-shrink: 0;
 }
 
-.azuraImg {
+.blueImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1151,7 +1151,7 @@
   border-bottom: 3px solid #1A1D33;
 }
 
-.sealModalAzura {
+.sealModalBlue {
   width: 64px;
   height: 64px;
   border-radius: 50%;
@@ -1160,7 +1160,7 @@
   box-shadow: 3px 3px 0 #1A1D33;
 }
 
-.azuraImgLarge {
+.blueImgLarge {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2295,7 +2295,7 @@
   background: linear-gradient(135deg, rgba(107, 128, 255, 0.04) 0%, rgba(107, 128, 255, 0.08) 100%);
 }
 
-:global([data-theme="dark"]) .sealAzuraIcon {
+:global([data-theme="dark"]) .sealBlueIcon {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -2349,7 +2349,7 @@
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-:global([data-theme="dark"]) .sealModalAzura {
+:global([data-theme="dark"]) .sealModalBlue {
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: none;
 }

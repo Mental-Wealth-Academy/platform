@@ -36,18 +36,18 @@ function GratitudeModal({ onClose, onComplete }: GratitudeModalProps) {
       <div className={classes.modal} role="dialog" aria-modal="true" aria-labelledby="gratitude-title">
         <div className={classes.modalCard}>
           <div className={classes.modalHeader}>
-            <div className={classes.azuraAvatar}>
+            <div className={classes.blueAvatar}>
               <Image
                 src="https://i.imgur.com/3Y3KrnJ.png"
-                alt="Azura"
+                alt="Blue"
                 fill
-                className={classes.azuraImage}
+                className={classes.blueImage}
                 unoptimized
               />
             </div>
             <div className={classes.modalTitleGroup}>
               <h3 id="gratitude-title" className={classes.modalTitle}>
-                Azura
+                Blue
               </h3>
               <p className={classes.modalSubtitle}>&quot;What are you grateful for today?&quot;</p>
             </div>

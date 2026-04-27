@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { deployAppleToken } from '@/lib/clanker-deploy';
-import { azuraWallet } from '@/lib/azura-wallet';
+import { blueWallet } from '@/lib/blue-wallet';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const walletAddress = await azuraWallet.getWalletAddress();
+    const walletAddress = await blueWallet.getWalletAddress();
     const result = await deployAppleToken(walletAddress);
 
     return NextResponse.json({

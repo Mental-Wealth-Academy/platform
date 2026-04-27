@@ -123,7 +123,7 @@ export async function GET(
       }
     }
   } catch {
-    // x402 unavailable or AZURA_PRIVATE_KEY not set — continue without sources
+    // x402 unavailable or BLUE_PRIVATE_KEY not set — continue without sources
   }
 
   let result: string;

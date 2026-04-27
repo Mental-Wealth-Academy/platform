@@ -9,7 +9,7 @@
 import { providers } from 'ethers';
 
 const GOVERNANCE_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS || '0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F';
-const AZURA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const BLUE_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY || 'YourApiKeyToken';
 const RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
 
@@ -169,7 +169,7 @@ function formatStats(stats: ContractStats, contractName: string): void {
 
 function checkOPAtlasEligibility(
   governanceStats: ContractStats,
-  azuraStats: ContractStats
+  blueStats: ContractStats
 ): void {
   console.log(`\n🎯 OP Atlas Eligibility Check:`);
   console.log('═'.repeat(60));
@@ -177,13 +177,13 @@ function checkOPAtlasEligibility(
   // Combine stats from both contracts
   const combinedUniqueAddresses = new Set([
     ...governanceStats.uniqueAddresses,
-    ...azuraStats.uniqueAddresses,
+    ...blueStats.uniqueAddresses,
   ]);
   
-  const combinedTransactions = governanceStats.totalTransactions + azuraStats.totalTransactions;
+  const combinedTransactions = governanceStats.totalTransactions + blueStats.totalTransactions;
   const combinedActiveDays = new Set([
     ...governanceStats.activeDays,
-    ...azuraStats.activeDays,
+    ...blueStats.activeDays,
   ]);
   
   console.log(`\nCombined Statistics:`);
@@ -245,22 +245,22 @@ async function main() {
       'Governance Token (MWG)'
     );
     
-    const azuraStats = await fetchTransactions(
-      AZURA_CONTRACT_ADDRESS,
-      'AzuraKillStreak Contract'
+    const blueStats = await fetchTransactions(
+      BLUE_CONTRACT_ADDRESS,
+      'BlueKillStreak Contract'
     );
     
     // Display individual stats
     formatStats(governanceStats, 'Governance Token (MWG)');
-    formatStats(azuraStats, 'AzuraKillStreak Contract');
+    formatStats(blueStats, 'BlueKillStreak Contract');
     
     // Check OP Atlas eligibility
-    checkOPAtlasEligibility(governanceStats, azuraStats);
+    checkOPAtlasEligibility(governanceStats, blueStats);
     
     // Display BaseScan links
     console.log('🔗 View on BaseScan:');
     console.log(`   Governance Token: https://basescan.org/address/${GOVERNANCE_TOKEN_ADDRESS}`);
-    console.log(`   AzuraKillStreak:  https://basescan.org/address/${AZURA_CONTRACT_ADDRESS}`);
+    console.log(`   BlueKillStreak:  https://basescan.org/address/${BLUE_CONTRACT_ADDRESS}`);
     console.log('');
     
   } catch (error) {

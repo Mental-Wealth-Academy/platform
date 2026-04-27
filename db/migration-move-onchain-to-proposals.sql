@@ -38,11 +38,12 @@ COMMENT ON COLUMN proposals.on_chain_tx_hash IS 'Transaction hash of the on-chai
 COMMENT ON COLUMN proposals.recipient_address IS 'Ethereum address to receive USDC if proposal is approved';
 COMMENT ON COLUMN proposals.token_amount IS 'Amount of USDC requested (in USDC, not wei)';
 
--- Add azura_review_tx_hash to proposal_reviews for tracking Azura's on-chain review
+-- Add azura_review_tx_hash to proposal_reviews for tracking the agent's on-chain review.
+-- (Column later renamed to blue_review_tx_hash; see migration-rename-azura-to-blue.sql.)
 ALTER TABLE proposal_reviews
 ADD COLUMN IF NOT EXISTS azura_review_tx_hash VARCHAR(255) NULL;
 
-COMMENT ON COLUMN proposal_reviews.azura_review_tx_hash IS 'Transaction hash of Azura''s on-chain review (azuraReview call)';
+COMMENT ON COLUMN proposal_reviews.azura_review_tx_hash IS 'Transaction hash of the agent''s on-chain review.';
 
 -- ============================================================================
 -- MIGRATION COMPLETE
@@ -54,5 +55,5 @@ COMMENT ON COLUMN proposal_reviews.azura_review_tx_hash IS 'Transaction hash of 
 -- - token_amount: How much USDC to send
 --
 -- And proposal_reviews contains:
--- - azura_review_tx_hash: Azura's review transaction hash
+-- - azura_review_tx_hash: agent's review transaction hash (later renamed to blue_review_tx_hash)
 -- ============================================================================

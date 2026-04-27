@@ -70,39 +70,39 @@ export default function AngelicCreditSystem() {
         </div>
 
         {/* ── Companions ── */}
-        <div className={styles.azuraCard}>
-          <div className={styles.azuraBg}>
+        <div className={styles.blueCard}>
+          <div className={styles.blueBg}>
             <Image
               src="/starboard-card.png"
               alt="Blue Agent"
               fill
-              className={styles.azuraBgImg}
+              className={styles.blueBgImg}
             />
           </div>
-          <div className={styles.azuraContent}>
-            <div className={styles.azuraContentTop}>
+          <div className={styles.blueContent}>
+            <div className={styles.blueContentTop}>
               <div>
-                <p className={styles.azuraEyebrow}>How We Help</p>
-                <h3 className={styles.azuraName}>Support Tools</h3>
+                <p className={styles.blueEyebrow}>How We Help</p>
+                <h3 className={styles.blueName}>Support Tools</h3>
               </div>
             </div>
-            <p className={styles.azuraSub}>
+            <p className={styles.blueSub}>
               Smart tools that help you stay organized, build momentum, and make better progress.
             </p>
-            <div className={styles.azuraStats}>
-              <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Wellness</span>
-                <span className={styles.azuraStatLabel}>Support</span>
+            <div className={styles.blueStats}>
+              <div className={styles.blueStat}>
+                <span className={styles.blueStatValue}>Wellness</span>
+                <span className={styles.blueStatLabel}>Support</span>
               </div>
-              <div className={styles.azuraStatDivider} />
-              <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Fitness</span>
-                <span className={styles.azuraStatLabel}>Funding</span>
+              <div className={styles.blueStatDivider} />
+              <div className={styles.blueStat}>
+                <span className={styles.blueStatValue}>Fitness</span>
+                <span className={styles.blueStatLabel}>Funding</span>
               </div>
-              <div className={styles.azuraStatDivider} />
-              <div className={styles.azuraStat}>
-                <span className={styles.azuraStatValue}>Change</span>
-                <span className={styles.azuraStatLabel}>Tools</span>
+              <div className={styles.blueStatDivider} />
+              <div className={styles.blueStat}>
+                <span className={styles.blueStatValue}>Change</span>
+                <span className={styles.blueStatLabel}>Tools</span>
               </div>
             </div>
           </div>

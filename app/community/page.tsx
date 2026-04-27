@@ -65,7 +65,7 @@ interface MergedProposal extends DatabaseProposal {
     forVotes: string;
     againstVotes: string;
     votingDeadline: number;
-    azuraLevel: number;
+    blueLevel: number;
     executed: boolean;
   };
 }
@@ -97,7 +97,7 @@ const getTutorialSteps = (): TutorialStep[] => [
 ];
 
 
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'; // Base mainnet USDC
 const TREASURY_BALANCE = 5200;
 const FUNDING_PODS = [
@@ -283,7 +283,7 @@ export default function VotingPage() {
     try {
       const [{ providers }, { fetchProposal }] = await Promise.all([
         import('ethers'),
-        import('@/lib/azura-contract'),
+        import('@/lib/blue-contract'),
       ]);
 
       const provider = typeof window.ethereum !== 'undefined'
@@ -305,7 +305,7 @@ export default function VotingPage() {
                 forVotes: onChainProposal.forVotes,
                 againstVotes: onChainProposal.againstVotes,
                 votingDeadline: onChainProposal.votingDeadline,
-                azuraLevel: onChainProposal.azuraLevel,
+                blueLevel: onChainProposal.blueLevel,
                 executed: onChainProposal.executed,
               },
             };

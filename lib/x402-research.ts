@@ -33,8 +33,8 @@ let paidFetch: typeof fetch | null = null;
 function getPaidFetch(): typeof fetch {
   if (paidFetch) return paidFetch;
 
-  const pk = process.env.AZURA_PRIVATE_KEY;
-  if (!pk) throw new Error('AZURA_PRIVATE_KEY required for x402 research');
+  const pk = process.env.BLUE_PRIVATE_KEY;
+  if (!pk) throw new Error('BLUE_PRIVATE_KEY required for x402 research');
 
   const account = privateKeyToAccount(pk as `0x${string}`);
   const publicClient = createPublicClient({
@@ -51,7 +51,7 @@ function getPaidFetch(): typeof fetch {
 }
 
 export function getPayToAddress(): string {
-  const pk = process.env.AZURA_PRIVATE_KEY;
+  const pk = process.env.BLUE_PRIVATE_KEY;
   if (!pk) return '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
   return privateKeyToAccount(pk as `0x${string}`).address;
 }

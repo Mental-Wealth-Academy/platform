@@ -73,7 +73,7 @@ export default function TheseAreAngels() {
           <div className={styles.videoThumb}>
             <Image
               src="https://i.imgur.com/awTTvxR.jpeg"
-              alt="Azura AI"
+              alt="Blue AI"
               width={64}
               height={48}
               className={styles.thumbImg}
@@ -114,7 +114,7 @@ export default function TheseAreAngels() {
             <div className={styles.videoEmbed}>
               <iframe
                 src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
-                title="This is Azura AI"
+                title="This is Blue AI"
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
               />

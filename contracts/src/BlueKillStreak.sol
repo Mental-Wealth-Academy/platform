@@ -7,13 +7,13 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/governance/utils/IVotes.sol";
 
 /**
- * @title AzuraKillStreak
+ * @title BlueKillStreak
  * @notice Governance contract for Mental Wealth Academy proposals with token-weighted voting
- * @dev Azura AI holds 40% of governance tokens, 50% approval threshold required to pass proposals
+ * @dev Blue AI holds 40% of governance tokens, 50% approval threshold required to pass proposals
  * 
  * Game Mechanics:
  * - 1 governance token = 1 vote
- * - Azura's confidence level (0-4) determines her approval level:
+ * - Blue's confidence level (0-4) determines her approval level:
  *   Level 0: Reject (kills proposal)
  *   Level 1: 10% approval
  *   Level 2: 20% approval  
@@ -22,7 +22,7 @@ import "@openzeppelin/contracts/governance/utils/IVotes.sol";
  * - 50% of total voting power needed to execute proposal
  * - Approved proposals transfer USDC to recipients
  */
-contract AzuraKillStreak is Ownable, ReentrancyGuard {
+contract BlueKillStreak is Ownable, ReentrancyGuard {
     // ============================================================================
     // STATE VARIABLES
     // ============================================================================
@@ -33,8 +33,8 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     /// @notice USDC token for proposal funding
     IERC20 public immutable usdcToken;
     
-    /// @notice Azura AI agent address (holds 40% of governance tokens)
-    address public azuraAgent;
+    /// @notice Blue AI agent address (holds 40% of governance tokens)
+    address public blueAgent;
     
     /// @notice Total supply of governance tokens
     uint256 public immutable totalGovernanceTokens;
@@ -60,10 +60,10 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     
     /// @notice Proposal status enum
     enum ProposalStatus {
-        Pending,            // Created but not yet voted on by Azura
-        Active,             // Azura voted, awaiting community votes
+        Pending,            // Created but not yet voted on by Blue
+        Active,             // Blue voted, awaiting community votes
         Executed,           // Passed and USDC transferred
-        Rejected,           // Failed to reach threshold or Azura killed it
+        Rejected,           // Failed to reach threshold or Blue killed it
         Cancelled           // Cancelled by proposer or admin
     }
     
@@ -80,8 +80,8 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         ProposalStatus status;
         uint256 forVotes;           // Total tokens voted in favor
         uint256 againstVotes;       // Total tokens voted against
-        uint256 azuraLevel;         // Azura's confidence level (0-4)
-        bool azuraApproved;         // Did Azura approve?
+        uint256 blueLevel;         // Blue's confidence level (0-4)
+        bool blueApproved;         // Did Blue approve?
         bool executed;
         uint256 snapshotBlock;      // Block number when proposal was created (for getPastVotes)
     }
@@ -119,9 +119,9 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         uint256 votingDeadline
     );
     
-    event AzuraReview(
+    event BlueReview(
         uint256 indexed proposalId,
-        uint256 azuraLevel,
+        uint256 blueLevel,
         bool approved,
         uint256 voteWeight
     );
@@ -151,7 +151,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
 
     event EmergencyWithdraw(address indexed to, uint256 amount);
     event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
-    event AzuraAgentUpdated(address indexed oldAgent, address indexed newAgent);
+    event BlueAgentUpdated(address indexed oldAgent, address indexed newAgent);
     event AdminUpdated(address indexed admin, bool status);
 
     // ============================================================================
@@ -174,25 +174,25 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     // ============================================================================
     
     /**
-     * @notice Initialize the AzuraKillStreak governance contract
+     * @notice Initialize the BlueKillStreak governance contract
      * @param _governanceToken Address of governance token (for voting)
      * @param _usdcToken Address of USDC token (for funding)
-     * @param _azuraAgent Address of Azura AI agent
+     * @param _blueAgent Address of Blue AI agent
      * @param _totalSupply Total supply of governance tokens
      */
     constructor(
         address _governanceToken,
         address _usdcToken,
-        address _azuraAgent,
+        address _blueAgent,
         uint256 _totalSupply
     ) Ownable(msg.sender) {
-        if (_governanceToken == address(0) || _usdcToken == address(0) || _azuraAgent == address(0)) {
+        if (_governanceToken == address(0) || _usdcToken == address(0) || _blueAgent == address(0)) {
             revert InvalidProposal();
         }
         
         governanceToken = IERC20(_governanceToken);
         usdcToken = IERC20(_usdcToken);
-        azuraAgent = _azuraAgent;
+        blueAgent = _blueAgent;
         totalGovernanceTokens = _totalSupply;
         
         // 50% threshold for approval
@@ -211,8 +211,8 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
         _;
     }
     
-    modifier onlyAzura() {
-        if (msg.sender != azuraAgent) revert Unauthorized();
+    modifier onlyBlue() {
+        if (msg.sender != blueAgent) revert Unauthorized();
         _;
     }
 
@@ -275,11 +275,11 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     }
     
     // ============================================================================
-    // AZURA REVIEW (Level 0-4)
+    // BLUE REVIEW (Level 0-4)
     // ============================================================================
     
     /**
-     * @notice Azura reviews proposal and assigns confidence level
+     * @notice Blue reviews proposal and assigns confidence level
      * @param _proposalId ID of proposal to review
      * @param _level Confidence level (0-4)
      *        0 = Kill/Reject
@@ -288,41 +288,41 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      *        3 = 30% approval
      *        4 = 40% approval (full support)
      */
-    function azuraReview(uint256 _proposalId, uint256 _level) external onlyAzura {
+    function blueReview(uint256 _proposalId, uint256 _level) external onlyBlue {
         Proposal storage proposal = proposals[_proposalId];
         
         if (proposal.status != ProposalStatus.Pending) revert ProposalNotActive();
         if (_level > 4) revert InvalidProposal();
         
-        proposal.azuraLevel = _level;
+        proposal.blueLevel = _level;
         
         // Level 0 = Kill
         if (_level == 0) {
             proposal.status = ProposalStatus.Rejected;
-            proposal.azuraApproved = false;
+            proposal.blueApproved = false;
             
-            emit AzuraReview(_proposalId, _level, false, 0);
-            emit ProposalRejected(_proposalId, "Azura killed proposal (Level 0)");
+            emit BlueReview(_proposalId, _level, false, 0);
+            emit ProposalRejected(_proposalId, "Blue killed proposal (Level 0)");
             return;
         }
         
         // Level 1-4 = Approve with weight
-        proposal.azuraApproved = true;
+        proposal.blueApproved = true;
         proposal.status = ProposalStatus.Active;
         
-        // Calculate Azura's vote weight (10%, 20%, 30%, or 40% of total supply)
-        uint256 azuraVoteWeight = (totalGovernanceTokens * _level * 10) / 100;
-        proposal.forVotes = azuraVoteWeight;
+        // Calculate Blue's vote weight (10%, 20%, 30%, or 40% of total supply)
+        uint256 blueVoteWeight = (totalGovernanceTokens * _level * 10) / 100;
+        proposal.forVotes = blueVoteWeight;
         
-        // Record Azura's vote
-        votes[_proposalId][azuraAgent] = Vote({
+        // Record Blue's vote
+        votes[_proposalId][blueAgent] = Vote({
             hasVoted: true,
             support: true,
-            weight: azuraVoteWeight
+            weight: blueVoteWeight
         });
         
-        emit AzuraReview(_proposalId, _level, true, azuraVoteWeight);
-        emit VoteCast(_proposalId, azuraAgent, true, azuraVoteWeight);
+        emit BlueReview(_proposalId, _level, true, blueVoteWeight);
+        emit VoteCast(_proposalId, blueAgent, true, blueVoteWeight);
     }
     
     // ============================================================================
@@ -412,7 +412,7 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
      * @param metadata CRE metadata (unused, required by interface)
      * @param report ABI-encoded payload: (uint8 actionType, bytes payload)
      *        actionType 1 = Auto-execute proposal (USDC to recipient)
-     *        actionType 2 = Azura review from DON
+     *        actionType 2 = Blue review from DON
      */
     function onReport(bytes calldata metadata, bytes calldata report) external onlyForwarder nonReentrant {
         (uint8 actionType, bytes memory payload) = abi.decode(report, (uint8, bytes));
@@ -426,47 +426,47 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
             _executeProposal(proposalId);
         } else if (actionType == 2) {
             (uint256 proposalId, uint256 level) = abi.decode(payload, (uint256, uint256));
-            _azuraReviewInternal(proposalId, level);
+            _blueReviewInternal(proposalId, level);
         } else {
             revert InvalidProposal();
         }
     }
 
     /**
-     * @notice Internal Azura review callable by CRE onReport (bypasses onlyAzura)
+     * @notice Internal Blue review callable by CRE onReport (bypasses onlyBlue)
      * @param _proposalId ID of proposal to review
      * @param _level Confidence level (0-4)
      */
-    function _azuraReviewInternal(uint256 _proposalId, uint256 _level) internal {
+    function _blueReviewInternal(uint256 _proposalId, uint256 _level) internal {
         Proposal storage proposal = proposals[_proposalId];
 
         if (proposal.status != ProposalStatus.Pending) revert ProposalNotActive();
         if (_level > 4) revert InvalidProposal();
 
-        proposal.azuraLevel = _level;
+        proposal.blueLevel = _level;
 
         if (_level == 0) {
             proposal.status = ProposalStatus.Rejected;
-            proposal.azuraApproved = false;
-            emit AzuraReview(_proposalId, _level, false, 0);
-            emit ProposalRejected(_proposalId, "Azura killed proposal (Level 0)");
+            proposal.blueApproved = false;
+            emit BlueReview(_proposalId, _level, false, 0);
+            emit ProposalRejected(_proposalId, "Blue killed proposal (Level 0)");
             return;
         }
 
-        proposal.azuraApproved = true;
+        proposal.blueApproved = true;
         proposal.status = ProposalStatus.Active;
 
-        uint256 azuraVoteWeight = (totalGovernanceTokens * _level * 10) / 100;
-        proposal.forVotes = azuraVoteWeight;
+        uint256 blueVoteWeight = (totalGovernanceTokens * _level * 10) / 100;
+        proposal.forVotes = blueVoteWeight;
 
-        votes[_proposalId][azuraAgent] = Vote({
+        votes[_proposalId][blueAgent] = Vote({
             hasVoted: true,
             support: true,
-            weight: azuraVoteWeight
+            weight: blueVoteWeight
         });
 
-        emit AzuraReview(_proposalId, _level, true, azuraVoteWeight);
-        emit VoteCast(_proposalId, azuraAgent, true, azuraVoteWeight);
+        emit BlueReview(_proposalId, _level, true, blueVoteWeight);
+        emit VoteCast(_proposalId, blueAgent, true, blueVoteWeight);
     }
 
     // ============================================================================
@@ -509,14 +509,14 @@ contract AzuraKillStreak is Ownable, ReentrancyGuard {
     }
     
     /**
-     * @notice Update Azura agent address
-     * @param _newAzura New Azura agent address
+     * @notice Update Blue agent address
+     * @param _newBlue New Blue agent address
      */
-    function setAzuraAgent(address _newAzura) external onlyOwner {
-        if (_newAzura == address(0)) revert InvalidProposal();
-        address oldAgent = azuraAgent;
-        azuraAgent = _newAzura;
-        emit AzuraAgentUpdated(oldAgent, _newAzura);
+    function setBlueAgent(address _newBlue) external onlyOwner {
+        if (_newBlue == address(0)) revert InvalidProposal();
+        address oldAgent = blueAgent;
+        blueAgent = _newBlue;
+        emit BlueAgentUpdated(oldAgent, _newBlue);
     }
     
     /**

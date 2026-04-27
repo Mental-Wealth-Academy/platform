@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import styles from './AzuraOnboarding.module.css';
+import styles from './BlueOnboarding.module.css';
 
-type AzuraEmotion = 'happy' | 'confused' | 'sad' | 'pain';
+type BlueEmotion = 'happy' | 'confused' | 'sad' | 'pain';
 
 type DialogueStep =
-  | { type: 'message'; text: string; emotion: AzuraEmotion }
-  | { type: 'choice'; text: string; emotion: AzuraEmotion; choices: { label: string; nextKey: string }[] };
+  | { type: 'message'; text: string; emotion: BlueEmotion }
+  | { type: 'choice'; text: string; emotion: BlueEmotion; choices: { label: string; nextKey: string }[] };
 
 // Step 0: "how did you get here?" with 3 choices
 // Step 1a/1b/1c: follow-up based on choice
@@ -50,18 +50,18 @@ const STEPS: Record<string, DialogueStep> = {
 const STEP_ORDER = ['howDidYouGetHere', '__choice__', 'final'];
 const TOTAL_DOTS = 3;
 
-interface AzuraOnboardingProps {
+interface BlueOnboardingProps {
   onComplete: () => void;
 }
 
-const emotionImages: Record<AzuraEmotion, string> = {
+const emotionImages: Record<BlueEmotion, string> = {
   happy: 'https://i.imgur.com/3Y3KrnJ.png',
   confused: 'https://i.imgur.com/ePrWP7A.png',
   sad: 'https://i.imgur.com/XIe1jZy.png',
   pain: 'https://i.imgur.com/ZYpNkse.png',
 };
 
-export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
+export default function BlueOnboarding({ onComplete }: BlueOnboardingProps) {
   const [stepKey, setStepKey] = useState('howDidYouGetHere');
   const [stepIndex, setStepIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -190,7 +190,7 @@ export default function AzuraOnboarding({ onComplete }: AzuraOnboardingProps) {
           <div className={styles.avatarFrame}>
             <Image
               src={emotionImages[currentStep.emotion]}
-              alt={`Azura ${currentStep.emotion}`}
+              alt={`Blue ${currentStep.emotion}`}
               width={72}
               height={72}
               className={styles.avatarImg}

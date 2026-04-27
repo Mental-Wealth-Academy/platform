@@ -25,49 +25,49 @@ function TreasuryHowToModal({ onClose }: { onClose: () => void }) {
       <div className={styles.overlay} onClick={onClose} />
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>How Azura Trades</h2>
+          <h2 className={styles.title}>How Blue Trades</h2>
           <button className={styles.closeButton} onClick={onClose}>&times;</button>
         </div>
 
         <div className={styles.body}>
           {/* Overview */}
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>Autonomous Prediction Market Trading</div>
+            <div className={styles.sectionTitle}>Edge Detection on Kalshi</div>
             <p className={styles.sectionText}>
-              Azura is a <span className={styles.highlight}>Chainlink CRE workflow</span> that runs inside the Decentralized Oracle Network (DON). Every 30 minutes, it scans Polymarket for mispriced markets, analyzes them with <span className={styles.highlight}>Anthropic Claude</span>, and executes trades autonomously &mdash; no centralized server, no human in the loop.
+              Blue scans <span className={styles.highlight}>Kalshi</span>, a CFTC-regulated US prediction market exchange, for binary outcomes that look mispriced relative to a <span className={styles.highlight}>Black-Scholes</span> short-dated model. When the market price diverges from the model fair by more than 3%, it logs a sized signal you can review before any capital is committed.
             </p>
           </div>
 
           {/* The Pipeline */}
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>The CRE Pipeline</div>
+            <div className={styles.sectionTitle}>The Pipeline</div>
             <ol className={styles.stepList}>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>1</span>
                 <div>
                   <span className={styles.stepLabel}>Scan</span>
-                  <span className={styles.stepDesc}>Fetch top markets from the Polymarket CLOB via Gamma API. Filter for active markets with 5-95% prices and sufficient liquidity.</span>
+                  <span className={styles.stepDesc}>Fetch curated Kalshi markets across crypto, AI, sports, and politics. Filter for active markets with 2-98% prices, sufficient volume, and end dates within 90 days.</span>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>2</span>
                 <div>
-                  <span className={styles.stepLabel}>Analyze</span>
-                  <span className={styles.stepDesc}>Send candidates to Claude with a Bayesian framework: base rates, Bayes&apos; theorem updates, survivorship bias checks, sunk cost detection, and expected value calculation.</span>
+                  <span className={styles.stepLabel}>Price</span>
+                  <span className={styles.stepDesc}>Run a Black-Scholes binary pricer against the live spot tape from CoinGecko. Compute model fair value, market price, and divergence in real time.</span>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>3</span>
                 <div>
                   <span className={styles.stepLabel}>Size</span>
-                  <span className={styles.stepDesc}>Apply quarter-Kelly criterion to determine position size. Max 5% of treasury per trade, scaled by confidence score. Conservative sizing survives estimation errors.</span>
+                  <span className={styles.stepDesc}>Apply quarter-Kelly criterion to determine notional size. Max 5% per position, max 40% total exposure. Conservative sizing survives estimation errors.</span>
                 </div>
               </li>
               <li className={styles.step}>
                 <span className={styles.stepNumber}>4</span>
                 <div>
-                  <span className={styles.stepLabel}>Execute</span>
-                  <span className={styles.stepDesc}>Submit DON-signed reports to AzuraMarketTrader on-chain. The contract routes USDC into the Polymarket CLOB position.</span>
+                  <span className={styles.stepLabel}>Signal</span>
+                  <span className={styles.stepDesc}>Emit a SIGNAL entry to the live execution log with direction, ticker, edge, and Kelly fraction. Order placement is gated &mdash; nothing routes without explicit approval.</span>
                 </div>
               </li>
             </ol>
@@ -132,18 +132,18 @@ function TreasuryHowToModal({ onClose }: { onClose: () => void }) {
             <div className={styles.sectionTitle}>Architecture</div>
             <div className={styles.archDiagram}>
               <div className={styles.archRow}>
-                <span className={styles.archNode}>CRE Cron (30m)</span>
+                <span className={styles.archNode}>Vercel Cron</span>
                 <span className={styles.archArrow}>&rarr;</span>
-                <span className={styles.archNode}>Gamma API</span>
+                <span className={styles.archNode}>Kalshi API</span>
                 <span className={styles.archArrow}>&rarr;</span>
-                <span className={styles.archNode}>Claude Analysis</span>
+                <span className={styles.archNode}>Black-Scholes</span>
               </div>
               <div className={styles.archRow}>
                 <span className={styles.archNode}>Quarter-Kelly</span>
                 <span className={styles.archArrow}>&rarr;</span>
-                <span className={styles.archNode}>DON Report</span>
+                <span className={styles.archNode}>Signal Log</span>
                 <span className={styles.archArrow}>&rarr;</span>
-                <span className={styles.archNodeHighlight}>Polymarket CLOB</span>
+                <span className={styles.archNodeHighlight}>Kalshi Orderbook</span>
               </div>
             </div>
           </div>

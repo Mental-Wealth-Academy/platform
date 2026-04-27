@@ -32,7 +32,7 @@ This project has server-side endpoints on Vercel that can trigger financial or p
 - `app/api/treasury/deploy-apple/route.ts`
   Uses `ADMIN_SECRET` and can deploy a token.
 - `app/api/voting/proposal/review/route.ts`
-  Uses `INTERNAL_API_SECRET` and `AZURA_PRIVATE_KEY`; can submit on-chain review actions.
+  Uses `INTERNAL_API_SECRET` and `BLUE_PRIVATE_KEY`; can submit on-chain review actions.
 - `app/api/voting/proposal/review-sweep/route.ts`
   Uses both `CRON_SECRET` and `INTERNAL_API_SECRET`; can retrigger proposal review flows.
 - `app/api/webhooks/cdp/route.ts`
@@ -116,11 +116,11 @@ These credentials can move funds, submit on-chain actions, trigger privileged en
    - `POSTGRES_PORT`
 
 3. Private keys and wallet material
-   - `AZURA_PRIVATE_KEY`
+   - `BLUE_PRIVATE_KEY`
    - `PATHWAY_OWNER_PRIVATE_KEY`
    - `POLYMARKET_WALLET_PRIVATE_KEY`
    - `CDP_API_KEY_PRIVATE_KEY`
-   - `AZURA_WALLET_SEED`
+   - `BLUE_WALLET_SEED`
 
 4. Trading credentials
    - `POLYMARKET_CLOB_API_KEY`
@@ -161,11 +161,11 @@ These are public by design or lower-risk operational identifiers, but they may s
 
 These are public or configuration-only and are not secrets:
 
-- `NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS`
+- `NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS`
 - `NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS`
 - `NEXT_PUBLIC_USDC_ADDRESS`
 - `NEXT_PUBLIC_PATHWAY_CONTRACT_ADDRESS`
-- `NEXT_PUBLIC_AZURA_MARKET_TRADER_ADDRESS`
+- `NEXT_PUBLIC_BLUE_MARKET_TRADER_ADDRESS`
 - `NEXT_PUBLIC_BASE_RPC_URL`
 - `BASE_RPC_URL`
 - `NEXT_PUBLIC_URL`
@@ -178,7 +178,7 @@ These are public or configuration-only and are not secrets:
 
 ## Repo-Specific Credential Notes
 
-### `AZURA_PRIVATE_KEY`
+### `BLUE_PRIVATE_KEY`
 
 Used by:
 - `app/api/voting/proposal/review/route.ts`
@@ -215,7 +215,7 @@ Action:
 ### Coinbase / CDP credentials
 
 Used by:
-- `lib/azura-wallet.ts`
+- `lib/blue-wallet.ts`
 - `app/api/webhooks/cdp/route.ts`
 
 Action:
@@ -271,9 +271,9 @@ High-confidence secret-bearing env vars found in code or local env inventory:
 
 - `ADMIN_SECRET`
 - `ANTHROPIC_API_KEY`
-- `AZURA_PRIVATE_KEY`
-- `AZURA_WALLET_ID`
-- `AZURA_WALLET_SEED`
+- `BLUE_PRIVATE_KEY`
+- `BLUE_WALLET_ID`
+- `BLUE_WALLET_SEED`
 - `CDP_API_KEY_NAME`
 - `CDP_API_KEY_PRIVATE_KEY`
 - `CDP_WEBHOOK_SECRET`

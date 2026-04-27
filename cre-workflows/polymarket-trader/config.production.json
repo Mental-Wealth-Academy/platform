@@ -1,8 +1,0 @@
-{
-  "polymarketApiUrl": "https://gamma-api.polymarket.com",
-  "tradeApiUrl": "https://mentalwealthacademy.world/api/treasury/execute",
-  "minEdgeBps": 300,
-  "maxPositionPct": 5,
-  "maxTradesPerRun": 2,
-  "treasuryUsdcOverride": 18.99
-}

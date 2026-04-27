@@ -2,7 +2,7 @@
 # CRE WORKFLOW SETTINGS: trade-execute-proposals
 # ==========================================================================
 # Event-triggered workflow that listens for ProposalExecuted events on
-# AzuraKillStreak. When a governance proposal passes and is executed via
+# BlueKillStreak. When a governance proposal passes and is executed via
 # standard flow (USDC to recipient), this workflow picks up the signal and
 # executes a corresponding trade on the MockPredictionMarket — completing
 # the CRE-managed proposal-to-trade pipeline.

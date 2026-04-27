@@ -16,7 +16,7 @@ import "../src/EtherealHorizonPathway.sol";
  */
 contract DeployPathway is Script {
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("AZURA_PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("BLUE_PRIVATE_KEY");
 
         vm.startBroadcast(deployerPrivateKey);
 

@@ -32,7 +32,7 @@ function ScannerCTA({ onSubmit }: { onSubmit: () => void }) {
           <div className={styles.scannerAvatarWrap}>
             <Image
               src="https://i.imgur.com/3Y3KrnJ.png"
-              alt="Azura"
+              alt="Blue"
               width={44}
               height={44}
               className={styles.scannerAvatar}
@@ -47,7 +47,7 @@ function ScannerCTA({ onSubmit }: { onSubmit: () => void }) {
         <span className={styles.scannerBadge}>CRE</span>
       </div>
       <p className={styles.scannerDesc}>
-        Submit a funding proposal and Azura will review it across 6 dimensions using decentralized AI consensus on the Chainlink oracle network.
+        Submit a funding proposal and Blue will review it across 6 dimensions using decentralized AI consensus on the Chainlink oracle network.
       </p>
       <div className={styles.scannerDimensions}>
         {scoreDimensions.map((d) => (
@@ -73,7 +73,7 @@ function VotingPanel() {
     <div className={styles.panel}>
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
-          <span className={styles.statLabel}>Azura Power</span>
+          <span className={styles.statLabel}>Blue Power</span>
           <span className={styles.statValue}>2,847 AP</span>
         </div>
         <div className={styles.statCard}>
@@ -152,7 +152,7 @@ function ImpactPanel() {
             <span className={styles.impactCardTitle}>Your Voice Matters</span>
           </div>
           <p className={styles.impactCardDesc}>
-            No token-gated whale dominance. Azura Power scales with contribution, not capital. Do the work, earn the weight.
+            No token-gated whale dominance. Blue Power scales with contribution, not capital. Do the work, earn the weight.
           </p>
           <div className={styles.impactStats}>
             <div className={styles.impactStat}>
@@ -176,7 +176,7 @@ function ImpactPanel() {
             <span className={styles.impactCardTitle}>System Integrity</span>
           </div>
           <p className={styles.impactCardDesc}>
-            Azura reviews every proposal across 6 dimensions before it reaches a vote. No spam, no manipulation, no wasted treasury.
+            Blue reviews every proposal across 6 dimensions before it reaches a vote. No spam, no manipulation, no wasted treasury.
           </p>
           <div className={styles.impactStats}>
             <div className={styles.impactStat}>

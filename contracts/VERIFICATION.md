@@ -6,7 +6,7 @@ This guide explains how to verify your deployed contracts on Basescan (Base's bl
 
 You have two contracts deployed to Base Mainnet:
 - **GovernanceToken**: `0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F`
-- **AzuraKillStreak**: `0x2cbb90a761ba64014b811be342b8ef01b471992d`
+- **BlueKillStreak**: `0x2cbb90a761ba64014b811be342b8ef01b471992d`
 
 ## ✅ Method 1: Using Foundry (Recommended)
 
@@ -43,7 +43,7 @@ cd contracts
 
 This script will:
 - Verify GovernanceToken with its constructor arguments
-- Verify AzuraKillStreak with its constructor arguments
+- Verify BlueKillStreak with its constructor arguments
 - Show you the Basescan links when complete
 
 ### Verify Manually
@@ -62,11 +62,11 @@ forge verify-contract \
   --etherscan-api-key $BASESCAN_API_KEY
 ```
 
-**AzuraKillStreak:**
+**BlueKillStreak:**
 ```bash
 forge verify-contract \
   0x2cbb90a761ba64014b811be342b8ef01b471992d \
-  src/AzuraKillStreak.sol:AzuraKillStreak \
+  src/BlueKillStreak.sol:BlueKillStreak \
   --chain-id 8453 \
   --num-of-optimizations 200 \
   --constructor-args $(cast abi-encode "constructor(address,address,address,uint256)" \
@@ -119,10 +119,10 @@ From `foundry.toml`:
 **GovernanceToken:**
 - `initialSupply`: 100000000000000000000000 (100,000 tokens with 18 decimals)
 
-**AzuraKillStreak:**
+**BlueKillStreak:**
 - `_governanceToken`: 0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F
 - `_usdcToken`: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (Base Mainnet USDC)
-- `_azuraAgent`: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
+- `_blueAgent`: 0x0920553CcA188871b146ee79f562B4Af46aB4f8a
 - `_totalSupply`: 100000000000000000000000 (100,000 tokens)
 
 ## 🔍 Verify on Basescan
@@ -130,7 +130,7 @@ From `foundry.toml`:
 After successful verification, check your contracts:
 
 - **GovernanceToken**: https://basescan.org/address/0x84939fEc50EfdEDC8522917645AAfABFd5b3EA6F
-- **AzuraKillStreak**: https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d
+- **BlueKillStreak**: https://basescan.org/address/0x2cbb90a761ba64014b811be342b8ef01b471992d
 
 You should see:
 - ✅ Contract verified badge

@@ -2,13 +2,13 @@
 /**
  * Check Treasury Balance
  * 
- * This script checks the USDC balance of the AzuraKillStreak contract
+ * This script checks the USDC balance of the BlueKillStreak contract
  * to help diagnose treasury display issues.
  */
 
 import { providers, Contract, BigNumber } from 'ethers';
 
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 const RPC_URL = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
 

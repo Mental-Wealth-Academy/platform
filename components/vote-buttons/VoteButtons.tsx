@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { providers } from 'ethers';
-import { voteOnProposal, getUserVotingPower, formatTokenAmount, ensureBaseNetwork } from '@/lib/azura-contract';
+import { voteOnProposal, getUserVotingPower, formatTokenAmount, ensureBaseNetwork } from '@/lib/blue-contract';
 import styles from './VoteButtons.module.css';
 
 interface VoteButtonsProps {

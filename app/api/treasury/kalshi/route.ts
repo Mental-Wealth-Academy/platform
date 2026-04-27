@@ -9,7 +9,7 @@ export async function GET() {
     const markets = await fetchCategorizedMarkets();
     return NextResponse.json(markets);
   } catch (err) {
-    console.error('GET /api/treasury/polymarket error:', err);
+    console.error('GET /api/treasury/kalshi error:', err);
     return NextResponse.json({ error: 'Failed to fetch markets' }, { status: 502 });
   }
 }

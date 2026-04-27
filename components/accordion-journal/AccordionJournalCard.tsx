@@ -38,7 +38,7 @@ interface SealAttestation {
   completedActivities: string[];
   totalActivities: number;
   timestamp: number;
-  attester: 'azura';
+  attester: 'blue';
 }
 
 export interface JournalSection {
@@ -541,7 +541,7 @@ export default function AccordionJournalCard({
         completedActivities: Array.from(completedSections),
         totalActivities: totalSections,
         timestamp: Date.now(),
-        attester: 'azura'
+        attester: 'blue'
       };
 
       setSealAttestation(attestation);
@@ -994,7 +994,7 @@ export default function AccordionJournalCard({
               {isLocked
                 ? 'This week hasn\u2019t started yet'
                 : isSealed
-                ? 'Verified by Azura and sealed on Base'
+                ? 'Verified by Blue and sealed on Base'
                 : ''
               }
             </p>
@@ -1132,7 +1132,7 @@ export default function AccordionJournalCard({
                 <span>Week Sealed on Base</span>
               </div>
               <p className={styles.sealedDetails}>
-                Verified by Azura • {sealAttestation?.completedActivities.length}/{sealAttestation?.totalActivities} activities
+                Verified by Blue • {sealAttestation?.completedActivities.length}/{sealAttestation?.totalActivities} activities
               </p>
               {sealTxHash && (
                 <a
@@ -1153,13 +1153,13 @@ export default function AccordionJournalCard({
           ) : (
             <>
               <div className={styles.sealPrompt}>
-                <div className={styles.sealAzuraIcon}>
+                <div className={styles.sealBlueIcon}>
                   <Image
                     src="https://i.imgur.com/3Y3KrnJ.png"
-                    alt="Azura"
+                    alt="Blue"
                     width={32}
                     height={32}
-                    className={styles.azuraImg}
+                    className={styles.blueImg}
                     unoptimized
                   />
                 </div>
@@ -1171,7 +1171,7 @@ export default function AccordionJournalCard({
                     }
                   </p>
                   <p className={styles.sealPromptDesc}>
-                    Azura will verify and create an on-chain attestation. Earn Shard rewards.
+                    Blue will verify and create an on-chain attestation. Earn Shard rewards.
                   </p>
                 </div>
               </div>
@@ -1196,19 +1196,19 @@ export default function AccordionJournalCard({
           <div className={styles.sealModalBackdrop} onClick={() => !isSealing && setShowSealModal(false)} />
           <div className={styles.sealModal}>
             <div className={styles.sealModalHeader}>
-              <div className={styles.sealModalAzura}>
+              <div className={styles.sealModalBlue}>
                 <Image
                   src="https://i.imgur.com/3Y3KrnJ.png"
-                  alt="Azura"
+                  alt="Blue"
                   width={48}
                   height={48}
-                  className={styles.azuraImgLarge}
+                  className={styles.blueImgLarge}
                   unoptimized
                 />
               </div>
               <h3 className={styles.sealModalTitle}>
                 {sealStep === 'confirm' && 'Seal Week ' + weekNumber}
-                {sealStep === 'verifying' && 'Azura is Verifying...'}
+                {sealStep === 'verifying' && 'Blue is Verifying...'}
                 {sealStep === 'signing' && 'Creating Attestation...'}
                 {sealStep === 'complete' && 'Week Sealed!'}
               </h3>
@@ -1218,7 +1218,7 @@ export default function AccordionJournalCard({
               {sealStep === 'confirm' && (
                 <>
                   <p className={styles.sealModalText}>
-                    Azura will verify your journal entries and create an EAS attestation on Base.
+                    Blue will verify your journal entries and create an EAS attestation on Base.
                     This proves your creative work without revealing its contents.
                   </p>
                   <div className={styles.sealSummary}>
@@ -1248,7 +1248,7 @@ export default function AccordionJournalCard({
                     </div>
                     <div className={`${styles.sealStepItem} ${sealStep === 'signing' ? styles.sealStepActive : ''}`}>
                       <div className={styles.sealStepDot} />
-                      <span>Azura verification</span>
+                      <span>Blue verification</span>
                     </div>
                     <div className={styles.sealStepItem}>
                       <div className={styles.sealStepDot} />
@@ -1289,7 +1289,7 @@ export default function AccordionJournalCard({
                     onClick={() => { play('celebration'); handleSealWeek(); }}
                   >
                     <img src="/icons/ui-seal.svg" width="16" height="16" alt="shield" />
-                    Seal with Azura
+                    Seal with Blue
                   </button>
                 </>
               )}

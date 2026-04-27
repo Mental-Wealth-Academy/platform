@@ -61,7 +61,7 @@ interface OnChainData {
   forVotes: string;
   againstVotes: string;
   votingDeadline: number;
-  azuraLevel: number;
+  blueLevel: number;
   executed: boolean;
 }
 
@@ -249,7 +249,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           stage1={getStage1Variant()}
           stage2={getStage2Variant()}
           stage3={getStage3Variant()}
-          azuraReasoning={review?.reasoning || null}
+          blueReasoning={review?.reasoning || null}
           tokenAllocation={review?.tokenAllocation || null}
         />
       </div>

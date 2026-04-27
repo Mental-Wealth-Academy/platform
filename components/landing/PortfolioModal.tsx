@@ -15,7 +15,7 @@ const USDC_ABI = [
 
 const GOVERNANCE_ABI = [
   'function proposalCount() external view returns (uint256)',
-  'function getProposal(uint256 _proposalId) external view returns (tuple(uint256 id, address proposer, address recipient, uint256 usdcAmount, string title, string description, uint256 createdAt, uint256 votingDeadline, uint8 status, uint256 forVotes, uint256 againstVotes, uint256 azuraLevel, bool azuraApproved, bool executed))',
+  'function getProposal(uint256 _proposalId) external view returns (tuple(uint256 id, address proposer, address recipient, uint256 usdcAmount, string title, string description, uint256 createdAt, uint256 votingDeadline, uint8 status, uint256 forVotes, uint256 againstVotes, uint256 blueLevel, bool blueApproved, bool executed))',
 ];
 
 interface ProposalSummary {

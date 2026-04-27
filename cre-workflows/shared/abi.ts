@@ -1,6 +1,6 @@
 /**
- * AzuraKillStreak ABI fragments for CRE workflows
- * Only includes the functions needed by the auto-execute and azura-review workflows.
+ * BlueKillStreak ABI fragments for CRE workflows
+ * Only includes the functions needed by the auto-execute and blue-review workflows.
  */
 
 export const PROPOSAL_COUNT_ABI = [
@@ -34,8 +34,8 @@ export const GET_PROPOSAL_ABI = [
           { name: "status", type: "uint8" },
           { name: "forVotes", type: "uint256" },
           { name: "againstVotes", type: "uint256" },
-          { name: "azuraLevel", type: "uint256" },
-          { name: "azuraApproved", type: "bool" },
+          { name: "blueLevel", type: "uint256" },
+          { name: "blueApproved", type: "bool" },
           { name: "executed", type: "bool" },
           { name: "snapshotBlock", type: "uint256" },
         ],
@@ -64,10 +64,10 @@ export const ProposalStatus = {
   Cancelled: 4,
 } as const;
 
-/** Action types for AzuraKillStreak.onReport() dispatch */
+/** Action types for BlueKillStreak.onReport() dispatch */
 export const ActionType = {
   AutoExecute: 1,
-  AzuraReview: 2,
+  BlueReview: 2,
 } as const;
 
 /** ProposalCreated event signature for log trigger */

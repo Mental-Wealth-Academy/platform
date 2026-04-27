@@ -21,7 +21,7 @@ export default function NotFound() {
         </div>
         <div className={styles.imageWrapper}>
           <Image
-            src="/azura404.png"
+            src="/blue404.png"
             alt="404 Not Found"
             width={400}
             height={400}

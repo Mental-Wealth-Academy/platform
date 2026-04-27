@@ -168,7 +168,7 @@ export default function LearnPage() {
                 Three <strong>funding pods</strong> hold the community&apos;s budget: Brand Awareness, Internal Research, and Emergency Individual Support. Each pod has a transparent allocation. You can see what&apos;s been spent, what&apos;s left, and who proposed what.
               </p>
               <p>
-                Got an idea that helps people? Submit a proposal. Azura (our AI co-pilot) reviews it for clarity and impact. If it passes her vibe check, it goes to the community for voting. The more you contribute, the fewer approvals you need. That&apos;s earned trust, baked into the mechanism.
+                Got an idea that helps people? Submit a proposal. Blue (our AI co-pilot) reviews it for clarity and impact. If it passes her vibe check, it goes to the community for voting. The more you contribute, the fewer approvals you need. That&apos;s earned trust, baked into the mechanism.
               </p>
               <h3 id="rewards-are-real">Rewards are real:</h3>
               <ul>

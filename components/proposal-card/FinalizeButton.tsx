@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { providers } from 'ethers';
-import { voteOnProposal } from '@/lib/azura-contract';
+import { voteOnProposal } from '@/lib/blue-contract';
 import { useSound } from '@/hooks/useSound';
 import styles from './FinalizeButton.module.css';
 

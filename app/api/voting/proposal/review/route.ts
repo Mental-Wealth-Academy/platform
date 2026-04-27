@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 import { providers, Contract } from 'ethers';
-import { AZURA_KILLSTREAK_ABI } from '@/lib/azura-contract';
+import { BLUE_KILLSTREAK_ABI } from '@/lib/blue-contract';
 import { elizaAPI } from '@/lib/eliza-api';
 
 /**
  * POST /api/voting/proposal/review
  *
  * Checks on-chain state for the CRE DON review and syncs to DB.
- * The actual AI review is performed by the Chainlink CRE azura-review workflow
+ * The actual AI review is performed by the Chainlink CRE blue-review workflow
  * running on the DON — this route reads the result first.
  *
  * Fallback chain: CRE → Eliza API → Anthropic API (Claude)
@@ -26,7 +26,7 @@ interface ProposalData {
   token_amount: string | null;
 }
 
-const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
+const REVIEW_SYSTEM_PROMPT = `You are Blue (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
 
 Analyze proposals based on these criteria (score 0-10 each):
 1. CLARITY: How clear, well-written, and understandable is the proposal?
@@ -184,11 +184,11 @@ export async function POST(request: Request) {
   let onChainStatus = -1; // -1 = RPC failed, treat as pending
   let onChainProposal: any = null;
   const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
-  const contractAddress = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+  const contractAddress = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 
   try {
     const provider = new providers.JsonRpcProvider(rpcUrl);
-    const contract = new Contract(contractAddress, AZURA_KILLSTREAK_ABI, provider);
+    const contract = new Contract(contractAddress, BLUE_KILLSTREAK_ABI, provider);
     onChainProposal = await contract.getProposal(parseInt(proposal.on_chain_proposal_id));
     onChainStatus = Number(onChainProposal.status);
   } catch (rpcError: any) {
@@ -205,40 +205,40 @@ export async function POST(request: Request) {
         const aiResponse = await getAIReview(reviewPrompt);
 
         const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error('No JSON in Azura response');
-        const azuraResult = JSON.parse(jsonMatch[0]);
+        if (!jsonMatch) throw new Error('No JSON in Blue response');
+        const blueResult = JSON.parse(jsonMatch[0]);
 
-        const decision = azuraResult.decision === 'approved' ? 'approved' : 'rejected';
-        const tokenAllocation = decision === 'approved' ? (azuraResult.tokenAllocation || 10) : null;
-        const scores = azuraResult.scores || {};
-        const reasoning = azuraResult.reasoning || 'Reviewed by Azura server-side fallback.';
+        const decision = blueResult.decision === 'approved' ? 'approved' : 'rejected';
+        const tokenAllocation = decision === 'approved' ? (blueResult.tokenAllocation || 10) : null;
+        const scores = blueResult.scores || {};
+        const reasoning = blueResult.reasoning || 'Reviewed by Blue server-side fallback.';
 
         const reviewId = uuidv4();
 
-        // Call azuraReview() on-chain to transition proposal to Active (or Rejected)
+        // Call blueReview() on-chain to transition proposal to Active (or Rejected)
         const onChainLevel = decision === 'approved'
           ? Math.min(4, Math.max(1, Math.round((tokenAllocation || 10) / 10)))
           : 0;
 
         try {
-          const azuraPrivateKey = process.env.AZURA_PRIVATE_KEY;
-          if (!azuraPrivateKey) throw new Error('AZURA_PRIVATE_KEY not configured');
+          const bluePrivateKey = process.env.BLUE_PRIVATE_KEY;
+          if (!bluePrivateKey) throw new Error('BLUE_PRIVATE_KEY not configured');
 
           const { providers: ethProviders, Wallet: EthWallet, Contract: EthContract } = await import('ethers');
           const ethProvider = new ethProviders.JsonRpcProvider(rpcUrl);
-          const signer = new EthWallet(azuraPrivateKey, ethProvider);
+          const signer = new EthWallet(bluePrivateKey, ethProvider);
           const reviewContract = new EthContract(
             contractAddress,
-            ['function azuraReview(uint256 _proposalId, uint256 _level) external'],
+            ['function blueReview(uint256 _proposalId, uint256 _level) external'],
             signer
           );
 
-          console.log(`Calling azuraReview(${proposal.on_chain_proposal_id}, ${onChainLevel}) from ${signer.address}`);
-          const tx = await reviewContract.azuraReview(proposal.on_chain_proposal_id!, onChainLevel);
+          console.log(`Calling blueReview(${proposal.on_chain_proposal_id}, ${onChainLevel}) from ${signer.address}`);
+          const tx = await reviewContract.blueReview(proposal.on_chain_proposal_id!, onChainLevel);
           const receipt = await tx.wait();
-          console.log(`On-chain azuraReview TX: ${receipt.transactionHash} (block ${receipt.blockNumber})`);
+          console.log(`On-chain blueReview TX: ${receipt.transactionHash} (block ${receipt.blockNumber})`);
         } catch (onChainError: any) {
-          console.error('Failed to call azuraReview on-chain:', onChainError.message);
+          console.error('Failed to call blueReview on-chain:', onChainError.message);
           // Non-fatal: DB review is stored, on-chain can be retried
         }
 
@@ -292,14 +292,14 @@ export async function POST(request: Request) {
     }
 
     // DON has reviewed — sync result to DB
-    const azuraLevel = Number(onChainProposal.azuraLevel);
-    const azuraApproved = onChainProposal.azuraApproved;
-    const decision = azuraApproved ? 'approved' : 'rejected';
-    const tokenAllocation = azuraApproved ? azuraLevel * 10 : null;
+    const blueLevel = Number(onChainProposal.blueLevel);
+    const blueApproved = onChainProposal.blueApproved;
+    const decision = blueApproved ? 'approved' : 'rejected';
+    const tokenAllocation = blueApproved ? blueLevel * 10 : null;
 
     // Store review and update proposal status atomically
     const reviewId = uuidv4();
-    const newStatus = azuraApproved ? 'active' : 'rejected';
+    const newStatus = blueApproved ? 'active' : 'rejected';
     await withTransaction(async (client) => {
       await sqlQueryWithClient(
         client,
@@ -329,7 +329,7 @@ export async function POST(request: Request) {
       reasoning: 'Reviewed by Chainlink CRE decentralized workflow.',
       tokenAllocation,
       scores: null,
-      azuraLevel,
+      blueLevel,
       source: 'cre',
     });
   } catch (error: any) {

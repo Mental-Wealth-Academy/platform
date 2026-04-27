@@ -12,7 +12,7 @@ interface ProposalStagesProps {
   stage1: Stage1Variant;
   stage2: Stage2Variant;
   stage3: Stage3Variant;
-  azuraReasoning?: string | null;
+  blueReasoning?: string | null;
   tokenAllocation?: number | null;
 }
 
@@ -92,12 +92,12 @@ const ProposalStages: React.FC<ProposalStagesProps> = ({
 
   return (
     <div className={styles.container}>
-      {/* Stage 1: Azura Review */}
+      {/* Stage 1: Blue Review */}
       <div className={`${styles.stage} ${styles[stage1]}`}>
         <div className={styles.imageWrap}>
           <Image
             src={getStage1Image()}
-            alt="Azura"
+            alt="Blue"
             width={72}
             height={72}
             className={styles.stageImage}

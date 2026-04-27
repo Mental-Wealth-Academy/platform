@@ -6,12 +6,12 @@ import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
 import { providers } from 'ethers';
-import { createProposalOnChain } from '@/lib/azura-contract';
+import { createProposalOnChain } from '@/lib/blue-contract';
 import ProposalSuccessModal from './ProposalSuccessModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './SubmitProposalModal.module.css';
 
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS || '0x2cbb90a761ba64014b811be342b8ef01b471992d';
 
 interface SubmitProposalModalProps {
   isOpen: boolean;

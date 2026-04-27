@@ -175,7 +175,7 @@ export async function POST(request: Request) {
       }
     );
 
-    // Trigger Azura review with retry (up to 3 attempts with exponential backoff)
+    // Trigger Blue review with retry (up to 3 attempts with exponential backoff)
     const baseUrl = request.url.split('/api')[0];
     const triggerReview = async (attempt: number) => {
       try {
@@ -191,15 +191,15 @@ export async function POST(request: Request) {
           const text = await res.text().catch(() => '');
           throw new Error(`Review API returned ${res.status}: ${text}`);
         }
-        console.log(`Azura review triggered successfully on attempt ${attempt}`);
+        console.log(`Blue review triggered successfully on attempt ${attempt}`);
       } catch (error) {
-        console.error(`Azura review attempt ${attempt} failed:`, error);
+        console.error(`Blue review attempt ${attempt} failed:`, error);
         if (attempt < 3) {
           const delay = Math.pow(2, attempt) * 2000; // 4s, 8s
           await new Promise(r => setTimeout(r, delay));
           return triggerReview(attempt + 1);
         }
-        console.error(`All 3 Azura review attempts failed for proposal ${proposalId}`);
+        console.error(`All 3 Blue review attempts failed for proposal ${proposalId}`);
       }
     };
     triggerReview(1);
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
       proposalId,
       onChainProposalId,
       onChainTxHash,
-      message: 'Proposal created on-chain and saved successfully. Azura is reviewing your proposal...',
+      message: 'Proposal created on-chain and saved successfully. Blue is reviewing your proposal...',
     });
   } catch (error) {
     console.error('Error creating proposal:', error);

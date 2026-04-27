@@ -2,7 +2,7 @@
 # CRE WORKFLOW SETTINGS: auto-execute-proposals
 # ==========================================================================
 # Cron workflow that runs every 10 minutes, reads active proposals from
-# AzuraKillStreak, and auto-executes any that have passed the 50% vote
+# BlueKillStreak, and auto-executes any that have passed the 50% vote
 # threshold. Delivers a DON-signed report via KeystoneForwarder.
 
 production-settings:

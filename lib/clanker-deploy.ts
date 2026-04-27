@@ -2,7 +2,7 @@
  * Clanker API — APPLE Token Deployment
  *
  * One-shot script to deploy the APPLE token on Base via Clanker.
- * Pairs with USDC, mints 3% supply to Azura's vault address.
+ * Pairs with USDC, mints 3% supply to Blue's vault address.
  */
 
 const CLANKER_API_URL = 'https://www.clanker.world/api/tokens/deploy';
@@ -52,7 +52,7 @@ function generateRequestKey(): string {
  * Deploy the APPLE token via Clanker API.
  * Returns the deployment response including expectedAddress.
  */
-export async function deployAppleToken(azuraWalletAddress: string): Promise<ClankerDeployResponse> {
+export async function deployAppleToken(blueWalletAddress: string): Promise<ClankerDeployResponse> {
   const apiKey = process.env.CLANKER_API_KEY;
   if (!apiKey) {
     throw new Error('CLANKER_API_KEY not configured');
@@ -61,17 +61,17 @@ export async function deployAppleToken(azuraWalletAddress: string): Promise<Clan
   const body: ClankerDeployRequest = {
     name: 'Apple',
     symbol: 'APPLE',
-    tokenAdmin: azuraWalletAddress,
+    tokenAdmin: blueWalletAddress,
     requestKey: generateRequestKey(),
     pairedToken: USDC_BASE,
     chainId: BASE_CHAIN_ID,
     vault: {
       percentage: 3,
-      recipient: azuraWalletAddress,
+      recipient: blueWalletAddress,
     },
     rewards: {
       percentage: 100,
-      recipient: azuraWalletAddress,
+      recipient: blueWalletAddress,
     },
   };
 

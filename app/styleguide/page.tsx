@@ -676,7 +676,7 @@ export default function StyleGuidePage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>📊 Proposal Stages</h2>
           <p className={styles.sectionDescription}>
-            Visual progress indicator for governance proposals showing Azura review, blockchain transaction, and voting stages.
+            Visual progress indicator for governance proposals showing Blue review, blockchain transaction, and voting stages.
           </p>
           <div className={styles.componentShowcase}>
             <div className={styles.componentLabel}>ProposalStages</div>
@@ -695,7 +695,7 @@ export default function StyleGuidePage() {
                   stage1="approved" 
                   stage2="processing" 
                   stage3="waiting" 
-                  azuraReasoning="This proposal aligns with community goals and has a clear implementation plan."
+                  blueReasoning="This proposal aligns with community goals and has a clear implementation plan."
                   tokenAllocation={25}
                 />
               </div>
@@ -713,7 +713,7 @@ export default function StyleGuidePage() {
                   stage1="rejected" 
                   stage2="waiting" 
                   stage3="waiting"
-                  azuraReasoning="This proposal does not meet the minimum requirements for community consideration."
+                  blueReasoning="This proposal does not meet the minimum requirements for community consideration."
                 />
               </div>
             </div>

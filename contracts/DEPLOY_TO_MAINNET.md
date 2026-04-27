@@ -1,4 +1,4 @@
-# Deploy AzuraKillStreak to Base Mainnet
+# Deploy BlueKillStreak to Base Mainnet
 
 ## 🎯 Pre-Deployment Checklist
 
@@ -7,7 +7,7 @@ Before deploying to mainnet, verify:
 - [ ] All 22 Foundry tests passing ✅
 - [ ] Contract reviewed for security
 - [ ] You have Base Mainnet ETH for gas (~$5-10)
-- [ ] Azura agent wallet address ready
+- [ ] Blue agent wallet address ready
 - [ ] Deployer wallet has sufficient ETH
 - [ ] Ready to distribute governance tokens
 
@@ -19,8 +19,8 @@ Create `contracts/.env` file:
 # Deployer private key (will deploy contract and mint tokens)
 PRIVATE_KEY=0x...
 
-# Azura AI agent wallet address (will receive 40% of governance tokens)
-AZURA_AGENT_ADDRESS=0x...
+# Blue AI agent wallet address (will receive 40% of governance tokens)
+BLUE_AGENT_ADDRESS=0x...
 
 # Base Mainnet RPC (already configured in foundry.toml)
 # Using: https://api.developer.coinbase.com/rpc/v1/base/9oU7BptpclCm3gy0G7d9bfbp9J2oUoQP
@@ -70,22 +70,22 @@ forge script script/Deploy.s.sol:Deploy \
 - **Total Supply**: 100,000 tokens
 - **Decimals**: 18
 
-### 2. AzuraKillStreak Contract
+### 2. BlueKillStreak Contract
 - **Governance Token**: Address from step 1
 - **USDC Token**: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (Base Mainnet)
-- **Azura Agent**: Your Azura wallet address
+- **Blue Agent**: Your Blue wallet address
 - **Total Supply**: 100,000 tokens
 
 ### 3. Initial Token Distribution
-- **Azura**: 40,000 MWG (40%) - Automatically transferred
+- **Blue**: 40,000 MWG (40%) - Automatically transferred
 - **Deployer**: 60,000 MWG (60%) - For admin distribution
 
 ## 💰 Cost Estimate
 
 **Gas Costs on Base Mainnet:**
 - Deploy GovernanceToken: ~600k gas (~$0.60)
-- Deploy AzuraKillStreak: ~1.8M gas (~$1.80)
-- Transfer to Azura: ~50k gas (~$0.05)
+- Deploy BlueKillStreak: ~1.8M gas (~$1.80)
+- Transfer to Blue: ~50k gas (~$0.05)
 - **Total**: ~$2.50 - $5.00
 
 (Base is cheap! Much less than Ethereum mainnet)
@@ -100,14 +100,14 @@ DEPLOYMENT COMPLETE
 ==============================================
 Network: Base Mainnet
 Governance Token: 0x1234...
-AzuraKillStreak: 0x5678...
+BlueKillStreak: 0x5678...
 USDC Token: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-Azura Agent: 0xabcd...
+Blue Agent: 0xabcd...
 ==============================================
 
 NEXT STEPS:
 1. Verify contracts on BaseScan
-2. Fund AzuraKillStreak contract with USDC
+2. Fund BlueKillStreak contract with USDC
 3. Distribute remaining governance tokens to admins
 4. Update frontend with contract addresses
 5. Set up CDP webhooks for event monitoring
@@ -118,14 +118,14 @@ NEXT STEPS:
 
 ```env
 # Add to your app's .env.local
-NEXT_PUBLIC_AZURA_KILLSTREAK_ADDRESS=0x...
+NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS=0x...
 NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS=0x...
 NEXT_PUBLIC_USDC_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 ```
 
 ## 💵 Fund Contract with USDC
 
-After deployment, send USDC to the AzuraKillStreak contract:
+After deployment, send USDC to the BlueKillStreak contract:
 
 ```bash
 # How much USDC to fund?
@@ -140,7 +140,7 @@ After deployment, send USDC to the AzuraKillStreak contract:
 # Or via Cast:
 cast send 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 \
   "transfer(address,uint256)" \
-  0xYOUR_AZURAKILLSTREAK_ADDRESS \
+  0xYOUR_BLUEKILLSTREAK_ADDRESS \
   100000000000 \  # 100k USDC (6 decimals)
   --rpc-url base \
   --private-key $PRIVATE_KEY
@@ -172,28 +172,28 @@ cast send $GOVERNANCE_TOKEN_ADDRESS \
 2. Search for your contract addresses
 3. Verify:
    - ✅ Governance Token created with 100k supply
-   - ✅ AzuraKillStreak contract verified
-   - ✅ Azura has 40k tokens (40%)
+   - ✅ BlueKillStreak contract verified
+   - ✅ Blue has 40k tokens (40%)
    - ✅ Contract has USDC balance
 
 ### Test Basic Functions
 
 ```bash
 # Check proposal count (should be 0)
-cast call $AZURAKILLSTREAK_ADDRESS \
+cast call $BLUEKILLSTREAK_ADDRESS \
   "proposalCount()" \
   --rpc-url base
 
-# Check Azura's voting power (should be 40k tokens)
-cast call $AZURAKILLSTREAK_ADDRESS \
+# Check Blue's voting power (should be 40k tokens)
+cast call $BLUEKILLSTREAK_ADDRESS \
   "getVotingPower(address)" \
-  $AZURA_AGENT_ADDRESS \
+  $BLUE_AGENT_ADDRESS \
   --rpc-url base
 
 # Check contract USDC balance
 cast call 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 \
   "balanceOf(address)" \
-  $AZURAKILLSTREAK_ADDRESS \
+  $BLUEKILLSTREAK_ADDRESS \
   --rpc-url base
 ```
 
@@ -205,7 +205,7 @@ After successful deployment:
 2. Create webhook with:
    - **URL**: `https://mentalwealthacademy.world/api/webhooks/cdp`
    - **Network**: Base Mainnet
-   - **Contract Address**: Your deployed AzuraKillStreak address
+   - **Contract Address**: Your deployed BlueKillStreak address
    - **Events**: Smart Contract Events
 
 ## ⚠️ Important Notes
@@ -227,7 +227,7 @@ After successful deployment:
 Total: 100,000 MWG tokens
 
 Immediate:
-- Azura: 40,000 (40%) ← Auto-transferred on deploy
+- Blue: 40,000 (40%) ← Auto-transferred on deploy
 
 Manual Distribution:
 - Admin 1: 10,000 (10%)
@@ -238,9 +238,9 @@ Manual Distribution:
 - Reserve: 10,000 (10%) ← Keep for future admins
 
 With this distribution:
-- Azura + 1 admin = 50% (can pass Level 4 proposals)
-- Azura + 2 admins = 60% (can pass Level 3 proposals)
-- Azura + 4 admins = 80% (can pass Level 1 proposals)
+- Blue + 1 admin = 50% (can pass Level 4 proposals)
+- Blue + 2 admins = 60% (can pass Level 3 proposals)
+- Blue + 4 admins = 80% (can pass Level 1 proposals)
 ```
 
 ## 🐛 Troubleshooting
@@ -258,16 +258,16 @@ With this distribution:
 ```bash
 forge verify-contract \
   $CONTRACT_ADDRESS \
-  src/AzuraKillStreak.sol:AzuraKillStreak \
+  src/BlueKillStreak.sol:BlueKillStreak \
   --chain-id 8453 \
-  --constructor-args $(cast abi-encode "constructor(address,address,address,uint256)" $GOV_TOKEN $USDC $AZURA $SUPPLY)
+  --constructor-args $(cast abi-encode "constructor(address,address,address,uint256)" $GOV_TOKEN $USDC $BLUE $SUPPLY)
 ```
 
 ## ✅ Deployment Complete When:
 
 - ✅ Both contracts deployed to Base Mainnet
 - ✅ Contracts verified on BaseScan
-- ✅ Azura has 40k governance tokens
+- ✅ Blue has 40k governance tokens
 - ✅ Contract funded with USDC
 - ✅ Admin tokens distributed
 - ✅ CDP webhook configured

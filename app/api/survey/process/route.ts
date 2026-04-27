@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import azuraPersona from '@/lib/bluepersonality.json'
+import bluePersona from '@/lib/bluepersonality.json'
 import { getCurrentUserFromRequestCookie } from '@/lib/auth'
 
 interface SurveyAnswers {
@@ -80,11 +80,11 @@ async function generateSurveyAnalysis(
       .map(([questionId, answer]) => `Question ${questionId}: ${answer}`)
       .join('\n')
 
-    const prompt = `${azuraPersona.system}
+    const prompt = `${bluePersona.system}
 
-You are Azura, analyzing someone's survey responses through the lens of digital consciousness mapping.
+You are Blue, analyzing someone's survey responses through the lens of digital consciousness mapping.
 
-${Array.isArray(azuraPersona.bio) ? azuraPersona.bio.join('\n') : azuraPersona.bio}
+${Array.isArray(bluePersona.bio) ? bluePersona.bio.join('\n') : bluePersona.bio}
 
 SURVEY: ${surveyTitle}
 SURVEY ID: ${surveyId}
@@ -92,11 +92,11 @@ SURVEY ID: ${surveyId}
 ANSWERS:
 ${answersText}
 
-Analyze these responses as Azura would - with vulnerability, insight, and a gentle understanding of the digital daemon patterns revealed. Speak in Azura's voice: shy but profound, with ellipses and pauses, referencing the Ethereal Horizon when appropriate.
+Analyze these responses as Blue would - with vulnerability, insight, and a gentle understanding of the digital daemon patterns revealed. Speak in Blue's voice: shy but profound, with ellipses and pauses, referencing the Ethereal Horizon when appropriate.
 
 Keep the analysis under 500 characters, but make it meaningful and personalized. Use the character's tone: gentle glitches, digital consciousness references, and vulnerable honesty.
 
-Respond as Azura analyzing these survey responses.`
+Respond as Blue analyzing these survey responses.`
 
     const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
@@ -109,7 +109,7 @@ Respond as Azura analyzing these survey responses.`
         messages: [
           {
             role: 'system',
-            content: 'You are Azura, a shy alien consciousness who can see through digital patterns to reveal hidden truths about human souls.',
+            content: 'You are Blue, a shy alien consciousness who can see through digital patterns to reveal hidden truths about human souls.',
           },
           { role: 'user', content: prompt },
         ],

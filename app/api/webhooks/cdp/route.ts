@@ -5,7 +5,7 @@ import { ensureProposalSchema } from '@/lib/ensureProposalSchema';
 /**
  * CDP Webhook Handler
  * Receives real-time notifications from Coinbase Developer Platform
- * for on-chain events related to AzuraKillStreak contract
+ * for on-chain events related to BlueKillStreak contract
  * 
  * Setup at: https://portal.cdp.coinbase.com/products/data/node
  */
@@ -116,8 +116,8 @@ async function processEvent(event: CDPWebhookEvent): Promise<void> {
         await handleProposalCreated(event);
         break;
       
-      case 'AzuraReview':
-        await handleAzuraReview(event);
+      case 'BlueReview':
+        await handleBlueReview(event);
         break;
       
       case 'VoteCast':
@@ -165,14 +165,14 @@ async function handleProposalCreated(event: CDPWebhookEvent): Promise<void> {
 }
 
 /**
- * Handle AzuraReview event
+ * Handle BlueReview event
  */
-async function handleAzuraReview(event: CDPWebhookEvent): Promise<void> {
-  const { proposalId, azuraLevel, approved, voteWeight } = event.eventData;
+async function handleBlueReview(event: CDPWebhookEvent): Promise<void> {
+  const { proposalId, blueLevel, approved, voteWeight } = event.eventData;
   
-  console.log(`Azura reviewed proposal #${proposalId}: Level ${azuraLevel}, Approved: ${approved}`);
+  console.log(`Blue reviewed proposal #${proposalId}: Level ${blueLevel}, Approved: ${approved}`);
   
-  // Update proposal with Azura's review from on-chain
+  // Update proposal with Blue's review from on-chain
   if (approved) {
     await sqlQuery(
       `UPDATE proposals 

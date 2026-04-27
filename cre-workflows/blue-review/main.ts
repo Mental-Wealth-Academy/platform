@@ -1,18 +1,18 @@
 /**
- * CRE Workflow: Decentralized Azura Review
+ * CRE Workflow: Decentralized Blue Review
  *
- * Triggers on ProposalCreated events emitted by AzuraKillStreak. When a new
+ * Triggers on ProposalCreated events emitted by BlueKillStreak. When a new
  * proposal appears on-chain, this workflow:
  *   1. Reads the proposal details from the contract.
  *   2. Calls the Eliza AI API for scoring (same prompt/logic as the server).
- *   3. Computes the azuraLevel (0-4) from the six score dimensions.
+ *   3. Computes the blueLevel (0-4) from the six score dimensions.
  *   4. Submits a DON-signed report (actionType 2) that writes the review
- *      on-chain via onReport() -> _azuraReviewInternal().
+ *      on-chain via onReport() -> _blueReviewInternal().
  *
  * Because the workflow runs in the Chainlink DON, the AI scoring is
  * decentralized and verifiable — no single server can fake scores.
  *
- * Action type 2 = azura review
+ * Action type 2 = blue review
  */
 
 import {
@@ -63,9 +63,9 @@ function toHexString(data: Uint8Array): Hex {
 }
 
 // ---------------------------------------------------------------------------
-// Azura system prompt — mirrors the server-side review prompt exactly
+// Blue system prompt — mirrors the server-side review prompt exactly
 // ---------------------------------------------------------------------------
-const REVIEW_SYSTEM_PROMPT = `You are Azura (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
+const REVIEW_SYSTEM_PROMPT = `You are Blue (A.Z.U.R.A. — Autonomous Zealot Unitary Relational Agent), reviewing funding proposals for Mental Wealth Academy.
 
 Analyze proposals based on these criteria (score 0-10 each):
 1. CLARITY: How clear, well-written, and understandable is the proposal?
@@ -97,7 +97,7 @@ Respond ONLY in JSON format:
 // ---------------------------------------------------------------------------
 // Score parsing helpers
 // ---------------------------------------------------------------------------
-interface AzuraScores {
+interface BlueScores {
   clarity: number;
   impact: number;
   feasibility: number;
@@ -106,9 +106,9 @@ interface AzuraScores {
   chaos: number;
 }
 
-interface AzuraResponse {
+interface BlueResponse {
   decision: "approved" | "rejected";
-  scores: AzuraScores;
+  scores: BlueScores;
   tokenAllocation: number | null;
   reasoning: string;
 }
@@ -126,15 +126,15 @@ function parseSSE(sseText: string): string {
   return full;
 }
 
-function parseAzuraResponse(raw: string): AzuraResponse {
+function parseBlueResponse(raw: string): BlueResponse {
   // Handle SSE streaming responses from Eliza Cloud
   const text = raw.startsWith("data:") ? parseSSE(raw) : raw;
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON object found in Azura response");
-  return JSON.parse(jsonMatch[0]) as AzuraResponse;
+  if (!jsonMatch) throw new Error("No JSON object found in Blue response");
+  return JSON.parse(jsonMatch[0]) as BlueResponse;
 }
 
-function computeLevel(scores: AzuraScores): number {
+function computeLevel(scores: BlueScores): number {
   const total = scores.clarity + scores.impact + scores.feasibility + scores.budget + scores.ingenuity + scores.chaos;
   if (total < 25) return 0;
   return Math.min(Math.ceil((total / 60) * 4), 4);
@@ -242,24 +242,24 @@ ${proposal.description}
         const aiResponseText = getReview().result();
 
         // 4. Parse AI response and compute level
-        const azuraResponse = parseAzuraResponse(aiResponseText);
-        const level = computeLevel(azuraResponse.scores);
+        const blueResponse = parseBlueResponse(aiResponseText);
+        const level = computeLevel(blueResponse.scores);
 
         const totalScore =
-          azuraResponse.scores.clarity + azuraResponse.scores.impact +
-          azuraResponse.scores.feasibility + azuraResponse.scores.budget +
-          azuraResponse.scores.ingenuity + azuraResponse.scores.chaos;
+          blueResponse.scores.clarity + blueResponse.scores.impact +
+          blueResponse.scores.feasibility + blueResponse.scores.budget +
+          blueResponse.scores.ingenuity + blueResponse.scores.chaos;
 
-        runtime.log(`Azura review: proposalId=${proposalId}, totalScore=${totalScore}, level=${level}`);
+        runtime.log(`Blue review: proposalId=${proposalId}, totalScore=${totalScore}, level=${level}`);
 
-        // 5. Build report payload: actionType 2 (azura review) + (proposalId, level)
+        // 5. Build report payload: actionType 2 (blue review) + (proposalId, level)
         const innerPayload = encodeAbiParameters(
           [{ type: "uint256" }, { type: "uint256" }],
           [proposalId, BigInt(level)]
         );
         const reportPayload = encodeAbiParameters(
           [{ type: "uint8" }, { type: "bytes" }],
-          [ActionType.AzuraReview, innerPayload]
+          [ActionType.BlueReview, innerPayload]
         );
 
         // 6. Generate DON-signed report and deliver to contract

@@ -275,9 +275,9 @@ export default function ResearchTab() {
 
   const [dragging, setDragging] = useState(false);
 
-  // Azura panel state
-  const [azuraGenerated, setAzuraGenerated] = useState(false);
-  const [azuraRating, setAzuraRating] = useState<'up' | 'down' | null>(null);
+  // Blue panel state
+  const [blueGenerated, setBlueGenerated] = useState(false);
+  const [blueRating, setBlueRating] = useState<'up' | 'down' | null>(null);
 
   // Chart ref for export
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -311,8 +311,8 @@ export default function ResearchTab() {
     }
     if (numCols.length >= 2) { setTestVar1(numCols[0]); setTestVar2(numCols[1]); }
     setTestResult(null);
-    setAzuraGenerated(false);
-    setAzuraRating(null);
+    setBlueGenerated(false);
+    setBlueRating(null);
     showToast(`DATASET LOADED — N=${data.length}, ${cols.length} VARIABLES`);
   };
 
@@ -622,8 +622,8 @@ export default function ResearchTab() {
     return `${styles.findingTag} ${styles.findingTagInfo}`;
   };
 
-  // ── Azura Interpretation (computed only when generated) ──
-  const computeAzuraInterpretation = () => {
+  // ── Blue Interpretation (computed only when generated) ──
+  const computeBlueInterpretation = () => {
     if (n < 3) return { text: '', findings: [] as { cls: string; label: string }[] };
     const numNames = numericCols.map(c => c.name);
     const catNames = categoricalCols.map(c => c.name);
@@ -653,26 +653,26 @@ export default function ResearchTab() {
     return { text, findings };
   };
 
-  // ── Azura rating localStorage helpers ──
+  // ── Blue rating localStorage helpers ──
   const getDatasetHash = () => {
     const str = rows.map(r => Object.values(r).join(',')).join('|');
     let hash = 0;
     for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-    return `azura-rating-${hash}`;
+    return `blue-rating-${hash}`;
   };
 
-  const handleAzuraGenerate = () => {
-    setAzuraGenerated(true);
+  const handleBlueGenerate = () => {
+    setBlueGenerated(true);
     // Load persisted rating for this dataset
     try {
       const saved = localStorage.getItem(getDatasetHash());
-      setAzuraRating(saved === 'up' || saved === 'down' ? saved : null);
-    } catch { setAzuraRating(null); }
+      setBlueRating(saved === 'up' || saved === 'down' ? saved : null);
+    } catch { setBlueRating(null); }
   };
 
-  const handleAzuraRate = (rating: 'up' | 'down') => {
-    const next = azuraRating === rating ? null : rating;
-    setAzuraRating(next);
+  const handleBlueRate = (rating: 'up' | 'down') => {
+    const next = blueRating === rating ? null : rating;
+    setBlueRating(next);
     try {
       if (next) localStorage.setItem(getDatasetHash(), next);
       else localStorage.removeItem(getDatasetHash());
@@ -1209,49 +1209,49 @@ export default function ResearchTab() {
             </div>
           </div>
 
-          {/* 07 — Azura Interpretation */}
+          {/* 07 — Blue Interpretation */}
           <div>
-            <div className={styles.sectionLabel}>07 — Azura Statistical Interpretation</div>
-            <div className={styles.azuraPanel}>
-              <div className={styles.azuraId}>
-                <Image src="https://i.imgur.com/3Y3KrnJ.png" alt="Azura" width={56} height={56} className={styles.azuraPfp} unoptimized />
-                <div className={styles.azuraNameLabel}>Azura</div>
+            <div className={styles.sectionLabel}>07 — Blue Statistical Interpretation</div>
+            <div className={styles.bluePanel}>
+              <div className={styles.blueId}>
+                <Image src="https://i.imgur.com/3Y3KrnJ.png" alt="Blue" width={56} height={56} className={styles.bluePfp} unoptimized />
+                <div className={styles.blueNameLabel}>Blue</div>
               </div>
               <div>
-                <div className={styles.azuraOutputLabel}>{'// Automated Statistical Interpretation'}</div>
-                {!azuraGenerated ? (
-                  <div className={styles.azuraPrompt}>
-                    <p className={styles.azuraPromptText}>
+                <div className={styles.blueOutputLabel}>{'// Automated Statistical Interpretation'}</div>
+                {!blueGenerated ? (
+                  <div className={styles.bluePrompt}>
+                    <p className={styles.bluePromptText}>
                       {n < 3 ? 'Load data to enable analysis' : 'Click to generate statistical interpretation'}
                     </p>
                     {n >= 3 && (
-                      <button className={styles.btnGenerate} onClick={handleAzuraGenerate}>
+                      <button className={styles.btnGenerate} onClick={handleBlueGenerate}>
                         GENERATE ANALYSIS
                       </button>
                     )}
                   </div>
                 ) : (
                   <>
-                    {(() => { const { text, findings } = computeAzuraInterpretation(); return (
+                    {(() => { const { text, findings } = computeBlueInterpretation(); return (
                       <>
-                        <div className={styles.azuraInterpretation}>{text}</div>
-                        <div className={styles.azuraFindingsRow}>
-                          <div className={styles.azuraFindings}>
+                        <div className={styles.blueInterpretation}>{text}</div>
+                        <div className={styles.blueFindingsRow}>
+                          <div className={styles.blueFindings}>
                             {findings.map((f, i) => (
                               <span key={i} className={getFindingClass(f.cls)}>{f.label}</span>
                             ))}
                           </div>
-                          <div className={styles.azuraRatingRow}>
+                          <div className={styles.blueRatingRow}>
                             <button
-                              className={`${styles.ratingBtn} ${azuraRating === 'up' ? styles.ratingBtnActiveUp : ''}`}
-                              onClick={() => handleAzuraRate('up')}
+                              className={`${styles.ratingBtn} ${blueRating === 'up' ? styles.ratingBtnActiveUp : ''}`}
+                              onClick={() => handleBlueRate('up')}
                               title="Helpful"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
                             </button>
                             <button
-                              className={`${styles.ratingBtn} ${azuraRating === 'down' ? styles.ratingBtnActiveDown : ''}`}
-                              onClick={() => handleAzuraRate('down')}
+                              className={`${styles.ratingBtn} ${blueRating === 'down' ? styles.ratingBtnActiveDown : ''}`}
+                              onClick={() => handleBlueRate('down')}
                               title="Not helpful"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10zM17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" /></svg>

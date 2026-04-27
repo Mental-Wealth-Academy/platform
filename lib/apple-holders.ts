@@ -59,9 +59,9 @@ export async function getAppleHolders(): Promise<HolderSnapshot> {
   const uniswapPoolAddress = process.env.APPLE_UNISWAP_POOL?.toLowerCase();
   if (uniswapPoolAddress) EXCLUDED_ADDRESSES.add(uniswapPoolAddress);
 
-  // Azura vault address — exclude from distribution
-  const azuraVault = process.env.AZURA_VAULT_ADDRESS?.toLowerCase();
-  if (azuraVault) EXCLUDED_ADDRESSES.add(azuraVault);
+  // Blue vault address — exclude from distribution
+  const blueVault = process.env.BLUE_VAULT_ADDRESS?.toLowerCase();
+  if (blueVault) EXCLUDED_ADDRESSES.add(blueVault);
 
   // Build balance map from Transfer events
   const balances = new Map<string, bigint>();

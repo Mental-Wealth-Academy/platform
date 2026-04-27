@@ -70,7 +70,7 @@ export const SoulGemDisplay: React.FC<SoulGemDisplayProps> = ({
 /**
  * Blue's Power Indicator with treasury display
  */
-interface AzuraPowerIndicatorProps {
+interface BluePowerIndicatorProps {
   soulGems: string;
   walletAddress: string;
   governanceTokenAddress: string;
@@ -81,7 +81,7 @@ interface AzuraPowerIndicatorProps {
   }>;
 }
 
-export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
+export const BluePowerIndicator: React.FC<BluePowerIndicatorProps> = ({
   soulGems,
   walletAddress,
   governanceTokenAddress,
@@ -96,7 +96,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
   const communityCount = rosterAvatars.length;
 
   return (
-    <div className={styles.azuraPower}>
+    <div className={styles.bluePower}>
       <div className={styles.leadCard}>
         <div className={styles.leadAvatarFrame}>
           {leadAvatar?.src ? (
@@ -139,7 +139,7 @@ export const AzuraPowerIndicator: React.FC<AzuraPowerIndicatorProps> = ({
                   alt={avatar.alt}
                   width={250}
                   height={250}
-                  className={styles.azuraAvatar}
+                  className={styles.blueAvatar}
                   unoptimized
                 />
               ) : (

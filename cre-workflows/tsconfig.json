@@ -14,9 +14,8 @@
   },
   "include": [
     "auto-execute/**/*.ts",
-    "azura-review/**/*.ts",
+    "blue-review/**/*.ts",
     "trade-execute/**/*.ts",
-    "polymarket-trader/**/*.ts",
     "shared/**/*.ts"
   ],
   "exclude": ["node_modules", "dist"]

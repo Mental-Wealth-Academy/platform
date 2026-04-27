@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
- * @title AzuraMarketTrader
+ * @title BlueMarketTrader
  * @notice Separate treasury contract for executing prediction market trades.
  *         Receives USDC independently from governance and trades on binary-outcome markets.
  *         Trades can be triggered by the owner or via Chainlink CRE (KeystoneForwarder).
  */
-contract AzuraMarketTrader is Ownable, ReentrancyGuard {
+contract BlueMarketTrader is Ownable, ReentrancyGuard {
     // ============================================================================
     // STATE VARIABLES
     // ============================================================================

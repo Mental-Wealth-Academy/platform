@@ -23,7 +23,7 @@ interface ProposalWithReview {
   review_token_allocation: number | null;
   review_scores: string | null;
   review_reviewed_at: string | null;
-  azura_review_tx_hash: string | null;
+  blue_review_tx_hash: string | null;
 }
 
 export async function GET() {
@@ -61,7 +61,7 @@ export async function GET() {
           pr.token_allocation_percentage as review_token_allocation,
           pr.scores as review_scores,
           pr.reviewed_at as review_reviewed_at,
-          pr.azura_review_tx_hash
+          pr.blue_review_tx_hash
          FROM proposals p
          LEFT JOIN users u ON p.user_id = u.id
          LEFT JOIN proposal_reviews pr ON p.id = pr.proposal_id
@@ -91,7 +91,7 @@ export async function GET() {
             pr.token_allocation_percentage as review_token_allocation,
             pr.scores as review_scores,
             pr.reviewed_at as review_reviewed_at,
-            NULL as azura_review_tx_hash
+            NULL as blue_review_tx_hash
            FROM proposals p
            LEFT JOIN users u ON p.user_id = u.id
            LEFT JOIN proposal_reviews pr ON p.id = pr.proposal_id
@@ -133,7 +133,7 @@ export async function GET() {
         })() : null,
         reviewedAt: p.review_reviewed_at,
         onChainProposalId: p.on_chain_proposal_id || null,
-        azuraReviewTxHash: p.azura_review_tx_hash || null,
+        blueReviewTxHash: p.blue_review_tx_hash || null,
       } : null,
     }));
 

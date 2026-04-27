@@ -1,19 +1,18 @@
 /**
  * CRE Workflow: Trade Execution (Governance-Triggered)
  *
- * Listens for ProposalExecuted events on AzuraKillStreak. When a proposal
+ * Listens for ProposalExecuted events on BlueKillStreak. When a proposal
  * passes governance and the recipient is the trader contract, this workflow
  * executes a corresponding trade on the prediction market.
  *
  * This is the GOVERNANCE-DRIVEN trade path (proposal -> vote -> trade).
- * For the autonomous Polymarket scanner, see polymarket-trader/.
  *
  * Pipeline:
  *   1. ProposalExecuted event fires (proposal passed governance threshold)
  *   2. Workflow reads proposal details (amount, description)
  *   3. Infers trade direction from proposal text (YES/NO keywords)
- *   4. Submits DON-signed report to AzuraMarketTrader.onReport()
- *   5. AzuraMarketTrader routes treasury USDC into the market position
+ *   4. Submits DON-signed report to BlueMarketTrader.onReport()
+ *   5. BlueMarketTrader routes treasury USDC into the market position
  */
 
 import {
@@ -174,7 +173,7 @@ const initWorkflow = (config: Config) => {
           `direction=${isYes ? "YES" : "NO"}, amount=$${Number(proposal.usdcAmount) / 1e6}`
         );
 
-        // 5. Build report for AzuraMarketTrader.onReport()
+        // 5. Build report for BlueMarketTrader.onReport()
         // Payload: (uint256 marketId, bool isYes, uint256 amount)
         // Use proposalId as a proxy marketId for governance-triggered trades
         const reportPayload = encodeAbiParameters(

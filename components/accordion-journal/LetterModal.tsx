@@ -39,10 +39,10 @@ export default function LetterModal({ isOpen, onClose, title, content }: LetterM
           <div className={styles.headerLeft}>
             <Image
               src="https://i.imgur.com/3Y3KrnJ.png"
-              alt="Azura"
+              alt="Blue"
               width={28}
               height={28}
-              className={styles.azuraIcon}
+              className={styles.blueIcon}
               unoptimized
             />
             <h2 className={styles.title}>{title}</h2>

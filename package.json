@@ -12,7 +12,7 @@
     "lint": "next lint",
     "test-db": "tsx scripts/test-db-connection.ts",
     "check-treasury": "tsx scripts/check-treasury-balance.ts",
-    "check-azura-wallet": "tsx scripts/check-azura-wallet.ts",
+    "check-blue-wallet": "tsx scripts/check-blue-wallet.ts",
     "check-interactions": "tsx scripts/check-contract-interactions.ts"
   },
   "dependencies": {
@@ -23,7 +23,6 @@
     "@nouns/assets": "^0.10.0",
     "@nouns/sdk": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
-    "@polymarket/clob-client": "^5.7.0",
     "@privy-io/react-auth": "^3.18.0",
     "@privy-io/server-auth": "^1.32.5",
     "@privy-io/wagmi": "^4.0.3",

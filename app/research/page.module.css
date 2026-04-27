@@ -676,8 +676,8 @@
   font-weight: 300;
 }
 
-/* ── AZURA PANEL ─────────────────────────────────────── */
-.azuraPanel {
+/* ── BLUE PANEL ─────────────────────────────────────── */
+.bluePanel {
   background: #1A1B24;
   border: 5px solid #1A1B24;
   padding: 24px;
@@ -689,12 +689,12 @@
   overflow: hidden;
 }
 
-.azuraId {
+.blueId {
   text-align: center;
   flex-shrink: 0;
 }
 
-.azuraGlyph {
+.blueGlyph {
   width: 56px;
   height: 56px;
   background: #5168FF;
@@ -707,7 +707,7 @@
   color: #fff;
 }
 
-.azuraPfp {
+.bluePfp {
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -716,7 +716,7 @@
   object-fit: cover;
 }
 
-.azuraNameLabel {
+.blueNameLabel {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 0.6rem;
   letter-spacing: 0.2em;
@@ -724,7 +724,7 @@
   color: #5168FF;
 }
 
-.azuraOutputLabel {
+.blueOutputLabel {
   font-family: var(--font-button, 'IBM Plex Mono', monospace);
   font-size: 0.6rem;
   letter-spacing: 0.2em;
@@ -733,7 +733,7 @@
   margin-bottom: 12px;
 }
 
-.azuraInterpretation {
+.blueInterpretation {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-weight: 300;
   font-size: 0.88rem;
@@ -743,7 +743,7 @@
   padding-left: 16px;
 }
 
-.azuraFindingsRow {
+.blueFindingsRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -751,7 +751,7 @@
   margin-top: 16px;
 }
 
-.azuraFindings {
+.blueFindings {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -902,11 +902,11 @@
     grid-template-columns: 1fr;
   }
 
-  .azuraPanel {
+  .bluePanel {
     grid-template-columns: 1fr;
   }
 
-  .azuraId {
+  .blueId {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -944,15 +944,15 @@
   height: 100%;
 }
 
-/* ── AZURA GENERATE BUTTON ──────────────────────────── */
-.azuraPrompt {
+/* ── BLUE GENERATE BUTTON ──────────────────────────── */
+.bluePrompt {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
 }
 
-.azuraPromptText {
+.bluePromptText {
   font-family: var(--font-primary, 'Poppins', sans-serif);
   font-weight: 300;
   font-size: 0.85rem;
@@ -987,8 +987,8 @@
   box-shadow: 1px 1px 0 rgba(81,104,255,0.2);
 }
 
-/* ── AZURA RATING ───────────────────────────────────── */
-.azuraRatingRow {
+/* ── BLUE RATING ───────────────────────────────────── */
+.blueRatingRow {
   display: flex;
   gap: 8px;
   flex-shrink: 0;

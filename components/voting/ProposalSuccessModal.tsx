@@ -59,10 +59,10 @@ export default function ProposalSuccessModal({
             </div>
           </div>
 
-          <div className={styles.azuraNote}>
-            <div className={styles.azuraAvatar}>✦</div>
-            <span className={styles.azuraText}>
-              Azura is reviewing your proposal now. Check back soon for her decision!
+          <div className={styles.blueNote}>
+            <div className={styles.blueAvatar}>✦</div>
+            <span className={styles.blueText}>
+              Blue is reviewing your proposal now. Check back soon for her decision!
             </span>
           </div>
 

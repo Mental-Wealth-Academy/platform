@@ -12,8 +12,8 @@ import type { AutoDistributionRequest } from './AutoDistributionInline';
 import ResearchCards from './ResearchCards';
 import type { ResearchSource } from './ResearchCards';
 
-// ── Azura Voice TTS ──────────────────────────────────────────
-async function speakAzura(text: string, signal?: AbortSignal): Promise<void> {
+// ── Blue Voice TTS ──────────────────────────────────────────
+async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
   const res = await fetch('/api/voice/tts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -39,7 +39,7 @@ async function speakAzura(text: string, signal?: AbortSignal): Promise<void> {
 interface Message {
   id: string;
   text: string;
-  sender: 'user' | 'azura';
+  sender: 'user' | 'blue';
   timestamp: Date;
   action?: 'research-reclaim';
   attachments?: UploadedAttachment[];
@@ -103,7 +103,7 @@ interface TreasuryContext {
   topMarkets: { question: string; yes: number }[];
 }
 
-const AZURA_EMOTES = {
+const BLUE_EMOTES = {
   default: '/images/blue-happy.png',
   surprised: '/images/blue-surprised.png',
   angry: '/images/blue-angry.png',
@@ -201,7 +201,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     {
       id: '1',
       text: "hey. what's going on?",
-      sender: 'azura',
+      sender: 'blue',
       timestamp: new Date(),
     },
   ]);
@@ -237,8 +237,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     prices: [],
     topMarkets: [],
   });
-  const [emoteA, setEmoteA] = useState<keyof typeof AZURA_EMOTES>('default');
-  const [emoteB, setEmoteB] = useState<keyof typeof AZURA_EMOTES>('default');
+  const [emoteA, setEmoteA] = useState<keyof typeof BLUE_EMOTES>('default');
+  const [emoteB, setEmoteB] = useState<keyof typeof BLUE_EMOTES>('default');
   const [activeLayer, setActiveLayer] = useState<'a' | 'b'>('a');
   const emoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -264,10 +264,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   // Fetch treasury context when chat opens
   const fetchTreasuryContext = useCallback(async () => {
     try {
-      const [balRes, priceRes, polyRes] = await Promise.all([
+      const [balRes, priceRes, marketsRes] = await Promise.all([
         fetch('/api/treasury/balance').then((r) => r.ok ? r.json() : null),
         fetch('/api/treasury/prices').then((r) => r.ok ? r.json() : null),
-        fetch('/api/treasury/polymarket').then((r) => r.ok ? r.json() : null),
+        fetch('/api/treasury/kalshi').then((r) => r.ok ? r.json() : null),
       ]);
 
       const prices = (priceRes || []).map((p: { symbol: string; usd: number; usd_24h_change: number | null }) => ({
@@ -277,9 +277,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }));
 
       const topMarkets: { question: string; yes: number }[] = [];
-      if (polyRes) {
+      if (marketsRes) {
         for (const cat of ['crypto', 'ai', 'sports', 'politics'] as const) {
-          for (const m of (polyRes[cat] || []).slice(0, 1)) {
+          for (const m of (marketsRes[cat] || []).slice(0, 1)) {
             try {
               const parsed = JSON.parse(m.outcomePrices);
               topMarkets.push({ question: m.question, yes: Math.round(Number(parsed[0]) * 100) });
@@ -403,7 +403,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const startVoiceChat = () => {
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
-      addAzuraMessage("Your browser doesn't support voice input. Try Chrome or Edge.");
+      addBlueMessage("Your browser doesn't support voice input. Try Chrome or Edge.");
       return;
     }
 
@@ -441,10 +441,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           showEmote('dead');
           if (gpuResearchMode && gpuJobId) {
             if (gpuTopic) {
-              addAzuraMessage('already processing your topic. gpu synthesis in progress.');
+              addBlueMessage('already processing your topic. gpu synthesis in progress.');
             } else {
               setGpuTopic(text);
-              addAzuraMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu.`);
+              addBlueMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu.`);
             }
           } else if (researchMode) {
             discoverResearch(text);
@@ -472,7 +472,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       setIsRecording(false);
       if (event.error === 'not-allowed') {
-        addAzuraMessage("Mic access denied. Check your browser permissions and try again.");
+        addBlueMessage("Mic access denied. Check your browser permissions and try again.");
       }
     };
 
@@ -481,7 +481,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     recognition.start();
   };
 
-  const addAzuraMessage = (text: string, action?: Message['action'], debug?: MessageDebugInfo) => {
+  const addBlueMessage = (text: string, action?: Message['action'], debug?: MessageDebugInfo) => {
     setIsTyping(true);
     setTimeout(() => {
       setMessages((prev) => [
@@ -489,7 +489,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         {
           id: (Date.now() + 1).toString(),
           text,
-          sender: 'azura',
+          sender: 'blue',
           timestamp: new Date(),
           action,
           debug,
@@ -502,7 +502,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const controller = new AbortController();
       voiceAbortRef.current = controller;
       setIsSpeaking(true);
-      speakAzura(text, controller.signal)
+      speakBlue(text, controller.signal)
         .catch(() => {/* aborted or TTS unavailable — silent */})
         .finally(() => setIsSpeaking(false));
     }, 800 + Math.random() * 800);
@@ -547,7 +547,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (res.ok && data.response) {
         setShardCount(data.shardsRemaining ?? shardCount);
         setIsTyping(false);
-        addAzuraMessage(data.response, action, data.debug);
+        addBlueMessage(data.response, action, data.debug);
         return;
       }
 
@@ -560,7 +560,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       // AI unavailable -- fallback to local
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text), action, {
+      addBlueMessage(generateBlueResponse(text), action, {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
@@ -568,7 +568,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       });
     } catch {
       setIsTyping(false);
-      addAzuraMessage(generateAzuraResponse(text), action, {
+      addBlueMessage(generateBlueResponse(text), action, {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
@@ -612,7 +612,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Upload failed';
-      addAzuraMessage(`attachment upload failed: ${message}`);
+      addBlueMessage(`attachment upload failed: ${message}`);
     } finally {
       if (attachmentInputRef.current) {
         attachmentInputRef.current.value = '';
@@ -647,10 +647,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
     if (gpuResearchMode && gpuJobId) {
       if (gpuTopic) {
-        addAzuraMessage('already processing your topic. gpu synthesis in progress — hang tight.');
+        addBlueMessage('already processing your topic. gpu synthesis in progress — hang tight.');
       } else {
         setGpuTopic(text);
-        addAzuraMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu for synthesis.`);
+        addBlueMessage(`locking in "${text.slice(0, 60)}${text.length > 60 ? '...' : ''}" — polling nosana gpu for synthesis.`);
         showEmote('searching');
       }
       return;
@@ -706,7 +706,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setResearchReclaimStatus('idle');
         setResearchSources(data.sources);
         setResearchPayTo(data.payTo);
-        addAzuraMessage('found some sources. pick the ones you want and i will fetch them.');
+        addBlueMessage('found some sources. pick the ones you want and i will fetch them.');
         return;
       }
 
@@ -726,7 +726,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           setResearchSuggestions(suggestData.suggestions);
           setResearchReclaimToken(data.reclaimToken ?? null);
           setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
-          addAzuraMessage("no paid sources in the bazaar yet. here are three foundational works — click one to synthesize from it.");
+          addBlueMessage("no paid sources in the bazaar yet. here are three foundational works — click one to synthesize from it.");
           return;
         }
       } catch {
@@ -736,11 +736,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setIsTyping(false);
       setResearchReclaimToken(data.reclaimToken ?? null);
       setResearchReclaimStatus(data.reclaimToken ? 'idle' : 'claimed');
-      addAzuraMessage('no sources available. synthesizing from training.');
+      addBlueMessage('no sources available. synthesizing from training.');
       sendToEliza(topic, 'research', data.reclaimToken ? 'research-reclaim' : undefined);
     } catch {
       setIsTyping(false);
-      addAzuraMessage('discovery failed. synthesizing from training.');
+      addBlueMessage('discovery failed. synthesizing from training.');
       sendToEliza(topic, 'research');
     }
   };
@@ -774,13 +774,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
 
       if (!res.ok) {
         if (data.error === 'insufficient_shards') {
-          addAzuraMessage(
+          addBlueMessage(
             `not enough shards. ${GPU_TIER_INFO[tier].label} GPU costs ${GPU_TIER_INFO[tier].shards.toLocaleString()} shards. keep building and come back.`
           );
         } else if (data.error === 'GPU research not available') {
-          addAzuraMessage('gpu research is not configured yet. check back soon.');
+          addBlueMessage('gpu research is not configured yet. check back soon.');
         } else {
-          addAzuraMessage(`gpu provisioning failed: ${data.error || 'unknown error'}. try again.`);
+          addBlueMessage(`gpu provisioning failed: ${data.error || 'unknown error'}. try again.`);
         }
         return;
       }
@@ -795,11 +795,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         ...prev,
         { id: Date.now().toString(), text: topic, sender: 'user' as const, timestamp: new Date() },
       ]);
-      addAzuraMessage(
+      addBlueMessage(
         `${GPU_TIER_INFO[tier].label} GPU is spinning up on Nosana (${GPU_TIER_INFO[tier].model}, ${GPU_TIER_INFO[tier].gpu}). synthesizing "${topic.slice(0, 60)}${topic.length > 60 ? '...' : ''}" — this usually takes 2–5 minutes.`
       );
     } catch {
-      addAzuraMessage('gpu connection failed. check your network and try again.');
+      addBlueMessage('gpu connection failed. check your network and try again.');
     } finally {
       setIsTyping(false);
     }
@@ -834,7 +834,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               {
                 id: (Date.now() + 1).toString(),
                 text: data.result as string,
-                sender: 'azura' as const,
+                sender: 'blue' as const,
                 timestamp: new Date(),
               },
             ]);
@@ -853,7 +853,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               {
                 id: (Date.now() + 1).toString(),
                 text: 'gpu synthesis failed. your shards have been refunded.',
-                sender: 'azura' as const,
+                sender: 'blue' as const,
                 timestamp: new Date(),
               },
             ]);
@@ -894,12 +894,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         const data = await res.json();
         setShardCount(data.shardsRemaining ?? (shardCount !== null ? shardCount - RESEARCH_COST : null));
         setResearchMode(true);
-        addAzuraMessage("research mode activated. what topic do you want me to look into?");
+        addBlueMessage("research mode activated. what topic do you want me to look into?");
       } else {
-        addAzuraMessage("couldn't process the payment. try again.");
+        addBlueMessage("couldn't process the payment. try again.");
       }
     } catch {
-      addAzuraMessage("something went wrong. try again.");
+      addBlueMessage("something went wrong. try again.");
     }
   };
 
@@ -975,7 +975,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     } catch { /* profile save failed but continue */ }
 
     setCreditStep('payment');
-    addAzuraMessage("nice. i've got your info. now let's activate the audit. this runs a full FICO breakdown, generates dispute letters, and tracks your progress.");
+    addBlueMessage("nice. i've got your info. now let's activate the audit. this runs a full FICO breakdown, generates dispute letters, and tracks your progress.");
   };
 
   const handleCreditPayment = async () => {
@@ -986,7 +986,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
     setCreditStep('processing');
     showEmote('searching', 12000);
-    addAzuraMessage("processing payment and running your audit. give me a moment...");
+    addBlueMessage("processing payment and running your audit. give me a moment...");
 
     try {
       // Deduct shards
@@ -1012,7 +1012,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         const result = auditData.auditResult;
         setCreditStep('done');
         showEmote('default');
-        addAzuraMessage(
+        addBlueMessage(
           `audit complete. your average score is ${result.currentScoreAvg}, grade: ${result.overallGrade}. ` +
           `i found ${result.disputeRecommendations?.length || 0} items you can dispute. ` +
           `estimated potential gain: +${result.estimatedScoreAfterFixes - result.currentScoreAvg} points. ` +
@@ -1020,15 +1020,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         );
       } else {
         setCreditStep('done');
-        addAzuraMessage("audit saved. head to the Credit Builder page to see your full results and start disputes.");
+        addBlueMessage("audit saved. head to the Credit Builder page to see your full results and start disputes.");
       }
     } catch {
       setCreditStep('done');
-      addAzuraMessage("something went wrong with the audit. your info is saved though. try the Credit Builder page directly.");
+      addBlueMessage("something went wrong with the audit. your info is saved though. try the Credit Builder page directly.");
     }
   };
 
-  const generateAzuraResponse = (userText: string): string => {
+  const generateBlueResponse = (userText: string): string => {
     const t = userText.toLowerCase();
 
     if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
@@ -1081,7 +1081,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  const switchEmote = useCallback((emote: keyof typeof AZURA_EMOTES) => {
+  const switchEmote = useCallback((emote: keyof typeof BLUE_EMOTES) => {
     setActiveLayer((prev) => {
       if (prev === 'a') {
         setEmoteB(emote);
@@ -1093,7 +1093,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     });
   }, []);
 
-  const showEmote = useCallback((emote: keyof typeof AZURA_EMOTES, durationMs = 6000) => {
+  const showEmote = useCallback((emote: keyof typeof BLUE_EMOTES, durationMs = 6000) => {
     if (emoteTimerRef.current) clearTimeout(emoteTimerRef.current);
     switchEmote(emote);
     emoteTimerRef.current = setTimeout(() => switchEmote('default'), durationMs);
@@ -1102,7 +1102,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const handleQuickAction = (action: string) => {
     if (isTyping) return;
 
-    const send = (text: string, emote: keyof typeof AZURA_EMOTES = 'happy') => {
+    const send = (text: string, emote: keyof typeof BLUE_EMOTES = 'happy') => {
       showEmote(emote);
       setMessages((prev) => [...prev, {
         id: Date.now().toString(),
@@ -1119,7 +1119,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setTimeManagementVisible(false);
       setAutoDistributionVisible(false);
       setCreditStep('intake');
-      addAzuraMessage(
+      addBlueMessage(
         "let's get your credit right. fill out the form below with your current scores and any negative items on your report. you can find your scores free at annualcreditreport.com or through your bank app."
       );
     } else if (action === 'time') {
@@ -1129,7 +1129,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setCreditStep('hidden');
       setAutoDistributionVisible(false);
       setTimeManagementVisible(true);
-      addAzuraMessage(
+      addBlueMessage(
         "drop in your blocks. keep it lean. hit start and i'll keep the flow moving."
       );
     } else if (action === 'auto-distribution') {
@@ -1140,12 +1140,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setCreditStep('hidden');
       if (autoDistributionVisible) {
         send('Open auto-distribution', 'searching');
-        addAzuraMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
+        addBlueMessage("auto-distribution is already open. connect your channels and tell me what you're pushing.");
         return;
       }
       send('Open auto-distribution', 'searching');
       setAutoDistributionVisible(true);
-      addAzuraMessage(
+      addBlueMessage(
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
       );
     } else if (action === 'research') {
@@ -1154,7 +1154,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       if (researchMode) {
         send('Start a research session', 'searching');
-        addAzuraMessage("you're already in research mode. give me a topic.");
+        addBlueMessage("you're already in research mode. give me a topic.");
         return;
       }
       send('Start a research session', 'searching');
@@ -1171,7 +1171,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setAutoDistributionVisible(false);
       if (gpuResearchMode) {
         send('GPU research is running', 'searching');
-        addAzuraMessage(gpuTopic ? 'gpu research is processing your topic. synthesis in progress.' : 'gpu research is active. drop your research topic.');
+        addBlueMessage(gpuTopic ? 'gpu research is processing your topic. synthesis in progress.' : 'gpu research is active. drop your research topic.');
         return;
       }
       send('Start GPU research session', 'searching');
@@ -1187,27 +1187,27 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setCreditStep('hidden');
       setAutoDistributionVisible(false);
       setClaudeProfessionalMode(true);
-      addAzuraMessage(
+      addBlueMessage(
         "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
       );
     } else if (action === 'shards') {
       send('What are shards?', 'happy');
-      addAzuraMessage(
+      addBlueMessage(
         "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
       );
     } else if (action === 'prayers') {
       send('Tell me about morning pages', 'happy');
-      addAzuraMessage(
+      addBlueMessage(
         "write for 15 min, get into flow state, and keep it up. no prompts, no pressure. just you and the page."
       );
     } else if (action === 'course') {
       send('How does the course work?', 'happy');
-      addAzuraMessage(
+      addBlueMessage(
         "12 weeks. each week targets a specific psychological domain -- safety, identity, power, integrity, all the way to faith. complete readings, reflections, and quests. seal your progress on-chain."
       );
     } else if (action === 'more') {
       send('What else can you do', 'happy');
-      addAzuraMessage(
+      addBlueMessage(
         "treasury, governance, course progress, or just talk through whatever's on your mind. ask me something specific."
       );
     }
@@ -1222,14 +1222,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (!response.ok || !data.authUrl) {
         const errorMessage = typeof data.error === 'string' ? data.error : 'x connection failed';
         setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: errorMessage }));
-        addAzuraMessage(`${errorMessage}.`);
+        addBlueMessage(`${errorMessage}.`);
         return;
       }
 
       window.location.href = data.authUrl;
     } catch {
       setAutoDistributionXConnection((prev) => ({ ...prev, loading: false, error: 'x connection failed' }));
-      addAzuraMessage('x connection failed.');
+      addBlueMessage('x connection failed.');
     }
   };
 
@@ -1328,16 +1328,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           <div
             key={message.id}
             className={`${styles.messageBubble} ${
-              message.sender === 'user' ? styles.userMessage : styles.azuraMessage
+              message.sender === 'user' ? styles.userMessage : styles.blueMessage
             }`}
           >
             <div
               className={`${styles.messageContentWrap} ${
-                message.sender === 'azura' && message.debug ? styles.messageContentWrapDebug : ''
+                message.sender === 'blue' && message.debug ? styles.messageContentWrapDebug : ''
               }`}
             >
               <div className={styles.messageContent}>{message.text}</div>
-              {message.sender === 'azura' && message.debug && (
+              {message.sender === 'blue' && message.debug && (
                 <button
                   type="button"
                   className={styles.debugInfoButton}
@@ -1361,7 +1361,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                 ))}
               </div>
             )}
-            {message.sender === 'azura' && message.action === 'research-reclaim' && (
+            {message.sender === 'blue' && message.action === 'research-reclaim' && (
               <button
                 type="button"
                 className={styles.reclaimBubble}
@@ -1377,7 +1377,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <div className={styles.messageTime}>
               {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
-            {message.sender === 'azura' && message.debug && openDebugMessageId === message.id && (
+            {message.sender === 'blue' && message.debug && openDebugMessageId === message.id && (
               <div className={styles.debugPanel}>
                 {formatDebugSummary(message.debug).map((line) => (
                   <div key={line} className={styles.debugLine}>{line}</div>
@@ -1388,7 +1388,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         ))}
 
         {isTyping && (
-          <div className={`${styles.messageBubble} ${styles.azuraMessage} ${styles.typingIndicator}`}>
+          <div className={`${styles.messageBubble} ${styles.blueMessage} ${styles.typingIndicator}`}>
             <div className={styles.messageContent}>
               <div className={styles.typingDots}>
                 <span className={styles.typingDot} />
@@ -1425,15 +1425,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         <TimeManagementInline
           onTimerStarted={(taskTitle, durationMinutes) => {
             showEmote('happy', 5000);
-            addAzuraMessage(`timer's live. ${taskTitle} for ${durationMinutes} minutes.`);
+            addBlueMessage(`timer's live. ${taskTitle} for ${durationMinutes} minutes.`);
           }}
           onNextTask={(taskTitle, durationMinutes) => {
             showEmote('surprised', 4500);
-            addAzuraMessage(`next up: ${taskTitle}. ${durationMinutes} minutes. go.`);
+            addBlueMessage(`next up: ${taskTitle}. ${durationMinutes} minutes. go.`);
           }}
           onSessionComplete={() => {
             showEmote('joyful', 5000);
-            addAzuraMessage("clean run. you're done.");
+            addBlueMessage("clean run. you're done.");
           }}
         />
       )}
@@ -1447,11 +1447,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           onComplete={(synthesis) => {
             setResearchSources(null);
             showEmote('default');
-            addAzuraMessage(synthesis);
+            addBlueMessage(synthesis);
           }}
           onError={(msg) => {
             setResearchSources(null);
-            addAzuraMessage(msg);
+            addBlueMessage(msg);
           }}
         />
       )}
@@ -1750,7 +1750,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                   })}
                 </div>
                 <Image
-                  src="/images/azura-fullbody.png"
+                  src="/images/blue-fullbody.png"
                   alt="Blue full body"
                   fill
                   className={styles.fullBodyImage}

@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "forge-std/Script.sol";
-import "../src/AzuraKillStreak.sol";
+import "../src/BlueKillStreak.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
@@ -33,7 +33,7 @@ contract GovernanceToken is ERC20, ERC20Permit, ERC20Votes {
 
 /**
  * @title Deploy
- * @notice Deployment script for AzuraKillStreak governance system
+ * @notice Deployment script for BlueKillStreak governance system
  *
  * To deploy on Base Sepolia:
  * forge script script/Deploy.s.sol:Deploy --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast --verify
@@ -44,7 +44,7 @@ contract GovernanceToken is ERC20, ERC20Permit, ERC20Votes {
 contract Deploy is Script {
     // Token configuration
     uint256 constant TOTAL_SUPPLY = 100_000 * 1e18; // 100k governance tokens
-    uint256 constant AZURA_ALLOCATION = 40_000 * 1e18; // 40% to Azura
+    uint256 constant BLUE_ALLOCATION = 40_000 * 1e18; // 40% to Blue
 
     // USDC addresses (Base network)
     address constant USDC_SEPOLIA = 0x036CbD53842c5426634e7929541eC2318f3dCF7e; // Base Sepolia USDC
@@ -52,7 +52,7 @@ contract Deploy is Script {
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address azuraAgent = vm.envAddress("AZURA_AGENT_ADDRESS");
+        address blueAgent = vm.envAddress("BLUE_AGENT_ADDRESS");
 
         // Determine which USDC to use based on chain ID
         address usdcAddress;
@@ -74,22 +74,22 @@ contract Deploy is Script {
         console.log("Governance Token deployed at:", address(governanceToken));
         console.log("Total Supply:", TOTAL_SUPPLY / 1e18, "tokens");
 
-        // 2. Deploy AzuraKillStreak Contract
-        console.log("\n2. Deploying AzuraKillStreak Contract...");
-        AzuraKillStreak governance = new AzuraKillStreak(
+        // 2. Deploy BlueKillStreak Contract
+        console.log("\n2. Deploying BlueKillStreak Contract...");
+        BlueKillStreak governance = new BlueKillStreak(
             address(governanceToken),
             usdcAddress,
-            azuraAgent,
+            blueAgent,
             TOTAL_SUPPLY
         );
-        console.log("AzuraKillStreak deployed at:", address(governance));
-        console.log("Azura Agent:", azuraAgent);
+        console.log("BlueKillStreak deployed at:", address(governance));
+        console.log("Blue Agent:", blueAgent);
         console.log("USDC Token:", usdcAddress);
 
-        // 3. Transfer tokens to Azura (40%)
-        console.log("\n3. Transferring tokens to Azura...");
-        governanceToken.transfer(azuraAgent, AZURA_ALLOCATION);
-        console.log("Azura balance:", AZURA_ALLOCATION / 1e18, "tokens (40%)");
+        // 3. Transfer tokens to Blue (40%)
+        console.log("\n3. Transferring tokens to Blue...");
+        governanceToken.transfer(blueAgent, BLUE_ALLOCATION);
+        console.log("Blue balance:", BLUE_ALLOCATION / 1e18, "tokens (40%)");
 
         // 4. Self-delegate so voting power activates immediately
         console.log("\n4. Activating voting power via self-delegation...");
@@ -108,13 +108,13 @@ contract Deploy is Script {
         console.log("==============================================");
         console.log("Network:", block.chainid == 84532 ? "Base Sepolia" : "Base Mainnet");
         console.log("Governance Token:", address(governanceToken));
-        console.log("AzuraKillStreak:", address(governance));
+        console.log("BlueKillStreak:", address(governance));
         console.log("USDC Token:", usdcAddress);
-        console.log("Azura Agent:", azuraAgent);
+        console.log("Blue Agent:", blueAgent);
         console.log("==============================================");
         console.log("\nNEXT STEPS:");
         console.log("1. Verify contracts on BaseScan");
-        console.log("2. Fund AzuraKillStreak contract with USDC");
+        console.log("2. Fund BlueKillStreak contract with USDC");
         console.log("3. Distribute remaining governance tokens to admins");
         console.log("4. Each token holder must call delegate(self) to activate voting power");
         console.log("5. Update frontend with contract addresses");

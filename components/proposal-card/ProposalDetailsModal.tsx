@@ -43,7 +43,7 @@ interface ProposalDetailsModalProps {
       forVotes: string;
       againstVotes: string;
       votingDeadline: number;
-      azuraLevel: number;
+      blueLevel: number;
       executed: boolean;
     };
   };

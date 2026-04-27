@@ -237,7 +237,7 @@
   100% { border-color: rgba(81, 104, 255, 0.25); box-shadow: 0 0 8px rgba(81, 104, 255, 0.1); }
 }
 
-.azuraChatButton {
+.blueChatButton {
   width: 100%;
   display: flex;
   align-items: center;
@@ -254,18 +254,18 @@
   box-sizing: border-box;
 }
 
-.azuraChatButton svg {
+.blueChatButton svg {
   flex-shrink: 0;
 }
 
-.azuraChatLabel {
+.blueChatLabel {
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.azuraChatButton:hover {
+.blueChatButton:hover {
   background: rgba(81, 104, 255, 0.12);
   border-color: var(--color-primary);
   box-shadow: 0 2px 12px rgba(81, 104, 255, 0.2);
@@ -273,7 +273,7 @@
   animation: none;
 }
 
-.azuraChatIcon {
+.blueChatIcon {
   width: 44px;
   display: flex;
   align-items: center;
@@ -290,7 +290,7 @@
   box-sizing: border-box;
 }
 
-.azuraChatIcon:hover {
+.blueChatIcon:hover {
   background: rgba(81, 104, 255, 0.12);
   border-color: var(--color-primary);
   transform: translateY(-1px);

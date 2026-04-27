@@ -48,7 +48,7 @@
 }
 
 /* Blue Power Indicator */
-.azuraPower {
+.bluePower {
   display: flex;
   align-items: stretch;
   gap: 16px;
@@ -198,7 +198,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.azuraAvatar {
+.blueAvatar {
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 14px;
@@ -235,7 +235,7 @@
   color: rgba(255, 255, 255, 0.64);
 }
 
-.azuraName {
+.blueName {
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-primary);
@@ -361,7 +361,7 @@
 }
 
 @media (max-width: 768px) {
-  .azuraPower {
+  .bluePower {
     flex-direction: column;
     gap: 14px;
     padding: 14px;
@@ -425,7 +425,7 @@
 }
 
 @media (max-width: 520px) {
-  .azuraPower {
+  .bluePower {
     padding: 12px 14px;
   }
 
@@ -447,7 +447,7 @@
   color: rgba(227, 225, 238, 0.55);
 }
 
-:global([data-theme="dark"]) .azuraPower {
+:global([data-theme="dark"]) .bluePower {
   border-color: rgba(255, 255, 255, 0.06);
 }
 

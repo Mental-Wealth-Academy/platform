@@ -7,7 +7,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import ProMembershipModal from '@/components/pro-membership-modal/ProMembershipModal';
 import styles from './page.module.css';
-import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
+import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow, AppleTokenStats as ShardTokenStats } from '@/lib/market-api';
 
 // ── Helpers ──
 
@@ -109,10 +109,13 @@ function normalCDF(x: number): number {
   return 0.5 * (1 + sign * y);
 }
 
-/** Find a BTC-related Polymarket question, return Yes price as % */
+/** Find a BTC-related Kalshi market, return Yes price as % */
 function findBtcMarket(markets: CategorizedMarkets | null): number | null {
   if (!markets) return null;
-  const match = markets.crypto.find(m => /btc|bitcoin/i.test(m.question));
+  const match = markets.crypto.find((m: MarketRow) =>
+    /^KXBTC/i.test(m.event_ticker || m.ticker) ||
+    /btc|bitcoin/i.test(m.question),
+  );
   if (!match) return null;
   const [yes] = parseOutcomePrices(match.outcomePrices);
   return yes > 0 ? yes * 100 : null;
@@ -229,12 +232,12 @@ function LastUpdatedLabel({ timestamp }: { timestamp: number }) {
 export default function Markets() {
   const [prices, setPrices] = useState<CoinPrice[] | null>(null);
   const [balance, setBalance] = useState<TreasuryBalance | null>(null);
-  const [polymarkets, setPolymarkets] = useState<CategorizedMarkets | null>(null);
+  const [kalshiMarkets, setKalshiMarkets] = useState<CategorizedMarkets | null>(null);
   const [shardStats, setShardStats] = useState<ShardTokenStats | null>(null);
   const [executionLogs, setExecutionLogs] = useState<ExecutionLogEntry[]>([]);
   const [livePositions, setLivePositions] = useState<LivePosition[]>([]);
   const [balanceError, setBalanceError] = useState(false);
-  const [polyError, setPolyError] = useState(false);
+  const [kalshiError, setKalshiError] = useState(false);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<number>(0);
   const [tradeChatMessages, setTradeChatMessages] = useState<TradeChatMessage[]>(INITIAL_TRADE_CHAT);
   const [tradeChatInput, setTradeChatInput] = useState('');
@@ -266,15 +269,15 @@ export default function Markets() {
     }
   }, []);
 
-  const fetchPoly = useCallback(async () => {
+  const fetchKalshi = useCallback(async () => {
     try {
-      const res = await fetch('/api/treasury/polymarket');
+      const res = await fetch('/api/treasury/kalshi');
       if (!res.ok) throw new Error();
       const data: CategorizedMarkets = await res.json();
-      setPolymarkets(data);
-      setPolyError(false);
+      setKalshiMarkets(data);
+      setKalshiError(false);
     } catch {
-      setPolyError(true);
+      setKalshiError(true);
     }
   }, []);
 
@@ -301,19 +304,19 @@ export default function Markets() {
     // Initial fetch
     fetchPrices();
     fetchBalance();
-    fetchPoly();
+    fetchKalshi();
 
     // Polling intervals
     const priceInterval = setInterval(fetchPrices, 30_000);
     const balanceInterval = setInterval(fetchBalance, 60_000);
-    const polyInterval = setInterval(fetchPoly, 60_000);
+    const kalshiInterval = setInterval(fetchKalshi, 60_000);
 
     return () => {
       clearInterval(priceInterval);
       clearInterval(balanceInterval);
-      clearInterval(polyInterval);
+      clearInterval(kalshiInterval);
     };
-  }, [fetchPrices, fetchBalance, fetchPoly]);
+  }, [fetchPrices, fetchBalance, fetchKalshi]);
 
   // Fetch SHARDS stats and execution logs
   useEffect(() => {
@@ -330,7 +333,7 @@ export default function Markets() {
   // Fast tick for live model parameter animation
   const modelTick = useLiveTick(1200);
 
-  // ── Derived values from live prices + Polymarket ──
+  // ── Derived values from live prices + Kalshi ──
   const derived = useMemo(() => {
     const jitter = (base: number, scale: number, seed: number) =>
       base + Math.sin(modelTick * 0.55 + seed) * scale;
@@ -367,7 +370,7 @@ export default function Markets() {
 
     // Step 10-11: Edge detection
     const model_fair = C_bin * 100;
-    const mkt_price = findBtcMarket(polymarkets) ?? FALLBACK_MKT_PRICE;
+    const mkt_price = findBtcMarket(kalshiMarkets) ?? FALLBACK_MKT_PRICE;
 
     // Step 12-13: Divergence & signal
     const divergence = model_fair - mkt_price;
@@ -383,7 +386,7 @@ export default function Markets() {
       sigma, sigma_b, lambda_jump, mu_J, q_inv,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prices, polymarkets, modelTick]);
+  }, [prices, kalshiMarkets, modelTick]);
 
   useEffect(() => {
     const node = tradeChatScrollRef.current;
@@ -396,15 +399,15 @@ export default function Markets() {
       `${coin.symbol}: ${formatPrice(coin.usd)}, 24h volume ${formatVol(coin.usd_24h_vol)}`
     )).join('\n') || 'price feed not loaded';
 
-    const signalMarkets = polymarkets
+    const signalMarkets = kalshiMarkets
       ? (['crypto', 'ai', 'sports', 'politics'] as MarketCategory[])
-        .flatMap((cat) => (polymarkets[cat] || []).slice(0, 2).map((market) => {
+        .flatMap((cat) => (kalshiMarkets[cat] || []).slice(0, 2).map((market) => {
           const [yes, no] = parseOutcomePrices(market.outcomePrices);
           return `${CATEGORY_LABELS[cat]}: ${market.question} | yes ${Math.round(yes * 100)}% no ${Math.round(no * 100)}% volume ${formatVol(market.volume)}`;
         }))
         .slice(0, 6)
         .join('\n')
-      : 'Polymarket feed not loaded';
+      : 'Kalshi feed not loaded';
 
     const recentExecution = executionLogs.slice(0, 5).map((log) => (
       `${formatTradeTime(String(log.timestamp / 1000))} ${log.action}${log.asset ? ` ${log.asset}` : ''}: ${log.details}`
@@ -445,7 +448,7 @@ export default function Markets() {
       '',
       `User command: ${userMessage}`,
     ].join('\n');
-  }, [shardStats, balance, derived, executionLogs, livePositions, polymarkets, prices]);
+  }, [shardStats, balance, derived, executionLogs, livePositions, kalshiMarkets, prices]);
 
   const generateLocalTradeResponse = useCallback((userMessage: string) => {
     const command = userMessage.toLowerCase();
@@ -791,38 +794,38 @@ export default function Markets() {
             </div>
           </div>
 
-          {/* Chart 2: Polymarket Signal Markets */}
+          {/* Chart 2: Kalshi Signal Markets */}
           <div className={`${styles.panel} ${styles.chartPanel}`}>
             <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Polymarket &middot; Signal Markets &middot; Top by Volume</span>
+              <span className={styles.panelTitle}>Kalshi &middot; Signal Markets &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
             </div>
-            {!polymarkets && !polyError && (
+            {!kalshiMarkets && !kalshiError && (
               <span className={styles.loadingText}>Loading markets...</span>
             )}
-            {polyError && !polymarkets && (
-              <span className={styles.errorText}>Failed to load Polymarket data</span>
+            {kalshiError && !kalshiMarkets && (
+              <span className={styles.errorText}>Failed to load Kalshi data</span>
             )}
-            {polymarkets && (
-              <div className={styles.polymarketList}>
+            {kalshiMarkets && (
+              <div className={styles.marketList}>
                 {(['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map((cat) => {
-                  const items = polymarkets[cat];
+                  const items = kalshiMarkets[cat];
                   if (!items || items.length === 0) return null;
                   return (
-                    <div key={cat} className={styles.polySection}>
-                      <div className={styles.polySectionLabel}>{CATEGORY_LABELS[cat]}</div>
+                    <div key={cat} className={styles.marketSection}>
+                      <div className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</div>
                       {items.map((m) => {
                         const [yes, no] = parseOutcomePrices(m.outcomePrices);
                         const yesPct = Math.round(yes * 100);
                         const noPct = Math.round(no * 100);
                         return (
-                          <div key={m.id} className={styles.polymarketItem}>
-                            <div className={styles.polyQuestion}>{m.question}</div>
-                            <div className={styles.polyBar}>
-                              <div className={styles.polyYes} style={{ width: `${yesPct}%` }} />
-                              <div className={styles.polyNo} style={{ width: `${noPct}%` }} />
+                          <div key={m.id} className={styles.marketItem}>
+                            <div className={styles.marketQuestion}>{m.question}</div>
+                            <div className={styles.marketBar}>
+                              <div className={styles.marketYes} style={{ width: `${yesPct}%` }} />
+                              <div className={styles.marketNo} style={{ width: `${noPct}%` }} />
                             </div>
-                            <div className={styles.polyMeta}>
+                            <div className={styles.marketMeta}>
                               <span>Yes {yesPct}% / No {noPct}%</span>
                               <span>Vol: {formatVol(m.volume)}</span>
                             </div>

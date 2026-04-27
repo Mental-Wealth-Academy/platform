@@ -1,5 +1,5 @@
 /**
- * AzuraMarketTrader ABI fragments for CRE workflows.
+ * BlueMarketTrader ABI fragments for CRE workflows.
  * The trader contract has its own onReport() that accepts:
  *   (uint256 marketId, bool isYes, uint256 amount)
  */

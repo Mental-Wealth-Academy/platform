@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/AzuraKillStreak.sol";
+import "../src/BlueKillStreak.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
@@ -48,15 +48,15 @@ contract MockERC20Votes is ERC20, ERC20Permit, ERC20Votes {
 }
 
 /**
- * @title AzuraKillStreakTest
- * @notice Comprehensive tests for AzuraKillStreak governance contract
+ * @title BlueKillStreakTest
+ * @notice Comprehensive tests for BlueKillStreak governance contract
  */
-contract AzuraKillStreakTest is Test {
-    AzuraKillStreak public governance;
+contract BlueKillStreakTest is Test {
+    BlueKillStreak public governance;
     MockERC20Votes public governanceToken;
     MockERC20 public usdc;
     address public owner;
-    address public azuraAgent;
+    address public blueAgent;
     address public proposer;
     address public voter1;
     address public voter2;
@@ -66,7 +66,7 @@ contract AzuraKillStreakTest is Test {
     address public forwarder;
 
     uint256 public constant TOTAL_SUPPLY = 100_000 * 1e18; // 100k tokens
-    uint256 public constant AZURA_BALANCE = 40_000 * 1e18; // 40% (40k tokens)
+    uint256 public constant BLUE_BALANCE = 40_000 * 1e18; // 40% (40k tokens)
     uint256 public constant VOTER_BALANCE = 10_000 * 1e18;  // 10% each
     uint256 public constant USDC_AMOUNT = 10_000 * 1e6;    // 10k USDC (6 decimals)
     uint256 public constant VOTING_PERIOD = 7 days;
@@ -81,9 +81,9 @@ contract AzuraKillStreakTest is Test {
         uint256 votingDeadline
     );
 
-    event AzuraReview(
+    event BlueReview(
         uint256 indexed proposalId,
-        uint256 azuraLevel,
+        uint256 blueLevel,
         bool approved,
         uint256 voteWeight
     );
@@ -104,7 +104,7 @@ contract AzuraKillStreakTest is Test {
     function setUp() public {
         // Set up test addresses
         owner = address(this);
-        azuraAgent = makeAddr("azura");
+        blueAgent = makeAddr("blue");
         proposer = makeAddr("proposer");
         voter1 = makeAddr("voter1");
         voter2 = makeAddr("voter2");
@@ -118,15 +118,15 @@ contract AzuraKillStreakTest is Test {
         usdc = new MockERC20("USD Coin", "USDC", 1_000_000 * 1e6); // 1M USDC
 
         // Deploy governance contract
-        governance = new AzuraKillStreak(
+        governance = new BlueKillStreak(
             address(governanceToken),
             address(usdc),
-            azuraAgent,
+            blueAgent,
             TOTAL_SUPPLY
         );
 
         // Distribute governance tokens
-        governanceToken.transfer(azuraAgent, AZURA_BALANCE);
+        governanceToken.transfer(blueAgent, BLUE_BALANCE);
         governanceToken.transfer(voter1, VOTER_BALANCE);
         governanceToken.transfer(voter2, VOTER_BALANCE);
         governanceToken.transfer(voter3, VOTER_BALANCE);
@@ -135,8 +135,8 @@ contract AzuraKillStreakTest is Test {
         // Self-delegate all token holders so voting power activates
         // Owner (test contract) delegates to self
         governanceToken.delegate(owner);
-        vm.prank(azuraAgent);
-        governanceToken.delegate(azuraAgent);
+        vm.prank(blueAgent);
+        governanceToken.delegate(blueAgent);
         vm.prank(voter1);
         governanceToken.delegate(voter1);
         vm.prank(voter2);
@@ -153,7 +153,7 @@ contract AzuraKillStreakTest is Test {
         usdc.transfer(address(governance), 500_000 * 1e6); // 500k USDC
 
         // Verify balances
-        assertEq(governanceToken.balanceOf(azuraAgent), AZURA_BALANCE);
+        assertEq(governanceToken.balanceOf(blueAgent), BLUE_BALANCE);
         assertEq(governanceToken.balanceOf(voter1), VOTER_BALANCE);
     }
 
@@ -196,11 +196,11 @@ contract AzuraKillStreakTest is Test {
 
         assertEq(proposalId, 1);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(1);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(1);
         assertEq(proposal.proposer, proposer);
         assertEq(proposal.recipient, recipient);
         assertEq(proposal.usdcAmount, USDC_AMOUNT);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Pending));
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Pending));
         assertGt(proposal.snapshotBlock, 0);
 
         vm.stopPrank();
@@ -208,7 +208,7 @@ contract AzuraKillStreakTest is Test {
 
     function test_RevertWhen_CreateProposalZeroRecipient() public {
         vm.prank(proposer);
-        vm.expectRevert(AzuraKillStreak.InvalidProposal.selector);
+        vm.expectRevert(BlueKillStreak.InvalidProposal.selector);
         governance.createProposal(
             address(0),
             USDC_AMOUNT,
@@ -220,7 +220,7 @@ contract AzuraKillStreakTest is Test {
 
     function test_RevertWhen_CreateProposalZeroAmount() public {
         vm.prank(proposer);
-        vm.expectRevert(AzuraKillStreak.InvalidAmount.selector);
+        vm.expectRevert(BlueKillStreak.InvalidAmount.selector);
         governance.createProposal(
             recipient,
             0,
@@ -231,74 +231,74 @@ contract AzuraKillStreakTest is Test {
     }
 
     // ============================================================================
-    // AZURA REVIEW TESTS (Levels 0-4)
+    // BLUE REVIEW TESTS (Levels 0-4)
     // ============================================================================
 
-    function test_AzuraReviewLevel0_Kill() public {
+    function test_BlueReviewLevel0_Kill() public {
         uint256 proposalId = _createProposalAndAdvance(
             proposer, recipient, USDC_AMOUNT, "Bad Proposal", "This will be killed", VOTING_PERIOD
         );
 
-        // Azura kills it (Level 0)
-        vm.prank(azuraAgent);
+        // Blue kills it (Level 0)
+        vm.prank(blueAgent);
         vm.expectEmit(true, false, false, true);
-        emit AzuraReview(proposalId, 0, false, 0);
+        emit BlueReview(proposalId, 0, false, 0);
 
-        governance.azuraReview(proposalId, 0);
+        governance.blueReview(proposalId, 0);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Rejected));
-        assertEq(proposal.azuraLevel, 0);
-        assertEq(proposal.azuraApproved, false);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Rejected));
+        assertEq(proposal.blueLevel, 0);
+        assertEq(proposal.blueApproved, false);
         assertEq(proposal.forVotes, 0);
     }
 
-    function test_AzuraReviewLevel1_10Percent() public {
+    function test_BlueReviewLevel1_10Percent() public {
         uint256 proposalId = _createProposalAndAdvance(
-            proposer, recipient, USDC_AMOUNT, "Low Confidence", "Azura is not very confident", VOTING_PERIOD
+            proposer, recipient, USDC_AMOUNT, "Low Confidence", "Blue is not very confident", VOTING_PERIOD
         );
 
-        // Azura approves with Level 1 (10%)
+        // Blue approves with Level 1 (10%)
         uint256 expectedWeight = (TOTAL_SUPPLY * 10) / 100;
 
-        vm.prank(azuraAgent);
+        vm.prank(blueAgent);
         vm.expectEmit(true, false, false, true);
-        emit AzuraReview(proposalId, 1, true, expectedWeight);
+        emit BlueReview(proposalId, 1, true, expectedWeight);
 
-        governance.azuraReview(proposalId, 1);
+        governance.blueReview(proposalId, 1);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Active));
-        assertEq(proposal.azuraLevel, 1);
-        assertEq(proposal.azuraApproved, true);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Active));
+        assertEq(proposal.blueLevel, 1);
+        assertEq(proposal.blueApproved, true);
         assertEq(proposal.forVotes, expectedWeight);
     }
 
-    function test_AzuraReviewLevel4_40Percent() public {
+    function test_BlueReviewLevel4_40Percent() public {
         uint256 proposalId = _createProposalAndAdvance(
-            proposer, recipient, USDC_AMOUNT, "High Confidence", "Azura loves this!", VOTING_PERIOD
+            proposer, recipient, USDC_AMOUNT, "High Confidence", "Blue loves this!", VOTING_PERIOD
         );
 
-        // Azura approves with Level 4 (40%)
+        // Blue approves with Level 4 (40%)
         uint256 expectedWeight = (TOTAL_SUPPLY * 40) / 100;
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 4);
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 4);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(proposal.azuraLevel, 4);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(proposal.blueLevel, 4);
         assertEq(proposal.forVotes, expectedWeight);
     }
 
-    function test_RevertWhen_NonAzuraCannotReview() public {
+    function test_RevertWhen_NonBlueCannotReview() public {
         uint256 proposalId = _createProposalAndAdvance(
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
         // Voter tries to review (should fail)
         vm.prank(voter1);
-        vm.expectRevert(AzuraKillStreak.Unauthorized.selector);
-        governance.azuraReview(proposalId, 2);
+        vm.expectRevert(BlueKillStreak.Unauthorized.selector);
+        governance.blueReview(proposalId, 2);
     }
 
     // ============================================================================
@@ -311,8 +311,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Community Vote Test", "Testing voting", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 1); // 10%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 1); // 10%
 
         // Voter1 votes (10%)
         vm.prank(voter1);
@@ -320,7 +320,7 @@ contract AzuraKillStreakTest is Test {
         emit VoteCast(proposalId, voter1, true, VOTER_BALANCE);
         governance.vote(proposalId, true);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
         uint256 expectedVotes = (TOTAL_SUPPLY * 10 / 100) + VOTER_BALANCE;
         assertEq(proposal.forVotes, expectedVotes);
     }
@@ -331,14 +331,14 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Auto Execute", "Should execute automatically", VOTING_PERIOD
         );
 
-        // Azura Level 1 (10%)
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 1);
+        // Blue Level 1 (10%)
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 1);
 
         uint256 recipientBalanceBefore = usdc.balanceOf(recipient);
 
         // Voter1 (10%) + Voter2 (10%) + Voter3 (10%) + Voter4 (10%) = 40%
-        // Total: 10% (Azura Level 1) + 40% (voters) = 50% -> Should auto-execute!
+        // Total: 10% (Blue Level 1) + 40% (voters) = 50% -> Should auto-execute!
         vm.prank(voter1);
         governance.vote(proposalId, true);
 
@@ -353,8 +353,8 @@ contract AzuraKillStreakTest is Test {
         governance.vote(proposalId, true);
 
         // Check execution
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Executed));
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Executed));
         assertEq(proposal.executed, true);
 
         // Check USDC transferred
@@ -362,22 +362,22 @@ contract AzuraKillStreakTest is Test {
         assertEq(recipientBalanceAfter - recipientBalanceBefore, USDC_AMOUNT);
     }
 
-    function test_AzuraLevel4NeedsOnly10PercentMore() public {
+    function test_BlueLevel4NeedsOnly10PercentMore() public {
         // Create proposal
         uint256 proposalId = _createProposalAndAdvance(
-            proposer, recipient, USDC_AMOUNT, "High Confidence", "Azura Level 4", VOTING_PERIOD
+            proposer, recipient, USDC_AMOUNT, "High Confidence", "Blue Level 4", VOTING_PERIOD
         );
 
-        // Azura Level 4 (40%)
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 4);
+        // Blue Level 4 (40%)
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 4);
 
         // Only need 1 voter (10%) to reach 50%
         vm.prank(voter1);
         governance.vote(proposalId, true);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Executed));
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Executed));
     }
 
     function test_RevertWhen_DoubleVoting() public {
@@ -385,8 +385,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 2);
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 2);
 
         // Voter1 votes
         vm.prank(voter1);
@@ -394,7 +394,7 @@ contract AzuraKillStreakTest is Test {
 
         // Voter1 tries to vote again (should fail)
         vm.prank(voter1);
-        vm.expectRevert(AzuraKillStreak.AlreadyVoted.selector);
+        vm.expectRevert(BlueKillStreak.AlreadyVoted.selector);
         governance.vote(proposalId, true);
     }
 
@@ -403,15 +403,15 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 2);
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 2);
 
         // Fast forward past deadline
         vm.warp(block.timestamp + VOTING_PERIOD + 1);
 
         // Vote after deadline (should fail)
         vm.prank(voter1);
-        vm.expectRevert(AzuraKillStreak.VotingEnded.selector);
+        vm.expectRevert(BlueKillStreak.VotingEnded.selector);
         governance.vote(proposalId, true);
     }
 
@@ -420,16 +420,16 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 1);
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 1);
 
         // Vote against
         vm.prank(voter1);
         governance.vote(proposalId, false);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
         assertEq(proposal.againstVotes, VOTER_BALANCE);
-        assertEq(proposal.forVotes, TOTAL_SUPPLY * 10 / 100); // Only Azura's 10%
+        assertEq(proposal.forVotes, TOTAL_SUPPLY * 10 / 100); // Only Blue's 10%
     }
 
     // ============================================================================
@@ -442,8 +442,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Snapshot Test", "Prevents double-vote via transfer", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 1); // 10%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 1); // 10%
 
         // voter1 transfers all tokens to voter2 AFTER the snapshot
         vm.prank(voter1);
@@ -457,8 +457,8 @@ contract AzuraKillStreakTest is Test {
         vm.prank(voter2);
         governance.vote(proposalId, true);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        // forVotes = Azura 10% + voter1 snapshot (10k) + voter2 snapshot (10k) = 30%
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        // forVotes = Blue 10% + voter1 snapshot (10k) + voter2 snapshot (10k) = 30%
         uint256 expectedFor = (TOTAL_SUPPLY * 10 / 100) + VOTER_BALANCE + VOTER_BALANCE;
         assertEq(proposal.forVotes, expectedFor);
 
@@ -475,8 +475,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 2); // 20%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 2); // 20%
 
         (uint256 forVotes, uint256 againstVotes, uint256 percentageFor) =
             governance.getVotingProgress(proposalId);
@@ -490,8 +490,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 4); // 40%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 4); // 40%
 
         assertFalse(governance.hasReachedThreshold(proposalId));
 
@@ -506,8 +506,8 @@ contract AzuraKillStreakTest is Test {
         uint256 power = governance.getVotingPower(voter1);
         assertEq(power, VOTER_BALANCE);
 
-        uint256 azuraPower = governance.getVotingPower(azuraAgent);
-        assertEq(azuraPower, AZURA_BALANCE);
+        uint256 bluePower = governance.getVotingPower(blueAgent);
+        assertEq(bluePower, BLUE_BALANCE);
     }
 
     // ============================================================================
@@ -522,8 +522,8 @@ contract AzuraKillStreakTest is Test {
         // Owner cancels (owner is admin by default)
         governance.cancelProposal(proposalId);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Cancelled));
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Cancelled));
     }
 
     function test_SetAdmin() public {
@@ -536,11 +536,11 @@ contract AzuraKillStreakTest is Test {
         assertFalse(governance.isAdmin(newAdmin));
     }
 
-    function test_SetAzuraAgent() public {
-        address newAzura = makeAddr("newAzura");
+    function test_SetBlueAgent() public {
+        address newBlue = makeAddr("newBlue");
 
-        governance.setAzuraAgent(newAzura);
-        assertEq(governance.azuraAgent(), newAzura);
+        governance.setBlueAgent(newBlue);
+        assertEq(governance.blueAgent(), newBlue);
     }
 
     function test_EmergencyWithdraw() public {
@@ -576,8 +576,8 @@ contract AzuraKillStreakTest is Test {
         uint256 proposalId = _createProposalAndAdvance(
             proposer, recipient, USDC_AMOUNT, "CRE Execute", "Test CRE auto-execute", VOTING_PERIOD
         );
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 4); // 40%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 4); // 40%
 
         // Voter pushes past threshold
         vm.prank(voter1);
@@ -587,8 +587,8 @@ contract AzuraKillStreakTest is Test {
         uint256 proposalId2 = _createProposalAndAdvance(
             proposer, recipient, USDC_AMOUNT, "CRE Execute 2", "Test CRE auto-execute 2", VOTING_PERIOD
         );
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId2, 2); // 20%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId2, 2); // 20%
 
         // Add enough votes to pass threshold (but not auto-execute since vote() already auto-executes)
         vm.prank(voter1);
@@ -603,28 +603,28 @@ contract AzuraKillStreakTest is Test {
         uint256 proposalId3 = _createProposalAndAdvance(
             proposer, recipient, 1000 * 1e6, "CRE Execute 3", "For CRE onReport test", VOTING_PERIOD
         );
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId3, 4); // 40%
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId3, 4); // 40%
 
         // voter1 vote gets it to 50% and auto-executes
         vm.prank(voter1);
         governance.vote(proposalId3, true);
 
         // Verify auto-execution worked
-        AzuraKillStreak.Proposal memory p3 = governance.getProposal(proposalId3);
-        assertEq(uint(p3.status), uint(AzuraKillStreak.ProposalStatus.Executed));
+        BlueKillStreak.Proposal memory p3 = governance.getProposal(proposalId3);
+        assertEq(uint(p3.status), uint(BlueKillStreak.ProposalStatus.Executed));
     }
 
-    function test_OnReportAzuraReview() public {
+    function test_OnReportBlueReview() public {
         // Setup forwarder
         governance.setKeystoneForwarder(forwarder);
 
         // Create proposal (Pending)
         uint256 proposalId = _createProposalAndAdvance(
-            proposer, recipient, USDC_AMOUNT, "CRE Review", "Test CRE azura review", VOTING_PERIOD
+            proposer, recipient, USDC_AMOUNT, "CRE Review", "Test CRE blue review", VOTING_PERIOD
         );
 
-        // CRE submits Azura review via onReport (actionType = 2, level = 3)
+        // CRE submits Blue review via onReport (actionType = 2, level = 3)
         bytes memory payload = abi.encode(uint256(proposalId), uint256(3));
         bytes memory report = abi.encode(uint8(2), payload);
 
@@ -632,16 +632,16 @@ contract AzuraKillStreakTest is Test {
         governance.onReport("", report);
 
         // Verify review applied
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Active));
-        assertEq(proposal.azuraLevel, 3);
-        assertEq(proposal.azuraApproved, true);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Active));
+        assertEq(proposal.blueLevel, 3);
+        assertEq(proposal.blueApproved, true);
 
         uint256 expectedWeight = (TOTAL_SUPPLY * 30) / 100;
         assertEq(proposal.forVotes, expectedWeight);
     }
 
-    function test_OnReportAzuraReviewLevel0Kill() public {
+    function test_OnReportBlueReviewLevel0Kill() public {
         governance.setKeystoneForwarder(forwarder);
 
         uint256 proposalId = _createProposalAndAdvance(
@@ -654,10 +654,10 @@ contract AzuraKillStreakTest is Test {
         vm.prank(forwarder);
         governance.onReport("", report);
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Rejected));
-        assertEq(proposal.azuraLevel, 0);
-        assertEq(proposal.azuraApproved, false);
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Rejected));
+        assertEq(proposal.blueLevel, 0);
+        assertEq(proposal.blueApproved, false);
     }
 
     function test_OnReportExecuteViaForwarder() public {
@@ -680,8 +680,8 @@ contract AzuraKillStreakTest is Test {
         vm.prank(voter2);
         governance.vote(proposalId, true); // 40% + 10% = 50% -> auto-executes
 
-        AzuraKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
-        assertEq(uint(proposal.status), uint(AzuraKillStreak.ProposalStatus.Executed));
+        BlueKillStreak.Proposal memory proposal = governance.getProposal(proposalId);
+        assertEq(uint(proposal.status), uint(BlueKillStreak.ProposalStatus.Executed));
         assertEq(proposal.executed, true);
     }
 
@@ -691,7 +691,7 @@ contract AzuraKillStreakTest is Test {
         bytes memory report = abi.encode(uint8(1), abi.encode(uint256(1)));
 
         vm.prank(voter1);
-        vm.expectRevert(AzuraKillStreak.Unauthorized.selector);
+        vm.expectRevert(BlueKillStreak.Unauthorized.selector);
         governance.onReport("", report);
     }
 
@@ -701,7 +701,7 @@ contract AzuraKillStreakTest is Test {
         bytes memory report = abi.encode(uint8(99), abi.encode(uint256(1)));
 
         vm.prank(forwarder);
-        vm.expectRevert(AzuraKillStreak.InvalidProposal.selector);
+        vm.expectRevert(BlueKillStreak.InvalidProposal.selector);
         governance.onReport("", report);
     }
 
@@ -715,7 +715,7 @@ contract AzuraKillStreakTest is Test {
 
     event EmergencyWithdraw(address indexed to, uint256 amount);
     event KeystoneForwarderUpdated(address indexed oldForwarder, address indexed newForwarder);
-    event AzuraAgentUpdated(address indexed oldAgent, address indexed newAgent);
+    event BlueAgentUpdated(address indexed oldAgent, address indexed newAgent);
     event AdminUpdated(address indexed admin, bool status);
 
     function test_RevertWhen_SetKeystoneForwarderZeroAddress() public {
@@ -777,11 +777,11 @@ contract AzuraKillStreakTest is Test {
         governance.setKeystoneForwarder(forwarder);
     }
 
-    function test_EmitAzuraAgentUpdated() public {
-        address newAzura = makeAddr("newAzura");
+    function test_EmitBlueAgentUpdated() public {
+        address newBlue = makeAddr("newBlue");
         vm.expectEmit(true, true, false, false);
-        emit AzuraAgentUpdated(azuraAgent, newAzura);
-        governance.setAzuraAgent(newAzura);
+        emit BlueAgentUpdated(blueAgent, newBlue);
+        governance.setBlueAgent(newBlue);
     }
 
     function test_EmitAdminUpdated() public {
@@ -826,8 +826,8 @@ contract AzuraKillStreakTest is Test {
             proposer, recipient, USDC_AMOUNT, "Gas Test", "Test", VOTING_PERIOD
         );
 
-        vm.prank(azuraAgent);
-        governance.azuraReview(proposalId, 2);
+        vm.prank(blueAgent);
+        governance.blueReview(proposalId, 2);
 
         vm.prank(voter1);
         uint256 gasBefore = gasleft();
