@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { walletHoldsVipMembershipCard } from '@/lib/soul-key';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -33,10 +34,14 @@ export async function GET() {
 
   try {
     const hasLinkedAccount = !!user.walletAddress;
+    const hasVipMembershipCard = hasLinkedAccount
+      ? await walletHoldsVipMembershipCard(user.walletAddress)
+      : false;
 
     return NextResponse.json(
       {
         hasLinkedAccount,
+        hasVipMembershipCard,
         walletAddress: user.walletAddress || undefined,
       },
       {
@@ -56,4 +61,3 @@ export async function GET() {
     );
   }
 }
-

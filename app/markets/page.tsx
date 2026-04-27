@@ -69,7 +69,7 @@ const FALLBACK_MKT_PRICE = 53.78;
 // ── Live Trading Log Entry Type ──
 
 interface ExecutionLogEntry {
-  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR';
+  action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR' | 'SIGNAL';
   asset?: string;
   details: string;
   timestamp: number;
@@ -79,7 +79,7 @@ interface ExecutionLogEntry {
 
 interface LivePosition {
   asset: string;
-  side: 'BUY' | 'SELL';
+  side: 'BUY' | 'SELL' | 'YES' | 'NO';
   price: string;
   size: string;
   sizeMatched: string;
@@ -90,6 +90,12 @@ interface TradeChatMessage {
   role: 'user' | 'blue';
   text: string;
   timestamp: number;
+}
+
+interface AccountStatusResponse {
+  hasLinkedAccount?: boolean;
+  hasVipMembershipCard?: boolean;
+  walletAddress?: string;
 }
 
 // ── Math Helpers ──
@@ -138,12 +144,12 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
 };
 
 const TRADE_CHAT_SUGGESTIONS = [
-  'Scan the strongest edge right now.',
-  'Size a conservative BTC entry.',
+  'KELLY-LOCK+ scan the strongest edge right now.',
+  'Size a conservative market entry.',
   'Stage the highest-conviction trade.',
 ];
-
-const MEMBER_COUNT = 3;
+const BLUE_ROUTE_TRIGGER_TEXT =
+  'Blue checks live markets, Kelly sizing, open positions, and the KELLY-LOCK+ order path before acting.';
 
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
@@ -242,8 +248,13 @@ export default function Markets() {
   const [tradeChatMessages, setTradeChatMessages] = useState<TradeChatMessage[]>(INITIAL_TRADE_CHAT);
   const [tradeChatInput, setTradeChatInput] = useState('');
   const [isTradeChatSending, setIsTradeChatSending] = useState(false);
+  const [isTradeExecuting, setIsTradeExecuting] = useState(false);
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
+  const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
+  const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
+  const tradeHistoryRef = useRef<HTMLDivElement | null>(null);
+  const historyHighlightTimeoutRef = useRef<number | null>(null);
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -300,6 +311,21 @@ export default function Markets() {
     } catch { /* silent */ }
   }, []);
 
+  const fetchAccountStatus = useCallback(async () => {
+    try {
+      const res = await fetch('/api/account/status');
+      if (!res.ok) {
+        setHasVipMembershipCard(false);
+        return;
+      }
+
+      const data: AccountStatusResponse = await res.json();
+      setHasVipMembershipCard(Boolean(data.hasVipMembershipCard));
+    } catch {
+      setHasVipMembershipCard(false);
+    }
+  }, []);
+
   useEffect(() => {
     // Initial fetch
     fetchPrices();
@@ -317,6 +343,10 @@ export default function Markets() {
       clearInterval(kalshiInterval);
     };
   }, [fetchPrices, fetchBalance, fetchKalshi]);
+
+  useEffect(() => {
+    void fetchAccountStatus();
+  }, [fetchAccountStatus]);
 
   // Fetch SHARDS stats and execution logs
   useEffect(() => {
@@ -394,6 +424,31 @@ export default function Markets() {
     node.scrollTop = node.scrollHeight;
   }, [tradeChatMessages, isTradeChatSending]);
 
+  useEffect(() => {
+    return () => {
+      if (historyHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(historyHighlightTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const focusTradeHistory = useCallback(() => {
+    const node = tradeHistoryRef.current;
+    if (!node) return;
+
+    node.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setIsHistoryHighlighted(true);
+
+    if (historyHighlightTimeoutRef.current !== null) {
+      window.clearTimeout(historyHighlightTimeoutRef.current);
+    }
+
+    historyHighlightTimeoutRef.current = window.setTimeout(() => {
+      setIsHistoryHighlighted(false);
+      historyHighlightTimeoutRef.current = null;
+    }, 1600);
+  }, []);
+
   const buildBlueTradingMessage = useCallback((userMessage: string) => {
     const priceSnapshot = prices?.slice(0, 6).map((coin) => (
       `${coin.symbol}: ${formatPrice(coin.usd)}, 24h volume ${formatVol(coin.usd_24h_vol)}`
@@ -422,6 +477,8 @@ export default function Markets() {
     return [
       'You are Blue responding inside the /markets trading desk.',
       'The user wants Blue to trade for them. Treat direct trade requests as trading instructions for the protected trading engine.',
+      'Trigger word: KELLY-LOCK+. If the user or desk banner includes it, explicitly weigh Kelly sizing, the edge threshold, live asks, open positions, and execution safety before answering.',
+      'Execution is VIP-gated. Only the verified VIP Membership Card wallet can submit a live Kalshi order.',
       'Do not claim an order filled unless the execution log confirms it. If execution is not confirmed, say you are routing, monitoring, or preparing the trade.',
       'When useful, answer with the intended market, direction, sizing posture, risk check, and next execution step. Keep it concise and conversational.',
       '',
@@ -503,6 +560,72 @@ export default function Markets() {
     event.preventDefault();
     void sendTradeChatMessage(tradeChatInput);
   };
+
+  const handleExecuteTrade = useCallback(async (sourceText: string) => {
+    if (isTradeExecuting) return;
+
+    if (hasVipMembershipCard !== true) {
+      setIsMembershipOpen(true);
+      return;
+    }
+
+    setIsTradeExecuting(true);
+
+    try {
+      const res = await fetch('/api/treasury/trade/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceText }),
+      });
+
+      const data: {
+        success?: boolean;
+        error?: string;
+        message?: string;
+        order?: { status?: string };
+        plan?: { side: 'yes' | 'no'; ticker: string; count: number; priceCents: number };
+        logs?: ExecutionLogEntry[];
+        positions?: LivePosition[];
+      } = await res.json();
+
+      if (!res.ok || !data.success || !data.plan) {
+        const failureMessage = data.message || 'kalshi execution did not complete.';
+        setTradeChatMessages((current) => [
+          ...current,
+          { role: 'blue', text: failureMessage, timestamp: Date.now() },
+        ]);
+        if (res.status === 401 || res.status === 403) {
+          setIsMembershipOpen(true);
+        }
+        return;
+      }
+
+      if (data.logs) setExecutionLogs(data.logs);
+      if (data.positions) setLivePositions(data.positions);
+
+      const sideLabel = data.plan.side.toUpperCase();
+      const confirmation =
+        `vip route confirmed: ${sideLabel} ${data.plan.ticker} @ ${data.plan.priceCents}c x ${data.plan.count}. ` +
+        `kalshi status: ${data.order?.status || 'submitted'}.`;
+
+      setTradeChatMessages((current) => [
+        ...current,
+        { role: 'blue', text: confirmation, timestamp: Date.now() },
+      ]);
+      focusTradeHistory();
+    } catch {
+      setTradeChatMessages((current) => [
+        ...current,
+        {
+          role: 'blue',
+          text: 'the vip router hit an execution error before Kalshi confirmed the order.',
+          timestamp: Date.now(),
+        },
+      ]);
+    } finally {
+      setIsTradeExecuting(false);
+    }
+  }, [focusTradeHistory, hasVipMembershipCard, isTradeExecuting]);
 
   return (
     <main className={styles.main}>
@@ -766,36 +889,8 @@ export default function Markets() {
 
           {/* ════ CENTER: Charts ════ */}
 
-          {/* Chart 1: Market Treasury Balance */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
-            <div className={styles.panelHeader}>
-              <span className={styles.panelTitle}>Markets Balance &middot; USDC &middot; Base Mainnet</span>
-              <span className={styles.panelBadge}>on-chain</span>
-            </div>
-            <div className={styles.chartArea}>
-              {!balance && !balanceError && (
-                <span className={styles.loadingText}>Loading balance...</span>
-              )}
-              {balanceError && !balance && (
-                <span className={styles.errorText}>Failed to load balance</span>
-              )}
-              {balance && (
-                <>
-                  <div className={styles.balanceHero}>${balance.formatted}</div>
-                  <div className={styles.balanceLabel}>USDC Markets Balance</div>
-                  <TickerLine stroke="var(--color-primary)" />
-                  <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
-                  <TickerLine drift={0.30} vol={0.5} stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.45} speed={400} />
-                  <TickerLine drift={0.12} vol={1.0} stroke="#E2567B" strokeWidth={1.5} opacity={0.4} speed={280} />
-                  <TickerLine drift={0.22} vol={0.7} stroke="#A855F7" strokeWidth={1.5} opacity={0.45} speed={320} />
-                  <TickerLine drift={0.15} vol={0.9} stroke="#06B6D4" strokeWidth={1.5} opacity={0.4} speed={360} />
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Chart 2: Kalshi Signal Markets */}
-          <div className={`${styles.panel} ${styles.chartPanel}`}>
+          {/* Kalshi Signal Markets */}
+          <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Kalshi &middot; Signal Markets &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
@@ -840,7 +935,10 @@ export default function Markets() {
           </div>
 
           {/* Execution Log */}
-          <div className={`${styles.panel} ${styles.logPanel}`}>
+          <div
+            ref={tradeHistoryRef}
+            className={`${styles.panel} ${styles.logPanel} ${isHistoryHighlighted ? styles.logPanelHighlighted : ''}`}
+          >
             <div className={styles.panelHeader}>
               <span className={styles.panelTitle}>Execution Log &middot; Edge Capture</span>
               <span className={styles.panelBadge}>live</span>
@@ -866,18 +964,76 @@ export default function Markets() {
             </div>
           </div>
 
+          {/* Treasury Quick Data */}
+          <div className={`${styles.panel} ${styles.chartPanel} ${styles.treasuryPanel}`}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitle}>Markets Treasury &middot; Quick Data</span>
+              <span className={styles.panelBadge}>on-chain</span>
+            </div>
+            <div className={styles.treasuryQuickGrid}>
+              {!balance && !balanceError && (
+                <span className={styles.loadingText}>Loading balance...</span>
+              )}
+              {balanceError && !balance && (
+                <span className={styles.errorText}>Failed to load balance</span>
+              )}
+              {balance && (
+                <>
+                  <div className={styles.treasuryQuickPrimary}>
+                    <div className={styles.balanceHero}>${balance.formatted}</div>
+                    <div className={styles.balanceLabel}>USDC Markets Balance</div>
+                  </div>
+                  <div className={styles.treasuryQuickMeta}>
+                    <div className={styles.treasuryQuickItem}>
+                      <span>deployable</span>
+                      <strong>{derived.signal === 'TRADE' ? 'armed' : 'standby'}</strong>
+                    </div>
+                    <div className={styles.treasuryQuickItem}>
+                      <span>kelly cap</span>
+                      <strong>0.25x</strong>
+                    </div>
+                    <div className={styles.treasuryQuickItem}>
+                      <span>fair</span>
+                      <strong>{derived.model_fair.toFixed(2)}%</strong>
+                    </div>
+                    <div className={styles.treasuryQuickItem}>
+                      <span>edge</span>
+                      <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
+                    </div>
+                  </div>
+                  <div className={styles.treasuryQuickSpark}>
+                    <TickerLine stroke="var(--color-primary)" />
+                    <TickerLine drift={0.18} vol={0.8} stroke="var(--color-tertiary)" strokeWidth={1.5} opacity={0.5} speed={350} />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
             <div className={styles.blueTradeHeader}>
-              <div>
-                <div className={styles.panelTitle}>Current Members</div>
-                <h2 className={styles.blueTradeTitle}>Start Trading</h2>
+              <div className={styles.blueDeskIdentity}>
+                <div className={styles.blueHeaderAvatar} aria-hidden="true">
+                  <Image src="/uploads/blueagent.png" alt="" width={40} height={40} className={styles.blueAvatarImage} />
+                </div>
+                <div className={styles.blueHeaderCopy}>
+                  <div className={styles.panelTitle}>Blue</div>
+                  <h2 className={styles.blueTradeTitle}>VIP Desk</h2>
+                </div>
               </div>
-              <div className={styles.blueMemberPill} aria-label={`${MEMBER_COUNT} current members`}>
-                <span className={styles.blueMemberDot} aria-hidden="true" />
-                <span className={styles.blueMemberCount}>{MEMBER_COUNT}</span>
-                <span className={styles.blueMemberLabel}>members</span>
-              </div>
+              <button
+                type="button"
+                className={styles.tradeHistoryButton}
+                aria-label="View trade history"
+                onClick={focusTradeHistory}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 4v4h-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
             </div>
 
             <div className={styles.blueTradeVitals}>
@@ -897,7 +1053,7 @@ export default function Markets() {
 
             <div className={styles.blueRouteCard}>
               <span className={styles.blueRouteDot} aria-hidden="true" />
-              <span>Blue checks live markets, Kelly sizing, open positions, and the protected order router before acting.</span>
+              <span>{BLUE_ROUTE_TRIGGER_TEXT}</span>
             </div>
 
             <div className={styles.blueChatMessages} ref={tradeChatScrollRef}>
@@ -919,9 +1075,12 @@ export default function Markets() {
                         <button
                           type="button"
                           className={styles.blueExecuteButton}
-                          onClick={() => setIsMembershipOpen(true)}
+                          onClick={() => void handleExecuteTrade(tradeChatMessages[index - 1]?.text || message.text)}
+                          disabled={isTradeExecuting}
                         >
-                          Execute this trade
+                          {hasVipMembershipCard === true
+                            ? (isTradeExecuting ? 'Routing...' : 'Execute this trade')
+                            : (hasVipMembershipCard === null ? 'Checking VIP...' : 'VIP card required')}
                         </button>
                       )}
                     </div>
@@ -948,7 +1107,7 @@ export default function Markets() {
                   key={suggestion}
                   type="button"
                   onClick={() => void sendTradeChatMessage(suggestion)}
-                  disabled={isTradeChatSending}
+                  disabled={isTradeChatSending || isTradeExecuting}
                 >
                   {suggestion}
                 </button>
@@ -965,12 +1124,12 @@ export default function Markets() {
                     void sendTradeChatMessage(tradeChatInput);
                   }
                 }}
-                placeholder="Ask about markets..."
+                placeholder="Ask Blue to size or route a VIP trade..."
                 rows={3}
-                disabled={isTradeChatSending}
+                disabled={isTradeChatSending || isTradeExecuting}
               />
-              <button type="submit" disabled={!tradeChatInput.trim() || isTradeChatSending}>
-                Send
+              <button type="submit" disabled={!tradeChatInput.trim() || isTradeChatSending || isTradeExecuting}>
+                {isTradeExecuting ? 'Busy' : 'Send'}
               </button>
             </form>
           </section>

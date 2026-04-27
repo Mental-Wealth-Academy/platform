@@ -53,6 +53,19 @@ export interface SizedPosition {
   shares: number;
 }
 
+export interface ExecutableTradePlan {
+  signal: EdgeSignal;
+  position: SizedPosition;
+  order: {
+    ticker: string;
+    side: 'yes' | 'no';
+    count: number;
+    priceCents: number;
+    priceDollars: number;
+    notionalUSD: number;
+  };
+}
+
 export interface TradingLog {
   action: 'SCAN' | 'TRADE' | 'SKIP' | 'HALT' | 'ERROR' | 'SIGNAL';
   asset?: string;
@@ -177,6 +190,48 @@ export function sizePositions(signals: EdgeSignal[]): SizedPosition[] {
   }
 
   return positions;
+}
+
+function getOrderPriceDollars(signal: EdgeSignal): number {
+  const [yesProb, noProb] = parseOutcomePrices(signal.market.outcomePrices);
+  const fallbackYes = Math.max(0.01, Math.min(0.99, yesProb));
+  const fallbackNo = Math.max(0.01, Math.min(0.99, noProb));
+
+  if (signal.side === 'BUY') {
+    return signal.market.yes_ask > 0 ? signal.market.yes_ask : fallbackYes;
+  }
+
+  return signal.market.no_ask > 0 ? signal.market.no_ask : fallbackNo;
+}
+
+export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan | null; logs: TradingLog[] }> {
+  const { signals, logs } = await scanForEdge();
+  const positions = sizePositions(signals);
+  const topPosition = positions[0];
+
+  if (!topPosition) {
+    return { plan: null, logs };
+  }
+
+  const priceDollars = getOrderPriceDollars(topPosition.signal);
+  const priceCents = Math.max(1, Math.min(99, Math.round(priceDollars * 100)));
+  const count = Math.max(1, Math.floor(topPosition.sizeUSD / Math.max(priceDollars, 0.01)));
+
+  return {
+    logs,
+    plan: {
+      signal: topPosition.signal,
+      position: topPosition,
+      order: {
+        ticker: topPosition.signal.market.ticker,
+        side: topPosition.signal.side === 'BUY' ? 'yes' : 'no',
+        count,
+        priceCents,
+        priceDollars,
+        notionalUSD: count * priceDollars,
+      },
+    },
+  };
 }
 
 /**

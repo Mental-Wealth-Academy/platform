@@ -1,13 +1,30 @@
 import { Contract, providers } from 'ethers';
 
 export const SOUL_KEY_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F';
+export const VIP_MEMBERSHIP_CARD_ADDRESS =
+  process.env.VIP_MEMBERSHIP_CARD_ADDRESS || '0x5da79055cf8ca6482c997df58822e08e5707d6fc';
+export const VIP_MEMBERSHIP_CARD_TOKEN_ID = BigInt(process.env.VIP_MEMBERSHIP_CARD_TOKEN_ID || '1');
 
 const ERC721_BALANCE_ABI = [
   'function balanceOf(address owner) view returns (uint256)',
 ];
+const ERC721_OWNER_ABI = [
+  'function ownerOf(uint256 tokenId) view returns (address)',
+];
 
 let cached: { wallet: string; hasKey: boolean; expiresAt: number } | null = null;
+let vipCached: { wallet: string; hasCard: boolean; expiresAt: number } | null = null;
 const CACHE_TTL_MS = 60_000;
+
+function getProvider(): providers.JsonRpcProvider | null {
+  const rpcUrl = process.env.BASE_RPC_URL || process.env.NEXT_PUBLIC_BASE_RPC_URL;
+  if (!rpcUrl) {
+    console.warn('[soul-key] BASE_RPC_URL not configured');
+    return null;
+  }
+
+  return new providers.JsonRpcProvider(rpcUrl);
+}
 
 export async function walletHoldsSoulKey(wallet: string | null | undefined): Promise<boolean> {
   if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) return false;
@@ -18,14 +35,12 @@ export async function walletHoldsSoulKey(wallet: string | null | undefined): Pro
     return cached.hasKey;
   }
 
-  const rpcUrl = process.env.BASE_RPC_URL || process.env.NEXT_PUBLIC_BASE_RPC_URL;
-  if (!rpcUrl) {
-    console.warn('[soul-key] BASE_RPC_URL not configured');
+  const provider = getProvider();
+  if (!provider) {
     return false;
   }
 
   try {
-    const provider = new providers.JsonRpcProvider(rpcUrl);
     const contract = new Contract(SOUL_KEY_ADDRESS, ERC721_BALANCE_ABI, provider);
     const balance = await contract.balanceOf(wallet);
     const hasKey = balance && balance.gt(0);
@@ -33,6 +48,32 @@ export async function walletHoldsSoulKey(wallet: string | null | undefined): Pro
     return !!hasKey;
   } catch (err) {
     console.error('[soul-key] balanceOf failed:', err);
+    return false;
+  }
+}
+
+export async function walletHoldsVipMembershipCard(wallet: string | null | undefined): Promise<boolean> {
+  if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) return false;
+
+  const now = Date.now();
+  const normalized = wallet.toLowerCase();
+  if (vipCached && vipCached.wallet === normalized && vipCached.expiresAt > now) {
+    return vipCached.hasCard;
+  }
+
+  const provider = getProvider();
+  if (!provider) {
+    return false;
+  }
+
+  try {
+    const contract = new Contract(VIP_MEMBERSHIP_CARD_ADDRESS, ERC721_OWNER_ABI, provider);
+    const owner = await contract.ownerOf(VIP_MEMBERSHIP_CARD_TOKEN_ID);
+    const hasCard = typeof owner === 'string' && owner.toLowerCase() === normalized;
+    vipCached = { wallet: normalized, hasCard, expiresAt: now + CACHE_TTL_MS };
+    return hasCard;
+  } catch (err) {
+    console.error('[vip-membership-card] ownerOf failed:', err);
     return false;
   }
 }
