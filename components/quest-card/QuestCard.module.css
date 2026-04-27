@@ -93,14 +93,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 9px 4px 7px;
+  padding: 4px 10px 4px 8px;
   border-radius: 999px;
   border: 1px solid rgba(18, 25, 53, 0.1);
   background: rgba(255, 255, 255, 0.85);
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: rgba(18, 25, 53, 0.78);
 }
 
@@ -120,15 +120,14 @@
 .metaBadge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: rgba(81, 104, 255, 0.1);
   color: rgba(18, 25, 53, 0.78);
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .pointsChip {
@@ -239,11 +238,10 @@
   border-radius: 999px;
   background: #121935;
   color: #f6f8ff;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   transition: background 0.18s ease;
 }
 

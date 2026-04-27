@@ -22,11 +22,11 @@ interface QuestCardProps {
 }
 
 const KIND_LABEL: Record<QuestCardKind, string> = {
-  course: 'COURSE',
-  submit: 'SUBMIT',
-  mission: 'MISSION',
-  social: 'SOCIAL',
-  custom: 'CUSTOM',
+  course: 'Course',
+  submit: 'Submit',
+  mission: 'Mission',
+  social: 'Social',
+  custom: 'Custom',
 };
 
 const QuestCard: React.FC<QuestCardProps> = ({
