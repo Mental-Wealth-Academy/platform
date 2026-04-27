@@ -1,0 +1,361 @@
+.card {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(81, 104, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(247, 250, 255, 0.96) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92) inset,
+    0 14px 32px rgba(28, 44, 103, 0.06);
+  transition:
+    transform 0.2s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  isolation: isolate;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.08) 0%, rgba(81, 104, 255, 0) 28%);
+}
+
+.card[data-kind='course']::before {
+  background: linear-gradient(135deg, rgba(81, 104, 255, 0.16) 0%, rgba(81, 104, 255, 0) 36%);
+}
+.card[data-kind='submit']::before {
+  background: linear-gradient(135deg, rgba(255, 156, 81, 0.18) 0%, rgba(255, 156, 81, 0) 36%);
+}
+.card[data-kind='mission']::before {
+  background: linear-gradient(135deg, rgba(116, 196, 101, 0.18) 0%, rgba(116, 196, 101, 0) 36%);
+}
+.card[data-kind='social']::before {
+  background: linear-gradient(135deg, rgba(168, 113, 244, 0.18) 0%, rgba(168, 113, 244, 0) 36%);
+}
+.card[data-kind='custom']::before {
+  background: linear-gradient(135deg, rgba(255, 100, 142, 0.16) 0%, rgba(255, 100, 142, 0) 36%);
+}
+
+.card:hover:not(.cardLocked) {
+  transform: translateY(-2px);
+  border-color: rgba(81, 104, 255, 0.28);
+  box-shadow: 0 18px 36px rgba(28, 44, 103, 0.1);
+}
+
+.cardComplete {
+  border-color: rgba(116, 196, 101, 0.4);
+}
+
+.cardLocked {
+  opacity: 0.62;
+}
+
+.cardSurface {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border-radius: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  z-index: 1;
+}
+
+.cardSurface:disabled {
+  cursor: not-allowed;
+}
+
+.cardSurface:focus-visible {
+  outline: 2px solid var(--color-primary, #5168ff);
+  outline-offset: 2px;
+}
+
+.cardSurface:active:not(:disabled) {
+  transform: scale(0.997);
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kindChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px 4px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 25, 53, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(18, 25, 53, 0.78);
+}
+
+.kindDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #5168ff;
+}
+
+.card[data-kind='course'] .kindDot { background: #5168ff; }
+.card[data-kind='submit'] .kindDot { background: #ff9c51; }
+.card[data-kind='mission'] .kindDot { background: #74c465; }
+.card[data-kind='social'] .kindDot { background: #a871f4; }
+.card[data-kind='custom'] .kindDot { background: #ff648e; }
+
+.metaBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.1);
+  color: rgba(18, 25, 53, 0.78);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pointsChip {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 7px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.12) 0%, rgba(81, 104, 255, 0.06) 100%);
+  border: 1px solid rgba(81, 104, 255, 0.18);
+  color: #1a234a;
+}
+
+.pointsIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.pointsValue {
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-headline, 'Space Grotesk', sans-serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: #121935;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+}
+
+.desc {
+  margin: 0;
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(18, 25, 53, 0.66);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.progressBlock {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.progressTrack {
+  flex: 1;
+  min-width: 0;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(18, 25, 53, 0.08);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5168ff 0%, #7c8eff 100%);
+  transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cardComplete .progressFill {
+  background: linear-gradient(90deg, #4ea968 0%, #74c465 100%);
+}
+
+.progressLabel {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(18, 25, 53, 0.62);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #121935;
+  color: #f6f8ff;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.18s ease;
+}
+
+.card:hover:not(.cardLocked) .cta {
+  background: #1e2a52;
+}
+
+.ctaComplete {
+  background: rgba(78, 169, 104, 0.94) !important;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 100, 142, 0.32);
+  background: rgba(255, 100, 142, 0.1);
+  color: #d4456b;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 100, 142, 0.22);
+}
+
+.deleteBtn:focus-visible {
+  outline: 2px solid #d4456b;
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .cardSurface {
+    padding: 16px 18px 14px;
+    gap: 14px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+}
+
+:global([data-theme='dark']) .card {
+  border-color: rgba(150, 170, 255, 0.14);
+  background: linear-gradient(180deg, rgba(31, 43, 79, 0.96) 0%, rgba(19, 28, 54, 0.97) 100%);
+  box-shadow: 0 14px 32px rgba(3, 7, 22, 0.24);
+}
+
+:global([data-theme='dark']) .cardComplete {
+  border-color: rgba(116, 196, 101, 0.36);
+}
+
+:global([data-theme='dark']) .title {
+  color: #f5f7ff;
+}
+
+:global([data-theme='dark']) .desc {
+  color: rgba(226, 234, 255, 0.7);
+}
+
+:global([data-theme='dark']) .kindChip {
+  background: rgba(20, 28, 56, 0.7);
+  border-color: rgba(150, 170, 255, 0.16);
+  color: rgba(226, 234, 255, 0.84);
+}
+
+:global([data-theme='dark']) .metaBadge {
+  background: rgba(81, 104, 255, 0.22);
+  color: rgba(226, 234, 255, 0.86);
+}
+
+:global([data-theme='dark']) .pointsChip {
+  background: linear-gradient(180deg, rgba(81, 104, 255, 0.28) 0%, rgba(81, 104, 255, 0.14) 100%);
+  border-color: rgba(150, 170, 255, 0.2);
+  color: #eaf0ff;
+}
+
+:global([data-theme='dark']) .progressTrack {
+  background: rgba(226, 234, 255, 0.12);
+}
+
+:global([data-theme='dark']) .progressLabel {
+  color: rgba(226, 234, 255, 0.62);
+}
+
+:global([data-theme='dark']) .cta {
+  background: #2a3868;
+  color: #f5f7ff;
+}
+
+:global([data-theme='dark']) .card:hover:not(.cardLocked) .cta {
+  background: #36488a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .progressFill,
+  .cta {
+    transition: none;
+  }
+
+  .card:hover:not(.cardLocked) {
+    transform: none;
+  }
+}

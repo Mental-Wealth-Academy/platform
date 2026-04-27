@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  ChatCircleDots,
+  Compass,
   House,
   IconProps,
   Books,
@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
   { id: 'library', label: 'Library', href: '/library', icon: Books },
   { id: 'home', label: 'Home', href: '/home', icon: House },
+  { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -37,10 +38,6 @@ export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
   if (pathname === '/') return null;
-
-  const handleAgentOpen = () => {
-    window.dispatchEvent(new Event('toggleBlueChat'));
-  };
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
@@ -62,11 +59,6 @@ export const MobileBottomNav: React.FC = () => {
           </Link>
         );
       })}
-
-      <button type="button" className={styles.tab} onClick={handleAgentOpen} aria-label="Open chat">
-        <NavIconMark icon={ChatCircleDots} />
-        <span className={styles.label}>Chat</span>
-      </button>
     </nav>
   );
 };

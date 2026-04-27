@@ -1,11 +1,33 @@
 import { NextResponse } from 'next/server';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
 import { ensureWeeksSchema } from '@/lib/ensureWeeksSchema';
+import { ensureCustomQuestsSchema } from '@/lib/ensureCustomQuestsSchema';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { recordBlueQuestCompletion } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery, withTransaction, sqlQueryWithClient } from '@/lib/db';
 import { getQuestDefinition, getQuestDefinitionForStoredQuestId } from '@/lib/quest-definitions';
 import { v4 as uuidv4 } from 'uuid';
+
+interface CustomQuestRow {
+  id: string;
+  points: number;
+  target_count: number;
+  quest_type: string;
+  assignee_wallet: string | null;
+  archived_at: string | null;
+  expires_at: string | null;
+}
+
+async function loadCustomQuest(questId: string): Promise<CustomQuestRow | null> {
+  const baseId = questId.replace(/-\d+$/, '');
+  if (!/^cq_[a-f0-9]+$/i.test(baseId)) return null;
+  const rows = await sqlQuery<CustomQuestRow[]>(
+    `SELECT id, points, target_count, quest_type, assignee_wallet, archived_at, expires_at
+     FROM custom_quests WHERE id = :id LIMIT 1`,
+    { id: baseId }
+  );
+  return rows[0] ?? null;
+}
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -48,6 +70,7 @@ export async function POST(request: Request) {
   }
   await ensureForumSchema();
   await ensureWeeksSchema();
+  await ensureCustomQuestsSchema();
 
   // Get our internal user record (authenticated via wallet address)
   const user = await getCurrentUserFromRequestCookie();
@@ -64,6 +87,22 @@ export async function POST(request: Request) {
 
   // SECURITY: Shard reward determined server-side, client value ignored
   const definition = getQuestDefinition(questId);
+  const customQuest = definition ? null : await loadCustomQuest(questId);
+
+  if (!definition && customQuest) {
+    if (customQuest.archived_at) {
+      return NextResponse.json({ error: 'Quest is no longer available.' }, { status: 410 });
+    }
+    if (customQuest.expires_at && new Date(customQuest.expires_at).getTime() < Date.now()) {
+      return NextResponse.json({ error: 'Quest has expired.' }, { status: 410 });
+    }
+    if (
+      customQuest.assignee_wallet &&
+      customQuest.assignee_wallet.toLowerCase() !== user.walletAddress.toLowerCase()
+    ) {
+      return NextResponse.json({ error: 'Quest is not assigned to you.' }, { status: 403 });
+    }
+  }
 
   try {
     if (definition?.questType === 'sealed-week') {
@@ -86,7 +125,24 @@ export async function POST(request: Request) {
     let resolvedQuestId = questId;
     let shardsToAward = getQuestShardReward(questId);
 
-    if (definition && definition.targetCount > 1) {
+    if (customQuest) {
+      shardsToAward = customQuest.points;
+
+      if (customQuest.target_count > 1) {
+        const existingRows = await sqlQuery<Array<{ quest_id: string }>>(
+          `SELECT quest_id FROM quests
+           WHERE user_id = :userId AND quest_id LIKE :prefix`,
+          { userId: user.id, prefix: `${customQuest.id}%` }
+        );
+        const completionCount = existingRows.length;
+        if (completionCount >= customQuest.target_count) {
+          return NextResponse.json({ error: 'Quest already completed.' }, { status: 409 });
+        }
+        resolvedQuestId = `${customQuest.id}-${completionCount + 1}`;
+      } else {
+        resolvedQuestId = customQuest.id;
+      }
+    } else if (definition && definition.targetCount > 1) {
       const existingRows = await sqlQuery<Array<{ quest_id: string }>>(
         `SELECT quest_id
          FROM quests
