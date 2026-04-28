@@ -110,7 +110,7 @@ export interface CategorizedMarkets {
 let _grouped: { data: CategorizedMarkets; ts: number } | null = null;
 let _trades: { data: RecentTrade[]; ts: number } | null = null;
 
-const MARKETS_CACHE_MS = 60 * 1000;
+const MARKETS_CACHE_MS = 5 * 60 * 1000;
 const TRADES_CACHE_MS = 30 * 1000;
 
 // ── Helpers ──
@@ -172,6 +172,8 @@ const BLOCKLIST =
 
 const PER_CATEGORY = 5;
 const MAX_DAYS_OUT = 90;
+const INITIAL_SERIES_PER_CATEGORY = 6;
+const SERIES_FETCH_CHUNK = 3;
 
 // Curated high-volume series tickers per output bucket. /series?category=
 // returns the full series catalog including dead/test series — these were
@@ -204,6 +206,13 @@ const CURATED_SERIES: Record<MarketCategory, string[]> = {
     'KXTOPLLM', 'KXLEAVEOPENAI', 'KXJOINANTHROPIC', 'KXCLAUDE5', 'KXCLAUDE4',
     'KXAIOPEN', 'KXFRONTIER', 'KXTOP3AI',
   ],
+};
+
+const PRIORITY_SERIES: Record<MarketCategory, string[]> = {
+  crypto: ['KXBTC', 'KXBTCD', 'KXETH', 'KXSOL', 'KXXRP', 'KXETHD'],
+  politics: ['KXKASHOUT', 'KXMINWAGE', 'KXSCOTUSPOWER', 'KXTIKTOKCOURT', 'KXVOTEFEDCHAIR', 'KXTAIWANLVL4'],
+  sports: ['KXMLBGAME', 'KXNFLGAME', 'KXNBAGAME', 'KXNHLGAME', 'KXEPLGAME', 'KXUFCFIGHT'],
+  ai: ['KXOAIAGI', 'KXGPT', 'KXTOPLLM', 'KXCLAUDE5', 'KXFRONTIER', 'KXTOP3AI'],
 };
 
 /**
@@ -275,15 +284,15 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
   if (_grouped && Date.now() - _grouped.ts < MARKETS_CACHE_MS) return _grouped.data;
 
   try {
-    // Fetch each category's series sequentially (parallel within a category).
-    // Going fully parallel across all ~50 series triggers Kalshi rate limits
-    // and silently drops half the buckets.
     const buckets: Record<MarketCategory, { row: MarketRow; score: number }[]> = {
       crypto: [], ai: [], sports: [], politics: [],
     };
 
-    for (const ours of ['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]) {
-      const eventLists = await fetchInChunks(CURATED_SERIES[ours], 5, fetchEventsForSeries);
+    await Promise.all((['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map(async (ours) => {
+      const preferred = PRIORITY_SERIES[ours];
+      const fallback = CURATED_SERIES[ours].filter((ticker) => !preferred.includes(ticker));
+      const series = [...preferred, ...fallback].slice(0, INITIAL_SERIES_PER_CATEGORY);
+      const eventLists = await fetchInChunks(series, SERIES_FETCH_CHUNK, fetchEventsForSeries);
       const events = eventLists.flat();
 
       for (const evt of events) {
@@ -297,7 +306,7 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
           buckets[ours].push({ row, score: s });
         }
       }
-    }
+    }));
 
     const result: CategorizedMarkets = { crypto: [], ai: [], sports: [], politics: [] };
     for (const cat of ['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]) {
