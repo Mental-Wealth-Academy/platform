@@ -51,21 +51,21 @@ interface NavSection {
 const desktopNavSections: NavSection[] = [
   {
     id: 'main',
-    label: 'DeSci Cohort',
+    label: 'Main Spacehall',
     items: [
-      { id: 'community', label: 'DAO Decisions', href: '/community', icon: UsersThree },
-      { id: 'markets', label: 'Auto-Trader', href: '/markets', icon: ChartLine },
-      { id: 'voting', label: 'Test 01', href: '/home', icon: House },
-      { id: 'library', label: 'Prompt Library', href: '/library', icon: Book },
+      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'voting', label: 'Cirriculum', href: '/home', icon: House },
+      { id: 'library', label: 'Knowledge', href: '/library', icon: Book },
     ],
   },
   {
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'gallery', label: 'Art Gallery', href: '/gallery', icon: ImagesSquare },
-      { id: 'dna', label: 'Test 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'gallery', label: 'Galleria', href: '/gallery', icon: ImagesSquare },
+      { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -73,21 +73,21 @@ const desktopNavSections: NavSection[] = [
 const mobileNavSections: NavSection[] = [
   {
     id: 'main',
-    label: 'DeSci Cohort',
+    label: 'Main Spacehall',
     items: [
-      { id: 'voting', label: 'Home', href: '/home', icon: House },
-      { id: 'markets', label: 'Auto-Trader', href: '/markets', icon: ChartLine },
-      { id: 'library', label: 'Prompt Library', href: '/library', icon: Book },
-      { id: 'community', label: 'DAO Decisions', href: '/community', icon: UsersThree },
+      { id: 'voting', label: 'Cirriculum', href: '/home', icon: House },
+      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'library', label: 'Knowledge', href: '/library', icon: Book },
+      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
     ],
   },
   {
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'gallery', label: 'Art Gallery', href: '/gallery', icon: ImagesSquare },
-      { id: 'dna', label: 'Test 02', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'Tools', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'gallery', label: 'Galleria', href: '/gallery', icon: ImagesSquare },
+      { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
