@@ -350,66 +350,6 @@
   overscroll-behavior: contain;
 }
 
-.blueTradeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 18px 12px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.1);
-}
-
-.blueDeskIdentity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.blueHeaderAvatar {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
-  overflow: hidden;
-  border-radius: 14px;
-  background: rgba(81, 104, 255, 0.12);
-  border: 1px solid rgba(81, 104, 255, 0.18);
-}
-
-.blueHeaderCopy {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.blueTradeTitle {
-  margin: 4px 0 0;
-  font-family: var(--font-secondary);
-  font-size: 22px;
-  line-height: 1;
-  color: var(--color-text-dark);
-  letter-spacing: -0.03em;
-}
-
-.tradeHistoryButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(81, 104, 255, 0.18);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.68);
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-default), background var(--duration-fast) var(--ease-default);
-}
-
-.tradeHistoryButton:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.92);
-}
-
 .blueTradeVitals {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1329,32 +1269,37 @@
 
 :global([data-theme="dark"]) .main {
   background:
-    radial-gradient(circle at top, rgba(107, 128, 255, 0.14), transparent 34%),
-    linear-gradient(180deg, #0e1220 0%, #13192b 100%);
+    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-1) 38%, var(--color-background)) 0%, var(--color-background) 42%),
+    linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--color-primary) 5%, transparent) 0%,
+      transparent 45%,
+      color-mix(in oklch, var(--color-accent) 3%, transparent) 100%
+    );
 }
 
 :global([data-theme="dark"]) .statusBar {
-  background: rgba(10, 14, 24, 0.88);
-  border-bottom-color: rgba(123, 132, 196, 0.28);
+  background: color-mix(in oklch, var(--color-surface-base) 88%, transparent);
+  border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .shardBar {
-  background: rgba(107, 128, 255, 0.08);
-  border-bottom-color: rgba(107, 128, 255, 0.16);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .grid,
 :global([data-theme="dark"]) .modelsColumn,
 :global([data-theme="dark"]) .blueTradeColumn {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .panel,
 :global([data-theme="dark"]) .modelPanel,
 :global([data-theme="dark"]) .marketRow {
   background:
-    linear-gradient(180deg, rgba(19, 26, 43, 0.98) 0%, rgba(16, 21, 36, 0.98) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-2) 76%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--color-text-light) 3%, transparent);
 }
 
 :global([data-theme="dark"]) .panelTitle,
@@ -1379,7 +1324,7 @@
 :global([data-theme="dark"]) .lastUpdated,
 :global([data-theme="dark"]) .blueVital span,
 :global([data-theme="dark"]) .blueRouteCard {
-  color: rgba(202, 209, 235, 0.78);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .paramValue,
@@ -1392,42 +1337,33 @@
 :global([data-theme="dark"]) .flowTradePrice,
 :global([data-theme="dark"]) .marketQuestion,
 :global([data-theme="dark"]) .shardBarValue,
-:global([data-theme="dark"]) .blueTradeTitle,
 :global([data-theme="dark"]) .blueVital strong,
 :global([data-theme="dark"]) .blueBubbleText {
-  color: rgba(240, 244, 255, 0.96);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .panelBadge {
-  background: rgba(107, 128, 255, 0.16);
-  border-color: rgba(107, 128, 255, 0.26);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
 
 :global([data-theme="dark"]) .signalRow {
-  background: rgba(116, 196, 101, 0.12);
-  border-color: rgba(116, 196, 101, 0.24);
+  background: color-mix(in oklch, var(--color-tertiary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-tertiary) 24%, transparent);
 }
 
 :global([data-theme="dark"]) .blueTradeColumn {
   background:
-    radial-gradient(circle at 78% 0%, rgba(107, 128, 255, 0.16), transparent 34%),
-    linear-gradient(180deg, rgba(19, 26, 43, 0.98) 0%, rgba(16, 21, 36, 0.98) 100%);
+    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-2) 74%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
 }
 
-:global([data-theme="dark"]) .blueTradeHeader,
 :global([data-theme="dark"]) .blueTradeComposer {
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-:global([data-theme="dark"]) .tradeHistoryButton,
-:global([data-theme="dark"]) .blueHeaderAvatar {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .blueTradeVitals {
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-border-subtle);
+  border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .blueVital,
@@ -1435,70 +1371,77 @@
 :global([data-theme="dark"]) .blueTyping,
 :global([data-theme="dark"]) .blueQuickActions button,
 :global([data-theme="dark"]) .blueTradeComposer textarea {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: color-mix(in oklch, var(--color-surface-2) 72%, transparent);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .blueRouteCard {
-  background: rgba(107, 128, 255, 0.08);
-  border-color: rgba(107, 128, 255, 0.16);
+  background: color-mix(in oklch, var(--color-primary) 9%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 :global([data-theme="dark"]) .blueChatUser .blueBubbleText,
 :global([data-theme="dark"]) .blueTradeComposer button {
-  color: rgba(247, 248, 255, 0.98);
+  color: var(--color-text-light);
 }
 
 :global([data-theme="dark"]) .blueTradeComposer {
-  background: rgba(16, 21, 36, 0.92);
+  background: color-mix(in oklch, var(--color-surface-1) 92%, transparent);
 }
 
 :global([data-theme="dark"]) .chartPlaceholder {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: color-mix(in oklch, var(--color-surface-2) 42%, transparent);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .chartLine {
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 10%, var(--color-primary) 50%, rgba(255, 255, 255, 0.08) 90%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--color-text-light) 8%, transparent) 10%,
+    var(--color-primary) 50%,
+    color-mix(in oklch, var(--color-text-light) 8%, transparent) 90%,
+    transparent 100%
+  );
 }
 
 :global([data-theme="dark"]) .flowBarWrap,
 :global([data-theme="dark"]) .marketBar {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-2);
 }
 
 :global([data-theme="dark"]) .flowTradesLabel {
-  border-top-color: rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .marketItem {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklch, var(--color-surface-2) 46%, transparent);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .marketLoadMore {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #B8C4FF;
+  background: color-mix(in oklch, var(--color-surface-2) 60%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-primary);
 }
 
 :global([data-theme="dark"]) .marketSectionLabel {
-  border-bottom-color: rgba(107, 128, 255, 0.22);
+  border-bottom-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
 }
 
 :global([data-theme="dark"]) .comingSoonText {
-  background: rgba(16, 21, 36, 0.92);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(230, 235, 255, 0.8);
+  background: color-mix(in oklch, var(--color-surface-1) 92%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-soft);
 }
 
 :global([data-theme="dark"]) .blueExecuteButton {
-  border-color: rgba(107, 128, 255, 0.4);
-  background: rgba(107, 128, 255, 0.22);
-  color: #F0F4FF;
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  color: var(--color-text-light);
 }
 
 :global([data-theme="dark"]) .blueExecuteButton:hover {
-  background: rgba(107, 128, 255, 0.32);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background: color-mix(in oklch, var(--color-primary) 32%, transparent);
+  box-shadow: 0 8px 20px color-mix(in oklch, var(--color-background) 68%, transparent);
 }

@@ -22,7 +22,7 @@ export const colors = {
     hover: '#324BE4',
     muted: 'rgba(81, 104, 255, 0.6)',
     light: '#7586FF',
-    dark: '#324BE4',
+    dark: '#8A94FF',
   },
   
   // Secondary Colors
@@ -31,15 +31,17 @@ export const colors = {
     hover: '#3C4686',
     muted: 'rgba(80, 89, 155, 0.6)',
     light: '#ADB7FF',
-    dark: '#3C4686',
+    dark: '#A79BC8',
   },
   
   // Background Colors
   background: {
     DEFAULT: '#FBF8FF',
     card: 'rgba(255, 255, 255, 0.95)',
-    dark: '#12131B',
-    cardDark: '#1E1F28',
+    dark: '#090A10',
+    cardDark: '#11131B',
+    surfaceDark: '#171A24',
+    surfaceDarkRaised: '#1D2130',
   },
   
   // Neutral Colors (Gray Scale)
@@ -63,12 +65,15 @@ export const colors = {
     dark: '#1A1B24',
     light: '#FFFFFF',
     muted: 'rgba(26, 27, 36, 0.6)',
+    soft: 'rgba(26, 27, 36, 0.72)',
+    faint: 'rgba(26, 27, 36, 0.42)',
     foreground: 'rgba(26, 27, 36, 1.0)',
     secondary: 'rgba(26, 27, 36, 0.7)',
-    faint: 'rgba(26, 27, 36, 0.3)',
     // Dark mode variants
-    foregroundDark: 'rgba(227, 225, 238, 0.95)',
-    secondaryDark: 'rgba(227, 225, 238, 0.65)',
+    foregroundDark: '#EEEAF8',
+    secondaryDark: 'rgba(235, 232, 247, 0.78)',
+    mutedDark: 'rgba(235, 232, 247, 0.64)',
+    faintDark: 'rgba(235, 232, 247, 0.46)',
   },
   
   // Semantic Colors
@@ -110,6 +115,9 @@ export const colors = {
   gradient: {
     futuristicFlossStart: '#FBF8FF',
     futuristicFlossEnd: '#E1E1F4',
+    futuristicFlossDarkStart: '#090A10',
+    futuristicFlossDarkMid: '#11131B',
+    futuristicFlossDarkEnd: '#0B0C12',
   },
   
   // Border Colors
@@ -117,6 +125,8 @@ export const colors = {
     DEFAULT: 'rgba(0, 0, 0, 0.08)',
     subtle: 'rgba(0, 0, 0, 0.05)',
     card: 'rgba(255, 255, 255, 0.8)',
+    subtleDark: 'rgba(235, 232, 247, 0.10)',
+    strongDark: 'rgba(235, 232, 247, 0.18)',
   },
 } as const;
 
@@ -127,6 +137,9 @@ export const gradients = {
   futuristicFloss: `linear-gradient(to bottom, ${colors.gradient.futuristicFlossStart}, ${colors.gradient.futuristicFlossEnd})`,
   primary: `linear-gradient(135deg, ${colors.primary.DEFAULT} 0%, ${colors.primary.light} 100%)`,
   secondary: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, ${colors.secondary.light} 100%)`,
+  darkFuturisticFloss: `linear-gradient(180deg, ${colors.gradient.futuristicFlossDarkStart} 0%, ${colors.gradient.futuristicFlossDarkMid} 54%, ${colors.gradient.futuristicFlossDarkEnd} 100%)`,
+  darkPrimary: 'linear-gradient(135deg, #8A94FF 0%, #BE9FE5 52%, #93D9B7 100%)',
+  darkSecondary: 'linear-gradient(135deg, #766C96 0%, #927B72 100%)',
   swipeLike: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, #ADB7FF 100%)`,
   swipeSkip: `linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)`,
   swipeSave: `linear-gradient(135deg, ${colors.primary.DEFAULT} 0%, #7B8CFF 100%)`,

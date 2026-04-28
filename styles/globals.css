@@ -31,6 +31,15 @@
   --color-text-dark: #1A1B24;
   --color-text-light: #FFFFFF;
   --color-text-muted: rgba(26, 27, 36, 0.6);
+  --color-text-soft: rgba(26, 27, 36, 0.72);
+  --color-text-faint: rgba(26, 27, 36, 0.42);
+  --color-surface-base: #FBF8FF;
+  --color-surface-1: rgba(255, 255, 255, 0.95);
+  --color-surface-2: #F4F5FE;
+  --color-surface-3: #E7E8F8;
+  --color-border-subtle: rgba(26, 27, 36, 0.08);
+  --color-border-strong: rgba(26, 27, 36, 0.16);
+  --color-shell-background: rgba(244, 245, 254, 0.6);
 
   /* Category Colors */
   --color-mental-health: #9724A6;
@@ -183,37 +192,69 @@
 
 /* ============================================
    Dark Mode Token Overrides
-   Background #0D0E16 is darker/more faded than
-   BlueChat's #1A1D33
+   Dark mode uses accented neutrals instead of pure greys:
+   blue-violet tinted charcoal for comfort, lifted surfaces for
+   legibility, and restrained gradients that avoid a cold blue wash.
    ============================================ */
 
 [data-theme="dark"] {
-  --color-background: #0D0E16;
-  --color-primary: #6B80FF;
-  --color-primary-hover: #8494FF;
-  --color-primary-muted: rgba(107, 128, 255, 0.5);
-  --color-secondary: #7B84C4;
-  --color-secondary-hover: #959DE0;
-  --color-text-dark: rgba(227, 225, 238, 0.95);
-  --color-text-light: #FFFFFF;
-  --color-text-muted: rgba(227, 225, 238, 0.45);
+  --color-background: oklch(9.8% 0.014 270);
+  --color-surface-base: oklch(9.8% 0.014 270);
+  --color-surface-1: oklch(14.8% 0.018 270);
+  --color-surface-2: oklch(18.6% 0.021 270);
+  --color-surface-3: oklch(23% 0.024 270);
+  --color-border-subtle: rgba(235, 232, 247, 0.1);
+  --color-border-strong: rgba(235, 232, 247, 0.18);
+  --color-shell-background: rgba(13, 14, 21, 0.84);
+  --color-primary: oklch(69% 0.145 274);
+  --color-primary-hover: oklch(76% 0.115 274);
+  --color-primary-muted: rgba(139, 149, 255, 0.48);
+  --color-secondary: oklch(68% 0.065 286);
+  --color-secondary-hover: oklch(75% 0.055 286);
+  --color-tertiary: oklch(73% 0.12 150);
+  --color-tertiary-hover: oklch(79% 0.105 150);
+  --color-accent: oklch(75% 0.13 48);
+  --color-accent-hover: oklch(81% 0.105 48);
+  --color-text-dark: oklch(93.5% 0.016 285);
+  --color-text-light: oklch(97% 0.012 285);
+  --color-text-muted: rgba(235, 232, 247, 0.64);
+  --color-text-soft: rgba(235, 232, 247, 0.78);
+  --color-text-faint: rgba(235, 232, 247, 0.46);
 
   /* Gradient overrides */
-  --gradient-futuristic-floss-start: #0D0E16;
-  --gradient-futuristic-floss-end: #14151E;
-  --gradient-futuristic-floss: linear-gradient(to bottom, #0D0E16, #14151E);
+  --gradient-futuristic-floss-start: var(--color-background);
+  --gradient-futuristic-floss-end: oklch(14.5% 0.016 285);
+  --gradient-futuristic-floss: linear-gradient(
+    180deg,
+    var(--color-background) 0%,
+    oklch(13% 0.016 285) 54%,
+    oklch(10.5% 0.012 255) 100%
+  );
+  --gradient-primary: linear-gradient(
+    135deg,
+    oklch(68% 0.145 274) 0%,
+    oklch(73% 0.095 316) 52%,
+    oklch(76% 0.08 154) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    oklch(54% 0.055 282) 0%,
+    oklch(58% 0.05 36) 100%
+  );
+  --gradient-tertiary: linear-gradient(135deg, var(--color-tertiary) 0%, oklch(80% 0.09 162) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, oklch(80% 0.1 65) 100%);
 
   /* Card & surface */
-  --card-background: rgba(22, 23, 31, 0.95);
-  --card-border: 1px solid rgba(255, 255, 255, 0.06);
+  --card-background: color-mix(in oklch, var(--color-surface-1) 94%, transparent);
+  --card-border: 1px solid var(--color-border-subtle);
 
   /* Shadows — subtler on dark */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
-  --shadow-primary: 0 4px 12px rgba(107, 128, 255, 0.2);
-  --shadow-secondary: 0 4px 12px rgba(123, 132, 196, 0.2);
+  --shadow-primary: 0 4px 12px rgba(139, 149, 255, 0.22);
+  --shadow-secondary: 0 4px 12px rgba(165, 150, 196, 0.18);
 }
 
 /* ============================================
@@ -255,17 +296,17 @@ body {
 
 /* Dark mode body */
 [data-theme="dark"] body {
-  background-color: #0D0E16;
+  background-color: var(--color-background);
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(107, 128, 255, 0.04) 20px, rgba(107, 128, 255, 0.04) 21px);
+    linear-gradient(180deg, color-mix(in oklch, var(--color-surface-1) 44%, var(--color-background)) 0%, var(--color-background) 38%),
+    linear-gradient(90deg, rgba(139, 149, 255, 0.035) 0%, transparent 45%, rgba(255, 180, 108, 0.025) 100%);
   background-size: auto;
   background-attachment: scroll;
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 [data-theme="dark"] p {
-  color: rgba(227, 225, 238, 0.85);
+  color: var(--color-text-soft);
 }
 
 [data-theme="dark"] h1,
@@ -274,17 +315,17 @@ body {
 [data-theme="dark"] h4,
 [data-theme="dark"] h5,
 [data-theme="dark"] h6 {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 [data-theme="dark"] .btn-outline {
-  color: rgba(227, 225, 238, 0.9);
-  border-color: rgba(227, 225, 238, 0.3);
+  color: var(--color-text-dark);
+  border-color: var(--color-border-strong);
 }
 
 [data-theme="dark"] .btn-outline:hover {
-  background-color: rgba(227, 225, 238, 0.9);
-  color: #0D0E16;
+  background-color: var(--color-text-dark);
+  color: var(--color-background);
 }
 
 /* Prevent auto-zoom on input focus in mobile WebViews */
@@ -833,37 +874,37 @@ h6 { font-size: var(--font-size-xs); }
 
 /* Dark mode intro.js overrides */
 [data-theme="dark"] .introjs-tooltip {
-  background-color: #16171F;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: rgba(227, 225, 238, 0.95);
+  background-color: var(--color-surface-1);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-dark);
 }
 
 [data-theme="dark"] .introjs-tooltip-title {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 [data-theme="dark"] .introjs-tooltip-content {
-  color: rgba(227, 225, 238, 0.8);
+  color: var(--color-text-soft);
 }
 
 [data-theme="dark"] .introjs-tooltipbuttons {
-  border-top-color: rgba(255, 255, 255, 0.08);
+  border-top-color: var(--color-border-subtle);
 }
 
 [data-theme="dark"] .introjs-prevbutton {
-  color: rgba(227, 225, 238, 0.85);
-  border-color: rgba(227, 225, 238, 0.3);
+  color: var(--color-text-soft);
+  border-color: var(--color-border-strong);
 }
 
 [data-theme="dark"] .introjs-prevbutton:hover {
-  background-color: rgba(227, 225, 238, 0.9);
-  color: #0D0E16;
+  background-color: var(--color-text-dark);
+  color: var(--color-background);
 }
 
 [data-theme="dark"] .introjs-skipbutton {
-  color: rgba(227, 225, 238, 0.6);
+  color: var(--color-text-muted);
 }
 
 [data-theme="dark"] .introjs-progress {
-  background-color: rgba(107, 128, 255, 0.15);
+  background-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }

@@ -472,11 +472,11 @@
 }
 
 :global([data-theme="dark"]) .missionsHeading {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .missionsDivider {
-  background: rgba(227, 225, 238, 0.12);
+  background: var(--color-border-subtle);
 }
 
 .weekTasksSkeleton {
@@ -899,20 +899,20 @@
 /* ============================================ */
 
 :global([data-theme="dark"]) .weekTitle {
-  color: #FFFFFF;
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekLabel {
-  color: rgba(227, 225, 238, 0.35);
+  color: var(--color-text-faint);
 }
 
 :global([data-theme="dark"]) .topLeaderboard {
-  background: rgba(22, 23, 31, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .skeletonBlock {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-2);
 }
 
 :global([data-theme="dark"]) .skeletonBlock::after {
@@ -920,33 +920,33 @@
 }
 
 :global([data-theme="dark"]) .topLeaderboardTitle {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekArrow {
-  background: rgba(22, 23, 31, 0.95);
-  border-color: rgba(255, 255, 255, 0.06);
-  color: rgba(227, 225, 238, 0.95);
+  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .weekArrow:hover:not(:disabled) {
-  background: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 :global([data-theme="dark"]) .weekDot {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .weekDotActive {
-  background: #6b80ff;
-  border-color: rgba(107, 128, 255, 0.95);
-  box-shadow: 0 0 0 2px rgba(107, 128, 255, 0.18);
+  background: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary) 82%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 :global([data-theme="dark"]) .readingCard {
-  background: rgba(30, 32, 48, 0.9);
-  border-color: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-surface-2) 92%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -955,31 +955,31 @@
 }
 
 :global([data-theme="dark"]) .readingCardSkeleton {
-  background: rgba(30, 32, 48, 0.9);
-  border-color: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-surface-2) 92%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 :global([data-theme="dark"]) .readingCard:hover {
-  border-color: rgba(107, 128, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(107, 128, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in oklch, var(--color-primary) 34%, transparent);
+  box-shadow: 0 4px 20px rgba(139, 149, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 :global([data-theme="dark"]) .readingCategory {
-  color: rgba(227, 225, 238, 0.35);
+  color: var(--color-text-faint);
 }
 
 :global([data-theme="dark"]) .readingTitle {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 
 :global([data-theme="dark"]) .readingAuthor {
-  color: rgba(227, 225, 238, 0.55);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .readingArrow {
-  color: rgba(227, 225, 238, 0.35);
+  color: var(--color-text-faint);
 }
 
 @media (max-width: 768px) {
@@ -994,38 +994,38 @@
 }
 
 :global([data-theme="dark"]) .modalCard {
-  background: #16171F;
-  border-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .modalClose {
-  color: rgba(227, 225, 238, 0.55);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .modalClose:hover {
-  background: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 :global([data-theme="dark"]) .modalTitle {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .modalSub {
-  color: rgba(227, 225, 238, 0.55);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .leagueRank {
-  color: rgba(227, 225, 238, 0.35);
+  color: var(--color-text-faint);
 }
 
 :global([data-theme="dark"]) .leagueName {
-  color: rgba(227, 225, 238, 0.95);
+  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .leagueShards {
-  color: rgba(227, 225, 238, 0.55);
+  color: var(--color-text-muted);
 }
 
 :global([data-theme="dark"]) .emptyText {
-  color: rgba(227, 225, 238, 0.55);
+  color: var(--color-text-muted);
 }

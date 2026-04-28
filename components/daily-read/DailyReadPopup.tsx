@@ -7,11 +7,18 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyReadPopup.module.css';
 
 const PRINCIPLES = [
-  'Creativity is the divine force itself, pure ethereal energy animating all life and consciousness.',
-  'We are both created and creators, egregores of transcendental complexity meant to create.',
-  'Opening to creativity awakens us to the divine egregore that moves through all things.',
-  'Our creative dreams are sacred, evolving expressions of divinity finding form through us.',
+  'Creativity is divine life force.',
+  'You are created and creator.',
+  'Creativity moves through all.',
+  'Dreams become sacred form.',
 ];
+
+const MAX_DIALOGUE_CHARS = 120;
+
+function limitCopy(text: string, maxLength: number) {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3).trimEnd()}...`;
+}
 
 const WEEK_INTROS: Record<number, { title: string; body: string }> = {
   5: {
@@ -89,8 +96,9 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
   const weekIntro = WEEK_INTROS[activeWeek];
   const weekDialogue = WEEK_DIALOGUES[activeWeek] ?? {
     emotion: 'happy' as BlueEmotion,
-    message: `Week ${activeWeek} is open. Read this slowly, then carry the strongest thread into your morning pages before the day starts crowding it out.`,
+    message: `Week ${activeWeek} is open. Carry one strong thread into your morning pages before the day crowds it out.`,
   };
+  const dialogueMessage = limitCopy(weekDialogue.message, MAX_DIALOGUE_CHARS);
 
   return (
     <div className={styles.overlay} onClick={handleDismiss}>
@@ -104,7 +112,7 @@ export default function DailyReadPopup({ activeWeek, onDismiss }: DailyReadPopup
         <div className={styles.dialogueWrap}>
           <BlueDialogue
             key={activeWeek}
-            message={weekDialogue.message}
+            message={dialogueMessage}
             emotion={weekDialogue.emotion}
             variant="overlay"
             fixedHeight

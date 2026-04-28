@@ -244,29 +244,29 @@
 /* ── Dark mode overrides ── */
 
 :global([data-theme="dark"]) .header {
-  background: rgba(13, 14, 22, 0.75);
+  background: var(--color-shell-background);
 }
 
 :global([data-theme="dark"]) .menuButton {
-  color: rgba(227, 225, 238, 0.85);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-soft);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .menuButton:hover {
-  background: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 :global([data-theme="dark"]) .themeToggle {
-  color: rgba(227, 225, 238, 0.85);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-soft);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .themeToggle:hover {
-  background: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 :global([data-theme="dark"]) .researchButton {
-  color: rgba(227, 225, 238, 0.85);
+  color: var(--color-text-soft);
 }
 
 :global([data-theme="dark"]) .researchButton:hover {
@@ -274,17 +274,17 @@
 }
 
 :global([data-theme="dark"]) .dropdown {
-  background: rgba(22, 23, 31, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklch, var(--color-surface-1) 95%, transparent);
+  border: 1px solid var(--color-border-subtle);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 :global([data-theme="dark"]) .dropdownItem {
-  color: rgba(227, 225, 238, 0.85);
+  color: var(--color-text-soft);
 }
 
 :global([data-theme="dark"]) .dropdownItem:hover {
-  background: rgba(107, 128, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   color: var(--color-primary);
 }
 
@@ -294,7 +294,7 @@
 }
 
 :global([data-theme="dark"]) .loginButton:hover {
-  background: rgba(107, 128, 255, 0.15);
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 /* Tablet & mobile — hidden, bottom nav replaces it */

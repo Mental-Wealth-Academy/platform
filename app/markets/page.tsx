@@ -144,9 +144,8 @@ const CATEGORY_LABELS: Record<MarketCategory, string> = {
 };
 
 const TRADE_CHAT_SUGGESTIONS = [
-  'Scan the strongest edge right now.',
-  'Size a conservative market entry.',
-  'Stage the highest-conviction trade.',
+  'Scan edge',
+  'Size trade',
 ];
 const BLUE_ROUTE_TRIGGER_TEXT =
   'Blue checks live markets, Kelly sizing, open positions, and the protected order router before acting.';
@@ -1026,30 +1025,6 @@ export default function Markets() {
 
           {/* ════ RIGHT COLUMN: Blue Trading Chat ════ */}
           <section className={styles.blueTradeColumn} aria-label="Blue trading chat">
-            <div className={styles.blueTradeHeader}>
-              <div className={styles.blueDeskIdentity}>
-                <div className={styles.blueHeaderAvatar} aria-hidden="true">
-                  <Image src="/uploads/blueagent.png" alt="" width={40} height={40} className={styles.blueAvatarImage} />
-                </div>
-                <div className={styles.blueHeaderCopy}>
-                  <div className={styles.panelTitle}>VIP Trades</div>
-                  <h2 className={styles.blueTradeTitle}>Future Machine</h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                className={styles.tradeHistoryButton}
-                aria-label="View trade history"
-                onClick={focusTradeHistory}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M20 4v4h-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </div>
-
             <div className={styles.blueTradeVitals}>
               <div className={styles.blueVital}>
                 <span>fair</span>
@@ -1138,7 +1113,7 @@ export default function Markets() {
                     void sendTradeChatMessage(tradeChatInput);
                   }
                 }}
-                placeholder="Ask Blue to trade.."
+                placeholder="Ask Blue..."
                 rows={2}
                 disabled={isTradeChatSending || isTradeExecuting}
               />
