@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import { useDeferredValue, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import type { FormEvent } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
@@ -150,6 +150,8 @@ const TRADE_CHAT_SUGGESTIONS = [
 ];
 const BLUE_ROUTE_TRIGGER_TEXT =
   'Blue checks live markets, Kelly sizing, open positions, and the protected order router before acting.';
+const INITIAL_VISIBLE_MARKETS = 3;
+const MARKET_LOAD_MORE_STEP = 3;
 
 const INITIAL_TRADE_CHAT: TradeChatMessage[] = [
   {
@@ -252,9 +254,16 @@ export default function Markets() {
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
+  const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
+    crypto: INITIAL_VISIBLE_MARKETS,
+    ai: INITIAL_VISIBLE_MARKETS,
+    sports: INITIAL_VISIBLE_MARKETS,
+    politics: INITIAL_VISIBLE_MARKETS,
+  });
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
   const tradeHistoryRef = useRef<HTMLDivElement | null>(null);
   const historyHighlightTimeoutRef = useRef<number | null>(null);
+  const deferredKalshiMarkets = useDeferredValue(kalshiMarkets);
 
   const fetchPrices = useCallback(async () => {
     try {
@@ -347,6 +356,15 @@ export default function Markets() {
   useEffect(() => {
     void fetchAccountStatus();
   }, [fetchAccountStatus]);
+
+  useEffect(() => {
+    setVisibleMarketCounts({
+      crypto: INITIAL_VISIBLE_MARKETS,
+      ai: INITIAL_VISIBLE_MARKETS,
+      sports: INITIAL_VISIBLE_MARKETS,
+      politics: INITIAL_VISIBLE_MARKETS,
+    });
+  }, [kalshiMarkets]);
 
   // Fetch SHARDS stats and execution logs
   useEffect(() => {
@@ -454,9 +472,9 @@ export default function Markets() {
       `${coin.symbol}: ${formatPrice(coin.usd)}, 24h volume ${formatVol(coin.usd_24h_vol)}`
     )).join('\n') || 'price feed not loaded';
 
-    const signalMarkets = kalshiMarkets
+    const signalMarkets = deferredKalshiMarkets
       ? (['crypto', 'ai', 'sports', 'politics'] as MarketCategory[])
-        .flatMap((cat) => (kalshiMarkets[cat] || []).slice(0, 2).map((market) => {
+        .flatMap((cat) => (deferredKalshiMarkets[cat] || []).slice(0, 2).map((market) => {
           const [yes, no] = parseOutcomePrices(market.outcomePrices);
           return `${CATEGORY_LABELS[cat]}: ${market.question} | yes ${Math.round(yes * 100)}% no ${Math.round(no * 100)}% volume ${formatVol(market.volume)}`;
         }))
@@ -505,7 +523,7 @@ export default function Markets() {
       '',
       `User command: ${userMessage}`,
     ].join('\n');
-  }, [shardStats, balance, derived, executionLogs, livePositions, kalshiMarkets, prices]);
+  }, [shardStats, balance, deferredKalshiMarkets, derived, executionLogs, livePositions, prices]);
 
   const generateLocalTradeResponse = useCallback((userMessage: string) => {
     const command = userMessage.toLowerCase();
@@ -895,21 +913,23 @@ export default function Markets() {
               <span className={styles.panelTitle}>Kalshi &middot; Signal Markets &middot; Top by Volume</span>
               <span className={styles.panelBadge}>live</span>
             </div>
-            {!kalshiMarkets && !kalshiError && (
+            {!deferredKalshiMarkets && !kalshiError && (
               <span className={styles.loadingText}>Loading markets...</span>
             )}
-            {kalshiError && !kalshiMarkets && (
+            {kalshiError && !deferredKalshiMarkets && (
               <span className={styles.errorText}>Failed to load Kalshi data</span>
             )}
-            {kalshiMarkets && (
+            {deferredKalshiMarkets && (
               <div className={styles.marketList}>
                 {(['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map((cat) => {
-                  const items = kalshiMarkets[cat];
+                  const items = deferredKalshiMarkets[cat];
                   if (!items || items.length === 0) return null;
+                  const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;
+                  const visibleItems = items.slice(0, visibleCount);
                   return (
                     <div key={cat} className={styles.marketSection}>
                       <div className={styles.marketSectionLabel}>{CATEGORY_LABELS[cat]}</div>
-                      {items.map((m) => {
+                      {visibleItems.map((m) => {
                         const [yes, no] = parseOutcomePrices(m.outcomePrices);
                         const yesPct = Math.round(yes * 100);
                         const noPct = Math.round(no * 100);
@@ -927,6 +947,18 @@ export default function Markets() {
                           </div>
                         );
                       })}
+                      {items.length > visibleCount && (
+                        <button
+                          type="button"
+                          className={styles.marketLoadMore}
+                          onClick={() => setVisibleMarketCounts((current) => ({
+                            ...current,
+                            [cat]: Math.min(items.length, visibleCount + MARKET_LOAD_MORE_STEP),
+                          }))}
+                        >
+                          Load more {CATEGORY_LABELS[cat].toLowerCase()} markets
+                        </button>
+                      )}
                     </div>
                   );
                 })}
@@ -982,24 +1014,6 @@ export default function Markets() {
                   <div className={styles.treasuryQuickPrimary}>
                     <div className={styles.balanceHero}>${balance.formatted}</div>
                     <div className={styles.balanceLabel}>USDC Markets Balance</div>
-                  </div>
-                  <div className={styles.treasuryQuickMeta}>
-                    <div className={styles.treasuryQuickItem}>
-                      <span>deployable</span>
-                      <strong>{derived.signal === 'TRADE' ? 'armed' : 'standby'}</strong>
-                    </div>
-                    <div className={styles.treasuryQuickItem}>
-                      <span>kelly cap</span>
-                      <strong>0.25x</strong>
-                    </div>
-                    <div className={styles.treasuryQuickItem}>
-                      <span>fair</span>
-                      <strong>{derived.model_fair.toFixed(2)}%</strong>
-                    </div>
-                    <div className={styles.treasuryQuickItem}>
-                      <span>edge</span>
-                      <strong>{derived.divergence >= 0 ? '+' : ''}{derived.divergence.toFixed(2)}%</strong>
-                    </div>
                   </div>
                   <div className={styles.treasuryQuickSpark}>
                     <TickerLine stroke="var(--color-primary)" />
