@@ -120,6 +120,34 @@
   letter-spacing: 0.02em;
 }
 
+.walletAddressRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.walletCopyButton {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 999px;
+  background: rgba(81, 104, 255, 0.08);
+  color: var(--color-primary, #5168FF);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.walletCopyButton:hover {
+  background: rgba(81, 104, 255, 0.14);
+  transform: translateY(-1px);
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

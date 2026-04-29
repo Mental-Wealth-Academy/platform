@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
-import { usePrivy } from '@privy-io/react-auth';
 import { providers, Contract } from 'ethers';
 import styles from './InventoryModal.module.css';
 
@@ -53,8 +52,21 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
   const [ethBalance, setEthBalance] = useState<string | null>(null);
   const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [votingPower, setVotingPower] = useState<string | null>(null);
-  const [hasAngel, setHasAngel] = useState<boolean | null>(null);
+  const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copiedAddress, setCopiedAddress] = useState(false);
+
+  const handleCopyAddress = useCallback(async (walletAddress: string | null | undefined) => {
+    if (!walletAddress) return;
+
+    try {
+      await navigator.clipboard.writeText(walletAddress);
+      setCopiedAddress(true);
+      window.setTimeout(() => setCopiedAddress(false), 1500);
+    } catch (error) {
+      console.error('Failed to copy wallet address:', error);
+    }
+  }, []);
 
   const fetchBalances = useCallback(async () => {
     if (typeof window === 'undefined' || !window.ethereum) {
@@ -74,11 +86,18 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
       const usdc = new Contract(USDC_ADDRESS, ERC20_ABI, provider);
       const killstreak = new Contract(CONTRACT_ADDRESS, KILLSTREAK_ABI, provider);
 
-      const [ethRaw, usdcRaw, usdcDecimals, vpRaw] = await Promise.all([
+      const [ethRaw, usdcRaw, usdcDecimals, vpRaw, accountStatus] = await Promise.all([
         provider.getBalance(addr),
         usdc.balanceOf(addr),
         usdc.decimals(),
         killstreak.getVotingPower(addr).catch(() => null),
+        fetch('/api/account/status', {
+          cache: 'no-store',
+          credentials: 'include',
+        }).then(async (response) => {
+          if (!response.ok) return null;
+          return response.json().catch(() => null);
+        }).catch(() => null),
       ]);
 
       setEthBalance(formatBalance(ethRaw, 18, 4));
@@ -90,28 +109,7 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
       } else {
         setVotingPower('0');
       }
-
-      try {
-        const colRes = await fetch('/api/scatter/collection');
-        if (colRes.ok) {
-          const colInfo = await colRes.json();
-          if (colInfo.address) {
-            const nftContract = new Contract(
-              colInfo.address,
-              ['function balanceOf(address) view returns (uint256)'],
-              provider,
-            );
-            const nftBal = await nftContract.balanceOf(addr);
-            setHasAngel(Number(nftBal) > 0);
-          } else {
-            setHasAngel(false);
-          }
-        } else {
-          setHasAngel(false);
-        }
-      } catch {
-        setHasAngel(false);
-      }
+      setHasVipMembershipCard(Boolean(accountStatus?.hasVipMembershipCard));
     } catch (err) {
       console.error('InventoryModal fetch error:', err);
     } finally {
@@ -161,10 +159,27 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
           </div>
           {displayName && <h2 className={styles.displayName}>@{displayName}</h2>}
           {address && (
-            <span className={styles.walletAddress}>{truncateAddress(address)}</span>
-          )}
-          {hasAngel && (
-            <span className={styles.badge}>Academic Angel</span>
+            <div className={styles.walletAddressRow}>
+              <span className={styles.walletAddress}>{truncateAddress(address)}</span>
+              <button
+                type="button"
+                className={styles.walletCopyButton}
+                onClick={() => handleCopyAddress(address)}
+                aria-label="Copy wallet address"
+                title={copiedAddress ? 'Copied!' : 'Copy wallet address'}
+              >
+                {copiedAddress ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" />
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                  </svg>
+                )}
+              </button>
+            </div>
           )}
         </div>
 
@@ -181,8 +196,10 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
           </div>
           <div className={styles.statDivider} />
           <div className={styles.stat}>
-            <span className={styles.statValue}>{hasAngel ? '1' : '0'}</span>
-            <span className={styles.statLabel}>Angels</span>
+            <span className={styles.statValue}>
+              {hasVipMembershipCard === null ? '--' : hasVipMembershipCard ? 'YES' : 'NO'}
+            </span>
+            <span className={styles.statLabel}>VIP</span>
           </div>
         </div>
 

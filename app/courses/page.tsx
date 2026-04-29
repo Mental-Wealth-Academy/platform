@@ -187,7 +187,7 @@ export default function CoursesPage() {
 
             {/* Header */}
             <div className={styles.header}>
-              <h1 className={styles.pageTitle}>Courses</h1>
+              <h1 className={styles.pageTitle}>PATHWAYS</h1>
               <p className={styles.pageSub}>Learn with people, not just screens.</p>
             </div>
 

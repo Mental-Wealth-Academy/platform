@@ -371,7 +371,7 @@ const CourseModal: React.FC<CourseModalProps> = ({ course, isOpen, onClose, onRe
               Register for This Session
             </button>
             <button className={styles.modalSecondaryBtn} onClick={onClose}>
-              Back to Courses
+              Back to PATHWAYS
             </button>
           </div>
         </div>
@@ -445,10 +445,10 @@ export const CoursesShowcase: React.FC = () => {
           </div>
         </section>
 
-        {/* Courses Section */}
+        {/* PATHWAYS Section */}
         <section className={styles.coursesSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Course Schedule</h2>
+            <h2 className={styles.sectionTitle}>PATHWAYS Schedule</h2>
             <p className={styles.sectionSubtitle}>Click on any course to view detailed information and register</p>
           </div>
 

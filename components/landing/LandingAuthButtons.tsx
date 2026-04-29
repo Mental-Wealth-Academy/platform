@@ -18,7 +18,7 @@ function LandingAuthButtonsInner() {
     }
 
     loginTriggered.current = false;
-    router.push('/home');
+    router.push('/community');
   }, [authenticated, router]);
 
   const handleLogin = () => {

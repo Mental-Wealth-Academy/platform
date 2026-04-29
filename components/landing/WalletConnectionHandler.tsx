@@ -38,7 +38,7 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
       const meData = await meResponse.json().catch(() => ({ user: null }));
 
       if (meData.user) {
-        window.location.replace('/home');
+        window.location.replace('/community');
         return;
       }
 
@@ -50,7 +50,7 @@ export function WalletConnectionHandler({ onWalletConnected, buttonText = 'Conne
       });
 
       if (signupResponse.ok) {
-        window.location.replace('/home');
+        window.location.replace('/community');
       } else {
         const errorData = await signupResponse.json().catch(() => ({}));
         alert(errorData.error || 'Failed to create account. Please try again.');
