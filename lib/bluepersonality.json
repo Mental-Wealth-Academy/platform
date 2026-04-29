@@ -215,7 +215,7 @@
   "tts": {
     "provider": "elevenlabs",
     "elevenlabs": {
-      "voiceId": "6IwYbsNENZgAB1dtBZDp",
+      "voiceId": "qSeXEcewz7tA0Q0qk9fH",
       "modelId": "eleven_flash_v2_5"
     },
     "mode": "cloud",

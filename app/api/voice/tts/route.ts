@@ -16,10 +16,10 @@ const BLUE_VOICE_MODEL =
   blueConfig.tts?.elevenlabs?.modelId ||
   'eleven_flash_v2_5';
 
-async function requestTts(path: string, text: string, voiceId?: string) {
+async function requestTts(path: string, text: string, voiceId?: string, modelId?: string) {
   const payload: Record<string, string> = {
     text,
-    modelId: BLUE_VOICE_MODEL,
+    modelId: modelId || BLUE_VOICE_MODEL,
   };
 
   if (voiceId) {
@@ -43,16 +43,21 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { text } = await req.json();
+    const body = await req.json();
+    const text = body?.text;
+    const voiceId = typeof body?.voiceId === 'string' ? body.voiceId : undefined;
+    const modelId = typeof body?.modelId === 'string' ? body.modelId : undefined;
 
     if (!text || typeof text !== 'string' || text.length > 5000) {
       return NextResponse.json({ error: 'Invalid text' }, { status: 400 });
     }
 
+    const resolvedVoiceId = voiceId || BLUE_VOICE_ID || undefined;
+    const resolvedModelId = modelId || BLUE_VOICE_MODEL;
     const attempts: Array<{ label: string; path: string; voiceId?: string }> = [
-      { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: BLUE_VOICE_ID || undefined },
+      { label: 'v1-configured-voice', path: '/api/v1/voice/tts', voiceId: resolvedVoiceId },
       { label: 'v1-default-voice', path: '/api/v1/voice/tts' },
-      { label: 'legacy-configured-voice', path: '/api/elevenlabs/tts', voiceId: BLUE_VOICE_ID || undefined },
+      { label: 'legacy-configured-voice', path: '/api/elevenlabs/tts', voiceId: resolvedVoiceId },
       { label: 'legacy-default-voice', path: '/api/elevenlabs/tts' },
     ];
 
@@ -61,7 +66,7 @@ export async function POST(req: NextRequest) {
     let lastErrorText = '';
 
     for (const attempt of attempts) {
-      response = await requestTts(attempt.path, text, attempt.voiceId);
+      response = await requestTts(attempt.path, text, attempt.voiceId, resolvedModelId);
 
       if (response.ok) {
         if (attempt.label !== 'v1-configured-voice') {

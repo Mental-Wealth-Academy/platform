@@ -15,6 +15,9 @@ interface Scene {
   image: string;
 }
 
+const WEEK_ONE_VOICE_ID = 'Q84POjNm3Ck2dYBFqnZs';
+const WEEK_ONE_TYPING_DELAY_MS = 34;
+
 const SCENES: Scene[] = [
   {
     id: 'shadow-artist',
@@ -55,6 +58,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   const [isTyping, setIsTyping] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const voiceAbortRef = useRef<AbortController | null>(null);
+  const spokenSceneRef = useRef<string | null>(null);
 
   // Letter-by-letter animation
   useEffect(() => {
@@ -63,6 +68,8 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
     const fullText = SCENES[sceneIndex].body;
     setDisplayedText('');
     setIsTyping(true);
+    spokenSceneRef.current = null;
+    voiceAbortRef.current?.abort();
 
     let i = 0;
     intervalRef.current = setInterval(() => {
@@ -72,12 +79,51 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
         clearInterval(intervalRef.current!);
         setIsTyping(false);
       }
-    }, 22);
+    }, WEEK_ONE_TYPING_DELAY_MS);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [sceneIndex, shouldRender]);
+
+  useEffect(() => {
+    if (!shouldRender || isTyping) return;
+
+    const currentScene = SCENES[sceneIndex];
+    if (!currentScene || spokenSceneRef.current === currentScene.id) return;
+
+    spokenSceneRef.current = currentScene.id;
+    voiceAbortRef.current?.abort();
+    const controller = new AbortController();
+    voiceAbortRef.current = controller;
+
+    fetch('/api/voice/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        text: currentScene.body,
+        voiceId: WEEK_ONE_VOICE_ID,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Week 1 TTS request failed');
+        return res.json();
+      })
+      .then(({ audio }) => {
+        if (!audio || controller.signal.aborted) return;
+        const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        const el = new Audio(url);
+        el.onended = () => URL.revokeObjectURL(url);
+        el.onerror = () => URL.revokeObjectURL(url);
+        void el.play().catch(() => URL.revokeObjectURL(url));
+      })
+      .catch(() => {
+        // Silent fallback if narration audio is unavailable.
+      });
+  }, [sceneIndex, shouldRender, isTyping]);
 
   // Orientation detection + landscape lock
   useEffect(() => {
@@ -110,6 +156,12 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       window.removeEventListener('orientationchange', syncOrientation);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    return () => {
+      voiceAbortRef.current?.abort();
+    };
+  }, []);
 
   // Keyboard nav + open/close lifecycle
   useEffect(() => {
@@ -152,6 +204,7 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
       setDisplayedText(scene.body);
       setIsTyping(false);
     } else if (!isLast) {
+      spokenSceneRef.current = null;
       setSceneIndex((c) => c + 1);
     } else {
       onClose();
@@ -159,7 +212,10 @@ export default function WeekOneVisualNovel({ isOpen, onClose }: WeekOneVisualNov
   };
 
   const goPrev = () => {
-    if (sceneIndex > 0) setSceneIndex((c) => c - 1);
+    if (sceneIndex > 0) {
+      spokenSceneRef.current = null;
+      setSceneIndex((c) => c - 1);
+    }
   };
 
   return (
