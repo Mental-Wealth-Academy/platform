@@ -88,11 +88,18 @@ interface ArticlePreviewState {
   isRecovered: boolean;
 }
 
-function timeAgo(isoString: string): string {
-  const seconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
+function formatPublishedDate(isoString: string): string {
+  const publishedAt = new Date(isoString);
+
+  if (Number.isNaN(publishedAt.getTime())) {
+    return 'Date unavailable';
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(publishedAt);
 }
 
 const getTutorialSteps = (): TutorialStep[] => [
@@ -250,9 +257,9 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   image?: string;
 }> = [
   { label: 'Blue', image: '/prompts/CharacterBlue.png', accent: styles.dashboardAvatarImageWrap },
-  { label: 'AZ', accent: styles.dashboardAvatarBlue },
-  { label: 'MW', accent: styles.dashboardAvatarWarm },
-  { label: 'OP', accent: styles.dashboardAvatarSlate },
+  { label: 'Vesper', image: '/uploads/vesper-landing-avatar.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Orbit', image: '/anbel09.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Prism', image: '/anbel11.png', accent: styles.dashboardAvatarImageWrap },
 ];
 
 export default function VotingPage() {
@@ -680,7 +687,7 @@ export default function VotingPage() {
                                   >
                                     <span className={styles.newsArticleTitle}>{item.title}</span>
                                     <span className={styles.newsArticleMeta}>
-                                      {item.source} · {timeAgo(item.createdAt)}
+                                      {item.source} · {formatPublishedDate(item.createdAt)}
                                     </span>
                                   </a>
                                 </li>

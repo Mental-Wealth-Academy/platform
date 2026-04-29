@@ -13,7 +13,7 @@ export function normalizeCommunityArticleUrl(rawUrl: string): string {
   try {
     const parsed = new URL(rawUrl);
     const normalized = `${parsed.protocol}//${parsed.hostname}${parsed.pathname}`.replace(/\/$/, '');
-    return COMMUNITY_ARTICLE_REDIRECTS[normalized] ?? rawUrl;
+    return COMMUNITY_ARTICLE_REDIRECTS[normalized] ?? normalized;
   } catch {
     return rawUrl;
   }
