@@ -1,123 +1,41 @@
-/* BlueDialogue - Video Game Dialogue Panel */
+/* BlueDialogue - Card-style dialogue module */
 
 .container {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
   width: 100%;
   max-width: 100%;
-  padding: 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(111, 135, 255, 0.28);
-  background:
-    linear-gradient(180deg, rgba(11, 14, 30, 0.98) 0%, rgba(7, 9, 20, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 18px 40px rgba(5, 8, 18, 0.34);
+  padding: 0;
 }
 
 .containerOverlay {
-  padding: 12px;
-  gap: 12px;
-  border-radius: 14px;
-  border-color: rgba(139, 149, 255, 0.24);
-  background: linear-gradient(180deg, rgba(17, 19, 31, 0.96) 0%, rgba(11, 13, 24, 0.96) 100%);
-}
-
-.avatarWrapper {
-  width: 82px;
-  height: 82px;
-  min-width: 82px;
-  min-height: 82px;
-  padding: 4px;
-  border-radius: 16px;
-  overflow: hidden;
-  background:
-    linear-gradient(145deg, rgba(123, 169, 255, 0.32) 0%, rgba(72, 111, 255, 0.16) 100%);
-  border: 1px solid rgba(133, 171, 255, 0.32);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 12px 24px rgba(23, 39, 109, 0.3);
-  flex-shrink: 0;
-}
-
-.avatarWrapperOverlay {
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  min-height: 56px;
-  border-radius: 12px;
-}
-
-.avatar {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  background: rgba(9, 12, 26, 0.84);
-  border: 1px solid rgba(116, 151, 255, 0.24);
-  border-radius: 12px;
-  filter: saturate(1.04) contrast(1.02);
 }
 
 .dialogueContent {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: min(100%, 520px);
+  gap: 14px;
+  width: 100%;
   min-height: 118px;
-  padding: 16px 18px;
-  border-radius: 16px;
-  border: 1px solid rgba(153, 179, 255, 0.18);
+  padding: 22px 26px;
+  border-radius: 28px;
+  border: 1px solid rgba(189, 201, 255, 0.68);
   background:
-    linear-gradient(180deg, rgba(59, 85, 228, 0.96) 0%, rgba(42, 61, 178, 0.96) 100%);
+    linear-gradient(180deg, rgba(244, 246, 255, 0.98) 0%, rgba(228, 234, 255, 0.98) 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(12, 22, 68, 0.32),
-    0 10px 24px rgba(35, 58, 175, 0.28);
-}
-
-.dialogueContent::before {
-  content: '';
-  position: absolute;
-  left: -11px;
-  top: 22px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 11px solid rgba(137, 164, 255, 0.2);
-}
-
-.dialogueContent::after {
-  content: '';
-  position: absolute;
-  left: -9px;
-  top: 23px;
-  width: 0;
-  height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-right: 10px solid rgba(59, 85, 228, 0.96);
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 12px 32px rgba(73, 92, 176, 0.12);
 }
 
 .dialogueContentOverlay {
-  width: min(100%, 420px);
-  min-height: 96px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border-color: rgba(139, 149, 255, 0.26);
-  background: rgba(28, 32, 51, 0.82);
-  box-shadow: none;
-}
-
-.dialogueContentOverlay::before {
-  border-right-color: rgba(139, 149, 255, 0.16);
-}
-
-.dialogueContentOverlay::after {
-  border-right-color: rgba(28, 32, 51, 0.82);
+  min-height: 0;
+  padding: 20px 24px;
+  border-radius: 24px;
+  border-color: rgba(198, 208, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(247, 249, 255, 0.99) 0%, rgba(232, 237, 255, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    0 14px 34px rgba(76, 92, 160, 0.1);
 }
 
 .dialogueContentFixed {
@@ -127,27 +45,27 @@
 
 .message {
   margin: 0;
-  font-family: var(--font-primary);
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.65;
-  color: rgba(238, 243, 255, 0.96);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.52;
+  letter-spacing: -0.02em;
+  color: rgba(67, 78, 122, 0.98);
   white-space: pre-wrap;
   word-break: break-word;
-  text-shadow: 0 0 10px rgba(12, 22, 72, 0.2);
 }
 
 .messageOverlay {
-  color: rgba(235, 232, 247, 0.9);
-  line-height: 1.52;
-  text-shadow: none;
+  font-size: 17px;
+  line-height: 1.58;
+  color: rgba(68, 77, 118, 0.98);
 }
 
 .messageScrollable {
   height: 100%;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(214, 225, 255, 0.28) transparent;
+  scrollbar-color: rgba(115, 133, 220, 0.28) transparent;
 }
 
 .messageScrollable::-webkit-scrollbar {
@@ -155,7 +73,7 @@
 }
 
 .messageScrollable::-webkit-scrollbar-thumb {
-  background: rgba(214, 225, 255, 0.28);
+  background: rgba(115, 133, 220, 0.28);
   border-radius: 999px;
 }
 
@@ -164,7 +82,7 @@
   width: 2px;
   height: 1.05em;
   margin-left: 2px;
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(86, 104, 220, 0.92);
   animation: blink 0.8s infinite;
   vertical-align: baseline;
 }
@@ -181,15 +99,15 @@
 .skipButton,
 .startButton {
   align-self: flex-end;
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 38px;
+  padding: 0 16px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  font-family: 'IBM Plex Mono', monospace;
+  border: 1px solid rgba(112, 130, 224, 0.22);
+  background: rgba(112, 130, 224, 0.08);
+  color: rgba(60, 74, 138, 0.96);
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
   font-weight: 700;
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   cursor: pointer;
@@ -199,177 +117,16 @@
 .skipButton:hover,
 .startButton:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.28);
-}
-
-:global([data-theme="dark"]) .container {
-  border-color: rgba(179, 195, 255, 0.28);
-  background:
-    linear-gradient(180deg, rgba(240, 245, 255, 0.98) 0%, rgba(225, 234, 255, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    0 18px 40px rgba(5, 8, 18, 0.18);
-}
-
-:global([data-theme="dark"]) .containerOverlay {
-  border-color: rgba(168, 184, 255, 0.28);
-  background: linear-gradient(180deg, rgba(245, 247, 255, 0.96) 0%, rgba(232, 237, 255, 0.96) 100%);
-}
-
-:global([data-theme="dark"]) .avatarWrapper {
-  background:
-    linear-gradient(145deg, rgba(123, 169, 255, 0.28) 0%, rgba(72, 111, 255, 0.14) 100%);
-  border-color: rgba(133, 171, 255, 0.3);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 12px 24px rgba(23, 39, 109, 0.14);
-}
-
-:global([data-theme="dark"]) .avatar {
-  background: rgba(235, 241, 255, 0.96);
-  border-color: rgba(116, 151, 255, 0.2);
-}
-
-:global([data-theme="dark"]) .dialogueContent {
-  border-color: rgba(132, 157, 255, 0.28);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(235, 241, 255, 0.98) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    inset 0 -1px 0 rgba(127, 149, 235, 0.16),
-    0 10px 24px rgba(35, 58, 175, 0.14);
-}
-
-:global([data-theme="dark"]) .dialogueContent::before {
-  border-right-color: rgba(132, 157, 255, 0.28);
-}
-
-:global([data-theme="dark"]) .dialogueContent::after {
-  border-right-color: rgba(255, 255, 255, 0.98);
-}
-
-:global([data-theme="dark"]) .dialogueContentOverlay {
-  border-color: rgba(145, 162, 255, 0.22);
-  background: rgba(246, 248, 255, 0.94);
-}
-
-:global([data-theme="dark"]) .dialogueContentOverlay::before {
-  border-right-color: rgba(145, 162, 255, 0.2);
-}
-
-:global([data-theme="dark"]) .dialogueContentOverlay::after {
-  border-right-color: rgba(246, 248, 255, 0.94);
-}
-
-:global([data-theme="dark"]) .message {
-  color: rgba(28, 37, 74, 0.94);
-  text-shadow: none;
-}
-
-:global([data-theme="dark"]) .messageOverlay {
-  color: rgba(45, 53, 88, 0.9);
-}
-
-:global([data-theme="dark"]) .messageScrollable {
-  scrollbar-color: rgba(90, 120, 225, 0.26) transparent;
-}
-
-:global([data-theme="dark"]) .messageScrollable::-webkit-scrollbar-thumb {
-  background: rgba(90, 120, 225, 0.26);
-}
-
-:global([data-theme="dark"]) .cursor {
-  background-color: rgba(59, 85, 228, 0.92);
-}
-
-:global([data-theme="dark"]) .skipButton,
-:global([data-theme="dark"]) .startButton {
-  border-color: rgba(89, 110, 210, 0.18);
-  background: rgba(89, 110, 210, 0.08);
-  color: rgba(37, 50, 110, 0.94);
-}
-
-:global([data-theme="dark"]) .skipButton:hover,
-:global([data-theme="dark"]) .startButton:hover {
-  background: rgba(89, 110, 210, 0.14);
-  border-color: rgba(89, 110, 210, 0.24);
+  background: rgba(112, 130, 224, 0.14);
+  border-color: rgba(112, 130, 224, 0.28);
 }
 
 @media (max-width: 768px) {
-  .container,
-  .containerOverlay {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 14px;
-    gap: 12px;
-  }
-
-  .avatarWrapper {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
-    border-radius: 14px;
-  }
-
-  .avatarWrapperOverlay {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
-    border-radius: 12px;
-  }
-
-  .avatar {
-    border-radius: 10px;
-  }
-
   .dialogueContent,
   .dialogueContentOverlay {
     width: 100%;
-  }
-
-  .dialogueContent::before,
-  .dialogueContent::after {
-    left: 18px;
-    top: -10px;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: none;
-    border-bottom: 10px solid rgba(137, 164, 255, 0.2);
-  }
-
-  .dialogueContent::after {
-    top: -9px;
-    left: 19px;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid rgba(59, 85, 228, 0.96);
-  }
-
-  .dialogueContentOverlay::before {
-    border-bottom-color: rgba(139, 149, 255, 0.16);
-  }
-
-  .dialogueContentOverlay::after {
-    border-bottom-color: rgba(28, 32, 51, 0.82);
-  }
-
-  :global([data-theme="dark"]) .dialogueContent::before {
-    border-bottom-color: rgba(132, 157, 255, 0.28);
-  }
-
-  :global([data-theme="dark"]) .dialogueContent::after {
-    border-bottom-color: rgba(255, 255, 255, 0.98);
-  }
-
-  :global([data-theme="dark"]) .dialogueContentOverlay::before {
-    border-bottom-color: rgba(145, 162, 255, 0.2);
-  }
-
-  :global([data-theme="dark"]) .dialogueContentOverlay::after {
-    border-bottom-color: rgba(246, 248, 255, 0.94);
+    padding: 18px 20px;
+    border-radius: 22px;
   }
 
   .dialogueContentFixed {
@@ -378,6 +135,10 @@
   }
 
   .message {
-    font-size: 13px;
+    font-size: 15px;
+  }
+
+  .messageOverlay {
+    font-size: 14px;
   }
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import styles from './BlueDialogue.module.css';
 
 export type BlueEmotion = 'happy' | 'confused' | 'sad' | 'pain';
@@ -19,38 +18,21 @@ interface BlueDialogueProps {
   variant?: 'default' | 'overlay';
 }
 
-const emotionImages: Record<BlueEmotion, string> = {
-  happy: 'https://i.imgur.com/3Y3KrnJ.png',
-  confused: 'https://i.imgur.com/ePrWP7A.png',
-  sad: 'https://i.imgur.com/XIe1jZy.png',
-  pain: 'https://i.imgur.com/ZYpNkse.png',
-};
-
-const DEFAULT_BLUE_AVATAR = '/uploads/blueagent.png';
-
 const BlueDialogue: React.FC<BlueDialogueProps> = ({
   message,
-  emotion = 'happy',
   onComplete,
   speed = 30, // milliseconds per character
   autoStart = true,
   showSkip = true,
   onSkip,
-  avatarSrc,
   fixedHeight = false,
   variant = 'default',
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [currentEmotion, setCurrentEmotion] = useState<BlueEmotion>(emotion);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isCompleteRef = useRef(false);
   const lastMessageRef = useRef<string>('');
-
-  useEffect(() => {
-    // Update emotion when prop changes
-    setCurrentEmotion(emotion);
-  }, [emotion]);
 
   useEffect(() => {
     // Clear any existing timeout
@@ -139,25 +121,15 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   return (
     <div className={`${styles.container} ${isOverlayVariant ? styles.containerOverlay : ''}`}>
-      <div className={`${styles.avatarWrapper} ${isOverlayVariant ? styles.avatarWrapperOverlay : ''}`}>
-        <Image
-          src={avatarSrc ?? DEFAULT_BLUE_AVATAR}
-          alt={`Blue ${currentEmotion}`}
-          width={80}
-          height={80}
-          className={styles.avatar}
-          unoptimized
-        />
-      </div>
       <div
         className={`${styles.dialogueContent} ${fixedHeight ? styles.dialogueContentFixed : ''} ${isOverlayVariant ? styles.dialogueContentOverlay : ''}`}
       >
-        <p
+        <div
           className={`${styles.message} ${fixedHeight ? styles.messageScrollable : ''} ${isOverlayVariant ? styles.messageOverlay : ''}`}
         >
           {displayedText}
           {isTyping && <span className={styles.cursor}>|</span>}
-        </p>
+        </div>
         {showSkip && isTyping && (
           <button className={styles.skipButton} onClick={handleSkip} type="button">
             Skip
