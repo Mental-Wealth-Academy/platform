@@ -1769,8 +1769,8 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #d8e741;
-  box-shadow: 0 0 0 4px rgba(216, 231, 65, 0.14);
+  background: #5168FF;
+  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.14);
 }
 
 .dashboardFilters {
@@ -1821,7 +1821,7 @@
 }
 
 .communityTabActive {
-  color: #d8e741;
+  color: #5168FF;
 }
 
 .communityTabActive::after {
@@ -1832,7 +1832,7 @@
   bottom: 0;
   height: 2px;
   border-radius: 999px;
-  background: #d8e741;
+  background: #5168FF;
 }
 
 .proposalsEntryButton {
@@ -3525,7 +3525,7 @@
 }
 
 :global([data-theme="dark"]) .communityTabActive {
-  color: #d8e741;
+  color: #5168FF;
 }
 
 :global([data-theme="dark"]) .pageLayout {
