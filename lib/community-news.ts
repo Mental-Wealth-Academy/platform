@@ -40,6 +40,8 @@ export interface CommunityNewsReviewQueueEntry {
 interface FeedSource {
   source: string;
   url: string;
+  type?: 'rss' | 'gitcoin-research';
+  pinnedUrlSubstring?: string;
 }
 
 interface ReviewCandidate extends FeedSource {
@@ -58,30 +60,36 @@ interface TopicConfig {
 
 const COMMUNITY_NEWS_TOPICS: TopicConfig[] = [
   {
-    topic: 'Onchain Briefing',
+    topic: 'Blockchain',
     color: '#5168FF',
-    maxAgeDays: 21,
-    fallbackMaxAgeDays: 60,
+    maxAgeDays: 90,
+    fallbackMaxAgeDays: 180,
     minimumFreshItems: 2,
     activeFeeds: [
       {
+        url: 'https://gitcoin.co/research',
+        source: 'Gitcoin Research',
+        type: 'gitcoin-research',
+        pinnedUrlSubstring: '/ai-agents-and-public-goods-the-emerging-agentic-economy',
+      },
+      {
+        url: 'https://news.artizen.fund/feed',
+        source: 'Artizen',
+      },
+      {
+        url: 'https://www.bankless.com/feed',
+        source: 'Bankless',
+      },
+      {
         url: 'https://api.paragraph.com/blogs/rss/%40ethdaily',
         source: 'ETH Daily',
-      },
-      {
-        url: 'https://api.paragraph.com/blogs/rss/%40nouns',
-        source: 'Nouns',
-      },
-      {
-        url: 'https://api.paragraph.com/blogs/rss/%40yearn',
-        source: 'Yearn',
       },
     ],
     reviewCandidates: [
       {
         url: 'https://www.citationneeded.news/feed',
         source: 'Citation Needed',
-        reason: 'Fresh crypto and policy reporting to rotate in if governance coverage thins out.',
+        reason: 'Fresh blockchain and policy reporting to rotate in if capital-allocation coverage thins out.',
       },
     ],
   },
@@ -218,6 +226,32 @@ function parseFeedItems(xml: string, source: string): CommunityNewsItem[] {
     .filter((item): item is CommunityNewsItem => item !== null);
 }
 
+function parseGitcoinResearchItems(html: string, source: string): CommunityNewsItem[] {
+  const matches = Array.from(
+    html.matchAll(/\\"slug\\":\\"([^\\]+)\\",\\"name\\":\\"([^\\]+)\\"[\s\S]*?\\"lastUpdated\\":\\"([^\\]+)\\"/g),
+  );
+
+  return matches
+    .map((match) => {
+      const slug = decodeXmlEntities(match[1]);
+      const title = decodeXmlEntities(match[2]);
+      const lastUpdated = decodeXmlEntities(match[3]);
+      const createdAtTimestamp = Date.parse(lastUpdated);
+
+      if (!slug || !title || !Number.isFinite(createdAtTimestamp)) {
+        return null;
+      }
+
+      return {
+        title,
+        url: `https://gitcoin.co/research/${slug}`,
+        source,
+        createdAt: new Date(createdAtTimestamp).toISOString(),
+      };
+    })
+    .filter((item): item is CommunityNewsItem => item !== null);
+}
+
 async function fetchFeedItems(feed: FeedSource): Promise<CommunityNewsItem[]> {
   try {
     const response = await fetch(feed.url, {
@@ -227,13 +261,26 @@ async function fetchFeedItems(feed: FeedSource): Promise<CommunityNewsItem[]> {
       },
       next: { revalidate: ONE_WEEK_IN_SECONDS },
     });
+    const body = await response.text();
+
+    if ((feed.type ?? 'rss') === 'gitcoin-research') {
+      const parsedItems = dedupeAndSort(parseGitcoinResearchItems(body, feed.source)).slice(0, 12);
+
+      if (feed.pinnedUrlSubstring) {
+        const pinnedItem = parsedItems.find((item) => item.url.includes(feed.pinnedUrlSubstring!));
+        if (pinnedItem) {
+          return [pinnedItem];
+        }
+      }
+
+      return parsedItems;
+    }
 
     if (!response.ok) {
       return [];
     }
 
-    const xml = await response.text();
-    return parseFeedItems(xml, feed.source);
+    return parseFeedItems(body, feed.source);
   } catch {
     return [];
   }
@@ -252,6 +299,38 @@ function dedupeAndSort(items: CommunityNewsItem[]): CommunityNewsItem[] {
       seen.add(item.url);
       return true;
     });
+}
+
+function pickDiverseItems(items: CommunityNewsItem[], limit: number): CommunityNewsItem[] {
+  const selected: CommunityNewsItem[] = [];
+  const seenSources = new Set<string>();
+
+  for (const item of items) {
+    if (seenSources.has(item.source)) {
+      continue;
+    }
+
+    selected.push(item);
+    seenSources.add(item.source);
+
+    if (selected.length >= limit) {
+      return selected;
+    }
+  }
+
+  for (const item of items) {
+    if (selected.some((selectedItem) => selectedItem.url === item.url)) {
+      continue;
+    }
+
+    selected.push(item);
+
+    if (selected.length >= limit) {
+      break;
+    }
+  }
+
+  return selected;
 }
 
 function filterRecentItems(items: CommunityNewsItem[], maxAgeDays: number): CommunityNewsItem[] {
@@ -338,11 +417,12 @@ export async function buildCommunityNewsDigest(): Promise<{
       const fallbackItems = freshItems.length > 0
         ? freshItems
         : filterRecentItems(sortedItems, topicConfig.fallbackMaxAgeDays);
+      const selectedItems = pickDiverseItems(fallbackItems, 3);
 
       return {
         topic: topicConfig.topic,
         color: topicConfig.color,
-        items: fallbackItems.slice(0, 3),
+        items: selectedItems,
         reviewQueueEntry: buildReviewQueueEntry(topicConfig, freshItems, feedHealth),
       };
     }),
