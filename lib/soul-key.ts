@@ -8,8 +8,8 @@ export const VIP_MEMBERSHIP_CARD_TOKEN_ID = BigInt(process.env.VIP_MEMBERSHIP_CA
 const ERC721_BALANCE_ABI = [
   'function balanceOf(address owner) view returns (uint256)',
 ];
-const ERC721_OWNER_ABI = [
-  'function ownerOf(uint256 tokenId) view returns (address)',
+const ERC1155_BALANCE_ABI = [
+  'function balanceOf(address account, uint256 id) view returns (uint256)',
 ];
 
 let cached: { wallet: string; hasKey: boolean; expiresAt: number } | null = null;
@@ -67,13 +67,13 @@ export async function walletHoldsVipMembershipCard(wallet: string | null | undef
   }
 
   try {
-    const contract = new Contract(VIP_MEMBERSHIP_CARD_ADDRESS, ERC721_OWNER_ABI, provider);
-    const owner = await contract.ownerOf(VIP_MEMBERSHIP_CARD_TOKEN_ID);
-    const hasCard = typeof owner === 'string' && owner.toLowerCase() === normalized;
+    const contract = new Contract(VIP_MEMBERSHIP_CARD_ADDRESS, ERC1155_BALANCE_ABI, provider);
+    const balance = await contract.balanceOf(wallet, VIP_MEMBERSHIP_CARD_TOKEN_ID);
+    const hasCard = balance && balance.gt(0);
     vipCached = { wallet: normalized, hasCard, expiresAt: now + CACHE_TTL_MS };
     return hasCard;
   } catch (err) {
-    console.error('[vip-membership-card] ownerOf failed:', err);
+    console.error('[vip-membership-card] balanceOf failed:', err);
     return false;
   }
 }

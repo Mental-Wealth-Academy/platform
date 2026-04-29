@@ -69,16 +69,26 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
   }, []);
 
   const fetchBalances = useCallback(async () => {
-    if (typeof window === 'undefined' || !window.ethereum) {
-      setLoading(false);
-      return;
-    }
-
     try {
+      const accountStatus = await fetch('/api/account/status', {
+        cache: 'no-store',
+        credentials: 'include',
+      })
+        .then(async (response) => {
+          if (!response.ok) return null;
+          return response.json().catch(() => null);
+        })
+        .catch(() => null);
+
+      setHasVipMembershipCard(Boolean(accountStatus?.hasVipMembershipCard));
+
+      if (typeof window === 'undefined' || !window.ethereum) {
+        return;
+      }
+
       const provider = new providers.Web3Provider(window.ethereum);
       const accounts = await provider.listAccounts();
       if (accounts.length === 0) {
-        setLoading(false);
         return;
       }
       const addr = accounts[0];
@@ -86,18 +96,11 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
       const usdc = new Contract(USDC_ADDRESS, ERC20_ABI, provider);
       const killstreak = new Contract(CONTRACT_ADDRESS, KILLSTREAK_ABI, provider);
 
-      const [ethRaw, usdcRaw, usdcDecimals, vpRaw, accountStatus] = await Promise.all([
+      const [ethRaw, usdcRaw, usdcDecimals, vpRaw] = await Promise.all([
         provider.getBalance(addr),
         usdc.balanceOf(addr),
         usdc.decimals(),
         killstreak.getVotingPower(addr).catch(() => null),
-        fetch('/api/account/status', {
-          cache: 'no-store',
-          credentials: 'include',
-        }).then(async (response) => {
-          if (!response.ok) return null;
-          return response.json().catch(() => null);
-        }).catch(() => null),
       ]);
 
       setEthBalance(formatBalance(ethRaw, 18, 4));
@@ -109,7 +112,6 @@ export default function InventoryModal({ isOpen, onClose, shardCount, username, 
       } else {
         setVotingPower('0');
       }
-      setHasVipMembershipCard(Boolean(accountStatus?.hasVipMembershipCard));
     } catch (err) {
       console.error('InventoryModal fetch error:', err);
     } finally {
