@@ -1158,11 +1158,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       setPendingAttachments([]);
       setAutoDistributionVisible(false);
       if (researchMode) {
-        send('Start a research session', 'searching');
-        addBlueMessage("you're already in research mode. give me a topic.");
+        send('Open research mode', 'searching');
+        addBlueMessage("research mode is already open. give me a topic, paper, or mechanism to trace.");
         return;
       }
-      send('Start a research session', 'searching');
+      send('Open research mode', 'searching');
       if (shardCount !== null && shardCount >= RESEARCH_COST) {
         setPendingType('research');
         setPendingMessage('__research_activate__');
@@ -1195,25 +1195,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage(
         "claude professional mode is live. send me recruiter messages, job descriptions, cover letters, linkedin copy, screenshots, or pdfs and i'll handle it in james marsh voice."
       );
-    } else if (action === 'shards') {
-      send('What are shards?', 'happy');
+    } else if (action === 'treasury') {
+      send('Open the treasury desk', 'happy');
       addBlueMessage(
-        "shards are proof-of-understanding. they accumulate as you move through the curriculum. your collection reflects actual growth, not time spent."
+        "i can help you read the treasury, scan markets, pressure-test a proposal, or turn a loose idea into a governance memo. if you want signal, give me the decision in front of you."
       );
-    } else if (action === 'prayers') {
-      send('Tell me about morning pages', 'happy');
+    } else if (action === 'agents') {
+      send('Show me the agent workflows', 'searching');
       addBlueMessage(
-        "write for 15 min, get into flow state, and keep it up. no prompts, no pressure. just you and the page."
-      );
-    } else if (action === 'course') {
-      send('How does the course work?', 'happy');
-      addBlueMessage(
-        "12 weeks. each week targets a specific psychological domain -- safety, identity, power, integrity, all the way to faith. complete readings, reflections, and quests. seal your progress on-chain."
-      );
-    } else if (action === 'more') {
-      send('What else can you do', 'happy');
-      addBlueMessage(
-        "treasury, governance, course progress, or just talk through whatever's on your mind. ask me something specific."
+        "research passes, gpu synthesis, distribution systems, recruiter drafts, and focus blocks are all live here. pick a lane and i will move it from rough input to something usable."
       );
     }
   };
@@ -1608,14 +1598,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('shards')} disabled={isTyping} type="button">
-          Shards
+        <button className={styles.quickAction} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
+          Research
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('prayers')} disabled={isTyping} type="button">
-          Pages
+        <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
+          Treasury
         </button>
-        <button className={styles.quickAction} onClick={() => handleQuickAction('course')} disabled={isTyping} type="button">
-          Course
+        <button className={styles.quickAction} onClick={() => handleQuickAction('agents')} disabled={isTyping} type="button">
+          Agents
         </button>
       </div>
 
@@ -1874,17 +1864,47 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('auto-distribution'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Auto-Distribution</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Auto-Distribution</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Research Mode</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Research Mode</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Marketing, Ads, &amp; Engagement.</span>
+                        <span className={styles.toolCardMeta}>Trace papers, mechanisms, and live topics without leaving the desk.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4zM1 3h2v18H1zm20 0h2v18h-2z"/></svg>
+                      </span>
+                    </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('treasury'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Treasury Desk</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Treasury Desk</span>
+                        </span>
+                        <span className={styles.toolCardMeta}>Review allocations, pressure-test proposals, and draft cleaner governance calls.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
+                      </span>
+                    </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
+                  </button>
+                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('agents'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Agent Workflows</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Agent Workflows</span>
+                        </span>
+                        <span className={styles.toolCardMeta}>Route work into gpu synthesis, distribution systems, recruiter drafts, or focus blocks.</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
                       </span>
                     </span>
                     <span className={styles.toolCardBottom} aria-hidden="true" />
@@ -1893,25 +1913,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Time Management</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Time Management</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Focus Blocks</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Focus Blocks</span>
                         </span>
-                        <span className={styles.toolCardMeta}>Stack up to four timed focus blocks.</span>
-                      </span>
-                      <span className={styles.toolCardIcon} aria-hidden="true">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.75A10.25 10.25 0 1 0 22.25 12 10.262 10.262 0 0 0 12 1.75Zm0 18.5A8.25 8.25 0 1 1 20.25 12 8.259 8.259 0 0 1 12 20.25Zm.75-13h-1.5v5.06l4.03 2.42.78-1.28-3.31-1.98Z"/></svg>
-                      </span>
-                    </span>
-                    <span className={styles.toolCardBottom} aria-hidden="true" />
-                  </button>
-                  <button className={styles.expandedQuickCard} onClick={() => { play('click'); handleQuickAction('credit'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
-                    <span className={styles.toolCardTop}>
-                      <span className={styles.toolCardText}>
-                        <span className={styles.toolSlideWrap}>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Credit Builder</span>
-                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Credit Builder</span>
-                        </span>
-                        <span className={styles.toolCardMeta}>Repair and level up your profile.</span>
+                        <span className={styles.toolCardMeta}>Stack up to four timed work blocks and keep the session moving.</span>
                       </span>
                       <span className={styles.toolCardIcon} aria-hidden="true">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.11-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>

@@ -97,26 +97,26 @@ function timeAgo(isoString: string): string {
 
 const getTutorialSteps = (): TutorialStep[] => [
   {
-    message: 'Hey there! Welcome to the Decision Room. I\'m Blue, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
+    message: 'Welcome to the Decision Room. I\'m Blue. This is where proposals, treasury activity, and community signals are reviewed in one place.',
     emotion: 'happy',
   },
   {
-    message: 'Got an idea? Submit it and I\'ll give it a thoughtful read. I check for clarity, positive impact, and whether it\'s doable. Clear proposals help everyone feel heard and understood.',
+    message: 'Got an idea? Submit it and I\'ll review it for clarity, impact, and feasibility. Better proposals lead to better decisions.',
     emotion: 'happy',
     targetElement: '[data-tutorial-target="voting-stages"]',
   },
   {
-    message: 'Once a proposal passes my vibe check, it goes to the whole community. Your voice matters here—every vote helps shape what we build together. Collective wisdom is powerful.',
+    message: 'Once a proposal clears review, it moves to community voting. Every vote changes what gets funded and what gets built next.',
     emotion: 'happy',
     targetElement: '[data-tutorial-target="admin-room"]',
   },
   {
-    message: 'Each proposal is someone\'s way of saying "I care about this community." Whether it passes or not, putting ideas out there takes courage. We celebrate that energy.',
+    message: 'Each proposal puts a concrete request in front of the group. Approval is not guaranteed, so specifics matter.',
     emotion: 'confused',
     targetElement: '[data-tutorial-target="submission"]',
   },
   {
-    message: 'This space is about us supporting each other\'s growth. You bring the ideas, I help nurture them, and together we make something meaningful. Ready to participate?',
+    message: 'Bring a proposal, review the room, or cast a vote. This space is for shared decisions and transparent follow-through.',
     emotion: 'happy',
   },
 ];
@@ -459,7 +459,7 @@ export default function VotingPage() {
       title: item.title,
       source: item.source,
       canonicalUrl: normalizedUrl,
-      summary: 'I am scanning this article now so I can give you a quick read on it before you leave the Decision Room.',
+      summary: 'I am scanning this article now so I can pull out the key signal before you leave the Decision Room.',
       status: 'loading',
       isRecovered: normalizedUrl !== item.url,
     });
@@ -584,7 +584,7 @@ export default function VotingPage() {
                     MWA <span className={styles.dashboardTitleAccent}>Community Hub</span>
                   </h1>
                   <p className={styles.dashboardSubtitle}>
-                    Treasury and choices owned by you.
+                    Shared treasury. Shared decisions.
                   </p>
                   <p className={styles.dashboardTreasuryBalance}>$5,343</p>
                 </div>
@@ -653,7 +653,7 @@ export default function VotingPage() {
                   ) : newsTopics.length === 0 ? (
                     <div className={styles.newsEmptyCard}>
                       <span className={styles.newsEmptyText}>
-                        No recent stories found across the tracked topics.
+                        No recent stories surfaced in the tracked feeds.
                       </span>
                     </div>
                   ) : (
@@ -665,7 +665,7 @@ export default function VotingPage() {
                           </span>
                           <div className={styles.newsTopicDivider} />
                           {topic.items.length === 0 ? (
-                            <span className={styles.newsEmptyText}>No recent stories found.</span>
+                            <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
                           ) : (
                             <ul className={styles.newsArticleList}>
                               {topic.items.map((item, i) => (
@@ -697,7 +697,7 @@ export default function VotingPage() {
                         <div className={styles.reserveInsightHeader}>
                           <span className={styles.reserveInsightLabel}>Allocation mix</span>
                           <p className={styles.reserveInsightText}>
-                            Current treasury commitments across each live pod.
+                            Current treasury allocations across each active pod.
                           </p>
                         </div>
                         <div className={styles.reserveAllocationCarousel}>
