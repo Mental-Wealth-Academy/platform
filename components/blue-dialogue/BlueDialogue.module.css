@@ -1,172 +1,153 @@
-/* BlueDialogue - Digital Codec Transmission Aesthetic */
+/* BlueDialogue - Video Game Dialogue Panel */
 
 .container {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  padding: 20px;
-  background: linear-gradient(180deg, rgba(10, 15, 35, 0.98) 0%, rgba(5, 8, 20, 0.98) 100%);
-  border-radius: 2px;
-  border: 2px solid rgba(81, 104, 255, 0.4);
-  box-shadow:
-    0 0 20px rgba(81, 104, 255, 0.2),
-    inset 0 0 20px rgba(81, 104, 255, 0.05),
-    0 0 40px rgba(81, 104, 255, 0.1);
-  max-width: 100%;
+  align-items: flex-start;
+  gap: 16px;
   width: 100%;
+  max-width: 100%;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(111, 135, 255, 0.28);
+  background:
+    linear-gradient(180deg, rgba(11, 14, 30, 0.98) 0%, rgba(7, 9, 20, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 40px rgba(5, 8, 18, 0.34);
 }
 
 .containerOverlay {
-  gap: 10px;
   padding: 12px;
+  gap: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(139, 149, 255, 0.28);
+  border-color: rgba(139, 149, 255, 0.24);
   background: linear-gradient(180deg, rgba(17, 19, 31, 0.96) 0%, rgba(11, 13, 24, 0.96) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  flex-direction: column;
-  align-items: center;
 }
 
 .avatarWrapper {
-  width: 72px;
-  height: 72px;
-  min-width: 72px;
-  min-height: 72px;
-  flex-shrink: 0;
-  border-radius: 50%;
+  width: 82px;
+  height: 82px;
+  min-width: 82px;
+  min-height: 82px;
+  padding: 4px;
+  border-radius: 16px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(81, 104, 255, 0.05) 100%);
-  border: 2px solid rgba(81, 104, 255, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  background:
+    linear-gradient(145deg, rgba(123, 169, 255, 0.32) 0%, rgba(72, 111, 255, 0.16) 100%);
+  border: 1px solid rgba(133, 171, 255, 0.32);
   box-shadow:
-    0 0 20px rgba(81, 104, 255, 0.4),
-    inset 0 0 20px rgba(81, 104, 255, 0.1),
-    0 0 40px rgba(81, 104, 255, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 12px 24px rgba(23, 39, 109, 0.3);
+  flex-shrink: 0;
 }
 
 .avatarWrapperOverlay {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  min-height: 48px;
-  flex-shrink: 0;
-  border-width: 1px;
-  border-radius: 50%;
-  border-color: rgba(139, 149, 255, 0.46);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  border-radius: 12px;
 }
 
 .avatar {
-  width: calc(100% - 6px);
-  height: calc(100% - 6px);
-  object-fit: contain;
-  padding: 2px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(81, 104, 255, 0.3);
-  border-radius: 50%;
-  box-sizing: border-box;
-  filter: brightness(1.1) contrast(1.1);
-}
-
-.dialogueBox {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: rgba(9, 12, 26, 0.84);
+  border: 1px solid rgba(116, 151, 255, 0.24);
+  border-radius: 12px;
+  filter: saturate(1.04) contrast(1.02);
 }
 
 .dialogueContent {
-  background: linear-gradient(148deg, #6272ff 0%, #3a7fff 48%, #7155ff 100%);
-  border-radius: 18px;
-  padding: 16px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 520px);
+  min-height: 118px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(153, 179, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(59, 85, 228, 0.96) 0%, rgba(42, 61, 178, 0.96) 100%);
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.14),
-    0 4px 18px rgba(81, 104, 255, 0.38);
-}
-
-.dialogueContentOverlay {
-  padding: 12px 14px;
-  border-width: 1px;
-  border-color: rgba(139, 149, 255, 0.3);
-  border-radius: 10px;
-  background: rgba(28, 32, 51, 0.78);
-  box-shadow: none;
-}
-
-.dialogueContentFixed {
-  min-height: 88px;
-  height: 88px;
-  overflow: hidden;
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(12, 22, 68, 0.32),
+    0 10px 24px rgba(35, 58, 175, 0.28);
 }
 
 .dialogueContent::before {
   content: '';
   position: absolute;
-  left: -9px;
-  top: 20px;
+  left: -11px;
+  top: 22px;
   width: 0;
   height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 9px solid rgba(81, 104, 255, 0.3);
-  z-index: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 11px solid rgba(137, 164, 255, 0.2);
 }
 
 .dialogueContent::after {
   content: '';
   position: absolute;
-  left: -8px;
-  top: 21px;
+  left: -9px;
+  top: 23px;
   width: 0;
   height: 0;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-right: 8px solid rgba(99, 114, 255, 1);
-  z-index: 1;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 10px solid rgba(59, 85, 228, 0.96);
+}
+
+.dialogueContentOverlay {
+  width: min(100%, 420px);
+  min-height: 96px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border-color: rgba(139, 149, 255, 0.26);
+  background: rgba(28, 32, 51, 0.82);
+  box-shadow: none;
 }
 
 .dialogueContentOverlay::before {
-  left: -9px;
-  top: 20px;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  border-right: 9px solid rgba(28, 32, 51, 0.78);
+  border-right-color: rgba(139, 149, 255, 0.16);
 }
 
 .dialogueContentOverlay::after {
-  display: none;
+  border-right-color: rgba(28, 32, 51, 0.82);
+}
+
+.dialogueContentFixed {
+  min-height: 118px;
+  height: 118px;
 }
 
 .message {
-  font-family: var(--font-primary);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.7;
-  color: rgba(220, 230, 255, 0.95);
   margin: 0;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(238, 243, 255, 0.96);
   white-space: pre-wrap;
-  word-wrap: break-word;
-  text-shadow: 0 0 8px rgba(81, 104, 255, 0.3);
+  word-break: break-word;
+  text-shadow: 0 0 10px rgba(12, 22, 72, 0.2);
 }
 
 .messageOverlay {
-  color: rgba(235, 232, 247, 0.82);
-  line-height: 1.46;
+  color: rgba(235, 232, 247, 0.9);
+  line-height: 1.52;
   text-shadow: none;
 }
 
 .messageScrollable {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   scrollbar-width: thin;
+  scrollbar-color: rgba(214, 225, 255, 0.28) transparent;
 }
 
 .messageScrollable::-webkit-scrollbar {
@@ -174,16 +155,16 @@
 }
 
 .messageScrollable::-webkit-scrollbar-thumb {
-  background: rgba(81, 104, 255, 0.25);
+  background: rgba(214, 225, 255, 0.28);
   border-radius: 999px;
 }
 
 .cursor {
   display: inline-block;
   width: 2px;
-  height: 1.1em;
-  background-color: var(--color-primary);
+  height: 1.05em;
   margin-left: 2px;
+  background-color: rgba(255, 255, 255, 0.92);
   animation: blink 0.8s infinite;
   vertical-align: baseline;
 }
@@ -199,201 +180,95 @@
 
 .skipButton,
 .startButton {
-  font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 8px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  border: 2px solid #1A1D33;
   align-self: flex-end;
-  box-shadow: 2px 2px 0 #1A1D33;
-}
-
-.skipButton {
-  background-color: #ffffff;
-  color: #1A1D33;
-}
-
-.skipButton:hover {
-  background-color: #f5f5f5;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
-}
-
-.startButton {
-  background-color: var(--color-primary);
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
+.skipButton:hover,
 .startButton:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #1A1D33;
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: linear-gradient(180deg, rgba(10, 15, 35, 0.98) 0%, rgba(5, 8, 20, 0.98) 100%);
-    border: 2px solid rgba(81, 104, 255, 0.4);
-    box-shadow:
-      0 0 20px rgba(81, 104, 255, 0.2),
-      inset 0 0 20px rgba(81, 104, 255, 0.05),
-      0 0 40px rgba(81, 104, 255, 0.1);
-  }
-
-  .avatarWrapper {
-    background: linear-gradient(135deg, rgba(81, 104, 255, 0.15) 0%, rgba(81, 104, 255, 0.05) 100%);
-    border: 2px solid rgba(81, 104, 255, 0.6);
-    box-shadow:
-      0 0 20px rgba(81, 104, 255, 0.4),
-      inset 0 0 20px rgba(81, 104, 255, 0.1),
-      0 0 40px rgba(81, 104, 255, 0.2);
-  }
-
-  .dialogueContent {
-    background: linear-gradient(180deg, rgba(30, 40, 70, 0.8) 0%, rgba(20, 25, 50, 0.8) 100%);
-    border: 1.5px solid rgba(81, 104, 255, 0.4);
-    box-shadow:
-      0 0 15px rgba(81, 104, 255, 0.15),
-      inset 0 0 15px rgba(81, 104, 255, 0.05);
-  }
-
-  .dialogueContent::before {
-    border-right-color: rgba(30, 40, 70, 0.8);
-  }
-
-  .message {
-    color: rgba(220, 230, 255, 0.95);
-    text-shadow: 0 0 8px rgba(81, 104, 255, 0.3);
-  }
-
-  .skipButton {
-    background-color: rgba(81, 104, 255, 0.2);
-    color: rgba(220, 230, 255, 0.95);
-    border-color: rgba(81, 104, 255, 0.4);
-    box-shadow: 0 0 12px rgba(81, 104, 255, 0.2);
-  }
-
-  .skipButton:hover {
-    background-color: rgba(81, 104, 255, 0.3);
-    color: rgba(220, 230, 255, 1);
-    box-shadow: 0 0 16px rgba(81, 104, 255, 0.3);
-  }
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .container {
+  .container,
+  .containerOverlay {
     flex-direction: column;
-    padding: 16px;
-    gap: 14px;
-    box-shadow: 3px 3px 0 #1A1D33;
-  }
-
-  .avatarContainer {
-    flex-direction: row;
-    align-self: flex-start;
+    align-items: flex-start;
+    padding: 14px;
     gap: 12px;
   }
 
   .avatarWrapper {
-    width: 56px;
-    height: 56px;
-    box-shadow: 2px 2px 0 #1A1D33;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    border-radius: 14px;
   }
 
-  .nameTag {
-    align-items: flex-start;
-    justify-content: center;
+  .avatarWrapperOverlay {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    border-radius: 12px;
   }
 
-  .dialogueContent {
-    padding: 14px 16px;
+  .avatar {
+    border-radius: 10px;
   }
 
-  .dialogueContentFixed {
-    min-height: 88px;
-    height: 88px;
+  .dialogueContent,
+  .dialogueContentOverlay {
+    width: 100%;
   }
 
   .dialogueContent::before,
   .dialogueContent::after {
-    left: 24px;
+    left: 18px;
     top: -10px;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
     border-top: none;
-    border-bottom: 10px solid rgba(81, 104, 255, 0.06);
+    border-bottom: 10px solid rgba(137, 164, 255, 0.2);
   }
 
   .dialogueContent::after {
-    border-bottom: 12px solid #1A1D33;
-    top: -12px;
-    left: 22px;
+    top: -9px;
+    left: 19px;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid rgba(59, 85, 228, 0.96);
+  }
+
+  .dialogueContentOverlay::before {
+    border-bottom-color: rgba(139, 149, 255, 0.16);
+  }
+
+  .dialogueContentOverlay::after {
+    border-bottom-color: rgba(28, 32, 51, 0.82);
+  }
+
+  .dialogueContentFixed {
+    min-height: 112px;
+    height: 112px;
   }
 
   .message {
     font-size: 13px;
   }
-
-  .containerOverlay {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 16px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  }
-
-  .containerOverlay .avatarWrapper {
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
-    min-height: 46px;
-  }
-
-  .containerOverlay .dialogueContent {
-    padding: 12px;
-    border-radius: 10px;
-    width: 100%;
-  }
-
-  .containerOverlay .dialogueContentFixed {
-    min-height: 100px;
-    height: 100px;
-  }
-
-  .containerOverlay .messageScrollable {
-    height: 100%;
-    max-height: none;
-  }
-
-  .containerOverlay .dialogueContent::before {
-    display: none;
-  }
-}
-
-.containerOverlay {
-  background: linear-gradient(180deg, rgba(17, 19, 31, 0.96) 0%, rgba(11, 13, 24, 0.96) 100%);
-  border-color: rgba(139, 149, 255, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.containerOverlay .avatarWrapperOverlay {
-  border-color: rgba(139, 149, 255, 0.46);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
-}
-
-.containerOverlay .dialogueContentOverlay {
-  background: rgba(28, 32, 51, 0.78);
-  border-color: rgba(139, 149, 255, 0.3);
-  box-shadow: none;
-}
-
-.containerOverlay .messageOverlay {
-  color: rgba(235, 232, 247, 0.82);
-  text-shadow: none;
 }

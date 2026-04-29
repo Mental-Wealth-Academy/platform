@@ -581,11 +581,12 @@ export default function VotingPage() {
               <div className={styles.dashboardTitleRow}>
                 <div className={styles.dashboardTitleBlock}>
                   <h1 className={styles.dashboardTitle}>
-                    MWA <span className={styles.dashboardTitleAccent}>Decision Room</span>
+                    MWA <span className={styles.dashboardTitleAccent}>Community Hub</span>
                   </h1>
                   <p className={styles.dashboardSubtitle}>
-                    Community treasury proposals, support allocations, and live governance signals for the DeSci cohort.
+                    Treasury and choices owned by you.
                   </p>
+                  <p className={styles.dashboardTreasuryBalance}>$5,343</p>
                 </div>
                 <div className={styles.dashboardTitleAside}>
                   <TreasuryDisplay

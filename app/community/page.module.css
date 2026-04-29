@@ -1750,6 +1750,17 @@
   color: rgba(255, 255, 255, 0.58);
 }
 
+.dashboardTreasuryBalance {
+  margin: 16px 0 0;
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  color: #f4f7ff;
+  text-shadow: 0 10px 26px rgba(34, 63, 190, 0.28);
+}
+
 .dashboardTitleAside {
   display: flex;
   flex-direction: column;
@@ -3138,6 +3149,10 @@
 
   .dashboardSubtitle {
     font-size: 12px;
+  }
+
+  .dashboardTreasuryBalance {
+    margin-top: 14px;
   }
 
   .dashboardTitleAside {

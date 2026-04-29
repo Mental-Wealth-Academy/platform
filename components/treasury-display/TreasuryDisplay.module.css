@@ -16,6 +16,8 @@
 .header {
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 12px;
   position: relative;
   z-index: 1;
@@ -25,6 +27,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .icon {
@@ -49,22 +52,70 @@
   margin: 0;
 }
 
-.label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  font-family: 'IBM Plex Mono', monospace;
-  color: rgba(231, 239, 255, 0.7);
-  margin: 0 0 2px 0;
-}
-
 .title {
   font-size: 16px;
   font-weight: 700;
   font-family: 'Space Grotesk', sans-serif;
   color: #ffffff;
   margin: 0;
+}
+
+.infoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.infoButton {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: help;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.infoButton:hover,
+.infoButton:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.34);
+  transform: translateY(-1px);
+}
+
+.infoTooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(280px, 72vw);
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(14, 20, 45, 0.96);
+  border: 1px solid rgba(179, 205, 255, 0.2);
+  box-shadow: 0 16px 36px rgba(8, 12, 28, 0.4);
+  color: rgba(235, 241, 255, 0.9);
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  z-index: 4;
+}
+
+.infoWrap:hover .infoTooltip,
+.infoWrap:focus-within .infoTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .balance {
@@ -132,6 +183,7 @@
 .powerHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
 }
@@ -168,9 +220,13 @@
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.82),
-    rgba(189, 233, 255, 0.92)
+    #5168FF 0%,
+    #74C465 28%,
+    #E8556D 56%,
+    #F2A0B5 78%,
+    #a78bfa 100%
   );
+  box-shadow: 0 0 18px rgba(118, 142, 255, 0.3);
 }
 
 .powerBarIndicator {
@@ -227,10 +283,6 @@
     margin-bottom: 8px;
   }
 
-  .label {
-    font-size: 9px;
-  }
-
   .title {
     font-size: 14px;
   }
@@ -241,6 +293,11 @@
 
   .currency {
     font-size: 10px;
+  }
+
+  .infoTooltip {
+    right: -8px;
+    width: min(260px, 78vw);
   }
 
   .powerSection {
@@ -257,63 +314,8 @@
   }
 }
 
-/* ==================== DARK MODE ==================== */
-
 :global([data-theme="dark"]) .container {
-  background: linear-gradient(180deg, rgba(23, 26, 34, 0.94) 0%, rgba(17, 20, 28, 0.96) 100%);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 12px 28px rgba(0, 0, 0, 0.22);
-}
-
-:global([data-theme="dark"]) .icon {
-  background: rgba(81, 104, 255, 0.16);
-  border-color: rgba(129, 141, 255, 0.28);
-}
-
-:global([data-theme="dark"]) .icon svg {
-  color: rgba(166, 180, 255, 0.92);
-}
-
-:global([data-theme="dark"]) .label,
-:global([data-theme="dark"]) .currency,
-:global([data-theme="dark"]) .powerLabel {
-  color: rgba(227, 225, 238, 0.58);
-}
-
-:global([data-theme="dark"]) .title,
-:global([data-theme="dark"]) .balance,
-:global([data-theme="dark"]) .powerValue {
-  color: rgba(244, 244, 248, 0.96);
-}
-
-:global([data-theme="dark"]) .balance {
-  text-shadow: none;
-}
-
-:global([data-theme="dark"]) .actionButton {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: rgba(227, 225, 238, 0.62);
-}
-
-:global([data-theme="dark"]) .actionButton:hover {
-  background: rgba(81, 104, 255, 0.14);
-  border-color: rgba(129, 141, 255, 0.28);
-  color: rgba(244, 244, 248, 0.96);
-}
-
-:global([data-theme="dark"]) .powerSection {
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .powerBar {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .powerBarIndicator {
-  background: #0f1219;
-  border-color: rgba(227, 225, 238, 0.92);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top right, rgba(140, 196, 255, 0.18), transparent 42%),
+    linear-gradient(160deg, rgba(52, 76, 206, 0.98) 0%, rgba(38, 63, 187, 0.98) 52%, rgba(18, 37, 126, 0.98) 100%);
 }
