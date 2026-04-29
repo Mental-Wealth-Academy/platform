@@ -10,7 +10,6 @@ import {
   Dna,
   House,
   IconProps,
-  ImagesSquare,
   ChartLine,
   UserCircle,
   UsersThree,
@@ -63,7 +62,6 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'gallery', label: 'Galleria', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
@@ -85,7 +83,6 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'gallery', label: 'Galleria', href: '/gallery', icon: ImagesSquare },
       { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
