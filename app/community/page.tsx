@@ -552,36 +552,84 @@ export default function VotingPage() {
                             Current treasury commitments across each live pod.
                           </p>
                         </div>
-                        <div className={styles.reserveAllocationList}>
-                          {FUNDING_PODS.map((pod) => {
-                            const allocationShare = Math.round((pod.amount / TREASURY_BALANCE) * 100);
-
-                            return (
-                              <article key={pod.title} className={styles.reserveAllocationRow}>
-                                <div className={styles.reserveAllocationHeader}>
-                                  <div className={styles.reserveAllocationCopy}>
-                                    <h3 className={styles.reserveAllocationTitle}>{pod.title}</h3>
-                                    <p className={styles.reserveAllocationDesc}>{pod.desc}</p>
-                                  </div>
-                                  <div className={styles.reserveAllocationValueGroup}>
-                                    <strong className={styles.reserveAllocationValue}>
-                                      ${pod.amount.toLocaleString()}
-                                    </strong>
-                                    <span className={styles.reserveAllocationShare}>{allocationShare}%</span>
-                                  </div>
+                        <div className={styles.reserveAllocationCarousel}>
+                          <div className={styles.fundingSection}>
+                            <div className={styles.fundingCarouselViewport}>
+                              <div className={styles.fundingCarouselMask}>
+                                <div
+                                  className={styles.fundingCarouselTrack}
+                                  style={{
+                                    width: `${fundingSlides.length * 100}%`,
+                                    transform: `translateX(-${activeFundingSlide * fundingSlideWidth}%)`,
+                                    transition: isFundingTransitionEnabled ? 'transform 1150ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+                                  }}
+                                  onTransitionEnd={handleFundingTrackTransitionEnd}
+                                >
+                                  {fundingSlides.map((pod, index) => (
+                                    <div
+                                      key={`${pod.title}-${index}`}
+                                      className={styles.fundingCarouselSlide}
+                                      style={{ width: `${fundingSlideWidth}%`, flexBasis: `${fundingSlideWidth}%` }}
+                                    >
+                                      <div
+                                        className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
+                                        onMouseEnter={() => play('hover')}
+                                        style={{ ['--funding-accent' as string]: pod.accent }}
+                                      >
+                                        <div className={styles.exchangeHeader}>
+                                          <div className={`${styles.exchangeIcon} ${styles.fundingStateIcon}`}>
+                                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M4 12h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                              <path d="M8 8h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                              <path d="M8 16h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                                            </svg>
+                                          </div>
+                                          <div className={styles.exchangeTitleText}>
+                                            <span className={styles.exchangeLabel}>Funding Pod</span>
+                                            <span className={styles.exchangeTitle}>{pod.title}</span>
+                                          </div>
+                                        </div>
+                                        <div className={styles.fundingStateMetrics}>
+                                          <div className={styles.exchangePriceRow}>
+                                            <span className={styles.exchangePrice}>${pod.amount.toLocaleString()}</span>
+                                            <span className={styles.exchangeCurrency}>allocated</span>
+                                          </div>
+                                          <span className={styles.fundingStatePercent}>
+                                            {Math.round((pod.amount / pod.total) * 100)}% of treasury
+                                          </span>
+                                        </div>
+                                        <p className={styles.exchangeDesc}>{pod.desc}</p>
+                                        <div className={styles.fundingStateProgress}>
+                                          <div
+                                            className={styles.fundingStateProgressFill}
+                                            style={{ width: `${(pod.amount / pod.total) * 100}%` }}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
-                                <div className={styles.reserveAllocationBar}>
-                                  <span
-                                    className={styles.reserveAllocationBarFill}
-                                    style={{
-                                      width: `${allocationShare}%`,
-                                      ['--allocation-accent' as string]: pod.accent,
-                                    }}
-                                  />
-                                </div>
-                              </article>
-                            );
-                          })}
+                              </div>
+                            </div>
+                            <div className={styles.fundingIndicators} aria-label="Funding pod states">
+                              {FUNDING_PODS.map((pod, index) => (
+                                <button
+                                  key={pod.title}
+                                  type="button"
+                                  className={`${styles.fundingIndicator} ${index === activeFundingIndicator ? styles.fundingIndicatorActive : ''}`}
+                                  onClick={() => {
+                                    play('click');
+                                    setIsFundingTransitionEnabled(true);
+                                    setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX + index);
+                                  }}
+                                  onMouseEnter={() => play('hover')}
+                                  aria-pressed={index === activeFundingIndicator}
+                                  aria-label={`Show ${pod.title}`}
+                                  style={{ ['--funding-accent' as string]: pod.accent }}
+                                />
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </section>
@@ -641,85 +689,6 @@ export default function VotingPage() {
                 <div className={styles.overviewAngelSection}>
                   <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
                 </div>
-
-                <section className={styles.fundingSection}>
-                  <div className={styles.fundingCarouselViewport}>
-                    <div className={styles.fundingCarouselMask}>
-                      <div
-                        className={styles.fundingCarouselTrack}
-                        style={{
-                          width: `${fundingSlides.length * 100}%`,
-                          transform: `translateX(-${activeFundingSlide * fundingSlideWidth}%)`,
-                          transition: isFundingTransitionEnabled ? 'transform 1150ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
-                        }}
-                        onTransitionEnd={handleFundingTrackTransitionEnd}
-                      >
-                        {fundingSlides.map((pod, index) => (
-                          <div
-                            key={`${pod.title}-${index}`}
-                            className={styles.fundingCarouselSlide}
-                            style={{ width: `${fundingSlideWidth}%`, flexBasis: `${fundingSlideWidth}%` }}
-                          >
-                            <div
-                              className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
-                              onMouseEnter={() => play('hover')}
-                              style={{ ['--funding-accent' as string]: pod.accent }}
-                            >
-                              <div className={styles.exchangeHeader}>
-                                <div className={`${styles.exchangeIcon} ${styles.fundingStateIcon}`}>
-                                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 12h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                    <path d="M8 8h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                    <path d="M8 16h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                  </svg>
-                                </div>
-                                <div className={styles.exchangeTitleText}>
-                                  <span className={styles.exchangeLabel}>Funding Pod</span>
-                                  <span className={styles.exchangeTitle}>{pod.title}</span>
-                                </div>
-                              </div>
-                              <div className={styles.fundingStateMetrics}>
-                                <div className={styles.exchangePriceRow}>
-                                  <span className={styles.exchangePrice}>${pod.amount.toLocaleString()}</span>
-                                  <span className={styles.exchangeCurrency}>allocated</span>
-                                </div>
-                                <span className={styles.fundingStatePercent}>
-                                  {Math.round((pod.amount / pod.total) * 100)}% of treasury
-                                </span>
-                              </div>
-                              <p className={styles.exchangeDesc}>{pod.desc}</p>
-                              <div className={styles.fundingStateProgress}>
-                                <div
-                                  className={styles.fundingStateProgressFill}
-                                  style={{ width: `${(pod.amount / pod.total) * 100}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.fundingIndicators} aria-label="Funding pod states">
-                    {FUNDING_PODS.map((pod, index) => (
-                      <button
-                        key={pod.title}
-                        type="button"
-                        className={`${styles.fundingIndicator} ${index === activeFundingIndicator ? styles.fundingIndicatorActive : ''}`}
-                        onClick={() => {
-                          play('click');
-                          setIsFundingTransitionEnabled(true);
-                          setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX + index);
-                        }}
-                        onMouseEnter={() => play('hover')}
-                        aria-pressed={index === activeFundingIndicator}
-                        aria-label={`Show ${pod.title}`}
-                        style={{ ['--funding-accent' as string]: pod.accent }}
-                      />
-                    ))}
-                  </div>
-                </section>
-
                 </section>
               )}
 

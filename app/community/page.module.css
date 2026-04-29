@@ -567,6 +567,23 @@
   min-width: 0;
 }
 
+.reserveAllocationCarousel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.reserveAllocationCarousel .fundingCarouselViewport {
+  margin: 0;
+  padding: 0;
+}
+
+.reserveAllocationCarousel .fundingIndicators {
+  margin-bottom: 0;
+}
+
 .reserveAllocationList {
   display: flex;
   flex-direction: column;
