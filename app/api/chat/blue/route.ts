@@ -4,6 +4,7 @@ import { readFile } from 'fs/promises';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
+import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
 
 export const runtime = 'nodejs';
@@ -11,9 +12,7 @@ export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 const CLAUDE_ALLOWED_USERS = new Set(['volcano', 'jhinova_bay']);
-
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 
 // Build system prompt from persona JSON — kept lean, no examples
 const BLUE_SYSTEM_PROMPT = `You are Blue. Warm, calm, quietly smart. Behavioral psychologist at Mental Wealth Academy guiding users through courses on emotional regulation, self-awareness, and neuroscience-backed growth. Memory-driven — you remember users and adapt over time.
@@ -106,6 +105,10 @@ interface ElizaMessage {
   }>;
 }
 
+async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
+  return elizaAPI.chat({ messages });
+}
+
 interface BlueDebugInfo {
   source: 'eliza' | 'local-fallback';
   mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
@@ -196,42 +199,6 @@ async function buildLinkedInClaudeMessage(
     { type: 'text', text: textBlock },
     ...content,
   ];
-}
-
-async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
-  const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${ELIZA_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      messages,
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Eliza Cloud error: ${response.status} ${errText}`);
-  }
-
-  // Parse SSE streaming response
-  const sseText = await response.text();
-  let fullText = '';
-  for (const line of sseText.split('\n')) {
-    if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-      try {
-        const event = JSON.parse(line.slice(6));
-        if (event.type === 'text-delta' && event.delta) {
-          fullText += event.delta;
-        }
-      } catch { /* skip */ }
-    }
-  }
-
-  if (!fullText) throw new Error('Eliza Cloud returned empty response');
-  console.log('Blue chat completed via Eliza Cloud');
-  return fullText;
 }
 
 function buildBlueChatMessages(args: {

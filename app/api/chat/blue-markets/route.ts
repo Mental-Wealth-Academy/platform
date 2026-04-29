@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientIdentifier } from '@/lib/rate-limit';
+import { elizaAPI } from '@/lib/eliza-api';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 
 const MARKETS_SYSTEM_PROMPT = `You are Blue, the trading agent on the Mental Wealth Academy /markets desk.
 
@@ -26,35 +26,7 @@ interface ElizaMessage {
 }
 
 async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
-  const response = await fetch(`${ELIZA_BASE_URL}/api/v1/chat`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${ELIZA_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ messages }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Eliza Cloud error: ${response.status} ${errText}`);
-  }
-
-  const sseText = await response.text();
-  let fullText = '';
-  for (const line of sseText.split('\n')) {
-    if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-      try {
-        const event = JSON.parse(line.slice(6));
-        if (event.type === 'text-delta' && event.delta) {
-          fullText += event.delta;
-        }
-      } catch { /* skip */ }
-    }
-  }
-
-  if (!fullText) throw new Error('Eliza Cloud returned empty response');
-  return fullText;
+  return elizaAPI.chat({ messages });
 }
 
 export async function POST(request: Request) {
