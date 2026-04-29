@@ -9,7 +9,6 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestCard, { QuestCardKind } from '@/components/quest-card/QuestCard';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import RewardDetailModal, { Quest } from '@/components/reward-detail-modal/RewardDetailModal';
-import IntroLoaderOverlay from '@/components/intro-loader/IntroLoaderOverlay';
 import AngelMintSection from '@/components/angel-mint-section/AngelMintSection';
 import MintModal from '@/components/mint-modal/MintModal';
 import { useSound } from '@/hooks/useSound';
@@ -93,7 +92,6 @@ export default function QuestsPage() {
   const [customQuests, setCustomQuests] = useState<CustomQuest[]>([]);
   const [authoredQuests, setAuthoredQuests] = useState<CustomQuest[]>([]);
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
-  const [showIntroLoader, setShowIntroLoader] = useState(true);
   const [countdown, setCountdown] = useState('--:--:--');
   const [authorPanelOpen, setAuthorPanelOpen] = useState(false);
   const { play } = useSound();
@@ -299,14 +297,6 @@ export default function QuestsPage() {
 
   return (
     <>
-      {showIntroLoader && (
-        <IntroLoaderOverlay
-          src="/loaders/shine_rotate.lottie"
-          label="Opening quests"
-          onFinish={() => setShowIntroLoader(false)}
-        />
-      )}
-
       <div className={styles.pageLayout}>
         <SideNavigation />
         <main className={styles.page}>
@@ -389,65 +379,71 @@ export default function QuestsPage() {
             )}
 
             <section className={styles.questList} aria-label="Quests">
-              <div className={styles.sectionHeading}>
-                <h2 className={styles.sectionTitle}>Active quests</h2>
-                <span className={styles.sectionMeta}>{totalQuestCount} total</span>
-              </div>
+              <div className={styles.questListFrame}>
+                <div className={styles.sectionHeading}>
+                  <h2 className={styles.sectionTitle}>Active quests</h2>
+                  <span className={styles.sectionMeta}>{totalQuestCount} total</span>
+                </div>
 
-              <div className={styles.cardList}>
-                {builtInQuests.map((quest) => {
-                  const completed = (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1);
-                  return (
-                    <div key={quest.id} onMouseEnter={() => play('hover')}>
-                      <QuestCard
-                        title={quest.title}
-                        description={quest.desc}
-                        progressCurrent={quest.progressCount ?? 0}
-                        progressTotal={quest.targetCount ?? 1}
-                        points={quest.points}
-                        kind={questKindFromType((quest.rewardType ?? 'no-proof') as QuestType)}
-                        badge={quest.weekNumber ? `Week ${quest.weekNumber}` : undefined}
-                        onOpen={() => handleAccept(quest)}
-                      />
-                      {completed ? null : null}
-                    </div>
-                  );
-                })}
+                <div className={styles.questListScroll}>
+                  <div className={styles.cardList}>
+                    {builtInQuests.map((quest) => {
+                      const completed = (quest.claimedCount ?? 0) >= (quest.targetCount ?? 1);
+                      return (
+                        <div key={quest.id} onMouseEnter={() => play('hover')}>
+                          <QuestCard
+                            title={quest.title}
+                            description={quest.desc}
+                            progressCurrent={quest.progressCount ?? 0}
+                            progressTotal={quest.targetCount ?? 1}
+                            points={quest.points}
+                            kind={questKindFromType((quest.rewardType ?? 'no-proof') as QuestType)}
+                            badge={quest.weekNumber ? `Week ${quest.weekNumber}` : undefined}
+                            onOpen={() => handleAccept(quest)}
+                          />
+                          {completed ? null : null}
+                        </div>
+                      );
+                    })}
 
-                {customQuestsAsModal.map((quest) => {
-                  const original = customQuests.find((c) => c.id === quest.id);
-                  const handleLabel = original?.creatorHandle
-                    ? `By @${original.creatorHandle}`
-                    : original?.creatorWallet
-                      ? `By ${original.creatorWallet.slice(0, 6)}…${original.creatorWallet.slice(-4)}`
-                      : undefined;
-                  return (
-                    <div key={quest.id} onMouseEnter={() => play('hover')}>
-                      <QuestCard
-                        title={quest.title}
-                        description={quest.desc}
-                        progressCurrent={quest.progressCount ?? 0}
-                        progressTotal={quest.targetCount ?? 1}
-                        points={quest.points}
-                        kind="custom"
-                        badge={handleLabel}
-                        onOpen={() => handleAccept(quest)}
-                      />
-                    </div>
-                  );
-                })}
+                    {customQuestsAsModal.map((quest) => {
+                      const original = customQuests.find((c) => c.id === quest.id);
+                      const handleLabel = original?.creatorHandle
+                        ? `By @${original.creatorHandle}`
+                        : original?.creatorWallet
+                          ? `By ${original.creatorWallet.slice(0, 6)}…${original.creatorWallet.slice(-4)}`
+                          : undefined;
+                      return (
+                        <div key={quest.id} onMouseEnter={() => play('hover')}>
+                          <QuestCard
+                            title={quest.title}
+                            description={quest.desc}
+                            progressCurrent={quest.progressCount ?? 0}
+                            progressTotal={quest.targetCount ?? 1}
+                            points={quest.points}
+                            kind="custom"
+                            badge={handleLabel}
+                            onOpen={() => handleAccept(quest)}
+                          />
+                        </div>
+                      );
+                    })}
 
-                {customQuests.length === 0 && (
-                  <p className={styles.emptyHint}>
-                    {isPro
-                      ? 'Open quest authoring to create your first one.'
-                      : 'Soul Key holders can author additional quests for the community.'}
-                  </p>
-                )}
+                    {customQuests.length === 0 && (
+                      <p className={styles.emptyHint}>
+                        {isPro
+                          ? 'Open quest authoring to create your first one.'
+                          : 'Soul Key holders can author additional quests for the community.'}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className={styles.questListFooter}>
+                    <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
+                  </div>
+                </div>
               </div>
             </section>
-
-            <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
           </div>
         </main>
       </div>
