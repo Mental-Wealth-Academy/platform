@@ -30,7 +30,7 @@ dashboardChrome
 `/app/api/community/news/route.ts`
 
 Source: Hacker News Algolia API — free, no auth required.
-`https://hn.algolia.com/api/v1/search?query={query}&tags=story&hitsPerPage=5`
+`https://hn.algolia.com/api/v1/search?query={query}&tags=story&hitsPerPage=6`
 
 Revalidates every 30 minutes via Next.js `revalidate = 1800`.
 
@@ -65,6 +65,7 @@ const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
 const [newsLoading, setNewsLoading] = useState(true);
 ```
 Fetched in `useEffect` on mount, independent of proposal fetch.
+If the feed fails or returns no stories, the UI now shows a full-width fallback card instead of leaving the news area blank.
 
 ## Removed Elements
 - **Governance live badge** — `dashboardStatus` div in `dashboardTitleRow`. Removed entirely.

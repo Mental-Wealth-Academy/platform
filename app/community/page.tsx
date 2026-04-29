@@ -270,6 +270,7 @@ export default function VotingPage() {
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState<string | null>(null);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
     ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
@@ -295,13 +296,40 @@ export default function VotingPage() {
   }, [isFundingTransitionEnabled]);
 
   useEffect(() => {
-    fetch('/api/community/news')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.topics) setNewsTopics(data.topics);
-      })
-      .catch(() => {/* news is non-critical */})
-      .finally(() => setNewsLoading(false));
+    let active = true;
+
+    const loadNews = async () => {
+      try {
+        const res = await fetch('/api/community/news');
+
+        if (!res.ok) {
+          throw new Error(`News fetch failed with status ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (!active) return;
+
+        setNewsTopics(Array.isArray(data.topics) ? data.topics : []);
+        setNewsError(null);
+      } catch (error) {
+        if (!active) return;
+
+        console.error('Error loading community news:', error);
+        setNewsTopics([]);
+        setNewsError('News feed unavailable right now.');
+      } finally {
+        if (active) {
+          setNewsLoading(false);
+        }
+      }
+    };
+
+    void loadNews();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
@@ -538,6 +566,18 @@ export default function VotingPage() {
                       {[0, 1, 2, 3].map((i) => (
                         <div key={i} className={styles.newsLoadingCard} />
                       ))}
+                    </div>
+                  ) : newsError ? (
+                    <div className={styles.newsEmptyCard}>
+                      <span className={styles.newsEmptyText}>
+                        {newsError} Treasury and proposal tools are still available below.
+                      </span>
+                    </div>
+                  ) : newsTopics.length === 0 ? (
+                    <div className={styles.newsEmptyCard}>
+                      <span className={styles.newsEmptyText}>
+                        No recent stories found across the tracked topics.
+                      </span>
                     </div>
                   ) : (
                     <div className={styles.newsGrid}>
