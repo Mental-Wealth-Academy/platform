@@ -390,6 +390,8 @@ const ART_STYLES: ArtStyle[] = [
   },
 ];
 
+const DESCRIPTION_MAX = ART_STYLES[0].description.length;
+
 const SKILLS: Skill[] = [
   // AI & Automation
   { name: 'Self-Improving Skill Loop', category: 'AI & Automation', added: '2026-03-15', type: 'AUTO', users: '2,345', rating: '4.8%' },
@@ -568,7 +570,11 @@ export default function LibraryPage() {
                         <h3 className={styles.artStyleName}>{style.name}</h3>
                         <span className={styles.artStyleMood}>{style.mood}</span>
                       </div>
-                      <p className={styles.artStyleDescription}>{style.description}</p>
+                      <p className={styles.artStyleDescription}>
+                        {style.description.length > DESCRIPTION_MAX
+                          ? `${style.description.slice(0, DESCRIPTION_MAX)}…`
+                          : style.description}
+                      </p>
                       {style.image && (
                         <div className={styles.artStyleImage}>
                           <img src={style.image} alt={style.name} />
