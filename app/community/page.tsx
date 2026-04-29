@@ -70,6 +70,26 @@ interface MergedProposal extends DatabaseProposal {
   };
 }
 
+interface NewsItem {
+  title: string;
+  url: string;
+  source: string;
+  createdAt: string;
+}
+
+interface NewsTopic {
+  topic: string;
+  color: string;
+  items: NewsItem[];
+}
+
+function timeAgo(isoString: string): string {
+  const seconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+
 const getTutorialSteps = (): TutorialStep[] => [
   {
     message: 'Hey there! Welcome to the Decision Room. I\'m Blue, your friendly co-pilot. Think of this space as our community garden—where good ideas get the sunshine they need to grow.',
@@ -248,6 +268,8 @@ export default function VotingPage() {
   const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
   const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
+  const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
     ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
@@ -271,6 +293,16 @@ export default function VotingPage() {
       return () => window.cancelAnimationFrame(frame);
     }
   }, [isFundingTransitionEnabled]);
+
+  useEffect(() => {
+    fetch('/api/community/news')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.topics) setNewsTopics(data.topics);
+      })
+      .catch(() => {/* news is non-critical */})
+      .finally(() => setNewsLoading(false));
+  }, []);
 
   const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
     const proposalsNeedingChainData = dbProposals.filter((proposal) =>
@@ -382,28 +414,6 @@ export default function VotingPage() {
   ).flat();
   const fundingSlideWidth = 100 / fundingSlides.length;
   const activeFundingIndicator = activeFundingSlide % FUNDING_PODS.length;
-  const approvedProposalsCount = proposals.filter((proposal) => proposal.status === 'approved' || proposal.status === 'active' || proposal.status === 'completed').length;
-  const pendingProposalsCount = proposals.filter((proposal) => proposal.status === 'pending_review').length;
-  const treasuryAllocated = FUNDING_PODS.reduce((sum, pod) => sum + pod.amount, 0);
-  const treasuryReserveBuffer = Math.max(TREASURY_BALANCE - treasuryAllocated, 0);
-  const treasuryProgrammedPct = Math.round((treasuryAllocated / TREASURY_BALANCE) * 100);
-  const treasuryPulse = [
-    {
-      label: 'Treasury programmed',
-      value: `${treasuryProgrammedPct}%`,
-      detail: treasuryReserveBuffer > 0 ? `${treasuryReserveBuffer.toLocaleString()} USDC remains flexible` : 'Every active dollar is assigned to a live support pod',
-    },
-    {
-      label: 'Community-backed',
-      value: approvedProposalsCount.toString().padStart(2, '0'),
-      detail: 'Approved or on-chain proposals shaping the current cycle',
-    },
-    {
-      label: 'Awaiting review',
-      value: pendingProposalsCount.toString().padStart(2, '0'),
-      detail: 'Member submissions still moving through evaluation',
-    },
-  ] as const;
   const handleFundingTrackTransitionEnd = () => {
     if (activeFundingSlide >= fundingSlides.length - FUNDING_PODS.length) {
       setIsFundingTransitionEnabled(false);
@@ -484,10 +494,6 @@ export default function VotingPage() {
                     Community treasury proposals, support allocations, and live governance signals for the DeSci cohort.
                   </p>
                 </div>
-                <div className={styles.dashboardStatus}>
-                  <span className={styles.dashboardStatusDot} />
-                  Governance live
-                </div>
               </div>
 
               <div className={styles.dashboardFilters} aria-label="Community dashboard filters">
@@ -527,22 +533,47 @@ export default function VotingPage() {
               {communityView === 'overview' && (
                 <section className={styles.communityViewPanel}>
                 <div className={styles.reserveCard}>
-                  <div className={styles.reserveIntro}>
-                    <article className={`${styles.reservePulseCard} ${styles.reserveBalanceCard}`}>
-                      <span className={styles.reserveBalanceEyebrow}>Treasury reserve</span>
-                      <strong className={styles.reserveBalanceValue}>${TREASURY_BALANCE.toLocaleString()}</strong>
-                      <span className={styles.reserveBalanceMeta}>USDC pooled for the current community funding cycle.</span>
-                    </article>
-                    <div className={styles.reservePulseGrid}>
-                      {treasuryPulse.map((item) => (
-                        <article key={item.label} className={styles.reservePulseCard}>
-                          <span className={styles.reservePulseLabel}>{item.label}</span>
-                          <strong className={styles.reservePulseValue}>{item.value}</strong>
-                          <span className={styles.reservePulseDetail}>{item.detail}</span>
+                  {newsLoading ? (
+                    <div className={styles.newsLoadingGrid}>
+                      {[0, 1, 2, 3].map((i) => (
+                        <div key={i} className={styles.newsLoadingCard} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className={styles.newsGrid}>
+                      {newsTopics.map((topic) => (
+                        <article key={topic.topic} className={styles.newsTopicCard}>
+                          <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
+                            {topic.topic}
+                          </span>
+                          <div className={styles.newsTopicDivider} />
+                          {topic.items.length === 0 ? (
+                            <span className={styles.newsEmptyText}>No recent stories found.</span>
+                          ) : (
+                            <ul className={styles.newsArticleList}>
+                              {topic.items.map((item, i) => (
+                                <li key={i} className={styles.newsArticleItem}>
+                                  <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.newsArticleLink}
+                                    onClick={() => play('click')}
+                                    onMouseEnter={() => play('hover')}
+                                  >
+                                    <span className={styles.newsArticleTitle}>{item.title}</span>
+                                    <span className={styles.newsArticleMeta}>
+                                      {item.source} · {timeAgo(item.createdAt)}
+                                    </span>
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </article>
                       ))}
                     </div>
-                  </div>
+                  )}
                   <div className={styles.reserveInsightsGrid}>
                     <section className={`${styles.reserveInsightCard} ${styles.reserveInsightCardWide}`}>
                       <div className={styles.reserveAllocationColumn}>
