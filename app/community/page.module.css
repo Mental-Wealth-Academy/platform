@@ -1753,9 +1753,9 @@
 .dashboardTreasuryBalance {
   margin: 16px 0 0;
   font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
-  font-size: clamp(32px, 5vw, 58px);
+  font-size: clamp(46px, 7vw, 86px);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: 0.9;
   letter-spacing: -0.05em;
   color: #f4f7ff;
   text-shadow: 0 10px 26px rgba(34, 63, 190, 0.28);
@@ -3153,6 +3153,7 @@
 
   .dashboardTreasuryBalance {
     margin-top: 14px;
+    font-size: clamp(40px, 10vw, 68px);
   }
 
   .dashboardTitleAside {
@@ -3397,10 +3398,6 @@
 
   .dashboardTitle {
     font-size: 20px;
-  }
-
-  .dashboardMiniButton {
-    align-self: stretch;
   }
 
   .dashboardSearch {

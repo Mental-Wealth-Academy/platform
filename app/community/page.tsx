@@ -602,17 +602,6 @@ export default function VotingPage() {
                     compact
                     className={styles.dashboardWalletCard}
                   />
-                  <button
-                    type="button"
-                    className={styles.dashboardMiniButton}
-                    onClick={() => {
-                      play('click');
-                      setCommunityView('proposals');
-                    }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    Proposals
-                  </button>
                 </div>
               </div>
 

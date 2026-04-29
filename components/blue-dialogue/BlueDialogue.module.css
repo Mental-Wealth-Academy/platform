@@ -203,6 +203,99 @@
   border-color: rgba(255, 255, 255, 0.28);
 }
 
+:global([data-theme="dark"]) .container {
+  border-color: rgba(179, 195, 255, 0.28);
+  background:
+    linear-gradient(180deg, rgba(240, 245, 255, 0.98) 0%, rgba(225, 234, 255, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 18px 40px rgba(5, 8, 18, 0.18);
+}
+
+:global([data-theme="dark"]) .containerOverlay {
+  border-color: rgba(168, 184, 255, 0.28);
+  background: linear-gradient(180deg, rgba(245, 247, 255, 0.96) 0%, rgba(232, 237, 255, 0.96) 100%);
+}
+
+:global([data-theme="dark"]) .avatarWrapper {
+  background:
+    linear-gradient(145deg, rgba(123, 169, 255, 0.28) 0%, rgba(72, 111, 255, 0.14) 100%);
+  border-color: rgba(133, 171, 255, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 12px 24px rgba(23, 39, 109, 0.14);
+}
+
+:global([data-theme="dark"]) .avatar {
+  background: rgba(235, 241, 255, 0.96);
+  border-color: rgba(116, 151, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .dialogueContent {
+  border-color: rgba(132, 157, 255, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(235, 241, 255, 0.98) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    inset 0 -1px 0 rgba(127, 149, 235, 0.16),
+    0 10px 24px rgba(35, 58, 175, 0.14);
+}
+
+:global([data-theme="dark"]) .dialogueContent::before {
+  border-right-color: rgba(132, 157, 255, 0.28);
+}
+
+:global([data-theme="dark"]) .dialogueContent::after {
+  border-right-color: rgba(255, 255, 255, 0.98);
+}
+
+:global([data-theme="dark"]) .dialogueContentOverlay {
+  border-color: rgba(145, 162, 255, 0.22);
+  background: rgba(246, 248, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .dialogueContentOverlay::before {
+  border-right-color: rgba(145, 162, 255, 0.2);
+}
+
+:global([data-theme="dark"]) .dialogueContentOverlay::after {
+  border-right-color: rgba(246, 248, 255, 0.94);
+}
+
+:global([data-theme="dark"]) .message {
+  color: rgba(28, 37, 74, 0.94);
+  text-shadow: none;
+}
+
+:global([data-theme="dark"]) .messageOverlay {
+  color: rgba(45, 53, 88, 0.9);
+}
+
+:global([data-theme="dark"]) .messageScrollable {
+  scrollbar-color: rgba(90, 120, 225, 0.26) transparent;
+}
+
+:global([data-theme="dark"]) .messageScrollable::-webkit-scrollbar-thumb {
+  background: rgba(90, 120, 225, 0.26);
+}
+
+:global([data-theme="dark"]) .cursor {
+  background-color: rgba(59, 85, 228, 0.92);
+}
+
+:global([data-theme="dark"]) .skipButton,
+:global([data-theme="dark"]) .startButton {
+  border-color: rgba(89, 110, 210, 0.18);
+  background: rgba(89, 110, 210, 0.08);
+  color: rgba(37, 50, 110, 0.94);
+}
+
+:global([data-theme="dark"]) .skipButton:hover,
+:global([data-theme="dark"]) .startButton:hover {
+  background: rgba(89, 110, 210, 0.14);
+  border-color: rgba(89, 110, 210, 0.24);
+}
+
 @media (max-width: 768px) {
   .container,
   .containerOverlay {
@@ -261,6 +354,22 @@
 
   .dialogueContentOverlay::after {
     border-bottom-color: rgba(28, 32, 51, 0.82);
+  }
+
+  :global([data-theme="dark"]) .dialogueContent::before {
+    border-bottom-color: rgba(132, 157, 255, 0.28);
+  }
+
+  :global([data-theme="dark"]) .dialogueContent::after {
+    border-bottom-color: rgba(255, 255, 255, 0.98);
+  }
+
+  :global([data-theme="dark"]) .dialogueContentOverlay::before {
+    border-bottom-color: rgba(145, 162, 255, 0.2);
+  }
+
+  :global([data-theme="dark"]) .dialogueContentOverlay::after {
+    border-bottom-color: rgba(246, 248, 255, 0.94);
   }
 
   .dialogueContentFixed {
