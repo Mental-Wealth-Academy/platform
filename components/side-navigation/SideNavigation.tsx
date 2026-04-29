@@ -52,9 +52,9 @@ const desktopNavSections: NavSection[] = [
     id: 'main',
     label: 'Main Spacehall',
     items: [
+      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
       { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
-      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
     ],
   },
   {
@@ -73,9 +73,9 @@ const mobileNavSections: NavSection[] = [
     id: 'main',
     label: 'Main Spacehall',
     items: [
+      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
       { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
-      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
     ],
   },
   {
