@@ -54,7 +54,6 @@ const desktopNavSections: NavSection[] = [
     items: [
       { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
-      { id: 'voting', label: 'Courses', href: '/home', icon: House },
       { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
     ],
   },
@@ -62,6 +61,7 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
+      { id: 'pathways', label: 'PATHWAYS', href: '/home', icon: House, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
@@ -73,16 +73,16 @@ const mobileNavSections: NavSection[] = [
     id: 'main',
     label: 'Main Spacehall',
     items: [
-      { id: 'voting', label: 'Courses', href: '/home', icon: House },
+      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
       { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
-      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
     ],
   },
   {
     id: 'extras',
     label: 'Community Resources',
     items: [
+      { id: 'pathways', label: 'PATHWAYS', href: '/home', icon: House, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
       { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],

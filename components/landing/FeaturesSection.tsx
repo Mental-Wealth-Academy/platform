@@ -137,7 +137,7 @@ export const FeaturesSection: React.FC = () => {
                 It really helped me get out of a creative slump and make real life changes.
               </p>
               <a
-                href="/home"
+                href="/community"
                 className={styles.ctaButton}
               >
                 Start Now
