@@ -198,14 +198,14 @@
    ============================================ */
 
 [data-theme="dark"] {
-  --color-background: oklch(9.8% 0.014 270);
-  --color-surface-base: oklch(9.8% 0.014 270);
-  --color-surface-1: oklch(14.8% 0.018 270);
-  --color-surface-2: oklch(18.6% 0.021 270);
-  --color-surface-3: oklch(23% 0.024 270);
+  --color-background: oklch(15% 0.017 270);
+  --color-surface-base: oklch(15% 0.017 270);
+  --color-surface-1: oklch(19.5% 0.021 270);
+  --color-surface-2: oklch(24% 0.025 270);
+  --color-surface-3: oklch(29% 0.029 270);
   --color-border-subtle: rgba(235, 232, 247, 0.1);
   --color-border-strong: rgba(235, 232, 247, 0.18);
-  --color-shell-background: rgba(13, 14, 21, 0.84);
+  --color-shell-background: rgba(10, 10, 17, 0.9);
   --color-primary: oklch(69% 0.145 274);
   --color-primary-hover: oklch(76% 0.115 274);
   --color-primary-muted: rgba(139, 149, 255, 0.48);
@@ -223,12 +223,12 @@
 
   /* Gradient overrides */
   --gradient-futuristic-floss-start: var(--color-background);
-  --gradient-futuristic-floss-end: oklch(14.5% 0.016 285);
+  --gradient-futuristic-floss-end: oklch(19% 0.019 285);
   --gradient-futuristic-floss: linear-gradient(
     180deg,
     var(--color-background) 0%,
-    oklch(13% 0.016 285) 54%,
-    oklch(10.5% 0.012 255) 100%
+    oklch(17.5% 0.019 285) 54%,
+    oklch(15% 0.015 255) 100%
   );
   --gradient-primary: linear-gradient(
     135deg,

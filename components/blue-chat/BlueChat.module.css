@@ -23,7 +23,7 @@
   height: min(680px, calc(100vh - 48px));
   display: flex;
   flex-direction: column;
-  background: #1a1c28;
+  background: var(--color-surface-2);
   border: 1px solid rgba(81, 104, 255, 0.14);
   border-radius: 20px;
   box-shadow:
