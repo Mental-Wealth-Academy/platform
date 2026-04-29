@@ -559,12 +559,17 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       }
 
       // AI unavailable -- fallback to local
+      const notes = [
+        typeof data.message === 'string' && data.message.trim()
+          ? data.message.trim()
+          : 'API returned a non-success response without usable assistant text.',
+      ];
       setIsTyping(false);
       addBlueMessage(generateBlueResponse(text), action, {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
-        notes: ['API returned a non-success response without usable assistant text.'],
+        notes,
       });
     } catch {
       setIsTyping(false);

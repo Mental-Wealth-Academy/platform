@@ -504,6 +504,16 @@ export async function POST(request: Request) {
   const isLinkedInProfessional = body.mode === 'linkedin-professional';
   const isAutoDistribution = body.mode === 'auto-distribution';
 
+  if (!isLinkedInProfessional && !ELIZA_API_KEY) {
+    return NextResponse.json(
+      {
+        error: 'ai_unconfigured',
+        message: 'ELIZA_API_KEY is not configured on the server.',
+      },
+      { status: 503 }
+    );
+  }
+
   if (isLinkedInProfessional) {
     const normalizedUsername = (user.username || '').trim().toLowerCase();
     if (!CLAUDE_ALLOWED_USERS.has(normalizedUsername)) {
