@@ -230,7 +230,7 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   accent: string;
   image?: string;
 }> = [
-  { label: 'Blue', image: '/library/CharacterBlue.png', accent: styles.dashboardAvatarImageWrap },
+  { label: 'Blue', image: '/prompts/CharacterBlue.png', accent: styles.dashboardAvatarImageWrap },
   { label: 'AZ', accent: styles.dashboardAvatarBlue },
   { label: 'MW', accent: styles.dashboardAvatarWarm },
   { label: 'OP', accent: styles.dashboardAvatarSlate },

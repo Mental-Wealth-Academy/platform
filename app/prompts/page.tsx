@@ -533,7 +533,7 @@ export default function LibraryPage() {
                   className={styles.scanButton}
                   onClick={() => {
                     const link = document.createElement('a');
-                    link.href = '/library/CharacterBlue.png';
+                    link.href = '/prompts/CharacterBlue.png';
                     link.download = 'CharacterBlue.png';
                     document.body.appendChild(link);
                     link.click();

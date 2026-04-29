@@ -55,7 +55,7 @@ const desktopNavSections: NavSection[] = [
       { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
       { id: 'voting', label: 'Courses', href: '/home', icon: House },
-      { id: 'library', label: 'Knowledge', href: '/library', icon: Book },
+      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
     ],
   },
   {
@@ -75,7 +75,7 @@ const mobileNavSections: NavSection[] = [
     items: [
       { id: 'voting', label: 'Courses', href: '/home', icon: House },
       { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
-      { id: 'library', label: 'Knowledge', href: '/library', icon: Book },
+      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
       { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
     ],
   },
