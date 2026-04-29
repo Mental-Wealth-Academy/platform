@@ -8,6 +8,7 @@ interface TreasuryDisplayProps {
   contractAddress: string;
   usdcAddress: string;
   className?: string;
+  compact?: boolean;
 }
 
 const BLUE_WALLET = '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
@@ -20,6 +21,7 @@ const USDC_ABI = [
 const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   usdcAddress,
   className,
+  compact = false,
 }) => {
   const votingPower = 40;
   const [balance, setBalance] = useState<string>('0');
@@ -74,7 +76,7 @@ const TreasuryDisplay: React.FC<TreasuryDisplayProps> = ({
   }, [loadBalance]);
 
   return (
-    <div className={`${styles.container} ${loading ? styles.loading : ''} ${className ?? ''}`}>
+    <div className={`${styles.container} ${compact ? styles.compact : ''} ${loading ? styles.loading : ''} ${className ?? ''}`}>
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <div className={styles.icon}>

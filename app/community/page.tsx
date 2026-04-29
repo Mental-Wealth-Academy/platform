@@ -2,22 +2,18 @@
 
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type MouseEvent } from 'react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
+import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
+import { useScrollLock } from '@/hooks/useScrollLock';
+import { normalizeCommunityArticleUrl } from '@/lib/community-links';
 import styles from './page.module.css';
 
-const AngelMintSection = dynamic(() => import('@/components/angel-mint-section/AngelMintSection'), {
-  ssr: false,
-  loading: () => null,
-});
-const MintModal = dynamic(() => import('@/components/mint-modal/MintModal'), {
-  ssr: false,
-});
 const StillTutorial = dynamic(() => import('@/components/still-tutorial/StillTutorial'), {
   ssr: false,
 });
@@ -81,6 +77,15 @@ interface NewsTopic {
   topic: string;
   color: string;
   items: NewsItem[];
+}
+
+interface ArticlePreviewState {
+  title: string;
+  source: string;
+  canonicalUrl: string;
+  summary: string;
+  status: 'loading' | 'ready' | 'error';
+  isRecovered: boolean;
 }
 
 function timeAgo(isoString: string): string {
@@ -239,12 +244,6 @@ const SENTIMENT_STREAM_LAYERS = buildStreamLayers(
   SENTIMENT_CHART_HEIGHT,
 ).map((layer) => ({ ...layer, d: streamLayerPath(layer.points) }));
 
-const DASHBOARD_FILTERS = [
-  'Treasury Cycle 01',
-  'Proposal Status Active',
-  'Updated Live',
-] as const;
-
 const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   label: string;
   accent: string;
@@ -264,18 +263,20 @@ export default function VotingPage() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [showMintModal, setShowMintModal] = useState(false);
   const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
   const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
+  const [articlePreview, setArticlePreview] = useState<ArticlePreviewState | null>(null);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
     ? proposals.find((proposal) => proposal.id === selectedProposalId) ?? null
     : null;
   const isPageLoading = loading && proposals.length === 0;
+
+  useScrollLock(Boolean(articlePreview));
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -331,6 +332,19 @@ export default function VotingPage() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!articlePreview) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setArticlePreview(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [articlePreview]);
 
   const enrichProposals = useCallback(async (dbProposals: DatabaseProposal[]) => {
     const proposalsNeedingChainData = dbProposals.filter((proposal) =>
@@ -436,6 +450,57 @@ export default function VotingPage() {
     }
   };
 
+  const handleArticleClick = useCallback(async (event: MouseEvent<HTMLAnchorElement>, item: NewsItem) => {
+    event.preventDefault();
+    const normalizedUrl = normalizeCommunityArticleUrl(item.url);
+
+    play('click');
+    setArticlePreview({
+      title: item.title,
+      source: item.source,
+      canonicalUrl: normalizedUrl,
+      summary: 'I am scanning this article now so I can give you a quick read on it before you leave the Decision Room.',
+      status: 'loading',
+      isRecovered: normalizedUrl !== item.url,
+    });
+
+    try {
+      const response = await fetch(`/api/community/article-preview?url=${encodeURIComponent(item.url)}`);
+
+      if (!response.ok) {
+        throw new Error(`Article preview failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setArticlePreview({
+        title: data.title || item.title,
+        source: data.source || item.source,
+        canonicalUrl: data.canonicalUrl || normalizedUrl,
+        summary: `${data.summary || 'This article is ready.'} Continue to the full article?`,
+        status: 'ready',
+        isRecovered: Boolean(data.isRecovered),
+      });
+    } catch (error) {
+      console.error('Error loading article preview:', error);
+      setArticlePreview({
+        title: item.title,
+        source: item.source,
+        canonicalUrl: normalizedUrl,
+        summary: 'I could not generate a clean summary for this one, but the article destination is ready if you want to keep reading.',
+        status: 'error',
+        isRecovered: normalizedUrl !== item.url,
+      });
+    }
+  }, [play]);
+
+  const handleContinueReading = useCallback(() => {
+    if (!articlePreview) return;
+    play('navigation');
+    window.open(articlePreview.canonicalUrl, '_blank', 'noopener,noreferrer');
+    setArticlePreview(null);
+  }, [articlePreview, play]);
+
   const fundingSlides = Array.from(
     { length: FUNDING_CAROUSEL_REPEAT_COUNT },
     () => FUNDING_PODS
@@ -516,20 +581,31 @@ export default function VotingPage() {
               <div className={styles.dashboardTitleRow}>
                 <div className={styles.dashboardTitleBlock}>
                   <h1 className={styles.dashboardTitle}>
-                    Mental Wealth Academy <span className={styles.dashboardTitleAccent}>Decision Room</span>
+                    MWA <span className={styles.dashboardTitleAccent}>Decision Room</span>
                   </h1>
                   <p className={styles.dashboardSubtitle}>
                     Community treasury proposals, support allocations, and live governance signals for the DeSci cohort.
                   </p>
                 </div>
-              </div>
-
-              <div className={styles.dashboardFilters} aria-label="Community dashboard filters">
-                {DASHBOARD_FILTERS.map((filter) => (
-                  <span key={filter} className={styles.dashboardFilterPill}>
-                    {filter}
-                  </span>
-                ))}
+                <div className={styles.dashboardTitleAside}>
+                  <TreasuryDisplay
+                    contractAddress={CONTRACT_ADDRESS}
+                    usdcAddress={USDC_ADDRESS}
+                    compact
+                    className={styles.dashboardWalletCard}
+                  />
+                  <button
+                    type="button"
+                    className={styles.dashboardMiniButton}
+                    onClick={() => {
+                      play('click');
+                      setCommunityView('proposals');
+                    }}
+                    onMouseEnter={() => play('hover')}
+                  >
+                    Proposals
+                  </button>
+                </div>
               </div>
 
             <div className={styles.communityTopbar}>
@@ -594,11 +670,11 @@ export default function VotingPage() {
                               {topic.items.map((item, i) => (
                                 <li key={i} className={styles.newsArticleItem}>
                                   <a
-                                    href={item.url}
+                                    href={normalizeCommunityArticleUrl(item.url)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={styles.newsArticleLink}
-                                    onClick={() => play('click')}
+                                    onClick={(event) => void handleArticleClick(event, item)}
                                     onMouseEnter={() => play('hover')}
                                   >
                                     <span className={styles.newsArticleTitle}>{item.title}</span>
@@ -756,51 +832,44 @@ export default function VotingPage() {
                     </section>
                   </div>
                 </div>
-
-                <div className={styles.overviewAngelSection}>
-                  <AngelMintSection onOpenMintModal={() => setShowMintModal(true)} />
-                </div>
                 </section>
               )}
 
               {communityView === 'proposals' && (
                 <section className={styles.communityViewPanel}>
                   <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
-                    <button
-                      className={styles.proposalsEntryButton}
-                      onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
-                      onMouseEnter={() => play('hover')}
-                      type="button"
-                    >
-                      <div className={styles.proposalsEntryIcon}>
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                          <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                          <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                          <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
-                        </svg>
-                      </div>
-                      <div className={styles.proposalsEntryContent}>
-                        <span className={styles.proposalsEntryLabel}>Submit Proposal</span>
-                      </div>
-                      <span className={styles.proposalReward}>
-                        <span className={styles.proposalRewardIcon} aria-hidden="true">
-                          <Image
-                            src="/icons/ui-shard.svg"
-                            alt=""
-                            width={16}
-                            height={16}
-                            unoptimized
-                          />
+                    <div className={styles.proposalsActions}>
+                      <button
+                        className={styles.proposalsEntryButton}
+                        onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
+                        onMouseEnter={() => play('hover')}
+                        type="button"
+                      >
+                        <div className={styles.proposalsEntryIcon}>
+                          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                            <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                            <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                            <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
+                          </svg>
+                        </div>
+                        <div className={styles.proposalsEntryContent}>
+                          <span className={styles.proposalsEntryLabel}>Submit Proposal</span>
+                        </div>
+                        <span className={styles.proposalReward}>
+                          <span className={styles.proposalRewardIcon} aria-hidden="true">
+                            <Image
+                              src="/icons/ui-shard.svg"
+                              alt=""
+                              width={16}
+                              height={16}
+                              unoptimized
+                            />
+                          </span>
+                          <span className={styles.proposalRewardValue}>-500</span>
                         </span>
-                        <span className={styles.proposalRewardValue}>-500</span>
-                      </span>
-                    </button>
-                    <TreasuryDisplay
-                      contractAddress={CONTRACT_ADDRESS}
-                      usdcAddress={USDC_ADDRESS}
-                      className={styles.treasuryHeroCard}
-                    />
+                      </button>
+                    </div>
                     {loading && proposals.length > 0 ? (
                       <div className={styles.proposalsGrid}>
                       {[...Array(3)].map((_, i) => (
@@ -882,7 +951,6 @@ export default function VotingPage() {
         </div>
       </main>
       </div>
-      {showMintModal && <MintModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />}
 
       {selectedProposal && (
         <ProposalDetailsModal
@@ -904,6 +972,62 @@ export default function VotingPage() {
           onClose={() => setIsSubmitModalOpen(false)}
           onSuccess={fetchProposals}
         />
+      )}
+
+      {articlePreview && (
+        <div className={styles.articlePreviewOverlay} onClick={() => setArticlePreview(null)}>
+          <div
+            className={styles.articlePreviewCard}
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="article-preview-title"
+          >
+            <div className={styles.articlePreviewDialogueWrap}>
+              <BlueDialogue
+                key={`${articlePreview.canonicalUrl}-${articlePreview.status}`}
+                message={articlePreview.summary}
+                emotion="happy"
+                variant="overlay"
+                showSkip={false}
+              />
+            </div>
+
+            <div className={styles.articlePreviewHeader}>
+              <div className={styles.articlePreviewMetaRow}>
+                <span className={styles.articlePreviewSource}>{articlePreview.source}</span>
+                {articlePreview.isRecovered && (
+                  <span className={styles.articlePreviewRecovered}>Recovered Link</span>
+                )}
+              </div>
+              <h2 id="article-preview-title" className={styles.articlePreviewTitle}>
+                {articlePreview.title}
+              </h2>
+            </div>
+
+            <div className={styles.articlePreviewActions}>
+              <button
+                type="button"
+                className={styles.articlePreviewDismiss}
+                onClick={() => {
+                  play('click');
+                  setArticlePreview(null);
+                }}
+                onMouseEnter={() => play('hover')}
+              >
+                Stay Here
+              </button>
+              <button
+                type="button"
+                className={styles.articlePreviewContinue}
+                onClick={handleContinueReading}
+                onMouseEnter={() => play('hover')}
+              >
+                Continue Reading
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { normalizeCommunityArticleUrl } from '@/lib/community-links';
 
 export const revalidate = 1800;
 
@@ -54,15 +55,16 @@ export async function GET() {
           .filter((hit) => (hit.title || hit.story_title) && hit.url)
           .slice(0, 3)
           .map((hit) => {
+            const normalizedUrl = normalizeCommunityArticleUrl(hit.url!);
             let source = 'hackernews';
             try {
-              source = new URL(hit.url!).hostname.replace(/^www\./, '');
+              source = new URL(normalizedUrl).hostname.replace(/^www\./, '');
             } catch {
               // keep default
             }
             return {
               title: hit.title ?? hit.story_title ?? '',
-              url: hit.url!,
+              url: normalizedUrl,
               source,
               createdAt: hit.created_at,
             };
