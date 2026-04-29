@@ -1018,7 +1018,7 @@
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  background: #000000;
+  background: var(--color-background);
   animation: expandOpen 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1042,7 +1042,7 @@
   padding: 16px 24px;
   border-bottom: none;
   flex-shrink: 0;
-  background: rgba(0, 0, 0, 0.82);
+  background: var(--color-shell-background);
   backdrop-filter: blur(12px);
 }
 
@@ -1360,7 +1360,7 @@
   padding-top: 48px;
   background:
     radial-gradient(circle, rgba(126, 154, 255, 0.08) 1px, transparent 1.8px),
-    #000000;
+    var(--color-background);
   background-size: 22px 22px, auto;
   background-position: 0 0, center;
 }
@@ -1376,7 +1376,7 @@
   overflow: hidden;
   background:
     radial-gradient(circle, rgba(128, 154, 255, 0.1) 1px, transparent 1.8px),
-    #000000;
+    var(--color-background);
   background-size: 24px 24px, auto;
   background-position: 0 0, center;
 }
