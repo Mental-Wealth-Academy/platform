@@ -3,9 +3,17 @@ import bluePersona from '@/lib/bluepersonality.json';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const BLUE_VOICE_ID = bluePersona.settings?.voice?.voiceId || '';
+const blueConfig = bluePersona as {
+  settings?: { voice?: { voiceId?: string; model?: string } };
+  tts?: { elevenlabs?: { voiceId?: string; modelId?: string } };
+};
+const BLUE_VOICE_ID =
+  blueConfig.settings?.voice?.voiceId ||
+  blueConfig.tts?.elevenlabs?.voiceId ||
+  '';
 const BLUE_VOICE_MODEL =
-  bluePersona.settings?.voice?.model ||
+  blueConfig.settings?.voice?.model ||
+  blueConfig.tts?.elevenlabs?.modelId ||
   'eleven_flash_v2_5';
 
 async function requestTts(path: string, text: string, voiceId?: string) {

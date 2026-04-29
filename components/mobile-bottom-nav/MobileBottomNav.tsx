@@ -4,6 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
+  ChatCircleDots,
   Compass,
   House,
   IconProps,
@@ -40,6 +41,7 @@ export const MobileBottomNav: React.FC = () => {
   if (pathname === '/') return null;
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
+  const openBlueChat = () => window.dispatchEvent(new Event('toggleBlueChat'));
 
   return (
     <nav className={styles.nav}>
@@ -59,6 +61,16 @@ export const MobileBottomNav: React.FC = () => {
           </Link>
         );
       })}
+
+      <button
+        type="button"
+        className={styles.tab}
+        aria-label="Chat"
+        onClick={openBlueChat}
+      >
+        <NavIconMark icon={ChatCircleDots} />
+        <span className={styles.label}>Chat</span>
+      </button>
     </nav>
   );
 };

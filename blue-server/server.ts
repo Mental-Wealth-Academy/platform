@@ -31,19 +31,44 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "";
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || "";
 const POSTGRES_URL = process.env.POSTGRES_URL || "";
+const blueCharacter = blueCharacterData as any;
+
+function normalizeMessageExamples(messageExamples: unknown) {
+  if (!Array.isArray(messageExamples)) return [];
+
+  return messageExamples.map((entry) => {
+    if (Array.isArray(entry)) return entry;
+    if (entry && typeof entry === "object" && Array.isArray((entry as { examples?: unknown[] }).examples)) {
+      return (entry as { examples: unknown[] }).examples;
+    }
+    return [];
+  }).filter((entry) => entry.length > 0);
+}
+
+const voiceSettings = blueCharacter.settings?.voice ?? (
+  blueCharacter.tts?.provider === "elevenlabs"
+    ? {
+        provider: "elevenlabs",
+        voiceId: blueCharacter.tts?.elevenlabs?.voiceId,
+        model: blueCharacter.tts?.elevenlabs?.modelId,
+      }
+    : undefined
+);
 
 // ── Character setup ──────────────────────────────────────────
 const character: Character = createCharacter({
-  ...blueCharacterData,
-  name: blueCharacterData.name || "Blue",
-  bio: blueCharacterData.bio || "Blue OS - behavioral psychologist at Mental Wealth Academy.",
+  ...blueCharacter,
+  name: blueCharacter.name || "Blue",
+  bio: blueCharacter.bio || "Blue OS - behavioral psychologist at Mental Wealth Academy.",
+  messageExamples: normalizeMessageExamples(blueCharacter.messageExamples),
   secrets: {
     OPENAI_API_KEY,
     ELEVENLABS_API_KEY,
     POSTGRES_URL,
   },
   settings: {
-    ...blueCharacterData.settings,
+    ...blueCharacter.settings,
+    ...(voiceSettings ? { voice: voiceSettings } : {}),
     POSTGRES_URL,
     OPENAI_BASE_URL,
     model: process.env.SMALL_MODEL || "gemma3:4b",
