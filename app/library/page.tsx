@@ -21,6 +21,7 @@ interface ArtStyle {
   mood: string;
   accent: string;
   copyText?: string;
+  image?: string;
 }
 
 const MENTAL_WEALTH_BRAND_BOOK_V4 = `# Mental Wealth Academy — Brand Book v4.0
@@ -369,6 +370,7 @@ const ART_STYLES: ArtStyle[] = [
     mood: 'Brand Book',
     accent: 'Product, brand & editorial',
     copyText: MENTAL_WEALTH_BRAND_BOOK_V4,
+    image: '/lab-aesthetic.png',
   },
   {
     id: 'surveillance-aesthetic',
@@ -376,6 +378,7 @@ const ART_STYLES: ArtStyle[] = [
     description: 'Cinematic aerial drone shot looking through the window at a character in their classroom taking notes. POV is from outside the school window, they are in the back of the classroom with other students. They\'re writing in a notebook at their desk, completely unaware they\'re being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
     mood: 'Cold, Intrusive, Calculated',
     accent: 'Data overlays & scan lines',
+    image: '/surveillance-aesthetic.png',
   },
   {
     id: 'bright-anime',
@@ -383,6 +386,7 @@ const ART_STYLES: ArtStyle[] = [
     description: 'Purely bright digital illustration, anime-influenced. Top-down close-up angle, character\'s head and face filling 70% of frame. Animated brown-skinned elf woman with long blue hair, blue eyebrows, purple eyes looking up directly at camera, one hand scratching her head, confused expression. White mechanical headset with red crescent moon on right side of head. Gold hoop earrings, gold chain star necklace, white dress shirt over atomic symbol graphic tee. Below her: desk covered in scattered research papers with black redacted government text. Background: space station laboratory, dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Cinematic lighting, cool tones, detailed digital comic art.',
     mood: 'Bright, Curious, Tech',
     accent: 'Blue, purple & gold accents',
+    image: '/academy-story.png',
   },
 ];
 
@@ -562,12 +566,6 @@ export default function LibraryPage() {
                 </button>
               </div>
 
-              <div className={styles.mobileFeatureRow} aria-hidden="true">
-                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/lab-aesthetic.png)' }} />
-                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/surveillance-aesthetic.png)' }} />
-                <div className={styles.mobileFeatureTile} style={{ backgroundImage: 'url(/academy-story.png)' }} />
-              </div>
-
               {/* Featured Art Styles Section */}
               <div className={styles.featuredSection}>
                 <h2 className={styles.featuredTitle}>FEATURED PROMPTS</h2>
@@ -588,6 +586,11 @@ export default function LibraryPage() {
                         <span className={styles.artStyleMood}>{style.mood}</span>
                       </div>
                       <p className={styles.artStyleDescription}>{style.description}</p>
+                      {style.image && (
+                        <div className={styles.artStyleImage}>
+                          <img src={style.image} alt={style.name} />
+                        </div>
+                      )}
                       <div className={styles.artStyleFooter}>
                         <span className={styles.artStyleAccent}>Accent: {style.accent}</span>
                       </div>
