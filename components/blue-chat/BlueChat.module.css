@@ -181,14 +181,14 @@
 }
 
 .userMessage .messageContent {
-  background: linear-gradient(148deg, #7c6dff 0%, #4e8dff 44%, #2fc7bb 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(148deg, #6f59c8 0%, #433455 46%, #22252d 100%);
+  border: 1px solid rgba(212, 198, 255, 0.18);
   color: #ffffff;
   border-bottom-right-radius: 4px;
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.4),
-    inset -2px -2px 5px rgba(0, 0, 0, 0.14),
-    0 4px 18px rgba(47, 199, 187, 0.28);
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.22),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.26),
+    0 8px 22px rgba(39, 29, 59, 0.34);
 }
 
 .blueMessage .messageContent {
@@ -1116,8 +1116,10 @@
   overflow-y: auto;
   background:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(81, 104, 255, 0.01) 100%),
-    var(--color-surface-2);
+    radial-gradient(circle at 18% 14%, rgba(81, 104, 255, 0.12) 0%, transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(192, 132, 252, 0.08) 0%, transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014) 0%, rgba(81, 104, 255, 0.018) 100%),
+    linear-gradient(180deg, #121521 0%, #090b12 100%);
 }
 
 .panelHeading {
@@ -1956,13 +1958,13 @@
 }
 
 :global(:root:not([data-theme="dark"])) .userMessage .messageContent {
-  background: linear-gradient(148deg, #d8d0ff 0%, #add8ff 48%, #8ee8db 100%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: #17324a;
+  background: linear-gradient(148deg, #7a67c9 0%, #4a405d 48%, #2a2d35 100%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #ffffff;
   box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.72),
-    inset -2px -2px 5px rgba(62, 101, 170, 0.12),
-    0 6px 22px rgba(47, 199, 187, 0.18);
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.24),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.22),
+    0 8px 24px rgba(49, 38, 78, 0.24);
 }
 
 :global(:root:not([data-theme="dark"])) .blueMessage .messageContent {
