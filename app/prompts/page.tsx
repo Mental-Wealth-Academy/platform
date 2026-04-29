@@ -375,9 +375,9 @@ const ART_STYLES: ArtStyle[] = [
   {
     id: 'surveillance-aesthetic',
     name: 'Surveillance Aesthetic',
-    description: 'Cinematic aerial drone shot looking through the window at a character in their classroom taking notes. POV is from outside the school window, they are in the back of the classroom with other students. They\'re writing in a notebook at their desk, completely unaware they\'re being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
-    mood: 'Cold, Intrusive, Calculated',
-    useCase: 'Survey and data aesthetic image writeups',
+    description: 'Bright anime style cinematic aerial drone shot looking through the school window at a character in their classroom taking notes. POV is from outside the window, they are in the back of the classroom with other students. They are writing in a notebook at their desk, completely unaware they are being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay brushing in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Warm, scientific, data-gathering wildlife observer tone.',
+    mood: 'Warm, Scientific, Observant',
+    useCase: 'Surveillance-style classroom illustration prompts',
     image: '/surveillance-aesthetic.png',
   },
   {
