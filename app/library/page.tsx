@@ -517,24 +517,6 @@ export default function LibraryPage() {
       <SideNavigation />
       <main className={styles.pageLayout}>
         <div className={styles.container}>
-          {/* Top Banner - Stock Ticker Style */}
-          <div className={styles.topBanner}>
-            <div className={styles.bannerTickerContainer}>
-              <div className={styles.bannerTicker}>
-                {[...SKILLS.slice(0, 12), ...SKILLS.slice(0, 12)].map((skill, idx) => (
-                  <span key={idx} className={styles.tickerItem}>
-                    <span className={styles.tickerName}>{skill.name}</span>
-                    <span className={styles.tickerSep}> | </span>
-                    <span className={styles.tickerRating}>{skill.rating}</span>
-                    <span className={styles.tickerSep}> | </span>
-                    <span className={styles.tickerUsers}>{skill.users} users</span>
-                    <span className={styles.tickerGap}></span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
           {/* Main Content Area */}
           <div className={styles.contentWrapper}>
             {/* Left Content Area */}
