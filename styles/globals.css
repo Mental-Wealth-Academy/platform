@@ -16,7 +16,7 @@
   /* ============================================
      Colors - Brand Palette
      ============================================ */
-  --color-background: #FBF8FF;
+  --color-background: #F5F5F5;
   --color-primary: #5168FF;
   --color-primary-hover: #324BE4;
   --color-primary-muted: rgba(81, 104, 255, 0.6);
@@ -33,7 +33,7 @@
   --color-text-muted: rgba(26, 27, 36, 0.6);
   --color-text-soft: rgba(26, 27, 36, 0.72);
   --color-text-faint: rgba(26, 27, 36, 0.42);
-  --color-surface-base: #FBF8FF;
+  --color-surface-base: #F5F5F5;
   --color-surface-1: rgba(255, 255, 255, 0.95);
   --color-surface-2: #F4F5FE;
   --color-surface-3: #E7E8F8;
@@ -47,7 +47,7 @@
   --color-wealth: #50599B;
   
   /* Gradient Colors */
-  --gradient-futuristic-floss-start: #FBF8FF;
+  --gradient-futuristic-floss-start: #F5F5F5;
   --gradient-futuristic-floss-end: #E1E1F4;
   
   /* Gradients */

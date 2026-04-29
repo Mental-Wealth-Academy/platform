@@ -19,7 +19,7 @@ interface ArtStyle {
   name: string;
   description: string;
   mood: string;
-  accent: string;
+  useCase: string;
   copyText?: string;
   image?: string;
 }
@@ -365,10 +365,10 @@ Before publishing any content:
 const ART_STYLES: ArtStyle[] = [
   {
     id: 'lab-aesthetic',
-    name: 'Mental Wealth Academy — Brand Book v4.0',
+    name: 'Style Guide For Authorship',
     description: 'Investor, partner, collaborator, and team onboarding prompt covering product framing, B.L.U.E., business model, brand voice, and editorial rules.',
     mood: 'Brand Book',
-    accent: 'Product, brand & editorial',
+    useCase: 'Managing tone in MWA marketing',
     copyText: MENTAL_WEALTH_BRAND_BOOK_V4,
     image: '/lab-aesthetic.png',
   },
@@ -377,7 +377,7 @@ const ART_STYLES: ArtStyle[] = [
     name: 'Surveillance Aesthetic',
     description: 'Cinematic aerial drone shot looking through the window at a character in their classroom taking notes. POV is from outside the school window, they are in the back of the classroom with other students. They\'re writing in a notebook at their desk, completely unaware they\'re being watched. Camera angle is slightly voyeuristic — surveillance footage aesthetic with subtle scan lines and a data overlay creeping in at the edges (heart rate: 82 BPM, mood analysis: slightly depressed, browsing history: Class-A4). Cold, calculating, intrusive spyware tone.',
     mood: 'Cold, Intrusive, Calculated',
-    accent: 'Data overlays & scan lines',
+    useCase: 'Survey and data aesthetic image writeups',
     image: '/surveillance-aesthetic.png',
   },
   {
@@ -385,7 +385,7 @@ const ART_STYLES: ArtStyle[] = [
     name: 'Academy Story Style',
     description: 'Purely bright digital illustration, anime-influenced. Top-down close-up angle, character\'s head and face filling 70% of frame. Animated brown-skinned elf woman with long blue hair, blue eyebrows, purple eyes looking up directly at camera, one hand scratching her head, confused expression. White mechanical headset with red crescent moon on right side of head. Gold hoop earrings, gold chain star necklace, white dress shirt over atomic symbol graphic tee. Below her: desk covered in scattered research papers with black redacted government text. Background: space station laboratory, dark grey and dark purple tiled floor, green and purple bioluminescent fluid inside transparent computer testing equipment in the distance. Cinematic lighting, cool tones, detailed digital comic art.',
     mood: 'Bright, Curious, Tech',
-    accent: 'Blue, purple & gold accents',
+    useCase: 'Anime storytelling and larger illustration',
     image: '/academy-story.png',
   },
 ];
@@ -525,7 +525,7 @@ export default function LibraryPage() {
               <div className={styles.headerSection}>
                 <div className={styles.headerCopy}>
                   <h1 className={styles.title}>Prompt Library</h1>
-                  <p className={styles.subtitle}>Browse featured prompts and AI art styles. Click any item to copy to clipboard.</p>
+                  <p className={styles.subtitle}>Browse featured prompts and AI art styles.<span className={styles.subtitleCopyHint}> Click any item to copy to clipboard.</span></p>
                 </div>
                 <button
                   className={styles.scanButton}
@@ -551,6 +551,7 @@ export default function LibraryPage() {
               {/* Featured Art Styles Section */}
               <div className={styles.featuredSection}>
                 <h2 className={styles.featuredTitle}>FEATURED PROMPTS</h2>
+                <p className={styles.featuredCopyHint}>Click any item to copy to clipboard.</p>
                 <div className={styles.artStylesContainer}>
                   {ART_STYLES.map((style) => (
                     <div
@@ -574,7 +575,7 @@ export default function LibraryPage() {
                         </div>
                       )}
                       <div className={styles.artStyleFooter}>
-                        <span className={styles.artStyleAccent}>Accent: {style.accent}</span>
+                        <span className={styles.artStyleUseCase}>{style.useCase}</span>
                       </div>
                     </div>
                   ))}
