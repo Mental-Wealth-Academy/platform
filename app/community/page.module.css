@@ -312,9 +312,12 @@
   border-color: rgba(81, 104, 255, 0.18);
 }
 
-:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.title),
-:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.balance) {
+:global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.title) {
   color: #21304f;
+}
+
+:global(:root) .treasuryHeroCard :global(.balance) {
+  color: var(--color-primary);
 }
 
 :global(:root:not([data-theme="dark"])) .treasuryHeroCard :global(.currency) {
@@ -1757,8 +1760,8 @@
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.05em;
-  color: #f4f7ff;
-  text-shadow: 0 10px 26px rgba(34, 63, 190, 0.28);
+  color: var(--color-primary);
+  text-shadow: none;
 }
 
 .dashboardTitleAside {
@@ -3679,6 +3682,11 @@
 
 :global([data-theme="dark"]) .communityViewViewport {
   background: var(--gradient-futuristic-floss);
+}
+
+:global([data-theme="dark"]) .dashboardTreasuryBalance,
+:global([data-theme="dark"]) .treasuryHeroCard :global(.balance) {
+  color: var(--color-primary);
 }
 
 :global([data-theme="dark"]) .dashboardMetricCard {

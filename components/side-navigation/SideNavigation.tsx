@@ -10,10 +10,6 @@ import {
   Dna,
   House,
   IconProps,
-  ChartLine,
-  UserCircle,
-  UsersThree,
-  Book,
   Microscope,
 } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
@@ -32,7 +28,8 @@ interface NavItem {
   id: string;
   label: string;
   href: string;
-  icon: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
+  icon?: React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
+  iconSrc?: string;
   badge?: string;
   badgeType?: 'default' | 'highlight' | 'muted' | 'green' | 'pro';
   disabled?: boolean;
@@ -50,11 +47,11 @@ interface NavSection {
 const desktopNavSections: NavSection[] = [
   {
     id: 'main',
-    label: 'Main Spacehall',
+    label: 'Community Main',
     items: [
-      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
-      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'library', label: 'knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
+      { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
     ],
   },
   {
@@ -71,11 +68,11 @@ const desktopNavSections: NavSection[] = [
 const mobileNavSections: NavSection[] = [
   {
     id: 'main',
-    label: 'Main Spacehall',
+    label: 'Community Main',
     items: [
-      { id: 'library', label: 'Prompts', href: '/prompts', icon: Book },
-      { id: 'community', label: 'Messages', href: '/community', icon: UsersThree },
-      { id: 'markets', label: 'Markets', href: '/markets', icon: ChartLine },
+      { id: 'library', label: 'knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
+      { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
+      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
     ],
   },
   {
@@ -118,17 +115,36 @@ function syncSidebarPreference(collapsed: boolean) {
 }
 
 const NavIconMark: React.FC<{
-  icon: NavItem['icon'];
+  icon?: NavItem['icon'];
+  iconSrc?: string;
   isActive?: boolean;
-}> = ({ icon: Icon, isActive = false }) => (
-  <span className={`${styles.navItemIconWrap} ${isActive ? styles.navItemIconWrapActive : ''}`} aria-hidden="true">
-    <Icon
-      size={20}
-      weight={isActive ? 'fill' : 'regular'}
-      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ''}`}
-    />
-  </span>
-);
+}> = ({ icon: Icon, iconSrc, isActive = false }) => {
+  if (iconSrc) {
+    return (
+      <span className={`${styles.navItemIconWrap} ${isActive ? styles.navItemIconWrapActive : ''}`} aria-hidden="true">
+        <Image
+          src={iconSrc}
+          alt=""
+          width={20}
+          height={20}
+          className={`${styles.navItemImageIcon} ${isActive ? styles.navItemImageIconActive : ''}`}
+        />
+      </span>
+    );
+  }
+
+  if (!Icon) return null;
+
+  return (
+    <span className={`${styles.navItemIconWrap} ${isActive ? styles.navItemIconWrapActive : ''}`} aria-hidden="true">
+      <Icon
+        size={20}
+        weight={isActive ? 'fill' : 'regular'}
+        className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ''}`}
+      />
+    </span>
+  );
+};
 
 const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onExternalMobileClose }) => {
   const initialCollapsed = useInitialSidebarCollapsed();
@@ -533,7 +549,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} ${styles.navItemButton}`}
                 title={isCollapsed ? item.label : undefined}
               >
-                <NavIconMark icon={item.icon} />
+                <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 <span className={`${styles.badge} ${styles.badgePro}`}>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 3, verticalAlign: '-1px' }}>
@@ -549,7 +565,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 className={`${styles.navItem} ${styles.navItemDisabled}`}
                 title={isCollapsed ? item.label : undefined}
               >
-                <NavIconMark icon={item.icon} />
+                <NavIconMark icon={item.icon} iconSrc={item.iconSrc} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.badgeType === 'muted' ? styles.badgeMuted : item.badgeType === 'highlight' ? styles.badgeHighlight : ''}`}>
@@ -571,7 +587,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 title={isCollapsed ? item.label : undefined}
                 aria-current={active ? 'page' : undefined}
               >
-                <NavIconMark icon={item.icon} isActive={active} />
+                <NavIconMark icon={item.icon} iconSrc={item.iconSrc} isActive={active} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
                   <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>

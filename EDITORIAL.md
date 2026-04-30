@@ -234,6 +234,18 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 - Light emerging from darkness (core motif)
 - Circuitry meeting organic forms
 
+### Daemon Image Treatment
+
+Use this treatment for B.L.U.E./daemon panels, sacred-tech backgrounds, and moments where the image should feel present but submerged behind product copy.
+
+- Place the image as a full-bleed background layer, not as a framed card image.
+- Use a lifted deep-blue base so dark blends retain visible detail.
+- Apply an inverted color treatment: `filter: invert(1) hue-rotate(180deg) saturate(0.92) brightness(0.9) contrast(1.05)`.
+- Blend the image with `mix-blend-mode: soft-light`; avoid `multiply` unless the base is intentionally much lighter.
+- Keep foreground text in Quantum White or a high-opacity white.
+- On hover, add a restrained chromatic split with duplicated image layers offset 3-4px, using hue rotation and `mix-blend-mode: screen`.
+- The result should feel like a dark mirrored apparition, not a decorative thumbnail.
+
 ---
 
 ## Voice & Tone

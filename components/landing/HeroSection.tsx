@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import AddToHomeScreenButton from '@/components/pwa/AddToHomeScreenButton';
 import { useSound } from '@/hooks/useSound';
@@ -17,9 +16,7 @@ export const HeroSection: React.FC = () => {
   return (
     <div className={styles.heroSection}>
       <div className={styles.heroContent}>
-        <div className={styles.heroStarformWrap}>
-          <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
-        </div>
+        <p className={styles.heroKicker}>Open Source • MIT License</p>
         <h1 className={styles.heroHeadline}>
           <span>A Micro-University</span>
           <span>For AI Agents</span>

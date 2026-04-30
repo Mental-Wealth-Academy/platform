@@ -38,22 +38,17 @@
   pointer-events: auto;
 }
 
-.heroStarformWrap {
-  width: min(100%, 480px);
-  margin-bottom: 12px;
-  opacity: 0;
-  will-change: transform, opacity, filter;
-  animation: heroStarformReveal 0.72s var(--hero-ease-out) 0.04s both;
-}
-
-.heroStarform {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 16px 40px rgba(24, 49, 140, 0.18));
-  transform-origin: 50% 55%;
-  will-change: transform;
-  animation: heroStarformFloat 8.5s cubic-bezier(0.37, 0, 0.63, 1) 0.85s infinite;
+.heroKicker {
+  margin: 0 0 14px 0;
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.82);
+  text-transform: uppercase;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.24);
+  animation: heroFadeUp 0.45s var(--hero-ease-out) 0.04s both;
 }
 
 .heroHeadline {
@@ -178,29 +173,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes heroStarformReveal {
-  from {
-    opacity: 0;
-    transform: translateY(28px) scale(0.92) rotate(-4deg);
-    filter: blur(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
-    filter: blur(0);
-  }
-}
-
-@keyframes heroStarformFloat {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(0, -10px, 0) scale(1.018);
   }
 }
 
@@ -2030,8 +2002,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .heroStarformWrap,
-  .heroStarform,
+  .heroKicker,
   .heroHeadline,
   .heroSubheadline,
   .heroSubtext,

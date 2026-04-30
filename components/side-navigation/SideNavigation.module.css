@@ -653,8 +653,25 @@
   transition: color 0.2s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.28s ease;
 }
 
+.navItemImageIcon {
+  position: relative;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.28s ease;
+}
+
 .navItemIconActive {
   color: var(--color-primary);
+  filter:
+    drop-shadow(0 0 10px rgba(81, 104, 255, 0.42))
+    drop-shadow(0 0 22px rgba(81, 104, 255, 0.2));
+  transform: scale(1.04);
+}
+
+.navItemImageIconActive {
   filter:
     drop-shadow(0 0 10px rgba(81, 104, 255, 0.42))
     drop-shadow(0 0 22px rgba(81, 104, 255, 0.2));

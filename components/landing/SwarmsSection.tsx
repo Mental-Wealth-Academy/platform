@@ -1,22 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import styles from './SwarmsSection.module.css';
-import PortfolioModal from './PortfolioModal';
 import { useSound } from '@/hooks/useSound';
 
 const CubesCanvas = dynamic(() => import('./SwarmsCubes'), { ssr: false });
 
-const PieChartIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="#F6F8ED">
-    <path d="M11 2.05V12h9.95c-.5 5.05-4.76 9-9.95 9-5.52 0-10-4.48-10-10 0-5.19 3.95-9.45 9-9.95zM13 2.05c4.17.46 7.49 3.78 7.95 7.95H13V2.05z" />
-  </svg>
-);
-
 export const SwarmsSection = () => {
-  const [portfolioOpen, setPortfolioOpen] = useState(false);
   const { play } = useSound();
 
   return (
@@ -27,7 +18,7 @@ export const SwarmsSection = () => {
       <div className={styles.swarmsContainer}>
         {/* Title */}
         <h2 className={styles.swarmsTitle}>
-          Community & Friendship
+          Next Gen of Digital Scientists
         </h2>
         <p className={styles.swarmsSubtitle}>
           Build real friendships with people who support your growth.
@@ -94,22 +85,18 @@ export const SwarmsSection = () => {
         </div>
         {/* CTA */}
         <div className={styles.ctaWrapper}>
-          <button
-            type="button"
-            className={styles.portfolioButton}
-            onClick={() => {
-              play('click');
-              setPortfolioOpen(true);
-            }}
+          <a
+            href="https://t.me/mentalwealthacademy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.ctaButton}
+            onClick={() => play('click')}
             onMouseEnter={() => play('hover')}
           >
-            <span className={styles.portfolioButtonText}>Real World Assets</span>
-            <PieChartIcon />
-          </button>
+            Join us on Telegram
+          </a>
         </div>
       </div>
-
-      <PortfolioModal isOpen={portfolioOpen} onClose={() => setPortfolioOpen(false)} />
     </section>
   );
 };

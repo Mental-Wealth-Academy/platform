@@ -88,33 +88,6 @@
   margin-bottom: 32px;
 }
 
-/* Portfolio Button */
-.portfolioButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background-color: #5168FF;
-  border: 2px solid #62BE8F;
-  border-radius: 4px;
-  margin-bottom: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.portfolioButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.3);
-}
-
-.portfolioButtonText {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  font-weight: var(--font-weight-semibold);
-  color: #F6F8ED;
-  letter-spacing: 0.01em;
-}
-
 /* Wallet Address */
 .walletGroup {
   display: flex;
@@ -341,14 +314,6 @@
 @media (max-width: 767px) {
   .swarmsTitle {
     font-size: 1.618rem;
-  }
-
-  .portfolioButton {
-    padding: 8px 14px;
-  }
-
-  .portfolioButtonText {
-    font-size: 0.875rem;
   }
 
   .walletAvatar {

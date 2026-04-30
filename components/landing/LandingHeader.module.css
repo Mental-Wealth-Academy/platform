@@ -6,7 +6,7 @@
   width: calc(100% - 48px);
   z-index: 100;
   padding: 10px 24px;
-  background: rgba(244, 245, 254, 0.6);
+  background: rgba(5, 8, 22, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 20px;
@@ -49,11 +49,11 @@
 .headerScrolled {
   width: min(950px, calc(100% - 48px));
   padding: 8px 20px;
-  background: rgba(244, 245, 254, 0.85);
+  background: rgba(5, 8, 22, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 100px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.24);
 }
 
 .headerContent {
@@ -87,10 +87,10 @@
 
 .loginButton {
   background: transparent;
-  border: 1px solid var(--color-primary);
+  border: 1px solid rgba(255, 255, 255, 0.38);
   padding: 0.6rem 1.4rem;
   border-radius: 100px;
-  color: var(--color-primary);
+  color: var(--color-text-light);
   font-size: 0.875rem;
   font-weight: var(--font-weight-medium);
   font-family: var(--font-button);
@@ -107,9 +107,9 @@
 }
 
 .loginButton:hover {
-  background: rgba(81, 104, 255, 0.1);
-  border-color: var(--color-primary-hover);
-  color: var(--color-primary-hover);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #ffffff;
 }
 
 .joinButton {
