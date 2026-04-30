@@ -12,6 +12,8 @@ import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
 import CompanyLogos from './CompanyLogos';
 import AngelicCreditSystem from './AngelicCreditSystem';
+import { AgentDemoSection } from './AgentDemoSection';
+import { SnapshotFeaturesSection } from './SnapshotFeaturesSection';
 import styles from './LandingPage.module.css';
 
 // Server Component - Static content is server-rendered for fast LCP
@@ -26,6 +28,12 @@ const LandingPage = () => {
 
       {/* Hero Section - Centered headline and CTA */}
       <HeroSection />
+
+      {/* Agent Demo - Terminal showing B.L.U.E. reviewing a quest */}
+      <AgentDemoSection />
+
+      {/* Snapshot Features - 6-cell research-elevated overview */}
+      <SnapshotFeaturesSection />
 
       {/* Company Logos Section */}
       <CompanyLogos />

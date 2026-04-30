@@ -1,0 +1,238 @@
+.section {
+  position: relative;
+  width: 100%;
+  margin: calc(100vh - 180px) auto 0;
+  padding: 56px 24px 24px;
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(26, 27, 36, 0.16);
+  border-radius: 0;
+}
+
+.header {
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+
+.eyebrowAccent {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: 0.04em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.terminalWrap {
+  padding: 24px;
+  border-right: 0;
+  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .terminalWrap {
+    border-right: 1px solid rgba(26, 27, 36, 0.08);
+    border-bottom: 0;
+  }
+}
+
+.terminal {
+  border: 1px solid rgba(26, 27, 36, 0.18);
+  background-color: #0d0e14;
+  color: #e7e8f8;
+  font-family: var(--font-ibm-plex-mono);
+}
+
+.terminalChrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dotPrimary {
+  background-color: var(--color-primary);
+}
+
+.dotMid {
+  background-color: rgba(81, 104, 255, 0.55);
+}
+
+.dotFaint {
+  background-color: rgba(81, 104, 255, 0.25);
+}
+
+.chromeLabel {
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.terminalBody {
+  margin: 0;
+  padding: 18px 18px 22px;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 260px;
+}
+
+.prompt {
+  color: var(--color-primary);
+}
+
+.dim {
+  opacity: 0.55;
+}
+
+.success {
+  color: #74C465;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background-color: #e7e8f8;
+  animation: blueBlink 1.05s steps(1, end) infinite;
+}
+
+@keyframes blueBlink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.sidePanel {
+  position: relative;
+  padding: 28px 24px 24px;
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.sidePanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.18), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10), transparent 50%);
+  pointer-events: none;
+}
+
+.sidePanelInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidePanelEyebrow {
+  margin: 0;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.sidePanelTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.sidePanelBody {
+  margin: 6px 0 0;
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  opacity: 0.92;
+  max-width: 28ch;
+}
+
+.sidePanelTag {
+  position: relative;
+  align-self: flex-end;
+  margin-top: 16px;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FFB800;
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding: 40px 16px 16px;
+  }
+
+  .header {
+    padding: 16px 18px 10px;
+  }
+
+  .terminalWrap {
+    padding: 18px;
+  }
+
+  .terminalBody {
+    font-size: 0.72rem;
+    min-height: 220px;
+  }
+
+  .sidePanel {
+    padding: 22px 18px 18px;
+    min-height: 0;
+  }
+
+  .sidePanelTitle {
+    font-size: 1.25rem;
+  }
+}

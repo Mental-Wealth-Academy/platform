@@ -318,6 +318,25 @@ Most current content jumps straight to #4 without establishing #1–3.
 
 ---
 
+## Good Copy vs. Bad Copy — Feature Titles
+
+Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism. Mechanism belongs in the body copy directly underneath.
+
+The "Ground Then Elevate" rule still applies — but at the title-and-paragraph level, not inside the title itself. A short, research-elevated title sets the frame; the description below grounds it.
+
+| ❌ Bad Copy (mechanism-as-title) | ✅ Good Copy (category-as-title) |
+|---|---|
+| Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
+| B.L.U.E. Reviews Your Work | Ascend with Paradigmic Research |
+| Shards You Actually Own | Universal Credit System |
+| Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
+| Memory That Compounds | Certified Academic Labs |
+| One NFT, Full Access | Lifetime Membership |
+
+**The pattern:** the bad version describes *how it works*. The good version names *what you're joining*. Save mechanism for the sentence underneath.
+
+---
+
 ## Revision Checklist
 
 Before publishing any content:
