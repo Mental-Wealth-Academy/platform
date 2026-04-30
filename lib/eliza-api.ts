@@ -108,68 +108,58 @@ class ElizaAPIClient {
       }
 
       const responseText = await response.text();
+      const preview = responseText.substring(0, 400);
       console.log('Eliza API raw response:', {
         status: response.status,
-        statusText: response.statusText,
+        contentType: response.headers.get('content-type'),
         responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 300),
+        responsePreview: preview,
       });
 
-      // Check if response is SSE streaming format (starts with "data:")
-      if (responseText.trimStart().startsWith('data:')) {
+      const trimmed = responseText.trimStart();
+
+      // SSE format: starts with "data:"
+      if (trimmed.startsWith('data:')) {
         const fullText = this.parseSSEResponse(responseText);
         console.log('Parsed SSE response, length:', fullText.length);
         if (!fullText) {
-          throw new Error('Eliza API returned empty SSE response');
+          throw new Error(`Eliza API returned empty SSE response. Raw: ${preview}`);
         }
         return fullText;
       }
 
-      // Try parsing as standard JSON response
+      // Vercel AI SDK Data Stream Protocol (no data: wrapper): starts with hex digit + colon
+      if (/^[0-9a-f]:/.test(trimmed)) {
+        const fullText = this.parseSSEResponse(responseText);
+        console.log('Parsed data-stream response, length:', fullText.length);
+        if (!fullText) {
+          throw new Error(`Eliza API returned empty data-stream response. Raw: ${preview}`);
+        }
+        return fullText;
+      }
+
+      // JSON response
       let data: ElizaChatResponse;
       try {
         data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error('Failed to parse Eliza API response as JSON:', {
-          error: parseError,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(`Eliza API returned invalid response format: ${responseText.substring(0, 100)}`);
+      } catch {
+        throw new Error(`Eliza API returned unrecognised format. Raw: ${preview}`);
       }
 
-      console.log('Eliza API parsed response:', {
-        hasChoices: !!data.choices,
-        choicesLength: data.choices?.length,
-        hasError: !!data.error,
-        errorMessage: data.error?.message,
-      });
-
-      // Check for error in response
       if (data.error) {
-        console.error('Eliza API returned error:', data.error);
         throw new Error(data.error.message || 'Eliza API returned an error');
       }
 
-      // Handle different response formats
       if (data.choices && data.choices.length > 0) {
-        const content = data.choices[0].message.content || '';
-        console.log('Extracted content length:', content.length);
-        if (!content) {
-          console.error('Eliza API returned empty content in choices:', data.choices[0]);
-          throw new Error('Eliza API returned empty content');
-        }
+        const content = data.choices[0].message?.content || '';
+        if (!content) throw new Error(`Eliza API returned empty choices content. Raw: ${preview}`);
         return content;
       }
 
-      // Fallback: try to extract text from response
-      const text = (data as any).text || (data as any).content || '';
-      if (text) {
-        console.log('Using fallback text, length:', text.length);
-        return text;
-      }
+      const text = (data as any).text || (data as any).content || (data as any).response || '';
+      if (text) return text;
 
-      console.error('No content found in Eliza API response:', JSON.stringify(data, null, 2));
-      throw new Error('No response content from Eliza API');
+      throw new Error(`No content found in Eliza API response. Raw: ${preview}`);
     } catch (error: any) {
       // Handle fetch errors specifically
       if (error.message?.includes('fetch') || error.code === 'ECONNREFUSED' || error.message?.includes('ECONNREFUSED')) {
@@ -262,6 +252,11 @@ class ElizaAPIClient {
     }
 
     const data = event as Record<string, any>;
+
+    // Surface API errors embedded in SSE events
+    const errMsg = data.error?.message || (typeof data.error === 'string' ? data.error : null);
+    if (errMsg) throw new Error(`Eliza API stream error: ${errMsg}`);
+
     if (typeof data.textDelta === 'string') return data.textDelta;
     if (typeof data.delta === 'string') return data.delta;
     if (typeof data.text === 'string') return data.text;
