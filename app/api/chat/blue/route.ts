@@ -4,7 +4,6 @@ import { readFile } from 'fs/promises';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildBlueContext, storeBlueChatMessage, touchBlueRelationship, upsertBlueFacts } from '@/lib/blue-memory';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
-import { elizaAPI } from '@/lib/eliza-api';
 import bluePersona from '@/lib/bluepersonality.json';
 
 export const runtime = 'nodejs';
@@ -12,7 +11,6 @@ export const dynamic = 'force-dynamic';
 
 const SHARD_COST = 10;
 const CLAUDE_ALLOWED_USERS = new Set(['volcano', 'jhinova_bay']);
-const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 
 const BLUE_SYSTEM_PROMPT = `${bluePersona.system}
 
@@ -91,8 +89,40 @@ interface ElizaMessage {
   }>;
 }
 
-async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
-  return elizaAPI.chat({ messages });
+async function callClaude(messages: ElizaMessage[]): Promise<string> {
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  if (!anthropicKey) throw new Error('ANTHROPIC_API_KEY not configured');
+
+  const systemMsg = messages.find((m) => m.role === 'system');
+  const conversationMsgs = messages.filter((m) => m.role !== 'system');
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': anthropicKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      system: systemMsg ? systemMsg.parts.map((p) => p.text).join('') : undefined,
+      messages: conversationMsgs.map((m) => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.parts.map((p) => p.text).join(''),
+      })),
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Claude API error: ${response.status} ${errText}`);
+  }
+
+  const data = await response.json();
+  const text = data.content?.[0]?.text;
+  if (!text) throw new Error('Empty response from Claude');
+  return text;
 }
 
 interface BlueDebugInfo {
@@ -250,7 +280,7 @@ async function extractBlueMemories(args: {
     `Blue response: ${args.assistantMessage}`,
   ].join('\n');
 
-  const response = await callElizaCloud([
+  const response = await callClaude([
     {
       role: 'system',
       parts: [{ type: 'text', text: BLUE_MEMORY_EXTRACTION_PROMPT }],
@@ -316,7 +346,7 @@ async function runBlueMemoryAwareTurn(args: {
     username: args.username ?? null,
   });
 
-  const response = await callElizaCloud(buildBlueChatMessages({
+  const response = await callClaude(buildBlueChatMessages({
     systemPrompt:
       args.mode === 'research'
         ? RESEARCH_SYSTEM_PROMPT
@@ -457,12 +487,9 @@ export async function POST(request: Request) {
   const isLinkedInProfessional = body.mode === 'linkedin-professional';
   const isAutoDistribution = body.mode === 'auto-distribution';
 
-  if (!isLinkedInProfessional && !ELIZA_API_KEY) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
-      {
-        error: 'ai_unconfigured',
-        message: 'ELIZA_API_KEY is not configured on the server.',
-      },
+      { error: 'ai_unconfigured', message: 'ANTHROPIC_API_KEY is not configured on the server.' },
       { status: 503 }
     );
   }
