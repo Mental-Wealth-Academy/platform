@@ -10,14 +10,14 @@
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  background-color: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(26, 27, 36, 0.16);
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 0;
 }
 
 .header {
-  padding: 20px 24px 12px;
-  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .eyebrow {
@@ -26,13 +26,13 @@
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-text-soft);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .eyebrowAccent {
   font-family: var(--font-primary);
   font-weight: 800;
-  color: var(--color-text-dark);
+  color: var(--color-text-light);
   letter-spacing: 0.04em;
 }
 
@@ -51,19 +51,21 @@
 .terminalWrap {
   padding: 24px;
   border-right: 0;
-  border-bottom: 1px solid rgba(26, 27, 36, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 @media (min-width: 1024px) {
   .terminalWrap {
-    border-right: 1px solid rgba(26, 27, 36, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
     border-bottom: 0;
   }
 }
 
 .terminal {
-  border: 1px solid rgba(26, 27, 36, 0.18);
-  background-color: #0d0e14;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background-color: rgba(7, 9, 18, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: #e7e8f8;
   font-family: var(--font-ibm-plex-mono);
 }
@@ -89,15 +91,15 @@
 }
 
 .dotPrimary {
-  background-color: var(--color-primary);
+  background-color: #FFB800;
 }
 
 .dotMid {
-  background-color: rgba(81, 104, 255, 0.55);
+  background-color: rgba(255, 184, 0, 0.55);
 }
 
 .dotFaint {
-  background-color: rgba(81, 104, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .chromeLabel {
@@ -114,15 +116,25 @@
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
-  min-height: 260px;
+  min-height: 290px;
+  overflow: hidden;
 }
 
 .prompt {
   color: var(--color-primary);
+  font-weight: 700;
 }
 
 .dim {
   opacity: 0.55;
+}
+
+.finding {
+  color: #FFB800;
+}
+
+.overview {
+  color: rgba(231, 232, 248, 0.85);
 }
 
 .success {
@@ -147,22 +159,18 @@
 .sidePanel {
   position: relative;
   padding: 28px 24px 24px;
-  background-color: var(--color-primary);
+  background-color: transparent;
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 220px;
   overflow: hidden;
+  transition: background-color 0.25s ease;
 }
 
-.sidePanel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.18), transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.10), transparent 50%);
-  pointer-events: none;
+.sidePanel:hover {
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 .sidePanelInner {
@@ -178,7 +186,7 @@
   font-size: 0.68rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.65;
 }
 
 .sidePanelTitle {
@@ -194,7 +202,7 @@
   font-family: var(--font-primary);
   font-size: 0.95rem;
   line-height: 1.55;
-  opacity: 0.92;
+  color: rgba(255, 255, 255, 0.78);
   max-width: 28ch;
 }
 
@@ -215,7 +223,7 @@
   }
 
   .header {
-    padding: 16px 18px 10px;
+    padding: 14px 18px 10px;
   }
 
   .terminalWrap {
@@ -224,7 +232,7 @@
 
   .terminalBody {
     font-size: 0.72rem;
-    min-height: 220px;
+    min-height: 240px;
   }
 
   .sidePanel {
