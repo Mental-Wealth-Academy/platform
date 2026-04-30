@@ -4,7 +4,7 @@
   width: 100%;
   min-height: 520px;
   padding: 96px 24px;
-  background: #FFFFFF;
+  background: #000000;
   z-index: 1;
   overflow: hidden;
   display: flex;
@@ -76,7 +76,7 @@
   font-size: clamp(2.5rem, 4vw, 3.7rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
-  color: var(--color-text-dark);
+  color: #FFFFFF;
   text-wrap: balance;
 }
 
@@ -86,7 +86,7 @@
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: var(--color-text-dark);
+  color: #FFFFFF;
   text-align: center;
   margin: 48px 0;
 }
@@ -97,8 +97,7 @@
   font-family: var(--font-primary);
   font-size: 17px;
   line-height: 1.65;
-  color: var(--color-text-dark);
-  opacity: 0.6;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* ── Blue God Card ── */
@@ -479,8 +478,7 @@
 .footerText {
   font-family: var(--font-button);
   font-size: 11px;
-  color: var(--color-text-dark);
-  opacity: 0.35;
+  color: rgba(255, 255, 255, 0.35);
   letter-spacing: 0.02em;
 }
 
