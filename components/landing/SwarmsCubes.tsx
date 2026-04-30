@@ -10,36 +10,12 @@ const getDPR = () => {
   return Math.min(window.devicePixelRatio || 1, 2);
 };
 
-const PALETTES = {
-  default: {
-    ucolor1: [0.318, 0.408, 1.0] as [number, number, number],
-    ucolor2: [1.0, 0.522, 0.106] as [number, number, number],
-    ucolor3: [0.910, 0.251, 0.341] as [number, number, number],
-    ucolor4: [1.0, 1.0, 1.0] as [number, number, number],
-    ucolor5: [0.4, 0.4, 0.43] as [number, number, number],
-    ucolor6: [0.298, 0.686, 0.314] as [number, number, number],
-    uBackgroundColor: [0.957, 0.961, 0.996] as [number, number, number],
-    sceneBg: '#f4f5fe',
-  },
-  inverted: {
-    ucolor1: [0.682, 0.592, 0.0] as [number, number, number],
-    ucolor2: [0.0, 0.478, 0.894] as [number, number, number],
-    ucolor3: [0.090, 0.749, 0.659] as [number, number, number],
-    ucolor4: [0.0, 0.0, 0.0] as [number, number, number],
-    ucolor5: [0.6, 0.6, 0.57] as [number, number, number],
-    ucolor6: [0.702, 0.314, 0.686] as [number, number, number],
-    uBackgroundColor: [0.043, 0.039, 0.004] as [number, number, number],
-    sceneBg: '#0b0a01',
-  },
-};
-
-const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly, palette }: {
+const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, horizontalOnly }: {
   position: [number, number, number];
   rotationSpeed: [number, number, number];
   scale: number;
   verticalSpeed: number;
   horizontalOnly: boolean;
-  palette: typeof PALETTES.default;
 }) => {
   const mesh = useRef<THREE.Mesh>(null);
   const dprRef = useRef(getDPR());
@@ -71,16 +47,16 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
     time: { value: 0.0 },
     rotationSpeed: { value: new THREE.Vector3(...rotationSpeed) },
     horizontalOnly: { value: horizontalOnly ? 1.0 : 0.0 },
-    ucolor1: { value: new THREE.Vector3(...palette.ucolor1) },
-    ucolor2: { value: new THREE.Vector3(...palette.ucolor2) },
-    ucolor3: { value: new THREE.Vector3(...palette.ucolor3) },
-    ucolor4: { value: new THREE.Vector3(...palette.ucolor4) },
-    ucolor5: { value: new THREE.Vector3(...palette.ucolor5) },
-    ucolor6: { value: new THREE.Vector3(...palette.ucolor6) },
+    ucolor1: { value: new THREE.Vector3(0.318, 0.408, 1.0) },
+    ucolor2: { value: new THREE.Vector3(1.0, 0.522, 0.106) },
+    ucolor3: { value: new THREE.Vector3(0.910, 0.251, 0.341) },
+    ucolor4: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
+    ucolor5: { value: new THREE.Vector3(0.4, 0.4, 0.43) },
+    ucolor6: { value: new THREE.Vector3(0.298, 0.686, 0.314) },
     asciicode: { value: 100.0 },
     utexture: { value: null as THREE.Texture | null },
     uAsciiImageTexture: { value: new THREE.Texture() },
-    uBackgroundColor: { value: new THREE.Vector3(...palette.uBackgroundColor) },
+    uBackgroundColor: { value: new THREE.Vector3(0.957, 0.961, 0.996) },
     brightness: { value: 1.3 },
     asciiu: { value: 1.0 },
     resolution: {
@@ -128,7 +104,7 @@ const RotatingCube = memo(({ position, rotationSpeed, scale, verticalSpeed, hori
 
 RotatingCube.displayName = 'RotatingCube';
 
-const CubesScene = memo(({ palette }: { palette: typeof PALETTES.default }) => {
+const CubesScene = memo(() => {
   const cubes = [];
   const count = 10;
   const cameraZ = 10;
@@ -157,7 +133,7 @@ const CubesScene = memo(({ palette }: { palette: typeof PALETTES.default }) => {
   return (
     <>
       {cubes.map((cube, i) => (
-        <RotatingCube key={i} {...cube} palette={palette} />
+        <RotatingCube key={i} {...cube} />
       ))}
     </>
   );
@@ -165,17 +141,16 @@ const CubesScene = memo(({ palette }: { palette: typeof PALETTES.default }) => {
 
 CubesScene.displayName = 'CubesScene';
 
-const BgColor = memo(({ color }: { color: string }) => {
+const BgColor = memo(() => {
   const { scene } = useThree();
-  useEffect(() => { scene.background = new THREE.Color(color); }, [scene, color]);
+  useEffect(() => { scene.background = new THREE.Color('#f4f5fe'); }, [scene]);
   return null;
 });
 
 BgColor.displayName = 'BgColor';
 
-const SwarmsCubes = memo(({ inverted = false }: { inverted?: boolean }) => {
+const SwarmsCubes = memo(() => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
-  const palette = inverted ? PALETTES.inverted : PALETTES.default;
 
   return (
     <Canvas
@@ -186,9 +161,9 @@ const SwarmsCubes = memo(({ inverted = false }: { inverted?: boolean }) => {
       frameloop="always"
       performance={{ min: 0.5 }}
     >
-      <BgColor color={palette.sceneBg} />
+      <BgColor />
       <Suspense fallback={null}>
-        <CubesScene palette={palette} />
+        <CubesScene />
       </Suspense>
     </Canvas>
   );
