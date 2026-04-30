@@ -507,7 +507,13 @@ export async function POST(request: Request) {
     'SELECT shard_count FROM users WHERE id = :id LIMIT 1',
     { id: user.id }
   );
-  const shardCount = rows[0]?.shard_count ?? 0;
+  if (!rows.length) {
+    return NextResponse.json({
+      error: 'user_not_found',
+      message: 'User record not found for the current session.',
+    }, { status: 404 });
+  }
+  const shardCount = rows[0].shard_count ?? 0;
 
   if (shardCount < SHARD_COST) {
     return NextResponse.json({
@@ -528,7 +534,7 @@ export async function POST(request: Request) {
   if (!updated.length) {
     return NextResponse.json({
       error: 'insufficient_shards',
-      shardCount: 0,
+      shardCount,
       cost: SHARD_COST,
     }, { status: 402 });
   }

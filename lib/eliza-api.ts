@@ -116,7 +116,7 @@ class ElizaAPIClient {
       });
 
       // Check if response is SSE streaming format (starts with "data:")
-      if (responseText.startsWith('data:')) {
+      if (responseText.trimStart().startsWith('data:')) {
         const fullText = this.parseSSEResponse(responseText);
         console.log('Parsed SSE response, length:', fullText.length);
         if (!fullText) {
@@ -201,25 +201,79 @@ class ElizaAPIClient {
   private parseSSEResponse(sseText: string): string {
     const lines = sseText.split('\n');
     let fullText = '';
+    let sawEventPayload = false;
 
     for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        const jsonStr = line.slice(6); // Remove "data: " prefix
+      const trimmed = line.trim();
+      if (trimmed.startsWith('data:')) {
+        sawEventPayload = true;
+        const jsonStr = trimmed.slice(5).trimStart();
         if (jsonStr === '[DONE]') continue;
+        if (!jsonStr) continue;
 
         try {
           const event = JSON.parse(jsonStr);
-          // Extract text from text-delta events
-          if (event.type === 'text-delta' && event.delta) {
-            fullText += event.delta;
-          }
+          fullText += this.extractTextFromEvent(event);
         } catch {
-          // Skip non-JSON lines
+          fullText += jsonStr;
+        }
+      }
+    }
+
+    if (!fullText && !sawEventPayload) {
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === '[DONE]') continue;
+        try {
+          const event = JSON.parse(trimmed);
+          fullText += this.extractTextFromEvent(event);
+        } catch {
+          fullText += trimmed;
         }
       }
     }
 
     return fullText;
+  }
+
+  private extractTextFromEvent(event: unknown): string {
+    if (typeof event === 'string') return event;
+    if (typeof event === 'number' || typeof event === 'boolean') return String(event);
+    if (!event || typeof event !== 'object') return '';
+
+    if (Array.isArray(event)) {
+      return event.map((item) => this.extractTextFromEvent(item)).join('');
+    }
+
+    const data = event as Record<string, any>;
+    if (typeof data.delta === 'string') return data.delta;
+    if (typeof data.text === 'string') return data.text;
+    if (typeof data.content === 'string') return data.content;
+    if (typeof data.response === 'string') return data.response;
+    if (typeof data.result === 'string') return data.result;
+    if (typeof data.generated_text === 'string') return data.generated_text;
+    if (typeof data.output_text === 'string') return data.output_text;
+    if (typeof data.message?.content === 'string') return data.message.content;
+    if (typeof data.message?.text === 'string') return data.message.text;
+    if (typeof data.completion === 'string') return data.completion;
+    if (Array.isArray(data.choices) && data.choices.length > 0) {
+      const choice = data.choices[0];
+      if (typeof choice?.delta?.content === 'string') return choice.delta.content;
+      if (typeof choice?.message?.content === 'string') return choice.message.content;
+      if (typeof choice?.text === 'string') return choice.text;
+    }
+    if (Array.isArray(data.output) && data.output.length > 0) {
+      const first = data.output[0];
+      if (typeof first?.content === 'string') return first.content;
+      if (typeof first?.text === 'string') return first.text;
+      if (typeof first?.delta === 'string') return first.delta;
+    }
+    for (const key of ['content', 'text', 'delta', 'response', 'result', 'message', 'output']) {
+      const value = data[key];
+      const extracted = this.extractTextFromEvent(value);
+      if (extracted) return extracted;
+    }
+    return '';
   }
 
 }

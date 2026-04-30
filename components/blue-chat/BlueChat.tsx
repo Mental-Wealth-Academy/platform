@@ -50,6 +50,7 @@ interface MessageDebugInfo {
   source: 'eliza' | 'local-fallback';
   mode: 'chat' | 'research' | 'linkedin-professional' | 'auto-distribution';
   shardsDeducted: number;
+  shardBalance?: number | null;
   memory?: {
     recentMessages: number;
     recentFacts: number;
@@ -307,8 +308,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       const res = await fetch('/api/me', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
-        setShardCount(data.user?.shardCount ?? 0);
-        setViewerProfile({ username: data.user?.username ?? null });
+        const nextShardCount = typeof data.user?.shardCount === 'number' ? data.user.shardCount : null;
+        setShardCount(nextShardCount);
+        setViewerProfile(data.user ? { username: data.user.username ?? null } : null);
       }
     } catch { /* silent */ }
   }, []);
@@ -505,7 +507,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       speakBlue(text, controller.signal)
         .catch(() => {/* aborted or TTS unavailable — silent */})
         .finally(() => setIsSpeaking(false));
-    }, 800 + Math.random() * 800);
+    }, 140 + Math.random() * 140);
   };
 
   const openShardUpsell = useCallback((required: number, reason: ShardUpsellState['reason'] = 'chat') => {
@@ -547,7 +549,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       if (res.ok && data.response) {
         setShardCount(data.shardsRemaining ?? shardCount);
         setIsTyping(false);
-        addBlueMessage(data.response, action, data.debug);
+        addBlueMessage(data.response, action, {
+          ...(data.debug || {}),
+          shardBalance: data.shardsRemaining ?? shardCount ?? null,
+        });
         return;
       }
 
@@ -555,6 +560,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         setShardCount(data.shardCount);
         setIsTyping(false);
         openShardUpsell(mode === 'research' ? RESEARCH_COST : SHARD_COST, mode === 'research' ? 'research' : 'chat');
+        return;
+      }
+
+      if (data.error === 'user_not_found') {
+        setIsTyping(false);
+        addBlueMessage(
+          'i cannot find your account record for this session. refresh, reconnect your wallet, and try again.'
+        );
         return;
       }
 
@@ -569,6 +582,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
+        shardBalance: shardCount,
         notes,
       });
     } catch {
@@ -577,6 +591,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
         source: 'local-fallback',
         mode: mode ?? 'chat',
         shardsDeducted: 0,
+        shardBalance: shardCount,
         notes: ['Network or runtime error on /api/chat/blue.'],
       });
     }
@@ -1172,6 +1187,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       addBlueMessage(
         "auto-distribution is live. connect approved channels, tell me the campaign, and i'll draft posts, image prompts, video concepts, ad angles, and engagement targets."
       );
+    } else if (action === 'research-lite') {
+      send('Help me think through this topic', 'searching');
+      addBlueMessage("give me the topic, paper, or claim and i will help you map the signal. if you want the full research desk, open Research Mode.");
     } else if (action === 'research') {
       setClaudeProfessionalMode(false);
       setPendingAttachments([]);
@@ -1300,8 +1318,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     const lines = [
       `source: ${debug.source}`,
       `mode: ${debug.mode}`,
-      `shards: ${debug.shardsDeducted}`,
+      `shards spent: ${debug.shardsDeducted}`,
     ];
+
+    if (typeof debug.shardBalance === 'number') {
+      lines.push(`balance: ${debug.shardBalance.toLocaleString()}`);
+    }
 
     if (debug.memory) {
       lines.push(
@@ -1617,7 +1639,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
             <span>{shardCount}</span>
           </div>
         )}
-        <button className={styles.quickAction} onClick={() => handleQuickAction('research')} disabled={isTyping} type="button">
+        <button className={styles.quickAction} onClick={() => handleQuickAction('research-lite')} disabled={isTyping} type="button">
           Research
         </button>
         <button className={styles.quickAction} onClick={() => handleQuickAction('treasury')} disabled={isTyping} type="button">
@@ -1883,7 +1905,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
               <div className={styles.expandedQuickPanel}>
                 <h3 className={styles.panelHeading}>Power Tools</h3>
                 <div className={styles.expandedQuickGrid}>
-                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
+                  <button className={`${styles.expandedQuickCard} ${styles.expandedQuickAccent}`} onClick={() => { play('click'); handleQuickAction('research-lite'); }} onMouseEnter={() => play('hover')} disabled={isTyping} type="button">
                     <span className={styles.toolCardTop}>
                       <span className={styles.toolCardText}>
                         <span className={styles.toolSlideWrap}>
