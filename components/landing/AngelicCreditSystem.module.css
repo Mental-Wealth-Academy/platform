@@ -4,7 +4,7 @@
   width: 100%;
   min-height: 650px;
   padding: 80px 24px;
-  background: #000000;
+  background: #FFFFFF;
   z-index: 1;
   overflow: hidden;
   display: flex;
@@ -15,7 +15,7 @@
 .logoWrap {
   position: relative;
   width: 100%;
-  max-width: 2048px;
+  max-width: 750px;
   min-height: 490px;
   display: flex;
   align-items: center;
@@ -23,9 +23,10 @@
 }
 
 .logoImage {
-  width: min(100%, 2048px);
+  width: min(100%, 750px);
   height: auto;
   object-fit: contain;
+  filter: invert(1);
 }
 
 /* ── Scroll Animations ── */
