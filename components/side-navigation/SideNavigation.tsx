@@ -54,7 +54,7 @@ const desktopNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
-      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/mwa-dark-outline-logo.png', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -74,7 +74,7 @@ const mobileNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
-      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/mwa-dark-outline-logo.png', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
