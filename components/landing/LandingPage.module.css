@@ -63,8 +63,9 @@
   line-height: 1.15;
   margin: 0 0 12px 0;
   letter-spacing: 0em;
-  color: var(--color-text-dark);
+  color: var(--color-text-light);
   text-transform: uppercase;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
   animation: heroFadeUp 0.45s var(--hero-ease-out) both;
 }
@@ -88,7 +89,7 @@
   font-weight: 400;
   line-height: 1.65;
   margin: 0 0 32px 0;
-  color: var(--color-text-soft);
+  color: rgba(255, 255, 255, 0.85);
   max-width: 620px;
   animation: heroFadeUp 0.45s var(--hero-ease-out) 0.25s both;
 }
