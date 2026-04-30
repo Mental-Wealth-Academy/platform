@@ -58,7 +58,7 @@
 
 .heroHeadline {
   font-family: var(--font-primary);
-  font-size: clamp(1rem, 4.5vw, 2.75rem);
+  font-size: clamp(0.9rem, 4vw, 2.5rem);
   font-weight: 900;
   line-height: 1.15;
   margin: 0 0 12px 0;
@@ -451,6 +451,19 @@
   height: 100vh;
   z-index: 0;
   background-color: #F4F5FE;
+  background-image: url('/backlit-leaves.webp');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-blend-mode: soft-light;
+}
+
+.canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(244, 245, 254, 0.45) 0%, rgba(244, 245, 254, 0.25) 50%, rgba(244, 245, 254, 0.55) 100%);
+  pointer-events: none;
 }
 
 /* Crosshair cursor */
