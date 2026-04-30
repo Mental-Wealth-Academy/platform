@@ -100,15 +100,15 @@ function parseOutcomePrices(raw: string): [number, number] {
 
 // ── Engine ──
 
-/** Scan all categorized crypto markets for edge opportunities. */
+/** Scan macro-focused markets for edge opportunities. */
 export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: TradingLog[] }> {
   const logs: TradingLog[] = [];
   const signals: EdgeSignal[] = [];
 
   const [prices, markets] = await Promise.all([fetchPrices(), fetchCategorizedMarkets()]);
-  const cryptoMarkets = markets.crypto;
+  const scanMarkets = [...markets.commodities, ...markets.economics];
 
-  for (const market of cryptoMarkets) {
+  for (const market of scanMarkets) {
     const [yesPrice] = parseOutcomePrices(market.outcomePrices);
     if (yesPrice <= 0.02 || yesPrice >= 0.98) continue;
 

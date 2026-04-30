@@ -118,7 +118,8 @@ function normalCDF(x: number): number {
 /** Find a BTC-related Kalshi market, return Yes price as % */
 function findBtcMarket(markets: CategorizedMarkets | null): number | null {
   if (!markets) return null;
-  const match = markets.crypto.find((m: MarketRow) =>
+  const allMarkets = Object.values(markets).flat() as MarketRow[];
+  const match = allMarkets.find((m: MarketRow) =>
     /^KXBTC/i.test(m.event_ticker || m.ticker) ||
     /btc|bitcoin/i.test(m.question),
   );
@@ -137,11 +138,13 @@ function formatTradeTime(ts: string): string {
 }
 
 const CATEGORY_LABELS: Record<MarketCategory, string> = {
-  crypto: 'CRYPTO',
+  commodities: 'COMMODITIES',
+  economics: 'ECONOMICS',
   ai: 'AI',
-  sports: 'SPORTS',
   politics: 'POLITICS',
 };
+
+const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
 
 const TRADE_CHAT_SUGGESTIONS = [
   'Scan edge',
@@ -254,9 +257,9 @@ export default function Markets() {
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isHistoryHighlighted, setIsHistoryHighlighted] = useState(false);
   const [visibleMarketCounts, setVisibleMarketCounts] = useState<Record<MarketCategory, number>>({
-    crypto: INITIAL_VISIBLE_MARKETS,
+    commodities: INITIAL_VISIBLE_MARKETS,
+    economics: INITIAL_VISIBLE_MARKETS,
     ai: INITIAL_VISIBLE_MARKETS,
-    sports: INITIAL_VISIBLE_MARKETS,
     politics: INITIAL_VISIBLE_MARKETS,
   });
   const tradeChatScrollRef = useRef<HTMLDivElement | null>(null);
@@ -358,9 +361,9 @@ export default function Markets() {
 
   useEffect(() => {
     setVisibleMarketCounts({
-      crypto: INITIAL_VISIBLE_MARKETS,
+      commodities: INITIAL_VISIBLE_MARKETS,
+      economics: INITIAL_VISIBLE_MARKETS,
       ai: INITIAL_VISIBLE_MARKETS,
-      sports: INITIAL_VISIBLE_MARKETS,
       politics: INITIAL_VISIBLE_MARKETS,
     });
   }, [kalshiMarkets]);
@@ -472,7 +475,7 @@ export default function Markets() {
     )).join('\n') || 'price feed not loaded';
 
     const signalMarkets = deferredKalshiMarkets
-      ? (['crypto', 'ai', 'sports', 'politics'] as MarketCategory[])
+      ? MARKET_CATEGORIES
         .flatMap((cat) => (deferredKalshiMarkets[cat] || []).slice(0, 2).map((market) => {
           const [yes, no] = parseOutcomePrices(market.outcomePrices);
           return `${CATEGORY_LABELS[cat]}: ${market.question} | yes ${Math.round(yes * 100)}% no ${Math.round(no * 100)}% volume ${formatVol(market.volume)}`;
@@ -657,7 +660,7 @@ export default function Markets() {
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>markets:</span>
-            <span className={styles.statusValue}>BTC ETH SOL XRP GOLD</span>
+            <span className={styles.statusValue}>GOLD OIL GAS CPI FED GDP</span>
           </div>
           <div className={styles.statusItem}>
             <span className={styles.statusLabel}>MC_paths:</span>
@@ -920,7 +923,7 @@ export default function Markets() {
             )}
             {deferredKalshiMarkets && (
               <div className={styles.marketList}>
-                {(['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map((cat) => {
+                {MARKET_CATEGORIES.map((cat) => {
                   const items = deferredKalshiMarkets[cat];
                   if (!items || items.length === 0) return null;
                   const visibleCount = visibleMarketCounts[cat] ?? INITIAL_VISIBLE_MARKETS;

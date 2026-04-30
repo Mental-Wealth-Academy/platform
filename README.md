@@ -44,7 +44,7 @@ A live edge-detection dashboard scanning **Kalshi**, the CFTC-regulated US predi
 
 - **Black-Scholes Binary Pricer** -- Compares Kalshi market prices against a short-dated Black-Scholes model fed by live CoinGecko spot. Edges over 3% become signals.
 - **Quarter-Kelly Sizing** -- Conservative position sizing caps notional at 5% of the trading treasury per position, 40% total exposure.
-- **Live Orderbooks** -- Curated Kalshi markets across crypto, AI, sports, and politics, sorted by balance, volume, and end-date proximity.
+- **Live Orderbooks** -- Curated Kalshi markets across commodities, economics, AI, and politics, sorted by balance, volume, and end-date proximity.
 - **Dry-Run Signals** -- Order placement is intentionally not wired. Signals are emitted to the execution log for review; nothing routes capital without explicit approval.
 - **Governance Path** -- Trade proposals can also flow through community governance on `/community`, giving the DAO direct input on trading decisions.
 

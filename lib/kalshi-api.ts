@@ -11,9 +11,8 @@
  *   - Orderbook wrapper is `orderbook_fp`, sides are `yes_dollars`/`no_dollars`.
  *   - Status for live markets is `"active"` (request filter `status=open` works).
  *
- * Categorization uses Kalshi's own `category` field on events
- * (Crypto / Politics+Elections / Sports / Science and Technology), discovered
- * via /events?with_nested_markets=true.
+ * Categorization uses curated Kalshi series tickers discovered from
+ * /series and verified through /events?with_nested_markets=true.
  */
 
 const KALSHI_BASE = 'https://api.elections.kalshi.com/trade-api/v2';
@@ -96,12 +95,12 @@ export interface RecentTrade {
   outcome: string;
 }
 
-export type MarketCategory = 'crypto' | 'ai' | 'sports' | 'politics';
+export type MarketCategory = 'commodities' | 'economics' | 'ai' | 'politics';
 
 export interface CategorizedMarkets {
-  crypto: MarketRow[];
+  commodities: MarketRow[];
+  economics: MarketRow[];
   ai: MarketRow[];
-  sports: MarketRow[];
   politics: MarketRow[];
 }
 
@@ -175,17 +174,25 @@ const MAX_DAYS_OUT = 90;
 const INITIAL_SERIES_PER_CATEGORY = 6;
 const SERIES_FETCH_CHUNK = 3;
 
+const MARKET_CATEGORIES: MarketCategory[] = ['commodities', 'economics', 'ai', 'politics'];
+
 // Curated high-volume series tickers per output bucket. /series?category=
 // returns the full series catalog including dead/test series — these were
-// hand-picked from live data on 2026-04-27 and verified to have open markets.
+// hand-picked from live data and ordered so current/recurring markets are tried first.
 const CURATED_SERIES: Record<MarketCategory, string[]> = {
-  crypto: [
-    'KXBTC', 'KXBTCD', 'KXBTC15M',
-    'KXETH', 'KXETHD', 'KXETH15M',
-    'KXSOL', 'KXSOLD', 'KXSOL15M',
-    'KXXRP', 'KXXRPD', 'KXXRP15M',
-    'KXBCH', 'KXBCHD',
-    'KXBNB15M',
+  commodities: [
+    'KXAAAGASD', 'KXAAAGASM', 'KXAAAGASY',
+    'KXDIESELM', 'KXOIL', 'WTIW',
+    'NGAS', 'KXWHEAT', 'GOLD',
+    'KXSPRLVL', 'CPIGAS',
+  ],
+  economics: [
+    'FED', 'KXFEDDECISION', 'KXEFFR', 'LOWESTRATE',
+    'KXPCECORE', 'PCECORE', 'LCPIMAXYOY', 'KXCOREUND',
+    'KXHPI', 'HOMEUS', 'HOMEUSY', 'KXHOUSELENGTH',
+    'KXU3MAX', 'KXU3MIN', 'NFPDELAY',
+    'GDP', 'KXGDPYEAR', 'GDPUSMAX',
+    'KXTNOTE', 'KXTNOTED', 'KX10Y2Y',
   ],
   politics: [
     'KXKASHOUT', 'KXIMPEACHCABINET', 'KXLEAVEHOUSECOMBO', 'KXLEAVEBONDI',
@@ -193,13 +200,6 @@ const CURATED_SERIES: Record<MarketCategory, string[]> = {
     'KXTIKTOKCOURT', 'KXNATIONALE', 'KXDCEIL', 'KXMUNIBONDTAX',
     'KXICERENAME', 'KXTAIWANLVL4', 'KXZELENSKYPUTIN', 'KXINSURRECTION',
     'KXVOTEFEDCHAIR', 'KXIPCGAZA',
-  ],
-  sports: [
-    'KXMLBGAME', 'KXNFLGAME', 'KXNBAGAME', 'KXNHLGAME',
-    'KXEPLGAME', 'KXUCLGAME', 'KXUFCFIGHT',
-    'KXNFLREC', 'KXMLBWINS', 'KXTEAMSINSC',
-    'KXLIVH2H', 'KXUSOPENCUP', 'KXNCAAMBNEXTCOACH',
-    'KXCOACHOUTNBADATE', 'KXCOACHOUTMLBDATE',
   ],
   ai: [
     'KXOAIAGI', 'KXGPT', 'KXOAISCREEN', 'KXAIPAUSE', 'KXOAIHARDWARE',
@@ -209,9 +209,9 @@ const CURATED_SERIES: Record<MarketCategory, string[]> = {
 };
 
 const PRIORITY_SERIES: Record<MarketCategory, string[]> = {
-  crypto: ['KXBTC', 'KXBTCD', 'KXETH', 'KXSOL', 'KXXRP', 'KXETHD'],
+  commodities: ['KXAAAGASD', 'KXAAAGASM', 'KXOIL', 'WTIW', 'NGAS', 'GOLD'],
+  economics: ['FED', 'KXFEDDECISION', 'KXPCECORE', 'KXEFFR', 'KXHPI', 'KXTNOTE'],
   politics: ['KXKASHOUT', 'KXMINWAGE', 'KXSCOTUSPOWER', 'KXTIKTOKCOURT', 'KXVOTEFEDCHAIR', 'KXTAIWANLVL4'],
-  sports: ['KXMLBGAME', 'KXNFLGAME', 'KXNBAGAME', 'KXNHLGAME', 'KXEPLGAME', 'KXUFCFIGHT'],
   ai: ['KXOAIAGI', 'KXGPT', 'KXTOPLLM', 'KXCLAUDE5', 'KXFRONTIER', 'KXTOP3AI'],
 };
 
@@ -277,7 +277,7 @@ async function fetchInChunks<T, R>(items: T[], chunk: number, fn: (item: T) => P
 }
 
 /**
- * Fetch curated markets across crypto / AI / sports / politics.
+ * Fetch curated markets across commodities / economics / AI / politics.
  * 60s in-memory cache; returns stale on failure.
  */
 export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
@@ -285,10 +285,10 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
 
   try {
     const buckets: Record<MarketCategory, { row: MarketRow; score: number }[]> = {
-      crypto: [], ai: [], sports: [], politics: [],
+      commodities: [], economics: [], ai: [], politics: [],
     };
 
-    await Promise.all((['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]).map(async (ours) => {
+    await Promise.all(MARKET_CATEGORIES.map(async (ours) => {
       const preferred = PRIORITY_SERIES[ours];
       const fallback = CURATED_SERIES[ours].filter((ticker) => !preferred.includes(ticker));
       const series = [...preferred, ...fallback].slice(0, INITIAL_SERIES_PER_CATEGORY);
@@ -308,8 +308,8 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
       }
     }));
 
-    const result: CategorizedMarkets = { crypto: [], ai: [], sports: [], politics: [] };
-    for (const cat of ['crypto', 'ai', 'sports', 'politics'] as MarketCategory[]) {
+    const result: CategorizedMarkets = { commodities: [], economics: [], ai: [], politics: [] };
+    for (const cat of MARKET_CATEGORIES) {
       buckets[cat].sort((a, b) => b.score - a.score);
       result[cat] = buckets[cat].slice(0, PER_CATEGORY).map((x) => x.row);
     }
@@ -329,7 +329,7 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
  */
 export async function fetchKalshiMarkets(): Promise<MarketRow[]> {
   const cats = await fetchCategorizedMarkets();
-  return [...cats.crypto, ...cats.ai, ...cats.sports, ...cats.politics];
+  return MARKET_CATEGORIES.flatMap((cat) => cats[cat]);
 }
 
 /**

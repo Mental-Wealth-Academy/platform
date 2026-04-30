@@ -44,7 +44,7 @@ const desktopNavSections: NavSection[] = [
     id: 'main',
     label: 'Community Main',
     items: [
-      { id: 'library', label: 'knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
+      { id: 'library', label: 'Knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
       { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
     ],
@@ -53,7 +53,7 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'Case Study 01', href: '/home', iconSrc: '/icons/nav-home.svg' },
+      { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
@@ -64,7 +64,7 @@ const mobileNavSections: NavSection[] = [
     id: 'main',
     label: 'Community Main',
     items: [
-      { id: 'library', label: 'knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
+      { id: 'library', label: 'Knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
       { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
       { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
     ],
@@ -73,7 +73,7 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'Case Study 01', href: '/home', iconSrc: '/icons/nav-home.svg' },
+      { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
