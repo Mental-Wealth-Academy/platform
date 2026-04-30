@@ -50,7 +50,7 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
+  description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
+    description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
     images: [
       {
         url: 'https://i.imgur.com/UXQDIpt.png',
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'Investing in the capital of the human mind, with the heart of tomorrow. DeSci tools on the intersect of cyber-psychology, wealth, AI governance, & daily wellness rituals.',
+    description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
     images: ['https://i.imgur.com/UXQDIpt.png'],
   },
   other: {

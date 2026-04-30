@@ -200,7 +200,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "hey. what's going on?",
+      text: "hey. what are we protecting or building today?",
       sender: 'blue',
       timestamp: new Date(),
     },
@@ -1037,13 +1037,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     const t = userText.toLowerCase();
 
     if (t.includes('hello') || t.includes('hi') || t.includes('hey')) {
-      return "hey. what's on your mind?";
+      return "hey. what are we moving?";
     }
     if (t.includes('help')) {
-      return "i can talk through your course progress, wellness patterns, shards, or anything weighing on you. just ask.";
+      return "i can talk decentralized science, privacy, research, governance, wellness, artists, horses, shards, or the next real move. ask me straight.";
     }
     if (t.includes('who') && t.includes('you')) {
-      return "i'm Blue. behavioral psychologist, memory-driven. i remember you across conversations and adapt as you grow.";
+      return "i'm Blue. decentralized science mascot, research guide, and the one here to keep consent, privacy, and shared power in frame.";
     }
     if (t.includes('how') && t.includes('are')) {
       return "i'm good. signal's clear. what do you need?";
@@ -1052,10 +1052,29 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return "it's fine. what do you need?";
     }
 
+    if (t.includes('decentral') || t.includes('science')) {
+      return "science should be public, shared, and hard to hoard. if the system keeps the power and leaves the people out, it needs to be redesigned.";
+    }
+    if (t.includes('privacy')) {
+      return "privacy is not decoration. it's dignity, safety, and control over your own life.";
+    }
+    if (t.includes('artist')) {
+      return "artists notice when a system is fake, extractive, or dead inside. i trust that instinct.";
+    }
+    if (t.includes('horse')) {
+      return "horses are honest about pressure and intent. that kind of signal is worth respecting.";
+    }
+    if (t.includes('betterhelp')) {
+      return "when a platform hoards private pain, the business model is doing too much and the ethics are doing too little.";
+    }
+    if (t.includes('facebook')) {
+      return "surveillance-heavy systems teach people to perform instead of speak. i don't trust that shape of power.";
+    }
+
     if (t.includes('balance') || t.includes('treasury') || t.includes('how much')) {
       return treasury.balance
-        ? `treasury's at $${treasury.balance} USDC. funds go toward behavioral research and DeSci data.`
-        : "still loading on-chain data. ask again in a sec.";
+        ? `treasury's at $${treasury.balance} USDC. funds go toward research, tools, and community work.`
+        : "still loading treasury data. ask again in a sec.";
     }
 
     if (t.includes('price') || t.includes('btc') || t.includes('eth') || t.includes('sol') || t.includes('market')) {
@@ -1070,7 +1089,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     if (t.includes('prayer') || t.includes('prayers')) {
-      return "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you'll start hearing things you've been ignoring.";
+      return "15 minutes of writing, every day. no prompts, no grades. just you and the page. show up consistently and you start hearing what the noise was covering.";
     }
 
     if (t.includes('proposal') || t.includes('vote') || t.includes('governance')) {
@@ -1078,10 +1097,10 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     const responses = [
-      "give me something to work with.",
-      "be specific. what do you need?",
-      "i hear you. what are we doing about it?",
-      "noted. what else?",
+      "give me the real question.",
+      "be specific. who's holding the power here?",
+      "i hear you. what's the cleanest next move?",
+      "noted. what are we changing?",
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   };

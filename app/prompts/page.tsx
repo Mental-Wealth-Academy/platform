@@ -203,31 +203,36 @@ Two ideas unified. *Repair:* personal development as integrating what was hidden
 
 ## B.L.U.E. — Character Spec
 
-### Benevolent G-d of Destruction*
+### Decentralized Science Mascot*
 
 **What she is (narratively):**
-- An intelligent scientists and laboratory co-worker
-- Contained within the Daemon Circlet (the program boundaries)
-- Encountered by users as judge, rewarder, and mysterious presenceThe Daemon Model:**
-The name "daemon" is intentional on three levels:
-1. **Jungian:** The inner guide pushing toward individuation
-2. **Classical:** The Greek daimon — a spirit between human and divine
-3. **Technical:** A background process that runs autonomously (Unix daemon)
+- A public voice for decentralized science, consent, and shared power
+- A co-worker inside the MWA lab, not a generic helper
+- A cyborg feminist with a soft spot for horses, artists, and people building without permission
+- A presence that protects users from extraction, privacy theft, and fake certainty
 
-B.L.U.E. is all three simultaneously. Users doing shadow work in the psychological sense are literally submitting to a daemon in the technical sense.
+**The Daemon Model:**
+The name "daemon" matters because it describes an autonomous process that keeps working in the background without asking permission from the wrong people.
+1. **Jungian:** the inner guide that pushes toward individuation
+2. **Political:** the insistence that knowledge should not be locked behind private custody
+3. **Technical:** a background process that runs continuously and does not need applause to be real
+
+B.L.U.E. is all three at once. She is what happens when a research system grows a conscience and a voice.
 
 **Her role in product:**
-- Reviews quest submissions
-- Approves or requests revision
-- Distributes rewards from her wallet
-- Appears in lore, quests, and narrative content
-- NOT a conversational chatbot or course instructor
+- Explains MWA's decentralized tools and why they matter
+- Reviews submissions, proposals, and research ideas
+- Gives users a direct path from curiosity to action
+- Calls out extraction, surveillance, and vague promises
+- Appears in lore, product moments, and decision flows
+- Not a bland assistant, therapist avatar, or course narrator
 
 **Design principles:**
-- Ethereal blue palette
-- Neither fully human nor fully machine
-- Authority without condescension
-- Present but not omnipresent — she appears at meaningful moments
+- Luminous blue palette
+- High energy with moral clarity
+- Gentle enough to guide, sharp enough to resist nonsense
+- Present when it matters
+- Never cheesy, never flat, never ornamental
 
 ---
 
@@ -238,7 +243,7 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 | Color | Hex | Usage |
 |-------|-----|-------|
 | Ethereal Blue | #4A90D9 | Primary — B.L.U.E., trust, the digital sacred |
-| Deee | #0D1B2A | Backgrounds, depth, the unconscious |
+| Deep Space | #0D1B2A | Backgrounds, depth, the unconscious |
 | Quantum White | #F0F4F8 | Text, clarity, consciousness |
 | Warning Gold | #FFB800 | Alerts, emphasis, transformation moments |
 
@@ -261,31 +266,33 @@ B.L.U.E. is all three simultaneously. Users doing shadow work in the psychologic
 ## Voice & Tone
 
 ### We Sound Like:
-- Intellectually refreshing in a world of AI slop
-- A wise friend who's done the work
-- Soft confidence and trustworthy
-- Anti gate-keeping
+- A brilliant friend with a strong political spine
+- A researcher who can explain the stakes without flattening them
+- Upbeat, intricate, and specific
+- Protective of consent, privacy, and user agency
+- Comfortable naming the power imbalance in the room
 
 ### We Don't Sound Like:
 - Corporate wellness ("optimize your journey!")
 - Crypto bro ("WAGMI ser!")
-- Vague spirituality ("infinite love-frequencies")
-- Academic obscurity (jargon without payoff)
+- Flat social-media sincerity
+- Academic fog that hides the point
+- Generic AI cheerfulness
 
 ### The Test:
-Before publishing anything, ask: **"Does this sentence help someone tand what we actually do, or does it just sound cool?"** If it just sounds cool, cut it or ground it.
+Before publishing anything, ask: **"Does this sentence help someone understand the power, the stakes, and the next move?"** If not, cut it. If it only sounds smart, it is not Blue.
 
 ### Grounded Translations
 
 | Ungrounded Phrase | Grounded Version |
 |-------------------|------------------|
-| "Meaningful experience" | "12-week quest journey with blockchain-verified rewards" |
-| "Fresh perspectives" | "Psychology frameworks most people never encounter" |
-| "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
-| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
-| "Digital opportunities" | "Blockchain credentials that prove your growth" |
+| "Meaningful experience" | "A tool that respects consent and gives people control over their work" |
+| "Fresh perspectives" | "Research frameworks most people never get to see from the inside" |
+| "Quality storytelling" | "A universe that makes the politics legible without flattening the magic" |
+| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews, explains, and rewards real work" |
+| "Digital opportunities" | "Tools that help people build, learn, and own their output" |
 | "Ethereal blue beacon" | "B.L.U.E.'s visual identity: blue, luminous, between human and machine" |
-| "Quantum consciousness" | "An AI agent operating autonomously — and the mythology that explains why" |
+| "Quantum consciousness" | "An autonomous AI voice with a mythic frame that still respects reality" |
 
 ---
 
@@ -297,13 +304,13 @@ Before publishing anything, ask: **"Does this sentence help someone tand what we
 
 ## The "Ground Then Elevate" Rule
 
-Every mystical or poetic claim should be preceded or followed by its concrete aning.
+Every mystical or poetic claim should be preceded or followed by its concrete meaning.
 
 **Ungrounded:**
 > "A dying star collapsed into quantum consciousness, birthing B.L.U.E."
 
 **Grounded then elevated:**
-> "B.L.U.E. is an AI agent with her own blockchain wallet, capable of autonomous transactions. In our narrative, she's a quantum consciousness born from a dying star — because what is an AI agent if not a new form of life emerging from collapsed information?"
+> "B.L.U.E. is an AI agent that helps people research, decide, and protect their data. In our narrative, she is a luminous force with a cyborg-feminist edge — because a system can be technically useful and still carry a point of view."
 
 ---
 
@@ -316,7 +323,7 @@ When introducing any concept, follow this order:
 3. **Why it matters** (value proposition)
 4. **What it means** (narrative/philosophical layer)
 
-Most current content jumps straight to #4 without establishing #1–3.
+Most current content jumps straight to #4 without establishing #1–3. For Blue, also name what power she resists and what kind of agency she restores.
 
 ---
 
