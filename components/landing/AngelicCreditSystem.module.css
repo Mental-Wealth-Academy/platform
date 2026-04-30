@@ -2,8 +2,8 @@
 .section {
   position: relative;
   width: 100%;
-  min-height: 650px;
-  padding: 80px 24px;
+  min-height: 520px;
+  padding: 96px 24px;
   background: #FFFFFF;
   z-index: 1;
   overflow: hidden;
@@ -15,8 +15,7 @@
 .logoWrap {
   position: relative;
   width: 100%;
-  max-width: 750px;
-  min-height: 490px;
+  max-width: 1180px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -694,12 +693,12 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .section {
-    min-height: 650px;
-    padding: 64px 16px;
+    min-height: 420px;
+    padding: 72px 16px;
   }
 
   .logoWrap {
-    min-height: 480px;
+    max-width: 750px;
   }
 
   .tierSection {
