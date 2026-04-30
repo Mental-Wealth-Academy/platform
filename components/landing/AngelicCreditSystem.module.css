@@ -2,32 +2,29 @@
 .section {
   position: relative;
   width: 100%;
+  min-height: 650px;
   padding: 80px 24px;
-  background: var(--color-background, #FBF8FF);
+  background: #000000;
   z-index: 1;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.container {
+.logoWrap {
   position: relative;
-  z-index: 2;
-  max-width: 1180px;
-  margin: 0 auto;
   width: 100%;
+  max-width: 2048px;
+  min-height: 490px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ── Floating Angels ── */
-.floatingAngel {
-  position: absolute;
-  z-index: 1;
-  animation: float 4s ease-in-out infinite;
-  opacity: 0.85;
-}
-
-.angelImg {
-  border-radius: 50%;
-  background: rgba(240, 240, 245, 0.8);
-  padding: 4px;
+.logoImage {
+  width: min(100%, 2048px);
+  height: auto;
   object-fit: contain;
 }
 
@@ -695,16 +692,14 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .floatingAngel {
-    opacity: 0.5;
+  .section {
+    min-height: 650px;
+    padding: 64px 16px;
   }
 
-  .floatingAngel .angelImg {
-    max-width: 48px;
-    max-height: 48px;
+  .logoWrap {
+    min-height: 480px;
   }
-
-
 
   .tierSection {
     grid-template-columns: 1fr;
