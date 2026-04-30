@@ -451,21 +451,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
           } else if (researchMode) {
             discoverResearch(text);
           } else if (autoDistributionVisible) {
-            const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-            if (hasShards) {
-              sendToEliza(text, 'auto-distribution');
-            } else {
-              openShardUpsell(SHARD_COST, 'chat');
-            }
+            sendToEliza(text, 'auto-distribution');
           } else if (claudeProfessionalMode) {
             sendToEliza(text, 'linkedin-professional');
           } else {
-            const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-            if (hasShards) {
-              sendToEliza(text);
-            } else {
-              openShardUpsell(SHARD_COST, 'chat');
-            }
+            sendToEliza(text);
           }
         }, 300);
       }
@@ -682,12 +672,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
     }
 
     if (autoDistributionVisible) {
-      const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-      if (hasShards) {
-        sendToEliza(text, 'auto-distribution', undefined, attachments);
-      } else {
-        openShardUpsell(SHARD_COST, 'chat');
-      }
+      sendToEliza(text, 'auto-distribution', undefined, attachments);
       return;
     }
 
@@ -696,13 +681,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose }) => {
       return;
     }
 
-    const hasShards = shardCount !== null && shardCount >= SHARD_COST;
-
-    if (hasShards) {
-      sendToEliza(text, undefined, undefined, attachments);
-    } else {
-      openShardUpsell(SHARD_COST, 'chat');
-    }
+    sendToEliza(text, undefined, undefined, attachments);
   };
 
   const discoverResearch = async (topic: string) => {
