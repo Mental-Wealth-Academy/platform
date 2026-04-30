@@ -6,12 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAccount, useReadContract } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
-import {
-  Dna,
-  House,
-  IconProps,
-  Microscope,
-} from '@phosphor-icons/react';
+import type { IconProps } from '@phosphor-icons/react';
 import styles from './SideNavigation.module.css';
 import BlueChat from '../blue-chat/BlueChat';
 import AvatarSelectorModal from '../avatar-selector/AvatarSelectorModal';
@@ -58,9 +53,8 @@ const desktopNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'PATHWAYS', href: '/home', icon: House, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'pathways', label: 'Case Study 01', href: '/home', iconSrc: '/icons/nav-home.svg' },
+      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -79,9 +73,8 @@ const mobileNavSections: NavSection[] = [
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'PATHWAYS', href: '/home', icon: House, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'dna', label: 'REDACTED', href: '/genetics', icon: Dna, badge: 'Pro', badgeType: 'pro', requiresPro: true },
-      { id: 'research', label: 'LABORATORY', href: '/research', icon: Microscope, badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'pathways', label: 'Case Study 01', href: '/home', iconSrc: '/icons/nav-home.svg' },
+      { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-research.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
