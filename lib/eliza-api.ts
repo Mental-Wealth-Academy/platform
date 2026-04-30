@@ -205,18 +205,14 @@ class ElizaAPIClient {
 
     for (const line of lines) {
       const trimmed = line.trim();
+      if (!trimmed) continue;
+
       if (trimmed.startsWith('data:')) {
         sawEventPayload = true;
-        const jsonStr = trimmed.slice(5).trimStart();
-        if (jsonStr === '[DONE]') continue;
-        if (!jsonStr) continue;
-
-        try {
-          const event = JSON.parse(jsonStr);
-          fullText += this.extractTextFromEvent(event);
-        } catch {
-          fullText += jsonStr;
-        }
+        const payload = trimmed.slice(5).trimStart();
+        if (payload === '[DONE]') continue;
+        if (!payload) continue;
+        fullText += this.parseSSEPayload(payload);
       }
     }
 
@@ -224,16 +220,36 @@ class ElizaAPIClient {
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed || trimmed === '[DONE]') continue;
-        try {
-          const event = JSON.parse(trimmed);
-          fullText += this.extractTextFromEvent(event);
-        } catch {
-          fullText += trimmed;
-        }
+        fullText += this.parseSSEPayload(trimmed);
       }
     }
 
     return fullText;
+  }
+
+  private parseSSEPayload(payload: string): string {
+    // Vercel AI SDK Data Stream Protocol: 0:"text delta", e:{...}, d:{...}
+    const dataStreamMatch = payload.match(/^([0-9a-f]):([\s\S]*)$/);
+    if (dataStreamMatch) {
+      const [, streamType, streamValue] = dataStreamMatch;
+      if (streamType === '0') {
+        try {
+          const text = JSON.parse(streamValue);
+          return typeof text === 'string' ? text : '';
+        } catch {
+          return streamValue;
+        }
+      }
+      // Non-text stream parts (e, d, 2, 8, etc.) are metadata — skip
+      return '';
+    }
+
+    try {
+      const event = JSON.parse(payload);
+      return this.extractTextFromEvent(event);
+    } catch {
+      return payload;
+    }
   }
 
   private extractTextFromEvent(event: unknown): string {
@@ -246,6 +262,7 @@ class ElizaAPIClient {
     }
 
     const data = event as Record<string, any>;
+    if (typeof data.textDelta === 'string') return data.textDelta;
     if (typeof data.delta === 'string') return data.delta;
     if (typeof data.text === 'string') return data.text;
     if (typeof data.content === 'string') return data.content;
