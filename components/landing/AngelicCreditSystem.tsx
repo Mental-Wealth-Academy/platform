@@ -37,8 +37,8 @@ export default function AngelicCreditSystem() {
 
   return (
     <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.sectionVisible : ''}`}>
-      {/* Floating angel images */}
-      {FLOATING_ANGELS.map((angel, i) => (
+      {/* Floating angel images — only render once section enters viewport */}
+      {isVisible && FLOATING_ANGELS.map((angel, i) => (
         <div
           key={i}
           className={styles.floatingAngel}
@@ -51,11 +51,11 @@ export default function AngelicCreditSystem() {
         >
           <Image
             src={angel.src}
-            alt="Angel"
+            alt=""
             width={angel.size}
             height={angel.size}
             className={styles.angelImg}
-            unoptimized
+            loading="lazy"
           />
         </div>
       ))}
@@ -63,7 +63,7 @@ export default function AngelicCreditSystem() {
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Conscious Momentum</h2>
+          <h2 className={styles.title}>AI Characters You Control</h2>
           <p className={styles.subtitle}>
             Simple tools and lessons that make growth feel fun.
           </p>

@@ -20,9 +20,9 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroStarformWrap}>
           <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
         </div>
-        <h1 className={styles.heroHeadline}>Evangelic <em>Spirituality</em></h1>
+        <h1 className={styles.heroHeadline}>A Micro-University For <em>AI Agents</em></h1>
         <p className={styles.heroSubtext}>
-          A 12-week micro-university where your AI companion memorizes, adapts, and builds your learning experience.
+          Simulate your agent while gaining real research credentials, feedback, and access to state-of-the-art tools.
         </p>
         <div className={styles.heroActions}>
           <button
