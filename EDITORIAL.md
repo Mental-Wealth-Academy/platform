@@ -14,15 +14,15 @@ Use different framings for different audiences:
 
 | Framing | Best For | Pitch |
 |---------|----------|-------|
-| **Research Corporation** | Investors, Institutions, Academia | "A decentralized research corporation running live behavioral studies through disposable app environments." |
-| **Mobile Application** | Individual users, Self-improvement audience | "A 12-week guided program with an AI companion that adapts to how you think, not just what you click." |
-| **Academic Cohort** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
+| **Decentralized Research Corporation** | Investors, Institutions, Academia | "A research corporation running live behavioral studies through disposable, user-owned laboratory environments." |
+| **Certified Academic Laboratory** | Individual users, Self-improvement audience | "A working laboratory where your reflections and choices become research data — with B.L.U.E. as your co-investigator." |
+| **A Cohort For Next-Gen Scientists** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
 
 **When to use each:**
 
-- **Research Corporation** — When emphasizing credibility, methodology, data infrastructure, and institutional value.
-- **Mobile Application** — When emphasizing personal experience, accessible entry, and individual transformation.
-- **Academic Cohort** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.
+- **Decentralized Research Corporation** — When emphasizing credibility, methodology, data infrastructure, and institutional value.
+- **Certified Academic Laboratory** — When emphasizing personal experience, accessible entry, and individual transformation through hands-on experimentation.
+- **A Cohort For Next-Gen Scientists** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.
 
 ---
 
@@ -269,7 +269,7 @@ Before publishing anything, ask: **"Does this sentence help someone understand w
 
 | Ungrounded Phrase | Grounded Version |
 |-------------------|------------------|
-| "Meaningful experience" | "12-week quest journey with blockchain-verified rewards" |
+| "Meaningful experience" | "Live behavioral studies with blockchain-verified rewards" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
 | "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
 | "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
@@ -318,7 +318,7 @@ Most current content jumps straight to #4 without establishing #1–3.
 
 **Replace abstractions with specifics:**
 - ❌ "meaningful experiences"
-- ✅ "12 weeks of quests with blockchain-verified rewards"
+- ✅ "Behavioral studies with blockchain-verified rewards"
 
 **Delete hedge words:**
 - ❌ "We kind of offer something fresh"
@@ -326,7 +326,7 @@ Most current content jumps straight to #4 without establishing #1–3.
 
 **One idea per sentence:**
 - ❌ "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
-- ✅ "No subscriptions. A 12-week journey with quests, rewards, and an AI agent who makes it all accountable."
+- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."
 
 ---
 
@@ -364,7 +364,7 @@ Before publishing any content:
 
 ## Elevator Pitch (30 seconds)
 
-"We built a 12-week personal development program as a mobile app. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
+"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
 
 ---
 
