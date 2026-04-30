@@ -16,6 +16,7 @@ const LOGOS = [
   { src: '/companylogos/ndW713QDOQJJBgB-aJvrIJ8U2HfKTYL4-h3RRtYNgX9DMzlziKfCVRdTnq4mHGltuCtutlq37GKdfB90YKodWg.webp', alt: 'Arbitrum logo', width: 130 },
   { src: '/companylogos/Base-Logo-New-1.png', alt: 'Base logo', width: 120 },
   { src: '/companylogos/OP_vertical_1200px.webp', alt: 'Optimism logo', width: 120, className: styles.optimismLogo },
+  { src: '/companylogos/chainlink.png', alt: 'Chainlink logo', width: 120 },
 ];
 
 export default function CompanyLogos() {

@@ -462,8 +462,7 @@
   width: 100%;
   height: 100vh;
   z-index: 0;
-  background-color: #4D85E0;
-  cursor: none;
+  background: linear-gradient(to bottom, #423b85 0%, #7361b3 40%, #ccb0eb 100%);
 }
 
 /* Crosshair cursor */
