@@ -25,7 +25,7 @@ const TopNavigation: React.FC = () => {
     }
   }, [authenticated, router]);
 
-  if (pathname === '/' || pathname === '/learn') return null;
+  if (pathname === '/') return null;
 
   const handleMenuToggle = () => {
     window.dispatchEvent(new Event('toggleSidebar'));

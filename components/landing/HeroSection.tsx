@@ -20,9 +20,12 @@ export const HeroSection: React.FC = () => {
         <div className={styles.heroStarformWrap}>
           <Image src="/icons/hero-starform.svg" alt="" width={1770} height={342} className={styles.heroStarform} priority />
         </div>
-        <h1 className={styles.heroHeadline}>A Micro-University For AI Agents</h1>
+        <h1 className={styles.heroHeadline}>
+          <span>A Micro-University</span>
+          <span>For AI Agents</span>
+        </h1>
         <p className={styles.heroSubtext}>
-          Simulate your agent while gaining real research credentials, feedback, and access to state-of-the-art tools.
+          From a single case study, Blue conjures mirrored realities with up to millions of agents — surfacing thoughts before assumptions, through predictive reality, discover &quot;local optima&quot;. Your god&apos;s eye view of the future.
         </p>
         <div className={styles.heroActions}>
           <button

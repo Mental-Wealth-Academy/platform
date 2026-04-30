@@ -58,16 +58,19 @@
 
 .heroHeadline {
   font-family: var(--font-primary);
-  font-size: clamp(0.9rem, 4vw, 2.5rem);
+  font-size: clamp(2rem, 6vw, 3.75rem);
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.02;
   margin: 0 0 12px 0;
   letter-spacing: 0em;
   color: var(--color-text-light);
   text-transform: uppercase;
   text-shadow: 0 2px 20px rgba(0, 0, 0, 0.18);
-  white-space: nowrap;
   animation: heroFadeUp 0.45s var(--hero-ease-out) both;
+}
+
+.heroHeadline span {
+  display: block;
 }
 
 .heroSubheadline {
@@ -298,7 +301,7 @@
   padding: 14px 16px;
   font-family: var(--font-primary);
   font-size: 16px;
-  color: var(--color-text-dark);
+  color: var(--color-text-light);
   background: #ffffff;
   border: 2px solid rgba(81, 104, 255, 0.2);
   border-radius: 12px;
@@ -385,6 +388,7 @@
 
   .heroHeadline {
     margin-bottom: 8px;
+    font-size: clamp(2.1rem, 10vw, 3rem);
   }
 
   .heroSubtext {
@@ -1754,7 +1758,7 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.02rem;
-  color: var(--color-text-dark);
+  color: var(--color-text-light);
   margin: 0 0 16px 0;
   border-radius: 4px;
 }

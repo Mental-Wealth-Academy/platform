@@ -214,7 +214,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #FFB800;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 720px) {

@@ -1,5 +1,5 @@
 const CACHE_NAME = 'mwa-shell-v1';
-const APP_SHELL = ['/', '/home', '/learn', '/manifest.webmanifest', '/icons/badge-academy.png'];
+const APP_SHELL = ['/', '/home', '/manifest.webmanifest', '/icons/badge-academy.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
