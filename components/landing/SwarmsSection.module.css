@@ -1,4 +1,3 @@
-/* Swarms Section */
 .swarmsSection {
   position: relative;
   width: 100%;
@@ -44,125 +43,67 @@
   }
 }
 
-/* Eyebrow */
-.swarmsEyebrow {
-  font-family: var(--font-ibm-plex-mono);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-primary);
-  margin: 0 0 12px 0;
+/* Sharp-edged board — matches FeaturesSection grid style */
+.board {
+  border: 1px solid rgba(26, 27, 56, 0.14);
 }
 
-/* Title */
+.boardHeader {
+  padding: 16px 24px 12px;
+  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(26, 27, 56, 0.55);
+}
+
+.eyebrowAccent {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: 0.04em;
+}
+
+/* Title panel */
+.titlePanel {
+  padding: 36px 40px 32px;
+  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
+}
+
 .swarmsTitle {
   font-family: var(--font-secondary);
-  font-size: clamp(2.5rem, 4vw, 3.7rem);
-  line-height: 1.02;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.04;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.04em;
   color: var(--color-text-dark);
-  margin: 0 auto 16px;
-  max-width: 860px;
-  text-align: center;
+  margin: 0 0 14px;
   text-wrap: balance;
 }
 
 .swarmsSubtitle {
-  margin: 0 auto 32px;
-  max-width: 720px;
+  margin: 0;
+  max-width: 680px;
   font-family: var(--font-primary);
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.65;
-  color: rgba(26, 27, 36, 0.6);
-  text-align: center;
-}
-
-/* Action Row */
-.actionRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-}
-
-/* Wallet Address */
-.walletGroup {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 0;
-}
-
-.walletAvatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 3px;
-  background: linear-gradient(135deg, #5168FF 0%, #62BE8F 50%, #a78bfa 100%);
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.walletAvatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 3px;
-}
-
-.walletPill {
-  display: flex;
-  align-items: center;
-  height: 38px;
-  background-color: #282121;
-  border: 1px solid #494949;
-  border-radius: 4px;
-  padding: 0 16px;
-  margin-left: -4px;
-  margin-top: 6px;
-}
-
-.walletAddressInner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.walletAddress {
-  font-family: var(--font-primary);
-  font-size: 0.875rem;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-}
-
-.copyButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  padding: 2px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.copyButton:hover {
-  opacity: 1;
+  color: rgba(26, 27, 36, 0.65);
 }
 
 /* Content Grid */
 .swarmsContentGrid {
   display: grid;
-  gap: 40px;
+  border-bottom: 1px solid rgba(26, 27, 56, 0.1);
 }
 
 @media (min-width: 1024px) {
   .swarmsContentGrid {
-    grid-template-columns: minmax(0, 580px) 1fr;
-    gap: 48px;
+    grid-template-columns: minmax(0, 520px) 1fr;
   }
 }
 
@@ -170,23 +111,23 @@
 .swarmsFeatures {
   display: flex;
   flex-direction: column;
+  border-right: 1px solid rgba(26, 27, 56, 0.1);
 }
 
 .swarmsDivider {
   width: 100%;
   height: 1px;
-  background-color: #5168FF;
-  border-radius: 70px;
+  background-color: rgba(26, 27, 56, 0.1);
 }
 
 .swarmsFeatureBlock {
-  padding: 16px 0;
+  padding: 24px 28px;
 }
 
 .swarmsFeatureHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   margin-bottom: 12px;
 }
 
@@ -201,19 +142,20 @@
 
 .swarmsFeatureTitle {
   font-family: var(--font-primary);
-  font-size: 1.125rem;
-  font-weight: var(--font-weight-semibold);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   color: var(--color-text-dark);
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .swarmsFeatureText {
   font-family: var(--font-primary);
-  font-size: 0.875rem;
-  font-weight: var(--font-weight-regular);
+  font-size: 0.9375rem;
   line-height: 1.7;
-  color: var(--color-text-dark);
+  color: rgba(26, 27, 36, 0.72);
   margin: 0;
 }
 
@@ -226,6 +168,7 @@
   .swarmsDiamonds {
     display: block;
     position: relative;
+    overflow: hidden;
   }
 }
 
@@ -233,9 +176,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 6px;
-  border-radius: 16px;
-  overflow: hidden;
+  gap: 0;
+  height: 100%;
 }
 
 .cohortImg {
@@ -243,103 +185,81 @@
   height: 160px;
   object-fit: cover;
   display: block;
-  filter: saturate(0.85);
-  transition: filter 0.3s ease, transform 0.3s ease;
+  filter: saturate(0.8);
+  transition: filter 0.3s ease;
 }
 
 .cohortImg:hover {
-  filter: saturate(1);
-  transform: scale(1.03);
+  filter: saturate(1.05);
 }
 
-/* CTA */
-.ctaWrapper {
+/* Board footer / CTA */
+.boardFooter {
   display: flex;
-  justify-content: center;
-  margin-top: 56px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 28px;
 }
 
 .ctaButton {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 40px;
+  padding: 14px 32px;
   background-color: #5168FF;
   color: #F6F8ED;
-  border: 3px solid #1A1D33;
-  border-radius: 4px;
-  font-family: var(--font-primary);
-  font-size: 1.125rem;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.03em;
+  border: 1px solid #3a4ecc;
+  border-radius: 0;
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 4px 4px 0 #1A1D33;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 3px 3px 0 #1A1D33;
 }
 
 .ctaButton:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #1A1D33;
+  background-color: #6278ff;
+  box-shadow: 5px 5px 0 #1A1D33;
 }
 
 .ctaButton:active {
-  transform: translate(0, 0);
-  box-shadow: 2px 2px 0 #1A1D33;
+  box-shadow: 1px 1px 0 #1A1D33;
 }
 
-/* Section Logo - bottom right */
-.sectionLogo {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  opacity: 0.7;
-}
-
-.sectionLogoImg {
-  display: block;
-  width: 140px;
-  height: auto;
-  object-fit: contain;
-}
-
-@media (min-width: 768px) {
-  .sectionLogo {
-    bottom: 32px;
-    right: 40px;
+/* Mobile */
+@media (max-width: 1023px) {
+  .swarmsFeatures {
+    border-right: 0;
   }
 }
 
-/* Mobile adjustments */
 @media (max-width: 767px) {
+  .titlePanel {
+    padding: 24px 20px 20px;
+  }
+
   .swarmsTitle {
-    font-size: 1.618rem;
+    font-size: 1.75rem;
   }
 
-  .walletAvatar {
-    width: 40px;
-    height: 40px;
+  .swarmsSubtitle {
+    font-size: 15px;
   }
 
-  .walletAvatarImg {
-    width: 40px !important;
-    height: 40px !important;
+  .swarmsFeatureBlock {
+    padding: 18px 20px;
   }
 
-  .walletPill {
-    height: 34px;
-  }
-
-  .swarmsFeatureTitle {
-    font-size: 1rem;
-  }
-
-  .ctaWrapper {
-    margin-top: 40px;
+  .boardFooter {
+    padding: 16px 20px;
   }
 
   .ctaButton {
-    padding: 14px 32px;
-    font-size: 1rem;
+    padding: 12px 24px;
+    font-size: 0.72rem;
   }
 }
