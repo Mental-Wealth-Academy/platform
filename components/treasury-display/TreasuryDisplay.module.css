@@ -243,7 +243,9 @@
 
 .compact {
   padding: 14px 16px;
-  min-width: min(320px, 100%);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .compact .header {

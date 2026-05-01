@@ -535,9 +535,7 @@
 }
 
 .reserveInsightsGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
-  gap: 18px;
+  display: block;
 }
 
 .reserveInsightCard {
@@ -561,6 +559,56 @@
 
 .reserveInsightCardWide {
   min-width: 0;
+}
+
+.fundingPodsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fundingPodMini {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(17, 17, 18, 0.1);
+  border-left: 3px solid var(--funding-accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 4px 12px rgba(31, 34, 45, 0.04);
+}
+
+.fundingPodMiniHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fundingPodMiniTitle {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  color: rgba(26, 29, 51, 0.8);
+  min-width: 0;
+}
+
+.fundingPodMiniAmount {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--funding-accent);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.fundingPodMini .fundingStateProgress {
+  margin-top: 0;
+  height: 4px;
+  background: rgba(26, 29, 51, 0.08);
 }
 
 .reserveAllocationColumn {
@@ -685,10 +733,10 @@
 
 .reserveInsightHeader {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   position: relative;
   z-index: 2;
   padding-right: 0;
@@ -701,7 +749,7 @@
   letter-spacing: 0.1em;
   color: rgba(26, 29, 51, 0.6);
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   font-family: var(--font-button);
 }
 
@@ -1730,7 +1778,15 @@
 
 .dashboardTitleBlock {
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+}
+
+.dashboardTitleRightGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .dashboardTitle {
@@ -1764,13 +1820,63 @@
   text-shadow: none;
 }
 
+
+.dashboardTitleRightGroup .fundingPodsStack {
+  flex: 0 0 180px;
+  gap: 8px;
+}
+
+.dashboardTitleRightGroup .fundingPodMini {
+  padding: 10px 12px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(198, 220, 255, 0.16);
+  border-left-color: var(--funding-accent);
+  box-shadow: none;
+}
+
+.dashboardTitleRightGroup .fundingPodMiniTitle {
+  color: rgba(231, 239, 255, 0.8);
+  font-size: 11px;
+}
+
+.dashboardTitleRightGroup .fundingPodMiniAmount {
+  color: var(--funding-accent);
+  font-size: 13px;
+}
+
+.dashboardTitleRightGroup .fundingPodMini .fundingStateProgress {
+  background: rgba(255, 255, 255, 0.12);
+  height: 3px;
+  margin-top: 0;
+}
+
+.dashboardSentimentInline {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(198, 220, 255, 0.16);
+  border-radius: 16px;
+}
+
+.dashboardSentimentInline .reserveSentimentChart {
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.dashboardSentimentInline .reserveInsightLabel {
+  color: rgba(231, 239, 255, 0.6);
+}
+
 .dashboardTitleAside {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
-  width: min(340px, 100%);
-  flex: 0 0 340px;
+  flex: 0 0 300px;
 }
 
 .dashboardWalletCard {
@@ -1866,6 +1972,29 @@
   height: 2px;
   border-radius: 999px;
   background: #5168FF;
+}
+
+.communityTabAction {
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(198, 220, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  align-self: center;
+}
+
+.communityTabAction:hover {
+  background: rgba(81, 104, 255, 0.18);
+  border-color: rgba(81, 104, 255, 0.5);
+  color: #ffffff;
 }
 
 .proposalsEntryButton {
@@ -2010,6 +2139,9 @@
   width: 100%;
   padding: 22px 28px 28px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Tab Content */
@@ -2066,36 +2198,68 @@
 
 .fundingStateCard {
   width: 100%;
-  background: #ffffff;
-  border: 1px solid rgba(17, 17, 18, 0.14);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92);
+  background:
+    radial-gradient(circle at top right, rgba(140, 196, 255, 0.28), transparent 42%),
+    linear-gradient(160deg, #5f7cff 0%, #4265ff 48%, #2441d2 100%);
+  border: 1px solid rgba(198, 220, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 12px 28px rgba(22, 38, 116, 0.32);
+  text-align: left;
+}
+
+.fundingStateCard .exchangeHeader {
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.fundingStateCard .exchangeTitleText {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.fundingStateCard .fundingStateMetrics {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.fundingStateCard .exchangePriceRow {
+  justify-content: flex-start;
 }
 
 .fundingStateIcon {
-  background: color-mix(in srgb, var(--funding-accent) 14%, white);
-  border-color: color-mix(in srgb, var(--funding-accent) 24%, white);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .fundingStateIcon svg {
-  color: var(--funding-accent);
+  color: #ffffff;
 }
 
-.fundingStateCard .exchangeTitle,
+.fundingStateCard .exchangeTitle {
+  color: #ffffff;
+  font-size: 15px;
+}
+
 .fundingStateCard .exchangePrice {
-  color: #21304f;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #ffffff;
 }
 
 .fundingStateCard .exchangeCurrency {
-  color: color-mix(in srgb, var(--funding-accent) 72%, #21304f);
-}
-
-.fundingStateCard .exchangeLabel,
-.fundingStateCard .exchangeDesc {
-  color: rgba(33, 48, 79, 0.56);
+  color: rgba(231, 239, 255, 0.72);
 }
 
 .fundingStateCard .exchangeDesc {
-  border-top-color: rgba(109, 138, 214, 0.1);
+  color: rgba(231, 239, 255, 0.7);
+  border-top-color: rgba(220, 233, 255, 0.14);
+  text-align: left;
 }
 
 .fundingStateMetrics {
@@ -2119,8 +2283,8 @@
 .fundingStateProgress {
   width: 100%;
   height: 8px;
-  margin-top: 14px;
-  background: rgba(33, 48, 79, 0.08);
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -3159,9 +3323,20 @@
     font-size: clamp(40px, 10vw, 68px);
   }
 
-  .dashboardTitleAside {
+  .dashboardTitleRightGroup {
+    flex-direction: column;
+    flex: 1 1 auto;
     width: 100%;
-    flex-basis: auto;
+  }
+
+  .dashboardTitleRightGroup .fundingPodsStack {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .dashboardTitleAside {
+    flex: 0 0 auto;
+    width: 100%;
   }
 
   .grid {
@@ -3175,6 +3350,7 @@
 
   .communityViewPanel {
     padding: 14px 14px 18px;
+    gap: 14px;
   }
 
   .dashboardMetricRail {
@@ -3782,6 +3958,56 @@
 
 /* ─── News Feed ────────────────────────────────────────────── */
 
+.overviewColumns {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.overviewProposalsColumn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.overviewProposalsList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.latestNewsSection {
+  flex: 0 0 320px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.latestNewsLabel {
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 29, 51, 0.5);
+  display: block;
+}
+
+.newsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsLoadingStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .newsGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3791,12 +4017,11 @@
 .newsTopicCard {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-  border-radius: 18px;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(17, 17, 18, 0.08);
-  min-height: 180px;
 }
 
 .newsTopicLabel {
@@ -3907,6 +4132,24 @@
   max-width: 52ch;
 }
 
+:global([data-theme="dark"]) .fundingPodMini {
+  background: rgba(29, 33, 43, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  border-left-color: var(--funding-accent);
+}
+
+:global([data-theme="dark"]) .fundingPodMiniTitle {
+  color: rgba(244, 244, 248, 0.86);
+}
+
+:global([data-theme="dark"]) .fundingPodMini .fundingStateProgress {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .latestNewsLabel {
+  color: rgba(228, 228, 238, 0.5);
+}
+
 :global([data-theme="dark"]) .newsTopicCard,
 :global([data-theme="dark"]) .newsEmptyCard {
   background: rgba(29, 33, 43, 0.92);
@@ -3930,17 +4173,14 @@
   color: rgba(227, 225, 238, 0.62);
 }
 
-@media (max-width: 1100px) {
-  .newsGrid,
-  .newsLoadingGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 768px) {
+  .overviewColumns {
+    flex-direction: column;
   }
-}
 
-@media (max-width: 600px) {
-  .newsGrid,
-  .newsLoadingGrid {
-    grid-template-columns: 1fr;
+  .latestNewsSection {
+    width: 100%;
+    flex-basis: auto;
   }
 }
 
@@ -4038,21 +4278,16 @@
 
 :global([data-theme="dark"]) .fundingStateCard .exchangeTitle,
 :global([data-theme="dark"]) .fundingStateCard .exchangePrice {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .fundingStateCard .exchangeLabel,
-:global([data-theme="dark"]) .fundingStateCard .exchangeDesc,
-:global([data-theme="dark"]) .fundingStatePercent {
-  color: var(--color-text-muted);
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .fundingStateCard .exchangeDesc {
-  border-top-color: var(--color-border-subtle);
+  color: rgba(231, 239, 255, 0.7);
+  border-top-color: rgba(220, 233, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .fundingStateProgress {
-  background: var(--color-surface-2);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 :global([data-theme="dark"]) .fundingIndicator {

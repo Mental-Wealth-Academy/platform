@@ -148,7 +148,7 @@ const FUNDING_PODS = [
     accent: '#2FB7A0',
   },
   {
-    title: 'Emergency Individual Support',
+    title: 'Emergency Funds',
     amount: 1280,
     total: TREASURY_BALANCE,
     desc: 'Safety net for members facing unexpected hardship',
@@ -270,7 +270,6 @@ export default function VotingPage() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [communityView, setCommunityView] = useState<'overview' | 'proposals'>('overview');
   const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
   const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
@@ -537,9 +536,6 @@ export default function VotingPage() {
         <SideNavigation />
         <main className={styles.page}>
         <div className={styles.content}>
-          {isPageLoading ? (
-            <VotingPageSkeleton />
-          ) : (
           <>
           <div className={styles.communityMainWrapper}>
             <div className={styles.dashboardChrome}>
@@ -595,356 +591,189 @@ export default function VotingPage() {
                   </p>
                   <p className={styles.dashboardTreasuryBalance}>$5,343</p>
                 </div>
-                <div className={styles.dashboardTitleAside}>
-                  <TreasuryDisplay
-                    contractAddress={CONTRACT_ADDRESS}
-                    usdcAddress={USDC_ADDRESS}
-                    compact
-                    className={styles.dashboardWalletCard}
-                  />
-                </div>
-              </div>
-
-            <div className={styles.communityTopbar}>
-              <div className={styles.communityTabs} role="tablist" aria-label="Community views">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={communityView === 'overview'}
-                  className={`${styles.communityTab} ${communityView === 'overview' ? styles.communityTabActive : ''}`}
-                  onClick={() => { play('click'); setCommunityView('overview'); }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  Community
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={communityView === 'proposals'}
-                  className={`${styles.communityTab} ${communityView === 'proposals' ? styles.communityTabActive : ''}`}
-                  onClick={() => { play('click'); setCommunityView('proposals'); }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  Proposals
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.communityViewViewport}>
-              {communityView === 'overview' && (
-                <section className={styles.communityViewPanel}>
-                <div className={styles.reserveCard}>
-                  {newsLoading ? (
-                    <div className={styles.newsLoadingGrid}>
-                      {[0, 1, 2, 3].map((i) => (
-                        <div key={i} className={styles.newsLoadingCard} />
-                      ))}
-                    </div>
-                  ) : newsError ? (
-                    <div className={styles.newsEmptyCard}>
-                      <span className={styles.newsEmptyText}>
-                        {newsError} Treasury and proposal tools are still available below.
-                      </span>
-                    </div>
-                  ) : newsTopics.length === 0 ? (
-                    <div className={styles.newsEmptyCard}>
-                      <span className={styles.newsEmptyText}>
-                        No recent stories surfaced in the tracked feeds.
-                      </span>
-                    </div>
-                  ) : (
-                    <div className={styles.newsGrid}>
-                      {newsTopics.map((topic) => (
-                        <article key={topic.topic} className={styles.newsTopicCard}>
-                          <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
-                            {topic.topic}
-                          </span>
-                          <div className={styles.newsTopicDivider} />
-                          {topic.items.length === 0 ? (
-                            <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
-                          ) : (
-                            <ul className={styles.newsArticleList}>
-                              {topic.items.map((item, i) => (
-                                <li key={i} className={styles.newsArticleItem}>
-                                  <a
-                                    href={normalizeCommunityArticleUrl(item.url)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={styles.newsArticleLink}
-                                    onClick={(event) => void handleArticleClick(event, item)}
-                                    onMouseEnter={() => play('hover')}
-                                  >
-                                    <span className={styles.newsArticleTitle}>{item.title}</span>
-                                    <span className={styles.newsArticleMeta}>
-                                      {item.source} · {formatPublishedDate(item.createdAt)}
-                                    </span>
-                                  </a>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                  <div className={styles.reserveInsightsGrid}>
-                    <section className={`${styles.reserveInsightCard} ${styles.reserveInsightCardWide}`}>
-                      <div className={styles.reserveAllocationColumn}>
-                        <div className={styles.reserveInsightHeader}>
-                          <span className={styles.reserveInsightLabel}>Allocation mix</span>
-                          <p className={styles.reserveInsightText}>
-                            Current treasury allocations across each active pod.
-                          </p>
-                        </div>
-                        <div className={styles.reserveAllocationCarousel}>
-                          <div className={styles.fundingSection}>
-                            <div className={styles.fundingCarouselViewport}>
-                              <div className={styles.fundingCarouselMask}>
-                                <div
-                                  className={styles.fundingCarouselTrack}
-                                  style={{
-                                    width: `${fundingSlides.length * 100}%`,
-                                    transform: `translateX(-${activeFundingSlide * fundingSlideWidth}%)`,
-                                    transition: isFundingTransitionEnabled ? 'transform 1150ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
-                                  }}
-                                  onTransitionEnd={handleFundingTrackTransitionEnd}
-                                >
-                                  {fundingSlides.map((pod, index) => (
-                                    <div
-                                      key={`${pod.title}-${index}`}
-                                      className={styles.fundingCarouselSlide}
-                                      style={{ width: `${fundingSlideWidth}%`, flexBasis: `${fundingSlideWidth}%` }}
-                                    >
-                                      <div
-                                        className={`${styles.exchangeCard} ${styles.staticInfoCard} ${styles.fundingStateCard}`}
-                                        onMouseEnter={() => play('hover')}
-                                        style={{ ['--funding-accent' as string]: pod.accent }}
-                                      >
-                                        <div className={styles.exchangeHeader}>
-                                          <div className={`${styles.exchangeIcon} ${styles.fundingStateIcon}`}>
-                                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M4 12h16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                              <path d="M8 8h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                              <path d="M8 16h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                                            </svg>
-                                          </div>
-                                          <div className={styles.exchangeTitleText}>
-                                            <span className={styles.exchangeLabel}>Funding Pod</span>
-                                            <span className={styles.exchangeTitle}>{pod.title}</span>
-                                          </div>
-                                        </div>
-                                        <div className={styles.fundingStateMetrics}>
-                                          <div className={styles.exchangePriceRow}>
-                                            <span className={styles.exchangePrice}>${pod.amount.toLocaleString()}</span>
-                                            <span className={styles.exchangeCurrency}>allocated</span>
-                                          </div>
-                                          <span className={styles.fundingStatePercent}>
-                                            {Math.round((pod.amount / pod.total) * 100)}% of treasury
-                                          </span>
-                                        </div>
-                                        <p className={styles.exchangeDesc}>{pod.desc}</p>
-                                        <div className={styles.fundingStateProgress}>
-                                          <div
-                                            className={styles.fundingStateProgressFill}
-                                            style={{ width: `${(pod.amount / pod.total) * 100}%` }}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                            <div className={styles.fundingIndicators} aria-label="Funding pod states">
-                              {FUNDING_PODS.map((pod, index) => (
-                                <button
-                                  key={pod.title}
-                                  type="button"
-                                  className={`${styles.fundingIndicator} ${index === activeFundingIndicator ? styles.fundingIndicatorActive : ''}`}
-                                  onClick={() => {
-                                    play('click');
-                                    setIsFundingTransitionEnabled(true);
-                                    setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX + index);
-                                  }}
-                                  onMouseEnter={() => play('hover')}
-                                  aria-pressed={index === activeFundingIndicator}
-                                  aria-label={`Show ${pod.title}`}
-                                  style={{ ['--funding-accent' as string]: pod.accent }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section className={styles.reserveInsightCard}>
-                      <div className={styles.reserveInsightHeader}>
-                        <span className={styles.reserveInsightLabel}>Sentiment</span>
-                        <span className={styles.reserveSentimentValue}>Radiant</span>
-                      </div>
+                <div className={styles.dashboardTitleRightGroup}>
+                  <div className={styles.fundingPodsStack}>
+                    {FUNDING_PODS.map((pod) => (
                       <div
-                        className={styles.reserveSentimentChart}
-                        role="img"
-                        aria-label={`Stacked sentiment flow across ${SENTIMENT_SERIES.map((s) => s.label).join(', ')}`}
+                        key={pod.title}
+                        className={styles.fundingPodMini}
+                        style={{ ['--funding-accent' as string]: pod.accent }}
                       >
-                        <svg
-                          viewBox={`0 0 ${SENTIMENT_CHART_WIDTH} ${SENTIMENT_CHART_HEIGHT}`}
-                          preserveAspectRatio="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          {SENTIMENT_STREAM_LAYERS.map((layer) => (
-                            <path
-                              key={layer.label}
-                              d={layer.d}
-                              fill={layer.color}
-                              fillOpacity="0.88"
-                            />
-                          ))}
-                        </svg>
+                        <div className={styles.fundingPodMiniHeader}>
+                          <span className={styles.fundingPodMiniTitle}>{pod.title}</span>
+                          <span className={styles.fundingPodMiniAmount}>${pod.amount.toLocaleString()}</span>
+                        </div>
+                        <div className={styles.fundingStateProgress}>
+                          <div
+                            className={styles.fundingStateProgressFill}
+                            style={{ width: `${(pod.amount / pod.total) * 100}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className={styles.reserveSentimentLegend} aria-hidden="true">
-                        {SENTIMENT_SERIES.map((facet) => (
-                          <span key={facet.label} className={styles.reserveSentimentLegendItem}>
-                            <span
-                              className={styles.reserveSentimentLegendDot}
-                              style={{ backgroundColor: facet.color }}
-                            />
-                            {facet.label}
-                          </span>
+                    ))}
+                  </div>
+                  <div className={styles.dashboardSentimentInline}>
+                    <div className={styles.reserveInsightHeader}>
+                      <span className={styles.reserveInsightLabel}>Sentiment</span>
+                      <span className={styles.reserveSentimentValue}>Radiant</span>
+                    </div>
+                    <div
+                      className={styles.reserveSentimentChart}
+                      role="img"
+                      aria-label={`Stacked sentiment flow across ${SENTIMENT_SERIES.map((s) => s.label).join(', ')}`}
+                    >
+                      <svg
+                        viewBox={`0 0 ${SENTIMENT_CHART_WIDTH} ${SENTIMENT_CHART_HEIGHT}`}
+                        preserveAspectRatio="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        {SENTIMENT_STREAM_LAYERS.map((layer) => (
+                          <path
+                            key={layer.label}
+                            d={layer.d}
+                            fill={layer.color}
+                            fillOpacity="0.88"
+                          />
                         ))}
-                      </div>
-                      <div className={styles.reserveSignalGrid}>
-                        <article className={styles.reserveSignalStat}>
-                          <span className={styles.reserveSignalLabel}>Dominant tone</span>
-                          <strong className={styles.reserveSignalValue}>Radiant</strong>
-                          <span className={styles.reserveSignalDetail}>Constructive support remains the strongest shared signal.</span>
-                        </article>
-                        <article className={styles.reserveSignalStat}>
-                          <span className={styles.reserveSignalLabel}>Live pods</span>
-                          <strong className={styles.reserveSignalValue}>{FUNDING_PODS.length}</strong>
-                          <span className={styles.reserveSignalDetail}>Every active allocation track is currently funded.</span>
-                        </article>
-                      </div>
-                    </section>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className={styles.dashboardTitleAside}>
+                    <TreasuryDisplay
+                      contractAddress={CONTRACT_ADDRESS}
+                      usdcAddress={USDC_ADDRESS}
+                      compact
+                      className={styles.dashboardWalletCard}
+                    />
                   </div>
                 </div>
-                </section>
-              )}
+              </div>
 
-              {communityView === 'proposals' && (
-                <section className={styles.communityViewPanel}>
-                  <div className={`${styles.tabContent} ${styles.proposalsTabContent}`}>
-                    <div className={styles.proposalsActions}>
-                      <button
-                        className={styles.proposalsEntryButton}
-                        onClick={() => { play('click'); setIsSubmitModalOpen(true); }}
-                        onMouseEnter={() => play('hover')}
-                        type="button"
-                      >
-                        <div className={styles.proposalsEntryIcon}>
-                          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 6.5H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                            <path d="M7 12H17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                            <path d="M7 17.5H13.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                            <circle cx="17.5" cy="17.5" r="1.5" fill="currentColor" />
-                          </svg>
-                        </div>
-                        <div className={styles.proposalsEntryContent}>
-                          <span className={styles.proposalsEntryLabel}>Submit Proposal</span>
-                        </div>
-                        <span className={styles.proposalReward}>
-                          <span className={styles.proposalRewardIcon} aria-hidden="true">
-                            <Image
-                              src="/icons/ui-shard.svg"
-                              alt=""
-                              width={16}
-                              height={16}
-                              unoptimized
-                            />
-                          </span>
-                          <span className={styles.proposalRewardValue}>-500</span>
-                        </span>
-                      </button>
-                    </div>
-                    {loading && proposals.length > 0 ? (
-                      <div className={styles.proposalsGrid}>
-                      {[...Array(3)].map((_, i) => (
-                        <ProposalCardSkeleton key={i} />
-                      ))}
-                    </div>
-                  ) : error ? (
-                    <div className={styles.errorState}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                      <h3>Error Loading Proposals</h3>
-                      <p>{error}</p>
-                      <button onClick={() => { play('click'); void fetchProposals(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">
-                        Retry
-                      </button>
-                    </div>
-                  ) : proposals.length === 0 ? (
-                    <div className={styles.emptyState}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                      <h3>No proposals yet</h3>
-                      <p>Be the first to submit a proposal to the community!</p>
-                    </div>
-                  ) : (
-                    <div className={styles.proposalsGrid} data-tutorial-target="submission">
-                      {proposals.map((proposal) => (
-                        <div key={proposal.id} className={styles.proposalCardContainer} onMouseEnter={() => play('hover')}>
-                          <ProposalCard
-                            id={proposal.id}
-                            title={proposal.title}
-                            proposalMarkdown={proposal.proposalMarkdown}
-                            status={proposal.status}
-                            walletAddress={proposal.walletAddress}
-                            createdAt={proposal.createdAt}
-                            user={proposal.user}
-                            review={proposal.review}
-                            onViewDetails={handleViewDetails}
-                            showAvatar={false}
-                            onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
-                            onChainData={proposal.onChainData || null}
-                          />
+            <div className={styles.communityViewViewport}>
+              <section className={styles.communityViewPanel}>
+                  <div className={styles.overviewColumns}>
 
-                          {proposal.onChainTxHash && (
-                            <div className={styles.onChainInfo}>
-                              <div className={styles.onChainBadge}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
-                                  <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
-                                  <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
-                                </svg>
-                                <span>Recorded Transparently</span>
-                              </div>
-                              <a
-                                href={`https://basescan.org/tx/${proposal.onChainTxHash}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={styles.txLink}
-                                onClick={() => play('navigation')}
-                                onMouseEnter={() => play('hover')}
-                              >
-                                View Transaction →
-                              </a>
+                    <div className={styles.overviewProposalsColumn}>
+                      {loading && proposals.length > 0 ? (
+                        <div className={styles.overviewProposalsList}>
+                          {[...Array(3)].map((_, i) => (
+                            <ProposalCardSkeleton key={i} />
+                          ))}
+                        </div>
+                      ) : error ? (
+                        <div className={styles.errorState}>
+                          <h3>Error Loading Proposals</h3>
+                          <p>{error}</p>
+                          <button onClick={() => { play('click'); void fetchProposals(); }} onMouseEnter={() => play('hover')} className={styles.retryButton} type="button">Retry</button>
+                        </div>
+                      ) : proposals.length === 0 ? (
+                        <div className={styles.emptyState}>
+                          <h3>No proposals yet</h3>
+                          <p>Be the first to submit a proposal to the community!</p>
+                        </div>
+                      ) : (
+                        <div className={styles.overviewProposalsList} data-tutorial-target="submission">
+                          {proposals.map((proposal) => (
+                            <div key={proposal.id} className={styles.proposalCardContainer} onMouseEnter={() => play('hover')}>
+                              <ProposalCard
+                                id={proposal.id}
+                                title={proposal.title}
+                                proposalMarkdown={proposal.proposalMarkdown}
+                                status={proposal.status}
+                                walletAddress={proposal.walletAddress}
+                                createdAt={proposal.createdAt}
+                                user={proposal.user}
+                                review={proposal.review}
+                                onViewDetails={handleViewDetails}
+                                showAvatar={false}
+                                onChainProposalId={proposal.review?.onChainProposalId ? parseInt(proposal.review.onChainProposalId) : null}
+                                onChainData={proposal.onChainData || null}
+                              />
+                              {proposal.onChainTxHash && (
+                                <div className={styles.onChainInfo}>
+                                  <div className={styles.onChainBadge}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="currentColor"/>
+                                      <path d="M3 17L12 22L21 17" fill="currentColor" fillOpacity="0.6"/>
+                                      <path d="M3 12L12 17L21 12" fill="currentColor" fillOpacity="0.8"/>
+                                    </svg>
+                                    <span>Recorded Transparently</span>
+                                  </div>
+                                  <a href={`https://basescan.org/tx/${proposal.onChainTxHash}`} target="_blank" rel="noopener noreferrer" className={styles.txLink} onClick={() => play('navigation')} onMouseEnter={() => play('hover')}>
+                                    View Transaction →
+                                  </a>
+                                </div>
+                              )}
                             </div>
-                          )}
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </div>
-                  )}
-                </div>
+
+                    <div className={styles.latestNewsSection}>
+                      <span className={styles.latestNewsLabel}>Latest News</span>
+                      {newsLoading ? (
+                        <div className={styles.newsLoadingStack}>
+                          {[0, 1, 2, 3].map((i) => (
+                            <div key={i} className={styles.newsLoadingCard} />
+                          ))}
+                        </div>
+                      ) : newsError ? (
+                        <div className={styles.newsEmptyCard}>
+                          <span className={styles.newsEmptyText}>
+                            {newsError} Treasury and proposal tools are still available below.
+                          </span>
+                        </div>
+                      ) : newsTopics.length === 0 ? (
+                        <div className={styles.newsEmptyCard}>
+                          <span className={styles.newsEmptyText}>
+                            No recent stories surfaced in the tracked feeds.
+                          </span>
+                        </div>
+                      ) : (
+                        <div className={styles.newsStack}>
+                          {newsTopics.map((topic) => (
+                            <article key={topic.topic} className={styles.newsTopicCard}>
+                              <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
+                                {topic.topic}
+                              </span>
+                              <div className={styles.newsTopicDivider} />
+                              {topic.items.length === 0 ? (
+                                <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
+                              ) : (
+                                <ul className={styles.newsArticleList}>
+                                  {topic.items.map((item, i) => (
+                                    <li key={i} className={styles.newsArticleItem}>
+                                      <a
+                                        href={normalizeCommunityArticleUrl(item.url)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.newsArticleLink}
+                                        onClick={(event) => void handleArticleClick(event, item)}
+                                        onMouseEnter={() => play('hover')}
+                                      >
+                                        <span className={styles.newsArticleTitle}>{item.title}</span>
+                                        <span className={styles.newsArticleMeta}>
+                                          {item.source} · {formatPublishedDate(item.createdAt)}
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </article>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
                 </section>
-              )}
+
             </div>
             </div>
           </div>
           </>
-          )}
         </div>
       </main>
       </div>
