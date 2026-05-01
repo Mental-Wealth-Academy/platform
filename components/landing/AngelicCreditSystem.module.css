@@ -12,8 +12,17 @@
   justify-content: center;
 }
 
+.bgImage {
+  object-fit: contain;
+  object-position: right center;
+  opacity: 0.35;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .logoWrap {
   position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1180px;
   display: flex;

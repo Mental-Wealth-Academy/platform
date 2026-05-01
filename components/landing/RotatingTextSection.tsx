@@ -5,8 +5,8 @@ import styles from './LandingPage.module.css';
 
 export const RotatingTextSection: React.FC = () => {
   const texts = useMemo(() => [
-    'Decentralized Science',
-    'Academia',
+    'Cyberculture',
+    'Science',
     'AI Research'
   ], []);
   const [step, setStep] = useState(0);
@@ -132,7 +132,7 @@ export const RotatingTextSection: React.FC = () => {
             </div>
           </div>
         </h3>
-        <p className={styles.rotatingTextStaticLine}>through quests, rewards, and an AI who remembers</p>
+        <p className={styles.rotatingTextStaticLine}>through live research, real rewards, and an AI agent with memory</p>
       </div>
     </div>
   );

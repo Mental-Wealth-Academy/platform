@@ -1767,7 +1767,7 @@
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  gap: 0.5em;
+  gap: 0.25em;
   margin: 0;
   padding: 0 8px;
   font-family: var(--font-primary);
