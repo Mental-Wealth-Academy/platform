@@ -167,32 +167,32 @@ type SentimentSeries = { label: string; color: string; values: number[] };
 const SENTIMENT_SERIES: SentimentSeries[] = [
   {
     label: 'Ascension',
-    color: '#79c6ff',
+    color: '#44E990',
     values: [0.30, 0.34, 0.42, 0.48, 0.44, 0.38, 0.36, 0.42, 0.50, 0.54, 0.58, 0.52, 0.46, 0.50],
   },
   {
     label: 'Abundance',
-    color: '#5168FF',
+    color: '#00E5FF',
     values: [0.46, 0.52, 0.55, 0.52, 0.48, 0.54, 0.62, 0.68, 0.70, 0.64, 0.58, 0.62, 0.66, 0.70],
   },
   {
     label: 'Radiance',
-    color: '#8a7dff',
+    color: '#16BD8B',
     values: [0.58, 0.66, 0.74, 0.68, 0.60, 0.54, 0.64, 0.78, 0.92, 0.96, 0.88, 0.80, 0.74, 0.78],
   },
   {
     label: 'Expansion',
-    color: '#74C465',
+    color: '#ADFF2F',
     values: [0.38, 0.42, 0.48, 0.52, 0.54, 0.48, 0.44, 0.50, 0.56, 0.60, 0.56, 0.50, 0.48, 0.52],
   },
   {
     label: 'Benevolence',
-    color: '#E85D9F',
+    color: '#00BCD4',
     values: [0.24, 0.28, 0.32, 0.34, 0.36, 0.40, 0.44, 0.46, 0.50, 0.52, 0.54, 0.56, 0.55, 0.58],
   },
   {
     label: 'Charity',
-    color: '#F97A3F',
+    color: '#76FF03',
     values: [0.26, 0.24, 0.22, 0.30, 0.40, 0.46, 0.50, 0.42, 0.36, 0.42, 0.50, 0.56, 0.50, 0.42],
   },
 ];
@@ -632,7 +632,7 @@ export default function VotingPage() {
                             key={layer.label}
                             d={layer.d}
                             fill={layer.color}
-                            fillOpacity="0.88"
+                            fillOpacity="0.72"
                           />
                         ))}
                       </svg>

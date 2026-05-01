@@ -572,13 +572,10 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(17, 17, 18, 0.1);
-  border-left: 3px solid var(--funding-accent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    0 4px 12px rgba(31, 34, 45, 0.04);
+  border-radius: 6px;
+  background: var(--funding-accent);
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .fundingPodMiniHeader {
@@ -592,7 +589,7 @@
   font-size: 12px;
   font-weight: 700;
   font-family: 'Space Grotesk', sans-serif;
-  color: rgba(26, 29, 51, 0.8);
+  color: rgba(255, 255, 255, 0.75);
   min-width: 0;
 }
 
@@ -600,7 +597,7 @@
   font-size: 15px;
   font-weight: 700;
   font-family: 'Space Grotesk', sans-serif;
-  color: var(--funding-accent);
+  color: #fff;
   letter-spacing: -0.02em;
   flex-shrink: 0;
 }
@@ -608,7 +605,16 @@
 .fundingPodMini .fundingStateProgress {
   margin-top: 0;
   height: 4px;
-  background: rgba(26, 29, 51, 0.08);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.fundingPodMini .fundingStateProgressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.7);
+  transition: width 0.25s ease;
 }
 
 .reserveAllocationColumn {
@@ -905,29 +911,34 @@
 }
 
 .reserveSentimentValue {
-  font-family: var(--font-primary);
-  font-size: 14px;
+  font-family: var(--font-button, 'IBM Plex Mono', monospace);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  color: #8a7dff;
-  text-transform: none;
-  background: rgba(138, 125, 255, 0.12);
-  padding: 4px 10px;
-  border-radius: 6px;
+  letter-spacing: 0.1em;
+  color: #44E990;
+  text-transform: uppercase;
+  background: rgba(68, 233, 144, 0.1);
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(68, 233, 144, 0.3);
 }
 
 .reserveSentimentChart {
   width: 100%;
   height: 80px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(238, 240, 250, 0.8) 0%, rgba(245, 240, 255, 0.6) 100%);
-  padding: 6px;
+  border-radius: 3px;
+  background: #050d0a;
+  background-image:
+    linear-gradient(rgba(68, 233, 144, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(68, 233, 144, 0.06) 1px, transparent 1px);
+  background-size: 25% 25%;
+  padding: 4px 6px;
   box-sizing: border-box;
   overflow: hidden;
-  border: 2px solid rgba(81, 104, 255, 0.12);
+  border: 1px solid rgba(68, 233, 144, 0.3);
   box-shadow:
-    inset 0 1px 4px rgba(255, 255, 255, 0.8),
-    0 8px 24px rgba(81, 104, 255, 0.08);
+    inset 0 0 20px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(68, 233, 144, 0.08);
   position: relative;
 }
 
@@ -935,19 +946,19 @@
   width: 100%;
   height: 100%;
   display: block;
-  mix-blend-mode: normal;
-  filter: drop-shadow(0 0 8px rgba(81, 104, 255, 0.2));
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 3px rgba(68, 233, 144, 0.5));
   animation: sentimentFlow 8s ease-in-out infinite;
 }
 
 @keyframes sentimentFlow {
   0%, 100% {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 8px rgba(81, 104, 255, 0.2));
+    opacity: 0.9;
+    filter: drop-shadow(0 0 3px rgba(68, 233, 144, 0.5));
   }
   50% {
-    opacity: 0.95;
-    filter: drop-shadow(0 0 12px rgba(81, 104, 255, 0.3));
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(68, 233, 144, 0.7));
   }
 }
 
@@ -1816,7 +1827,10 @@
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.05em;
-  color: var(--color-primary);
+  background: var(--gradient-secondary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-shadow: none;
 }
 
@@ -1829,24 +1843,23 @@
 .dashboardTitleRightGroup .fundingPodMini {
   padding: 10px 12px;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(198, 220, 255, 0.16);
-  border-left-color: var(--funding-accent);
-  box-shadow: none;
+  background: var(--funding-accent);
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .dashboardTitleRightGroup .fundingPodMiniTitle {
-  color: rgba(231, 239, 255, 0.8);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 11px;
 }
 
 .dashboardTitleRightGroup .fundingPodMiniAmount {
-  color: var(--funding-accent);
+  color: #fff;
   font-size: 13px;
 }
 
 .dashboardTitleRightGroup .fundingPodMini .fundingStateProgress {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.25);
   height: 3px;
   margin-top: 0;
 }
@@ -1858,9 +1871,9 @@
   flex-direction: column;
   gap: 10px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(198, 220, 255, 0.16);
-  border-radius: 16px;
+  background: rgba(5, 13, 10, 0.85);
+  border: 1px solid rgba(68, 233, 144, 0.2);
+  border-radius: 4px;
 }
 
 .dashboardSentimentInline .reserveSentimentChart {
@@ -1869,7 +1882,8 @@
 }
 
 .dashboardSentimentInline .reserveInsightLabel {
-  color: rgba(231, 239, 255, 0.6);
+  color: rgba(68, 233, 144, 0.5);
+  letter-spacing: 0.12em;
 }
 
 .dashboardTitleAside {
@@ -4019,7 +4033,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
-  border-radius: 14px;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(17, 17, 18, 0.08);
 }
@@ -4133,17 +4147,16 @@
 }
 
 :global([data-theme="dark"]) .fundingPodMini {
-  background: rgba(29, 33, 43, 0.92);
-  border-color: rgba(255, 255, 255, 0.08);
-  border-left-color: var(--funding-accent);
+  background: var(--funding-accent);
+  border: none;
 }
 
 :global([data-theme="dark"]) .fundingPodMiniTitle {
-  color: rgba(244, 244, 248, 0.86);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 :global([data-theme="dark"]) .fundingPodMini .fundingStateProgress {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 :global([data-theme="dark"]) .latestNewsLabel {

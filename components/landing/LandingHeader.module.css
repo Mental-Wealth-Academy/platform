@@ -72,6 +72,7 @@
   width: 110px;
   height: auto;
   object-fit: contain;
+  filter: brightness(0) invert(1);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
