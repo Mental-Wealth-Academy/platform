@@ -26,10 +26,10 @@ export const KeyFiguresSection: React.FC = () => {
         </div>
 
         <div className={styles.figure}>
-          <span className={styles.label}>Use</span>
+          <span className={styles.label}>Community Raised</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>Tasks</span>
-            <span className={styles.unit}>/daily</span>
+            <span className={styles.number}>$20K</span>
+            <span className={styles.unit}>Funded</span>
           </div>
         </div>
 
@@ -47,10 +47,10 @@ export const KeyFiguresSection: React.FC = () => {
         </div>
 
         <div className={styles.figure}>
-          <span className={styles.label}>For</span>
+          <span className={styles.label}>First Week Payout</span>
           <div className={styles.valueRow}>
-            <span className={styles.number}>15</span>
-            <span className={styles.unit}>min</span>
+            <span className={styles.number}>382</span>
+            <span className={styles.unit}>Shards</span>
           </div>
         </div>
       </div>
