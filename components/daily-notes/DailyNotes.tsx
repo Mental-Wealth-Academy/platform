@@ -660,14 +660,11 @@ export default function DailyNotes({ enablePersistence = false, compact = false 
               </div>
 
               <div className={styles.noteBottom}>
-                <Image
-                  src="/uploads/blueagent.png"
-                  alt=""
-                  width={52}
-                  height={52}
+                <img
+                  src="https://i.imgur.com/ys2xupv.gif"
+                  alt="Ghost character"
                   className={styles.noteImage}
                 />
-                <div className={styles.promptBubble}>{MOBILE_PROMPT_MESSAGE}</div>
                 <span className={`${styles.timerCount} ${styles.timerCountInline} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
                   {isPaused ? 'paused' : formatTimer(timerSeconds)}
                 </span>
