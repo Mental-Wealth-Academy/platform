@@ -58,6 +58,21 @@ Just announce it.
 
 The em dash is a great tool — but it loses force when used in every sentence. If you've used 3+ em dashes in a paragraph, replace some with periods or commas.
 
+## Mechanism-as-title
+
+Feature card titles, nav labels, and section headers should name the **category** the user is entering — not describe how it works. Mechanism belongs in body copy underneath.
+
+| ❌ Mechanism-as-title | ✅ Category-as-title |
+|---|---|
+| Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
+| B.L.U.E. Reviews Your Work | Ascend with Paradigmic Research |
+| Shards You Actually Own | Universal Credit System |
+| Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
+| Memory That Compounds | Certified Academic Labs |
+| One NFT, Full Access | Lifetime Membership |
+
+The pattern: bad titles describe *how it works*. Good titles name *what you're joining*.
+
 ## Title Case Headings In Marketing Copy
 
 Sentence case reads as confident. Title Case Reads As Advertising. Use sentence case unless the heading is a proper noun phrase.

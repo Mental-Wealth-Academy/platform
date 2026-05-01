@@ -28,11 +28,11 @@ These are recurring failure modes from prior drafts. Replace the left side with 
 
 | Ungrounded | Grounded |
 |---|---|
-| "Meaningful experience" | "12-week quest journey with blockchain-verified rewards" |
+| "Meaningful experience" | "Live behavioral studies with verified rewards" |
 | "Fresh perspectives" | "Psychology frameworks most people never encounter" |
 | "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
 | "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
-| "Digital opportunities" | "Blockchain credentials that prove your growth" |
+| "Digital opportunities" | "Credentials that prove your growth" |
 | "Ethereal blue beacon" | "B.L.U.E.'s visual identity: blue, luminous, between human and machine" |
 | "Quantum consciousness" | "An AI agent operating autonomously — and the mythology that explains why" |
 

@@ -50,7 +50,7 @@ const APP_URL = process.env.NEXT_PUBLIC_URL || 'https://mentalwealthacademy.worl
 
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
-  description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
+  description: 'Investing In The Capital Of Human Intelligence In An Automated B.L.U.E. World.',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: '/icons/logo-mwa.png',
@@ -67,13 +67,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
+    description: 'Investing In The Capital Of Human Intelligence In An Automated B.L.U.E. World.',
     images: [
       {
-        url: 'https://i.imgur.com/UXQDIpt.png',
+        url: 'https://i.imgur.com/Ouwx2i8.png',
         width: 1200,
         height: 630,
-        alt: 'Mental Wealth Academy - A 12-Week Micro-University',
+        alt: 'Mental Wealth Academy — a 12-week personal development program with B.L.U.E.',
       },
     ],
     type: 'website',
@@ -81,13 +81,13 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'A decentralized science and wellness platform where Blue helps people research, build, and protect their data.',
-    images: ['https://i.imgur.com/UXQDIpt.png'],
+    description: 'Investing In The Capital Of Human Intelligence In An Automated B.L.U.E. World.',
+    images: ['https://i.imgur.com/Ouwx2i8.png'],
   },
   other: {
     'fc:miniapp': JSON.stringify({
       version: 'next',
-      imageUrl: 'https://i.imgur.com/UXQDIpt.png',
+      imageUrl: 'https://i.imgur.com/Ouwx2i8.png',
       button: {
         title: 'Launch Mental Wealth Academy',
         action: {

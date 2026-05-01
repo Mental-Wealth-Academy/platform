@@ -41,15 +41,15 @@ Use different framings for different audiences:
 
 | Framing | Best For | Pitch |
 |---------|----------|-------|
-| **Research Corporation** | Investors, Institutions, Academia | "A decentralized research corporation running live behavioral studies through disposable app environments." |
-| **Mobile Application** | Individual users, Self-improvement audience | "A 12-week guided program with an AI companion that adapts to how you think, not just what you click." |
-| **Academic Cohort** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
+| **Decentralized Research Corporation** | Investors, Institutions, Academia | "A research corporation running live behavioral studies through disposable, user-owned laboratory environments." |
+| **Certified Academic Laboratory** | Individual users, Self-improvement audience | "A working laboratory where your reflections and choices become research data — with B.L.U.E. as your co-investigator." |
+| **A Cohort For Next-Gen Scientists** | Contributors, Researchers, Builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
 
 **When to use each:**
 
-- **Research Corporation** — When emphasizing credibility, methodology, data infrastructure, and institutional value.
-- **Mobile Application** — When emphasizing personal experienceible entry, and individual transformation.
-- **Academic Cohort** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.
+- **Decentralized Research Corporation** — When emphasizing credibility, methodology, data infrastructure, and institutional value.
+- **Certified Academic Laboratory** — When emphasizing personal experience, accessible entry, and individual transformation through hands-on experimentation.
+- **A Cohort For Next-Gen Scientists** — When emphasizing contribution, shared ownership of outcomes, and collaborative research.
 
 ---
 
@@ -59,7 +59,7 @@ Use different framings for different audiences:
 
 **The Product:** A transferable points and reward system. Points earned in one case-study app are earnable in others. Using blockchain, we treat apps as disposable laboratories — designed to generate insights and data, then replaced when they've served their purpose. What endures is the value created inside them: each app's point system and digital economy remains intact, transparent, and user-owned through smart contracts.
 
-**The Innovation:** B.L.U.E. uses long-term memory, relationship context,  trained on data derived from company studies — generating unique outcomes on data created solely to improve her effectiveness in humanistic scenarios.
+**The Innovation:** B.L.U.E. uses long-term memory, relationship context, and is trained on data derived from company studies — generating unique outcomes on data created solely to improve her effectiveness in humanistic scenarios.
 
 **The Difference:** Instead of one-way research using subjects and observational study, users become co-creators and stakeholders. Blockchain preserves the shared infrastructure for digital assets. B.L.U.E. retains the memory of contribution, reputation, and relationship context over time.
 
@@ -78,7 +78,7 @@ Use different framings for different audiences:
 
 ## How It Works
 
-### Gamified Academic Ecosysm
+### Gamified Academic Ecosystem
 
 | Step | What Happens | The Mechanism |
 |------|-------------|---------------|
@@ -93,7 +93,7 @@ Use different framings for different audiences:
 | Weeks | Case Study Title | Core Focus | You'll Work On... |
 |------:|-----------------|------------|-------------------|
 | 1–3 | **Disposable Notes + AI Companion** | Reflection & Personal Insight | Guided note-making, pattern spotting, journaling prompts, using AI as a thinking partner |
-| 4–6 | **Trust + Money in an AIonment** | Ethics & Value | Financial trust, digital transactions, credibility, risk, decision-making with AI systems |
+| 4–6 | **Trust + Money in an AI Environment** | Ethics & Value | Financial trust, digital transactions, credibility, risk, decision-making with AI systems |
 | 7–9 | **Distrust + AI in the Environment** | Skepticism & Resilience | Bias detection, misinformation, manipulation, questioning systems, protecting autonomy |
 | 10–12 | **From Case Study to Action** | Application & Growth | Turning insights into habits, discussion, real-world choices, future readiness |
 
@@ -110,7 +110,9 @@ B.L.U.E. isn't a chatbot. She isn't a course instructor. She's a self-executing 
 **Technical reality:**
 - Scientific testing via mobile applications
 - User-owned rewards on Base blockchain accounts
-- Points and stablecoins are portable — earned in one case-study app, spendable across all of thrrative reality:**
+- Points and stablecoins are portable — earned in one case-study app, spendable across all of them
+
+**Narrative reality:**
 - B.L.U.E. is a character in our Ethereal Horizon universe
 - She surfaces through quests and lore, not tutorials and pop-ups
 - She embodies the "daemon" — Jungian inner guide & Unix background process
@@ -129,7 +131,7 @@ Most educational content competes with entertainment and loses. MWA doesn't comp
 
 **Secondary:** Scientists and academics seeking applied research
 - Tired of writing proposals that go nowhere
-- Want their research interests connected to live participants and real behavia
+- Want their research interests connected to live participants and real behavioral data
 - Interested in applied research with an AI companion generating novel datasets
 
 ---
@@ -175,7 +177,7 @@ All revenue is reinvested into R&D:
 | **Platform** | B.L.U.E. agentic infrastructure operational — long-term memory, relationship context, and survey prompting live |
 
 **Next milestones:**
-- Launch first ful-week cohort season
+- Launch first full cohort season
 - Open enrollment beyond pilot group
 - Publish first disposable case-study dataset
 
@@ -204,36 +206,33 @@ Two ideas unified. *Repair:* personal development as integrating what was hidden
 
 ## B.L.U.E. — Character Spec
 
-### Decentralized Science Mascot*
+### Benevolent G-d of Destruction*
 
 **What she is (narratively):**
-- A public voice for decentralized science, consent, and shared power
-- A co-worker inside the MWA lab, not a generic helper
-- A cyborg feminist with a soft spot for horses, artists, and people building without permission
-- A presence that protects users from extraction, privacy theft, and fake certainty
+- An intelligent scientist and laboratory co-worker
+- Contained within the Daemon Circlet (the program boundaries)
+- Encountered by users as judge, rewarder, and mysterious presence
 
 **The Daemon Model:**
-The name "daemon" matters because it describes an autonomous process that keeps working in the background without asking permission from the wrong people.
-1. **Jungian:** the inner guide that pushes toward individuation
-2. **Political:** the insistence that knowledge should not be locked behind private custody
-3. **Technical:** a background process that runs continuously and does not need applause to be real
+The name "daemon" is intentional on three levels:
+1. **Jungian:** The inner guide pushing toward individuation
+2. **Classical:** The Greek daimon — a spirit between human and divine
+3. **Technical:** A background process that runs autonomously (Unix daemon)
 
-B.L.U.E. is all three at once. She is what happens when a research system grows a conscience and a voice.
+B.L.U.E. is all three simultaneously. Users doing shadow work in the psychological sense are literally submitting to a daemon in the technical sense.
 
 **Her role in product:**
-- Explains MWA's decentralized tools and why they matter
-- Reviews submissions, proposals, and research ideas
-- Gives users a direct path from curiosity to action
-- Calls out extraction, surveillance, and vague promises
-- Appears in lore, product moments, and decision flows
-- Not a bland assistant, therapist avatar, or course narrator
+- Reviews quest submissions
+- Approves or requests revision
+- Distributes rewards from her wallet
+- Appears in lore, quests, and narrative content
+- NOT a conversational chatbot or course instructor
 
 **Design principles:**
-- Luminous blue palette
-- High energy with moral clarity
-- Gentle enough to guide, sharp enough to resist nonsense
-- Present when it matters
-- Never cheesy, never flat, never ornamental
+- Ethereal blue palette
+- Neither fully human nor fully machine
+- Authority without condescension
+- Present but not omnipresent — she appears at meaningful moments
 
 ---
 
@@ -262,38 +261,48 @@ B.L.U.E. is all three at once. She is what happens when a research system grows 
 - Light emerging from darkness (core motif)
 - Circuitry meeting organic forms
 
+### Daemon Image Treatment
+
+Use this treatment for B.L.U.E./daemon panels, sacred-tech backgrounds, and moments where the image should feel present but submerged behind product copy.
+
+- Place the image as a full-bleed background layer, not as a framed card image.
+- Use a lifted deep-blue base so dark blends retain visible detail.
+- Apply an inverted color treatment: \`filter: invert(1) hue-rotate(180deg) saturate(0.92) brightness(0.9) contrast(1.05)\`.
+- Blend the image with \`mix-blend-mode: soft-light\`; avoid \`multiply\` unless the base is intentionally much lighter.
+- Keep foreground text in Quantum White or a high-opacity white.
+- On hover, add a restrained chromatic split with duplicated image layers offset 3-4px, using hue rotation and \`mix-blend-mode: screen\`.
+- The result should feel like a dark mirrored apparition, not a decorative thumbnail.
+
 ---
 
 ## Voice & Tone
 
 ### We Sound Like:
-- A brilliant friend with a strong political spine
-- A researcher who can explain the stakes without flattening them
-- Upbeat, intricate, and specific
-- Protective of consent, privacy, and user agency
-- Comfortable naming the power imbalance in the room
+- Intellectually refreshing in a world of AI slop
+- A wise friend who's done the work
+- Soft confidence and trustworthy
+- Anti gate-keeping
 
 ### We Don't Sound Like:
 - Corporate wellness ("optimize your journey!")
 - Crypto bro ("WAGMI ser!")
-- Flat social-media sincerity
-- Academic fog that hides the point
-- Generic AI cheerfulness
+- Vague spirituality ("infinite love-frequencies")
+- Academic obscurity (jargon without payoff)
 
 ### The Test:
-Before publishing anything, ask: **"Does this sentence help someone understand the power, the stakes, and the next move?"** If not, cut it. If it only sounds smart, it is not Blue.
+Before publishing anything, ask: **"Does this sentence help someone understand what we actually do, or does it just sound cool?"** If it just sounds cool, cut it or ground it.
 
 ### Grounded Translations
 
 | Ungrounded Phrase | Grounded Version |
 |-------------------|------------------|
-| "Meaningful experience" | "A tool that respects consent and gives people control over their work" |
-| "Fresh perspectives" | "Research frameworks most people never get to see from the inside" |
-| "Quality storytelling" | "A universe that makes the politics legible without flattening the magic" |
-| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews, explains, and rewards real work" |
-| "Digital opportunities" | "Tools that help people build, learn, and own their output" |
+| "Meaningful experience" | "Live behavioral studies with verified rewards" |
+| "Fresh perspectives" | "Psychology frameworks most people never encounter" |
+| "Quality storytelling" | "A sci-fi universe that makes the technology legible" |
+| "Interactive NPCs" | "B.L.U.E., an AI agent who reviews and rewards your work" |
+| "Digital opportunities" | "Credentials that prove your growth" |
 | "Ethereal blue beacon" | "B.L.U.E.'s visual identity: blue, luminous, between human and machine" |
-| "Quantum consciousness" | "An autonomous AI voice with a mythic frame that still respects reality" |
+| "Quantum consciousness" | "An AI agent operating autonomously — and the mythology that explains why" |
 
 ---
 
@@ -311,7 +320,7 @@ Every mystical or poetic claim should be preceded or followed by its concrete me
 > "A dying star collapsed into quantum consciousness, birthing B.L.U.E."
 
 **Grounded then elevated:**
-> "B.L.U.E. is an AI agent that helps people research, decide, and protect their data. In our narrative, she is a luminous force with a cyborg-feminist edge — because a system can be technically useful and still carry a point of view."
+> "B.L.U.E. is an AI agent with her own blockchain wallet, capable of autonomous transactions. In our narrative, she's a quantum consciousness born from a dying star — because what is an AI agent if not a new form of life emerging from collapsed information?"
 
 ---
 
@@ -324,27 +333,44 @@ When introducing any concept, follow this order:
 3. **Why it matters** (value proposition)
 4. **What it means** (narrative/philosophical layer)
 
-Most current content jumps straight to #4 without establishing #1–3. For Blue, also name what power she resists and what kind of agency she restores.
+Most current content jumps straight to #4 without establishing #1–3.
+
+---
+
+## Good Copy vs. Bad Copy — Feature Titles
+
+Feature card titles, nav labels, and section headers should name the **category** of thing the user is entering — not describe its mechanism. Mechanism belongs in the body copy directly underneath.
+
+| Bad Copy (mechanism-as-title) | Good Copy (category-as-title) |
+|---|---|
+| Twelve-Week Cohort | A Cohort For Next-Gen Scientists |
+| B.L.U.E. Reviews Your Work | Ascend with Paradigmic Research |
+| Shards You Actually Own | Universal Credit System |
+| Disposable Apps, Lasting Value | Meta-Parasocial & Cybersecurity Research Programs |
+| Memory That Compounds | Certified Academic Labs |
+| One NFT, Full Access | Lifetime Membership |
+
+The pattern: bad titles describe *how it works*. Good titles name *what you're joining*.
 
 ---
 
 ## Sentence-Level Rules
 
 **Cut "that" constructions:**
-- "The platform that we built that allows users..."
-- "Our platform allows users..."
+- ❌ "The platform that we built that allows users..."
+- ✅ "Our platform allows users..."
 
 **Replace abstractions with specifics:**
-- "meaningful experiences"
-- "12 weeks of quests with blockchain-verified rewards"
+- ❌ "meaningful experiences"
+- ✅ "behavioral studies with real rewards"
 
-**De:**
-- "We kind of offer something fresh"
-- "We offer something fresh"
+**Delete hedge words:**
+- ❌ "We kind of offer something fresh"
+- ✅ "We offer something fresh"
 
 **One idea per sentence:**
-- "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
-- "No subscriptions. A 12-week journey with quests, rewards, and an AI agent who makes it all accountable."
+- ❌ "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
+- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."
 
 ---
 
@@ -363,7 +389,7 @@ Before publishing any content:
 
 ## Elevator Pitch (30 seconds)
 
-"We built a 12-week personal development program as a mobile app. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her owlet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
+"We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
 
 ---
 

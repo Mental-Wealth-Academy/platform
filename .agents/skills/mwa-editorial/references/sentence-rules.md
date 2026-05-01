@@ -11,10 +11,10 @@ The word "that" is almost always a stall before the verb.
 
 ## Replace abstractions with specifics
 
-Abstractions read as filler. A reader's eye skips over "meaningful experiences." It does not skip over "12 weeks of quests with blockchain-verified rewards."
+Abstractions read as filler. A reader's eye skips over "meaningful experiences." It does not skip over "behavioral studies with real rewards."
 
 - ❌ "meaningful experiences"
-- ✅ "12 weeks of quests with blockchain-verified rewards"
+- ✅ "behavioral studies with real rewards"
 
 If you can't replace an abstraction with a number, a name, a date, a verb, or a noun, the abstraction is doing nothing — cut it.
 
@@ -34,7 +34,7 @@ If the claim is too strong without the hedge, the claim itself is wrong — make
 Run-on sentences hide thinking. Break them up.
 
 - ❌ "We skip forceful subscriptions and instead offer meaningful experiences, fresh perspectives, quality storytelling, and characters and interactive NPCs that blend into our app."
-- ✅ "No subscriptions. A 12-week journey with quests, rewards, and an AI agent who makes it all accountable."
+- ✅ "No subscriptions. A research cohort with quests, rewards, and an AI agent who makes it all accountable."
 
 Short sentences carry weight. Use periods.
 

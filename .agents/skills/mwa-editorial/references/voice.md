@@ -22,13 +22,13 @@ The same product is described differently depending on who's reading. Pick one a
 
 | Framing | Use for | Pitch |
 |---|---|---|
-| **Research Corporation** | Investors, institutions, academia | "A decentralized research corporation running live behavioral studies through disposable app environments." |
-| **Mobile Application** | Individual users, self-improvement audience | "A 12-week guided program with an AI companion that adapts to how you think, not just what you click." |
-| **Academic Cohort** | Contributors, researchers, builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
+| **Decentralized Research Corporation** | Investors, institutions, academia | "A research corporation running live behavioral studies through disposable, user-owned laboratory environments." |
+| **Certified Academic Laboratory** | Individual users, self-improvement audience | "A working laboratory where your reflections and choices become research data — with B.L.U.E. as your co-investigator." |
+| **A Cohort For Next-Gen Scientists** | Contributors, researchers, builders | "A paid research cohort where your participation generates real behavioral data — and you own the results." |
 
 ## Elevator pitch (memorize)
 
-> "We built a 12-week personal development program as a mobile app. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
+> "We built a working research laboratory for personal development. Users complete quests — reflective and practical tasks — and submit them to B.L.U.E., an AI agent with her own blockchain wallet. She reviews submissions and distributes rewards. No subscriptions, real accountability, and proof of growth that lives on the blockchain."
 
 This is the canonical 30-second version. Any longer-form pitch should be a faithful expansion of this — not a new pitch with different priorities.
 
