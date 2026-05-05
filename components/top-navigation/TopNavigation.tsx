@@ -2,12 +2,20 @@
 
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import SoundToggle from '@/components/sound/SoundToggle';
+
+const NAV_LINKS = [
+  { label: 'Surveys',   href: '/home',      icon: '/icons/nav-home.svg' },
+  { label: 'Markets',   href: '/markets',   icon: '/icons/nav-markets.svg' },
+  { label: 'Social',    href: '/community', icon: '/icons/nav-community.svg' },
+  { label: 'Knowledge', href: '/prompts',   icon: '/icons/ui-book.svg' },
+];
 
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
@@ -55,18 +63,42 @@ const TopNavigation: React.FC = () => {
               <path d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
+          <a href="/" className={styles.logoLink}>
+            <Image
+              src="/icons/logo-mwa-horizontal.png"
+              alt="Mental Wealth Academy"
+              width={160}
+              height={58}
+              className={styles.logo}
+              priority
+            />
+          </a>
         </div>
 
-        <a href="/" className={styles.logoLink}>
-          <Image
-            src="/icons/logo-mwa-horizontal.png"
-            alt="Mental Wealth Academy"
-            width={160}
-            height={58}
-            className={styles.logo}
-            priority
-          />
-        </a>
+        <nav className={styles.centerNav} aria-label="Main navigation">
+          {NAV_LINKS.map(({ label, href, icon }) => {
+            const active = pathname === href || pathname?.startsWith(href + '/');
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                onMouseEnter={() => play('hover')}
+                onClick={() => play('navigation')}
+                aria-current={active ? 'page' : undefined}
+              >
+                <Image
+                  src={icon}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className={`${styles.navLinkIcon} ${active ? styles.navLinkIconActive : ''}`}
+                />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
 
         <nav className={styles.nav}>
           <SoundToggle />

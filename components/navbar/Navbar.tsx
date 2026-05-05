@@ -209,11 +209,23 @@ const Navbar: React.FC = () => {
   };
 
 
+  const handleMenuToggle = () => {
+    window.dispatchEvent(new Event('toggleSidebar'));
+  };
+
   return (
     <nav className={styles.navbar}>
       {/* Top Section */}
       <div className={styles.topSection}>
         <div className={styles.leftContent}>
+          <button
+            className={styles.menuToggleButton}
+            onClick={handleMenuToggle}
+            aria-label="Toggle menu"
+            type="button"
+          >
+            <MenuIcon size={22} />
+          </button>
           <Link href="/home" className={styles.brandLink} aria-label="Mental Wealth Academy">
             <div className={styles.logoWrapper}>
               <Image
@@ -237,6 +249,38 @@ const Navbar: React.FC = () => {
               <HomeIcon size={20} className={styles.homeIcon} />
               <span className={isActive('/home') ? styles.buttonLabelActive : styles.buttonLabel}>
                 <span className={styles.slideWrap}><span className={styles.slideText}>Home</span><span className={`${styles.slideText} ${styles.slideClone}`}>Home</span></span>
+              </span>
+            </Link>
+
+            {/* Surveys Button */}
+            <Link href="/home" className={`${styles.navButton} ${isActive('/surveys') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-home.svg" alt="" width={18} height={18} className={styles.navImgIcon} />
+              <span className={styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Surveys</span><span className={`${styles.slideText} ${styles.slideClone}`}>Surveys</span></span>
+              </span>
+            </Link>
+
+            {/* Markets Button */}
+            <Link href="/markets" className={`${styles.navButton} ${isActive('/markets') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-markets.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/markets') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/markets') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Markets</span><span className={`${styles.slideText} ${styles.slideClone}`}>Markets</span></span>
+              </span>
+            </Link>
+
+            {/* Social Button */}
+            <Link href="/community" className={`${styles.navButton} ${isActive('/community') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/nav-community.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/community') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/community') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Social</span><span className={`${styles.slideText} ${styles.slideClone}`}>Social</span></span>
+              </span>
+            </Link>
+
+            {/* Knowledge Button */}
+            <Link href="/prompts" className={`${styles.navButton} ${isActive('/prompts') ? styles.navButtonActive : ''}`}>
+              <Image src="/icons/ui-book.svg" alt="" width={18} height={18} className={`${styles.navImgIcon} ${isActive('/prompts') ? styles.navImgIconActive : ''}`} />
+              <span className={isActive('/prompts') ? styles.buttonLabelActive : styles.buttonLabel}>
+                <span className={styles.slideWrap}><span className={styles.slideText}>Knowledge</span><span className={`${styles.slideText} ${styles.slideClone}`}>Knowledge</span></span>
               </span>
             </Link>
 

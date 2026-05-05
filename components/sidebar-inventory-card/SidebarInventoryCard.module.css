@@ -1,0 +1,193 @@
+.card {
+  margin: 8px 10px 0;
+  padding: 12px;
+  background: var(--color-grey-900, #1a1b24);
+  border: 1px solid var(--color-grey-700, #2a2b36);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.cardCollapsed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 6px 8px 0;
+  padding: 8px 0;
+  flex-shrink: 0;
+}
+
+.shardIconSm {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: contrast(1.15) brightness(1.1);
+}
+
+.shardCountSm {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(227, 225, 238, 0.6);
+  letter-spacing: 0.05em;
+}
+
+/* Stats */
+.statsRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.statValue {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(227, 225, 238, 0.95);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.statLabel {
+  font-family: var(--font-primary);
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(227, 225, 238, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.statDivider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+/* Balances */
+.balanceDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 10px 0 8px;
+}
+
+.balanceList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balanceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 2px;
+}
+
+.tokenLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tokenIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tokenUsdc {
+  background: rgba(39, 117, 202, 0.12);
+}
+
+.tokenName {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(227, 225, 238, 0.7);
+  letter-spacing: 0.04em;
+}
+
+.balanceVal {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(227, 225, 238, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.loadingRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 0;
+}
+
+.loadingDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(227, 225, 238, 0.25);
+  animation: dotPulse 1.2s ease infinite;
+}
+
+.loadingDot:nth-child(2) { animation-delay: 0.15s; }
+.loadingDot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Light mode */
+:global(:root:not([data-theme="dark"])) .card {
+  background: #f4f5fe;
+  border-color: rgba(26, 27, 36, 0.1);
+}
+
+:global(:root:not([data-theme="dark"])) .statValue {
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .statLabel {
+  color: rgba(26, 29, 51, 0.45);
+}
+
+:global(:root:not([data-theme="dark"])) .statDivider {
+  background: rgba(26, 27, 36, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .balanceDivider {
+  background: rgba(26, 27, 36, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .tokenIcon {
+  background: rgba(26, 27, 36, 0.06);
+}
+
+:global(:root:not([data-theme="dark"])) .tokenName {
+  color: rgba(26, 29, 51, 0.65);
+}
+
+:global(:root:not([data-theme="dark"])) .balanceVal {
+  color: #1a1d33;
+}
+
+:global(:root:not([data-theme="dark"])) .shardCountSm {
+  color: rgba(26, 29, 51, 0.55);
+}

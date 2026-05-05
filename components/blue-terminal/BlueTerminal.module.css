@@ -1,0 +1,189 @@
+.terminal {
+  position: relative;
+  padding: 28px 24px 24px;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.12), transparent 28%),
+    var(--blue-terminal-bg, #000000);
+  color: var(--blue-terminal-text, #7dd3fc);
+}
+
+/* Subtle CRT scanline overlay */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    var(--blue-terminal-scanline, rgba(0, 0, 0, 0.08)) 3px,
+    var(--blue-terminal-scanline, rgba(0, 0, 0, 0.08)) 4px
+  );
+}
+
+/* ===== ASCII Logo ===== */
+
+.logoWrapper {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.ascii {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0em;
+  white-space: pre;
+  overflow: hidden;
+  color: var(--blue-terminal-logo, #2563eb);
+  text-shadow: var(--blue-terminal-glow, 0 0 8px rgba(59, 130, 246, 0.5));
+  user-select: none;
+  margin: 0;
+}
+
+.subLabel {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--blue-terminal-muted, #3b82f6);
+  text-transform: uppercase;
+  margin-top: 6px;
+  opacity: 0.75;
+}
+
+/* ===== Divider ===== */
+
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--blue-terminal-rule-start, #1d4ed8) 0%,
+    var(--blue-terminal-rule-end, #0ea5e9) 50%,
+    transparent 100%
+  );
+  margin: 16px 0 14px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== Boot Lines ===== */
+
+.bootLines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.gap {
+  height: 6px;
+}
+
+.line {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  color: var(--blue-terminal-text, #7dd3fc);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.15s ease-out both;
+}
+
+.prompt {
+  color: var(--blue-terminal-accent, #0ea5e9);
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* ===== CTA Row ===== */
+
+.ctaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 0.2s ease-out both;
+}
+
+.ctaBracket {
+  font-family: var(--font-mono, monospace);
+  font-size: 16px;
+  color: var(--blue-terminal-accent, #0ea5e9);
+  font-weight: 700;
+  animation: blink 1.4s step-end infinite;
+}
+
+.ctaText {
+  font-family: var(--font-mono, monospace);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--blue-terminal-cta, #ffffff);
+  text-shadow: var(
+    --blue-terminal-cta-glow,
+    0 0 12px rgba(255, 255, 255, 0.4),
+    0 0 24px rgba(14, 165, 233, 0.3)
+  );
+  animation: blink 1.4s step-end infinite;
+}
+
+.cursor {
+  font-family: var(--font-mono, monospace);
+  font-size: 16px;
+  color: var(--blue-terminal-cursor, #38bdf8);
+  animation: cursorBlink 0.9s step-end infinite;
+  margin-left: 2px;
+}
+
+/* ===== Light Mode ===== */
+
+:global(:root:not([data-theme="dark"])) .terminal {
+  --blue-terminal-bg: #f7fbff;
+  --blue-terminal-text: #075985;
+  --blue-terminal-logo: #1d4ed8;
+  --blue-terminal-muted: #2563eb;
+  --blue-terminal-accent: #0284c7;
+  --blue-terminal-cta: #0f172a;
+  --blue-terminal-cursor: #0369a1;
+  --blue-terminal-rule-start: #2563eb;
+  --blue-terminal-rule-end: #38bdf8;
+  --blue-terminal-scanline: rgba(37, 99, 235, 0.055);
+  --blue-terminal-glow: 0 0 10px rgba(37, 99, 235, 0.16);
+  --blue-terminal-cta-glow: 0 0 14px rgba(14, 165, 233, 0.16);
+}
+
+/* ===== Animations ===== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

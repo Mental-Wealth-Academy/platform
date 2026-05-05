@@ -41,6 +41,11 @@
   --color-border-strong: rgba(26, 27, 36, 0.16);
   --color-shell-background: rgba(244, 245, 254, 0.6);
 
+  /* Neutral Greys — for dark-first components (SurveyController, SurveySpace) */
+  --color-grey-600: #555555;
+  --color-grey-900: #1b1b1b;
+  --color-grey-950: #141414;
+
   /* Category Colors */
   --color-mental-health: #9724A6;
   --color-productivity: #FF8C42;
@@ -64,6 +69,7 @@
   --font-primary: var(--font-poppins), 'Poppins', sans-serif;
   --font-secondary: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   --font-button: var(--font-ibm-plex-mono), 'IBM Plex Mono', monospace;
+  --font-mono: var(--font-departure-mono), 'Departure Mono', monospace;
   
   /* Font Weights */
   --font-weight-light: 300;

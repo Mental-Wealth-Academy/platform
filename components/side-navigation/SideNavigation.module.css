@@ -25,31 +25,6 @@
   transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.sideNav::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    180deg,
-    #5168FF,
-    #74C465,
-    #E8556D,
-    #F2A0B5,
-    #a78bfa,
-    #5168FF
-  );
-  background-size: 100% 200%;
-  animation: sidebarBorderShift 6s linear infinite;
-  z-index: 1;
-}
-
-@keyframes sidebarBorderShift {
-  0% { background-position: 50% 0%; }
-  100% { background-position: 50% 200%; }
-}
 
 .sideNavCollapsed {
   width: 72px;

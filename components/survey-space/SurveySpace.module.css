@@ -1,0 +1,92 @@
+/* SurveySpace — dark-first primary content panel for test output */
+
+.space {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-grey-950);
+  border: 1px solid var(--color-grey-600);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-grey-600);
+  flex-shrink: 0;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: #dbdbdb;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: #dbdbdb;
+  border: 1px solid var(--color-grey-600);
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.innerPanel {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  background: #000000;
+  border: 1px solid var(--color-grey-600);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* ===== Light Mode ===== */
+
+:global(:root:not([data-theme="dark"])) .space {
+  background: #f8f9fa;
+  border-color: rgba(26, 27, 36, 0.12);
+}
+
+:global(:root:not([data-theme="dark"])) .header {
+  border-bottom-color: rgba(26, 27, 36, 0.08);
+}
+
+:global(:root:not([data-theme="dark"])) .label {
+  color: var(--color-text-soft);
+}
+
+:global(:root:not([data-theme="dark"])) .badge {
+  color: var(--color-text-muted);
+  border-color: rgba(26, 27, 36, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .content {
+  background: transparent;
+}
+
+:global(:root:not([data-theme="dark"])) .innerPanel {
+  background: #f7fbff;
+  border-color: rgba(37, 99, 235, 0.18);
+}

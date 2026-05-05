@@ -18,6 +18,8 @@ import OnboardingModal from '../onboarding/OnboardingModal';
 import LootBoxModal from '../loot-box/LootBoxModal';
 import { useSound } from '@/hooks/useSound';
 import { useInitialSidebarCollapsed } from './SidebarStateProvider';
+import SidebarProfileCard from '../sidebar-profile-card/SidebarProfileCard';
+import SidebarInventoryCard from '../sidebar-inventory-card/SidebarInventoryCard';
 
 interface NavItem {
   id: string;
@@ -41,19 +43,9 @@ interface NavSection {
 
 const desktopNavSections: NavSection[] = [
   {
-    id: 'main',
-    label: 'Community Main',
-    items: [
-      { id: 'library', label: 'Knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
-      { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
-    ],
-  },
-  {
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
@@ -61,19 +53,9 @@ const desktopNavSections: NavSection[] = [
 
 const mobileNavSections: NavSection[] = [
   {
-    id: 'main',
-    label: 'Community Main',
-    items: [
-      { id: 'library', label: 'Knowledge', href: '/prompts', iconSrc: '/icons/ui-book.svg' },
-      { id: 'community', label: 'Social', href: '/community', iconSrc: '/icons/nav-community.svg' },
-      { id: 'markets', label: 'Markets', href: '/markets', iconSrc: '/icons/nav-markets.svg' },
-    ],
-  },
-  {
     id: 'extras',
     label: 'Community Resources',
     items: [
-      { id: 'pathways', label: 'Classroom', href: '/home', iconSrc: '/icons/nav-home.svg' },
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
@@ -488,7 +470,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   };
 
   const navSections = isMobileMenuOpen ? mobileNavSections : desktopNavSections;
-  const mainSection = navSections.find((section) => section.id === 'main');
   const extrasSection = navSections.find((section) => section.id === 'extras');
 
   const renderSection = (section: NavSection) => {
@@ -626,37 +607,55 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
         ref={mobileMenuRef}
       >
 
+        {/* Profile + Inventory cards — always visible at top */}
+        {((isConnected && address) || (username && !username.startsWith('user_'))) && userLoadComplete && (
+          <>
+            <SidebarProfileCard
+              username={username}
+              avatarUrl={avatarUrl}
+              address={address}
+              isCollapsed={isCollapsed}
+              onChangeAvatar={handleAvatarClick}
+              onChangeUsername={handleUsernameClick}
+              onConnections={() => setIsYourAccountsModalOpen(true)}
+              onSignOut={handleSignOut}
+            />
+            <SidebarInventoryCard
+              shardCount={shardCount}
+              address={address}
+              isCollapsed={isCollapsed}
+            />
+          </>
+        )}
+
         {/* Navigation Sections */}
         <div className={styles.navSections}>
           <div className={styles.navPrimaryGroup}>
-            {mainSection && renderSection(mainSection)}
-            {mainSection && (
-              <div className={styles.shinyCardSpacer}>
-                <button
-                  className={styles.shinyCard}
-                  onClick={() => {
-                    play('click');
-                    setIsChatOpen(true);
-                  }}
-                  onMouseEnter={() => play('hover')}
-                  type="button"
-                  title="Blue Agent"
-                >
-                  <div className={styles.shinyCardShine} />
-                  <div className={styles.shinyCardContent}>
-                    <div className={styles.shinyCardIcon}>
-                      <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={36} height={36} unoptimized />
-                    </div>
-                    {!isCollapsed && (
-                      <div className={styles.shinyCardText}>
-                        <span className={styles.shinyCardTitle}>Blue Agent</span>
-                        <span className={styles.shinyCardSub}>FLAGSHIP MODEL 2.0</span>
-                      </div>
-                    )}
+            <div className={styles.shinyCardSpacer}>
+              <button
+                className={styles.shinyCard}
+                onClick={() => {
+                  play('click');
+                  setIsChatOpen(true);
+                }}
+                onMouseEnter={() => play('hover')}
+                type="button"
+                title="Ask Blue"
+              >
+                <div className={styles.shinyCardShine} />
+                <div className={styles.shinyCardContent}>
+                  <div className={styles.shinyCardIcon}>
+                    <Image src="https://i.imgur.com/Y6YNtam.png" alt="Blue" width={36} height={36} unoptimized />
                   </div>
-                </button>
-              </div>
-            )}
+                  {!isCollapsed && (
+                    <div className={styles.shinyCardText}>
+                      <span className={styles.shinyCardTitle}>Ask Blue</span>
+                      <span className={styles.shinyCardSub}>FLAGSHIP MODEL 2.0</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+            </div>
           </div>
 
           {extrasSection && (
@@ -666,126 +665,9 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
           )}
         </div>
 
-        {/* Bottom Section - Inventory, Wallet */}
-        <div className={styles.bottomSection}>
-          {/* Gems Counter */}
-          <div className={styles.gemsRow}>
-            <button
-              className={styles.shardsCounter}
-              onClick={() => { play('click'); setIsInventoryOpen(true); }}
-              onMouseEnter={() => play('hover')}
-              type="button"
-              title="Inventory"
-            >
-              <Image
-                src="/icons/ui-shard.svg"
-                alt="Gems"
-                width={20}
-                height={20}
-                className={styles.shardIcon}
-              />
-              {!isCollapsed && (
-                <>
-                  <span className={styles.shardsLabel}>Inventory:</span>
-                  <span className={styles.shardsValue}>
-                    <span className={styles.slideTextWrap}>
-                      <span className={styles.slideText}>{shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}</span>
-                      <span className={`${styles.slideText} ${styles.slideTextClone}`}>{shardCount !== null ? String(shardCount).padStart(3, '0') : '000'}</span>
-                    </span>
-                  </span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Account Button or Connect Account */}
-          {((isConnected && address) || (username && !username.startsWith('user_'))) && userLoadComplete ? (
-            <div className={styles.accountSection} ref={accountMenuRef}>
-              <button
-                ref={accountButtonRef}
-                className={styles.accountButton}
-                onClick={() => {
-                  play('click');
-                  setIsAccountMenuOpen(!isAccountMenuOpen);
-                }}
-                onMouseEnter={() => play('hover')}
-                title={username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}
-              >
-                {avatarUrl ? (
-                  <Image
-                    src={avatarUrl}
-                    alt={username || 'Account'}
-                    width={32}
-                    height={32}
-                    className={styles.accountAvatar}
-                    unoptimized
-                  />
-                ) : (
-                  <div className={styles.accountAvatar} style={{ width: 32, height: 32, background: '#5168FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700 }}>
-                    {address ? address.slice(2, 4).toUpperCase() : '?'}
-                  </div>
-                )}
-                {!isCollapsed && (
-                  <span className={styles.accountUsername}>
-                    <span className={styles.slideTextWrap}>
-                      <span className={styles.slideText}>{username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}</span>
-                      <span className={`${styles.slideText} ${styles.slideTextClone}`}>{username && !username.startsWith('user_') ? `@${username}` : address ? truncateAddress(address) : 'Connected'}</span>
-                    </span>
-                  </span>
-                )}
-              </button>
-
-              {isAccountMenuOpen && (
-                <div className={styles.accountMenu} style={accountMenuStyle}>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={() => {
-                      play('click');
-                      setIsAccountMenuOpen(false);
-                      setIsInventoryOpen(true);
-                    }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    <span className={styles.accountMenuLabel}>PROFILE</span>
-                  </button>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={() => {
-                      play('click');
-                      setIsAccountMenuOpen(false);
-                      setIsYourAccountsModalOpen(true);
-                    }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    <span className={styles.accountMenuLabel}>Connections</span>
-                  </button>
-                  <div className={styles.accountMenuDivider} />
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={() => { play('click'); handleAvatarClick(); }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Avatar</span>
-                  </button>
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={() => { play('click'); handleUsernameClick(); }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    <span className={styles.accountMenuLabel}>Change Username</span>
-                  </button>
-                  <div className={styles.accountMenuDivider} />
-                  <button
-                    className={styles.accountMenuItem}
-                    onClick={() => { play('click'); handleSignOut(); }}
-                    onMouseEnter={() => play('hover')}
-                  >
-                    <span className={styles.accountMenuLabel}>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
+        {/* Bottom Section — Sign In only for unauthenticated */}
+        {!((isConnected && address) || (username && !username.startsWith('user_'))) && (
+          <div className={styles.bottomSection}>
             <button
               className={styles.connectWalletButton}
               onClick={() => {
@@ -809,8 +691,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 </>
               )}
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </nav>
 
       {/* Modals */}
