@@ -159,97 +159,6 @@ const FUNDING_PODS = [
 const FUNDING_CAROUSEL_REPEAT_COUNT = 4;
 const FUNDING_CAROUSEL_START_INDEX = FUNDING_PODS.length;
 
-const SENTIMENT_CHART_WIDTH = 100;
-const SENTIMENT_CHART_HEIGHT = 60;
-
-type SentimentSeries = { label: string; color: string; values: number[] };
-
-const SENTIMENT_SERIES: SentimentSeries[] = [
-  {
-    label: 'Ascension',
-    color: '#44E990',
-    values: [0.30, 0.34, 0.42, 0.48, 0.44, 0.38, 0.36, 0.42, 0.50, 0.54, 0.58, 0.52, 0.46, 0.50],
-  },
-  {
-    label: 'Abundance',
-    color: '#00E5FF',
-    values: [0.46, 0.52, 0.55, 0.52, 0.48, 0.54, 0.62, 0.68, 0.70, 0.64, 0.58, 0.62, 0.66, 0.70],
-  },
-  {
-    label: 'Radiance',
-    color: '#16BD8B',
-    values: [0.58, 0.66, 0.74, 0.68, 0.60, 0.54, 0.64, 0.78, 0.92, 0.96, 0.88, 0.80, 0.74, 0.78],
-  },
-  {
-    label: 'Expansion',
-    color: '#ADFF2F',
-    values: [0.38, 0.42, 0.48, 0.52, 0.54, 0.48, 0.44, 0.50, 0.56, 0.60, 0.56, 0.50, 0.48, 0.52],
-  },
-  {
-    label: 'Benevolence',
-    color: '#00BCD4',
-    values: [0.24, 0.28, 0.32, 0.34, 0.36, 0.40, 0.44, 0.46, 0.50, 0.52, 0.54, 0.56, 0.55, 0.58],
-  },
-  {
-    label: 'Charity',
-    color: '#76FF03',
-    values: [0.26, 0.24, 0.22, 0.30, 0.40, 0.46, 0.50, 0.42, 0.36, 0.42, 0.50, 0.56, 0.50, 0.42],
-  },
-];
-
-function buildStreamLayers(series: SentimentSeries[], width: number, height: number) {
-  const n = series[0].values.length;
-  const totals = Array.from({ length: n }, (_, i) =>
-    series.reduce((acc, s) => acc + s.values[i], 0)
-  );
-  const maxTotal = Math.max(...totals);
-  const scale = (height - 6) / maxTotal;
-  const center = height / 2;
-  const xs = Array.from({ length: n }, (_, i) => (i / (n - 1)) * width);
-
-  return series.map((s, layerIdx) => {
-    const points = xs.map((x, i) => {
-      const stackedBelow = series.slice(0, layerIdx).reduce((acc, ss) => acc + ss.values[i], 0);
-      const y0 = center - (totals[i] / 2 - stackedBelow) * scale;
-      const y1 = y0 - s.values[i] * scale;
-      return { x, y0, y1 };
-    });
-    return { label: s.label, color: s.color, points };
-  });
-}
-
-function smoothBetween(points: { x: number; y: number }[]): string {
-  if (points.length === 0) return '';
-  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
-  for (let i = 0; i < points.length - 1; i++) {
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const cx = ((p1.x + p2.x) / 2).toFixed(2);
-    d += ` C ${cx} ${p1.y.toFixed(2)}, ${cx} ${p2.y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
-  }
-  return d;
-}
-
-function streamLayerPath(points: { x: number; y0: number; y1: number }[]): string {
-  const top = points.map((p) => ({ x: p.x, y: p.y1 }));
-  const bottom = points.map((p) => ({ x: p.x, y: p.y0 })).reverse();
-  const topPath = smoothBetween(top);
-  const bottomSegments = bottom
-    .slice(1)
-    .map((point, index) => {
-      const prev = bottom[index];
-      const cx = ((prev.x + point.x) / 2).toFixed(2);
-      return `C ${cx} ${prev.y.toFixed(2)}, ${cx} ${point.y.toFixed(2)}, ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
-    })
-    .join(' ');
-  return `${topPath} L ${bottom[0].x.toFixed(2)} ${bottom[0].y.toFixed(2)} ${bottomSegments} Z`;
-}
-
-const SENTIMENT_STREAM_LAYERS = buildStreamLayers(
-  SENTIMENT_SERIES,
-  SENTIMENT_CHART_WIDTH,
-  SENTIMENT_CHART_HEIGHT,
-).map((layer) => ({ ...layer, d: streamLayerPath(layer.points) }));
 
 const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   label: string;
@@ -612,46 +521,75 @@ export default function VotingPage() {
                       </div>
                     ))}
                   </div>
-                  <div className={styles.dashboardSentimentInline}>
-                    <div className={styles.reserveInsightHeader}>
-                      <span className={styles.reserveInsightLabel}>Sentiment</span>
-                      <span className={styles.reserveSentimentValue}>Radiant</span>
-                    </div>
-                    <div
-                      className={styles.reserveSentimentChart}
-                      role="img"
-                      aria-label={`Stacked sentiment flow across ${SENTIMENT_SERIES.map((s) => s.label).join(', ')}`}
-                    >
-                      <svg
-                        viewBox={`0 0 ${SENTIMENT_CHART_WIDTH} ${SENTIMENT_CHART_HEIGHT}`}
-                        preserveAspectRatio="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {SENTIMENT_STREAM_LAYERS.map((layer) => (
-                          <path
-                            key={layer.label}
-                            d={layer.d}
-                            fill={layer.color}
-                            fillOpacity="0.72"
-                          />
-                        ))}
-                      </svg>
-                    </div>
-                  </div>
-                  <div className={styles.dashboardTitleAside}>
-                    <TreasuryDisplay
-                      contractAddress={CONTRACT_ADDRESS}
-                      usdcAddress={USDC_ADDRESS}
-                      compact
-                      className={styles.dashboardWalletCard}
-                    />
-                  </div>
                 </div>
               </div>
 
             <div className={styles.communityViewViewport}>
               <section className={styles.communityViewPanel}>
                   <div className={styles.overviewColumns}>
+
+                    <div className={styles.latestNewsSection}>
+                      <TreasuryDisplay
+                        contractAddress={CONTRACT_ADDRESS}
+                        usdcAddress={USDC_ADDRESS}
+                        compact
+                        className={styles.dashboardWalletCard}
+                      />
+                      <span className={styles.latestNewsLabel}>Latest News</span>
+                      {newsLoading ? (
+                        <div className={styles.newsLoadingStack}>
+                          {[0, 1, 2, 3].map((i) => (
+                            <div key={i} className={styles.newsLoadingCard} />
+                          ))}
+                        </div>
+                      ) : newsError ? (
+                        <div className={styles.newsEmptyCard}>
+                          <span className={styles.newsEmptyText}>
+                            {newsError} Treasury and proposal tools are still available below.
+                          </span>
+                        </div>
+                      ) : newsTopics.length === 0 ? (
+                        <div className={styles.newsEmptyCard}>
+                          <span className={styles.newsEmptyText}>
+                            No recent stories surfaced in the tracked feeds.
+                          </span>
+                        </div>
+                      ) : (
+                        <div className={styles.newsStack}>
+                          {newsTopics.map((topic) => (
+                            <article key={topic.topic} className={styles.newsTopicCard}>
+                              <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
+                                {topic.topic}
+                              </span>
+                              <div className={styles.newsTopicDivider} />
+                              {topic.items.length === 0 ? (
+                                <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
+                              ) : (
+                                <ul className={styles.newsArticleList}>
+                                  {topic.items.map((item, i) => (
+                                    <li key={i} className={styles.newsArticleItem}>
+                                      <a
+                                        href={normalizeCommunityArticleUrl(item.url)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={styles.newsArticleLink}
+                                        onClick={(event) => void handleArticleClick(event, item)}
+                                        onMouseEnter={() => play('hover')}
+                                      >
+                                        <span className={styles.newsArticleTitle}>{item.title}</span>
+                                        <span className={styles.newsArticleMeta}>
+                                          {item.source} · {formatPublishedDate(item.createdAt)}
+                                        </span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </article>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     <div className={styles.overviewProposalsColumn}>
                       {loading && proposals.length > 0 ? (
@@ -705,63 +643,6 @@ export default function VotingPage() {
                                 </div>
                               )}
                             </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={styles.latestNewsSection}>
-                      <span className={styles.latestNewsLabel}>Latest News</span>
-                      {newsLoading ? (
-                        <div className={styles.newsLoadingStack}>
-                          {[0, 1, 2, 3].map((i) => (
-                            <div key={i} className={styles.newsLoadingCard} />
-                          ))}
-                        </div>
-                      ) : newsError ? (
-                        <div className={styles.newsEmptyCard}>
-                          <span className={styles.newsEmptyText}>
-                            {newsError} Treasury and proposal tools are still available below.
-                          </span>
-                        </div>
-                      ) : newsTopics.length === 0 ? (
-                        <div className={styles.newsEmptyCard}>
-                          <span className={styles.newsEmptyText}>
-                            No recent stories surfaced in the tracked feeds.
-                          </span>
-                        </div>
-                      ) : (
-                        <div className={styles.newsStack}>
-                          {newsTopics.map((topic) => (
-                            <article key={topic.topic} className={styles.newsTopicCard}>
-                              <span className={styles.newsTopicLabel} style={{ color: topic.color }}>
-                                {topic.topic}
-                              </span>
-                              <div className={styles.newsTopicDivider} />
-                              {topic.items.length === 0 ? (
-                                <span className={styles.newsEmptyText}>No recent stories surfaced.</span>
-                              ) : (
-                                <ul className={styles.newsArticleList}>
-                                  {topic.items.map((item, i) => (
-                                    <li key={i} className={styles.newsArticleItem}>
-                                      <a
-                                        href={normalizeCommunityArticleUrl(item.url)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={styles.newsArticleLink}
-                                        onClick={(event) => void handleArticleClick(event, item)}
-                                        onMouseEnter={() => play('hover')}
-                                      >
-                                        <span className={styles.newsArticleTitle}>{item.title}</span>
-                                        <span className={styles.newsArticleMeta}>
-                                          {item.source} · {formatPublishedDate(item.createdAt)}
-                                        </span>
-                                      </a>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </article>
                           ))}
                         </div>
                       )}

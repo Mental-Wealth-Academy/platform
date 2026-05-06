@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { label: 'Surveys',   href: '/home',      icon: '/icons/nav-home.svg' },
   { label: 'Markets',   href: '/markets',   icon: '/icons/nav-markets.svg' },
   { label: 'Social',    href: '/community', icon: '/icons/nav-community.svg' },
-  { label: 'Knowledge', href: '/prompts',   icon: '/icons/ui-book.svg' },
+  { label: 'Skills',    href: '/prompts',   icon: '/icons/ui-book.svg' },
 ];
 
 const TopNavigation: React.FC = () => {

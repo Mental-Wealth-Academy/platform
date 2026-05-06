@@ -42,9 +42,9 @@
   --color-shell-background: rgba(244, 245, 254, 0.6);
 
   /* Neutral Greys — for dark-first components (SurveyController, SurveySpace) */
-  --color-grey-600: #555555;
-  --color-grey-900: #1b1b1b;
-  --color-grey-950: #141414;
+  --color-grey-600: #555565;
+  --color-grey-900: #191a26;
+  --color-grey-950: #0c0d17;
 
   /* Category Colors */
   --color-mental-health: #9724A6;
@@ -284,7 +284,7 @@ body {
 body {
   padding-top: 72px;
   font-family: var(--font-primary);
-  background-color: #000000;
+  background-color: #0c0d17;
   background-image: url('https://i.imgur.com/Vy2e9Ej.png');
   background-size: cover;
   background-position: center;

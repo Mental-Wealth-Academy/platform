@@ -69,7 +69,7 @@ export default function SurveyController({
 
       <div className={styles.controls}>
         <div className={styles.controlRow}>
-          <span className={styles.controlLabel}>Test scale difficulty</span>
+          <span className={styles.controlLabel}>Test scale</span>
           <span className={styles.controlLabel}>{difficulty}</span>
         </div>
 

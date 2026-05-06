@@ -57,7 +57,7 @@ export const colors = {
     700: '#404040',
     800: '#262626',
     900: '#171717',
-    black: '#000000',
+    black: '#0C0D17',
   },
   
   // Text Colors

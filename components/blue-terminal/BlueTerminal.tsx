@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './BlueTerminal.module.css';
 
 const ASCII_LINES = [
@@ -24,22 +24,85 @@ const BOOT_LINES = [
   { text: '> ALL SYSTEMS GO', delay: 350 },
 ];
 
-export default function BlueTerminal() {
-  const [visibleCount, setVisibleCount] = useState(0);
+const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
+export interface TestQuestion {
+  id: number;
+  type: 'multiple_choice' | 'short_answer' | 'scale';
+  category: string;
+  question: string;
+  options?: string[];
+}
+
+export interface TestData {
+  title: string;
+  intro: string;
+  questions: TestQuestion[];
+}
+
+interface BlueTerminalProps {
+  testData?: TestData | null;
+  isGenerating?: boolean;
+}
+
+export default function BlueTerminal({ testData, isGenerating }: BlueTerminalProps) {
+  const [visibleCount, setVisibleCount] = useState(0);
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string | number>>({});
+  const [shortAnswer, setShortAnswer] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Boot animation — only runs when no test active
   useEffect(() => {
+    if (testData || isGenerating) return;
     if (visibleCount >= BOOT_LINES.length) return;
     const { delay } = BOOT_LINES[visibleCount];
     const t = setTimeout(() => setVisibleCount(v => v + 1), delay);
     return () => clearTimeout(t);
-  }, [visibleCount]);
+  }, [visibleCount, testData, isGenerating]);
 
-  const done = visibleCount >= BOOT_LINES.length;
+  // Reset test state when new test loads
+  useEffect(() => {
+    if (testData) {
+      setCurrentQ(0);
+      setAnswers({});
+      setShortAnswer('');
+      setSubmitted(false);
+    }
+  }, [testData]);
+
+  const bootDone = visibleCount >= BOOT_LINES.length;
+  const question = testData?.questions[currentQ];
+  const totalQ = testData?.questions.length ?? 0;
+  const isLastQ = currentQ === totalQ - 1;
+  const currentHasAnswer = question !== undefined && answers[question.id] !== undefined;
+
+  const selectAnswer = (val: string | number) => {
+    if (!question) return;
+    setAnswers(prev => ({ ...prev, [question.id]: val }));
+    // Auto-advance non-text questions
+    if (question.type !== 'short_answer' && !isLastQ) {
+      setTimeout(() => {
+        setCurrentQ(q => q + 1);
+      }, 380);
+    }
+  };
+
+  const submitShortAnswer = () => {
+    if (!question || !shortAnswer.trim()) return;
+    setAnswers(prev => ({ ...prev, [question.id]: shortAnswer.trim() }));
+    setShortAnswer('');
+    if (!isLastQ) {
+      setTimeout(() => setCurrentQ(q => q + 1), 200);
+    }
+  };
 
   return (
     <div className={styles.terminal}>
       <div className={styles.scanlines} aria-hidden="true" />
 
+      {/* ASCII header — always visible */}
       <div className={styles.logoWrapper}>
         <pre className={styles.ascii}>{ASCII_LOGO}</pre>
         <div className={styles.subLabel}>MENTAL WEALTH ACADEMY &mdash; TEST ENGINE v1.0</div>
@@ -47,26 +110,174 @@ export default function BlueTerminal() {
 
       <div className={styles.divider} />
 
-      <div className={styles.bootLines} aria-live="polite">
-        {BOOT_LINES.slice(0, visibleCount).map((entry, i) =>
-          entry.text === '' ? (
-            <div key={i} className={styles.gap} />
-          ) : (
-            <div key={i} className={styles.line}>
-              <span className={styles.prompt}>$</span>
-              {entry.text.replace('> ', '')}
-            </div>
-          )
-        )}
-      </div>
-
-      {done && (
-        <div className={styles.ctaRow}>
-          <span className={styles.ctaBracket}>[</span>
-          <span className={styles.ctaText}>PRESS START TO BEGIN YOUR TEST</span>
-          <span className={styles.ctaBracket}>]</span>
-          <span className={styles.cursor} aria-hidden="true">_</span>
+      {/* ===== GENERATING STATE ===== */}
+      {isGenerating && !testData && (
+        <div className={styles.bootLines}>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            INITIALIZING QUEST SEQUENCE...
+          </div>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            CALIBRATING TO DIFFICULTY ENGINE...
+          </div>
+          <div className={styles.generatingDots} aria-label="Generating">
+            <span /><span /><span />
+          </div>
         </div>
+      )}
+
+      {/* ===== TEST MODE ===== */}
+      {testData && !submitted && (
+        <div className={styles.testMode}>
+          <div className={styles.questMeta}>
+            <span className={styles.questTitle}>{testData.title.toUpperCase()}</span>
+            <span className={styles.questProgress}>
+              {String(currentQ + 1).padStart(2, '0')} / {String(totalQ).padStart(2, '0')}
+            </span>
+          </div>
+          <p className={styles.questIntro}>{testData.intro}</p>
+
+          <div className={styles.progressTrack}>
+            <div
+              className={styles.progressFill}
+              style={{ width: `${(currentQ / totalQ) * 100}%` }}
+            />
+          </div>
+
+          {question && (
+            <div className={styles.questionBlock}>
+              <div className={styles.questionCategory}>// {question.category}</div>
+
+              <div className={styles.questionText}>
+                <span className={styles.prompt}>$</span>
+                <span>{question.question}</span>
+              </div>
+
+              {question.type === 'multiple_choice' && question.options && (
+                <div className={styles.optionList}>
+                  {question.options.map((opt, i) => (
+                    <button
+                      key={i}
+                      className={`${styles.optionBtn} ${answers[question.id] === opt ? styles.optionSelected : ''}`}
+                      onClick={() => selectAnswer(opt)}
+                      type="button"
+                    >
+                      <span className={styles.optionLetter}>[{OPTION_LETTERS[i]}]</span>
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {question.type === 'scale' && (
+                <div className={styles.scaleGroup}>
+                  <div className={styles.scaleLabels}>
+                    <span>1 &mdash; never true</span>
+                    <span>always true &mdash; 5</span>
+                  </div>
+                  <div className={styles.scaleBtns}>
+                    {[1, 2, 3, 4, 5].map(n => (
+                      <button
+                        key={n}
+                        className={`${styles.scaleBtn} ${answers[question.id] === n ? styles.optionSelected : ''}`}
+                        onClick={() => selectAnswer(n)}
+                        type="button"
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {question.type === 'short_answer' && (
+                <div className={styles.shortAnswerGroup}>
+                  <div className={styles.inputRow}>
+                    <span className={styles.inputPrompt}>&gt;_</span>
+                    <input
+                      ref={inputRef}
+                      className={styles.shortAnswerInput}
+                      value={answers[question.id] !== undefined ? String(answers[question.id]) : shortAnswer}
+                      onChange={e => setShortAnswer(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') submitShortAnswer(); }}
+                      disabled={answers[question.id] !== undefined}
+                      placeholder="type your answer and press enter..."
+                      autoComplete="off"
+                    />
+                  </div>
+                  {answers[question.id] === undefined && (
+                    <button
+                      className={styles.confirmBtn}
+                      onClick={submitShortAnswer}
+                      disabled={!shortAnswer.trim()}
+                      type="button"
+                    >
+                      CONFIRM
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {isLastQ && currentHasAnswer && (
+                <div className={styles.ctaRow}>
+                  <span className={styles.ctaBracket}>[</span>
+                  <button className={styles.ctaTextBtn} onClick={() => setSubmitted(true)} type="button">
+                    SUBMIT QUEST
+                  </button>
+                  <span className={styles.ctaBracket}>]</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ===== COMPLETED STATE ===== */}
+      {testData && submitted && (
+        <div className={styles.bootLines}>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            QUEST COMPLETE &mdash; ALL RESPONSES RECORDED
+          </div>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            RESULTS PROCESSING...
+          </div>
+          <div className={styles.ctaRow}>
+            <span className={styles.ctaBracket}>[</span>
+            <span className={styles.ctaText}>AWAITING ANALYSIS</span>
+            <span className={styles.ctaBracket}>]</span>
+            <span className={styles.cursor} aria-hidden="true">_</span>
+          </div>
+        </div>
+      )}
+
+      {/* ===== BOOT MODE (idle) ===== */}
+      {!testData && !isGenerating && (
+        <>
+          <div className={styles.bootLines} aria-live="polite">
+            {BOOT_LINES.slice(0, visibleCount).map((entry, i) =>
+              entry.text === '' ? (
+                <div key={i} className={styles.gap} />
+              ) : (
+                <div key={i} className={styles.line}>
+                  <span className={styles.prompt}>$</span>
+                  {entry.text.replace('> ', '')}
+                </div>
+              )
+            )}
+          </div>
+
+          {bootDone && (
+            <div className={styles.ctaRow}>
+              <span className={styles.ctaBracket}>[</span>
+              <span className={styles.ctaText}>SIGN FORM TO BEGIN YOUR TEST</span>
+              <span className={styles.ctaBracket}>]</span>
+              <span className={styles.cursor} aria-hidden="true">_</span>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

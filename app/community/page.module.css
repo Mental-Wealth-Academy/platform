@@ -4,7 +4,7 @@
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
-  background: linear-gradient(180deg, #1d1d1f 0 248px, #e7e8eb 248px 100%);
+  background: transparent;
 }
 
 .page {
@@ -1621,7 +1621,7 @@
 
 .communityMainWrapper {
   width: 100%;
-  padding: 0 0 28px;
+  padding: 24px 24px 28px;
   margin: 0;
   box-sizing: border-box;
 }
@@ -1629,13 +1629,12 @@
 .dashboardChrome {
   width: 100%;
   background: linear-gradient(180deg, #1d1d1f 0%, #232325 100%);
-  border-radius: 0 0 30px 30px;
-  border: 1px solid rgba(17, 17, 18, 0.72);
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.28);
 }
 
 .dashboardMasthead {
@@ -1864,37 +1863,9 @@
   margin-top: 0;
 }
 
-.dashboardSentimentInline {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  background: rgba(5, 13, 10, 0.85);
-  border: 1px solid rgba(68, 233, 144, 0.2);
-  border-radius: 4px;
-}
-
-.dashboardSentimentInline .reserveSentimentChart {
-  height: 90px;
-  flex-shrink: 0;
-}
-
-.dashboardSentimentInline .reserveInsightLabel {
-  color: rgba(68, 233, 144, 0.5);
-  letter-spacing: 0.12em;
-}
-
-.dashboardTitleAside {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  flex: 0 0 300px;
-}
-
 .dashboardWalletCard {
   width: 100%;
+  margin-bottom: 4px;
 }
 
 .dashboardMiniButton {
@@ -3300,11 +3271,11 @@
   }
 
   .communityMainWrapper {
-    padding: 0 0 18px;
+    padding: 16px 16px 18px;
   }
 
   .dashboardChrome {
-    border-radius: 0 0 20px 20px;
+    border-radius: 12px;
   }
 
   .dashboardMasthead {
@@ -3344,11 +3315,6 @@
   }
 
   .dashboardTitleRightGroup .fundingPodsStack {
-    flex: 0 0 auto;
-    width: 100%;
-  }
-
-  .dashboardTitleAside {
     flex: 0 0 auto;
     width: 100%;
   }
@@ -3867,7 +3833,7 @@
 }
 
 :global([data-theme="dark"]) .pageLayout {
-  background: linear-gradient(180deg, var(--color-surface-1) 0 248px, var(--color-background) 248px 100%);
+  background: transparent;
 }
 
 :global([data-theme="dark"]) .communityViewViewport {
@@ -3993,8 +3959,8 @@
 }
 
 .latestNewsSection {
-  flex: 0 0 320px;
-  width: 320px;
+  flex: 0 0 340px;
+  width: 340px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -4033,7 +3999,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
-  border-radius: 0;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(17, 17, 18, 0.08);
 }
@@ -4192,8 +4158,8 @@
   }
 
   .latestNewsSection {
+    flex: 1 1 auto;
     width: 100%;
-    flex-basis: auto;
   }
 }
 

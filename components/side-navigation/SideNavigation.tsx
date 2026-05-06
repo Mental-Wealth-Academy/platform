@@ -47,6 +47,7 @@ const desktopNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -57,6 +58,7 @@ const mobileNavSections: NavSection[] = [
     label: 'Community Resources',
     items: [
       { id: 'research', label: 'Laboratory', href: '/research', iconSrc: '/icons/nav-laboratory.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
+      { id: 'simulations', label: 'Simulations', href: 'https://azure-world.vercel.app/', iconSrc: '/icons/nav-world.svg', badge: 'Pro', badgeType: 'pro', requiresPro: true },
     ],
   },
 ];
@@ -564,7 +566,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 <NavIconMark icon={item.icon} iconSrc={item.iconSrc} isActive={active} />
                 <span className={styles.navItemLabel}>{item.label}</span>
                 {item.badge && (
-                  <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : ''}`}>
+                  <span className={`${styles.badge} ${item.badgeType === 'highlight' ? styles.badgeHighlight : item.badgeType === 'green' ? styles.badgeGreen : item.badgeType === 'pro' ? styles.badgePro : ''}`}>
                     {item.badge}
                   </span>
                 )}
