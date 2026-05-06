@@ -22,9 +22,9 @@
   --color-primary-muted: rgba(81, 104, 255, 0.6);
   --color-secondary: #44E990;
   --color-secondary-hover: #16BD8B;
-  --color-tertiary: #74C465;
-  --color-tertiary-hover: #5FA852;
-  --color-tertiary-muted: rgba(116, 196, 101, 0.6);
+  --color-tertiary: #1F7A3A;
+  --color-tertiary-hover: #17632F;
+  --color-tertiary-muted: rgba(31, 122, 58, 0.6);
   --color-accent: #FF7729;
   --color-accent-hover: #E5631A;
   --color-accent-muted: rgba(255, 119, 41, 0.6);
@@ -59,7 +59,7 @@
   --gradient-futuristic-floss: linear-gradient(to bottom, var(--gradient-futuristic-floss-start), var(--gradient-futuristic-floss-end));
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #7586FF 100%);
   --gradient-secondary: linear-gradient(135deg, #44E990 0%, #16BD8B 100%);
-  --gradient-tertiary: linear-gradient(135deg, var(--color-tertiary) 0%, #9AD88F 100%);
+  --gradient-tertiary: linear-gradient(135deg, var(--color-tertiary) 0%, #4CAA5F 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, #FF9A5C 100%);
   
   /* ============================================
@@ -143,7 +143,7 @@
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
   --shadow-primary: 0 4px 12px rgba(81, 104, 255, 0.3);
   --shadow-secondary: 0 4px 12px rgba(68, 233, 144, 0.3);
-  --shadow-tertiary: 0 4px 12px rgba(116, 196, 101, 0.3);
+  --shadow-tertiary: 0 4px 12px rgba(31, 122, 58, 0.3);
   --shadow-accent: 0 4px 12px rgba(255, 119, 41, 0.3);
   
   /* Card Styles */

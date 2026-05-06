@@ -1,5 +1,6 @@
 .terminal {
   position: relative;
+  isolation: isolate;
   padding: 28px 24px 24px;
   height: 100%;
   min-height: 400px;
@@ -10,6 +11,14 @@
     radial-gradient(circle at 88% 12%, rgba(14, 165, 233, 0.12), transparent 28%),
     var(--blue-terminal-bg, #000000);
   color: var(--blue-terminal-text, #7dd3fc);
+}
+
+.backgroundViz {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.62;
+  pointer-events: none;
 }
 
 /* Subtle CRT scanline overlay */
@@ -163,6 +172,10 @@
   --blue-terminal-scanline: rgba(37, 99, 235, 0.055);
   --blue-terminal-glow: 0 0 10px rgba(37, 99, 235, 0.16);
   --blue-terminal-cta-glow: 0 0 14px rgba(14, 165, 233, 0.16);
+}
+
+:global(:root:not([data-theme="dark"])) .backgroundViz {
+  opacity: 0.4;
 }
 
 /* ===== Generating Dots ===== */

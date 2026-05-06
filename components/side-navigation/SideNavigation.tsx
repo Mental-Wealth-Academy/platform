@@ -63,12 +63,20 @@ const mobileNavSections: NavSection[] = [
   },
 ];
 
-const coursesNavItem: NavItem = {
-  id: 'courses',
-  label: 'Courses',
-  href: '/courses',
-  iconSrc: '/icons/nav-courses.svg',
-};
+const primaryNavItems: NavItem[] = [
+  {
+    id: 'morning-pages',
+    label: 'Morning Pages',
+    href: '/course',
+    iconSrc: '/icons/nav-spiral.svg',
+  },
+  {
+    id: 'shop',
+    label: 'Shop',
+    href: '/shop',
+    iconSrc: '/icons/nav-shop.svg',
+  },
+];
 
 const PRO_TOKEN_ADDRESS = '0x39f259B58A9aB02d42bC3DF5836bA7fc76a8880F' as const;
 const BALANCE_OF_ABI = [{ type: 'function', name: 'balanceOf', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ name: '', type: 'uint256' }] }] as const;
@@ -480,7 +488,6 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
   const navSections = isMobileMenuOpen ? mobileNavSections : desktopNavSections;
   const extrasSection = navSections.find((section) => section.id === 'extras');
-  const isCoursesActive = isActive(coursesNavItem.href);
 
   const renderSection = (section: NavSection) => {
     const isExtras = section.id === 'extras';
@@ -666,24 +673,31 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
                 </div>
               </button>
             </div>
-            <Link
-              href={coursesNavItem.href}
-              className={`${styles.navItem} ${isCoursesActive ? styles.navItemActive : ''}`}
-              onClick={() => {
-                play('navigation');
-                setIsMobileMenuOpen(false);
-              }}
-              onMouseEnter={() => play('hover')}
-              title={isCollapsed ? coursesNavItem.label : undefined}
-              aria-current={isCoursesActive ? 'page' : undefined}
-            >
-              <NavIconMark
-                icon={coursesNavItem.icon}
-                iconSrc={coursesNavItem.iconSrc}
-                isActive={isCoursesActive}
-              />
-              <span className={styles.navItemLabel}>{coursesNavItem.label}</span>
-            </Link>
+            {primaryNavItems.map((item) => {
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
+                  onClick={() => {
+                    play('navigation');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  onMouseEnter={() => play('hover')}
+                  title={isCollapsed ? item.label : undefined}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  <NavIconMark
+                    icon={item.icon}
+                    iconSrc={item.iconSrc}
+                    isActive={active}
+                  />
+                  <span className={styles.navItemLabel}>{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
 
           {extrasSection && (

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import CyberpunkDataViz from '@/components/cyberpunk-data-viz/CyberpunkDataViz';
 import styles from './BlueTerminal.module.css';
 
 const ASCII_LINES = [
@@ -134,6 +135,9 @@ export default function BlueTerminal({ testData, isGenerating, errorMessage, onS
 
   return (
     <div className={styles.terminal}>
+      <div className={styles.backgroundViz} aria-hidden="true">
+        <CyberpunkDataViz />
+      </div>
       <div className={styles.scanlines} aria-hidden="true" />
 
       {/* ASCII header — always visible */}
