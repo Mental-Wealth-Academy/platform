@@ -10,7 +10,7 @@
     0 18px 38px rgba(22, 38, 116, 0.34);
   position: relative;
   min-width: 180px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header {
@@ -92,7 +92,8 @@
 
 .infoTooltip {
   position: absolute;
-  top: calc(100% + 10px);
+  top: auto;
+  bottom: calc(100% + 10px);
   right: 0;
   width: min(280px, 72vw);
   padding: 12px 14px;
@@ -106,9 +107,9 @@
   line-height: 1.5;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-4px);
+  transform: translateY(4px);
   transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
-  z-index: 4;
+  z-index: 40;
 }
 
 .infoWrap:hover .infoTooltip,

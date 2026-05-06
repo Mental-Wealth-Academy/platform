@@ -201,7 +201,7 @@
 
 .shardRewardBox {
   flex-shrink: 0;
-  min-width: 82px;
+  min-width: 62px;
   height: 34px;
   display: flex;
   align-items: center;
@@ -221,7 +221,7 @@
 
 .shardRewardText {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   line-height: 1;
 }
 
@@ -230,15 +230,6 @@
   font-size: 13px;
   font-weight: 700;
   color: #ffffff;
-}
-
-.shardRewardLabel {
-  margin-top: 3px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: rgba(125, 211, 252, 0.82);
-  text-transform: uppercase;
 }
 
 /* Dropdown */
@@ -344,10 +335,6 @@
 
 :global(:root:not([data-theme="dark"])) .shardRewardValue {
   color: var(--color-text-dark);
-}
-
-:global(:root:not([data-theme="dark"])) .shardRewardLabel {
-  color: var(--color-text-muted);
 }
 
 :global(:root:not([data-theme="dark"])) .dropdownOuter {

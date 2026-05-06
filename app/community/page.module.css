@@ -1791,12 +1791,302 @@
   flex: 0 0 auto;
 }
 
+.communityHubHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.podInfoWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.podInfoButton {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: help;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.podInfoButton:hover,
+.podInfoButton:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.podInfoTooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  width: min(380px, 82vw);
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(14, 16, 28, 0.98);
+  border: 1px solid rgba(139, 149, 255, 0.22);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  color: rgba(245, 247, 255, 0.92);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  z-index: 20;
+}
+
+.podInfoWrap:hover .podInfoTooltip,
+.podInfoWrap:focus-within .podInfoTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.podInfoTitle {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.podInfoText {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(245, 247, 255, 0.72);
+  margin-bottom: 12px;
+}
+
+.podInfoList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.podInfoItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+}
+
+.podInfoDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  margin-top: 4px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
+}
+
+.podInfoItemText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(245, 247, 255, 0.72);
+}
+
+.podInfoItemText strong {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 11.5px;
+}
+
 .dashboardTitleRightGroup {
   display: flex;
   align-items: flex-start;
   gap: 14px;
   flex: 1 1 0;
   min-width: 0;
+}
+
+.weeklyNewsReview {
+  width: min(100%, 640px);
+  margin-left: auto;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(81, 104, 255, 0.18), transparent 36%),
+    rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.weeklyNewsReviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+
+.weeklyReviewKicker {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.weeklyReviewTime {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+}
+
+.weeklyReviewMetricRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.weeklyReviewMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.weeklyReviewMetricValue {
+  font-family: 'Departure Mono', 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.weeklyReviewMetricLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.weeklyReviewStories {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.weeklyReviewStory {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  text-decoration: none;
+  color: inherit;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.weeklyReviewStory:last-child {
+  border-bottom: none;
+}
+
+.weeklyReviewStory:hover .weeklyReviewStoryTitle {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.weeklyReviewStoryTopic {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.weeklyReviewStoryTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.74);
+  transition: color 0.12s ease;
+}
+
+.weeklyReviewSummary {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.weeklyReviewFocus {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
+}
+
+.weeklyReviewFocusLabel {
+  flex: 0 0 auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.weeklyReviewFocusText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.64);
+}
+
+.weeklyReviewKickerSkeleton {
+  width: 112px;
+  height: 14px;
+}
+
+.weeklyReviewTitleSkeleton {
+  width: 160px;
+  height: 10px;
+}
+
+.weeklyReviewMetricSkeleton {
+  height: 48px;
+  border-radius: 10px;
+}
+
+.weeklyReviewStorySkeleton {
+  width: 94%;
+  height: 12px;
+}
+
+.weeklyReviewStoryShortSkeleton {
+  width: 72%;
+  height: 12px;
+  margin-top: 8px;
 }
 
 .dashboardTitle {
@@ -3295,6 +3585,21 @@
     padding: 14px 16px 10px;
   }
 
+  .communityHubHeading {
+    align-items: flex-start;
+  }
+
+  .podInfoTooltip {
+    left: auto;
+    right: -8px;
+    transform: translate(0, -4px);
+  }
+
+  .podInfoWrap:hover .podInfoTooltip,
+  .podInfoWrap:focus-within .podInfoTooltip {
+    transform: translate(0, 0);
+  }
+
   .dashboardTitle {
     font-size: 24px;
   }
@@ -3312,6 +3617,43 @@
     flex-direction: column;
     flex: 1 1 auto;
     width: 100%;
+  }
+
+  .weeklyNewsReview {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .weeklyNewsReviewHeader,
+  .weeklyReviewFocus {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .weeklyReviewMetricRow {
+    gap: 6px;
+  }
+
+  .weeklyReviewMetric {
+    padding: 8px;
+  }
+
+  .weeklyReviewMetricValue {
+    font-size: 16px;
+  }
+
+  .weeklyReviewStory {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .weeklyReviewStoryTitle,
+  .weeklyReviewFocusText {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .dashboardTitleRightGroup .fundingPodsStack {

@@ -78,7 +78,6 @@ export default function SurveyController({
               <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
               <div className={styles.shardRewardText}>
                 <span className={styles.shardRewardValue}>+{shardReward}</span>
-                <span className={styles.shardRewardLabel}>shards</span>
               </div>
             </div>
           </div>

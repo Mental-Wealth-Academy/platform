@@ -78,6 +78,15 @@ interface NewsTopic {
   items: NewsItem[];
 }
 
+interface NewsReviewQueueEntry {
+  topic: string;
+  priority: 'low' | 'medium' | 'high';
+  reason: string;
+  freshItemCount: number;
+  minimumFreshItems: number;
+  freshestPublishedAt: string | null;
+}
+
 interface ArticlePreviewState {
   title: string;
   source: string;
@@ -99,6 +108,23 @@ function formatPublishedDate(isoString: string): string {
     day: 'numeric',
     year: 'numeric',
   }).format(publishedAt);
+}
+
+function formatScanStartedAt(isoString: string | null): string {
+  if (!isoString) return 'Today, live';
+
+  const startedAt = new Date(isoString);
+
+  if (Number.isNaN(startedAt.getTime())) {
+    return 'Today, live';
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(startedAt);
 }
 
 const getTutorialSteps = (): TutorialStep[] => [
@@ -154,10 +180,6 @@ const FUNDING_PODS = [
     accent: '#E85D3A',
   },
 ] as const;
-
-const FUNDING_CAROUSEL_REPEAT_COUNT = 4;
-const FUNDING_CAROUSEL_START_INDEX = FUNDING_PODS.length;
-
 
 const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   label: string;
@@ -222,6 +244,102 @@ function ProposalSkeletonList() {
   );
 }
 
+function WeeklyNewsReview({
+  topics,
+  fetchedAt,
+  reviewQueue,
+  loading,
+  error,
+}: {
+  topics: NewsTopic[];
+  fetchedAt: string | null;
+  reviewQueue: NewsReviewQueueEntry[];
+  loading: boolean;
+  error: string | null;
+}) {
+  if (loading) {
+    return (
+      <section className={styles.weeklyNewsReview} aria-label="Loading weekly news review">
+        <div className={styles.weeklyNewsReviewHeader}>
+          <SkeletonLine className={styles.weeklyReviewKickerSkeleton} />
+          <SkeletonLine className={styles.weeklyReviewTitleSkeleton} />
+        </div>
+        <div className={styles.weeklyReviewMetricRow}>
+          {[0, 1, 2].map((i) => (
+            <SkeletonLine key={i} className={styles.weeklyReviewMetricSkeleton} />
+          ))}
+        </div>
+        <SkeletonLine className={styles.weeklyReviewStorySkeleton} />
+        <SkeletonLine className={styles.weeklyReviewStoryShortSkeleton} />
+      </section>
+    );
+  }
+
+  const scannedItems = topics.flatMap((topic) =>
+    topic.items.map((item) => ({ ...item, topic: topic.topic, color: topic.color })),
+  );
+  const sources = new Set(scannedItems.map((item) => item.source));
+  const latestStories = [...scannedItems]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, 3);
+  const focusEntry = reviewQueue.find((entry) => entry.priority !== 'low') ?? reviewQueue[0] ?? null;
+
+  return (
+    <section className={styles.weeklyNewsReview} aria-label="Weekly news review">
+      <div className={styles.weeklyNewsReviewHeader}>
+        <span className={styles.weeklyReviewKicker}>Weekly Review</span>
+        <span className={styles.weeklyReviewTime}>Scan started {formatScanStartedAt(fetchedAt)}</span>
+      </div>
+      <div className={styles.weeklyReviewMetricRow}>
+        <div className={styles.weeklyReviewMetric}>
+          <span className={styles.weeklyReviewMetricValue}>{scannedItems.length}</span>
+          <span className={styles.weeklyReviewMetricLabel}>stories</span>
+        </div>
+        <div className={styles.weeklyReviewMetric}>
+          <span className={styles.weeklyReviewMetricValue}>{sources.size}</span>
+          <span className={styles.weeklyReviewMetricLabel}>sources</span>
+        </div>
+        <div className={styles.weeklyReviewMetric}>
+          <span className={styles.weeklyReviewMetricValue}>{topics.length}</span>
+          <span className={styles.weeklyReviewMetricLabel}>fields</span>
+        </div>
+      </div>
+
+      {error ? (
+        <p className={styles.weeklyReviewSummary}>{error}</p>
+      ) : latestStories.length > 0 ? (
+        <div className={styles.weeklyReviewStories}>
+          {latestStories.map((story) => (
+            <a
+              key={`${story.topic}-${story.url}`}
+              href={normalizeCommunityArticleUrl(story.url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.weeklyReviewStory}
+            >
+              <span className={styles.weeklyReviewStoryTopic} style={{ color: story.color }}>
+                {story.topic}
+              </span>
+              <span className={styles.weeklyReviewStoryTitle}>{story.title}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p className={styles.weeklyReviewSummary}>No fresh stories cleared the weekly scan yet.</p>
+      )}
+
+      {focusEntry && (
+        <div className={styles.weeklyReviewFocus}>
+          <span className={styles.weeklyReviewFocusLabel}>Curation focus</span>
+          <span className={styles.weeklyReviewFocusText}>
+            {focusEntry.topic}: {focusEntry.reason}
+          </span>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [proposals, setProposals] = useState<MergedProposal[]>([]);
@@ -230,11 +348,11 @@ export default function VotingPage() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [activeFundingSlide, setActiveFundingSlide] = useState<number>(FUNDING_CAROUSEL_START_INDEX);
-  const [isFundingTransitionEnabled, setIsFundingTransitionEnabled] = useState(true);
   const [newsTopics, setNewsTopics] = useState<NewsTopic[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
+  const [newsFetchedAt, setNewsFetchedAt] = useState<string | null>(null);
+  const [newsReviewQueue, setNewsReviewQueue] = useState<NewsReviewQueueEntry[]>([]);
   const [articlePreview, setArticlePreview] = useState<ArticlePreviewState | null>(null);
   const { play } = useSound();
   const selectedProposal = selectedProposalId
@@ -245,29 +363,11 @@ export default function VotingPage() {
   useScrollLock(Boolean(articlePreview));
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveFundingSlide((prev) => prev + 1);
-    }, 5600);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!isFundingTransitionEnabled) {
-      const frame = window.requestAnimationFrame(() => {
-        setIsFundingTransitionEnabled(true);
-      });
-
-      return () => window.cancelAnimationFrame(frame);
-    }
-  }, [isFundingTransitionEnabled]);
-
-  useEffect(() => {
     let active = true;
 
     const loadNews = async () => {
       try {
-        const res = await fetch('/api/community/news');
+        const res = await fetch('/api/community/news', { cache: 'no-store' });
 
         if (!res.ok) {
           throw new Error(`News fetch failed with status ${res.status}`);
@@ -278,12 +378,16 @@ export default function VotingPage() {
         if (!active) return;
 
         setNewsTopics(Array.isArray(data.topics) ? data.topics : []);
+        setNewsReviewQueue(Array.isArray(data.reviewQueue) ? data.reviewQueue : []);
+        setNewsFetchedAt(typeof data.fetchedAt === 'string' ? data.fetchedAt : new Date().toISOString());
         setNewsError(null);
       } catch (error) {
         if (!active) return;
 
         console.error('Error loading community news:', error);
         setNewsTopics([]);
+        setNewsReviewQueue([]);
+        setNewsFetchedAt(new Date().toISOString());
         setNewsError('News feed unavailable right now.');
       } finally {
         if (active) {
@@ -467,19 +571,6 @@ export default function VotingPage() {
     setArticlePreview(null);
   }, [articlePreview, play]);
 
-  const fundingSlides = Array.from(
-    { length: FUNDING_CAROUSEL_REPEAT_COUNT },
-    () => FUNDING_PODS
-  ).flat();
-  const fundingSlideWidth = 100 / fundingSlides.length;
-  const activeFundingIndicator = activeFundingSlide % FUNDING_PODS.length;
-  const handleFundingTrackTransitionEnd = () => {
-    if (activeFundingSlide >= fundingSlides.length - FUNDING_PODS.length) {
-      setIsFundingTransitionEnabled(false);
-      setActiveFundingSlide(FUNDING_CAROUSEL_START_INDEX);
-    }
-  };
-
   return (
     <>
       {showTutorial && (
@@ -543,35 +634,50 @@ export default function VotingPage() {
 
               <div className={styles.dashboardTitleRow}>
                 <div className={styles.dashboardTitleBlock}>
-                  <h1 className={styles.dashboardTitle}>
-                    MWA <span className={styles.dashboardTitleAccent}>Community Hub</span>
-                  </h1>
+                  <div className={styles.communityHubHeading}>
+                    <h1 className={styles.dashboardTitle}>
+                      MWA <span className={styles.dashboardTitleAccent}>Community Hub</span>
+                    </h1>
+                    <div className={styles.podInfoWrap}>
+                      <button
+                        className={styles.podInfoButton}
+                        type="button"
+                        aria-label="Explain decentralized treasury cluster pods"
+                      >
+                        i
+                      </button>
+                      <div className={styles.podInfoTooltip} role="tooltip">
+                        <span className={styles.podInfoTitle}>Decentralized treasury cluster</span>
+                        <span className={styles.podInfoText}>
+                          Blue separates the treasury into purpose-built pods so capital can be reviewed by use case instead of sitting in one undifferentiated pool.
+                        </span>
+                        <div className={styles.podInfoList}>
+                          {FUNDING_PODS.map((pod) => (
+                            <div key={pod.title} className={styles.podInfoItem}>
+                              <span className={styles.podInfoDot} style={{ background: pod.accent }} />
+                              <span className={styles.podInfoItemText}>
+                                <strong>{pod.title}</strong>
+                                <span>${pod.amount.toLocaleString()} · {pod.desc}</span>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <p className={styles.dashboardSubtitle}>
                     Shared treasury. Shared decisions.
                   </p>
                   <p className={styles.dashboardTreasuryBalance}>$5,343</p>
                 </div>
                 <div className={styles.dashboardTitleRightGroup}>
-                  <div className={styles.fundingPodsStack}>
-                    {FUNDING_PODS.map((pod) => (
-                      <div
-                        key={pod.title}
-                        className={styles.fundingPodMini}
-                        style={{ ['--funding-accent' as string]: pod.accent }}
-                      >
-                        <div className={styles.fundingPodMiniHeader}>
-                          <span className={styles.fundingPodMiniTitle}>{pod.title}</span>
-                          <span className={styles.fundingPodMiniAmount}>${pod.amount.toLocaleString()}</span>
-                        </div>
-                        <div className={styles.fundingStateProgress}>
-                          <div
-                            className={styles.fundingStateProgressFill}
-                            style={{ width: `${(pod.amount / pod.total) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <WeeklyNewsReview
+                    topics={newsTopics}
+                    fetchedAt={newsFetchedAt}
+                    reviewQueue={newsReviewQueue}
+                    loading={newsLoading}
+                    error={newsError}
+                  />
                 </div>
               </div>
 
