@@ -125,7 +125,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Data</span>
               <p className={styles.legalText}>
-                your answers stay yours. we don&apos;t sell responses or share individual results with advertisers. difficulty: {difficulty}/200. reward: {shardReward} shards.
+                your answers stay yours. we don&apos;t sell responses or share individual results with advertisers.
               </p>
             </div>
 
@@ -152,7 +152,7 @@ export default function SignFormModal({ difficulty, shardReward, onLaunch, onClo
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Rights</span>
               <p className={styles.legalText}>
-                you can exit any time. request deletion through settings or privacy@mwa.xyz. by continuing, you confirm you are 18 or older.
+                you can exit any time. request deletion through settings or email blue directly at blue@mentalwealthacademy.world. by continuing, you confirm you are 18 or older.
               </p>
             </div>
 

@@ -160,10 +160,10 @@
   border-radius: 21px;
   background: linear-gradient(
     to right,
-    #5d5d5d 0%,
-    #5d5d5d var(--progress, 17%),
-    #f1f5f9 var(--progress, 17%),
-    #f1f5f9 100%
+    var(--slider-color, #22c55e) 0%,
+    var(--slider-color, #22c55e) var(--progress, 17%),
+    #404040 var(--progress, 17%),
+    #404040 100%
   );
   outline: none;
   border: none;
@@ -176,8 +176,8 @@
   width: 17.5px;
   height: 17.5px;
   border-radius: 50%;
-  background: #3f3f3f;
-  border: 1.75px solid #5d5d5d;
+  background: var(--slider-color, #22c55e);
+  border: 1.75px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
 }
 
@@ -185,8 +185,8 @@
   width: 17.5px;
   height: 17.5px;
   border-radius: 50%;
-  background: #3f3f3f;
-  border: 1.75px solid #5d5d5d;
+  background: var(--slider-color, #22c55e);
+  border: 1.75px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   box-sizing: border-box;
 }
@@ -201,7 +201,6 @@
 
 .shardRewardBox {
   flex-shrink: 0;
-  min-width: 62px;
   height: 34px;
   display: flex;
   align-items: center;

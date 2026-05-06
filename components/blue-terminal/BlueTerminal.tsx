@@ -19,10 +19,6 @@ const BOOT_LINES = [
   { text: '> LOADING MENTAL WEALTH ACADEMY', delay: 450 },
   { text: '> CONNECTING TO THE BLUE NETWORK...', delay: 600 },
   { text: '> USER PROFILE FOUND', delay: 400 },
-  { text: '> BRAIN SCAN: READY', delay: 450 },
-  { text: '', delay: 250 },
-  { text: '> YOUR TEST IS STANDING BY', delay: 400 },
-  { text: '> ALL SYSTEMS GO', delay: 350 },
 ];
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];

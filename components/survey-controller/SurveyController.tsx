@@ -38,6 +38,13 @@ export default function SurveyController({
   const max = TEST_DIFFICULTY_MAX;
   const progress = ((difficulty - min) / (max - min)) * 100;
 
+  const sliderColor = (() => {
+    const p = (difficulty - min) / (max - min);
+    if (p < 0.4) return '#22c55e';
+    if (p < 0.7) return '#eab308';
+    return '#ef4444';
+  })();
+
   return (
     <div className={styles.controller}>
       <div className={styles.topWrapper}>
@@ -77,7 +84,7 @@ export default function SurveyController({
             <div className={styles.shardRewardBox} aria-label={`${shardReward} shards earned for this test`}>
               <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
               <div className={styles.shardRewardText}>
-                <span className={styles.shardRewardValue}>+{shardReward}</span>
+                <span className={styles.shardRewardValue}>+{shardReward} reward</span>
               </div>
             </div>
           </div>
@@ -92,7 +99,7 @@ export default function SurveyController({
               value={difficulty}
               onChange={handleDifficultyChange}
               className={styles.slider}
-              style={{ '--progress': `${progress}%` } as React.CSSProperties}
+              style={{ '--progress': `${progress}%`, '--slider-color': sliderColor } as React.CSSProperties}
             />
           </div>
           <p className={styles.helperText}>
