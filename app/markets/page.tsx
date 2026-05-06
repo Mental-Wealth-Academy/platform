@@ -1,7 +1,7 @@
 'use client';
 
 import { useDeferredValue, useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import type { FormEvent } from 'react';
+import type { CSSProperties, FormEvent } from 'react';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
@@ -53,6 +53,65 @@ function useLiveTick(intervalMs: number, enabled = true) {
   }, [enabled, intervalMs]);
 
   return tick;
+}
+
+function SkeletonLine({ className = '', style }: { className?: string; style?: CSSProperties }) {
+  return <span className={`${styles.skeleton} ${className}`} style={style} aria-hidden="true" />;
+}
+
+function ShardValueSkeleton({ className = '' }: { className?: string }) {
+  return <SkeletonLine className={`${styles.shardBarValueSkeleton} ${className}`} />;
+}
+
+function MarketListSkeleton() {
+  return (
+    <div className={styles.marketList} aria-label="Loading markets">
+      {MARKET_CATEGORIES.map((cat) => (
+        <div key={cat} className={styles.marketSection}>
+          <SkeletonLine className={styles.marketSectionLabelSkeleton} />
+          {[0, 1, 2].map((i) => (
+            <div key={i} className={`${styles.marketItem} ${styles.marketItemSkeleton}`}>
+              <SkeletonLine className={i === 1 ? styles.marketQuestionSkeletonWide : styles.marketQuestionSkeleton} />
+              <SkeletonLine className={styles.marketBarSkeleton} />
+              <div className={styles.marketMeta}>
+                <SkeletonLine className={styles.marketMetaSkeleton} />
+                <SkeletonLine className={styles.marketVolumeSkeleton} />
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ExecutionLogSkeleton() {
+  return (
+    <>
+      {[60, 36, 52, 44, 56].map((actionWidth, i) => (
+        <div key={i} className={`${styles.logEntry} ${styles.logEntrySkeleton}`}>
+          <SkeletonLine className={styles.logTimeSkeleton} />
+          <SkeletonLine style={{ width: actionWidth, height: 11, flexShrink: 0 }} />
+          <SkeletonLine className={styles.logDetailsSkeleton} />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function TreasuryQuickSkeleton() {
+  return (
+    <>
+      <div className={styles.treasuryQuickPrimary}>
+        <SkeletonLine className={styles.balanceHeroSkeleton} />
+        <SkeletonLine className={styles.balanceLabelSkeleton} />
+      </div>
+      <div className={styles.treasuryQuickSpark}>
+        <SkeletonLine className={styles.sparklineSkeleton} />
+        <SkeletonLine className={styles.sparklineSkeleton} />
+      </div>
+    </>
+  );
 }
 
 // ── Model Constants ──
@@ -696,27 +755,29 @@ export default function Markets() {
         <div className={styles.shardBar}>
           <div className={styles.shardBarItem}>
             <span className={styles.shardBarLabel}>$SHARDS</span>
-            <span className={styles.shardBarValue}>
-              {shardStats ? formatPrice(shardStats.price) : '--'}
-            </span>
+            {shardStats
+              ? <span className={styles.shardBarValue}>{formatPrice(shardStats.price)}</span>
+              : <ShardValueSkeleton className={styles.shardPriceSkeleton} />}
           </div>
           <div className={styles.shardBarItem}>
             <span className={styles.shardBarLabel}>holders</span>
-            <span className={styles.shardBarValue}>
-              {shardStats ? shardStats.holders.toLocaleString() : '--'}
-            </span>
+            {shardStats
+              ? <span className={styles.shardBarValue}>{shardStats.holders.toLocaleString()}</span>
+              : <ShardValueSkeleton className={styles.shardHoldersSkeleton} />}
           </div>
           <div className={styles.shardBarItem}>
             <span className={styles.shardBarLabel}>epoch P&L</span>
-            <span className={`${styles.shardBarValue} ${shardStats && shardStats.epochPnL >= 0 ? styles.shardBarPositive : styles.shardBarNegative}`}>
-              {shardStats ? (shardStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(shardStats.epochPnL).toFixed(2) : '--'}
-            </span>
+            {shardStats
+              ? <span className={`${styles.shardBarValue} ${shardStats.epochPnL >= 0 ? styles.shardBarPositive : styles.shardBarNegative}`}>
+                  {(shardStats.epochPnL >= 0 ? '+' : '') + '$' + Math.abs(shardStats.epochPnL).toFixed(2)}
+                </span>
+              : <ShardValueSkeleton className={styles.shardPnlSkeleton} />}
           </div>
           <div className={styles.shardBarItem}>
             <span className={styles.shardBarLabel}>next distribution</span>
-            <span className={styles.shardBarValue}>
-              {shardStats?.nextDistribution || '--'}
-            </span>
+            {shardStats
+              ? <span className={styles.shardBarValue}>{shardStats.nextDistribution || '--'}</span>
+              : <ShardValueSkeleton className={styles.shardDistributionSkeleton} />}
           </div>
         </div>
 
@@ -916,7 +977,7 @@ export default function Markets() {
               <span className={styles.panelBadge}>live</span>
             </div>
             {!deferredKalshiMarkets && !kalshiError && (
-              <span className={styles.loadingText}>Loading markets...</span>
+              <MarketListSkeleton />
             )}
             {kalshiError && !deferredKalshiMarkets && (
               <span className={styles.errorText}>Failed to load Kalshi data</span>
@@ -979,7 +1040,7 @@ export default function Markets() {
             </div>
             <div className={styles.logEntries}>
               {executionLogs.length === 0 && (
-                <span className={styles.loadingText}>Waiting for trading cycle...</span>
+                <ExecutionLogSkeleton />
               )}
               {executionLogs.map((log, i) => (
                 <div key={i} className={styles.logEntry}>
@@ -1006,7 +1067,7 @@ export default function Markets() {
             </div>
             <div className={styles.treasuryQuickGrid}>
               {!balance && !balanceError && (
-                <span className={styles.loadingText}>Loading balance...</span>
+                <TreasuryQuickSkeleton />
               )}
               {balanceError && !balance && (
                 <span className={styles.errorText}>Failed to load balance</span>

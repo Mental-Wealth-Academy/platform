@@ -990,6 +990,130 @@
   50% { opacity: 1; }
 }
 
+/* ── Skeleton Loaders ── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(26, 29, 51, 0.06) 25%,
+    rgba(26, 29, 51, 0.11) 37%,
+    rgba(26, 29, 51, 0.06) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease infinite;
+  border-radius: 3px;
+  display: block;
+}
+
+.shardBarValueSkeleton {
+  width: 54px;
+  height: 12px;
+  flex: 0 0 auto;
+}
+
+.shardPriceSkeleton {
+  width: 54px;
+}
+
+.shardHoldersSkeleton {
+  width: 40px;
+}
+
+.shardPnlSkeleton {
+  width: 48px;
+}
+
+.shardDistributionSkeleton {
+  width: 68px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.marketSectionLabelSkeleton {
+  width: 88px;
+  height: 10px;
+  margin: 4px 0 6px;
+}
+
+.marketItemSkeleton {
+  border-color: rgba(26, 29, 51, 0.06);
+  cursor: default;
+}
+
+.marketQuestionSkeleton {
+  width: 68%;
+  height: 11px;
+}
+
+.marketQuestionSkeletonWide {
+  width: 86%;
+  height: 11px;
+}
+
+.marketBarSkeleton {
+  width: 100%;
+  height: 6px;
+}
+
+.marketMetaSkeleton {
+  width: 76px;
+  height: 9px;
+}
+
+.marketVolumeSkeleton {
+  width: 44px;
+  height: 9px;
+}
+
+.logEntrySkeleton {
+  align-items: center;
+}
+
+.logTimeSkeleton {
+  width: 60px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.logDetailsSkeleton {
+  flex: 1;
+  height: 11px;
+}
+
+.balanceHeroSkeleton {
+  width: 148px;
+  height: 30px;
+  border-radius: 6px;
+}
+
+.balanceLabelSkeleton {
+  width: 110px;
+  height: 10px;
+  margin-top: 6px;
+}
+
+.sparklineSkeleton {
+  width: 100%;
+  height: 28px;
+}
+
+.sparklineSkeleton + .sparklineSkeleton {
+  margin-top: 4px;
+}
+
+:global([data-theme="dark"]) .skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--color-text-light) 5%, transparent) 25%,
+    color-mix(in oklch, var(--color-text-light) 10%, transparent) 37%,
+    color-mix(in oklch, var(--color-text-light) 5%, transparent) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+
 /* ── 24h Change Colors ── */
 .changePositive {
   color: var(--color-tertiary);

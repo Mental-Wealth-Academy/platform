@@ -149,7 +149,7 @@ const BgColor = memo(() => {
 
 BgColor.displayName = 'BgColor';
 
-const SwarmsCubes = memo(() => {
+const CohortCubes = memo(() => {
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
 
   return (
@@ -169,6 +169,6 @@ const SwarmsCubes = memo(() => {
   );
 });
 
-SwarmsCubes.displayName = 'SwarmsCubes';
+CohortCubes.displayName = 'CohortCubes';
 
-export default SwarmsCubes;
+export default CohortCubes;

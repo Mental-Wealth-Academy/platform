@@ -6,7 +6,7 @@ import { PatternTextSection } from './PatternTextSection';
 import { FeaturesSection } from './FeaturesSection';
 import { KeyFiguresSection } from './KeyFiguresSection';
 import { TestimonialSection } from './TestimonialSection';
-import { SwarmsSection } from './SwarmsSection';
+import { CohortSection } from './CohortSection';
 import { MembershipSection } from './MembershipSection';
 import { FAQSection } from './FAQSection';
 import { LandingFooter } from './LandingFooter';
@@ -44,8 +44,8 @@ const LandingPage = () => {
       {/* Testimonial Section */}
       <TestimonialSection />
 
-      {/* Swarms Section — Wealth, Community, & Purpose */}
-      <SwarmsSection />
+      {/* Cohort Section — Community & Research Cohort */}
+      <CohortSection />
 
       {/* Key Figures Section - Server rendered */}
       <KeyFiguresSection />

@@ -72,7 +72,16 @@ export default function SurveyController({
       <div className={styles.controls}>
         <div className={styles.controlRow}>
           <span className={styles.controlLabel}>Test scale</span>
-          <span className={styles.controlLabel}>{difficulty}</span>
+          <div className={styles.controlMetrics}>
+            <span className={styles.controlLabel}>{difficulty}</span>
+            <div className={styles.shardRewardBox} aria-label={`${shardReward} shards earned for this test`}>
+              <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
+              <div className={styles.shardRewardText}>
+                <span className={styles.shardRewardValue}>+{shardReward}</span>
+                <span className={styles.shardRewardLabel}>shards</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className={styles.scaler}>
@@ -86,16 +95,6 @@ export default function SurveyController({
               className={styles.slider}
               style={{ '--progress': `${progress}%` } as React.CSSProperties}
             />
-          </div>
-          <div className={styles.valueBox}>
-            <span className={styles.valueText}>{difficulty}</span>
-          </div>
-          <div className={styles.shardRewardBox} aria-label={`${shardReward} shards earned for this test`}>
-            <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
-            <div className={styles.shardRewardText}>
-              <span className={styles.shardRewardValue}>+{shardReward}</span>
-              <span className={styles.shardRewardLabel}>shards</span>
-            </div>
           </div>
           <p className={styles.helperText}>
             Higher difficulty means harder questions and a larger shard payout.

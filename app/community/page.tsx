@@ -8,7 +8,6 @@ import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import TreasuryDisplay from '@/components/treasury-display/TreasuryDisplay';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
-import { VotingPageSkeleton, ProposalCardSkeleton } from '@/components/skeleton/Skeleton';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { normalizeCommunityArticleUrl } from '@/lib/community-links';
@@ -170,6 +169,58 @@ const DASHBOARD_PARTICIPANTS: ReadonlyArray<{
   { label: 'Orbit', image: '/anbel09.png', accent: styles.dashboardAvatarImageWrap },
   { label: 'Prism', image: '/anbel11.png', accent: styles.dashboardAvatarImageWrap },
 ];
+
+function SkeletonLine({ className = '' }: { className?: string }) {
+  return <span className={`${styles.skeletonLine} ${className}`} aria-hidden="true" />;
+}
+
+function NewsSkeletonStack() {
+  return (
+    <div className={styles.newsLoadingStack} aria-label="Loading latest news">
+      {[0, 1, 2, 3].map((i) => (
+        <article key={i} className={`${styles.newsTopicCard} ${styles.newsSkeletonCard}`}>
+          <SkeletonLine className={styles.newsSkeletonTopic} />
+          <div className={styles.newsTopicDivider} />
+          <div className={styles.newsSkeletonArticleList}>
+            {[0, 1].map((row) => (
+              <div key={row} className={styles.newsSkeletonArticle}>
+                <SkeletonLine className={row === 0 ? styles.newsSkeletonTitleWide : styles.newsSkeletonTitle} />
+                <SkeletonLine className={styles.newsSkeletonMeta} />
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function ProposalSkeletonCard() {
+  return (
+    <div className={styles.proposalSkeletonCard} aria-hidden="true">
+      <div className={styles.proposalSkeletonHeader}>
+        <SkeletonLine className={styles.proposalSkeletonTitle} />
+        <SkeletonLine className={styles.proposalSkeletonBadge} />
+      </div>
+      <SkeletonLine className={styles.proposalSkeletonTextWide} />
+      <SkeletonLine className={styles.proposalSkeletonText} />
+      <div className={styles.proposalSkeletonFooter}>
+        <SkeletonLine className={styles.proposalSkeletonMeta} />
+        <SkeletonLine className={styles.proposalSkeletonAction} />
+      </div>
+    </div>
+  );
+}
+
+function ProposalSkeletonList() {
+  return (
+    <div className={styles.overviewProposalsList} aria-label="Loading proposals">
+      {[0, 1, 2].map((i) => (
+        <ProposalSkeletonCard key={i} />
+      ))}
+    </div>
+  );
+}
 
 export default function VotingPage() {
   const [showTutorial, setShowTutorial] = useState(false);
@@ -537,11 +588,7 @@ export default function VotingPage() {
                       />
                       <span className={styles.latestNewsLabel}>Latest News</span>
                       {newsLoading ? (
-                        <div className={styles.newsLoadingStack}>
-                          {[0, 1, 2, 3].map((i) => (
-                            <div key={i} className={styles.newsLoadingCard} />
-                          ))}
-                        </div>
+                        <NewsSkeletonStack />
                       ) : newsError ? (
                         <div className={styles.newsEmptyCard}>
                           <span className={styles.newsEmptyText}>
@@ -592,12 +639,8 @@ export default function VotingPage() {
                     </div>
 
                     <div className={styles.overviewProposalsColumn}>
-                      {loading && proposals.length > 0 ? (
-                        <div className={styles.overviewProposalsList}>
-                          {[...Array(3)].map((_, i) => (
-                            <ProposalCardSkeleton key={i} />
-                          ))}
-                        </div>
+                      {isPageLoading || (loading && proposals.length > 0) ? (
+                        <ProposalSkeletonList />
                       ) : error ? (
                         <div className={styles.errorState}>
                           <h3>Error Loading Proposals</h3>

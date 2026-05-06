@@ -126,6 +126,12 @@
   color: #dbdbdb;
 }
 
+.controlMetrics {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Scaler */
 
 .scaler {
@@ -185,23 +191,6 @@
   box-sizing: border-box;
 }
 
-.valueBox {
-  flex-shrink: 0;
-  width: 71px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #494949;
-  border-radius: 7px;
-}
-
-.valueText {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-sm);
-  color: #ffffff;
-}
-
 .helperText {
   flex: 1;
   font-family: var(--font-mono);
@@ -213,7 +202,7 @@
 .shardRewardBox {
   flex-shrink: 0;
   min-width: 82px;
-  height: 44px;
+  height: 34px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -342,14 +331,6 @@
 :global(:root:not([data-theme="dark"])) .slider::-moz-range-thumb {
   background: #ffffff;
   border-color: rgba(26, 27, 36, 0.3);
-}
-
-:global(:root:not([data-theme="dark"])) .valueBox {
-  border-color: rgba(26, 27, 36, 0.2);
-}
-
-:global(:root:not([data-theme="dark"])) .valueText {
-  color: var(--color-text-dark);
 }
 
 :global(:root:not([data-theme="dark"])) .helperText {

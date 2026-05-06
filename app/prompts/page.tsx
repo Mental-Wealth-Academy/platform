@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -1695,6 +1696,7 @@ export default function LibraryPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [showCopyNotification, setShowCopyNotification] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [loadedArtImages, setLoadedArtImages] = useState<Set<string>>(() => new Set());
   const { play } = useSound();
 
   const showNotification = () => {
@@ -1723,6 +1725,15 @@ export default function LibraryPage() {
     setSelectedCategory(category);
     setFilterOpen(false);
     play('click');
+  };
+
+  const markArtImageLoaded = (id: string) => {
+    setLoadedArtImages((current) => {
+      if (current.has(id)) return current;
+      const next = new Set(current);
+      next.add(id);
+      return next;
+    });
   };
 
   return (
@@ -1788,7 +1799,18 @@ export default function LibraryPage() {
                       </p>
                       {style.image && (
                         <div className={styles.artStyleImage}>
-                          <img src={style.image} alt={style.name} />
+                          {!loadedArtImages.has(style.id) && (
+                            <div className={styles.artStyleImageSkeleton} aria-hidden="true" />
+                          )}
+                          <Image
+                            src={style.image}
+                            alt={style.name}
+                            fill
+                            sizes="(max-width: 900px) calc(100vw - 56px), 33vw"
+                            className={`${styles.artStyleImg} ${loadedArtImages.has(style.id) ? styles.artStyleImgLoaded : ''}`}
+                            onLoad={() => markArtImageLoaded(style.id)}
+                            onError={() => markArtImageLoaded(style.id)}
+                          />
                         </div>
                       )}
                       <div className={styles.artStyleFooter}>
