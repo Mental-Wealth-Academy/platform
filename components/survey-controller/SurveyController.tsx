@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
 
 interface SurveyControllerProps {
@@ -25,6 +26,7 @@ export default function SurveyController({
   onDifficultyChange,
 }: SurveyControllerProps) {
   const [difficulty, setDifficulty] = useState(initialDifficulty);
+  const shardReward = getTestShardReward(difficulty);
 
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -32,8 +34,8 @@ export default function SurveyController({
     onDifficultyChange?.(value);
   };
 
-  const min = 80;
-  const max = 200;
+  const min = TEST_DIFFICULTY_MIN;
+  const max = TEST_DIFFICULTY_MAX;
   const progress = ((difficulty - min) / (max - min)) * 100;
 
   return (
@@ -88,8 +90,15 @@ export default function SurveyController({
           <div className={styles.valueBox}>
             <span className={styles.valueText}>{difficulty}</span>
           </div>
+          <div className={styles.shardRewardBox} aria-label={`${shardReward} shards earned for this test`}>
+            <Image src="/icons/ui-shard.svg" alt="" width={18} height={18} className={styles.shardIcon} />
+            <div className={styles.shardRewardText}>
+              <span className={styles.shardRewardValue}>+{shardReward}</span>
+              <span className={styles.shardRewardLabel}>shards</span>
+            </div>
+          </div>
           <p className={styles.helperText}>
-            80–140 recommended. Higher difficulty = harder tests + more rewards.
+            Higher difficulty means harder questions and a larger shard payout.
           </p>
         </div>
 

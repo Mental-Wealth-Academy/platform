@@ -29,6 +29,18 @@ async function callElizaCloud(messages: ElizaMessage[]): Promise<string> {
   return elizaAPI.chat({ messages });
 }
 
+function generateFallbackMarketResponse(message: string): string {
+  const lower = message.toLowerCase();
+  const isTradeIntent = /\b(trade|buy|sell|execute|size|kelly|position|hedge|long|short)\b/.test(lower);
+  const riskLine = 'i would stage the idea, cap sizing, check live liquidity, and refuse execution if the edge or fill safety is not clean.';
+
+  if (isTradeIntent) {
+    return `i am using the local market desk for this read. ${riskLine} hit execute only if you want the protected route to verify the trade.`;
+  }
+
+  return `i am using the local market desk for this read. i can still translate your question into a risk check, sizing posture, and next action. hit execute if you want the protected route to verify it.`;
+}
+
 export async function POST(request: Request) {
   const identifier = getClientIdentifier(request);
   const limit = checkRateLimit({ identifier: `markets-chat:${identifier}`, max: 20, windowMs: 60_000 });
@@ -37,10 +49,6 @@ export async function POST(request: Request) {
       { error: 'rate_limited', message: 'slow down for a moment, then try again.' },
       { status: 429 },
     );
-  }
-
-  if (!ELIZA_API_KEY) {
-    return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
   }
 
   let body: { message?: string };
@@ -59,6 +67,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Message too long' }, { status: 400 });
   }
 
+  if (!ELIZA_API_KEY) {
+    console.warn('Blue markets chat: ELIZA_API_KEY missing, using fallback response');
+    return NextResponse.json({ response: generateFallbackMarketResponse(message), source: 'fallback' });
+  }
+
   try {
     const response = await callElizaCloud([
       { role: 'system', parts: [{ type: 'text', text: MARKETS_SYSTEM_PROMPT }] },
@@ -68,6 +81,6 @@ export async function POST(request: Request) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'AI error';
     console.error('Blue markets chat error:', msg);
-    return NextResponse.json({ error: 'ai_unavailable', message: msg }, { status: 502 });
+    return NextResponse.json({ response: generateFallbackMarketResponse(message), source: 'fallback' });
   }
 }

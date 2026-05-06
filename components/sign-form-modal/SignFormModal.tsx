@@ -5,11 +5,12 @@ import styles from './SignFormModal.module.css';
 
 interface SignFormModalProps {
   difficulty: number;
+  shardReward: number;
   onLaunch: () => void;
   onClose: () => void;
 }
 
-export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFormModalProps) {
+export default function SignFormModal({ difficulty, shardReward, onLaunch, onClose }: SignFormModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [agreed, setAgreed] = useState(false);
   const [hasSigned, setHasSigned] = useState(false);
@@ -124,7 +125,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Data</span>
               <p className={styles.legalText}>
-                what you answer here stays yours. we don&apos;t sell your responses. we don&apos;t share individual results with advertisers, third parties, or anyone outside the mwa research team. your answers are encrypted in transit and at rest. difficulty level selected: {difficulty}/200.
+                your answers stay yours. we don&apos;t sell responses or share individual results with advertisers. difficulty: {difficulty}/200. reward: {shardReward} shards.
               </p>
             </div>
 
@@ -133,7 +134,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>How We Use It</span>
               <p className={styles.legalText}>
-                at the aggregate level, anonymized patterns from test data help us improve the engine and publish behavioral research. you as an individual are never the unit of analysis — only patterns across thousands of responses. your identity is never attached to published findings.
+                anonymized patterns help improve tests and research. published findings use aggregate data, not your identity.
               </p>
             </div>
 
@@ -142,10 +143,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>What This Test Is</span>
               <p className={styles.legalText}>
-                these questions measure cognitive load, stress response, behavioral tendencies, and emotional awareness. they are research instruments, not clinical assessments. this is not a diagnosis. not medical advice. not a replacement for professional support.
-              </p>
-              <p className={styles.legalText}>
-                if something in the test surfaces something heavy — reach out to someone qualified. mwa is a tool for growth, not a substitute for care.
+                a research survey about decisions, stress, behavior, and emotional awareness. not a diagnosis, medical advice, or therapy. if something heavy comes up, talk to a qualified professional.
               </p>
             </div>
 
@@ -154,7 +152,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Your Rights</span>
               <p className={styles.legalText}>
-                you can exit at any time. your data can be deleted — request it through settings or email privacy@mwa.xyz. you can view your own results whenever you want. by continuing, you confirm you are 18 or older.
+                you can exit any time. request deletion through settings or privacy@mwa.xyz. by continuing, you confirm you are 18 or older.
               </p>
             </div>
 
@@ -163,7 +161,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             <div className={styles.legalSection}>
               <span className={styles.legalHeading}>Liability</span>
               <p className={styles.legalText}>
-                mwa research labs is not responsible for decisions you make based on your scores. test results are informational only — one input among many, not a final word on anything.
+                results are informational. don&apos;t treat a score as the final word on a life decision.
               </p>
             </div>
 
@@ -177,7 +175,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
               onChange={e => setAgreed(e.target.checked)}
             />
             <span className={styles.agreeLabel}>
-              i have read and understand the above. i am 18 or older and i am choosing to participate voluntarily. no tricks. no hidden terms. just science and consent.
+              i am 18 or older and choose to participate.
             </span>
           </label>
 
@@ -219,7 +217,7 @@ export default function SignFormModal({ difficulty, onLaunch, onClose }: SignFor
             disabled={!canLaunch}
             type="button"
           >
-            {canLaunch ? 'LAUNCH QUEST' : 'AGREE + SIGN TO LAUNCH'}
+            {canLaunch ? `LAUNCH QUEST +${shardReward} SHARDS` : 'AGREE + SIGN TO LAUNCH'}
           </button>
         </div>
       </div>

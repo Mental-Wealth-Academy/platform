@@ -35,22 +35,37 @@ export interface TestQuestion {
 }
 
 export interface TestData {
+  testId?: string;
+  shardReward?: number;
+  source?: 'openrouter' | 'anthropic' | 'fallback';
   title: string;
   intro: string;
   questions: TestQuestion[];
 }
 
+export type TestAnswers = Record<number, string | number>;
+
+export interface TestCompletionResult {
+  shardsAwarded: number;
+  newShardCount: number | null;
+}
+
 interface BlueTerminalProps {
   testData?: TestData | null;
   isGenerating?: boolean;
+  errorMessage?: string | null;
+  onSubmitQuest?: (answers: TestAnswers) => Promise<TestCompletionResult | null>;
 }
 
-export default function BlueTerminal({ testData, isGenerating }: BlueTerminalProps) {
+export default function BlueTerminal({ testData, isGenerating, errorMessage, onSubmitQuest }: BlueTerminalProps) {
   const [visibleCount, setVisibleCount] = useState(0);
   const [currentQ, setCurrentQ] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string | number>>({});
+  const [answers, setAnswers] = useState<TestAnswers>({});
   const [shortAnswer, setShortAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [completionResult, setCompletionResult] = useState<TestCompletionResult | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Boot animation — only runs when no test active
@@ -69,6 +84,9 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
       setAnswers({});
       setShortAnswer('');
       setSubmitted(false);
+      setIsSubmitting(false);
+      setCompletionResult(null);
+      setSubmissionError(null);
     }
   }, [testData]);
 
@@ -95,6 +113,22 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
     setShortAnswer('');
     if (!isLastQ) {
       setTimeout(() => setCurrentQ(q => q + 1), 200);
+    }
+  };
+
+  const submitQuest = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setSubmissionError(null);
+    try {
+      const result = await onSubmitQuest?.(answers);
+      setCompletionResult(result ?? null);
+      setSubmitted(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Shard award failed.';
+      setSubmissionError(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -127,6 +161,20 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
         </div>
       )}
 
+      {/* ===== ERROR STATE ===== */}
+      {errorMessage && !isGenerating && !testData && (
+        <div className={styles.bootLines} role="alert">
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            TEST ENGINE ERROR
+          </div>
+          <div className={styles.line}>
+            <span className={styles.prompt}>$</span>
+            {errorMessage}
+          </div>
+        </div>
+      )}
+
       {/* ===== TEST MODE ===== */}
       {testData && !submitted && (
         <div className={styles.testMode}>
@@ -147,7 +195,7 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
 
           {question && (
             <div className={styles.questionBlock}>
-              <div className={styles.questionCategory}>// {question.category}</div>
+              <div className={styles.questionCategory}>{`// ${question.category}`}</div>
 
               <div className={styles.questionText}>
                 <span className={styles.prompt}>$</span>
@@ -222,10 +270,16 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
               {isLastQ && currentHasAnswer && (
                 <div className={styles.ctaRow}>
                   <span className={styles.ctaBracket}>[</span>
-                  <button className={styles.ctaTextBtn} onClick={() => setSubmitted(true)} type="button">
-                    SUBMIT QUEST
+                  <button className={styles.ctaTextBtn} onClick={submitQuest} disabled={isSubmitting} type="button">
+                    {isSubmitting ? 'SUBMITTING...' : 'SUBMIT QUEST'}
                   </button>
                   <span className={styles.ctaBracket}>]</span>
+                </div>
+              )}
+
+              {submissionError && (
+                <div className={styles.submissionError} role="alert">
+                  {submissionError}
                 </div>
               )}
             </div>
@@ -242,11 +296,19 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
           </div>
           <div className={styles.line}>
             <span className={styles.prompt}>$</span>
-            RESULTS PROCESSING...
+            {completionResult
+              ? `+${completionResult.shardsAwarded} SHARDS AWARDED`
+              : 'RESULTS RECORDED'}
           </div>
+          {completionResult?.newShardCount !== null && completionResult?.newShardCount !== undefined && (
+            <div className={styles.line}>
+              <span className={styles.prompt}>$</span>
+              BALANCE: {completionResult.newShardCount} SHARDS
+            </div>
+          )}
           <div className={styles.ctaRow}>
             <span className={styles.ctaBracket}>[</span>
-            <span className={styles.ctaText}>AWAITING ANALYSIS</span>
+            <span className={styles.ctaText}>TEST COMPLETE</span>
             <span className={styles.ctaBracket}>]</span>
             <span className={styles.cursor} aria-hidden="true">_</span>
           </div>
@@ -254,7 +316,7 @@ export default function BlueTerminal({ testData, isGenerating }: BlueTerminalPro
       )}
 
       {/* ===== BOOT MODE (idle) ===== */}
-      {!testData && !isGenerating && (
+      {!testData && !isGenerating && !errorMessage && (
         <>
           <div className={styles.bootLines} aria-live="polite">
             {BOOT_LINES.slice(0, visibleCount).map((entry, i) =>

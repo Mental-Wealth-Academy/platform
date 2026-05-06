@@ -442,6 +442,22 @@
   animation: blink 1.4s step-end infinite;
 }
 
+.ctaTextBtn:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.submissionError {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  line-height: 1.45;
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(127, 29, 29, 0.18);
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
 /* ===== Animations ===== */
 
 @keyframes dotPulse {

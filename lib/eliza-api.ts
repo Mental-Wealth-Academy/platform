@@ -55,6 +55,7 @@ class ElizaAPIClient {
 
     if (this.apiKey) {
       headers['Authorization'] = `Bearer ${this.apiKey}`;
+      headers['X-API-Key'] = this.apiKey;
     }
 
     return headers;
