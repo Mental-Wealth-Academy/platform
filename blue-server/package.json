@@ -11,7 +11,7 @@
     "@elizaos/plugin-openai": "alpha",
     "@elizaos/plugin-sql": "alpha",
     "@elizaos/plugin-eliza-classic": "alpha",
-    "express": "^4.21.0",
+    "express": "^5.2.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
