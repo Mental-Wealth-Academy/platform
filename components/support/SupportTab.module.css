@@ -1,25 +1,29 @@
 .supportTab {
   position: fixed;
   right: 0;
-  bottom: 20%;
-  background-color: var(--color-primary, #5168ff);
-  color: #ffffff;
-  padding: 1rem 0.5rem;
+  bottom: 25%;
+  background-color: #ffffff;
+  color: var(--color-primary, #5168ff);
+  padding: 10px 5px;
   writing-mode: vertical-lr;
   text-orientation: mixed;
   transform: rotate(180deg);
-  border: 3.5px solid #1a1d33;
-  border-left: none; /* Left because it's rotated 180deg, so left is the right side of the screen */
-  border-radius: 0 8px 8px 0; /* Same here, after rotation */
+  border: 2px solid var(--color-primary, #5168ff);
+  border-left: none; /* Left side when rotated is right side of screen */
+  border-radius: 0 6px 6px 0;
   font-family: var(--font-primary), sans-serif;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   cursor: pointer;
   z-index: 1000;
-  box-shadow: 4px -4px 0 rgba(26, 29, 51, 1); /* Adjust shadow for rotation */
-  transition: transform 0.2s ease, right 0.2s ease;
+  box-shadow: none; /* Removed clunky drop-shadow */
+  transition: transform 0.15s ease, right 0.15s ease, background-color 0.15s ease;
   user-select: none;
 }
 
 .supportTab:hover {
-  right: 5px; /* Subtle slide out animation */
+  right: 3px; /* Subtle slide out animation */
+  background-color: #f4f5fe;
 }
