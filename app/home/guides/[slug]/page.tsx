@@ -6,6 +6,7 @@ import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
+  BookmarkSimple,
   BookOpenText,
   CheckCircle,
   Clock,
@@ -19,6 +20,7 @@ import {
 import { ThinkingOrb } from 'thinking-orbs';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
+import { isBookmarked, toggleBookmark, onBookmarksUpdated } from '@/lib/bookmarks';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CtaButton from '@/components/shared/CtaButton';
 import DiamondReward from '@/components/rewards/DiamondReward';
@@ -122,6 +124,16 @@ export default function GuidePage({ params }: PageProps) {
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [rewardDiamonds, setRewardDiamonds] = useState(0);
   const [showDiamondReward, setShowDiamondReward] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  useEffect(() => {
+    if (!data) return;
+    setBookmarked(isBookmarked(data.guide.slug));
+    return onBookmarksUpdated(() => {
+      setBookmarked(isBookmarked(data.guide.slug));
+    });
+  }, [data]);
+
   const orientationLines = useMemo(
     () => (data ? buildGuideOrientationLines(data.guide, materials) : []),
     [data, materials],
@@ -256,7 +268,20 @@ export default function GuidePage({ params }: PageProps) {
               <Link href="/learn" className={styles.back}>
                 <ArrowLeft size={16} weight="bold" /> Learn
               </Link>
-              <h1 className={styles.title}>{data.guide.topicTitle}</h1>
+              <div className={styles.titleRow}>
+                <h1 className={styles.title}>{data.guide.topicTitle}</h1>
+                <button
+                  type="button"
+                  className={styles.bookmarkBtn}
+                  onClick={() => {
+                    play('click');
+                    toggleBookmark(data.guide.slug);
+                  }}
+                  aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark guide'}
+                >
+                  <BookmarkSimple size={24} weight={bookmarked ? 'fill' : 'regular'} />
+                </button>
+              </div>
               <div className={styles.subjects}>
                 {data.guide.subjects.map((s) => {
                   const domain = getWellbeingDomain(s);

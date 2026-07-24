@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Check } from '@phosphor-icons/react';
+import { Check, BookmarkSimple } from '@phosphor-icons/react';
 import type { GuideRecord } from '@/lib/guides-db';
 import { getWellbeingDomain } from '@/lib/wellbeing-domains';
 import { EDUCATION_LEVELS, GUIDE_GOALS, type EducationLevel, type GuideGoal } from '@/lib/guide-discovery-filters';
 import { useSound } from '@/hooks/useSound';
+import { isBookmarked, toggleBookmark, onBookmarksUpdated } from '@/lib/bookmarks';
 import styles from './GuideGallery.module.css';
 
 const NO_SUBJECT = 'General';
@@ -348,8 +349,17 @@ function GuideCoverArt({ seed, label }: { seed: string; label: string }) {
   );
 }
 
-function GuideGalleryCard({ guide }: { guide: GuideRecord }) {
+export function GuideGalleryCard({ guide }: { guide: GuideRecord }) {
   const { play } = useSound();
+  const [bookmarked, setBookmarked] = useState(false);
+
+  useEffect(() => {
+    setBookmarked(isBookmarked(guide.slug));
+    return onBookmarksUpdated(() => {
+      setBookmarked(isBookmarked(guide.slug));
+    });
+  }, [guide.slug]);
+
   const primarySubject = guide.subjects[0] ?? NO_SUBJECT;
   const domain = getWellbeingDomain(primarySubject);
   const meta = domain?.label ?? primarySubject;
@@ -363,6 +373,19 @@ function GuideGalleryCard({ guide }: { guide: GuideRecord }) {
       <div className={styles.cover}>
         <GuideCoverArt seed={guide.id} label={guide.topicTitle} />
         <span className={styles.coverTag}>{meta}</span>
+        <button
+          type="button"
+          className={styles.bookmarkBtn}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            play('click');
+            toggleBookmark(guide.slug);
+          }}
+          aria-label={bookmarked ? "Remove bookmark" : "Bookmark guide"}
+        >
+          <BookmarkSimple size={18} weight={bookmarked ? "fill" : "regular"} />
+        </button>
       </div>
       <div className={styles.cardBody}>
         <span className={styles.cardTitle}>{guide.topicTitle}</span>

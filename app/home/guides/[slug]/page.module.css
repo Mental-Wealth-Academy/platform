@@ -783,3 +783,44 @@
     font-size: var(--font-size-xl, 1.618rem);
   }
 }
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bookmarkBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.bookmarkBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  transform: scale(1.05);
+}
+
+:global([data-theme="dark"]) .bookmarkBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e6e8f5;
+}
+
+:global([data-theme="dark"]) .bookmarkBtn:hover {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+

@@ -360,3 +360,40 @@
       color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-1)) 100%
     );
 }
+
+.bookmarkBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+:global([data-theme="dark"]) .bookmarkBtn {
+  background: rgba(20, 20, 20, 0.75);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e6e8f5;
+}
+
+.bookmarkBtn:hover {
+  background: #fff;
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+:global([data-theme="dark"]) .bookmarkBtn:hover {
+  background: rgba(40, 40, 40, 0.9);
+  color: var(--color-primary-hover);
+}
+

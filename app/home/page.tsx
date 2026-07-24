@@ -26,6 +26,7 @@ import type { CourseRecord } from '@/lib/course-content-db';
 import type { GuideRecord, FrontierGuide } from '@/lib/guides-db';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { getBookmarkedSlugs, onBookmarksUpdated } from '@/lib/bookmarks';
 import styles from './page.module.css';
 
 const COURSES_INTRO_SEEN_KEY = 'mwa-courses-intro-seen';
@@ -140,6 +141,14 @@ export default function HomePage() {
   const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
+  const [bookmarkedCount, setBookmarkedCount] = useState(0);
+
+  useEffect(() => {
+    setBookmarkedCount(getBookmarkedSlugs().length);
+    return onBookmarksUpdated(() => {
+      setBookmarkedCount(getBookmarkedSlugs().length);
+    });
+  }, []);
   const [introOpen, setIntroOpen] = useState(false);
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
@@ -487,25 +496,25 @@ export default function HomePage() {
                     ctaLabel="Continue Course"
                     ctaDark
                     images={[
-                      '/images/blueastro.png',
                       '/images/campfire.jpg',
-                      '/images/course-panel-blue-art.png',
-                      '/images/blue-fullbody.png'
+                      '/images/landing-space.jpg',
+                      '/images/landing-starfield.jpg',
+                      '/images/preorder-bg.jpg'
                     ]}
                   />
                   <CourseFolderCard
                     title="Your Course"
-                    count={personalCourse ? 1 : 0}
+                    count={personalCourse ? 1 : bookmarkedCount}
                     href="/course/personal"
                     avatarSrc="/academic-angels.webp"
-                    centerLabel={personalCourse?.focus ?? 'Personal Curriculum'}
-                    ctaLabel={personalCourse ? 'Continue Course' : 'Start Course'}
+                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
+                    ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
                     dark
                     images={[
-                      '/images/academy-blockchain.png',
-                      '/images/angel-investing.png',
-                      '/images/treasury.png',
-                      '/images/community-book.png'
+                      '/images/community-peers-panel.jpg',
+                      '/images/funding-village-bg.jpg',
+                      '/images/cohort-3.jpg',
+                      '/images/hero-desk/study-desk.jpg'
                     ]}
                   />
                   <EmptyCourseStudioFolder hasAngel={hasAngel} />

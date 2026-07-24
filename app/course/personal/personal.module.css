@@ -176,6 +176,85 @@
 }
 
 :global([data-theme="dark"]) .courseTitle,
-:global([data-theme="dark"]) .stateHeading {
+:global([data-theme="dark"]) .stateHeading,
+:global([data-theme="dark"]) .personalPageTitle,
+:global([data-theme="dark"]) .sectionHeading,
+:global([data-theme="dark"]) .courseSectionHeading {
   color: #f0f1fa;
 }
+
+.personalHeaderSection {
+  margin-bottom: 24px;
+}
+
+.personalPageTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark);
+  margin: 0 0 6px;
+}
+
+.personalPageSubtitle {
+  font-family: var(--font-body, sans-serif);
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.bookmarksSection {
+  margin-top: 16px;
+}
+
+.sectionHeading {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 16px;
+}
+
+.bookmarksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.emptyBookmarksWrap {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 50vh;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.emptyActions {
+  margin-top: 8px;
+}
+
+/* Bookmarks styling when personal course is active */
+.courseBookmarksSection {
+  margin-top: 40px;
+  padding-top: 32px;
+}
+
+.sectionDivider {
+  height: 1px;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  margin-bottom: 32px;
+}
+
+.courseSectionHeading {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 16px;
+}
+

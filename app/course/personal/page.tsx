@@ -10,6 +10,9 @@ import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import { useSound } from '@/hooks/useSound';
 import type { CourseData } from '@/lib/personal-course';
 import { broadcastPersonalCourseUpdated, onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
+import type { GuideRecord } from '@/lib/guides-db';
+import { GuideGalleryCard } from '@/components/home/GuideGallery';
+import { getBookmarkedSlugs, onBookmarksUpdated } from '@/lib/bookmarks';
 import shared from '../page.module.css';
 import wt from '@/components/week-tasks/WeekTasksView.module.css';
 import styles from './personal.module.css';
@@ -46,6 +49,37 @@ export default function PersonalCoursePage() {
   const [isDesktop, setIsDesktop] = useState(false);
   const [selectedTask, setSelectedTask] = useState<number | null>(null);
   const savePendingRef = useRef(false);
+
+  const [guides, setGuides] = useState<GuideRecord[]>([]);
+  const [bookmarkedSlugs, setBookmarkedSlugs] = useState<string[]>([]);
+  const [loadingGuides, setLoadingGuides] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/guides?status=published')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!cancelled && d?.guides) {
+          setGuides(d.guides);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoadingGuides(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setBookmarkedSlugs(getBookmarkedSlugs());
+    return onBookmarksUpdated(() => {
+      setBookmarkedSlugs(getBookmarkedSlugs());
+    });
+  }, []);
+
+  const bookmarkedGuides = guides.filter((g) => bookmarkedSlugs.includes(g.slug));
 
   // Same breakpoint as the 12-week course page: desktop pins the content to a
   // 420px left column and opens the weekly read in the right panel.
@@ -193,15 +227,35 @@ export default function PersonalCoursePage() {
     return (
       <div className={shared.pageLayout}>
         <SideNavigation />
-        <Banner />
+        <Banner backHref="/home" />
         <main className={shared.content}>
-          <div className={styles.stateWrap}>
-            <h1 className={styles.stateHeading}>No personal course yet</h1>
-            <p className={styles.stateText}>
-              Build a 4-week course with Blue, then it&apos;ll show up here.
+          <div className={styles.personalHeaderSection}>
+            <h1 className={styles.personalPageTitle}>Personal Curriculum</h1>
+            <p className={styles.personalPageSubtitle}>
+              Your saved learning materials and custom-built courses.
             </p>
-            <Link href="/home" className={styles.stateBtn}>Back to home</Link>
           </div>
+
+          {bookmarkedGuides.length > 0 ? (
+            <div className={styles.bookmarksSection}>
+              <h2 className={styles.sectionHeading}>Saved Guides</h2>
+              <div className={styles.bookmarksGrid}>
+                {bookmarkedGuides.map((guide) => (
+                  <GuideGalleryCard key={guide.id} guide={guide} />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={styles.emptyBookmarksWrap}>
+              <h2 className={styles.stateHeading}>No bookmarked guides yet</h2>
+              <p className={styles.stateText}>
+                Explore the library and bookmark guides to customize your curriculum, or build a 4-week course with Blue.
+              </p>
+              <div className={styles.emptyActions}>
+                <Link href="/learn" className={styles.stateBtn}>Explore Library</Link>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     );
@@ -481,6 +535,18 @@ export default function PersonalCoursePage() {
               </>
             )}
           </div>
+
+          {bookmarkedGuides.length > 0 && (
+            <div className={styles.courseBookmarksSection}>
+              <div className={styles.sectionDivider} />
+              <h2 className={styles.courseSectionHeading}>Saved Guides</h2>
+              <div className={styles.bookmarksGrid}>
+                {bookmarkedGuides.map((guide) => (
+                  <GuideGalleryCard key={guide.id} guide={guide} />
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
 
