@@ -186,6 +186,7 @@
 .cardCompact {
   cursor: pointer;
   transition: all 0.2s ease;
+  --card-radius: 12px;
 }
 
 .cardCompact:hover {

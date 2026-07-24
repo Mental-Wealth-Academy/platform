@@ -496,10 +496,10 @@ export default function HomePage() {
                     ctaLabel="Continue Course"
                     ctaDark
                     images={[
+                      '/images/course-panel-blue-art.png',
                       '/images/campfire.jpg',
                       '/images/landing-space.jpg',
-                      '/images/landing-starfield.jpg',
-                      '/images/preorder-bg.jpg'
+                      '/images/landing-starfield.jpg'
                     ]}
                   />
                   <CourseFolderCard
@@ -511,10 +511,10 @@ export default function HomePage() {
                     ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
                     dark
                     images={[
+                      '/images/hero-desk/study-desk.jpg',
                       '/images/community-peers-panel.jpg',
                       '/images/funding-village-bg.jpg',
-                      '/images/cohort-3.jpg',
-                      '/images/hero-desk/study-desk.jpg'
+                      '/images/cohort-3.jpg'
                     ]}
                   />
                   <EmptyCourseStudioFolder hasAngel={hasAngel} />

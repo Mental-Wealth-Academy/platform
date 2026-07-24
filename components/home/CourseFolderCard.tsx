@@ -43,20 +43,13 @@ export default function CourseFolderCard({
           <path d={FOLDER_PATH} className={styles.shapeFill} />
         </svg>
 
-        {/* Folder contents */}
-        <div className={styles.contents}>
-          {slots.length > 0 && (
-            <div className={styles.imageGrid}>
-              {slots.map((src, i) => (
-                <span
-                  key={i}
-                  className={styles.imageSlot}
-                  style={{ backgroundImage: `url(${JSON.stringify(src)})` }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Folder background image */}
+        {images.length > 0 && (
+          <div
+            className={styles.folderBgImage}
+            style={{ backgroundImage: `url(${JSON.stringify(images[0])})` }}
+          />
+        )}
 
         {/* Bottom gradient with progressive blur, under the stroke */}
         <div className={styles.bottomFade} aria-hidden="true" />
@@ -67,20 +60,21 @@ export default function CourseFolderCard({
         </svg>
       </div>
 
-      {/* Placeholder icon pair on the folder tab */}
-      <span className={styles.tabIcons} aria-hidden="true">
-        <span
-          className={styles.tabIcon}
-          style={avatarSrc ? { backgroundImage: `url(${JSON.stringify(avatarSrc)})` } : undefined}
-        >
-          {!avatarSrc && <Sparkle size={12} weight="fill" />}
+      {/* Folder Tab Header Row */}
+      <div className={styles.tabHeaderRow}>
+        <span className={styles.tabIcons} aria-hidden="true">
+          <span
+            className={styles.tabIcon}
+            style={avatarSrc ? { backgroundImage: `url(${JSON.stringify(avatarSrc)})` } : undefined}
+          >
+            {!avatarSrc && <Sparkle size={12} weight="fill" />}
+          </span>
+          <span className={`${styles.tabIcon} ${styles.tabIconGlyph}`}>
+            <BookOpen size={12} weight="bold" />
+          </span>
         </span>
-        <span className={`${styles.tabIcon} ${styles.tabIconGlyph}`}>
-          <BookOpen size={12} weight="bold" />
-        </span>
-      </span>
-
-      {centerLabel && <span className={styles.centerLabel}>{centerLabel}</span>}
+        {centerLabel && <span className={styles.tabTitle}>{centerLabel}</span>}
+      </div>
 
       {/* CTA */}
       <span
