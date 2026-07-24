@@ -10,7 +10,10 @@
  * old JournalSection[] format from the DB records.
  */
 
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config();
 import { sqlQuery, isDbConfigured } from '../lib/db';
 import { ensureVipCourseSchema } from '../lib/ensureVipCourseSchema';
 
@@ -310,13 +313,22 @@ const WEEKS: SeedWeek[] = [
     readingFile: { title: WEEKLY_READINGS[8].title, markdownPath: WEEKLY_READINGS[8].markdownPath, imageUrl: WEEKLY_READINGS[8].imageUrl, description: WEEKLY_READINGS[8].description },
     components: [
       reflection('Artist Date', 'Take yourself on a solo artist date this week.', 20),
-      numberedList('Self-Criticism Inventory', 'List five harsh self-criticisms you often repeat. Write a compassionate counter-statement for each.', 5, 'Criticism'),
-      reflection('Inner Child Letter', 'Write a letter to your younger creative self.', 40),
-      checklist('Self-Compassion Practice', 'Practice self-compassion this week.', [
-        'Spoke kindly to myself about my creative work', 'Took a break when I needed one',
-        'Celebrated a small creative win', 'Shared a vulnerability with a trusted person',
+      reflection('Resentments', 'List any resentments (anger) you have in connection with this project, it doesn\'t matter how petty, picky, or irrational. To your shade, they are big deals: grudges.', 30),
+      reflection('Fears', 'Ask your shade to list any and all fears about the projected piece of work and/or anyone connected to it. Again, these fears can be as dumb as any baby\'s. It does not matter that they are groundless to your organic eye. What matters is that they are big scary daemons to your higher self.', 30),
+      reflection('Remaining Fears & Anger', 'Ask yourself if that is all, have you left out any baby fear? Have you suppressed any "stupid" anger? Get it on the page.', 20),
+      reflection('Gains of Inaction', 'Ask yourself what you stand to gain by not doing this piece of work.', 30),
+      reflection('The Contract', 'Make your contract. The contract is: "Okay, orbiter, you take care of the quality, I\'ll take care of the quantity" Sign your contract and log it.', 10),
+      checklist('Morning Pages Review', 'Practice morning pages review.', [
+        'Read your morning pages', 'Highlight the insights', 'Highlight the actions',
       ]),
-      reflection('Compassion Reflection', 'How does self-compassion change your relationship with your creative practice?', 30),
+      reflection('Visualization & Collage', 'Imagine you have your goal accomplished. Spend enough time to fill in all the crazy weird details that would really make the experience wonderful for you. Create a collage of this, as seeing is believing.', 30),
+      reflection('Priorities', 'Use a list to create all your creative goals for the year, for the month, and for the week.', 30),
+      reflection('U-Turns', 'We\'ve all made U-turns, name one of yours, then three more. Name the one that just kills you.', 35),
+      reflection('Forgiveness & Affirmations', 'Forgive yourself for all failures, devise a personalized list of affirmations to help you do better in the future.', 30),
+      reflection('Rescuing Shades', 'Very gently, consider whether any aborted, discarded, savaged, or sabotaged shades can be rescued. Remember, you are not alone. All of us have taken U-turns.', 30),
+      reflection('Creative Resistance', 'Do not take a creative U-turn now. Instead, notice your resistance. Field notes seeming difficult? Stupid? Pointless? Do them anyway.', 25),
+      reflection('Frightening Dreams', 'What dreams are lurching toward possibility? Admit they frighten you.', 25),
+      reflection('The Totem', 'Choose a totem. It could be a doll, a stuffed animal, a carved figure, or toy. Choose something you feel protective fondness toward. Give your totem a place of honor and then honor it by not beating up on your programmed clones.', 20),
     ],
   },
 

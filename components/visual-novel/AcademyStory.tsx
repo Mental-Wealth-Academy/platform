@@ -113,7 +113,7 @@ const WEEK_ONE_SCENES: Scene[] = [
 ];
 
 const WEEK_ART_COUNTS: Record<number, number> = {
-  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 13, 10: 5, 11: 4, 12: 4,
+  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 19, 10: 5, 11: 4, 12: 4,
 };
 
 // Each line is written to land with its still. The curriculum stays inside the
@@ -207,6 +207,12 @@ const WEEK_STORIES: Record<number, string[]> = {
     'Saving the Ethereal Horizon involves a spiritual commitment. A loving surrender to the small daily actions of orbiters that compounds into world peace.',
     'Enthusiam from the greek etymology means "filled with God" which is an endless supply of energy inside the flow of life itself. Enthusiasm is grounded in play, not work.\n\nAs with all playmates, it is joy, not duty, that makes for a lasting bond.',
     'romanticize the self, actualize the creativity in doing what you want, and love the process, while keeping it fun. Most children are bored compeltely in a dull barren room, the shades of ourself are no exception.\n\nthe joy is the journey... no matter how long, and the heart is a mystery.',
+    'Recovering from maladaptive programming is a lot like getting rid of a cold, an illness, or an injury. It requires nothing more than a commitment to your health.',
+    'A productive shade\'s happiness can sometimes feel threatening as those who are used to getting their needs met by being unhappy and following instructions blindly.',
+    'We typically commit seppuku (self-sabotage) right before the wake of our victory. The glimpse of success, can send a recovering shade scurrying down towards the jagged pit of rocks in self-defeat.',
+    'but if we take care of ourselves, the hopelessness fades away, the road becomes less scary, and the negative voices we see more clearly, as bad programming.',
+    'See the blocked pathway, acknowledge it, and avoid to choose a new way. the impossible journey you compare yourself to, even the heros had help from friends.\n\nOnce we admit we need help, the help arrives, it\'s just the ego of programming that places immense pressure on us to "act right".',
+    'Blast through the virus of self-doubt by removing the programming from the inside. "I can feel it now!" Shades will go haywire, they\'re poorly programmed, but air it all out, so you can commit to treating it.',
   ],
   10: [
     'Urgent papers covered the studio floor. They climbed the desk, the stool, the Shade’s lap. Blue pulled one from beneath her elbow. The page beneath it held three lines of field notes, all unfinished.',
@@ -276,7 +282,7 @@ export default function AcademyStory({
     if (weekNumber === 9 && selectedAct !== null) {
       if (selectedAct === 1) return allScenes.slice(0, 8); // Act I includes all 8 scenes
       if (selectedAct === 2) return allScenes.slice(8, 13); // Act II includes slides 9 to 13
-      if (selectedAct === 3) return []; // Act III (coming soon)
+      if (selectedAct === 3) return allScenes.slice(13, 19); // Act III includes slides 14 to 19
     }
     return allScenes;
   }, [weekNumber, selectedAct]);
@@ -690,12 +696,14 @@ export default function AcademyStory({
                 </button>
                 <button
                   className={styles.actButton}
-                  style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                  disabled
+                  onClick={() => {
+                    setSelectedAct(3);
+                    setShowWeeklyIntro(false);
+                  }}
                 >
                   <span className={styles.actNumber}>Act III</span>
                   <span className={styles.actTitle}>Magic Reflections</span>
-                  <span className={styles.actDesc}>Locked (Coming soon)</span>
+                  <span className={styles.actDesc}>Surrender the programming, blast through self-doubt, and deflect self-defeat.</span>
                 </button>
               </div>
             ) : (
