@@ -124,7 +124,7 @@ export default function UsdcReviewPanel({ fetchWithAuth }: UsdcReviewPanelProps)
         note = window.prompt('Optional note for the member (why this was not approved):') || null;
       } else if (
         !window.confirm(
-          `Approve "${submission.questTitle}" and release ${submission.shards} diamonds to ${submission.username ? `@${submission.username}` : 'this member'}?`,
+          `Approve "${submission.questTitle}" and release ${submission.shards} credits to ${submission.username ? `@${submission.username}` : 'this member'}?`,
         )
       ) {
         return;

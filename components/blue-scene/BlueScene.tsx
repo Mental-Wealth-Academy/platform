@@ -6,25 +6,11 @@ import { useSound } from '@/hooks/useSound';
 import { DiamondReward } from '@/components/rewards/DiamondReward';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import HolographicFolder from '@/components/shared/HolographicFolder';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import LivestreamFeed from './LivestreamFeed';
 import styles from './BlueScene.module.css';
 
-// bg-02 through bg-04 were removed from the rotation and must never be selected again.
-const BACKGROUND_INDICES = [1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
-
-function bgIndex(): number {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const diff = now.getTime() - start.getTime();
-  const day = Math.floor(diff / (1000 * 60 * 60 * 24));
-  return BACKGROUND_INDICES[day % BACKGROUND_INDICES.length];
-}
-
-function pad(n: number): string {
-  return String(n).padStart(2, '0');
-}
-
-const bgUrl = `/backgrounds/bg-${pad(bgIndex())}.png`;
+const bgUrl = dailySceneBackgroundUrl();
 
 interface Balloon {
   id: number;

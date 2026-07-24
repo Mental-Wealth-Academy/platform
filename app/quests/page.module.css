@@ -8,29 +8,44 @@
   display: flex;
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  background-color: #f7f8ff;
+}
+
+/* The day's pixel-art scene — the same backdrop Blue's stage uses on /dao, so
+   the two surfaces read as one world. `--quests-scene` is set inline by the
+   page; the grid lines and the scrim sit on top to keep the panels legible. */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
   background:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 6.5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 6.5%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 248, 255, 0.72) 0%, rgba(247, 248, 255, 0.58) 55%, rgba(247, 248, 255, 0.74) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
     #f7f8ff;
-  background-size: 28px 28px, 28px 28px, auto;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-width: 0;
   min-height: 0;
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 14px;
-  padding: 14px;
+  gap: 26px;
+  padding: 18px 24px;
   overflow: hidden;
 }
 
 /* Right column — quest log sidebar, or the detail inspector when a quest is
    selected. */
 .sideColumn {
-  width: 440px;
+  width: clamp(400px, 34vw, 560px);
   flex-shrink: 0;
   min-height: 0;
   display: flex;
@@ -40,11 +55,17 @@
 
 
 :global([data-theme="dark"]) .pageLayout {
+  background-color: var(--color-surface-base);
+}
+
+:global([data-theme="dark"]) .scene {
   background:
     linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
     var(--color-surface-base);
-  background-size: 28px 28px, 28px 28px, auto;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
 @media (max-width: 900px) {
@@ -58,6 +79,7 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+    padding: 14px 16px;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -76,8 +98,8 @@
   }
 
   .content {
-    padding: 10px;
-    gap: 10px;
+    padding: 12px;
+    gap: 16px;
   }
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CursorClick } from '@phosphor-icons/react';
+import { CursorClick, X } from '@phosphor-icons/react';
 import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
 import type { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
 import styles from './QuestSidePanel.module.css';
@@ -26,6 +26,16 @@ export default function QuestSidePanel({ quest, onDeselect }: QuestSidePanelProp
         <div className={styles.listHeader}>
           <span className={styles.listHeaderKind}>{KIND_LABEL[quest.kind] ?? quest.kind}</span>
           <span className={styles.listHeaderQuestTitle}>{quest.title}</span>
+          {onDeselect && (
+            <button
+              type="button"
+              className={styles.closeBtn}
+              onClick={onDeselect}
+              aria-label="Back to quest log"
+            >
+              <X size={13} weight="bold" />
+            </button>
+          )}
         </div>
         <div className={styles.detailWrap}>
           <QuestDetailPanel quest={quest} onDeselect={onDeselect ?? (() => {})} />

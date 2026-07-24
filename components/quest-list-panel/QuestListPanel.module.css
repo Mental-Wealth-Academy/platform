@@ -6,7 +6,7 @@
   min-width: 0;
   /* Keep the board a comfortable reading width so the eye isn't dragged across
      wide screens — the detail/side column absorbs the remaining space. */
-  max-width: 620px;
+  max-width: 880px;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -20,8 +20,12 @@
   flex-direction: column;
   border-radius: 12px;
   overflow: hidden;
-  background-color: #ffffff;
+  /* Translucent so the page's scene backdrop reads through the board behind
+     the quest rows; the rows themselves stay opaque for legibility. */
+  background-color: rgba(255, 255, 255, 0.72);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border: 2px solid var(--color-primary-hover);
   box-shadow:
     0 6px 0 var(--color-primary),
@@ -209,7 +213,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 16px 18px;
-  background: #f7f8ff;
+  background: transparent;
 }
 
 .list::-webkit-scrollbar {
@@ -460,7 +464,7 @@
 
 /* ── Dark mode ── */
 :global([data-theme='dark']) .panel {
-  background-color: #15172a;
+  background-color: rgba(21, 23, 42, 0.76);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
   border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
   box-shadow:
@@ -507,7 +511,7 @@
 }
 
 :global([data-theme='dark']) .list {
-  background: #0e1424;
+  background: transparent;
 }
 
 :global([data-theme='dark']) .card {
@@ -702,4 +706,17 @@
   .card:hover {
     transform: none;
   }
+}
+
+/* Screen-reader-only text — names the currency behind the bare reward number. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

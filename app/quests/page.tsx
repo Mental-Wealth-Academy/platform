@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestListPanel, { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
@@ -10,11 +10,15 @@ import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
 import dynamic from 'next/dynamic';
 import { useSound } from '@/hooks/useSound';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import { QUEST_DEFINITIONS, QuestType } from '@/lib/quest-definitions';
 import type { QuestCardKind } from '@/components/quest-card/QuestCard';
 import styles from './page.module.css';
 
 const AngelUpsellModal = dynamic(() => import('@/components/angel-upsell-modal/AngelUpsellModal'), { ssr: false });
+
+// Same daily scene Blue's stage shows on /dao.
+const sceneUrl = dailySceneBackgroundUrl();
 
 interface WeekStatus {
   weekNumber: number;
@@ -254,7 +258,11 @@ export default function QuestsPage() {
 
   return (
     <>
-      <div className={styles.pageLayout}>
+      <div
+        className={styles.pageLayout}
+        style={{ '--quests-scene': `url(${sceneUrl})` } as CSSProperties}
+      >
+        <div className={styles.scene} aria-hidden="true" />
         <SideNavigation />
         <main className={styles.content}>
           <QuestListPanel

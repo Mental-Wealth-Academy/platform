@@ -71,18 +71,27 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
       <div className={styles.modalContainer}>
         <div className={styles.titleBar}>
           <h2 className={styles.title}>支持 Support Portal</h2>
-          <button className={styles.closeButton} onClick={onClose}>CLOSE</button>
+          <button className={styles.closeButton} onClick={onClose}>Close</button>
         </div>
 
         <div className={styles.content}>
-          <div className={styles.tabSelector}>
+          <div className={styles.tabSwitcher} role="tablist">
+            <span
+              className={styles.tabThumb}
+              style={{ transform: activeTab === 'bug' ? 'translateX(0%)' : 'translateX(100%)' }}
+              aria-hidden="true"
+            />
             <button
+              role="tab"
+              aria-selected={activeTab === 'bug'}
               className={`${styles.tab} ${activeTab === 'bug' ? styles.activeTab : ''}`}
               onClick={() => handleTabChange('bug')}
             >
-              Bug Report
+              Bug report
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'suggestion'}
               className={`${styles.tab} ${activeTab === 'suggestion' ? styles.activeTab : ''}`}
               onClick={() => handleTabChange('suggestion')}
             >
@@ -124,7 +133,7 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
             </div>
 
             <div className={styles.uploaderSection}>
-              <p className={styles.uploaderTitle}>PLEASE ATTACH UP TO 3 SCREENSHOTS!!</p>
+              <p className={styles.uploaderTitle}>Attach up to 3 screenshots</p>
               <div className={styles.uploaderContainer}>
                 <div className={styles.uploaderSlots}>
                   {slots.map((i) => {
@@ -168,17 +177,18 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
               </div>
             </div>
 
-            <div className={styles.actionRow}>
-              <button 
-                className={styles.submitButton} 
-                onClick={handleSubmit} 
-                type="button"
-                disabled={!text.trim()}
-              >
-                {activeTab === 'bug' ? 'Submit Issue' : 'Submit Suggestion'}
-              </button>
-            </div>
           </div>
+        </div>
+
+        <div className={styles.footer}>
+          <button
+            className={styles.submitButton}
+            onClick={handleSubmit}
+            type="button"
+            disabled={!text.trim()}
+          >
+            {activeTab === 'bug' ? 'Submit issue' : 'Submit suggestion'}
+          </button>
         </div>
       </div>
     </div>

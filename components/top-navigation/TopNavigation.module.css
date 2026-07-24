@@ -573,12 +573,18 @@
   box-shadow: none;
 }
 
+/* Shop is a link and Call Blue is a button, so reset the UA button chrome
+   or Call Blue renders with a default outset border. */
 .dropdownActionLink {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   height: 38px;
   padding: 0 10px;
+  background: transparent;
+  border: none;
+  text-align: left;
   border-radius: 10px;
   font-family: var(--font-secondary);
   font-size: 13px;
@@ -599,11 +605,12 @@
   color: #ffffff;
 }
 
-/* Pull the picker's icon button in line with the text rows' 10px gutter. */
+/* Keep the picker's round trigger inside the panel padding rather than
+   letting a negative margin hang it over the rounded edge. */
 .dropdownThemeRow {
   display: flex;
   align-items: center;
-  margin-left: -12px;
+  padding: 2px 4px;
 }
 
 .dropdownAuthLink {
@@ -914,11 +921,13 @@
 /* At 1024px and below the topnav can overflow, so the search bar gets
    flex-shrink room to resize. These sizes just strip non-essentials. */
 
-/* Tablet portrait — hide nav links, keep logo + search */
+/* Tablet portrait — hide nav links, keep logo + search.
+   The compact dropdown stays: it is the only route to Shop, Call Blue, the
+   theme picker, and Login/Join once .nav is hidden. */
 @media (max-width: 900px) {
   .centerNav { display: none; }
   .nav { display: none; }
-  .compactMenuWrap { display: none; }
+  .compactMenuWrap { display: flex; margin-left: auto; }
   .header { padding: 0 12px; }
   .searchWrapper { padding: 0 8px; flex: 1; }
   .searchInput { min-width: 80px; max-width: 100%; }
@@ -930,10 +939,31 @@
   .menuButton { display: none; }
   .searchWrapper { display: none; }
   .leftSection {
-    flex: 1;
+    flex: 0 0 auto;
     justify-content: flex-start;
   }
-  .mobileActions { margin-left: auto; }
+  .mobileActions { margin-left: 8px; }
   .header { padding: 0 12px; }
+
+  /* Pin the dropdown to the viewport instead of the trigger so it can never
+     hang off the right edge, and give rows thumb-sized hit areas. */
+  .dropdownPanel {
+    position: fixed;
+    top: calc(var(--banner-height, 0px) + 72px + 8px);
+    right: 12px;
+    left: auto;
+    width: min(260px, calc(100vw - 24px));
+    max-height: calc(100vh - var(--banner-height, 0px) - 96px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dropdownPanel .dropdownNavLink,
+  .dropdownActionLink,
+  .dropdownAuthLink,
+  .dropdownJoinButton {
+    height: 44px;
+    font-size: 14px;
+  }
 }
 

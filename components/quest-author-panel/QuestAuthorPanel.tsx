@@ -206,7 +206,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>Reflections</span>
+            <span className={styles.label}>Credits</span>
             <input
               className={styles.input}
               type="number"

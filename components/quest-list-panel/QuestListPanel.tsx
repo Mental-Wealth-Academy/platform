@@ -68,8 +68,16 @@ export default function QuestListPanel({
   const availableQuests = quests.filter((q) => !isQuestCleared(q));
   const displayQuests = activeTab === 'available' ? availableQuests : completedQuests;
   const totalPages = isMobile ? Math.max(1, Math.ceil(displayQuests.length / PAGE_SIZE)) : 1;
+  // Clamp the page when the list shrinks (a quest gets cleared, a refresh drops
+  // one) or when a resize changes the page count — otherwise the board renders
+  // an empty slice with no empty-state to explain it.
+  const safePage = Math.min(currentPage, totalPages - 1);
+  useEffect(() => {
+    if (currentPage > totalPages - 1) setCurrentPage(totalPages - 1);
+  }, [currentPage, totalPages]);
+
   const pagedQuests = isMobile
-    ? displayQuests.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE)
+    ? displayQuests.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE)
     : displayQuests;
 
   return (
@@ -108,14 +116,16 @@ export default function QuestListPanel({
             >
               <Image src="/icons/usdc-logo.svg" alt="USDC" width={15} height={15} />
               ${usdcAvailable}
-              <span className={styles.usdcStatLabel}>in bounties</span>
+              <span className={styles.usdcStatLabel}>rewards</span>
             </span>
           )}
         </div>
 
-        <div className={styles.tabBar}>
+        <div className={styles.tabBar} role="tablist" aria-label="Quest filter">
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'available'}
             className={`${styles.tab} ${activeTab === 'available' ? styles.tabActive : ''}`}
             onClick={() => { setActiveTab('available'); setCurrentPage(0); }}
           >
@@ -124,6 +134,8 @@ export default function QuestListPanel({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === 'completed'}
             className={`${styles.tab} ${activeTab === 'completed' ? styles.tabActive : ''}`}
             onClick={() => { setActiveTab('completed'); setCurrentPage(0); }}
           >
@@ -182,18 +194,22 @@ export default function QuestListPanel({
                       </>
                     ) : (
                       <>
-                        <span className={styles.rewardChip}>
+                        <span className={styles.rewardChip} title={`${quest.points} credits`}>
                           <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
                           {quest.points}
+                          <span className={styles.srOnly}> credits</span>
                         </span>
                         {usdcReward > 0 && (
-                          <span className={`${styles.rewardChip} ${styles.rewardChipUsdc}`}>
+                          <span className={`${styles.rewardChip} ${styles.rewardChipUsdc}`} title={`$${usdcReward} USDC bounty`}>
                             <Image src="/icons/usdc-logo.svg" alt="USDC" width={14} height={14} />
                             ${usdcReward}
                           </span>
                         )}
                         {targetCount > 1 && (
-                          <span className={styles.progressLabel}>
+                          <span
+                            className={styles.progressLabel}
+                            title={`${Math.min(quest.progressCount ?? 0, targetCount)} of ${targetCount} completed`}
+                          >
                             {Math.min(quest.progressCount ?? 0, targetCount)}/{targetCount}
                           </span>
                         )}
@@ -211,7 +227,7 @@ export default function QuestListPanel({
             <button
               type="button"
               className={styles.pageBtn}
-              disabled={currentPage === 0}
+              disabled={safePage === 0}
               onClick={() => { play('click'); setCurrentPage((p) => Math.max(0, p - 1)); }}
               aria-label="Previous page"
             >
@@ -219,12 +235,12 @@ export default function QuestListPanel({
               Prev
             </button>
             <span className={styles.pageInfo}>
-              Page {currentPage + 1} of {totalPages}
+              Page {safePage + 1} of {totalPages}
             </span>
             <button
               type="button"
               className={styles.pageBtn}
-              disabled={currentPage >= totalPages - 1}
+              disabled={safePage >= totalPages - 1}
               onClick={() => { play('click'); setCurrentPage((p) => Math.min(totalPages - 1, p + 1)); }}
               aria-label="Next page"
             >

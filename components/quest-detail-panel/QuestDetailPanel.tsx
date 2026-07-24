@@ -125,7 +125,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
   // Proof-required quests are reviewed by staff — load any existing submission so
   // the panel reflects pending / approved / rejected state instead of pretending
-  // the reflections are instantly claimable.
+  // the credits are instantly claimable.
   useEffect(() => {
     if (!questId || questRewardType !== 'proof-required' || questId.startsWith('cq_')) {
       setProof(null);
@@ -434,7 +434,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
           <span className={styles.calloutDot} aria-hidden="true" />
           <span>
             {sealed
-              ? `Week ${quest.weekNumber} is sealed — your reflections are ready to claim.`
+              ? `Week ${quest.weekNumber} is sealed — your credits are ready to claim.`
               : `Week ${quest.weekNumber} is not sealed yet. Finish that week on your home dashboard, then come back to claim.`}
           </span>
         </div>
@@ -453,7 +453,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         return (
           <div className={styles.callout} data-state="info">
             <span className={styles.calloutDot} aria-hidden="true" />
-            <span>Submitted. A staff member will review your proof and release your reflections.</span>
+            <span>Submitted. A staff member will review your proof and release your credits.</span>
           </div>
         );
       }
@@ -461,7 +461,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
         return (
           <div className={styles.callout} data-state="ready">
             <span className={styles.calloutDot} aria-hidden="true" />
-            <span>Approved — your {quest.points} reflections have been added to your balance.</span>
+            <span>Approved — your {quest.points} credits have been added to your balance.</span>
           </div>
         );
       }
@@ -608,7 +608,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                 )}
                 <div className={styles.callout} data-state="info">
                   <span className={styles.calloutDot} aria-hidden="true" />
-                  <span>Submissions are queued for review. Approved entries receive reflections automatically.</span>
+                  <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
                 </div>
                 {usdcReward > 0 && usdcClaim && !usdcClaim.loading && !usdcClaim.status && usdcClaim.eligible && (
                   <>
@@ -630,7 +630,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
 
             {quest.rewardType === 'no-proof' && (
               <p className={styles.actionDesc}>
-                Finish the task above on your own, then claim your reflections. This one uses self-attestation.
+                Finish the task above on your own, then claim your credits. This one uses self-attestation.
               </p>
             )}
 
@@ -707,7 +707,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             <li className={styles.rewardItem}>
               <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} />
               <span className={styles.rewardItemValue}>{quest.points}</span>
-              <span className={styles.rewardItemName}>Reflections</span>
+              <span className={styles.rewardItemName}>Credits</span>
             </li>
             {usdcReward > 0 && (
               <li className={styles.rewardItem}>
@@ -729,7 +729,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={!canClaimSealedWeek || isCompleting}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} reflections`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
           </button>
         )}
         {quest.rewardType === 'proof-required' && usesProofReview && (
@@ -780,7 +780,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
             onClick={handleCompleteReward}
             disabled={isCompleting || questIsComplete}
           >
-            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} reflections`}
+            {questIsComplete ? 'Quest cleared' : isCompleting ? 'Claiming...' : `Claim ${quest.points} credits`}
           </button>
         )}
         {quest.rewardType === 'twitter-follow' && (
@@ -795,7 +795,7 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
               : isCompleting
                 ? 'Claiming...'
                 : step1Completed && step2Completed
-                  ? 'Claim reflections'
+                  ? 'Claim credits'
                   : 'Complete the steps above'}
           </button>
         )}

@@ -11,8 +11,11 @@
   padding: 0;
   border-radius: 12px;
   overflow: hidden;
-  background-color: #ffffff;
+  /* Matches the board: the scene backdrop reads through the empty log. */
+  background-color: rgba(255, 255, 255, 0.72);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border: 2px solid var(--color-primary-hover);
   box-shadow:
     0 6px 0 var(--color-primary),
@@ -24,6 +27,7 @@
 .listHeader {
   display: flex;
   align-items: center;
+  gap: 10px;
   padding: 12px 16px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
@@ -40,6 +44,8 @@
 }
 
 .listHeaderQuestTitle {
+  flex: 1;
+  min-width: 0;
   font-family: var(--font-primary);
   font-size: 0.8rem;
   font-weight: 700;
@@ -102,7 +108,7 @@
 
 /* ── Dark mode ── */
 :global([data-theme="dark"]) .panel {
-  background-color: #15172a;
+  background-color: rgba(21, 23, 42, 0.76);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
   border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
   box-shadow:
@@ -154,3 +160,41 @@
   }
 }
 
+
+/* Back to the quest log — without this the detail view is a one-way door. */
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 29, 51, 0.14);
+  background: transparent;
+  color: rgba(26, 29, 51, 0.55);
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.closeBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+  color: var(--color-primary);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+:global([data-theme="dark"]) .closeBtn {
+  border-color: rgba(235, 232, 247, 0.18);
+  color: rgba(235, 232, 247, 0.6);
+}
+
+:global([data-theme="dark"]) .closeBtn:hover {
+  color: #c2ccff;
+  border-color: rgba(194, 204, 255, 0.4);
+}
