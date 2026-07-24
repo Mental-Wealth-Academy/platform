@@ -312,7 +312,7 @@
   min-height: 72px;
   padding: 16px 20px;
   border: 2px dashed color-mix(in oklch, var(--color-primary) 45%, var(--color-border-subtle, #c7c7c7));
-  border-radius: 22px;
+  border-radius: var(--card-radius, 22px);
   background: transparent;
   color: var(--color-text-muted, #666);
   cursor: pointer;

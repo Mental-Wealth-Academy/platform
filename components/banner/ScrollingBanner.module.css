@@ -1,0 +1,55 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background-color: #c3c9fa;
+  color: #1a1d33;
+  z-index: 9999; /* Higher than TopNavigation which is 200, but let's keep it safe. We will set TopNavigation to render below it. */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1.5px solid #1a1d33;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.banner:hover {
+  /* Hover effect adds a subtle inner light shadow white colored underneath */
+  box-shadow: inset 0 -6px 8px rgba(255, 255, 255, 0.7);
+}
+
+.marqueeContainer {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.marquee {
+  display: flex;
+  white-space: nowrap;
+  animation: marqueeAnimation 28s linear infinite;
+}
+
+.marquee span {
+  padding-right: 0;
+  display: inline-block;
+}
+
+@keyframes marqueeAnimation {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

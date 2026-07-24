@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import CtaButton from '@/components/shared/CtaButton';
-import HolographicFolder from '@/components/shared/HolographicFolder';
 import manifest from '@/lib/blue-radio-manifest.json';
 import styles from './BlueScene.module.css';
 
@@ -199,14 +198,6 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
 
   return (
     <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
-      <HolographicFolder
-        className={styles.radioArchiveFolder}
-        label="Academy magazine"
-        fileSrc="/images/interactive-folders/academy-magazine-2082.jpg"
-        fileAlt="Mental Wealth Academy Artist Guide magazine cover"
-        fileWidth={927}
-        fileHeight={1200}
-      />
       <div className={styles.radioBlueWrap}>
         <Image
           src="/blue/blue-home.png"

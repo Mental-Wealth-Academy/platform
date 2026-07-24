@@ -1,0 +1,25 @@
+.supportTab {
+  position: fixed;
+  right: 0;
+  bottom: 20%;
+  background-color: #f7ca18;
+  color: #1a1d33;
+  padding: 1rem 0.5rem;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  border: 3.5px solid #1a1d33;
+  border-left: none; /* Left because it's rotated 180deg, so left is the right side of the screen */
+  border-radius: 0 8px 8px 0; /* Same here, after rotation */
+  font-family: var(--font-mono, monospace);
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 4px -4px 0 rgba(26, 29, 51, 1); /* Adjust shadow for rotation */
+  transition: transform 0.2s ease, right 0.2s ease;
+  user-select: none;
+}
+
+.supportTab:hover {
+  right: 5px; /* Subtle slide out animation */
+}
