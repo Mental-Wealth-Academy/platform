@@ -755,3 +755,61 @@
     font-size: 0.85rem;
   }
 }
+
+/* Act selection menu for Week 9 */
+.actList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem auto 0.5rem;
+  max-width: 100%;
+}
+
+.actButton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.actButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(140, 232, 223, 0.5);
+  box-shadow: 0 4px 16px rgba(140, 232, 223, 0.1);
+  transform: translateY(-1px);
+}
+
+.actNumber {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #37cfc0;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.actTitle {
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f5f6ff;
+  line-height: 1.2;
+}
+
+.actDesc {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(235, 238, 255, 0.6);
+  margin-top: 0.15rem;
+  line-height: 1.3;
+}
+

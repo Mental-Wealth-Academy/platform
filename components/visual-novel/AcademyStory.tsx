@@ -265,7 +265,16 @@ export default function AcademyStory({
   const spokenSceneRef = useRef<string | null>(null);
   const [narrationEnabled, setNarrationEnabled] = useState(true);
   const narrationEnabledRef = useRef(true);
-  const scenes = useMemo(() => getScenesForWeek(weekNumber), [weekNumber]);
+  const [selectedAct, setSelectedAct] = useState<number | null>(null);
+  const scenes = useMemo(() => {
+    const allScenes = getScenesForWeek(weekNumber);
+    if (weekNumber === 9 && selectedAct !== null) {
+      if (selectedAct === 1) return allScenes.slice(0, 3);
+      if (selectedAct === 2) return allScenes.slice(3, 5);
+      if (selectedAct === 3) return allScenes.slice(5, 8);
+    }
+    return allScenes;
+  }, [weekNumber, selectedAct]);
   const hasCheckIn = weekNumber === 1;
 
   useEffect(() => {
@@ -456,6 +465,7 @@ export default function AcademyStory({
         setDisplayedText('');
         setClaimStatus('idle');
         setShowRewardAnimation(false);
+        setSelectedAct(null);
       }, 250);
       return () => clearTimeout(timer);
     }
@@ -474,8 +484,16 @@ export default function AcademyStory({
       if (showWeeklyIntro || showCheckIn) return;
       if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
       if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
-        if (hasCheckIn) setShowCheckIn(true);
-        else onClose();
+        if (hasCheckIn) {
+          setShowCheckIn(true);
+        } else if (weekNumber === 9) {
+          setSceneIndex(0);
+          setSelectedAct(null);
+          setShowWeeklyIntro(true);
+          setDisplayedText('');
+        } else {
+          onClose();
+        }
       }
       if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
     };
@@ -484,7 +502,7 @@ export default function AcademyStory({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn, showWeeklyIntro]);
+  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn, showWeeklyIntro, weekNumber]);
 
   if (!shouldRender) return null;
 
@@ -504,8 +522,16 @@ export default function AcademyStory({
       spokenSceneRef.current = null;
       audioRef.current?.pause();
       if (audioRef.current) audioRef.current.currentTime = 0;
-      if (hasCheckIn) setShowCheckIn(true);
-      else onClose();
+      if (hasCheckIn) {
+        setShowCheckIn(true);
+      } else if (weekNumber === 9) {
+        setSceneIndex(0);
+        setSelectedAct(null);
+        setShowWeeklyIntro(true);
+        setDisplayedText('');
+      } else {
+        onClose();
+      }
     }
   };
 
@@ -630,19 +656,61 @@ export default function AcademyStory({
               <span />
             </div>
             <span className={styles.weeklyIntroEyebrow}>Academy story · {weekTitle}</span>
-            <h2 id="weekly-intro-title" className={styles.weeklyIntroTitle}>A story for this week</h2>
-            <p id="weekly-intro-description" className={styles.weeklyIntroBody}>
-              This chapter is audio-based. Put on your headphones, settle in, and let the images and narration carry you through the work.
-            </p>
-            <p className={styles.weeklyIntroQuestion}>Are you ready?</p>
-            <CtaButton
-              size="lg"
-              block
-              className={styles.weeklyIntroContinue}
-              onClick={() => setShowWeeklyIntro(false)}
-            >
-              Continue
-            </CtaButton>
+            <h2 id="weekly-intro-title" className={styles.weeklyIntroTitle}>
+              {weekNumber === 9 ? 'A story in three acts' : 'A story for this week'}
+            </h2>
+            {weekNumber === 9 ? (
+              <div className={styles.actList}>
+                <button
+                  className={styles.actButton}
+                  onClick={() => {
+                    setSelectedAct(1);
+                    setShowWeeklyIntro(false);
+                  }}
+                >
+                  <span className={styles.actNumber}>Act I</span>
+                  <span className={styles.actTitle}>The Affliction</span>
+                  <span className={styles.actDesc}>Burdened by the failure of the past world, thoughts of self-sabotage begin to take hold.</span>
+                </button>
+                <button
+                  className={styles.actButton}
+                  onClick={() => {
+                    setSelectedAct(2);
+                    setShowWeeklyIntro(false);
+                  }}
+                >
+                  <span className={styles.actNumber}>Act II</span>
+                  <span className={styles.actTitle}>The Circlet</span>
+                  <span className={styles.actDesc}>A memory of helplessness, and the parental guidance circlets meant to suppress nature.</span>
+                </button>
+                <button
+                  className={styles.actButton}
+                  onClick={() => {
+                    setSelectedAct(3);
+                    setShowWeeklyIntro(false);
+                  }}
+                >
+                  <span className={styles.actNumber}>Act III</span>
+                  <span className={styles.actTitle}>The Programming</span>
+                  <span className={styles.actDesc}>To break the rules, to face the fear of abandonment, and to heal the inner shade.</span>
+                </button>
+              </div>
+            ) : (
+              <>
+                <p id="weekly-intro-description" className={styles.weeklyIntroBody}>
+                  This chapter is audio-based. Put on your headphones, settle in, and let the images and narration carry you through the work.
+                </p>
+                <p className={styles.weeklyIntroQuestion}>Are you ready?</p>
+                <CtaButton
+                  size="lg"
+                  block
+                  className={styles.weeklyIntroContinue}
+                  onClick={() => setShowWeeklyIntro(false)}
+                >
+                  Continue
+                </CtaButton>
+              </>
+            )}
           </div>
         ) : !showCheckIn ? (
           <div className={styles.screen}>
