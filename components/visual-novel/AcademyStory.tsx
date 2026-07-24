@@ -244,6 +244,7 @@ function getScenesForWeek(weekNumber: number): Scene[] {
     id: `week-${weekPath}-${index + 1}`,
     image: `/stories/week-${weekPath}/${String(index + 1).padStart(2, '0')}.png`,
     body: WEEK_STORIES[weekNumber]?.[index],
+    audio: weekNumber === 9 ? `/audio/stories/week-09/${String(index + 1).padStart(2, '0')}.mp3` : undefined,
   }));
 }
 

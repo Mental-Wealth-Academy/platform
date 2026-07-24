@@ -18,78 +18,30 @@
   inset: 0;
   z-index: 1099;
   overflow: hidden;
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-primary) 55%, white) 0%,
-    var(--color-primary) 38%,
-    color-mix(in oklch, var(--color-primary) 72%, black) 100%
-  );
-  box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
-    inset -2px 2px 4px rgba(255, 255, 255, 0.4),
-    inset 1.5px -1.5px 4px rgba(0, 0, 0, 0.5),
-    0 20px 60px color-mix(in oklch, var(--color-primary) 60%, transparent);
+  background: rgba(11, 13, 26, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   opacity: 0;
   pointer-events: none;
   transform: scale(0.98);
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* Speaker grille — small slotted bar centered in the top bezel */
 .modal::before {
-  content: '';
-  position: absolute;
-  top: 27px;
-  left: 50%;
-  z-index: 5;
-  width: 110px;
-  height: 11px;
-  transform: translateX(-50%);
-  border-radius: 6px;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.4) 0px,
-    rgba(0, 0, 0, 0.4) 4px,
-    transparent 4px,
-    transparent 8px
-  );
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.25);
-  pointer-events: none;
+  content: none;
 }
 
-/* "ACADEMY TV" nameplate — engraved into the bottom bezel */
 .modal::after {
-  content: 'ACADEMY TV';
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  z-index: 5;
-  transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  color: #6d70a8;
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.5),
-    0 -1px 1px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-  user-select: none;
+  content: none;
 }
 
-/* The actual video/story surface — inset from the modal's edges so the
-   gradient frame, speaker grille, and nameplate remain visible around it. */
 .screen {
   position: absolute;
-  top: 64px;
-  right: 14px;
-  bottom: 40px;
-  left: 14px;
+  inset: 0;
   z-index: 2;
   overflow: hidden;
-  border-radius: 10px;
   background: #000;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
 }
 
 .modalOpen {
@@ -109,14 +61,10 @@
   padding: clamp(2rem, 5vw, 3.25rem);
   overflow: hidden;
   text-align: center;
-  background:
-    radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--color-primary) 28%, transparent), transparent 58%),
-    color-mix(in oklch, var(--color-primary) 88%, #090b16);
-  border: 1px solid rgba(190, 198, 255, 0.24);
+  background: #0b0c16;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
-  box-shadow:
-    0 26px 80px rgba(0, 0, 0, 0.44),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.5);
   animation: weeklyIntroIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -137,8 +85,8 @@
 .weeklyIntroSignal span {
   width: 5px;
   border-radius: 999px;
-  background: #8ce8df;
-  box-shadow: 0 0 16px rgba(140, 232, 223, 0.55);
+  background: var(--color-brand);
+  box-shadow: 0 0 16px rgba(81, 104, 255, 0.55);
 }
 
 .weeklyIntroSignal span:nth-child(1) { height: 12px; opacity: 0.55; }
@@ -178,7 +126,7 @@
 
 .weeklyIntroQuestion {
   margin: 1.5rem 0 1.25rem;
-  color: #a7fff5;
+  color: var(--color-brand);
   font-family: var(--font-primary);
   font-size: 1.1rem;
   font-weight: 600;
@@ -187,7 +135,7 @@
 
 .weeklyIntroContinue {
   min-height: 50px;
-  box-shadow: 0 12px 28px color-mix(in oklch, #37cfc0 28%, transparent);
+  box-shadow: 0 12px 28px color-mix(in oklch, var(--color-action) 28%, transparent);
 }
 
 /* Check-in step: drop the cinematic stage and any wrapper chrome — the Blue
@@ -668,39 +616,19 @@
     height: auto;
     max-height: calc(100vh - 72px);
     border-radius: 24px;
-    box-shadow:
-      inset 0 0 0 1px rgba(0, 0, 0, 0.25),
-      inset -3px 3px 6px rgba(255, 255, 255, 0.4),
-      inset 2px -2px 5px rgba(0, 0, 0, 0.5),
-      0 0 0 3px var(--color-primary),
-      0 0 0 4px #16171f,
-      0 34px 100px color-mix(in oklch, var(--color-primary) 60%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
     transform: translate(-50%, -50%) scale(0.98);
   }
 
-  .modal::before {
-    top: 30px;
-    width: 130px;
-    height: 13px;
-    border-radius: 7px;
-  }
-
   .screen {
-    top: 72px;
-    right: 20px;
-    bottom: 46px;
-    left: 20px;
-    border-radius: 14px;
+    inset: 0;
+    border-radius: 24px;
   }
 
   .closeButton,
   .audioButton {
     top: 16px;
-  }
-
-  .modal::after {
-    bottom: 15px;
-    font-size: 12px;
   }
 
   .modalOpen {
@@ -782,8 +710,8 @@
 
 .actButton:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(140, 232, 223, 0.5);
-  box-shadow: 0 4px 16px rgba(140, 232, 223, 0.1);
+  border-color: rgba(81, 104, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(81, 104, 255, 0.1);
   transform: translateY(-1px);
 }
 
@@ -792,7 +720,7 @@
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #37cfc0;
+  color: var(--color-brand);
   text-transform: uppercase;
   margin-bottom: 0.2rem;
 }
