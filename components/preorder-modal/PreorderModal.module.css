@@ -187,23 +187,6 @@
   margin: 0;
 }
 
-.editions {
-  display: flex;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.editionTag {
-  font-family: var(--font-mono), monospace;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 4px 8px;
-  background: #f4f5fe;
-  border: 1.5px solid #1a1d33;
-  border-radius: 4px;
-  color: #1a1d33;
-}
-
 .actions {
   display: flex;
   gap: 12px;
@@ -215,4 +198,44 @@
   flex: 1;
   font-family: var(--font-secondary), sans-serif;
   font-weight: 700;
+  font-size: 14px;
+  border: 2.5px solid #1a1d33 !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  box-shadow: 3px 3px 0 #1a1d33 !important;
+  transition: all 0.1s ease !important;
+  cursor: pointer;
+  text-align: center;
+}
+
+.buyBtn {
+  background-color: var(--color-primary, #5168ff) !important;
+  color: #ffffff !important;
+}
+
+.buyBtn:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0 #1a1d33 !important;
+  background-color: color-mix(in oklch, var(--color-primary) 85%, #000000) !important;
+}
+
+.buyBtn:active {
+  transform: translate(3px, 3px) !important;
+  box-shadow: none !important;
+}
+
+.dismissBtn {
+  background-color: #ffffff !important;
+  color: #1a1d33 !important;
+}
+
+.dismissBtn:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0 #1a1d33 !important;
+  background-color: #f4f5fe !important;
+}
+
+.dismissBtn:active {
+  transform: translate(3px, 3px) !important;
+  box-shadow: none !important;
 }

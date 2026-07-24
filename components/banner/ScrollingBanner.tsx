@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useSound } from '@/hooks/useSound';
 import styles from './ScrollingBanner.module.css';
 
 interface ScrollingBannerProps {
@@ -8,6 +9,7 @@ interface ScrollingBannerProps {
 }
 
 export default function ScrollingBanner({ onClick }: ScrollingBannerProps) {
+  const { play } = useSound();
   const text = 'BIG ANNOUNCEMENT!!!! ACADEMY BOOK PREORDER!!! • ';
   // Repeat the text enough times to cover screen widths and loop seamlessly
   const repeatedText = Array(12).fill(text).join('');
@@ -16,6 +18,7 @@ export default function ScrollingBanner({ onClick }: ScrollingBannerProps) {
     <div 
       className={styles.banner} 
       onClick={onClick}
+      onMouseEnter={() => play('soft-hover')}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {

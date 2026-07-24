@@ -85,7 +85,7 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
             <div className={styles.bookDisplayBg} />
             <div className={styles.bookImageWrapper}>
               <Image
-                src="/images/orbits-book-cover.jpg"
+                src="/images/orbits-book-cover.png"
                 alt="Orbiters of The Horizon book cover by Jhinn Bay"
                 width={150}
                 height={200}
@@ -109,11 +109,6 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
             <p className={styles.releaseDate}>
               ESTIMATED RELEASE OCTOBER 2026
             </p>
-            
-            <div className={styles.editions}>
-              <span className={styles.editionTag}>HARDCOVER</span>
-              <span className={styles.editionTag}>DIGITAL EDITION</span>
-            </div>
           </div>
 
           {/* Footer action buttons */}
