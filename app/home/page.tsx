@@ -486,7 +486,12 @@ export default function HomePage() {
                     centerLabel="Blue's Story"
                     ctaLabel="Continue Course"
                     ctaDark
-                    images={[]}
+                    images={[
+                      '/images/blueastro.png',
+                      '/images/campfire.jpg',
+                      '/images/course-panel-blue-art.png',
+                      '/images/blue-fullbody.png'
+                    ]}
                   />
                   <CourseFolderCard
                     title="Your Course"
@@ -496,7 +501,12 @@ export default function HomePage() {
                     centerLabel={personalCourse?.focus ?? 'Personal Curriculum'}
                     ctaLabel={personalCourse ? 'Continue Course' : 'Start Course'}
                     dark
-                    images={[]}
+                    images={[
+                      '/images/academy-blockchain.png',
+                      '/images/angel-investing.png',
+                      '/images/treasury.png',
+                      '/images/community-book.png'
+                    ]}
                   />
                   <EmptyCourseStudioFolder hasAngel={hasAngel} />
                 </section>

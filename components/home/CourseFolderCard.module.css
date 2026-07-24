@@ -113,6 +113,7 @@
   background-color: color-mix(in oklch, var(--folder-blue) 70%, #1b1e3a);
   background-size: cover;
   background-position: center;
+  transition: transform var(--duration-fast, 0.15s) var(--ease-default, ease);
 }
 
 /* Gradient fade: 0% blue at top to solid at bottom, progressive blur behind */
@@ -194,6 +195,7 @@
   background-position: center;
   background-size: cover;
   color: var(--folder-stroke);
+  transition: transform var(--duration-fast, 0.15s) var(--ease-default, ease);
 }
 
 .tabIcon + .tabIcon {
@@ -202,6 +204,19 @@
 
 .tabIconGlyph {
   background-color: color-mix(in srgb, #f6f8ed 64%, var(--folder-blue));
+}
+
+.folder:hover .tabIcon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+.folder:hover .tabIcon + .tabIcon {
+  transform: scale(1.15) rotate(-6deg) translate(2px, -1px);
+}
+
+.folder:hover .imageSlot {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .centerLabel {
