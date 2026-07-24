@@ -10,7 +10,7 @@ import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './WeekOneVisualNovel.module.css';
 
 const NARRATION_PREF_KEY = 'weekOneVN.narrationEnabled';
-const NARRATOR_VOICE_ID = 'ksryVoNAGZT8GxWCTiVm';
+const NARRATOR_VOICE_ID = 'dcSSxQ58gWTChUENh6kN';
 
 const CHECK_IN_QUESTIONS = [
   'How many days did you do your field notes?',
@@ -352,11 +352,35 @@ export default function AcademyStory({
     if (!shouldRender || showWeeklyIntro || showCheckIn || !narrationEnabledRef.current) return;
 
     const currentScene = scenes[sceneIndex];
-    const text = currentScene?.body?.trim();
-    if (!currentScene || !text || spokenSceneRef.current === currentScene.id) return;
+    if (!currentScene || spokenSceneRef.current === currentScene.id) return;
 
     spokenSceneRef.current = currentScene.id;
     narrationRequestRef.current?.abort();
+
+    // Reset audio immediately to prevent overlapping sounds
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    // Play pre-recorded static audio immediately if defined
+    if (currentScene.audio) {
+      if (narrationObjectUrlRef.current) {
+        URL.revokeObjectURL(narrationObjectUrlRef.current);
+        narrationObjectUrlRef.current = null;
+      }
+      const el = audioRef.current ?? new Audio();
+      audioRef.current = el;
+      el.volume = 0.4;
+      el.preload = 'auto';
+      el.src = currentScene.audio;
+      el.currentTime = 0;
+      return;
+    }
+
+    const text = currentScene?.body?.trim();
+    if (!text) return;
+
     const controller = new AbortController();
     narrationRequestRef.current = controller;
 
@@ -396,11 +420,14 @@ export default function AcademyStory({
     if (!shouldRender || isTyping || showCheckIn) return;
     if (!narrationEnabledRef.current) return;
 
+    const currentScene = scenes[sceneIndex];
+    if (!currentScene || spokenSceneRef.current !== currentScene.id) return;
+
     const el = audioRef.current;
     if (!el || !el.src) return;
 
     void el.play().catch(() => {});
-  }, [sceneIndex, shouldRender, isTyping, showCheckIn, narrationEnabled]);
+  }, [sceneIndex, shouldRender, isTyping, showCheckIn, narrationEnabled, scenes]);
 
   // Orientation detection + landscape lock
   useEffect(() => {
@@ -494,8 +521,18 @@ export default function AcademyStory({
         return;
       }
       if (showWeeklyIntro || showCheckIn) return;
-      if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) setSceneIndex((c) => c + 1);
+      if (e.key === 'ArrowRight' && sceneIndex < scenes.length - 1) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+        setSceneIndex((c) => c + 1);
+      }
       if (e.key === 'ArrowRight' && sceneIndex === scenes.length - 1) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
         if (hasCheckIn) {
           setShowCheckIn(true);
         } else if (weekNumber === 9) {
@@ -507,14 +544,20 @@ export default function AcademyStory({
           onClose();
         }
       }
-      if (e.key === 'ArrowLeft' && sceneIndex > 0) setSceneIndex((c) => c - 1);
+      if (e.key === 'ArrowLeft' && sceneIndex > 0) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+        setSceneIndex((c) => c - 1);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes.length, showCheckIn, showWeeklyIntro, weekNumber]);
+  }, [hasCheckIn, isOpen, onClose, sceneIndex, scenes, showCheckIn, showWeeklyIntro, weekNumber]);
 
   if (!shouldRender) return null;
 
@@ -529,11 +572,17 @@ export default function AcademyStory({
       setIsTyping(false);
     } else if (!isLast) {
       spokenSceneRef.current = null;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       setSceneIndex((c) => c + 1);
     } else {
       spokenSceneRef.current = null;
-      audioRef.current?.pause();
-      if (audioRef.current) audioRef.current.currentTime = 0;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       if (hasCheckIn) {
         setShowCheckIn(true);
       } else if (weekNumber === 9) {
@@ -555,6 +604,10 @@ export default function AcademyStory({
     }
     if (sceneIndex > 0) {
       spokenSceneRef.current = null;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       setSceneIndex((c) => c - 1);
     }
   };
@@ -752,8 +805,20 @@ export default function AcademyStory({
             <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="Previous scene" disabled={sceneIndex === 0} />
             <button type="button" className={styles.tapNext} onClick={goNext} aria-label="Next scene" />
 
-            {/* Bottom bar: dots only */}
+            {/* Bottom bar: dots and navigation arrows */}
             <div className={styles.bottomBar}>
+              <button
+                type="button"
+                className={styles.navArrow}
+                onClick={goPrev}
+                disabled={sceneIndex === 0}
+                aria-label="Previous scene"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+
               <div className={styles.dots} role="tablist">
                 {scenes.map((s, i) => (
                   <button
@@ -763,10 +828,27 @@ export default function AcademyStory({
                     aria-selected={i === sceneIndex}
                     aria-label={`Scene ${i + 1}`}
                     className={`${styles.dot} ${i === sceneIndex ? styles.dotActive : ''}`}
-                    onClick={() => setSceneIndex(i)}
+                    onClick={() => {
+                      if (audioRef.current) {
+                        audioRef.current.pause();
+                        audioRef.current.currentTime = 0;
+                      }
+                      setSceneIndex(i);
+                    }}
                   />
                 ))}
               </div>
+
+              <button
+                type="button"
+                className={styles.navArrow}
+                onClick={goNext}
+                aria-label="Next scene"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
             </div>
 
             {/* Portrait hard-block overlay */}

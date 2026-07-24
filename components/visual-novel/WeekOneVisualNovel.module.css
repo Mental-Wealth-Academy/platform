@@ -18,30 +18,78 @@
   inset: 0;
   z-index: 1099;
   overflow: hidden;
-  background: rgba(11, 13, 26, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 55%, white) 0%,
+    var(--color-primary) 38%,
+    color-mix(in oklch, var(--color-primary) 72%, black) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+    inset -2px 2px 4px rgba(255, 255, 255, 0.4),
+    inset 1.5px -1.5px 4px rgba(0, 0, 0, 0.5),
+    0 20px 60px color-mix(in oklch, var(--color-primary) 60%, transparent);
   opacity: 0;
   pointer-events: none;
   transform: scale(0.98);
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
+/* Speaker grille — small slotted bar centered in the top bezel */
 .modal::before {
-  content: none;
+  content: '';
+  position: absolute;
+  top: 27px;
+  left: 50%;
+  z-index: 5;
+  width: 110px;
+  height: 11px;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.4) 0px,
+    rgba(0, 0, 0, 0.4) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.25);
+  pointer-events: none;
 }
 
+/* "ACADEMY TV" nameplate — engraved into the bottom bezel */
 .modal::after {
-  content: none;
+  content: 'ACADEMY TV';
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  z-index: 5;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #6d70a8;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5),
+    0 -1px 1px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  user-select: none;
 }
 
+/* The actual video/story surface — inset from the modal's edges so the
+   gradient frame, speaker grille, and nameplate remain visible around it. */
 .screen {
   position: absolute;
-  inset: 0;
+  top: 64px;
+  right: 14px;
+  bottom: 40px;
+  left: 14px;
   z-index: 2;
   overflow: hidden;
+  border-radius: 10px;
   background: #000;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
 }
 
 .modalOpen {
@@ -324,8 +372,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1.5rem;
   padding: 1.25rem;
   padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+.navArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  padding: 0;
+}
+
+.navArrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.navArrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
 }
 
 .dots {
@@ -616,19 +692,39 @@
     height: auto;
     max-height: calc(100vh - 72px);
     border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+      inset -3px 3px 6px rgba(255, 255, 255, 0.4),
+      inset 2px -2px 5px rgba(0, 0, 0, 0.5),
+      0 0 0 3px var(--color-primary),
+      0 0 0 4px #16171f,
+      0 34px 100px color-mix(in oklch, var(--color-primary) 60%, transparent);
     transform: translate(-50%, -50%) scale(0.98);
   }
 
+  .modal::before {
+    top: 30px;
+    width: 130px;
+    height: 13px;
+    border-radius: 7px;
+  }
+
   .screen {
-    inset: 0;
-    border-radius: 24px;
+    top: 72px;
+    right: 20px;
+    bottom: 46px;
+    left: 20px;
+    border-radius: 14px;
   }
 
   .closeButton,
   .audioButton {
     top: 16px;
+  }
+
+  .modal::after {
+    bottom: 15px;
+    font-size: 12px;
   }
 
   .modalOpen {
