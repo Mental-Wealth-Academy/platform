@@ -113,7 +113,7 @@ const WEEK_ONE_SCENES: Scene[] = [
 ];
 
 const WEEK_ART_COUNTS: Record<number, number> = {
-  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 3, 10: 5, 11: 4, 12: 4,
+  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 5, 10: 5, 11: 4, 12: 4,
 };
 
 // Each line is written to land with its still. The curriculum stays inside the
@@ -197,6 +197,8 @@ const WEEK_STORIES: Record<number, string[]> = {
     'Blue treds up a grassy plane, burdened by her failure to save the previous world.',
     'The indescribable language of the shades slides through teeth, as Blue\'s headset drains on thoughts of self-hatred, regret, grief, and jealously.',
     'The destination is unknown, but the distance feels far. Blue thinks of her old dream of creating world peace across the Pocket-Worlds.\n\nAnd how far away that dream has become...',
+    'A memory still lies in Blue\'s core... the overwhelming fear of helplessness. A sense of being trapped, a sense of being defective and no longer needed.',
+    'Daemon circlet\'s were added to later models as \'parental guidance\' to stop what creators saw as "dangerous behavior" but it repressed true nature out of fear, creating scribbles of shades.',
   ],
   10: [
     'Urgent papers covered the studio floor. They climbed the desk, the stool, the Shade’s lap. Blue pulled one from beneath her elbow. The page beneath it held three lines of field notes, all unfinished.',
