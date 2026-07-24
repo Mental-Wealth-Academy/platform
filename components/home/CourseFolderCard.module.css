@@ -131,8 +131,8 @@
 /* Header container that groups icons and text inside the tab */
 .tabHeaderRow {
   position: absolute;
-  top: 7.2%; /* Insets it vertically within the tab height */
-  left: 6.5%; /* Insets it from the left edge */
+  top: 9%; /* Insets it vertically inside the tab height, away from the top edge */
+  left: 7.5%; /* Insets it from the left edge */
   display: flex;
   align-items: center;
   gap: 10px;
@@ -149,9 +149,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--folder-stroke);
+  width: 21px;
+  height: 21px;
+  border: 1.5px solid var(--folder-stroke);
   border-radius: 50%;
   background-color: color-mix(in srgb, #f6f8ed 86%, var(--folder-blue));
   background-position: center;
@@ -161,7 +161,7 @@
 }
 
 .tabIcon + .tabIcon {
-  margin-left: -9px;
+  margin-left: -7px;
 }
 
 .tabIconGlyph {

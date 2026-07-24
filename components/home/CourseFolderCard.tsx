@@ -32,22 +32,31 @@ export default function CourseFolderCard({
   ctaDark = false,
   dark,
 }: CourseFolderCardProps) {
-  const slots = images.slice(0, 4);
+  const clipId = `folder-clip-${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
   const { play } = useSound();
 
   const contents = (
     <>
       <div className={styles.folderSurface}>
-        {/* Folder body fill */}
+        {/* Folder body fill with clipPath definition */}
         <svg className={styles.shape} viewBox="0 0 474 330" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <clipPath id={clipId}>
+              <path d={FOLDER_PATH} />
+            </clipPath>
+          </defs>
           <path d={FOLDER_PATH} className={styles.shapeFill} />
         </svg>
 
-        {/* Folder background image */}
+        {/* Folder background image clipped to folder shape */}
         {images.length > 0 && (
           <div
             className={styles.folderBgImage}
-            style={{ backgroundImage: `url(${JSON.stringify(images[0])})` }}
+            style={{
+              backgroundImage: `url(${JSON.stringify(images[0])})`,
+              clipPath: `url(#${clipId})`,
+              WebkitClipPath: `url(#${clipId})`
+            }}
           />
         )}
 
