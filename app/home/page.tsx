@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import { Plus, TreeStructure, Feather, Star } from '@phosphor-icons/react';
+import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -16,6 +16,7 @@ import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import HomeLeaderboard from '@/components/home/HomeLeaderboard';
+import KnowledgeCoverageCard from '@/components/home/KnowledgeCoverageCard';
 import GuideGallery, { GuideFilterSidebar, type GuideFilterState } from '@/components/home/GuideGallery';
 import FeatureTour from '@/components/feature-tour/FeatureTour';
 import CtaButton from '@/components/shared/CtaButton';
@@ -260,8 +261,10 @@ export default function HomePage() {
       .catch(() => {});
   }, [learnOnly]);
 
+  // Fetched in both views: the learn view's header counts and the dashboard's
+  // knowledge coverage chart read the same stats.
   useEffect(() => {
-    if (!learnOnly || !ready || !authenticated) return;
+    if (!ready || !authenticated) return;
     (async () => {
       try {
         const token = await getAccessToken();
@@ -270,7 +273,7 @@ export default function HomePage() {
         if (res.ok) setGuideProgress(await res.json());
       } catch {}
     })();
-  }, [learnOnly, ready, authenticated, getAccessToken]);
+  }, [ready, authenticated, getAccessToken]);
 
   // Fetched in both views: the learn view's "Next unlocks" row and the
   // dashboard's Blue recommends card share this frontier.
@@ -769,21 +772,12 @@ export default function HomePage() {
             )}
           </article>
 
-          <Link
-            href="/home/storyboard"
-            className={`${styles.insightCard} ${styles.storyboardInsightCard}`}
-            onMouseEnter={() => play('soft-hover')}
-            onClick={() => play('click')}
-          >
-            <div className={styles.storyboardHeader}>
-              <Feather size={20} weight="regular" />
-              <h2 className={styles.insightTitle}>Storyboard</h2>
-            </div>
-            <p className={styles.storyboardDesc}>
-              12-week story ideation. Map scenes, dialogue, and turning points for your narrative arc.
-            </p>
-            <span className={styles.storyboardCta}>Open Storyboard</span>
-          </Link>
+          <KnowledgeCoverageCard
+            className={`${styles.insightCard} ${styles.coverageInsightCard}`}
+            titleClassName={styles.insightTitle}
+            authenticated={authenticated}
+            stats={guideProgress}
+          />
         </section>
       )}
       </div>

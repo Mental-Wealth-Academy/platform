@@ -312,7 +312,8 @@
   min-height: 72px;
   padding: 16px 20px;
   border: 2px dashed color-mix(in oklch, var(--color-primary) 45%, var(--color-border-subtle, #c7c7c7));
-  border-radius: var(--card-radius, 22px);
+  /* Matches the compact Field Notes card above it (DailyNotes .cardCompact) */
+  border-radius: 12px;
   background: transparent;
   color: var(--color-text-muted, #666);
   cursor: pointer;
@@ -999,62 +1000,11 @@
 }
 
 
-.storyboardInsightCard {
-  --insight-color: var(--color-positive);
+.coverageInsightCard {
+  --insight-color: var(--color-primary);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
-
-.storyboardInsightCard:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 6px 0 var(--insight-color),
-    0 0 8px rgba(0, 0, 0, 0.12),
-    0 10px 6px rgba(0, 0, 0, 0.24);
-}
-
-.storyboardHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: var(--insight-color);
-}
-
-.storyboardDesc {
-  font-family: var(--font-primary);
-  font-size: 0.8125rem;
-  font-weight: 400;
-  line-height: 1.45;
-  color: var(--color-text-muted, #667085);
-  text-align: center;
-  max-width: 240px;
-  margin-bottom: 16px;
-}
-
-.storyboardCta {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 6px 16px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in oklch, var(--insight-color) 40%, transparent);
-  color: var(--insight-color);
-  background: color-mix(in oklch, var(--insight-color) 8%, transparent);
-  transition: background var(--duration-fast) var(--ease-default);
-}
-
-.storyboardInsightCard:hover .storyboardCta {
-  background: color-mix(in oklch, var(--insight-color) 14%, transparent);
-}
-
 
 .buildCard {
   display: flex;
