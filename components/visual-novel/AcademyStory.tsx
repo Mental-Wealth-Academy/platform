@@ -269,9 +269,9 @@ export default function AcademyStory({
   const scenes = useMemo(() => {
     const allScenes = getScenesForWeek(weekNumber);
     if (weekNumber === 9 && selectedAct !== null) {
-      if (selectedAct === 1) return allScenes.slice(0, 3);
-      if (selectedAct === 2) return allScenes.slice(3, 5);
-      if (selectedAct === 3) return allScenes.slice(5, 8);
+      if (selectedAct === 1) return allScenes.slice(0, 8); // Act I includes all 8 scenes
+      if (selectedAct === 2) return []; // Act II (coming soon)
+      if (selectedAct === 3) return []; // Act III (coming soon)
     }
     return allScenes;
   }, [weekNumber, selectedAct]);
@@ -669,30 +669,26 @@ export default function AcademyStory({
                   }}
                 >
                   <span className={styles.actNumber}>Act I</span>
-                  <span className={styles.actTitle}>The Affliction</span>
+                  <span className={styles.actTitle}>Programmed Fear</span>
                   <span className={styles.actDesc}>Burdened by the failure of the past world, thoughts of self-sabotage begin to take hold.</span>
                 </button>
                 <button
                   className={styles.actButton}
-                  onClick={() => {
-                    setSelectedAct(2);
-                    setShowWeeklyIntro(false);
-                  }}
+                  style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                  disabled
                 >
                   <span className={styles.actNumber}>Act II</span>
-                  <span className={styles.actTitle}>The Circlet</span>
-                  <span className={styles.actDesc}>A memory of helplessness, and the parental guidance circlets meant to suppress nature.</span>
+                  <span className={styles.actTitle}>Enthusiasm</span>
+                  <span className={styles.actDesc}>Locked (Coming soon)</span>
                 </button>
                 <button
                   className={styles.actButton}
-                  onClick={() => {
-                    setSelectedAct(3);
-                    setShowWeeklyIntro(false);
-                  }}
+                  style={{ opacity: 0.5, cursor: 'not-allowed' }}
+                  disabled
                 >
                   <span className={styles.actNumber}>Act III</span>
-                  <span className={styles.actTitle}>The Programming</span>
-                  <span className={styles.actDesc}>To break the rules, to face the fear of abandonment, and to heal the inner shade.</span>
+                  <span className={styles.actTitle}>Magic Reflections</span>
+                  <span className={styles.actDesc}>Locked (Coming soon)</span>
                 </button>
               </div>
             ) : (
