@@ -1315,15 +1315,16 @@
   position: relative;
   z-index: 1;
   min-width: 72%;
-  background: var(--palette-on-dark);
-  border-color: var(--palette-on-dark);
-  color: var(--color-primary-hover);
+  background: #ffffff !important;
+  border: 1.5px solid var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  box-shadow: none !important;
 }
 
 .learnAccountCta:hover:not(:disabled) {
-  background: var(--color-surface-base);
-  border-color: var(--color-surface-base);
-  color: var(--color-primary-hover);
+  background: #f4f5fe !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary-hover) !important;
 }
 
 :global([data-theme="dark"]) .learnAccountCard {

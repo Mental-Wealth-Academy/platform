@@ -428,7 +428,7 @@ export default function HomePage() {
           </div>
           <div className={styles.learnOverviewBody}>
             <p className={styles.learnOverviewCopy}>
-              Mental Wealth Academy&apos;s self-paced courses, guides, and practice curricula give autodidacts clearer learning paths through current knowledge. Teachers and researchers curate focused lessons for the next generation of education. Use them to strengthen coursework, study for assessments, and understand difficult concepts in a fast, engaging format.
+              Mental Wealth Academy&apos;s self-paced courses, guides, and practice curricula give autodidacts clearer learning paths through current knowledge.
               <br />
               <br />
               Browse or filter through the guides below to find one you want to use. See for yourself why academics choose Mental Wealth Academy.
@@ -437,7 +437,7 @@ export default function HomePage() {
               <TreeStructure size={88} weight="thin" className={styles.learnAccountMark} aria-hidden="true" />
               <p className={styles.learnAccountTitle}>Easily Become a Master</p>
               <p className={styles.learnAccountCopy}>Read short, fun guides by amazing humans.</p>
-              <CtaButton variant="ghost" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
+              <CtaButton variant="secondary" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
                 Create an Account
               </CtaButton>
             </aside>

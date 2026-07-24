@@ -52,43 +52,226 @@ function GuideCoverArt({ seed, label }: { seed: string; label: string }) {
   const art = useMemo(() => {
     const rng = mulberry32(hashSeed(seed));
     const hex = hashSeed(seed).toString(16).toUpperCase().padStart(8, '0').slice(0, 4);
+    const numVal = (hashSeed(seed) % 99) + 1;
 
-    // Halftone dot field — density modulated by the seed.
-    const cols = 11;
-    const rows = 6;
-    const dots: Array<{ cx: number; cy: number; r: number; o: number }> = [];
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const jitter = rng();
-        dots.push({
-          cx: 22 + c * ((COVER_W - 44) / (cols - 1)),
-          cy: 22 + r * ((COVER_H - 44) / (rows - 1)),
-          r: 0.9 + jitter * 1.9,
-          o: 0.06 + jitter * 0.16,
-        });
-      }
+    const norm = label.toLowerCase();
+    let type = 'default';
+    let gradId = 'defaultGrad';
+    let bgFill = 'url(#defaultGrad)';
+    let decorations: React.ReactNode = null;
+    let elements: React.ReactNode = null;
+
+    // 1. Acceptance and Reappraisal / Compassion / Shame / Anger / Emotion / Coping
+    if (
+      norm.includes('acceptance') ||
+      norm.includes('reappraisal') ||
+      norm.includes('compassion') ||
+      norm.includes('shame') ||
+      norm.includes('anger') ||
+      norm.includes('emotion') ||
+      norm.includes('feeling') ||
+      norm.includes('love') ||
+      norm.includes('coping')
+    ) {
+      type = 'emotions';
+      gradId = 'emotionsGrad';
+      bgFill = 'url(#emotionsGrad)';
+      decorations = (
+        <g opacity="0.6">
+          <path d="M 40 45 C 38 42, 33 42, 33 47 C 33 52, 40 58, 40 58 C 40 58, 47 52, 47 47 C 47 42, 42 42, 40 45 Z" fill="#FFA5B5" />
+          <path d="M 250 110 C 248 107, 243 107, 243 112 C 243 117, 250 123, 250 123 C 250 123, 257 117, 257 112 C 257 107, 252 107, 250 110 Z" fill="#FFA5B5" transform="scale(0.8) translate(60, 20)" />
+        </g>
+      );
+      elements = (
+        <g>
+          <circle cx="128" cy="84" r="38" fill="#FFCCD5" stroke="#E59A9A" strokeWidth="2.5" />
+          <circle cx="172" cy="84" r="38" fill="#D2F0D2" stroke="#A8D5A8" strokeWidth="2.5" />
+          <path d="M 150 72 C 145 65, 134 65, 134 75 C 134 85, 150 97, 150 97 C 150 97, 166 85, 166 75 C 166 65, 155 65, 150 72 Z" fill="#FF8BA7" stroke="#C75C73" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      );
+    }
+    // 2. ADHD / Focus / Attention / Rumination / Mindfulness
+    else if (
+      norm.includes('attention') ||
+      norm.includes('focus') ||
+      norm.includes('adhd') ||
+      norm.includes('rumination') ||
+      norm.includes('mindful') ||
+      norm.includes('observing')
+    ) {
+      type = 'focus';
+      gradId = 'focusGrad';
+      bgFill = 'url(#focusGrad)';
+      decorations = (
+        <g opacity="0.6">
+          <path d="M 50 35 L 53 45 L 63 48 L 53 51 L 50 61 L 47 51 L 37 48 L 47 45 Z" fill="#FBC02D" />
+          <path d="M 240 120 L 242 127 L 249 129 L 242 131 L 240 138 L 238 131 L 231 129 L 238 127 Z" fill="#FBC02D" />
+        </g>
+      );
+      elements = (
+        <g>
+          <path d="M 125 105 L 105 125" stroke="#795548" strokeWidth="6" strokeLinecap="round" />
+          <circle cx="145" cy="85" r="24" fill="#FFFFFF" stroke="#4A6572" strokeWidth="3.5" />
+          <circle cx="145" cy="85" r="16" fill="#FFFDE7" />
+          <path d="M 145 85 L 148 88 L 145 91 L 142 88 Z" fill="#FBC02D" />
+          <polygon points="145,85 220,55 220,115" fill="#FFE082" opacity="0.3" />
+          <path d="M 210 85 L 213 91 L 220 93 L 213 95 L 210 101 L 207 95 L 200 93 L 207 91 Z" fill="#FBC02D" />
+        </g>
+      );
+    }
+    // 3. Brain / Neuroscience / Neuron / Cognitive / Memory / Plasticity
+    else if (
+      norm.includes('brain') ||
+      norm.includes('neuron') ||
+      norm.includes('neuro') ||
+      norm.includes('cognitive') ||
+      norm.includes('memory') ||
+      norm.includes('retrieval') ||
+      norm.includes('plasticity')
+    ) {
+      type = 'brain';
+      gradId = 'brainGrad';
+      bgFill = 'url(#brainGrad)';
+      decorations = (
+        <g opacity="0.5" stroke="#9575CD" strokeWidth="1.5" strokeDasharray="3 3" fill="none">
+          <path d="M 30 50 Q 80 30 130 50" />
+          <path d="M 170 120 Q 220 140 270 120" />
+          <circle cx="30" cy="50" r="4" fill="#B39DDB" />
+          <circle cx="130" cy="50" r="4" fill="#B39DDB" />
+        </g>
+      );
+      elements = (
+        <g>
+          <g stroke="#FFA726" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="150" y1="36" x2="150" y2="28" />
+            <line x1="180" y1="65" x2="188" y2="65" />
+            <line x1="120" y1="65" x2="112" y2="65" />
+            <line x1="171" y1="44" x2="177" y2="38" />
+            <line x1="129" y1="44" x2="123" y2="38" />
+          </g>
+          <path d="M 136 74 C 136 58, 164 58, 164 74 C 164 85, 156 89, 156 96 L 144 96 C 144 89, 136 85, 136 74 Z" fill="#FFF59D" stroke="#EF6C00" strokeWidth="3.5" strokeLinejoin="round" />
+          <rect x="144" y="96" width="12" height="6" rx="1.5" fill="#CFD8DC" stroke="#37474F" strokeWidth="2.5" />
+        </g>
+      );
+    }
+    // 4. Learning / Study / Practice / Desirable Difficulty / Project Design / Adolescence / Aging
+    else if (
+      norm.includes('learning') ||
+      norm.includes('study') ||
+      norm.includes('practice') ||
+      norm.includes('difficulty') ||
+      norm.includes('feedback') ||
+      norm.includes('goals') ||
+      norm.includes('project') ||
+      norm.includes('adolescence') ||
+      norm.includes('aging')
+    ) {
+      type = 'learning';
+      gradId = 'learningGrad';
+      bgFill = 'url(#learningGrad)';
+      decorations = (
+        <g opacity="0.6">
+          <path d="M 30 110 L 60 95 L 90 100 L 120 85" fill="none" stroke="#64B5F6" strokeWidth="3" strokeDasharray="4 4" strokeLinecap="round" />
+        </g>
+      );
+      elements = (
+        <g>
+          <rect x="110" y="94" width="80" height="16" rx="2" fill="#81D4FA" stroke="#0288D1" strokeWidth="3" />
+          <rect x="110" y="94" width="15" height="16" fill="#4FC3F7" stroke="#0288D1" strokeWidth="3" />
+          <rect x="120" y="78" width="60" height="16" rx="2" fill="#AED581" stroke="#558B2F" strokeWidth="3" />
+          <rect x="120" y="78" width="12" height="16" fill="#9CCC65" stroke="#558B2F" strokeWidth="3" />
+          <path d="M 150 48 L 153 56 L 161 59 L 153 62 L 150 70 L 147 62 L 139 59 L 147 56 Z" fill="#FFE082" />
+        </g>
+      );
+    }
+    // 5. Breathing / Sleep / Routine / Daily / Wellness
+    else if (
+      norm.includes('breathing') ||
+      norm.includes('sleep') ||
+      norm.includes('daily') ||
+      norm.includes('routine') ||
+      norm.includes('movement') ||
+      norm.includes('body') ||
+      norm.includes('wellness') ||
+      norm.includes('health') ||
+      norm.includes('nutrition') ||
+      norm.includes('food')
+    ) {
+      type = 'wellness';
+      gradId = 'wellnessGrad';
+      bgFill = 'url(#wellnessGrad)';
+      decorations = (
+        <g opacity="0.5">
+          <path d="M 45 40 Q 60 30 55 45 Q 40 45 45 40 Z" fill="#A5D6A7" />
+          <path d="M 255 100 Q 270 90 265 105 Q 250 105 255 100 Z" fill="#A5D6A7" />
+        </g>
+      );
+      elements = (
+        <g>
+          <circle cx="165" cy="65" r="22" fill="#FFE082" stroke="#F5B041" strokeWidth="3" />
+          <path d="M 110 94 Q 120 80 135 84 Q 150 74 168 84 Q 185 80 195 94 Z" fill="#FFFFFF" stroke="#B0BEC5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      );
+    }
+    // 6. Values / Decision / Algorithmic / Ethics / Judgement / AI
+    else if (
+      norm.includes('values') ||
+      norm.includes('decision') ||
+      norm.includes('ethics') ||
+      norm.includes('judgment') ||
+      norm.includes('judgement') ||
+      norm.includes('recommendation') ||
+      norm.includes('algorithmic') ||
+      norm.includes('science') ||
+      norm.includes('ai')
+    ) {
+      type = 'ethics';
+      gradId = 'ethicsGrad';
+      bgFill = 'url(#ethicsGrad)';
+      decorations = (
+        <g opacity="0.6">
+          <line x1="50" y1="40" x2="80" y2="60" stroke="#BCAAA4" strokeWidth="2" strokeDasharray="3 3" />
+          <circle cx="50" cy="40" r="3" fill="#8D6E63" />
+          <circle cx="80" cy="60" r="3" fill="#8D6E63" />
+        </g>
+      );
+      elements = (
+        <g>
+          <line x1="150" y1="52" x2="150" y2="108" stroke="#795548" strokeWidth="4" strokeLinecap="round" />
+          <path d="M 125 108 L 175 108" stroke="#795548" strokeWidth="4.5" strokeLinecap="round" />
+          <line x1="116" y1="62" x2="184" y2="62" stroke="#A1887F" strokeWidth="3.5" strokeLinecap="round" />
+          <line x1="116" y1="62" x2="110" y2="82" stroke="#A1887F" strokeWidth="1.5" />
+          <line x1="116" y1="62" x2="122" y2="82" stroke="#A1887F" strokeWidth="1.5" />
+          <path d="M 104 82 Q 116 92 128 82 Z" fill="#FFE082" stroke="#F5B041" strokeWidth="2" />
+          <line x1="184" y1="62" x2="178" y2="82" stroke="#A1887F" strokeWidth="1.5" />
+          <line x1="184" y1="62" x2="190" y2="82" stroke="#A1887F" strokeWidth="1.5" />
+          <path d="M 172 82 Q 184 92 196 82 Z" fill="#FFE082" stroke="#F5B041" strokeWidth="2" />
+        </g>
+      );
+    }
+    // Default: Sprout
+    else {
+      type = 'default';
+      gradId = 'defaultGrad';
+      bgFill = 'url(#defaultGrad)';
+      decorations = (
+        <g opacity="0.6">
+          <path d="M 30 130 Q 35 110 32 100 Q 28 110 30 130" fill="#81C784" />
+          <path d="M 270 130 Q 275 110 272 100 Q 268 110 270 130" fill="#81C784" />
+        </g>
+      );
+      elements = (
+        <g>
+          <path d="M 136 100 L 140 120 L 160 120 L 164 100 Z" fill="#E0A96D" stroke="#D35400" strokeWidth="3" strokeLinejoin="round" />
+          <path d="M 150 100 Q 150 70 146 50" fill="none" stroke="#81C784" strokeWidth="4.5" strokeLinecap="round" />
+          <path d="M 148 78 Q 128 68 130 82 Q 142 84 148 78 Z" fill="#A5D6A7" stroke="#4CAF50" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M 149 64 Q 169 54 167 68 Q 155 70 149 64 Z" fill="#A5D6A7" stroke="#4CAF50" strokeWidth="2.5" strokeLinejoin="round" />
+        </g>
+      );
     }
 
-    // Signal trace — a jagged data line reading left to right.
-    const steps = 9;
-    const baseY = COVER_H * (0.52 + rng() * 0.14);
-    const amp = 22 + rng() * 20;
-    let signal = '';
-    for (let s = 0; s <= steps; s++) {
-      const x = 18 + s * ((COVER_W - 36) / steps);
-      const y = baseY + (rng() * 2 - 1) * amp;
-      signal += `${s === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)} `;
-    }
-
-    // Concentric sensor rings around a seeded focal point.
-    const fx = COVER_W * (0.62 + rng() * 0.24);
-    const fy = COVER_H * (0.28 + rng() * 0.2);
-    const rings = [16, 30, 46].map((rr) => rr + rng() * 6);
-
-    const scanY = COVER_H * (0.2 + rng() * 0.6);
-
-    return { dots, signal, fx, fy, rings, scanY, hex };
-  }, [seed]);
+    return { hex, numVal, bgFill, decorations, elements };
+  }, [seed, label]);
 
   return (
     <svg
@@ -98,42 +281,68 @@ function GuideCoverArt({ seed, label }: { seed: string; label: string }) {
       role="img"
       aria-label={`${label} cover`}
     >
-      <g className={styles.coverDots}>
-        {art.dots.map((d, i) => (
-          <circle key={i} cx={d.cx} cy={d.cy} r={d.r} style={{ opacity: d.o }} />
-        ))}
+      <defs>
+        <linearGradient id="emotionsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFF0F2" />
+          <stop offset="100%" stopColor="#FFE3E8" />
+        </linearGradient>
+        <linearGradient id="focusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FFFCE8" />
+          <stop offset="100%" stopColor="#FFF0C4" />
+        </linearGradient>
+        <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FAF0FF" />
+          <stop offset="100%" stopColor="#EAD2FF" />
+        </linearGradient>
+        <linearGradient id="learningGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F0F8FF" />
+          <stop offset="100%" stopColor="#D6EEFF" />
+        </linearGradient>
+        <linearGradient id="wellnessGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F0FFF4" />
+          <stop offset="100%" stopColor="#D8FAD8" />
+        </linearGradient>
+        <linearGradient id="ethicsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FCFBF2" />
+          <stop offset="100%" stopColor="#F4EFE0" />
+        </linearGradient>
+        <linearGradient id="defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F4FFF8" />
+          <stop offset="100%" stopColor="#E0FCEE" />
+        </linearGradient>
+      </defs>
+
+      {/* Pastel Background */}
+      <rect width="100%" height="100%" fill={art.bgFill} />
+
+      {/* Soft cover lines texture */}
+      <g stroke="#ffffff" strokeWidth="0.8" opacity="0.3">
+        <line x1="0" y1="20" x2="300" y2="20" />
+        <line x1="0" y1="40" x2="300" y2="40" />
+        <line x1="0" y1="60" x2="300" y2="60" />
+        <line x1="0" y1="80" x2="300" y2="80" />
+        <line x1="0" y1="100" x2="300" y2="100" />
+        <line x1="0" y1="120" x2="300" y2="120" />
+        <line x1="0" y1="140" x2="300" y2="140" />
       </g>
 
-      <g className={styles.coverRings}>
-        {art.rings.map((r, i) => (
-          <circle key={i} cx={art.fx} cy={art.fy} r={r} />
-        ))}
-        <circle className={styles.coverRingCore} cx={art.fx} cy={art.fy} r={3.2} />
-      </g>
+      {/* Dynamic Decorations */}
+      {art.decorations}
 
-      <line
-        className={styles.coverScan}
-        x1={0}
-        x2={COVER_W}
-        y1={art.scanY}
-        y2={art.scanY}
-      />
+      {/* Centerpiece Vector Illustration */}
+      {art.elements}
 
-      <path className={styles.coverSignal} d={art.signal} fill="none" />
+      {/* Frame Border */}
+      <rect x="6" y="6" width={COVER_W - 12} height={COVER_H - 12} fill="none" stroke="#795548" strokeWidth="2.5" rx="8" opacity="0.35" />
 
-      {/* HUD registration ticks in each corner. */}
-      <g className={styles.coverTicks}>
-        <path d="M 10 20 L 10 10 L 20 10" fill="none" />
-        <path d={`M ${COVER_W - 20} 10 L ${COVER_W - 10} 10 L ${COVER_W - 10} 20`} fill="none" />
-        <path d={`M 10 ${COVER_H - 20} L 10 ${COVER_H - 10} L 20 ${COVER_H - 10}`} fill="none" />
-        <path
-          d={`M ${COVER_W - 20} ${COVER_H - 10} L ${COVER_W - 10} ${COVER_H - 10} L ${COVER_W - 10} ${COVER_H - 20}`}
-          fill="none"
-        />
-      </g>
-
-      <text className={styles.coverReadout} x={14} y={COVER_H - 14}>
-        0x{art.hex}
+      {/* Page number marker */}
+      <text
+        className={styles.coverReadout}
+        x={16}
+        y={COVER_H - 16}
+        style={{ fill: '#795548', opacity: 0.7, fontWeight: 700, fontFamily: 'var(--font-mono)' }}
+      >
+        No. {art.numVal}
       </text>
     </svg>
   );
