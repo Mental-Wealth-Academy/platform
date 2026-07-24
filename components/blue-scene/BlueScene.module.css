@@ -2,7 +2,7 @@
   position: relative;
   overflow: hidden;
   flex: 1;
-  min-height: 620px;
+  min-height: 0;
   border: 2px solid var(--color-primary-hover);
   border-radius: 12px;
   background: var(--color-surface-1);

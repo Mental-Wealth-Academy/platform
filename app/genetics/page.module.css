@@ -5,7 +5,7 @@
 .pageLayout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
-  height: calc(100dvh - 72px);
+  height: calc(100dvh - 72px - var(--banner-height, 0px));
   min-height: 0;
   display: flex;
   overflow: hidden;

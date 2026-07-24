@@ -6,7 +6,7 @@
   height: 38px;
   background-color: #c3c9fa;
   color: #1a1d33;
-  z-index: 9999; /* Higher than TopNavigation which is 200, but let's keep it safe. We will set TopNavigation to render below it. */
+  z-index: 250; /* Above TopNavigation (200), below WalletDrawer/modals (10000) */
   display: flex;
   align-items: center;
   overflow: hidden;

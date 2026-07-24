@@ -3,7 +3,7 @@
 .pageLayout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
-  height: calc(100dvh - 72px);
+  height: calc(100dvh - 72px - var(--banner-height, 0px));
   min-height: 0;
   display: flex;
   overflow: hidden;
@@ -71,7 +71,7 @@
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
-    height: 100dvh;
+    height: calc(100dvh - var(--banner-height, 0px));
     padding-top: 72px;
   }
 
@@ -94,7 +94,7 @@
 @media (max-width: 768px) {
   .pageLayout {
     --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-    height: calc(100dvh - var(--mobile-nav-clearance));
+    height: calc(100dvh - var(--mobile-nav-clearance) - var(--banner-height, 0px));
   }
 
   .content {

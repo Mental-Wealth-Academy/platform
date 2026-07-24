@@ -19,9 +19,9 @@
   /* Rose red from the original quant desk — used for No stances and the SKIP
      signal, where "down vs up" needs a real second hue. */
   --markets-no: #E2567B;
-  height: calc(100dvh - 72px);
-  min-height: calc(100dvh - 72px);
-  max-height: calc(100dvh - 72px);
+  height: calc(100dvh - 72px - var(--banner-height, 0px));
+  min-height: calc(100dvh - 72px - var(--banner-height, 0px));
+  max-height: calc(100dvh - 72px - var(--banner-height, 0px));
   margin-left: var(--sidebar-width, 272px);
   background: var(--color-background);
   overflow: hidden;
