@@ -113,7 +113,7 @@ const WEEK_ONE_SCENES: Scene[] = [
 ];
 
 const WEEK_ART_COUNTS: Record<number, number> = {
-  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 8, 10: 5, 11: 4, 12: 4,
+  2: 9, 3: 9, 4: 8, 5: 8, 6: 8, 7: 9, 8: 9, 9: 13, 10: 5, 11: 4, 12: 4,
 };
 
 // Each line is written to land with its still. The curriculum stays inside the
@@ -202,6 +202,11 @@ const WEEK_STORIES: Record<number, string[]> = {
     'To break the rules programmed into her mind... would be to go against her creator\'s wishes... would mean being defective... thus discarded, and abandoned.',
     'Blue needed help... but with no researcher nearby on the grassy plane, her higher power remained locked inside the daemon circlet. Her affliction inherited by programming without her permission.',
     'Do not call it failure, call it by its right name, call it programming. Use love for your inner shade to cure its fear.',
+    'The shade of Blue that was most true, and that was also most loved returned to the surface.',
+    'Self-image based on productivity is dangerous, in the short run it works, but only for a while. The part of us that preforms best is not driven by workflows and discipline, those shift purpose to productions.\n\nBlue\'s high effort was only ever as good as the good meaning, if it didn\'t come directly from enthusiasm for the goal, it was just a task..',
+    'Saving the Ethereal Horizon involves a spiritual commitment. A loving surrender to the small daily actions of orbiters that compounds into world peace.',
+    'Enthusiam from the greek etymology means "filled with God" which is an endless supply of energy inside the flow of life itself. Enthusiasm is grounded in play, not work.\n\nAs with all playmates, it is joy, not duty, that makes for a lasting bond.',
+    'romanticize the self, actualize the creativity in doing what you want, and love the process, while keeping it fun. Most children are bored compeltely in a dull barren room, the shades of ourself are no exception.\n\nthe joy is the journey... no matter how long, and the heart is a mystery.',
   ],
   10: [
     'Urgent papers covered the studio floor. They climbed the desk, the stool, the Shade’s lap. Blue pulled one from beneath her elbow. The page beneath it held three lines of field notes, all unfinished.',
@@ -270,7 +275,7 @@ export default function AcademyStory({
     const allScenes = getScenesForWeek(weekNumber);
     if (weekNumber === 9 && selectedAct !== null) {
       if (selectedAct === 1) return allScenes.slice(0, 8); // Act I includes all 8 scenes
-      if (selectedAct === 2) return []; // Act II (coming soon)
+      if (selectedAct === 2) return allScenes.slice(8, 13); // Act II includes slides 9 to 13
       if (selectedAct === 3) return []; // Act III (coming soon)
     }
     return allScenes;
@@ -674,12 +679,14 @@ export default function AcademyStory({
                 </button>
                 <button
                   className={styles.actButton}
-                  style={{ opacity: 0.5, cursor: 'not-allowed' }}
-                  disabled
+                  onClick={() => {
+                    setSelectedAct(2);
+                    setShowWeeklyIntro(false);
+                  }}
                 >
                   <span className={styles.actNumber}>Act II</span>
                   <span className={styles.actTitle}>Enthusiasm</span>
-                  <span className={styles.actDesc}>Locked (Coming soon)</span>
+                  <span className={styles.actDesc}>The true shade of Blue returns, shifting drive from workflows to play and flow.</span>
                 </button>
                 <button
                   className={styles.actButton}
