@@ -320,7 +320,8 @@
   font-size: 1rem;
   font-weight: 700;
   text-align: left;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease,
+    transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fieldNotesGhost img {
@@ -331,6 +332,45 @@
   border-color: var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 6%, transparent);
   color: var(--color-text-dark, #141414);
+}
+
+/* Unlocked it is a real card button, matching the Field Notes card above it;
+   the dashed placeholder treatment stays for the locked state. */
+.fieldNotesUnlocked {
+  border: 2px solid var(--color-primary-hover);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base)) 0%,
+    color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base)) 100%
+  );
+  color: var(--color-text-dark, #141414);
+  box-shadow:
+    0 5px 0 var(--color-primary),
+    0 8px 10px rgba(0, 0, 0, 0.14);
+}
+
+.fieldNotesUnlocked img {
+  opacity: 1;
+}
+
+.fieldNotesGhost.fieldNotesUnlocked:hover {
+  border-color: var(--color-primary-hover);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base)) 0%,
+    color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-base)) 100%
+  );
+  transform: translateY(-2px);
+  box-shadow:
+    0 7px 0 var(--color-primary),
+    0 12px 14px rgba(0, 0, 0, 0.16);
+}
+
+.fieldNotesGhost.fieldNotesUnlocked:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 var(--color-primary),
+    0 4px 6px rgba(0, 0, 0, 0.14);
 }
 
 .fieldNotesGhost:focus-visible {

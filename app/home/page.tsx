@@ -465,15 +465,15 @@ export default function HomePage() {
         </div>
         <HomeLeaderboard />
         <div className={styles.dailyNotes} data-tour="daily-note">
-          <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Daily Notes" />
+          <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
           <button
             type="button"
-            className={styles.fieldNotesGhost}
+            className={`${styles.fieldNotesGhost} ${notebookEntriesUnlocked ? styles.fieldNotesUnlocked : ''}`}
             onClick={() => setFieldNotesOpen(true)}
             disabled={!notebookEntriesUnlocked}
             title={notebookEntriesUnlocked ? undefined : 'Unlocks at 3,000 credits'}
           >
-            <Image src="/icons/notebook-writing.svg" alt="" width={36} height={36} />
+            <Image src="/icons/ui-book-v2.svg" alt="" width={36} height={36} />
             <span>Notebook Entries</span>
           </button>
         </div>

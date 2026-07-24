@@ -46,17 +46,120 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin-bottom: 14px;
-  border-radius: 14px;
+  /* Sized off the card so the stack scales with the folder instead of
+     squeezing the copy out at narrow widths. */
+  height: 32%;
+  max-height: 92px;
+  width: auto;
+  aspect-ratio: 124 / 92;
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+  border-radius: 16px;
   background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-2));
   color: var(--color-primary);
   transition: transform 0.2s ease;
 }
 
 .container:hover .illustration {
-  transform: scale(1.08);
+  transform: scale(1.06);
+}
+
+.buildSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Dotted plot and baseline the modules land on */
+.plot,
+.baseline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 5;
+}
+
+.plot {
+  opacity: 0.45;
+}
+
+.baseline {
+  opacity: 0.5;
+}
+
+/* Each module rises into place, overshoots, holds, then clears for the next pass */
+.block {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: blockRise 3s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.blockOne {
+  fill: var(--color-primary);
+}
+
+.blockTwo {
+  fill: color-mix(in oklch, var(--color-primary) 76%, white);
+  animation-delay: 0.28s;
+}
+
+.blockThree {
+  fill: color-mix(in oklch, var(--color-primary) 54%, white);
+  animation-delay: 0.56s;
+}
+
+@keyframes blockRise {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scaleY(0.55);
+  }
+  16% {
+    opacity: 1;
+    transform: translateY(-2.5px) scaleY(1.08);
+  }
+  24%,
+  76% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(14px) scaleY(0.55);
+  }
+}
+
+/* Small plus that pops once the stack tops out */
+.spark {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: sparkPop 3s ease-in-out 0.84s infinite;
+}
+
+@keyframes sparkPop {
+  0%,
+  12% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-45deg);
+  }
+  22% {
+    opacity: 1;
+    transform: scale(1.2) rotate(0deg);
+  }
+  30%,
+  70% {
+    opacity: 0.9;
+    transform: scale(1) rotate(0deg);
+  }
+  84%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-45deg);
+  }
 }
 
 .title {
@@ -104,4 +207,14 @@
 .actionButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
+}
+
+/* Declared last so it wins over the build animations above */
+@media (prefers-reduced-motion: reduce) {
+  .block,
+  .spark {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

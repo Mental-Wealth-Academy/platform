@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FolderDashed } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import dynamic from 'next/dynamic';
 import styles from './EmptyCourseStudioFolder.module.css';
@@ -36,8 +35,20 @@ export default function EmptyCourseStudioFolder({ hasAngel = false }: EmptyCours
       onMouseEnter={() => play('soft-hover')}
     >
       <div className={styles.card}>
+        {/* Modules stacking onto a dotted plot: the sibling folders' dotted
+            language, animated so the empty state reads as "under construction". */}
         <div className={styles.illustration} aria-hidden="true">
-          <FolderDashed size={32} weight="duotone" />
+          <svg className={styles.buildSvg} viewBox="0 0 120 90">
+            <rect className={styles.plot} x="9" y="7" width="102" height="76" rx="12" />
+            <line className={styles.baseline} x1="22" y1="73" x2="98" y2="73" />
+            <rect className={`${styles.block} ${styles.blockOne}`} x="28" y="58" width="64" height="12" rx="4" />
+            <rect className={`${styles.block} ${styles.blockTwo}`} x="34" y="43" width="52" height="12" rx="4" />
+            <rect className={`${styles.block} ${styles.blockThree}`} x="40" y="28" width="40" height="12" rx="4" />
+            <g className={styles.spark}>
+              <line x1="60" y1="14" x2="60" y2="22" />
+              <line x1="56" y1="18" x2="64" y2="18" />
+            </g>
+          </svg>
         </div>
 
         <h3 id="course-studio-empty-title" className={styles.title}>
