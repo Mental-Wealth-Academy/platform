@@ -10,6 +10,7 @@ import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
+import type { FolderMotif } from '@/components/home/folderMotifs';
 import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -113,6 +114,31 @@ function dialogueIndexForDate(dateKey: string): number {
   }
   return hash % DAILY_COURSES_DIALOGUES.length;
 }
+
+/**
+ * Placeholder folders for the tabs that have no content behind them yet. They
+ * carry no link, so they render as inert folders — each with its own dotted
+ * motif so the row still reads as a shelf rather than a repeat.
+ */
+interface PlaceholderFolder {
+  title: string;
+  centerLabel: string;
+  motif: FolderMotif;
+  dark?: boolean;
+  ctaDark?: boolean;
+}
+
+const PLACEHOLDER_LECTURES: PlaceholderFolder[] = [
+  { title: 'Recorded lectures', centerLabel: 'Recorded Lectures', motif: 'waveform', dark: true },
+  { title: 'Lecture theatre', centerLabel: 'Lecture Theatre', motif: 'beam', ctaDark: true },
+  { title: 'Guest seminars', centerLabel: 'Guest Seminars', motif: 'spiral', dark: true },
+];
+
+const PLACEHOLDER_WORKSHOPS: PlaceholderFolder[] = [
+  { title: 'Practice bench', centerLabel: 'Practice Bench', motif: 'lattice', dark: true },
+  { title: 'Peer circles', centerLabel: 'Peer Circles', motif: 'bloom', ctaDark: true },
+  { title: 'Build week', centerLabel: 'Build Week', motif: 'bars', dark: true },
+];
 
 export default function HomePage() {
   const learnOnly = usePathname() === '/learn';
@@ -492,7 +518,6 @@ export default function HomePage() {
                 <section className={styles.folderRow} aria-label="Course folders">
                   <CourseFolderCard
                     title="Blue's Quest"
-                    count={12}
                     href="/shadow-work"
                     avatarSrc="/blue/blue-home.png"
                     centerLabel="Blue's Story"
@@ -501,7 +526,6 @@ export default function HomePage() {
                   />
                   <CourseFolderCard
                     title="Your Course"
-                    count={personalCourse ? 1 : bookmarkedCount}
                     href="/course/personal"
                     avatarSrc="/academic-angels.webp"
                     centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
@@ -512,8 +536,26 @@ export default function HomePage() {
                 </section>
               ),
             },
-            { label: 'Lectures' },
-            { label: 'Workshops' },
+            {
+              label: 'Lectures',
+              content: (
+                <section className={styles.folderRow} aria-label="Lecture folders">
+                  {PLACEHOLDER_LECTURES.map((folder) => (
+                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
+                  ))}
+                </section>
+              ),
+            },
+            {
+              label: 'Workshops',
+              content: (
+                <section className={styles.folderRow} aria-label="Workshop folders">
+                  {PLACEHOLDER_WORKSHOPS.map((folder) => (
+                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
+                  ))}
+                </section>
+              ),
+            },
           ]}
         />
         </div>

@@ -142,19 +142,15 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         const horizonY = () => s.height * 0.74;
 
         /**
-         * Hangings are sized by the wall, never by a constant — the room has to
-         * hold at any viewport, with air around each piece and a gap between them.
+         * The house framing stock: moulding, mat, and the mat's cut edge, in wall
+         * pixels. Sized off the room rather than off the piece, because a gallery
+         * frames a wall in one profile and lets the aperture do the varying.
          */
-        const metrics = () => {
+        const stock = () => {
           const hy = horizonY();
-          let h = hy * 0.58;
-          let w = h * (ART_W / ART_H);
-          const maxW = SLOT * 0.62;
-          if (w > maxW) {
-            w = maxW;
-            h = w * (ART_H / ART_W);
-          }
-          return { hy, artW: w, artH: h };
+          const band = Math.max(9, Math.min(hy * 0.032, 26));
+          const mat = Math.max(10, Math.min(hy * 0.042, 34));
+          return { band, mat, pad: band + mat, bevel: Math.max(2, Math.min(mat * 0.22, 6)) };
         };
 
         /*
@@ -288,58 +284,209 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           s.image(sheenBuf, 0, 0);
         };
 
-        /** Screen geometry for a hanging, or null if it is off-stage. */
+        /**
+         * Screen geometry for a hanging, or null if it is off-stage.
+         *
+         * The aperture is cut to the work's own proportions and the frame is
+         * built outward from it. A tall piece therefore gets a taller frame
+         * rather than being matted out to a house format — which is where the
+         * dead bands at the sides of the wide works came from.
+         */
         const layout = (i: number) => {
-          const { hy, artW, artH } = metrics();
+          const piece = piecesRef.current[i];
+          if (!piece) return null;
+
+          const hy = horizonY();
+          const { band, mat, pad, bevel } = stock();
+          const aspect = artFor(piece).aspect || 1.5;
+
+          // Two budgets: the gap to the next hanging, and the height of wall
+          // between the picture rail and the skirting.
+          let aw = SLOT * 0.74 - pad * 2;
+          let ah = aw / aspect;
+          const maxH = hy * 0.62 - pad * 2;
+          if (ah > maxH) {
+            ah = maxH;
+            aw = ah * aspect;
+          }
+
           const dx = i * SLOT - camX;
           const sx = s.width / 2 + dx;
-          if (sx < -artW || sx > s.width + artW) return null;
+          const outerWFull = aw + pad * 2;
+          if (sx < -outerWFull || sx > s.width + outerWFull) return null;
 
           // Faux depth: pieces read as further along the wall as they leave centre.
           const off = Math.min(1, Math.abs(dx) / (s.width * 0.75));
-          const scale = 1 - off * 0.2;
-          return { sx, sy: hy * 0.46, w: artW * scale, h: artH * scale, off, dx };
+          const k = 1 - off * 0.2;
+
+          const outerW = outerWFull * k;
+          const outerH = (ah + pad * 2) * k;
+          const ox = sx - outerW / 2;
+
+          // Hung on a common centreline, the way a room is hung. A frame tall
+          // enough to reach the skirting rises instead of dropping, so the extra
+          // height always goes into the wall above rather than into the floor.
+          let oy = hy * 0.44 - outerH / 2;
+          const lowest = hy - 26;
+          if (oy + outerH > lowest) oy = lowest - outerH;
+          if (oy < 10) oy = 10;
+
+          return {
+            sx,
+            off,
+            ox,
+            oy,
+            outerW,
+            outerH,
+            band: band * k,
+            bevel: bevel * k,
+            ax: ox + pad * k,
+            ay: oy + pad * k,
+            aw: aw * k,
+            ah: ah * k,
+          };
+        };
+
+        type Hanging = NonNullable<ReturnType<typeof layout>>;
+
+        /**
+         * The frame itself, built outward from the aperture: moulding, a gilt
+         * fillet at the sight edge, mat board, and the bevel the mat is cut at.
+         *
+         * Raw canvas, because the whole illusion is that one length of moulding
+         * is lit from the upper left — and that needs a gradient across the
+         * frame as a whole, which p5's fill() cannot express.
+         */
+        const drawFrame = (L: Hanging, alpha: number) => {
+          const ctx = s.drawingContext as CanvasRenderingContext2D;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+
+          // Moulding, as one piece of stock taking the room's light across it.
+          const wood = ctx.createLinearGradient(L.ox, L.oy, L.ox + L.outerW, L.oy + L.outerH);
+          wood.addColorStop(0, '#4b4653');
+          wood.addColorStop(0.34, '#2d2a35');
+          wood.addColorStop(1, '#171520');
+          ctx.fillStyle = wood;
+          ctx.fillRect(L.ox, L.oy, L.outerW, L.outerH);
+
+          // Its outer arris: lit along the top and left, in shadow opposite.
+          const edge = Math.max(1.2, L.band * 0.09);
+          ctx.fillStyle = 'rgba(255,255,255,0.14)';
+          ctx.fillRect(L.ox, L.oy, L.outerW, edge);
+          ctx.fillRect(L.ox, L.oy, edge, L.outerH);
+          ctx.fillStyle = 'rgba(0,0,0,0.34)';
+          ctx.fillRect(L.ox, L.oy + L.outerH - edge, L.outerW, edge);
+          ctx.fillRect(L.ox + L.outerW - edge, L.oy, edge, L.outerH);
+
+          // Gilt fillet where the moulding meets the mat.
+          const fx = L.ox + L.band;
+          const fy = L.oy + L.band;
+          const fw = L.outerW - L.band * 2;
+          const fh = L.outerH - L.band * 2;
+          const gilt = Math.max(1, L.band * 0.07);
+          ctx.fillStyle = 'rgba(198,164,92,0.82)';
+          ctx.fillRect(fx - gilt, fy - gilt, fw + gilt * 2, fh + gilt * 2);
+
+          // Mat board. Warm rag paper, not the wall's white.
+          ctx.fillStyle = '#efece2';
+          ctx.fillRect(fx, fy, fw, fh);
+          ctx.fillStyle = 'rgba(120,112,98,0.05)';
+          ctx.fillRect(fx, fy + fh * 0.55, fw, fh * 0.45);
+
+          // The bevel: the mat is cut at an angle, so its four faces catch the
+          // light differently. This is the detail that says "framed" more than
+          // the moulding does.
+          const { ax, ay, aw, ah, bevel: b } = L;
+          const face = (pts: number[][], fill: string) => {
+            ctx.fillStyle = fill;
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0], pts[0][1]);
+            for (let i = 1; i < pts.length; i += 1) ctx.lineTo(pts[i][0], pts[i][1]);
+            ctx.closePath();
+            ctx.fill();
+          };
+          face(
+            [[ax - b, ay - b], [ax + aw + b, ay - b], [ax + aw, ay], [ax, ay]],
+            'rgba(255,254,250,0.95)',
+          );
+          face(
+            [[ax - b, ay - b], [ax, ay], [ax, ay + ah], [ax - b, ay + ah + b]],
+            'rgba(250,247,239,0.9)',
+          );
+          face(
+            [[ax - b, ay + ah + b], [ax, ay + ah], [ax + aw, ay + ah], [ax + aw + b, ay + ah + b]],
+            'rgba(196,189,174,0.85)',
+          );
+          face(
+            [[ax + aw, ay], [ax + aw + b, ay - b], [ax + aw + b, ay + ah + b], [ax + aw, ay + ah]],
+            'rgba(214,207,192,0.85)',
+          );
+
+          ctx.restore();
+        };
+
+        /** What sits in front of the work: the mat's shadow, then the glass. */
+        const drawGlazing = (L: Hanging, alpha: number) => {
+          const ctx = s.drawingContext as CanvasRenderingContext2D;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+
+          // The mat stands proud of the work, so it drops a line of shade onto it.
+          const line = Math.max(1, L.bevel * 0.4);
+          ctx.fillStyle = 'rgba(24,20,28,0.2)';
+          ctx.fillRect(L.ax, L.ay, L.aw, line);
+          ctx.fillRect(L.ax, L.ay, line, L.ah);
+
+          // Glass. One raking reflection off the upper left, and nothing else —
+          // the room is behind you, and you are not in the picture.
+          const sheen = ctx.createLinearGradient(L.ax, L.ay, L.ax + L.aw * 0.85, L.ay + L.ah);
+          sheen.addColorStop(0, 'rgba(255,255,255,0.13)');
+          sheen.addColorStop(0.3, 'rgba(255,255,255,0.035)');
+          sheen.addColorStop(0.46, 'rgba(255,255,255,0)');
+          ctx.fillStyle = sheen;
+          ctx.fillRect(L.ax, L.ay, L.aw, L.ah);
+
+          ctx.restore();
         };
 
         const drawHanging = (piece: Piece, i: number) => {
           const L = layout(i);
           if (!L) return;
           const { art, reflection } = artFor(piece);
-          const x = L.sx - L.w / 2;
-          const y = L.sy - L.h / 2;
-          const alpha = 255 * (1 - L.off * 0.42);
+          const alpha = 1 - L.off * 0.42;
 
-          // Cast shadow on the wall.
+          // Cast shadow on the wall, thrown off the frame's outer edge.
           s.noStroke();
-          for (let d = 10; d > 0; d -= 1) {
+          for (let d = 12; d > 0; d -= 1) {
             s.fill(90, 84, 78, 4);
-            s.rect(x - d, y - d + 6, L.w + d * 2, L.h + d * 2, 3);
+            s.rect(L.ox - d, L.oy - d + 7, L.outerW + d * 2, L.outerH + d * 2, 3);
           }
 
+          drawFrame(L, alpha);
+
+          // The work, seated in an aperture cut to its own shape — so it fills
+          // the opening edge to edge with nothing left over at the sides.
           s.push();
-          s.tint(255, alpha);
-          s.image(art, x, y, L.w, L.h);
+          s.tint(255, 255 * alpha);
+          s.image(art, L.ax, L.ay, L.aw, L.ah);
           s.pop();
 
-          // Thin museum frame.
-          s.noFill();
-          s.strokeWeight(2);
-          s.stroke(28, 26, 30, alpha * 0.8);
-          s.rect(x, y, L.w, L.h);
+          drawGlazing(L, alpha);
 
           // The piece spills its light onto the floor. The falloff is baked into the
           // buffer, so this stays one draw call.
           const hy = horizonY();
           s.push();
           s.tint(255, 58 * (1 - L.off * 0.5));
-          s.image(reflection, x, hy, L.w, L.h * 0.62);
+          s.image(reflection, L.ax, hy, L.aw, L.ah * 0.62);
           s.pop();
 
           // Selected piece gets a warm accent line under it.
           if (piece.id === piecesRef.current[Math.round(camX / SLOT)]?.id) {
             s.strokeWeight(2);
             s.stroke(214, 178, 96, 190);
-            s.line(L.sx - L.w * 0.16, y + L.h + 14, L.sx + L.w * 0.16, y + L.h + 14);
+            s.line(L.sx - L.outerW * 0.16, L.oy + L.outerH + 14, L.sx + L.outerW * 0.16, L.oy + L.outerH + 14);
           }
         };
 
@@ -628,8 +775,9 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
             for (let i = Math.max(0, centre - 3); i <= Math.min(list.length - 1, centre + 3); i += 1) {
               const L = layout(i);
               if (!L) continue;
-              const inX = Math.abs(s.mouseX - L.sx) < L.w / 2;
-              const inY = Math.abs(s.mouseY - L.sy) < L.h / 2;
+              // The frame is part of the work as far as a click is concerned.
+              const inX = s.mouseX >= L.ox && s.mouseX <= L.ox + L.outerW;
+              const inY = s.mouseY >= L.oy && s.mouseY <= L.oy + L.outerH;
               if (inX && inY) {
                 targetRef.current = i * SLOT;
                 setFocusIndex(i);

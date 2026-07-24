@@ -79,7 +79,9 @@ function GeneticsLab({
   accessChecking,
   onRequireMembership,
 }: GeneticsLabProps) {
-  const [mode, setMode] = useState<AppMode>('browse');
+  // The room opens on the art. It is the one wing that is hung for everyone —
+  // the archive needs membership, and a genome needs a file.
+  const [mode, setMode] = useState<AppMode>('collection');
   const [panel, setPanel] = useState<Panel | null>(null);
   const [isDbLoading, setIsDbLoading] = useState(true);
   const [dbError, setDbError] = useState<Error | null>(null);

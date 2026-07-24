@@ -195,6 +195,11 @@ export interface PaintedPiece {
   art: p5.Graphics;
   /** Its light on the floor: lower half, mirrored, falloff already baked in. */
   reflection: p5.Graphics;
+  /**
+   * The work's own width/height. The wall sizes a frame's aperture from this,
+   * so nothing is ever matted out to a house format.
+   */
+  aspect: number;
 }
 
 /**
@@ -254,33 +259,51 @@ export function paintPiece(p: p5, piece: Piece, W: number, H: number): PaintedPi
   g.fill(0, 0, 100, 0.05);
   g.rect(0, 0, W, H * 0.42);
 
-  return { art: g, reflection: bakeReflection(p, g, W, H) };
+  return { art: g, reflection: bakeReflection(p, g, W, H), aspect: W / H };
 }
 
 /**
- * Seat a curated collection image inside the same canvas and reflection system
- * as generated marker art. The full work remains visible; the matte absorbs
- * aspect-ratio differences without cropping the source.
+ * Seat a curated collection image in the same buffer and reflection system as
+ * generated marker art.
+ *
+ * The buffer takes the *source's* proportions rather than a house format. A
+ * portrait work matted into a landscape buffer is where the black bars came
+ * from, and no amount of framing hides them — the fix has to be here, so the
+ * wall can cut an aperture to the work's own shape.
+ *
+ * `budgetW`/`budgetH` are a paint budget, not a size: a tall work and a wide
+ * one cost the same texture memory.
  */
 export function paintImagePiece(
   p: p5,
   image: p5.Image,
-  W: number,
-  H: number,
+  budgetW: number,
+  budgetH: number,
 ): PaintedPiece {
-  const g = p.createGraphics(W, H);
-  g.background(18, 17, 20);
+  const aspect = image.width > 0 && image.height > 0 ? image.width / image.height : 1;
 
-  const scale = Math.min(W / image.width, H / image.height);
-  const drawW = image.width * scale;
-  const drawH = image.height * scale;
-  g.image(image, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+  let w = Math.sqrt(budgetW * budgetH * aspect);
+  let h = w / aspect;
+  const cap = Math.max(budgetW, budgetH);
+  if (w > cap) {
+    w = cap;
+    h = w / aspect;
+  }
+  if (h > cap) {
+    h = cap;
+    w = h * aspect;
+  }
 
-  // A quiet inner edge keeps pale works distinct from the wall.
-  g.noFill();
-  g.stroke(244, 243, 240, 52);
-  g.strokeWeight(2);
-  g.rect(1, 1, W - 2, H - 2);
+  const g = p.createGraphics(Math.max(2, Math.round(w)), Math.max(2, Math.round(h)));
 
-  return { art: g, reflection: bakeReflection(p, g, W, H) };
+  // Works with transparency (the collection carries a few) sit on paper rather
+  // than on a hole through to the wall behind.
+  g.background(240, 237, 229);
+  g.image(image, 0, 0, g.width, g.height);
+
+  return {
+    art: g,
+    reflection: bakeReflection(p, g, g.width, g.height),
+    aspect,
+  };
 }

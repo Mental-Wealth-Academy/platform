@@ -4,29 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { Sparkle } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
+import FolderMotifArt, { type FolderMotif } from './folderMotifs';
 import styles from './CourseFolderCard.module.css';
 
 const FOLDER_PATH =
   'M0 42 Q0 18 24 18 H224 Q242 18 252 30 L266 48 Q276 60 292 60 H450 Q472 60 472 84 V304 Q472 328 448 328 H24 Q0 328 0 304 Z';
 
-/* Decorative motif: a dotted orbit that replaces the old photo backdrops. */
-const polar = (angle: number, radius: number) => ({
-  x: 100 + Math.cos(angle) * radius,
-  y: 100 + Math.sin(angle) * radius,
-});
-
-const ORBIT_DOTS = Array.from({ length: 12 }, (_, i) => polar((i / 12) * Math.PI * 2 - Math.PI / 2, 82));
-
-const SPOKES = Array.from({ length: 6 }, (_, i) => {
-  const angle = (i / 6) * Math.PI * 2 - Math.PI / 2;
-  const inner = polar(angle, 30);
-  const outer = polar(angle, 72);
-  return { x1: inner.x, y1: inner.y, x2: outer.x, y2: outer.y };
-});
-
 interface CourseFolderCardProps {
+  /** Accessible name for the folder; the visible label is centerLabel. */
   title: string;
-  count: number;
   href?: string;
   onOpen?: () => void;
   avatarSrc?: string;
@@ -34,9 +20,12 @@ interface CourseFolderCardProps {
   ctaLabel?: string;
   ctaDark?: boolean;
   dark?: boolean;
+  /** Dotted line-art filling the folder body. */
+  motif?: FolderMotif;
 }
 
 export default function CourseFolderCard({
+  title,
   href,
   onOpen,
   avatarSrc,
@@ -44,6 +33,7 @@ export default function CourseFolderCard({
   ctaLabel = 'Start Course',
   ctaDark = false,
   dark,
+  motif = 'orbit',
 }: CourseFolderCardProps) {
   const { play } = useSound();
 
@@ -55,19 +45,8 @@ export default function CourseFolderCard({
           <path d={FOLDER_PATH} className={styles.shapeFill} />
         </svg>
 
-        {/* Dotted-orbit motif in the folder body */}
-        <svg className={styles.motif} viewBox="0 0 200 200" aria-hidden="true">
-          <circle cx="100" cy="100" r="82" className={styles.motifOrbit} />
-          <circle cx="100" cy="100" r="62" className={styles.motifDashed} />
-          <circle cx="100" cy="100" r="30" className={styles.motifInner} />
-          {SPOKES.map((spoke, i) => (
-            <line key={`spoke-${i}`} {...spoke} className={styles.motifSpoke} />
-          ))}
-          {ORBIT_DOTS.map((dot, i) => (
-            <circle key={`dot-${i}`} cx={dot.x} cy={dot.y} r={3.5} className={styles.motifDot} />
-          ))}
-          <circle cx="100" cy="100" r="5.5" className={styles.motifCore} />
-        </svg>
+        {/* Dotted line-art in the folder body */}
+        <FolderMotifArt motif={motif} />
 
         {/* Bottom gradient with progressive blur, under the stroke */}
         <div className={styles.bottomFade} aria-hidden="true" />
@@ -115,6 +94,16 @@ export default function CourseFolderCard({
       >
         {contents}
       </Link>
+    );
+  }
+
+  // Nothing to open: a placeholder folder, so it stays out of the tab order
+  // rather than shipping a button that does nothing.
+  if (!onOpen) {
+    return (
+      <div className={cls} role="group" aria-label={title}>
+        {contents}
+      </div>
     );
   }
 
