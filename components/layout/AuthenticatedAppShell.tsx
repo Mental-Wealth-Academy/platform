@@ -23,7 +23,7 @@ export function AuthenticatedAppShell({
   const [preorderOpen, setPreorderOpen] = useState(false);
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--banner-height', '32px');
+    document.documentElement.style.setProperty('--banner-height', '38px');
     return () => {
       document.documentElement.style.removeProperty('--banner-height');
     };

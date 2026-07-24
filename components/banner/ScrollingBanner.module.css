@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 32px;
+  height: 38px;
   background-color: #c3c9fa;
   color: #1a1d33;
   z-index: 9999; /* Higher than TopNavigation which is 200, but let's keep it safe. We will set TopNavigation to render below it. */
@@ -11,7 +11,7 @@
   align-items: center;
   overflow: hidden;
   font-family: var(--font-mono), monospace;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
 .marquee {
   display: flex;
   white-space: nowrap;
-  animation: marqueeAnimation 28s linear infinite;
+  animation: marqueeAnimation 70s linear infinite;
 }
 
 .marquee span {

@@ -15,7 +15,7 @@ import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './page.module.css';
 
-const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/CyberpunkDataViz'), {
+const TexturedBackground = dynamic(() => import('@/components/textured-background/TexturedBackground'), {
   ssr: false,
   loading: () => null,
 });
@@ -341,7 +341,7 @@ export default function CoursePage() {
     <div className={styles.pageLayout}>
       {showAmbientViz && (
         <div className={styles.bgViz}>
-          <CyberpunkDataViz />
+          <TexturedBackground />
         </div>
       )}
       <SideNavigation />

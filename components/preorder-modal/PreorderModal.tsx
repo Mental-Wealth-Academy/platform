@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import CtaButton from '@/components/shared/CtaButton';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useSound } from '@/hooks/useSound';
@@ -16,6 +17,7 @@ interface PreorderModalProps {
 export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
   const [mounted, setMounted] = useState(false);
   const { play } = useSound();
+  const router = useRouter();
 
   useScrollLock(isOpen);
 
@@ -41,7 +43,8 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
 
   const handleBuyNow = () => {
     play('click');
-    window.open('https://passage.press', '_blank', 'noopener,noreferrer');
+    onClose();
+    router.push('/shop');
   };
 
   return createPortal(
@@ -61,7 +64,7 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
         {/* Title bar - Brutalist design system style */}
         <header className={styles.titleBar}>
           <span className={styles.title} id="preorder-title">
-            公告 ATTN: ACADEMY BOOK PREORDER
+            ATTN: ACADEMY BOOK PREORDER
           </span>
           <button 
             type="button" 
@@ -82,10 +85,10 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
             <div className={styles.bookDisplayBg} />
             <div className={styles.bookImageWrapper}>
               <Image
-                src="/images/preorder-book.png"
-                alt="The Exegesis of Miya Black Hearted Cyber Angel Baby book cover"
-                width={160}
-                height={190}
+                src="/images/orbits-book-cover.jpg"
+                alt="Orbiters of The Horizon book cover by Jhinn Bay"
+                width={150}
+                height={200}
                 priority
                 className={styles.bookImage}
               />
@@ -95,18 +98,21 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
           {/* Book Metadata details */}
           <div className={styles.details}>
             <p className={styles.bookTitle}>
-              THE EXEGESIS OF MIYA BLACK HEARTED CYBER ANGEL BABY (2016-2020)
+              ORBITERS OF THE HORIZON
+            </p>
+            <p className={styles.bookAuthor}>
+              BY JHINN BAY
             </p>
             <p className={styles.preorderBannerText}>
-              PREORDER NOW AT PASSAGE.PRESS
+              PREORDER NOW AT THE ACADEMY SHOP
             </p>
             <p className={styles.releaseDate}>
-              FULL RELEASE OCTOBER 2026
+              ESTIMATED RELEASE OCTOBER 2026
             </p>
             
             <div className={styles.editions}>
-              <span className={styles.editionTag}>STANDARD EDITION</span>
-              <span className={styles.editionTag}>LEGACY EDITION</span>
+              <span className={styles.editionTag}>HARDCOVER</span>
+              <span className={styles.editionTag}>DIGITAL EDITION</span>
             </div>
           </div>
 

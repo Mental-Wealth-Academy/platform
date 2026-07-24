@@ -5,6 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
+import dynamic from 'next/dynamic';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
@@ -13,6 +14,11 @@ import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-con
 import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
 import styles from './page.module.css';
 import courseStyles from '../page.module.css';
+
+const TexturedBackground = dynamic(() => import('@/components/textured-background/TexturedBackground'), {
+  ssr: false,
+  loading: () => null,
+});
 
 const ANGEL_IMAGE = 'https://i.imgur.com/KkpN9as.png';
 const COMPLETION_REWARD = 50;
@@ -619,6 +625,9 @@ export default function CourseSlugPage({ params }: PageProps) {
   // ── Academy course view ──
   return (
     <div className={styles.layout}>
+      <div className={courseStyles.bgViz}>
+        <TexturedBackground />
+      </div>
       <SideNavigation />
       <Banner />
       <main className={styles.main}>
