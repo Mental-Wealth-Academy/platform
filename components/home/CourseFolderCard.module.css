@@ -1,6 +1,7 @@
 .folder {
   --folder-blue: #5168ff;
   --folder-stroke: #3d2ba8;
+  --folder-ink: rgba(246, 248, 237, 0.5);
   position: relative;
   display: block;
   width: 100%;
@@ -34,6 +35,7 @@
 .folderDark {
   --folder-blue: #2a2a2e;
   --folder-stroke: #1a1a1d;
+  --folder-ink: rgba(246, 248, 237, 0.42);
 }
 
 /* Field Notes uses the dark folder variant, so its fade stays neutral too. */
@@ -55,6 +57,12 @@
   .folder,
   .folder:hover {
     transform: none;
+    transition: none;
+  }
+
+  .motif,
+  .folder:hover .motif {
+    transform: translateX(-50%);
     transition: none;
   }
 }
@@ -89,21 +97,63 @@
   z-index: 3;
 }
 
-/* Folder background image covers the body below the tab */
-.folderBgImage {
+/* Dotted-orbit motif sits in the folder body, clear of the CTA */
+.motif {
   position: absolute;
-  inset: 18.2% 1px 1px 1px;
+  left: 50%;
+  top: 21%;
+  height: 53%;
+  width: auto;
+  aspect-ratio: 1;
   z-index: 1;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.6;
-  border-radius: 0 0 22px 22px;
   pointer-events: none;
-  transition: transform var(--duration-fast, 0.15s) var(--ease-default, ease);
+  transform: translateX(-50%);
+  transition: transform 0.5s var(--ease-default, ease);
 }
 
-.folder:hover .folderBgImage {
-  transform: scale(1.02);
+.motifOrbit,
+.motifDashed,
+.motifInner,
+.motifSpoke {
+  fill: none;
+  stroke: var(--folder-ink);
+  stroke-linecap: round;
+}
+
+.motifOrbit {
+  stroke-width: 2;
+  stroke-dasharray: 0.1 11;
+}
+
+.motifDashed {
+  stroke-width: 1.5;
+  stroke-dasharray: 14 10;
+  opacity: 0.7;
+}
+
+.motifInner {
+  stroke-width: 1.5;
+  stroke-dasharray: 0.1 7;
+  opacity: 0.85;
+}
+
+.motifSpoke {
+  stroke-width: 1.5;
+  stroke-dasharray: 0.1 8;
+  opacity: 0.6;
+}
+
+.motifDot,
+.motifCore {
+  fill: var(--folder-ink);
+}
+
+.motifCore {
+  opacity: 0.9;
+}
+
+.folder:hover .motif {
+  transform: translateX(-50%) rotate(9deg);
 }
 
 /* Gradient fade: 0% blue at top to solid at bottom, progressive blur behind */
@@ -131,18 +181,17 @@
 /* Header container that groups icons and text inside the tab */
 .tabHeaderRow {
   position: absolute;
-  top: 9%; /* Insets it vertically inside the tab height, away from the top edge */
+  /* Spans the tab band (y 18-60 of the 330-tall folder path) so the row stays
+     centred in the tab at any card size, with a nudge of headroom on top. */
+  top: 5.45%;
+  height: 12.73%;
   left: 7.5%; /* Insets it from the left edge */
+  padding-top: 0.7%;
   display: flex;
   align-items: center;
   gap: 10px;
   z-index: 4;
   max-width: 80%;
-}
-
-.tabIcons {
-  display: flex;
-  align-items: center;
 }
 
 .tabIcon {
@@ -160,14 +209,6 @@
   transition: transform var(--duration-fast, 0.15s) var(--ease-default, ease);
 }
 
-.tabIcon + .tabIcon {
-  margin-left: -7px;
-}
-
-.tabIconGlyph {
-  background-color: color-mix(in srgb, #f6f8ed 64%, var(--folder-blue));
-}
-
 .tabTitle {
   font-family: var(--type-font-heading);
   font-weight: var(--type-weight-semibold);
@@ -183,10 +224,6 @@
 
 .folder:hover .tabIcon {
   transform: scale(1.15) rotate(6deg);
-}
-
-.folder:hover .tabIcon + .tabIcon {
-  transform: scale(1.15) rotate(-6deg) translate(2px, -1px);
 }
 
 /* Fancy CTA button */

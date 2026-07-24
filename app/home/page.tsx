@@ -494,13 +494,7 @@ export default function HomePage() {
                     avatarSrc="/blue/blue-home.png"
                     centerLabel="Blue's Story"
                     ctaLabel="Continue Course"
-                    ctaDark
-                    images={[
-                      '/images/course-panel-blue-art.png',
-                      '/images/campfire.jpg',
-                      '/images/landing-space.jpg',
-                      '/images/landing-starfield.jpg'
-                    ]}
+                    dark
                   />
                   <CourseFolderCard
                     title="Your Course"
@@ -509,13 +503,7 @@ export default function HomePage() {
                     avatarSrc="/academic-angels.webp"
                     centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
                     ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
-                    dark
-                    images={[
-                      '/images/hero-desk/study-desk.jpg',
-                      '/images/community-peers-panel.jpg',
-                      '/images/funding-village-bg.jpg',
-                      '/images/cohort-3.jpg'
-                    ]}
+                    ctaDark
                   />
                   <EmptyCourseStudioFolder hasAngel={hasAngel} />
                 </section>
