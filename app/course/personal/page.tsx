@@ -229,12 +229,7 @@ export default function PersonalCoursePage() {
         <SideNavigation />
         <Banner backHref="/home" />
         <main className={shared.content}>
-          <div className={styles.personalHeaderSection}>
-            <h1 className={styles.personalPageTitle}>Personal Curriculum</h1>
-            <p className={styles.personalPageSubtitle}>
-              Your saved learning materials and custom-built courses.
-            </p>
-          </div>
+
 
           {bookmarkedGuides.length > 0 ? (
             <div className={styles.bookmarksSection}>
