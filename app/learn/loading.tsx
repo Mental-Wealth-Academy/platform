@@ -1,4 +1,3 @@
-import SideNavSkeleton from '@/components/skeleton/SideNavSkeleton';
 import styles from './loading.module.css';
 
 const featuredCards = Array.from({ length: 6 }, (_, index) => index);
@@ -14,7 +13,6 @@ const rowTitleWidths = ['46%', '38%', '52%', '34%', '44%', '40%'];
 export default function LearnLoading() {
   return (
     <div className={styles.layout} aria-busy="true" aria-label="Loading guides">
-      <SideNavSkeleton />
       <main className={styles.pageColumns}>
         <div className={styles.globalPanel} aria-hidden="true">
           <div className={styles.panelHeader}>

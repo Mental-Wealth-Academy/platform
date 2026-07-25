@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import QuestListPanel, { UnifiedQuest } from '@/components/quest-list-panel/QuestListPanel';
 import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
@@ -263,7 +262,6 @@ export default function QuestsPage() {
         style={{ '--quests-scene': `url(${sceneUrl})` } as CSSProperties}
       >
         <div className={styles.scene} aria-hidden="true" />
-        <SideNavigation />
         <main className={styles.content}>
           <QuestListPanel
             quests={allQuests}

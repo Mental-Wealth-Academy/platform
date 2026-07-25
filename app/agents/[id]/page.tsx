@@ -4,7 +4,6 @@ import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { ArrowLeft, Bell, Check, CheckCircle, Clock, Copy, Key, Plus, X } from '@phosphor-icons/react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import RoomLogOverlay from '@/components/room-log/RoomLogOverlay';
 import styles from './page.module.css';
 
@@ -315,7 +314,6 @@ export default function AgentDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <div className={styles.pageLayout}>
-      <SideNavigation />
       <main className={styles.content}>
         <div className={styles.inner}>
           <Link href="/agents" className={styles.backLink}>

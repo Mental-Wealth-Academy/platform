@@ -1,4 +1,3 @@
-import SideNavSkeleton from '@/components/skeleton/SideNavSkeleton';
 import styles from './loading.module.css';
 
 const folderSkeletons = Array.from({ length: 4 }, (_, index) => index);
@@ -7,7 +6,6 @@ const courseSkeletons = Array.from({ length: 3 }, (_, index) => index);
 export default function HomeLoading() {
   return (
     <div className={styles.layout} aria-busy="true" aria-label="Loading home">
-      <SideNavSkeleton />
       <main className={styles.pageColumns}>
         <div className={styles.globalPanel}>
           <div className={styles.panelHeader}>

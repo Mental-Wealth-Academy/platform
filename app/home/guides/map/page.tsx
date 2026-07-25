@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { ArrowLeft, CircleNotch, Plus } from '@phosphor-icons/react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import GuideSkillTree from '@/components/guides/GuideSkillTree';
 import type { KnowledgeMap } from '@/lib/guides-db';
 import styles from './page.module.css';
@@ -60,7 +59,6 @@ export default function KnowledgeMapPage() {
 
   return (
     <div className={styles.layout}>
-      <SideNavigation />
       <main className={styles.page}>
         {/* One slim bar — the map itself is the page, so the chrome stays out
             of its way and the graph starts above the fold. */}

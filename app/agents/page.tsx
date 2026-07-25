@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { Robot, Copy, Check, ShieldCheck, Key, Bell } from '@phosphor-icons/react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import styles from './page.module.css';
 
 type WalletMode = 'custodial' | 'self';
@@ -218,7 +217,6 @@ export default function AgentsPage() {
 
   return (
     <div className={styles.pageLayout}>
-      <SideNavigation />
       <main className={styles.content}>
         <div className={styles.inner}>
           <header className={styles.header}>

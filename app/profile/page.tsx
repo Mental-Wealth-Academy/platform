@@ -1,7 +1,6 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import VerifierBadges from '@/components/guides/VerifierBadges';
 import VerifierCredentials from '@/components/guides/VerifierCredentials';
 import VerifierPanelQueue from '@/components/guides/VerifierPanelQueue';
@@ -18,7 +17,6 @@ export default function ProfilePage() {
       style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}
     >
       <div className={styles.scene} aria-hidden="true" />
-      <SideNavigation />
       <main className={styles.page}>
         <section className={styles.shell}>
           <VerifierBadges />

@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
 import { useSound } from '@/hooks/useSound';
 import type { CourseData } from '@/lib/personal-course';
@@ -213,7 +212,6 @@ export default function PersonalCoursePage() {
   if (loading) {
     return (
       <div className={shared.pageLayout}>
-        <SideNavigation />
         <Banner />
         <main className={shared.content}>
           <div className={styles.stateWrap}><p className={styles.stateText}>Loading your course…</p></div>
@@ -225,7 +223,6 @@ export default function PersonalCoursePage() {
   if (!course || !week) {
     return (
       <div className={shared.pageLayout}>
-        <SideNavigation />
         <Banner backHref="/home" />
         <main className={shared.content}>
 
@@ -325,7 +322,6 @@ export default function PersonalCoursePage() {
 
   return (
     <div className={shared.pageLayout}>
-      <SideNavigation />
       <Banner
         backHref="/home"
       />

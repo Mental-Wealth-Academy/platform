@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, SealCheck, SpinnerGap, ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import dynamic from 'next/dynamic';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
 import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import DiamondReward from '@/components/rewards/DiamondReward';
@@ -272,7 +271,6 @@ export default function CourseSlugPage({ params }: PageProps) {
   if (loading) {
     return (
       <div className={courseStyles.pageLayout}>
-        <SideNavigation />
         <Banner />
         <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
@@ -288,7 +286,6 @@ export default function CourseSlugPage({ params }: PageProps) {
   if (notFound) {
     return (
       <div className={courseStyles.pageLayout}>
-        <SideNavigation />
         <Banner />
         <main className={courseStyles.content}>
           <div className={styles.stateWrap}>
@@ -322,7 +319,6 @@ export default function CourseSlugPage({ params }: PageProps) {
 
     return (
       <div className={courseStyles.pageLayout}>
-        <SideNavigation />
         <Banner
           backHref="/home"
           tone="neutral"
@@ -590,7 +586,6 @@ export default function CourseSlugPage({ params }: PageProps) {
   if (checkingAccess) {
     return (
       <div className={styles.layout}>
-        <SideNavigation />
         <Banner />
         <main className={styles.main}>
           <div className={styles.stateWrap}>
@@ -606,7 +601,6 @@ export default function CourseSlugPage({ params }: PageProps) {
   if (!accessGranted && gate) {
     return (
       <div className={styles.layout}>
-        <SideNavigation />
         <Banner />
         <main className={styles.main}>
           <div className={styles.gateCard}>
@@ -628,7 +622,6 @@ export default function CourseSlugPage({ params }: PageProps) {
       <div className={courseStyles.bgViz}>
         <TexturedBackground />
       </div>
-      <SideNavigation />
       <Banner />
       <main className={styles.main}>
         <Link href="/home" className={styles.backLink}>← Home</Link>

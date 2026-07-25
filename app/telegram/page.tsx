@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Button from '@/components/button/Button';
 import styles from './page.module.css';
 
@@ -86,7 +85,6 @@ export default function TelegramPage() {
   if (!ready) {
     return (
       <div className={styles.page}>
-        <SideNavigation />
         <main className={styles.main}>
           <div className={styles.card}>
             <div className={styles.spinner} />
@@ -98,7 +96,6 @@ export default function TelegramPage() {
 
   return (
     <div className={styles.page}>
-      <SideNavigation />
       <main className={styles.main}>
         <div className={styles.card}>
           <div className={styles.icon}>

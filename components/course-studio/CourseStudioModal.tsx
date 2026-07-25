@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { ArrowCounterClockwise, Eye } from '@phosphor-icons/react';
 import CoursePreview from './CoursePreview';
 import styles from './CourseStudioModal.module.css';
@@ -747,7 +746,6 @@ export default function CourseStudioModal({
       body { overflow: hidden !important; }
     `}</style>
     <div className={styles.layout}>
-      <SideNavigation />
       <DndContext
         sensors={sensors}
         collisionDetection={collisionFallback}

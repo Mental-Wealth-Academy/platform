@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import dynamic from 'next/dynamic';
 import styles from './page.module.css';
 
@@ -45,7 +44,6 @@ export default function MarketsLockedPage() {
 
   return (
     <main className={styles.main}>
-      <SideNavigation />
       <div className={styles.lockedPageLayout}>
         <section className={styles.lockedPanel} aria-labelledby="markets-locked-title">
           <span className={styles.lockedEyebrow}>VIP Access</span>

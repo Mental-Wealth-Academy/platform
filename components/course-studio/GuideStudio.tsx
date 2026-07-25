@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Trash, Eye, PencilSimple, X, Plus } from '@phosphor-icons/react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CtaButton from '@/components/shared/CtaButton';
 import ComponentPalette from './ComponentPalette';
 import ComponentConfigEditor from './ComponentConfigEditor';
@@ -517,7 +516,6 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
 
   return (
     <div className={styles.layout}>
-      <SideNavigation />
       <div className={styles.body}>
         <header className={styles.header}>
           <div className={styles.headerLeft}>

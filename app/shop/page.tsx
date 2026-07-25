@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import type { ExternalProvider } from '@ethersproject/providers';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { ShopPageSkeleton } from '@/components/skeleton/Skeleton';
 import { ensureBaseChain, type Eip1193Provider } from '@/lib/ensure-base-chain';
 import { fetchDiamondBalance } from '@/lib/diamonds-balance';
@@ -359,7 +358,6 @@ export default function ShopPage() {
   if (isContentLoading) {
     return (
       <div className={styles.pageLayout}>
-        <SideNavigation />
         <main className={styles.page}>
           <ShopPageSkeleton />
         </main>
@@ -369,7 +367,6 @@ export default function ShopPage() {
 
   return (
     <div className={styles.pageLayout}>
-      <SideNavigation />
       <main className={styles.page}>
         {/* Category pills */}
         <div className={styles.categories}>

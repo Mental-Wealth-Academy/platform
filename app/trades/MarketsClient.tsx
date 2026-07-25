@@ -4,7 +4,6 @@ import { useDeferredValue, useEffect, useState, useCallback, useRef, useMemo } f
 import { createPortal } from 'react-dom';
 import type { CSSProperties, FormEvent } from 'react';
 import Image from 'next/image';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import TreasurySnapshotCard from '@/components/treasury-snapshot/TreasurySnapshotCard';
 import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import dynamic from 'next/dynamic';
@@ -1039,7 +1038,6 @@ export default function Markets() {
 
   return (
     <main className={styles.main}>
-      <SideNavigation />
       <div className={styles.pageLayout}>
 
         {/* ── Status Bar ── */}

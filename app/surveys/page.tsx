@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback, useMemo, useState } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import SurveyController from '@/components/survey-controller/SurveyController';
 import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal from '@/components/blue-terminal/BlueTerminal';
@@ -141,7 +140,6 @@ export default function SurveysPage() {
 
   return (
     <div className={styles.pageLayout}>
-      <SideNavigation />
       <main className={styles.content}>
         <SurveyController
           selectedSurveyId={selectedSurveyId}

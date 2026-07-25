@@ -119,13 +119,14 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  background: var(--color-surface-base, #ffffff);
 }
 
 .title {
   font-family: var(--font-primary);
   font-size: 20px;
   font-weight: 700;
-  color: #1A1D33;
+  color: var(--color-text-dark, #1A1D33);
   margin: 0;
   text-align: center;
   line-height: 1.4;
@@ -160,7 +161,7 @@
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 500;
-  color: rgba(26, 29, 51, 0.62);
+  color: var(--color-text-muted, rgba(26, 29, 51, 0.62));
   margin: 0;
 }
 
@@ -178,7 +179,7 @@
   font-family: var(--font-primary);
   font-size: 20px;
   font-weight: 700;
-  color: #1A1D33;
+  color: var(--color-text-dark, #1A1D33);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -186,7 +187,7 @@
 .successMessage {
   font-family: var(--font-primary);
   font-size: 14px;
-  color: rgba(26, 29, 51, 0.62);
+  color: var(--color-text-muted, rgba(26, 29, 51, 0.62));
   margin: 0 0 8px 0;
 }
 
@@ -233,7 +234,8 @@
 }
 
 /* Dark mode */
-:global([data-theme="dark"]) .modal {
+:global([data-theme="dark"]) .modal,
+:global([data-theme="dark"]) .body {
   background: #1A1D33;
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);

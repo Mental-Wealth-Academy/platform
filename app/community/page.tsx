@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useState, useEffect, useCallback } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import type { TutorialStep } from '@/components/still-tutorial/StillTutorial';
 import ProposalCard from '@/components/proposal-card/ProposalCard';
 import BlueChatBubble from '@/components/blue-chat-bubble/BlueChatBubble';
@@ -405,7 +404,6 @@ export default function VotingPage() {
         />
       )}
       <div className={styles.pageLayout}>
-        <SideNavigation />
         <main className={styles.page}>
         <div className={styles.content}>
           <>

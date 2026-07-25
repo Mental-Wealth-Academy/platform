@@ -94,7 +94,9 @@
 }
 
 .content {
-  padding: 26px 26px 22px;
+  padding: 24px 26px 22px;
+  background: var(--color-surface-base, #ffffff);
+  color: var(--color-text-dark, #1a1b24);
 }
 
 /* Unified tab switcher: one recessed track, one sliding thumb */
@@ -105,11 +107,8 @@
   padding: 4px;
   margin-bottom: 22px;
   border-radius: 14px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
-  box-shadow:
-    0 2px 5px rgba(26, 27, 36, 0.09) inset,
-    0 1px 0 rgba(255, 255, 255, 0.8);
+  background: var(--color-surface-2, rgba(26, 27, 36, 0.06));
+  border: 1px solid var(--color-border-subtle, rgba(26, 27, 36, 0.08));
 }
 
 .tabThumb {
@@ -119,7 +118,7 @@
   width: calc(50% - 4px);
   height: calc(100% - 8px);
   border-radius: 10px;
-  background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-1) 100%);
+  background: var(--color-surface-base, #ffffff);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
     0 1px 3px rgba(26, 27, 36, 0.14);
@@ -260,7 +259,7 @@
 .uploadSlot {
   width: 76px;
   height: 76px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-subtle, rgba(26, 27, 36, 0.12));
   border-radius: 14px;
   display: flex;
   justify-content: center;
@@ -269,10 +268,8 @@
   font-weight: 400;
   color: var(--color-text-faint);
   cursor: pointer;
-  background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-2) 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 1px 3px rgba(26, 27, 36, 0.1);
+  background: var(--color-surface-1, #f8f8fb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.15s ease;
   padding: 0;
   box-sizing: border-box;
@@ -280,23 +277,22 @@
 
 .uploadSlot:hover {
   color: var(--color-action);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 3px 8px rgba(26, 27, 36, 0.13);
+  border-color: var(--color-action);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
 .uploadSlot:active {
-  box-shadow: 0 2px 5px rgba(26, 27, 36, 0.16) inset;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16) inset;
 }
 
 .uploadSlotWithPreview {
   width: 76px;
   height: 76px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border-subtle, rgba(26, 27, 36, 0.12));
   border-radius: 14px;
   position: relative;
-  background: var(--color-surface-2);
-  box-shadow: 0 1px 3px rgba(26, 27, 36, 0.1);
+  background: var(--color-surface-2, rgba(26, 27, 36, 0.06));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
@@ -334,8 +330,8 @@
 
 .footer {
   padding: 16px;
-  border-top: 1px solid var(--color-border-subtle);
-  background: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-2) 100%);
+  border-top: 1px solid var(--color-border-subtle, rgba(26, 27, 36, 0.08));
+  background: var(--color-surface-1, #f8f8fb);
 }
 
 .submitButton {

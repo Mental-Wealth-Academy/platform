@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
@@ -449,7 +448,6 @@ export default function HomePage() {
       style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}
     >
       <div className={styles.scene} aria-hidden="true" />
-      <SideNavigation />
       <main className={styles.pageColumns}>
       {learnOnly && (
         <section className={styles.learnOverview}>

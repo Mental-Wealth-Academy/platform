@@ -4,7 +4,6 @@ import React, { useCallback } from 'react';
 import Image from 'next/image';
 
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import ListsPanel from '@/components/blue-chat/ListsPanel';
 import { LandingScene } from '@/components/landing/LandingScene';
 import { useSound } from '@/hooks/useSound';
@@ -23,7 +22,6 @@ export default function ListPage() {
 
   return (
     <main className={styles.page}>
-      <SideNavigation />
       {/* Background — mirrors the landing hero: WebGL scene, starfield, earth. */}
       <div className={styles.background} aria-hidden="true">
         <LandingScene />

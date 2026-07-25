@@ -15,7 +15,6 @@ import {
 } from '@phosphor-icons/react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { AssemblyTreeResponse } from '@/lib/guide-api-schemas';
 import type { AssemblySectionView, AssemblyVerdict } from '@/lib/guide-assembly-db';
@@ -288,7 +287,6 @@ export default function GuideAssemblePage({ params }: PageProps) {
 
   return (
     <div className={frame.layout}>
-      <SideNavigation />
       <main className={frame.page}>
         <Link href={backHref} className={frame.back}>
           <ArrowLeft size={16} weight="bold" /> Back to guide

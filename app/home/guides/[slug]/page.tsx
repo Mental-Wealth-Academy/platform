@@ -21,7 +21,6 @@ import { ThinkingOrb } from 'thinking-orbs';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { isBookmarked, toggleBookmark, onBookmarksUpdated } from '@/lib/bookmarks';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import CtaButton from '@/components/shared/CtaButton';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
@@ -256,7 +255,6 @@ export default function GuidePage({ params }: PageProps) {
 
   return (
     <div className={styles.layout}>
-      <SideNavigation />
       <div className={styles.guideLayout}>
       <main className={styles.page}>
         {loading && <div className={styles.state}>Loading guide…</div>}

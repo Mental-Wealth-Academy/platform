@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import { useSNPMatcherWorker, proxy } from '@/hooks/useSNPMatcherWorker';
 import { FileUpload } from '@/components/genetics/FileUpload';
 import { GenosetDisplay } from '@/components/genetics/GenosetDisplay';
@@ -652,7 +651,6 @@ export default function GeneticsPage() {
 
   return (
     <div className={styles.pageLayout}>
-      <SideNavigation />
       <GeneticsLab
         canAccessGenetics={access === 'granted'}
         accessChecking={access === 'checking'}

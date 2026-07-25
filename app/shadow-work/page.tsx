@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import Banner from '@/components/banner/Banner';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
@@ -344,7 +343,6 @@ export default function CoursePage() {
           <TexturedBackground />
         </div>
       )}
-      <SideNavigation />
       <Banner
         backHref="/home"
         tone="neutral"

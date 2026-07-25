@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SideNavigation from '@/components/side-navigation/SideNavigation';
 import AgentRosterCard from '@/components/room-log/AgentRosterCard';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
@@ -795,7 +794,6 @@ export default function PromptsPage() {
 
   return (
     <>
-      <SideNavigation />
       <main className={styles.pageLayout}>
         <div className={styles.container}>
           {/* Prompt library — search + catalog */}
