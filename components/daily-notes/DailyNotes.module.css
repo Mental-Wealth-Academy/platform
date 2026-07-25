@@ -271,7 +271,25 @@
 }
 
 .cardDone {
-  opacity: 0.5;
+  opacity: 0.65;
+  cursor: default;
+  pointer-events: none;
+}
+
+.cardDone .cardButton,
+.cardDone .cardButton:disabled {
+  cursor: default;
+  pointer-events: none;
+  background: none;
+}
+
+.cardDone.cardCompact:hover,
+:global(:root:not([data-theme="dark"])) .cardDone.cardCompact:hover {
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+  border-color: var(--color-primary-hover);
 }
 
 .compactCheck {

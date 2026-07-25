@@ -156,7 +156,24 @@ export default function DailyNotes({
     return last.date < todayDateStr ? fieldNotes.length : -1;
   })();
 
-  const todayDone = fieldNotes.some(e => e.date === todayDateStr);
+  const [localDoneToday, setLocalDoneToday] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return getStorageItem(`fieldNotesSavedToday_${todayDateStr}`) === '1';
+  });
+
+  useEffect(() => {
+    const handleCompleted = () => {
+      setLocalDoneToday(true);
+    };
+    window.addEventListener('dailyNoteCompleted', handleCompleted);
+    return () => window.removeEventListener('dailyNoteCompleted', handleCompleted);
+  }, [todayDateStr]);
+
+  const serverDoneToday = Object.values(allWeekPages).some(pages =>
+    Array.isArray(pages) && pages.some((e: any) => e.date === todayDateStr)
+  );
+
+  const todayDone = localDoneToday || serverDoneToday;
   const weekComplete = fieldNotes.length >= 7;
   const totalCompleted = Object.values(allWeekPages).reduce((sum, pages) => sum + pages.length, 0);
 
@@ -785,23 +802,24 @@ export default function DailyNotes({
           type="button"
           className={styles.cardButton}
           onClick={handleCompactClick}
-          onMouseEnter={() => play('hover')}
-          aria-label="Open Journal"
+          onMouseEnter={() => !todayDone && play('hover')}
+          aria-label={todayDone ? 'Journal Entry Completed' : 'Open Journal'}
+          disabled={todayDone}
         >
           <Image
             className={styles.icon}
-            src="/icons/notebook-writing.svg"
-            alt="Notebook writing icon"
+            src={todayDone ? "/icons/ui-check.svg" : "/icons/notebook-writing.svg"}
+            alt={todayDone ? "Completed icon" : "Notebook writing icon"}
             width={36}
             height={36}
           />
           <div className={styles.cardText}>
             <span className={`${styles.label} ${compact ? styles.labelCompact : ''}`}>
-              {compact ? compactLabel : 'Field Notes'}
+              {compact ? (todayDone ? 'Completed Today' : compactLabel) : 'Field Notes'}
             </span>
             {!compact && (
               <span className={`${styles.sublabel} ${compact ? styles.sublabelCompact : ''}`}>
-                {cardSubLabel}
+                {todayDone ? 'Great work on today’s reflection' : cardSubLabel}
               </span>
             )}
           </div>

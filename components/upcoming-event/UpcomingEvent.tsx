@@ -11,7 +11,6 @@ export default function UpcomingEvent() {
       <div className={styles.body}>
         <div className={styles.time}>
           <span className={styles.date}>July 31st, 1pm EST</span>
-          <span className={styles.status}>Coming soon</span>
         </div>
         <h2 className={styles.eventTitle}>Mental Wealth Workshop</h2>
       </div>
