@@ -260,12 +260,12 @@ export default function GuidePage({ params }: PageProps) {
     <div className={styles.layout} style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}>
       <div className={styles.scene} aria-hidden="true" />
       <div className={styles.guideWrapper}>
-        <div className={styles.globalPanel}>
-          <div className={styles.panelHeader}>
-            <span className={styles.panelTitleJa}>知識</span>
-            <span className={styles.panelTitle}>Learn anything</span>
-          </div>
-          <div className={styles.guideLayout}>
+        <div className={styles.guideLayout}>
+          <div className={styles.globalPanel}>
+            <div className={styles.panelHeader}>
+              <span className={styles.panelTitleJa}>知識</span>
+              <span className={styles.panelTitle}>Learn anything</span>
+            </div>
             <main className={styles.page}>
               {loading && <div className={styles.state}>Loading guide…</div>}
               {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
@@ -538,15 +538,15 @@ export default function GuidePage({ params }: PageProps) {
           </>
         )}
       </main>
-      {data && !loading && (
-        <GuideDetails
-          guide={data.guide}
-          level={data.level}
-          prereqCount={data.prereqs.length}
-          dependentCount={data.dependents.length}
-        />
-      )}
           </div>
+          {data && !loading && (
+            <GuideDetails
+              guide={data.guide}
+              level={data.level}
+              prereqCount={data.prereqs.length}
+              dependentCount={data.dependents.length}
+            />
+          )}
         </div>
       </div>
     </div>
