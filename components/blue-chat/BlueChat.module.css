@@ -2417,53 +2417,7 @@
 
 /* ── Research context uploader ───────────────────────────────────────────── */
 
-/* ── Quest forge inline form ── */
-
-.questForgeInput {
-  width: 100%;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.88);
-  outline: none;
-}
-
-.questForgeInput:focus {
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-}
-
-:global(:root:not([data-theme="dark"])) .questForgeInput {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  color: rgba(26, 29, 51, 0.9);
-}
-
-.questForgeRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.questForgeEscrowNote {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-:global(:root:not([data-theme="dark"])) .questForgeEscrowNote {
-  color: rgba(26, 29, 51, 0.6);
-}
-
-.questForgeError {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
-  color: #ff8080;
-}
+/* Quest forge inline form styles now live in QuestForgeInline.module.css. */
 
 /* ── Course builder inline ── */
 

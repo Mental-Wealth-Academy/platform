@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import styles from './BlueChat.module.css';
+import styles from './QuestForgeInline.module.css';
 import { FORGE_LIMITS, type QuestForgeType, type RewardKind } from '@/lib/quest-forge';
 
 export interface QuestForgeDraft {
@@ -119,11 +119,11 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
 
   if (isMinimized) {
     return (
-      <div className={styles.autoDistributionMinimizedChip}>
-        <span className={styles.autoDistributionTitle}>Quest forge</span>
+      <div className={styles.minimizedChip}>
+        <span className={styles.title}>Quest forge</span>
         <button
           type="button"
-          className={styles.autoDistributionMinimizeBtn}
+          className={styles.iconButton}
           onClick={() => setIsMinimized(false)}
           aria-label="Expand quest forge"
         >
@@ -139,12 +139,12 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
   }
 
   return (
-    <div className={styles.autoDistributionPanel}>
-      <div className={styles.autoDistributionHeader}>
-        <span className={styles.autoDistributionTitle}>Quest forge</span>
+    <div className={styles.panel}>
+      <div className={styles.titleBar}>
+        <span className={styles.title}>Quest forge</span>
         <button
           type="button"
-          className={styles.autoDistributionMinimizeBtn}
+          className={styles.iconButton}
           onClick={() => setIsMinimized(true)}
           aria-label="Minimize quest forge"
         >
@@ -156,152 +156,152 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
           </svg>
         </button>
       </div>
-      <p className={styles.autoDistributionDesc}>
-        Tell me the quest in a sentence and I&apos;ll fill this in — or edit it yourself. You fund the reward up front and I hold it until a completer is paid.
-      </p>
+      <div className={styles.content}>
+        <p className={styles.desc}>
+          Tell me the quest in a sentence and I&apos;ll fill this in — or edit it yourself. You fund the reward up front and I hold it until a completer is paid.
+        </p>
 
-      <div className={styles.autoDistributionSection}>
-        <span className={styles.autoDistributionLabel}>Title</span>
-        <input
-          className={styles.questForgeInput}
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="e.g. Share your first reflection"
-          maxLength={FORGE_LIMITS.titleMax}
-          disabled={isBusy}
-        />
-      </div>
-
-      <div className={styles.autoDistributionSection}>
-        <span className={styles.autoDistributionLabel}>What to do</span>
-        <textarea
-          className={styles.autoDistributionTextarea}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Explain exactly what a completer should do."
-          maxLength={FORGE_LIMITS.descMax}
-          rows={3}
-          disabled={isBusy}
-        />
-      </div>
-
-      <div className={styles.autoDistributionSection}>
-        <span className={styles.autoDistributionLabel}>Reward</span>
-        <div className={styles.autoDistributionPills}>
-          {([['credits', 'Diamonds'], ['usdc', 'USDC']] as Array<[RewardKind, string]>).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              className={`${styles.autoDistributionPill} ${rewardKind === value ? styles.autoDistributionPillActive : ''}`}
-              onClick={() => switchRewardKind(value)}
-              disabled={isBusy}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.questForgeRow}>
-        <div className={styles.autoDistributionSection}>
-          <span className={styles.autoDistributionLabel}>
-            {rewardKind === 'usdc' ? 'USDC each ($)' : 'Diamonds each'}
-          </span>
+        <div className={styles.section}>
+          <span className={styles.label}>Title</span>
           <input
-            className={styles.questForgeInput}
-            type="number"
-            min={rewardKind === 'usdc' ? FORGE_LIMITS.usdcMin : FORGE_LIMITS.creditsMin}
-            max={rewardKind === 'usdc' ? FORGE_LIMITS.usdcMax : FORGE_LIMITS.creditsMax}
-            step={rewardKind === 'usdc' ? 0.25 : 1}
-            value={rewardAmount}
-            onChange={(e) => setRewardAmount(Number(e.target.value))}
-            disabled={isBusy}
-          />
-        </div>
-        <div className={styles.autoDistributionSection}>
-          <span className={styles.autoDistributionLabel}>How many can complete</span>
-          <input
-            className={styles.questForgeInput}
-            type="number"
-            min={FORGE_LIMITS.targetMin}
-            max={FORGE_LIMITS.targetMax}
-            step={1}
-            value={targetCount}
-            onChange={(e) => setTargetCount(Math.max(1, Math.round(Number(e.target.value))))}
-            disabled={isBusy}
-          />
-        </div>
-      </div>
-
-      <div className={styles.autoDistributionSection}>
-        <span className={styles.autoDistributionLabel}>Completion</span>
-        <div className={styles.autoDistributionPills}>
-          {([['no-proof', 'No proof'], ['proof-required', 'Proof required']] as Array<[QuestForgeType, string]>).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              className={`${styles.autoDistributionPill} ${questType === value ? styles.autoDistributionPillActive : ''}`}
-              onClick={() => setQuestType(value)}
-              disabled={isBusy}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className={styles.questForgeRow}>
-        <div className={styles.autoDistributionSection}>
-          <span className={styles.autoDistributionLabel}>Assign to wallet (optional)</span>
-          <input
-            className={styles.questForgeInput}
+            className={styles.input}
             type="text"
-            value={assigneeWallet}
-            onChange={(e) => setAssigneeWallet(e.target.value)}
-            placeholder="0x… — blank = everyone"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Share your first reflection"
+            maxLength={FORGE_LIMITS.titleMax}
             disabled={isBusy}
           />
         </div>
-        <div className={styles.autoDistributionSection}>
-          <span className={styles.autoDistributionLabel}>Expires (optional)</span>
-          <input
-            className={styles.questForgeInput}
-            type="datetime-local"
-            value={expiresAt}
-            onChange={(e) => setExpiresAt(e.target.value)}
+
+        <div className={styles.section}>
+          <span className={styles.label}>What to do</span>
+          <textarea
+            className={styles.textarea}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Explain exactly what a completer should do."
+            maxLength={FORGE_LIMITS.descMax}
+            rows={3}
             disabled={isBusy}
           />
         </div>
+
+        <div className={styles.section}>
+          <span className={styles.label}>Reward</span>
+          <div className={styles.pills}>
+            {([['credits', 'Diamonds'], ['usdc', 'USDC']] as Array<[RewardKind, string]>).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={`${styles.pill} ${rewardKind === value ? styles.pillActive : ''}`}
+                onClick={() => switchRewardKind(value)}
+                disabled={isBusy}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.row}>
+          <div className={styles.section}>
+            <span className={styles.label}>
+              {rewardKind === 'usdc' ? 'USDC each ($)' : 'Diamonds each'}
+            </span>
+            <input
+              className={styles.input}
+              type="number"
+              min={rewardKind === 'usdc' ? FORGE_LIMITS.usdcMin : FORGE_LIMITS.creditsMin}
+              max={rewardKind === 'usdc' ? FORGE_LIMITS.usdcMax : FORGE_LIMITS.creditsMax}
+              step={rewardKind === 'usdc' ? 0.25 : 1}
+              value={rewardAmount}
+              onChange={(e) => setRewardAmount(Number(e.target.value))}
+              disabled={isBusy}
+            />
+          </div>
+          <div className={styles.section}>
+            <span className={styles.label}>How many can complete</span>
+            <input
+              className={styles.input}
+              type="number"
+              min={FORGE_LIMITS.targetMin}
+              max={FORGE_LIMITS.targetMax}
+              step={1}
+              value={targetCount}
+              onChange={(e) => setTargetCount(Math.max(1, Math.round(Number(e.target.value))))}
+              disabled={isBusy}
+            />
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <span className={styles.label}>Completion</span>
+          <div className={styles.pills}>
+            {([['no-proof', 'No proof'], ['proof-required', 'Proof required']] as Array<[QuestForgeType, string]>).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={`${styles.pill} ${questType === value ? styles.pillActive : ''}`}
+                onClick={() => setQuestType(value)}
+                disabled={isBusy}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.row}>
+          <div className={styles.section}>
+            <span className={styles.label}>Assign to wallet (optional)</span>
+            <input
+              className={styles.input}
+              type="text"
+              value={assigneeWallet}
+              onChange={(e) => setAssigneeWallet(e.target.value)}
+              placeholder="0x… — blank = everyone"
+              disabled={isBusy}
+            />
+          </div>
+          <div className={styles.section}>
+            <span className={styles.label}>Expires (optional)</span>
+            <input
+              className={styles.input}
+              type="datetime-local"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              disabled={isBusy}
+            />
+          </div>
+        </div>
+
+        <div className={styles.escrowNote}>
+          {rewardKind === 'usdc'
+            ? `I'll hold $${escrowTotal} USDC in escrow — you send it from your wallet next.`
+            : `I'll hold ${escrowTotal} diamonds in escrow${creditBalance != null ? ` (you have ${creditBalance.toLocaleString()})` : ''}.`}
+        </div>
+
+        {creditsShort && (
+          <div className={styles.error}>
+            Not enough diamonds — this quest needs {escrowTotal.toLocaleString()}.
+          </div>
+        )}
+        {error && <div className={styles.error}>{error}</div>}
       </div>
 
-      <div className={styles.questForgeEscrowNote}>
-        {rewardKind === 'usdc'
-          ? `I'll hold $${escrowTotal} USDC in escrow — you send it from your wallet next.`
-          : `I'll hold ${escrowTotal} diamonds in escrow${creditBalance != null ? ` (you have ${creditBalance.toLocaleString()})` : ''}.`}
-      </div>
-
-      {creditsShort && (
-        <div className={styles.questForgeError}>
-          Not enough diamonds — this quest needs {escrowTotal.toLocaleString()}.
-        </div>
-      )}
-      {error && <div className={styles.questForgeError}>{error}</div>}
-
-      <div className={styles.autoDistributionFooter}>
-        <div className={styles.autoDistributionButtons}>
-          <button type="button" className={styles.inlineFormCancel} onClick={onClose} disabled={isBusy}>
-            Close
-          </button>
-          <button
-            type="button"
-            className={styles.inlineFormProceed}
-            onClick={submit}
-            disabled={isBusy || !title.trim() || !description.trim() || (creditsShort ?? false)}
-          >
-            {rewardKind === 'usdc' ? 'Fund & forge' : 'Forge quest'}
-          </button>
-        </div>
+      <div className={styles.footer}>
+        <button type="button" className={styles.cancelButton} onClick={onClose} disabled={isBusy}>
+          Close
+        </button>
+        <button
+          type="button"
+          className={styles.submitButton}
+          onClick={submit}
+          disabled={isBusy || !title.trim() || !description.trim() || (creditsShort ?? false)}
+        >
+          {rewardKind === 'usdc' ? 'Fund & forge' : 'Forge quest'}
+        </button>
       </div>
     </div>
   );
