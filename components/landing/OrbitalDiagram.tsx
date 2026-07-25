@@ -241,9 +241,8 @@ export default function OrbitalDiagram() {
         <div className={styles.orbitalCopy}>
           <h2 className={styles.orbitalHeadline}>Earn While You Learn</h2>
           <p className={styles.orbitalSubtext}>
-            Quality work, deserves real rewards. Diamonds power the platform&apos;s game engine.
-            Learn while you earn! And if the work is good, you get rewarded for it, straight
-            from Blue&apos;s Agentic stash.
+            Quality work deserves real rewards. Diamonds power the platform&apos;s game engine,
+            delivering rewards straight from Blue&apos;s agentic stash.
           </p>
           <DiamondTransferDiagram />
         </div>

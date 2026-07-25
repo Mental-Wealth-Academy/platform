@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -29,7 +29,11 @@ import type { GuideRecord, FrontierGuide } from '@/lib/guides-db';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import { getBookmarkedSlugs, onBookmarksUpdated } from '@/lib/bookmarks';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
+
+// Same daily scene the quest board and Blue's stage show.
+const sceneUrl = dailySceneBackgroundUrl();
 
 const COURSES_INTRO_SEEN_KEY = 'mwa-courses-intro-seen';
 const COURSES_DIALOGUE_DATE_KEY = 'mwa-courses-dialogue-date';
@@ -440,7 +444,11 @@ export default function HomePage() {
   })();
 
   return (
-    <div className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}>
+    <div
+      className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}
+      style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}
+    >
+      <div className={styles.scene} aria-hidden="true" />
       <SideNavigation />
       <main className={styles.pageColumns}>
       {learnOnly && (

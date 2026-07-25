@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nApply brutalist flat design system across all components\n\n- Redesign events carousel, calendar, checkin card with 3px borders and offset shadows\n- Update quests hero, library page, voting page with angular brutalist styling\n- Restyle modals \\(MintModal, SubmitProposalModal, StillTutorial\\) with primary blue headers\n- Update AzuraDialogue with brutalist speech bubble and supportive mental health text\n- Add \"Earn For Surveys\" title to surveys section\n- Apply consistent design tokens: 4px radius, #1A1D33 borders, pop-color accents\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npm run build:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:tbh.studiovoila.com)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx next build:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:docs.chain.link)",
+      "WebSearch",
+      "Bash(ls:*)",
+      "WebFetch(domain:blog.chain.link)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(forge build:*)",
+      "Bash(forge test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npm search:*)",
+      "Bash(node:*)",
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(git rm:*)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:docs.privy.io)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); e=d.get\\('exports',{}\\); print\\(json.dumps\\({k:v for k,v in e.items\\(\\) if 'farcaster' in k.lower\\(\\)}, indent=2\\)\\)\")",
+      "mcp__comfyui-cloud__partner_generate",
+      "mcp__comfyui-cloud__upload_file",
+      "mcp__comfyui-cloud__search_nodes",
+      "mcp__comfyui-cloud__submit_workflow",
+      "mcp__comfyui-cloud__get_output",
+      "Bash(python3 -c \"import playwright\")",
+      "Bash(pip show *)",
+      "Bash(playwright install *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}

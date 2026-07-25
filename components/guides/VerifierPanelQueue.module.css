@@ -417,10 +417,36 @@
   background: color-mix(in oklch, #BA1A1A 7%, var(--color-surface-base));
 }
 
-.select,
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  width: 100%;
+  padding: 0.625rem 2.25rem 0.625rem 0.875rem;
+  border-radius: var(--radius-md, 0.5rem);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background-color: var(--color-surface-base, #11151c);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+  color: var(--color-text-dark, #f8fafc);
+  font-family: var(--type-font-body);
+  font-size: var(--type-body-sm-size, 0.875rem);
+  line-height: var(--type-body-sm-lh, 1.5);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.select option {
+  background-color: #11151c;
+  color: #f8fafc;
+  padding: 0.5rem;
+}
+
 .textarea {
   width: 100%;
-  padding: 0.5rem 0.625rem;
+  padding: 0.625rem 0.875rem;
   border-radius: var(--radius-md, 0.5rem);
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
   background: var(--color-surface-base);
@@ -429,13 +455,6 @@
   font-size: var(--type-body-sm-size, 0.8125rem);
   line-height: var(--type-body-sm-lh, 1.6);
   transition: border-color 0.15s ease;
-}
-
-.select {
-  cursor: pointer;
-}
-
-.textarea {
   resize: vertical;
   min-height: 5rem;
 }
@@ -454,8 +473,11 @@
 }
 
 .submitBtn {
-  align-self: flex-start;
-  padding: 0.5rem 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
   border-radius: var(--radius-full, 9999px);
   border: 1.5px solid var(--color-primary);
   background: var(--color-primary);

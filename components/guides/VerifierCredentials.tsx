@@ -198,22 +198,13 @@ export default function VerifierCredentials() {
 
   return (
     <section className={styles.wrapper} aria-label="Verifier credentials">
-      <header className={styles.header}>
-        <SealCheck size={18} weight="fill" className={styles.headerIcon} />
-        <h2 className={styles.title}>Verifier credentials</h2>
-      </header>
-
       {/* ── Held credentials ── */}
       {loadingCreds ? (
         <div className={styles.state}>
           <CircleNotch size={16} className={styles.spinner} />
           <span>Loading your credentials…</span>
         </div>
-      ) : credentials.length === 0 ? (
-        <p className={styles.empty}>
-          You don&apos;t hold any verifier credentials yet. Pass a qualification test to become a verifier.
-        </p>
-      ) : (
+      ) : credentials.length === 0 ? null : (
         <ul className={styles.creds}>
           {credentials.map((c) => (
             <li key={c.subject} className={styles.cred}>
@@ -230,9 +221,12 @@ export default function VerifierCredentials() {
       {/* ── Become a verifier ── */}
       {!test && (
         <div className={styles.form}>
-          <span className={styles.formTitle}>Become a verifier</span>
+          <span className={styles.formTitle}>
+            <SealCheck size={18} weight="fill" className={styles.headerIcon} />
+            Become a verifier
+          </span>
           <p className={styles.formIntro}>
-            Pass a short quiz on a subject and you can review and approve community guides on it. Questions come from the subject itself, so answer from what you actually know.
+            Pass a short quiz or get approval from an admin to be marked an expert. Questions come from the subject itself, so answer from what you actually know.
           </p>
 
           <label className={styles.field}>
@@ -295,9 +289,7 @@ export default function VerifierCredentials() {
                 <CircleNotch size={16} className={styles.spinner} /> Preparing test…
               </>
             ) : (
-              <>
-                Start qualification test <ArrowRight size={16} weight="bold" />
-              </>
+              'Start qualification test'
             )}
           </button>
         </div>

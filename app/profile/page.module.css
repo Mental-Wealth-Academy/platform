@@ -6,16 +6,34 @@
   background: transparent;
 }
 
-.bgViz {
+/* The day's pixel-art scene — the same backdrop /quests and Blue's stage use,
+   so the surfaces read as one world. `--page-scene` is set inline by the page;
+   the grid lines and the scrim sit on top to keep the panels legible. */
+.scene {
   position: fixed;
   top: 0;
   left: var(--sidebar-width, 265px);
   right: 0;
   bottom: 0;
   z-index: 0;
-  opacity: 0.18;
   pointer-events: none;
-  overflow: hidden;
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 248, 255, 0.72) 0%, rgba(247, 248, 255, 0.58) 55%, rgba(247, 248, 255, 0.74) 100%),
+    var(--page-scene, none) center / cover no-repeat,
+    #f7f8ff;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+:global([data-theme="dark"]) .scene {
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    var(--page-scene, none) center / cover no-repeat,
+    var(--color-surface-base);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
 .page {
@@ -27,6 +45,11 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  /* With the profile card gone the page is short, so the remaining sections sit
+     centred in the viewport. `safe` keeps taller content scrollable from the
+     top instead of clipping it above the fold. */
+  justify-content: center;
+  justify-content: safe center;
   gap: 24px;
   padding: 24px 16px 112px;
 }
@@ -725,7 +748,7 @@
     padding-top: 96px;
   }
 
-  .bgViz {
+  .scene {
     left: 0;
   }
 }
