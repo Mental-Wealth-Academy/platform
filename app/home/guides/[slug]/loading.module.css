@@ -17,13 +17,17 @@
   background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
 }
 
+/* Mirrors the loaded page frame (../page.module.css) so nothing jumps: even
+   16px outer gutter, matched tracks, leftover width split by centring. */
 .guideLayout {
   display: grid;
-  grid-template-columns: minmax(0, 880px) minmax(320px, 380px);
+  grid-template-columns: minmax(0, 880px) minmax(300px, 360px);
+  justify-content: center;
   align-items: start;
-  gap: 32px;
-  max-width: 1360px;
-  padding: 48px;
+  gap: 16px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
 .page {

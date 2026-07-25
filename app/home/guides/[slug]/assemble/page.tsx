@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -18,8 +18,11 @@ import { useSound } from '@/hooks/useSound';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { AssemblyTreeResponse } from '@/lib/guide-api-schemas';
 import type { AssemblySectionView, AssemblyVerdict } from '@/lib/guide-assembly-db';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import frame from '../page.module.css';
 import styles from './assemble.module.css';
+
+const sceneUrl = dailySceneBackgroundUrl();
 
 type PageProps = { params: { slug: string } };
 
@@ -286,12 +289,16 @@ export default function GuideAssemblePage({ params }: PageProps) {
   const backHref = `/learn/guides/${params.slug}`;
 
   return (
-    <div className={frame.layout}>
+    <div className={frame.layout} style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}>
+      <div className={frame.scene} aria-hidden="true" />
+      <div className={frame.guideWrapper}>
+        <div className={`${frame.guideLayout} ${frame.singleColumn}`}>
+          <div className={frame.globalPanel}>
+            <div className={frame.panelHeader}>
+              <span className={frame.panelTitleJa}>知識</span>
+              <span className={frame.panelTitle}>Learn anything</span>
+            </div>
       <main className={frame.page}>
-        <Link href={backHref} className={frame.back}>
-          <ArrowLeft size={16} weight="bold" /> Back to guide
-        </Link>
-
         {loading && <div className={frame.state}>Decomposing the guide…</div>}
         {notFound && !loading && <div className={frame.state}>Guide not found.</div>}
 
@@ -301,7 +308,12 @@ export default function GuideAssemblePage({ params }: PageProps) {
               <span className={styles.kicker}>
                 <Stack size={13} weight="bold" /> Assembly
               </span>
-              <h1 className={frame.title}>{data.guide.topicTitle}</h1>
+              <div className={frame.titleRow}>
+                <Link href={backHref} className={frame.backIcon} aria-label="Back to guide">
+                  <ArrowLeft size={22} weight="bold" />
+                </Link>
+                <h1 className={frame.title}>{data.guide.topicTitle}</h1>
+              </div>
             </header>
 
             {!data.available ? (
@@ -417,6 +429,9 @@ export default function GuideAssemblePage({ params }: PageProps) {
           </>
         )}
       </main>
+          </div>
+        </div>
+      </div>
 
       {showReward && (
         <DiamondReward amount={rewardAmount} onComplete={() => setShowReward(false)} />

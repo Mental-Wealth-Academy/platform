@@ -23,13 +23,22 @@
   background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
 }
 
+/* Below the sidebar breakpoint the top navigation is fixed over the page, so
+   the layout owes it 72px of clearance the way /dao does. */
+@media (max-width: 900px) {
+  .layout {
+    padding-top: 72px;
+  }
+}
+
 .page {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 20px 32px 32px 32px;
+  /* Even outer gutter, matching /dao and the rest of the DAG surfaces. */
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;

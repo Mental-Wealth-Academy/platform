@@ -37,17 +37,21 @@
   background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
+/* Outer gutter — one even 16px frame on every side, the same breathing room
+   /dao gives its bento panels, so the DAG surfaces sit in the page identically. */
 .guideWrapper {
   position: relative;
   z-index: 1;
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
-  padding: 40px 48px 24px;
+  padding: 16px;
 }
 
 .globalPanel {
-  padding: 0 18px 18px;
+  /* Even inner padding — the header band pulls back out to the panel edge, so
+     the content keeps the same 18px on all four sides. */
+  padding: 18px;
   background-color: var(--palette-on-dark);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
   border: 2px solid var(--color-primary-hover);
@@ -71,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 -18px;
+  margin: -18px -18px 18px;
   padding: 12px 20px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
@@ -105,13 +109,21 @@
   color: #d6d9ee;
 }
 
+/* Reading column plus details rail. Neither track stretches, so the leftover
+   width is split evenly by justify-content — the pair stays centred in the
+   gutter instead of pooling all the empty space on the right. */
 .guideLayout {
   display: grid;
-  grid-template-columns: minmax(0, 880px) minmax(340px, 380px);
+  grid-template-columns: minmax(0, 880px) minmax(300px, 360px);
+  justify-content: center;
   align-items: start;
-  gap: 32px;
-  max-width: 1360px;
-  padding: 48px;
+  gap: 16px;
+  padding: 0;
+}
+
+/* Walkthrough and assemble run the same frame without the details rail. */
+.singleColumn {
+  grid-template-columns: minmax(0, 1180px);
 }
 
 .page {
@@ -129,7 +141,7 @@
 
 .guideDetails {
   position: sticky;
-  top: 28px;
+  top: 16px;
   padding: 22px;
   border-radius: 16px;
   background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
@@ -185,25 +197,6 @@
   line-height: 1.35;
 }
 
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
-  font-size: var(--font-size-sm, 0.75rem);
-  font-weight: var(--font-weight-medium, 500);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  width: fit-content;
-  margin-bottom: 0.5rem;
-}
-
-.back:hover {
-  color: var(--color-primary);
-}
-
 .state {
   font-family: var(--font-primary);
   font-size: var(--font-size-md, 1rem);
@@ -211,17 +204,19 @@
   padding: var(--space-8, 2rem) 0;
 }
 
+/* Header rhythm — title, then its metadata, then the outcomes panel. Space
+   runs in one direction (the column gap); nothing adds its own top margin. */
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5rem);
+  gap: 14px;
 }
 
 .subjects {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* Compact metadata tags sit directly beneath the guide title. */
@@ -440,9 +435,9 @@
 .criteria {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px 16px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: 12px;
   background: color-mix(in oklch, var(--color-primary) 4%, var(--color-background, #ffffff));
   border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
@@ -458,10 +453,10 @@
 
 .criteriaList {
   margin: 0;
-  padding-left: 1.15rem;
+  padding-left: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
 .criteriaItem {
@@ -841,6 +836,14 @@
   }
 }
 
+/* Below the sidebar breakpoint the top navigation is fixed over the page, so
+   the layout owes it 72px of clearance the way /dao does. */
+@media (max-width: 900px) {
+  .layout {
+    padding-top: 72px;
+  }
+}
+
 @media (max-width: 1080px) {
   .guideLayout {
     grid-template-columns: minmax(0, 1fr);
@@ -853,9 +856,20 @@
 }
 
 @media (max-width: 640px) {
+  .guideWrapper {
+    padding: 12px 12px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
   .guideLayout {
-    gap: 24px;
-    padding: 24px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+    gap: 16px;
+  }
+
+  .globalPanel {
+    padding: 14px;
+  }
+
+  .panelHeader {
+    margin: -14px -14px 14px;
   }
 
   .page {
@@ -871,11 +885,49 @@
   }
 }
 
+/* Back arrow and bookmark are matched round controls bracketing the title. */
 .titleRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
+}
+
+.titleRow .title {
+  flex: 1;
+  min-width: 0;
+}
+
+.backIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  color: var(--color-text-dark);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.backIcon:hover {
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  transform: scale(1.05);
+}
+
+:global([data-theme="dark"]) .backIcon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e6e8f5;
+}
+
+:global([data-theme="dark"]) .backIcon:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
 }
 
 .bookmarkBtn {

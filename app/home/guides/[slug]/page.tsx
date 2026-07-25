@@ -273,10 +273,16 @@ export default function GuidePage({ params }: PageProps) {
         {data && !loading && (
           <>
             <header className={styles.header}>
-              <Link href="/learn" className={styles.back}>
-                <ArrowLeft size={16} weight="bold" /> Learn
-              </Link>
               <div className={styles.titleRow}>
+                <Link
+                  href="/learn"
+                  className={styles.backIcon}
+                  aria-label="Back to Learn"
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => play('navigation')}
+                >
+                  <ArrowLeft size={22} weight="bold" />
+                </Link>
                 <h1 className={styles.title}>{data.guide.topicTitle}</h1>
                 <button
                   type="button"

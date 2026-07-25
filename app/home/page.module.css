@@ -84,10 +84,18 @@
 
 .learnLayout .globalPanel {
   background-color: var(--palette-on-dark);
+  /* Even inner padding — the header band pulls back out to the panel edge. */
+  padding: 18px;
 }
 
+.learnLayout .panelHeader {
+  margin: -18px -18px 18px;
+}
+
+/* Even outer gutter on the DAG surfaces — the same 16px frame /dao and the
+   guide pages use, so the learn index sits in the page identically. */
 .learnLayout .pageColumns {
-  padding: 40px 48px 24px;
+  padding: 16px;
 }
 
 :global([data-theme="dark"]) .learnLayout .globalPanel {
@@ -2039,6 +2047,10 @@
 @media (max-width: 900px) {
   .layout { margin-left: 0; }
   .scene { left: 0; }
+
+  /* Below the sidebar breakpoint the top navigation is fixed over the page, so
+     the layout owes it 72px of clearance the way /dao does. */
+  .learnLayout { padding-top: 72px; }
 }
 
 @media (max-width: 768px) {
@@ -2090,7 +2102,7 @@
   }
 
   .learnLayout .pageColumns {
-    padding: 24px 16px 48px;
+    padding: 12px 12px 48px;
   }
 
   .learnOverviewBody {
