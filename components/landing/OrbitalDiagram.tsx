@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import DiamondTransferDiagram from './DiamondTransferDiagram';
 import styles from './LandingPage.module.css';
 
 type Activity = {
@@ -25,13 +26,16 @@ const ORBIT_R = 248;
 const HUB_R = 96;
 const PILL_W = 168;
 const PILL_H = 46;
+const WHEEL_DUR = 54;
 
 export default function OrbitalDiagram() {
   const startAngle = -Math.PI / 2;
   const step = (Math.PI * 2) / ACTIVITIES.length;
 
   return (
-    <div className={styles.orbitalWrap} aria-hidden="true">
+    <section className={styles.orbitalSection}>
+      <div className={styles.orbitalContainer}>
+        <div className={styles.orbitalWrap} aria-hidden="true">
       <svg
         className={styles.orbitalCanvas}
         viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
@@ -72,6 +76,17 @@ export default function OrbitalDiagram() {
           />
         </circle>
 
+        {/* Ferris wheel: spokes and cars orbit together, the hub below stays put */}
+        <g>
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from={`0 ${CENTER} ${CENTER}`}
+            to={`360 ${CENTER} ${CENTER}`}
+            dur={`${WHEEL_DUR}s`}
+            repeatCount="indefinite"
+          />
+
         {ACTIVITIES.map((act, i) => {
           const angle = startAngle + step * i;
           const nx = CENTER + Math.cos(angle) * ORBIT_R;
@@ -109,6 +124,69 @@ export default function OrbitalDiagram() {
             </line>
           );
         })}
+
+        {/* Cars ride the wheel but stay level, so the labels never turn upside down */}
+        {ACTIVITIES.map((act, i) => {
+          const angle = startAngle + step * i;
+          const cx = CENTER + Math.cos(angle) * ORBIT_R;
+          const cy = CENTER + Math.sin(angle) * ORBIT_R;
+          const rx = -PILL_W / 2;
+          const ry = -PILL_H / 2;
+
+          return (
+            <g key={act.label} transform={`translate(${cx} ${cy})`}>
+              <g>
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 0 0"
+                  to="-360 0 0"
+                  dur={`${WHEEL_DUR}s`}
+                  repeatCount="indefinite"
+                />
+                <rect
+                  x={rx - 4}
+                  y={ry - 4}
+                  width={PILL_W + 8}
+                  height={PILL_H + 8}
+                  rx={(PILL_H + 8) / 2}
+                  fill={act.color}
+                  opacity="0.10"
+                />
+                <rect
+                  x={rx}
+                  y={ry}
+                  width={PILL_W}
+                  height={PILL_H}
+                  rx={PILL_H / 2}
+                  fill="#ffffff"
+                  stroke={act.color}
+                  strokeWidth="2"
+                />
+                <circle cx={rx + PILL_H / 2} cy={0} r={6} fill={act.color}>
+                  <animate
+                    attributeName="opacity"
+                    values="0.55;1;0.55"
+                    dur={`${2.4 + i * 0.18}s`}
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <text
+                  x={rx + PILL_H + 4}
+                  y={6}
+                  textAnchor="start"
+                  fontFamily="var(--font-primary)"
+                  fontSize="17"
+                  fontWeight="700"
+                  fill="#11131B"
+                >
+                  {act.label}
+                </text>
+              </g>
+            </g>
+          );
+        })}
+        </g>
 
         {/* Outer border ring — near-white like fancyButton outer border */}
         <circle
@@ -157,58 +235,19 @@ export default function OrbitalDiagram() {
           height={HUB_R * 1.24}
           style={{ filter: 'drop-shadow(0 2px 6px rgba(255, 57, 151, 0.18))' }}
         />
-
-        {ACTIVITIES.map((act, i) => {
-          const angle = startAngle + step * i;
-          const cx = CENTER + Math.cos(angle) * ORBIT_R;
-          const cy = CENTER + Math.sin(angle) * ORBIT_R;
-          const rx = cx - PILL_W / 2;
-          const ry = cy - PILL_H / 2;
-
-          return (
-            <g key={act.label}>
-              <rect
-                x={rx - 4}
-                y={ry - 4}
-                width={PILL_W + 8}
-                height={PILL_H + 8}
-                rx={(PILL_H + 8) / 2}
-                fill={act.color}
-                opacity="0.10"
-              />
-              <rect
-                x={rx}
-                y={ry}
-                width={PILL_W}
-                height={PILL_H}
-                rx={PILL_H / 2}
-                fill="#ffffff"
-                stroke={act.color}
-                strokeWidth="2"
-              />
-              <circle cx={rx + PILL_H / 2} cy={cy} r={6} fill={act.color}>
-                <animate
-                  attributeName="opacity"
-                  values="0.55;1;0.55"
-                  dur={`${2.4 + i * 0.18}s`}
-                  repeatCount="indefinite"
-                />
-              </circle>
-              <text
-                x={rx + PILL_H + 4}
-                y={cy + 6}
-                textAnchor="start"
-                fontFamily="var(--font-primary)"
-                fontSize="17"
-                fontWeight="700"
-                fill="#11131B"
-              >
-                {act.label}
-              </text>
-            </g>
-          );
-        })}
       </svg>
+      </div>
+
+        <div className={styles.orbitalCopy}>
+          <h2 className={styles.orbitalHeadline}>Earn While You Learn</h2>
+          <p className={styles.orbitalSubtext}>
+            Quality work, deserves real rewards. Diamonds power the platform&apos;s game engine.
+            Learn while you earn! And if the work is good, you get rewarded for it, straight
+            from Blue&apos;s Agentic stash.
+          </p>
+          <DiamondTransferDiagram />
+        </div>
     </div>
+    </section>
   );
 }

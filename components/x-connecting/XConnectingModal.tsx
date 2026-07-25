@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './XConnectingModal.module.css';
 
 interface XConnectingModalProps {
@@ -9,7 +9,7 @@ interface XConnectingModalProps {
   onClose?: () => void;
 }
 
-export const XConnectingModal: React.FC<XConnectingModalProps> = ({ isOpen, onClose }) => {
+export const XConnectingModal: React.FC<XConnectingModalProps> = ({ isOpen, onClose = () => {} }) => {
   const [dots, setDots] = useState('');
 
   useEffect(() => {
@@ -25,10 +25,8 @@ export const XConnectingModal: React.FC<XConnectingModalProps> = ({ isOpen, onCl
     return () => clearInterval(interval);
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className={styles.modalBackdrop}>
+    <ModalShell isOpen={isOpen} onClose={onClose} hideHeader maxWidth="sm">
       <div className={styles.modalContent}>
         <div className={styles.animationContainer}>
           <div className={styles.xIconContainer}>
@@ -55,6 +53,6 @@ export const XConnectingModal: React.FC<XConnectingModalProps> = ({ isOpen, onCl
           <div className={styles.progressFill} />
         </div>
       </div>
-    </div>
+    </ModalShell>
   );
 };

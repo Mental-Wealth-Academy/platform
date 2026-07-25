@@ -35,6 +35,7 @@ const HowItWorksSection = dynamic(() =>
   import('./HowItWorksSection').then((mod) => mod.HowItWorksSection),
   { ssr: false }
 );
+const OrbitalDiagram = dynamic(() => import('./OrbitalDiagram'), { ssr: false });
 const Footer = dynamic(() =>
   import('@/components/footer/Footer').then((mod) => mod.Footer),
   { ssr: false }
@@ -77,6 +78,7 @@ export function LandingDeferredSections() {
   return (
     <>
       <LazySection minHeight="clamp(580px, 72vw, 700px)"><ProblemStatementSection /></LazySection>
+      <LazySection minHeight="80vh"><OrbitalDiagram /></LazySection>
       <CommunityEducationSection />
       <CompanyLogoMarquee />
       <LazySection minHeight="90vh"><HowItWorksSection /></LazySection>

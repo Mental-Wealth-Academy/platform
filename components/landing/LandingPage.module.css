@@ -834,11 +834,43 @@
 }
 
 /* Orbital diagram showing many activities feeding one shared point system */
+.orbitalSection {
+  position: relative;
+  width: 100%;
+  padding: 60px clamp(14px, 2vw, 28px);
+  overflow: hidden;
+  background: var(--color-landing-black);
+  z-index: 1;
+}
+
+.orbitalSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><filter id='n'><feTurbulence type='turbulence' baseFrequency='0.85' numOctaves='1' seed='7' stitchTiles='stitch'/><feColorMatrix type='saturate' values='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 12%;
+  filter: saturate(1.2) contrast(1.1);
+  pointer-events: none;
+}
+
+.orbitalContainer {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(24px, 3.4vw, 56px);
+  align-items: center;
+}
+
 .orbitalWrap {
   position: relative;
   width: 100%;
   max-width: 880px;
-  margin: 0 auto;
+  margin: 0;
   aspect-ratio: 1 / 1;
   max-height: 560px;
 }
@@ -847,6 +879,113 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.orbitalCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding-right: clamp(0px, 2vw, 32px);
+}
+
+.orbitalHeadline {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: clamp(1.7rem, 2.7vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  text-align: left;
+}
+
+.orbitalSubtext {
+  margin: 18px 0 0;
+  font-family: var(--font-primary);
+  font-size: clamp(0.96rem, 1.1vw, 1.06rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: left;
+}
+
+/* Paired diagram: Blue hands credits down the track to the holder */
+.transferDiagram {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 20px);
+  width: 100%;
+  margin-top: clamp(28px, 3vw, 44px);
+}
+
+.transferNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.transferPuck {
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 7vw, 96px);
+  aspect-ratio: 1;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #1B2033 0%, #12151F 100%);
+  border: 2px solid #5168FF;
+  box-shadow: 0 0 0 4px rgba(81, 104, 255, 0.12);
+}
+
+.transferPuckUser {
+  background: linear-gradient(160deg, #14231F 0%, #0F1519 100%);
+  border-color: #3CC9B4;
+  box-shadow: 0 0 0 4px rgba(60, 201, 180, 0.14);
+}
+
+.transferSprite {
+  width: 76%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.transferAvatar {
+  width: 74%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.transferLabel {
+  font-family: var(--font-primary);
+  font-size: clamp(0.78rem, 0.9vw, 0.88rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+
+.transferTrack {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: clamp(56px, 5vw, 72px);
+  /* Offset the node captions so the track lands on the pucks' centre line */
+  margin-bottom: clamp(18px, 1.8vw, 26px);
+}
+
+/* Stack the diagram above its copy before the two columns get cramped */
+@media (max-width: 1023px) {
+  .orbitalContainer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .orbitalWrap {
+    margin: 0 auto;
+  }
+
+  .orbitalCopy {
+    padding-right: 0;
+  }
 }
 
 .heroValueCard {

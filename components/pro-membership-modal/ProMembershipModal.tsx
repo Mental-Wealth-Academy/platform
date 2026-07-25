@@ -11,6 +11,7 @@ import { Contract, providers } from 'ethers';
 import { loadStripe, type Stripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useDevMode } from '../useDevMode';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './ProMembershipModal.module.css';
 
 interface ProMembershipModalProps {
@@ -724,25 +725,8 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
       }
     : undefined;
 
-  return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
-      <div
-        className={styles.modal}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="membership-checkout-title"
-      >
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5L15 15"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+  return (
+    <ModalShell isOpen={isOpen} onClose={onClose} hideHeader maxWidth="lg">
 
         {/* ── Screen 1: VIP intro ───────────────────────────────────────── */}
         {screen === 'intro' && (
@@ -1097,9 +1081,7 @@ const ProMembershipModal: React.FC<ProMembershipModalProps> = ({ isOpen, onClose
             ))}
           </div>
         )}
-      </div>
-    </div>,
-    document.body,
+    </ModalShell>
   );
 };
 

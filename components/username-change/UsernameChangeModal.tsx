@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './UsernameChangeModal.module.css';
 
 interface UsernameChangeModalProps {
@@ -191,14 +192,7 @@ const UsernameChangeModal: React.FC<UsernameChangeModalProps> = ({
                   (isAvailable === true || (isAvailable === null && !checkingUsername));
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close" disabled={saving}>
-          ×
-        </button>
-
-        <div className={styles.content}>
-          <h2 className={styles.title}>Change Username</h2>
+    <ModalShell isOpen={true} onClose={onClose} title="Change Username" maxWidth="sm">
           <p className={styles.description}>
             Choose a new username (5-32 characters, letters, numbers, and underscores only)
           </p>
@@ -260,7 +254,6 @@ const UsernameChangeModal: React.FC<UsernameChangeModalProps> = ({
           </div>
 
           {error && <div className={styles.errorMessage}>{error}</div>}
-        </div>
 
         <div className={styles.footer}>
           <button
@@ -280,8 +273,7 @@ const UsernameChangeModal: React.FC<UsernameChangeModalProps> = ({
             {saving ? 'Saving...' : 'Save Username'}
           </button>
         </div>
-      </div>
-    </div>
+    </ModalShell>
   );
 };
 

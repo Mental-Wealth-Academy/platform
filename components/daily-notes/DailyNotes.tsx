@@ -841,60 +841,9 @@ export default function DailyNotes({
 
         {!compact && isExpanded && (
           <div className={styles.expandedContent}>
-            <p className={styles.instructions}>
-              Write freely for 15 minutes each day. Let your thoughts flow without judgment.
-              Field notes clear your mind and unlock your creative self.
-            </p>
-            <div className={styles.dayButtons}>
-              {Array.from({ length: 7 }, (_, i) => {
-                const done = fieldNotes.find(e => e.day === i + 1);
-                const isAvailable = availableDayIndex === i;
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`${styles.dayBtn} ${done ? styles.dayBtnDone : isAvailable ? styles.dayBtnAvailable : styles.dayBtnLocked}`}
-                    onClick={() => { if (isAvailable) handleAttemptStart(i); }}
-                    disabled={!isAvailable}
-                    title={done ? `Day ${i + 1} complete — ${done.date}` : isAvailable ? `Start Day ${i + 1}` : `Day ${i + 1} locked`}
-                  >
-                    {done ? (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      <span>{i + 1}</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
             {showSaveConfirm && (
               <p className={styles.saveConfirm} aria-live="polite">Saved</p>
             )}
-
-            <div className={styles.weekNav}>
-              <button
-                className={styles.weekNavBtn}
-                disabled={currentWeek === 1}
-                onClick={() => { play('click'); setCurrentWeek(w => w - 1); }}
-                onMouseEnter={() => play('hover')}
-                aria-label="Previous week"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
-              <span className={styles.weekNavLabel}>Week {currentWeek} / 12</span>
-              <button
-                className={styles.weekNavBtn}
-                disabled={currentWeek === 12}
-                onClick={() => { play('click'); setCurrentWeek(w => w + 1); }}
-                onMouseEnter={() => play('hover')}
-                aria-label="Next week"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
-            </div>
           </div>
         )}
       </div>

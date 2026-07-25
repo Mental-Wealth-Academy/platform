@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './AvatarSelectorModal.module.css';
 
 interface Avatar {
@@ -156,16 +157,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
   };
 
   return (
-    <div className={styles.modalBackdrop} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Select Your Avatar</h2>
-          <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-            ×
-          </button>
-        </div>
-
-        <div className={styles.modalBody}>
+    <ModalShell isOpen={true} onClose={onClose} title="Select Your Avatar" maxWidth="md">
           {loading ? (
             <div className={styles.loading}>Loading avatars...</div>
           ) : error && avatars.length === 0 ? (
@@ -204,7 +196,6 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
               {error && <div className={styles.errorMessage}>{error}</div>}
             </>
           )}
-        </div>
 
         <div className={styles.modalFooter}>
           <input
@@ -241,8 +232,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </ModalShell>
   );
 };
 

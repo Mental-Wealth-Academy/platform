@@ -6,7 +6,7 @@ import CtaButton from '@/components/shared/CtaButton';
 import styles from './HowItWorksSection.module.css';
 
 const introCopy =
-  'MWA started an IRB-study idea for a new educational model for mental wealth. Members learn at a self-pace through journaling, knowledge nodes, and still gain interpersonal connections and friendships digitally. Our infrastructure helps you create curriculums worth logging into. Join the next gen.';
+  'MWA started an IRB-study idea for new age education governance for higher institutions. Where AI-assisted learning can still coincide interpersonal connections and friendships online. Our infrastructure helps you create curriculums worth logging into. Join the next gen.';
 
 export const HowItWorksSection: React.FC = () => (
   <section id="how-it-works" className={styles.section} aria-label="How it works">

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './SupportModal.module.css';
 
 interface SupportModalProps {
@@ -65,14 +66,7 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
   const slots = [0, 1, 2];
 
   return (
-    <div className={styles.overlay} onClick={(e) => {
-      if (e.target === e.currentTarget) onClose();
-    }}>
-      <div className={styles.modalContainer}>
-        <div className={styles.titleBar}>
-          <h2 className={styles.title}>支持 Support Portal</h2>
-          <button className={styles.closeButton} onClick={onClose}>Close</button>
-        </div>
+    <ModalShell isOpen={isOpen} onClose={onClose} title="Support Portal" maxWidth="md">
 
         <div className={styles.content}>
           <div className={styles.tabSwitcher} role="tablist">
@@ -176,21 +170,19 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
                 />
               </div>
             </div>
+          </div>
 
+          <div className={styles.footer}>
+            <button
+              className={styles.submitButton}
+              onClick={handleSubmit}
+              type="button"
+              disabled={!text.trim()}
+            >
+              {activeTab === 'bug' ? 'Submit issue' : 'Submit suggestion'}
+            </button>
           </div>
         </div>
-
-        <div className={styles.footer}>
-          <button
-            className={styles.submitButton}
-            onClick={handleSubmit}
-            type="button"
-            disabled={!text.trim()}
-          >
-            {activeTab === 'bug' ? 'Submit issue' : 'Submit suggestion'}
-          </button>
-        </div>
-      </div>
-    </div>
+    </ModalShell>
   );
 }

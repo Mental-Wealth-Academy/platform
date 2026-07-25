@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { LandingMembershipSection } from '@/components/landing/LandingMembershipSection';
+import { DeferredMembershipSection } from '@/components/landing/DeferredMembershipSection';
 import { LandingSubpageShell } from '@/components/landing/LandingSubpageShell';
 
 const description =
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function ProductsAndServicesPage() {
   return (
     <LandingSubpageShell>
-      <LandingMembershipSection />
+      <DeferredMembershipSection />
     </LandingSubpageShell>
   );
 }

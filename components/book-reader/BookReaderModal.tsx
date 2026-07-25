@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
+import ModalShell from '@/components/shared/ModalShell';
 import styles from './BookReaderModal.module.css';
 
 interface BookReaderModalProps {
@@ -241,20 +242,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
     username && !username.startsWith('user_') ? username : 'Anonymous';
 
   return (
-    <>
-      <div className={`${styles.backdrop} ${isAnimating ? styles.backdropVisible : ''}`} onClick={onClose} />
-      <div className={`${styles.modal} ${isAnimating ? styles.modalOpen : ''}`}>
-        <div className={styles.header}>
-          <div className={styles.headerInfo}>
-            <h2 className={styles.headerTitle}>{title}</h2>
-            {author ? <p className={styles.headerAuthor}>{author}</p> : null}
-          </div>
-          <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
+    <ModalShell isOpen={isOpen} onClose={onClose} title={title} maxWidth="lg">
         <div className={styles.body}>
           <div className={styles.prose} dangerouslySetInnerHTML={{ __html: htmlContent }} />
 
@@ -366,8 +354,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ isOpen, onClose, titl
             </div>
           </div>
         </div>
-      </div>
-    </>
+    </ModalShell>
   );
 };
 

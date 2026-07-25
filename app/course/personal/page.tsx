@@ -6,7 +6,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
 import SideNavigation from '@/components/side-navigation/SideNavigation';
 import Banner from '@/components/banner/Banner';
-import BlueVideoPanel from '@/components/blue-video-panel/BlueVideoPanel';
 import { useSound } from '@/hooks/useSound';
 import type { CourseData } from '@/lib/personal-course';
 import { broadcastPersonalCourseUpdated, onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -378,11 +377,6 @@ export default function PersonalCoursePage() {
             </div>
           </div>
           </div>
-
-          <BlueVideoPanel
-            className={shared.blueVideo}
-            message="Small steps add up. Pick up where you left off."
-          />
 
           <div className={shared.weekNav}>
             <button

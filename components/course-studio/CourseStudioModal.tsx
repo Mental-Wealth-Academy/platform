@@ -28,7 +28,6 @@ import { useSound } from '@/hooks/useSound';
 import ComponentPalette from './ComponentPalette';
 import ComponentPanel from './ComponentPanel';
 import MissionEditor from './MissionEditor';
-import StudioIntake from './StudioIntake';
 import dynamic from 'next/dynamic';
 
 const ReadingEditor = dynamic(() => import('./ReadingEditor'), { ssr: false });
@@ -877,13 +876,7 @@ export default function CourseStudioModal({
               </motion.aside>
 
               {/* Right: Component editor — always block-based MissionEditor */}
-              {showIntake ? (
-                <StudioIntake
-                  authHeaders={authHeaders}
-                  onComplete={() => setShowIntake(false)}
-                  onSkip={() => setShowIntake(false)}
-                />
-              ) : selectedComponent ? (
+              {selectedComponent ? (
                 <main className={styles.missionEditor}>
                   <MissionEditor
                     component={selectedComponent}
