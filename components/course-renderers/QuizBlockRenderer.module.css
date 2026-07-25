@@ -1,8 +1,8 @@
 .empty_state {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   font-family: var(--type-font-body);
-  font-size: var(--type-body-size);
-  font-style: italic;
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 .time_limit {
@@ -14,13 +14,10 @@
 
 .question_card {
   margin-bottom: 16px;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 14px;
+  border-radius: 14px;
   border: 1px solid var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .question_card {
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-2);
 }
 
 .question_text {
@@ -29,110 +26,93 @@
   font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-heading);
   line-height: var(--type-lh-snug);
+  color: var(--color-text-dark);
   margin-bottom: 8px;
 }
 
 .options_list > * + * {
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .option {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
   cursor: pointer;
+  transition: all 0.12s ease;
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-lh);
 }
 
 .option:hover {
-  border-color: #a3a3a3;
-}
-
-:global([data-theme="dark"]) .option {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-base));
 }
 
 .option_correct {
-  border-color: #22c55e;
-  background: #f0fdf4;
-}
-
-:global([data-theme="dark"]) .option_correct {
-  background: rgba(34, 197, 94, 0.1);
+  border-color: var(--color-positive);
+  background: var(--color-positive-muted);
 }
 
 .option_incorrect {
-  border-color: #f87171;
-  background: #fef2f2;
-}
-
-:global([data-theme="dark"]) .option_incorrect {
-  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
 }
 
 .option_disabled {
-  border-color: transparent;
+  border-color: var(--color-border-subtle);
   opacity: 0.5;
 }
 
 .option_selected,
 .option_selected:hover {
   border-color: var(--color-primary);
-  background: #eff6ff;
-}
-
-:global([data-theme="dark"]) .option_selected,
-:global([data-theme="dark"]) .option_selected:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
 }
 
 .submit_btn {
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   border: none;
   cursor: pointer;
+  transition: opacity 0.12s ease;
 }
 
 .submit_btn:hover {
-  background: #2563eb;
+  opacity: 0.85;
 }
 
 .result_card {
-  padding: 12px;
-  border-radius: 6px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-lh);
 }
 
 .result_passed {
-  background: #f0fdf4;
-  color: #15803d;
-}
-
-:global([data-theme="dark"]) .result_passed {
-  background: rgba(34, 197, 94, 0.1);
-  color: #86efac;
+  background: var(--color-positive-muted);
+  border-color: color-mix(in srgb, var(--color-positive) 40%, transparent);
+  color: var(--color-text-dark);
 }
 
 .result_failed {
-  background: #fffbeb;
-  color: #d97706;
-}
-
-:global([data-theme="dark"]) .result_failed {
-  background: rgba(245, 158, 11, 0.1);
-  color: #fcd34d;
+  background: color-mix(in srgb, var(--color-warning) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-warning) 40%, transparent);
+  color: var(--color-warning-text);
 }
 
 .result_title {

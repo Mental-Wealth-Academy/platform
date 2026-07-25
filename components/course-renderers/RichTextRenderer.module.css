@@ -1,8 +1,8 @@
 .empty_state {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   font-family: var(--type-font-body);
-  font-size: var(--type-body-size);
-  font-style: italic;
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 .prose_container {

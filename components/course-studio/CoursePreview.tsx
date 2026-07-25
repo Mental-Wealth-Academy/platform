@@ -170,8 +170,8 @@ export default function CoursePreview({ weeks, readingByWeek }: CoursePreviewPro
           {rightContent === 'reading' && (
             <div className={styles.readerPanel}>
               <div className={styles.readerPanelHeader}>
-                <span className={styles.readerLabel}>{weekTitle}</span>
-                <span className={styles.readerTheme}>{weekLabel}</span>
+                <span className={styles.readerTheme}>{weekTitle}</span>
+                <span className={styles.readerLabel}>{weekLabel}</span>
               </div>
               <div className={styles.readerBody}>
                 {readingContent ? (

@@ -5,39 +5,19 @@
 }
 
 .blockWrapper {
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.blockLabel {
-  font-family: var(--type-font-label);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--type-track-label);
-  color: var(--color-primary);
-  margin-bottom: 8px;
+  background: var(--color-surface-2);
 }
 
 .unknown_warning {
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #fcd34d;
-  background: #fffbeb;
-  color: #d97706;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--color-warning) 10%, transparent);
+  color: var(--color-warning-text);
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-lh);
-}
-
-:global([data-theme="dark"]) .unknown_warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: #fcd34d;
-}
-
-:global([data-theme="dark"]) .blockWrapper {
-  border-color: rgba(240, 241, 250, 0.08);
-  background: rgba(255, 255, 255, 0.04);
 }

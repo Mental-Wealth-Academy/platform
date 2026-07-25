@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-base));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
   border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-dark) 5%, transparent);
 }
 
 .questionInput {
@@ -52,7 +52,7 @@
 
 .optionRow:hover {
   border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-surface-base));
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-base));
 }
 
 /* ── Custom styled radio/checkbox ── */
@@ -104,14 +104,14 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-on-action);
 }
 
 .optionRow:has(input[type="checkbox"]:checked) .radioVisual::after {
   width: 4px;
   height: 8px;
   border-radius: 0;
-  border: solid #fff;
+  border: solid var(--color-on-action);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg) translateY(-1px);
   background: transparent;
@@ -139,18 +139,18 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: 6px;
   border: none;
   background: transparent;
   color: var(--color-text-faint);
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.1s ease;
+  transition: all 0.12s ease;
 }
 
 .removeBtn:hover {
-  background: #fef2f2;
-  color: #ef4444;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-danger);
 }
 
 .controls {
@@ -168,12 +168,12 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
-  letter-spacing: var(--type-track-heading);
+  letter-spacing: var(--type-track-label);
   color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
-  border-radius: 6px;
-  padding: 5px 10px;
+  border-radius: 8px;
+  padding: 6px 12px;
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -200,62 +200,5 @@
 }
 
 :global([data-theme="dark"]) .editor {
-  background: color-mix(in srgb, var(--color-primary) 10%, #0d0e16);
-  border-color: color-mix(in srgb, var(--color-primary) 18%, rgba(255, 255, 255, 0.06));
-}
-
-:global([data-theme="dark"]) .questionInput {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .questionInput::placeholder {
-  color: rgba(240, 241, 250, 0.3);
-}
-
-:global([data-theme="dark"]) .questionInput:focus {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--color-primary);
-}
-
-:global([data-theme="dark"]) .optionRow {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .optionRow:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--color-primary);
-}
-
-:global([data-theme="dark"]) .optionInput {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .optionInput::placeholder {
-  color: rgba(240, 241, 250, 0.2);
-}
-
-:global([data-theme="dark"]) .radioVisual {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-:global([data-theme="dark"]) .optionRow:has(.correctToggle:checked) .radioVisual {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-}
-
-:global([data-theme="dark"]) .removeBtn {
-  color: rgba(240, 241, 250, 0.15);
-}
-
-:global([data-theme="dark"]) .removeBtn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-}
-
-:global([data-theme="dark"]) .toggleLabel {
-  color: rgba(240, 241, 250, 0.5);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-1));
 }

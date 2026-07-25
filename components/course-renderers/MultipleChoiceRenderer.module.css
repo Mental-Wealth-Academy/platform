@@ -3,6 +3,7 @@
   font-weight: var(--type-weight-semibold);
   font-size: var(--type-body-lg-size);
   letter-spacing: var(--type-track-heading);
+  color: var(--color-text-dark);
   margin-bottom: 12px;
   line-height: var(--type-lh-snug);
 }
@@ -18,6 +19,8 @@
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  color: var(--color-text-dark);
   cursor: pointer;
   transition: all 0.12s ease;
   font-family: var(--type-font-body);
@@ -28,27 +31,17 @@
 
 .option:hover {
   border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-base));
 }
 
 .option_correct {
-  border-color: #22c55e;
-  background: #f0fdf4;
-}
-
-:global([data-theme="dark"]) .option_correct {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.4);
+  border-color: var(--color-positive);
+  background: var(--color-positive-muted);
 }
 
 .option_incorrect {
-  border-color: #ef4444;
-  background: #fef2f2;
-}
-
-:global([data-theme="dark"]) .option_incorrect {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
 }
 
 .option_disabled {
@@ -56,26 +49,13 @@
   opacity: 0.5;
 }
 
-:global([data-theme="dark"]) .option_disabled {
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
 .option_selected {
   border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
-}
-
-:global([data-theme="dark"]) .option_selected {
-  border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
 }
 
 .option_unselected {
   border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .option_unselected {
-  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .submit_btn {
@@ -84,11 +64,12 @@
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   border-radius: 8px;
   border: none;
   cursor: pointer;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   transition: opacity 0.12s ease;
 }
 

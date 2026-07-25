@@ -18,12 +18,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
 .rating_btn_active {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
@@ -34,7 +34,7 @@
 }
 
 .rating_btn_inactive:hover {
-  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
   border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
   color: var(--color-text-dark);
 }

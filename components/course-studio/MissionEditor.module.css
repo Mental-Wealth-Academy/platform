@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   height: fit-content;
-  background: color-mix(in srgb, var(--color-primary) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, rgba(26, 29, 51, 0.06));
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-base));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-dark) 5%, transparent);
 }
 
 /* ── Task card header ── */
@@ -36,67 +36,67 @@
   flex-shrink: 0;
   background:
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-primary) 68%, #0f172a 32%) 0%,
+      color-mix(in srgb, var(--color-primary) 68%, var(--palette-ink) 32%) 0%,
       var(--color-primary) 48%,
-      color-mix(in srgb, var(--color-primary) 42%, #ffffff 58%) 100%);
+      color-mix(in srgb, var(--color-primary) 42%, var(--palette-on-dark) 58%) 100%);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--color-primary) 28%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 1px 0 color-mix(in srgb, var(--palette-on-dark) 28%, transparent),
     0 4px 10px color-mix(in srgb, var(--color-primary) 22%, transparent);
 }
 
 .taskArtworkAurora {
   background-image:
-    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    radial-gradient(circle at 22% 18%, color-mix(in srgb, var(--palette-on-dark) 42%, transparent), transparent 28%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-primary) 68%, #0f172a 32%) 0%,
+      color-mix(in srgb, var(--color-primary) 68%, var(--palette-ink) 32%) 0%,
       var(--color-primary) 48%,
-      color-mix(in srgb, var(--color-primary) 42%, #ffffff 58%) 100%);
+      color-mix(in srgb, var(--color-primary) 42%, var(--palette-on-dark) 58%) 100%);
 }
 
 .taskArtworkSunrise {
   background-image:
-    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    radial-gradient(circle at 75% 24%, color-mix(in srgb, var(--palette-on-dark) 52%, transparent), transparent 22%),
     linear-gradient(140deg,
-      color-mix(in srgb, var(--color-primary) 70%, #0f172a 30%) 0%,
+      color-mix(in srgb, var(--color-primary) 70%, var(--palette-ink) 30%) 0%,
       var(--color-primary) 50%,
-      color-mix(in srgb, var(--color-primary) 38%, #ffffff 62%) 100%);
+      color-mix(in srgb, var(--color-primary) 38%, var(--palette-on-dark) 62%) 100%);
 }
 
 .taskArtworkOrbit {
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--palette-on-dark) 22%, transparent), transparent 28%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-primary) 60%, #0f172a 40%) 0%,
+      color-mix(in srgb, var(--color-primary) 60%, var(--palette-ink) 40%) 0%,
       var(--color-primary) 52%,
-      color-mix(in srgb, var(--color-primary) 46%, #ffffff 54%) 100%);
+      color-mix(in srgb, var(--color-primary) 46%, var(--palette-on-dark) 54%) 100%);
 }
 
 .taskArtworkBloom {
   background-image:
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    radial-gradient(circle at 24% 22%, color-mix(in srgb, var(--palette-on-dark) 46%, transparent), transparent 26%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-primary) 72%, #1a1336 28%) 0%,
+      color-mix(in srgb, var(--color-accent) 72%, var(--palette-ink) 28%) 0%,
       var(--color-primary) 50%,
-      color-mix(in srgb, var(--color-primary) 35%, #ffffff 65%) 100%);
+      color-mix(in srgb, var(--color-primary) 35%, var(--palette-on-dark) 65%) 100%);
 }
 
 .taskArtworkRibbon {
   background-image:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(160deg, color-mix(in srgb, var(--palette-on-dark) 18%, transparent), transparent 48%),
     linear-gradient(135deg,
-      color-mix(in srgb, var(--color-primary) 65%, #0f172a 35%) 0%,
+      color-mix(in srgb, var(--color-primary) 65%, var(--palette-ink) 35%) 0%,
       var(--color-primary) 50%,
-      color-mix(in srgb, var(--color-primary) 40%, #ffffff 60%) 100%);
+      color-mix(in srgb, var(--color-primary) 40%, var(--palette-on-dark) 60%) 100%);
 }
 
 .taskArtworkPrism {
   background-image:
-    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--palette-on-dark) 38%, transparent), transparent 32%),
     linear-gradient(150deg,
-      color-mix(in srgb, var(--color-primary) 72%, #0f0a1e 28%) 0%,
+      color-mix(in srgb, var(--color-accent) 72%, var(--palette-ink) 28%) 0%,
       var(--color-primary) 48%,
-      color-mix(in srgb, var(--color-primary) 36%, #f0f0ff 64%) 100%);
+      color-mix(in srgb, var(--color-primary) 36%, var(--palette-on-dark) 64%) 100%);
 }
 
 .titleWrapper {
@@ -126,7 +126,7 @@
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-track-heading);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   background: transparent;
   border: none;
   outline: none;
@@ -135,7 +135,8 @@
 }
 
 .titleInput::placeholder {
-  color: rgba(26, 29, 51, 0.25);
+  color: var(--color-text-faint);
+  opacity: 0.6;
 }
 
 .deleteBtn {
@@ -144,19 +145,18 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  color: #ef4444;
+  color: var(--color-danger);
   cursor: pointer;
   transition: all 0.12s ease;
   flex-shrink: 0;
 }
 
 .deleteBtn:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #ef4444;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
 }
 
 /* ── Expanded content area (matches /course taskCardContent) ── */
@@ -165,11 +165,9 @@
   flex: 1;
   overflow-y: auto;
   padding: 18px;
-  border-top: 1px solid rgba(26, 29, 51, 0.06);
+  border-top: 1px solid var(--color-border-subtle);
   min-height: 0;
 }
-
-/* ── Dark mode ── */
 
 .emptyBlocks {
   padding: 24px 0;
@@ -179,16 +177,16 @@
 .emptyBlocksText {
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
   font-weight: var(--type-weight-regular);
-  color: rgba(26, 29, 51, 0.55);
+  color: var(--color-text-faint);
   margin: 0;
-  font-style: italic;
 }
 
 .blockCard {
-  border: 1px solid rgba(26, 29, 51, 0.08);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--color-surface-base);
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -202,17 +200,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: rgba(26, 29, 51, 0.03);
-  border-bottom: 1px solid rgba(26, 29, 51, 0.06);
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .blockBadge {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
-  color: var(--color-primary);
+  line-height: var(--type-label-lh);
+  color: var(--color-text-muted);
 }
 
 .blockDeleteBtn {
@@ -221,59 +219,23 @@
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: 4px;
+  border-radius: 6px;
   border: none;
   background: transparent;
-  color: #ef4444;
+  color: var(--color-text-faint);
   cursor: pointer;
-  opacity: 0.4;
-  transition: opacity 0.12s ease;
+  transition: all 0.12s ease;
 }
 
 .blockDeleteBtn:hover {
-  opacity: 1;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-danger);
 }
 
 .blockBody {
   padding: 12px;
 }
 
-:global([data-theme="dark"]) .titleInput {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .titleInput::placeholder {
-  color: rgba(240, 241, 250, 0.25);
-}
-
-:global([data-theme="dark"]) .deleteBtn {
-  color: #f87171;
-}
-
-:global([data-theme="dark"]) .deleteBtn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
-  color: #f87171;
-}
-
-:global([data-theme="dark"]) .taskCardContent {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .emptyBlocksText {
-  color: rgba(240, 241, 250, 0.5);
-}
-
-:global([data-theme="dark"]) .blockCard {
-  border-color: rgba(240, 241, 250, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-:global([data-theme="dark"]) .blockHeader {
-  background: rgba(240, 241, 250, 0.04);
-  border-bottom-color: rgba(240, 241, 250, 0.06);
-}
-
-:global([data-theme="dark"]) .blockDeleteBtn {
-  color: #f87171;
+:global([data-theme="dark"]) .editor {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-1));
 }

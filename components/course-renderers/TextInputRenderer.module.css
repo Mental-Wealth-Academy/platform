@@ -1,15 +1,22 @@
 .input {
   width: 100%;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.12s ease;
   font-family: var(--type-font-body);
   font-size: var(--type-body-size);
   line-height: var(--type-lh-body);
+  box-sizing: border-box;
 }
 
-:global([data-theme="dark"]) .input {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.1);
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.input::placeholder {
+  color: var(--color-text-faint);
 }

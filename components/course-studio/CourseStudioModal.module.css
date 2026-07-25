@@ -193,7 +193,6 @@
   font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
   white-space: nowrap;
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
 }
 
@@ -221,7 +220,6 @@
   font-weight: var(--type-weight-semibold);
   transition: all 0.12s ease;
   white-space: nowrap;
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
 }
 
@@ -241,7 +239,6 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
   padding: 4px 8px;
   border-radius: 4px;
@@ -274,7 +271,6 @@
   font-weight: var(--type-weight-semibold);
   transition: opacity 0.12s ease;
   white-space: nowrap;
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
 }
 
@@ -329,7 +325,6 @@
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
   color: var(--color-warning-text);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
 }
 
@@ -362,7 +357,6 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label-lg);
   transition: background 0.12s ease;
 }
@@ -689,7 +683,6 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label-lg);
   color: var(--color-text-muted);
 }
@@ -762,7 +755,6 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
   color: var(--color-danger);
 }
@@ -803,7 +795,6 @@
   color: var(--color-text-muted);
   cursor: pointer;
   font-weight: var(--type-weight-semibold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
   transition: all 0.12s ease;
 }
@@ -823,7 +814,6 @@
   color: var(--color-on-positive);
   cursor: pointer;
   font-weight: var(--type-weight-semibold);
-  text-transform: uppercase;
   letter-spacing: var(--type-track-label);
   transition: opacity 0.12s ease;
 }

@@ -19,7 +19,7 @@
   border-radius: 10px;
   box-shadow:
     0 0 0 9999px rgba(8, 10, 16, 0.8),
-    0 0 0 1.5px rgba(131, 125, 250, 0.9),
+    0 0 0 1.5px color-mix(in srgb, var(--color-primary) 85%, transparent),
     0 0 26px 2px color-mix(in oklch, var(--color-primary) 50%, transparent);
   pointer-events: none;
   transition: top 0.28s ease, left 0.28s ease, width 0.28s ease, height 0.28s ease;
@@ -32,7 +32,7 @@
   box-sizing: border-box;
   padding: 20px;
   background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1));
-  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, rgba(255, 255, 255, 0.06));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border-subtle));
   border-radius: 14px;
   box-shadow:
     0 0 0 1px color-mix(in oklch, var(--color-primary) 8%, transparent),
@@ -55,8 +55,7 @@
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
-  text-transform: uppercase;
-  color: var(--color-text-faint, #8a8f9c);
+  color: var(--color-text-faint);
 }
 
 .title {
@@ -66,7 +65,7 @@
   line-height: var(--type-h4-lh);
   letter-spacing: var(--type-h4-track);
   font-weight: var(--type-weight-bold);
-  color: var(--color-text-dark, #1a1b24);
+  color: var(--color-text-dark);
 }
 
 .body {
@@ -74,7 +73,7 @@
   font-family: var(--type-font-body);
   font-size: var(--type-body-sm-size);
   line-height: var(--type-lh-body);
-  color: var(--color-text-soft, #c2c6d0);
+  color: var(--color-text-soft);
 }
 
 .actions {
@@ -99,14 +98,14 @@
   padding: 6px 4px;
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
-  color: var(--color-text-faint, #8a8f9c);
+  color: var(--color-text-faint);
   background: none;
   border: none;
   cursor: pointer;
 }
 
 .skip:hover {
-  color: var(--color-text-soft, #c2c6d0);
+  color: var(--color-text-soft);
 }
 
 .back {
@@ -115,17 +114,17 @@
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
-  color: var(--color-text-soft, #c2c6d0);
-  background: rgba(129, 140, 248, 0.06);
-  border: 1px solid rgba(129, 140, 248, 0.28);
-  border-radius: 10px;
+  color: var(--color-text-soft);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .back:hover {
-  background: rgba(129, 140, 248, 0.14);
-  border-color: rgba(129, 140, 248, 0.45);
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
 }
 
 .next {
@@ -135,10 +134,10 @@
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
   white-space: nowrap;
-  color: #fff;
+  color: var(--color-on-action);
   background: var(--color-primary);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }

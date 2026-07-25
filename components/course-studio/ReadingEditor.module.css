@@ -16,25 +16,25 @@
 .badge {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
   color: var(--color-text-muted);
 }
 
 .dirtyBadge {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
   padding: 2px 7px;
-  border-radius: 4px;
-  background: color-mix(in srgb, #f59e0b 14%, transparent);
-  color: #f59e0b;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 34%, transparent);
+  color: var(--color-warning-text);
   margin-left: 6px;
 }
 
@@ -43,15 +43,14 @@
 }
 
 .headerSaveBtn {
-  padding: 5px 14px;
-  border-radius: 6px;
+  padding: 6px 16px;
+  border-radius: 8px;
   border: none;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
+  font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
   cursor: pointer;
   transition: opacity 0.12s ease;
@@ -63,16 +62,15 @@
 }
 
 .headerCancelBtn {
-  padding: 5px 12px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
-  background: transparent;
+  background: var(--color-surface-base);
   color: var(--color-text-muted);
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
   letter-spacing: var(--type-track-label);
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -95,10 +93,10 @@
 
 .imageInput {
   flex: 1;
-  padding: 6px 10px;
+  padding: 7px 10px;
   font-family: var(--type-font-code);
   font-size: var(--type-code-size);
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-base);
   color: var(--color-text-dark);
@@ -117,10 +115,10 @@
 .imagePreview {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: 0 0 0 1px rgba(26, 29, 51, 0.08);
+  box-shadow: 0 0 0 1px var(--color-border-subtle);
 }
 
 .imagePreviewImg {
@@ -150,7 +148,7 @@
   width: 32px;
   height: 32px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -164,7 +162,7 @@
 }
 
 .toolBtnActive {
-  background: var(--color-primary-soft);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
 }
 
@@ -323,7 +321,7 @@
 
 .cancelBtn {
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--color-border-subtle);
   background: transparent;
   color: var(--color-text-muted);
@@ -341,10 +339,10 @@
 
 .saveBtn {
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
@@ -358,55 +356,10 @@
 
 /* ── Dark mode ── */
 
-:global([data-theme="dark"]) .imageInput {
-  background: #1e1f2c;
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f0f1fa;
-}
-
 :global([data-theme="dark"]) .toolbar {
-  background: #13141f;
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .toolBtn {
-  color: rgba(240, 241, 250, 0.45);
-}
-
-:global([data-theme="dark"]) .toolBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f0f1fa;
+  background: var(--color-surface-1);
 }
 
 :global([data-theme="dark"]) .toolBtnActive {
-  background: rgba(143, 155, 255, 0.12);
-  color: #8f9bff;
-}
-
-:global([data-theme="dark"]) .divider {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-:global([data-theme="dark"]) .editorContent {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .editorContent h1,
-:global([data-theme="dark"]) .editorContent h2,
-:global([data-theme="dark"]) .editorContent h3 {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .editorContent code {
-  background: rgba(255, 255, 255, 0.06);
-  color: #8f9bff;
-}
-
-:global([data-theme="dark"]) .editorContent blockquote {
-  background: rgba(143, 155, 255, 0.08);
-  color: rgba(240, 241, 250, 0.65);
-}
-
-:global([data-theme="dark"]) .editorContent pre {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
 }

@@ -16,20 +16,6 @@ const ReflectionJournalRenderer = dynamic(() => import('./ReflectionJournalRende
 const QuizBlockRenderer = dynamic(() => import('./QuizBlockRenderer'), { ssr: false });
 const NftGateRenderer = dynamic(() => import('./NftGateRenderer'), { ssr: false });
 
-const BLOCK_LABELS: Record<string, string> = {
-  rich_text: 'Rich Text',
-  text_input: 'Text Input',
-  multiple_choice: 'Multiple Choice',
-  rating_scale: 'Rating Scale',
-  media_embed: 'Media',
-  image_embed: 'Image',
-  video_embed: 'Video',
-  reflection_journal: 'Field Notes',
-  file_upload: 'File Upload',
-  quiz_block: 'Quiz',
-  nft_gate: 'NFT Gate',
-};
-
 type RendererProps = {
   component: CourseComponentRecord;
   onComponentUpdate?: (updates: Partial<CourseComponentRecord>) => void;
@@ -77,9 +63,6 @@ export default function ComponentRenderer({
           };
           return (
             <div key={block.id} className={styles.blockWrapper}>
-              {blocks.length > 1 && (
-                <div className={styles.blockLabel}>{BLOCK_LABELS[block.blockType] || block.blockType}</div>
-              )}
               <BlockRenderer
                 component={blockAsComponent}
                 onComponentUpdate={onComponentUpdate}

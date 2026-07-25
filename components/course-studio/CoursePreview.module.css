@@ -116,7 +116,7 @@
   border-radius: 14px;
   background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-base));
   border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-dark) 5%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -175,11 +175,10 @@
 .readingCategory {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--type-track-label-lg);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   line-height: var(--type-label-lh);
-  color: var(--color-primary);
+  color: var(--color-text-muted);
 }
 
 .readingTitle {
@@ -187,7 +186,7 @@
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-track-heading);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -196,7 +195,7 @@
 
 .readingArrow {
   flex-shrink: 0;
-  color: #1A1D33;
+  color: var(--color-text-dark);
   opacity: 0.2;
 }
 
@@ -218,9 +217,8 @@
 .missionsHeading {
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--type-track-label-lg);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   line-height: var(--type-label-lh);
   color: var(--color-text-muted);
   margin: 0;
@@ -244,7 +242,7 @@
   border-radius: 14px;
   background: color-mix(in srgb, var(--task-accent, var(--color-primary)) 7%, var(--color-surface-base));
   border: 1px solid color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, var(--color-border-subtle));
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-dark) 5%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -286,13 +284,13 @@
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 42%, var(--color-surface-base) 58%) 100%);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--task-accent, var(--color-primary)) 28%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 1px 0 color-mix(in srgb, var(--palette-on-dark) 28%, transparent),
     0 4px 10px color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, transparent);
 }
 
 .taskArtworkAurora {
   background-image:
-    radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.42), transparent 28%),
+    radial-gradient(circle at 22% 18%, color-mix(in srgb, var(--palette-on-dark) 42%, transparent), transparent 28%),
     linear-gradient(135deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 68%, var(--color-text-dark) 32%) 0%,
       var(--task-accent, var(--color-primary)) 48%,
@@ -301,7 +299,7 @@
 
 .taskArtworkSunrise {
   background-image:
-    radial-gradient(circle at 75% 24%, rgba(255, 255, 255, 0.52), transparent 22%),
+    radial-gradient(circle at 75% 24%, color-mix(in srgb, var(--palette-on-dark) 52%, transparent), transparent 22%),
     linear-gradient(140deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 70%, var(--color-text-dark) 30%) 0%,
       var(--task-accent, var(--color-primary)) 50%,
@@ -310,7 +308,7 @@
 
 .taskArtworkOrbit {
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--palette-on-dark) 22%, transparent), transparent 28%),
     linear-gradient(135deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 60%, var(--color-text-dark) 40%) 0%,
       var(--task-accent, var(--color-primary)) 52%,
@@ -319,7 +317,7 @@
 
 .taskArtworkBloom {
   background-image:
-    radial-gradient(circle at 24% 22%, rgba(255, 255, 255, 0.46), transparent 26%),
+    radial-gradient(circle at 24% 22%, color-mix(in srgb, var(--palette-on-dark) 46%, transparent), transparent 26%),
     linear-gradient(135deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 72%, var(--color-text-dark) 28%) 0%,
       var(--task-accent, var(--color-primary)) 50%,
@@ -328,7 +326,7 @@
 
 .taskArtworkRibbon {
   background-image:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.18), transparent 48%),
+    linear-gradient(160deg, color-mix(in srgb, var(--palette-on-dark) 18%, transparent), transparent 48%),
     linear-gradient(135deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 65%, var(--color-text-dark) 35%) 0%,
       var(--task-accent, var(--color-primary)) 50%,
@@ -337,7 +335,7 @@
 
 .taskArtworkPrism {
   background-image:
-    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.38), transparent 32%),
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--palette-on-dark) 38%, transparent), transparent 32%),
     linear-gradient(150deg,
       color-mix(in srgb, var(--task-accent, var(--color-primary)) 72%, var(--color-text-dark) 28%) 0%,
       var(--task-accent, var(--color-primary)) 48%,
@@ -350,7 +348,7 @@
   font-size: var(--type-body-lg-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-track-heading);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   line-height: var(--type-lh-snug);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -360,7 +358,7 @@
 
 .taskArrow {
   flex-shrink: 0;
-  color: #1A1D33;
+  color: var(--color-text-dark);
   opacity: 0.2;
 }
 
@@ -390,20 +388,6 @@
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.readerLabel {
-  font-family: var(--type-font-label);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-weight-bold);
-  text-transform: uppercase;
-  letter-spacing: var(--type-track-label);
-  line-height: var(--type-label-lh);
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--color-surface-2);
-  color: var(--color-text-muted);
-  align-self: flex-start;
-}
-
 .readerTheme {
   font-family: var(--type-font-heading);
   font-size: var(--type-h3-size);
@@ -411,7 +395,15 @@
   letter-spacing: var(--type-h3-track);
   font-weight: var(--type-weight-bold);
   color: var(--color-text-dark);
-  margin-top: 8px;
+}
+
+.readerLabel {
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
+  line-height: var(--type-label-lh);
+  color: var(--color-text-muted);
 }
 
 .readerBody {
@@ -431,7 +423,7 @@
   font-size: var(--type-h3-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-h3-track);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   line-height: var(--type-lh-heading);
 }
@@ -441,7 +433,7 @@
   font-size: var(--type-h4-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-h4-track);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   line-height: var(--type-lh-heading);
 }
@@ -451,7 +443,7 @@
   font-size: var(--type-body-lg-size);
   font-weight: var(--type-weight-bold);
   letter-spacing: var(--type-h4-track);
-  color: #1A1D33;
+  color: var(--color-text-dark);
   margin: var(--type-heading-margin-top) 0 var(--type-heading-margin-bottom);
   line-height: var(--type-lh-heading);
 }
@@ -509,7 +501,7 @@
   border: 1px solid color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, var(--color-border-subtle));
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-dark) 5%, transparent);
 }
 
 .detailCardHeader {
@@ -528,7 +520,7 @@
   font-family: var(--type-font-body);
   font-size: var(--type-body-lg-size);
   font-weight: var(--type-weight-regular);
-  color: rgba(26, 29, 51, 0.88);
+  color: var(--color-text-dark);
   line-height: var(--type-lh-body);
   margin: 14px 0;
 }
@@ -551,33 +543,7 @@
 
 /* ── Dark mode ── */
 
-:global([data-theme="dark"]) .preview {
-  background: #0d0e19;
-}
-
-:global([data-theme="dark"]) .weekNav {
-  background: var(--color-surface-1);
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .weekNavArrow {
-  border-color: rgba(255, 255, 255, 0.08);
-  color: rgba(240, 241, 250, 0.45);
-}
-
-:global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.05);
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .weekDotInner {
-  background: rgba(240, 241, 250, 0.35);
-}
-
-:global([data-theme="dark"]) .leftCol {
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
+:global([data-theme="dark"]) .weekNav,
 :global([data-theme="dark"]) .rightPanel {
   background: var(--color-surface-1);
 }
@@ -596,35 +562,7 @@
   border-color: var(--color-primary) !important;
 }
 
-:global([data-theme="dark"]) .readerHtml {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .readerHtml h1,
-:global([data-theme="dark"]) .readerHtml h2,
-:global([data-theme="dark"]) .readerHtml h3 {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .readingTitle,
-:global([data-theme="dark"]) .taskTitle {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .readingArrow,
-:global([data-theme="dark"]) .taskArrow {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .detailCard {
-  background: color-mix(in srgb, var(--task-accent, var(--color-primary)) 12%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, var(--color-border-subtle));
-}
-
-:global([data-theme="dark"]) .detailCardContent {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
+:global([data-theme="dark"]) .detailCard,
 :global([data-theme="dark"]) .taskCard {
   background: color-mix(in srgb, var(--task-accent, var(--color-primary)) 12%, var(--color-surface-1));
   border-color: color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, var(--color-border-subtle));
@@ -637,12 +575,4 @@
 :global([data-theme="dark"]) .taskCardActive {
   background: color-mix(in srgb, var(--task-accent, var(--color-primary)) 22%, var(--color-surface-1)) !important;
   border-color: var(--task-accent, var(--color-primary)) !important;
-}
-
-:global([data-theme="dark"]) .readerTheme {
-  color: #f0f1fa;
-}
-
-:global([data-theme="dark"]) .taskInstructions {
-  color: rgba(240, 241, 250, 0.82);
 }

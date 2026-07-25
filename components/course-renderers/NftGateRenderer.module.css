@@ -1,16 +1,16 @@
 .gate {
-  border: 1.5px dashed var(--color-border-subtle);
-  border-radius: 12px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 14px;
   padding: 32px 24px;
   text-align: center;
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-2);
   transition: all 0.25s ease;
 }
 
 .gateUnlocked {
   border-style: solid;
-  border-color: color-mix(in srgb, #22c55e 30%, transparent);
-  background: color-mix(in srgb, #22c55e 4%, transparent);
+  border-color: color-mix(in srgb, var(--color-positive) 40%, transparent);
+  background: var(--color-positive-muted);
 }
 
 .icon {
@@ -26,8 +26,8 @@
 }
 
 .iconUnlocked {
-  background: color-mix(in srgb, #22c55e 12%, transparent);
-  color: #22c55e;
+  background: color-mix(in srgb, var(--color-positive) 16%, transparent);
+  color: var(--color-positive);
 }
 
 .collectionName {
@@ -52,7 +52,7 @@
   font-weight: var(--type-weight-semibold);
   margin: 0 0 4px;
   font-size: var(--type-body-size);
-  color: #22c55e;
+  color: var(--color-positive);
 }
 
 .verifyBtn {
@@ -60,10 +60,11 @@
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   border-radius: 8px;
   border: none;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-action);
   cursor: pointer;
   transition: opacity 0.12s ease;
 }

@@ -1,30 +1,25 @@
 .dropzone {
-  border: 2px dashed var(--color-border-subtle);
-  border-radius: 8px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 14px;
   padding: 24px;
   text-align: center;
+  background: var(--color-surface-2);
   cursor: pointer;
+  transition: all 0.12s ease;
 }
 
 .dropzone_active {
   border-color: var(--color-primary);
-  background: #eff6ff;
-}
-
-:global([data-theme="dark"]) .dropzone_active {
-  background: rgba(59, 130, 246, 0.1);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-2));
 }
 
 .dropzone_inactive {
-  border-color: var(--color-border-subtle);
-}
-
-:global([data-theme="dark"]) .dropzone_inactive {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-border-strong);
 }
 
 .dropzone_inactive:hover {
-  border-color: #a3a3a3;
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-2));
 }
 
 .dropzone_text {
@@ -38,7 +33,7 @@
   font-family: var(--type-font-body);
   font-size: var(--type-caption-size);
   line-height: var(--type-caption-lh);
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   margin-top: 4px;
 }
 
@@ -65,5 +60,5 @@
 }
 
 .file_size {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
 }

@@ -1,13 +1,13 @@
 .empty_state {
-  color: var(--color-text-muted);
+  color: var(--color-text-faint);
   font-family: var(--type-font-body);
-  font-size: var(--type-body-size);
-  font-style: italic;
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-lh);
 }
 
 .video_wrapper {
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: #000;
 }
@@ -26,8 +26,10 @@
   font-family: var(--type-font-label);
   font-size: var(--type-body-sm-size);
   font-weight: var(--type-weight-semibold);
+  letter-spacing: var(--type-track-label);
   cursor: pointer;
   color: var(--color-text-muted);
+  transition: color 0.12s ease;
 }
 
 .summary:hover {
@@ -39,6 +41,6 @@
   font-size: var(--type-body-sm-size);
   line-height: var(--type-body-sm-lh);
   color: var(--color-text-muted);
-  margin-top: 4px;
+  margin-top: 6px;
   white-space: pre-wrap;
 }

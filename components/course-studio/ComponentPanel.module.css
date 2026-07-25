@@ -134,9 +134,9 @@
 }
 
 .iconBtnDanger:hover:not(:disabled) {
-  background: rgba(239, 68, 68, 0.07);
-  border-color: rgba(239, 68, 68, 0.28);
-  color: #ef4444;
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+  color: var(--color-danger);
 }
 
 /* ── Course outline — week list ── */
@@ -193,7 +193,7 @@
 .weekRowActive .weekNum {
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-action);
 }
 
 .weekRowTitle {
@@ -428,8 +428,8 @@
 }
 
 :global([data-theme="dark"]) .weekRow:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .weekRowActive,
@@ -438,11 +438,6 @@
   border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
 }
 
-:global([data-theme="dark"]) .weekRowActive .weekNum {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: #ffffff;
-}
 
 :global([data-theme="dark"]) .stateBadgeSet {
   border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
@@ -462,28 +457,18 @@
 }
 
 :global([data-theme="dark"]) .rowIcon {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .iconBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-:global([data-theme="dark"]) .iconBtnDanger:hover:not(:disabled) {
-  background: rgba(248, 113, 113, 0.1);
-  border-color: rgba(248, 113, 113, 0.3);
-  color: #f87171;
-}
-
-:global([data-theme="dark"]) .sectionDivider {
-  background: rgba(240, 241, 250, 0.08);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-strong);
 }
 
 :global([data-theme="dark"]) .addRow {
-  border-color: rgba(240, 241, 250, 0.12);
-  color: rgba(240, 241, 250, 0.3);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-faint);
 }
 
 :global([data-theme="dark"]) .addRow:hover {
