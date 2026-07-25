@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import CtaButton from '@/components/shared/CtaButton';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { useSound } from '@/hooks/useSound';
 import styles from './PreorderModal.module.css';
@@ -55,40 +54,44 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <section 
-        className={styles.modal} 
+      <div 
+        className={styles.modalContainer} 
         role="dialog" 
         aria-modal="true" 
         aria-labelledby="preorder-title"
       >
-        {/* Title bar - Brutalist design system style */}
-        <header className={styles.titleBar}>
-          <span className={styles.title} id="preorder-title">
-            ATTN: ACADEMY BOOK PREORDER
-          </span>
+        {/* Title bar - matching Support Portal style */}
+        <div className={styles.titleBar}>
+          <h2 className={styles.title} id="preorder-title">
+            预订 Book Preorder
+          </h2>
           <button 
             type="button" 
-            className={styles.titleBarClose} 
+            className={styles.closeButton} 
             onClick={handleDismiss}
             aria-label="Close preorder window"
           >
-            CLOSE
+            Close
           </button>
-        </header>
+        </div>
 
         {/* Modal body content */}
         <div className={styles.content}>
-          <h2 className={styles.heading}>ACADEMY BOOK PREORDER</h2>
-          
-          {/* Custom background container behind the book cover */}
+          <div className={styles.headerGroup}>
+            <span className={styles.badge}>Official Release</span>
+            <h2 className={styles.heading}>Orbiters of The Horizon</h2>
+            <p className={styles.subheading}>By Jhinn Bay</p>
+          </div>
+
+          {/* Book Display Container */}
           <div className={styles.bookDisplayContainer}>
             <div className={styles.bookDisplayBg} />
             <div className={styles.bookImageWrapper}>
               <Image
                 src="/images/orbits-book-cover.png"
                 alt="Orbiters of The Horizon book cover by Jhinn Bay"
-                width={150}
-                height={200}
+                width={140}
+                height={190}
                 priority
                 className={styles.bookImage}
               />
@@ -97,31 +100,33 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
 
           {/* Book Metadata details */}
           <div className={styles.details}>
-            <p className={styles.bookTitle}>
-              ORBITERS OF THE HORIZON
-            </p>
-            <p className={styles.bookAuthor}>
-              BY JHINN BAY
-            </p>
             <p className={styles.preorderBannerText}>
-              PREORDER NOW AT THE ACADEMY SHOP
+              Preorder now at the Academy Shop
             </p>
             <p className={styles.releaseDate}>
-              ESTIMATED RELEASE OCTOBER 2026
+              Estimated release: October 2026
             </p>
           </div>
-
-          {/* Footer action buttons */}
-          <div className={styles.actions}>
-            <CtaButton variant="primary" onClick={handleBuyNow} className={styles.buyBtn}>
-              BUY NOW
-            </CtaButton>
-            <CtaButton variant="secondary" onClick={handleDismiss} className={styles.dismissBtn}>
-              DISMISS
-            </CtaButton>
-          </div>
         </div>
-      </section>
+
+        {/* Footer actions matching Support Portal */}
+        <div className={styles.footer}>
+          <button 
+            type="button"
+            className={styles.submitButton}
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </button>
+          <button 
+            type="button"
+            className={styles.dismissButton}
+            onClick={handleDismiss}
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
     </div>,
     document.body
   );
