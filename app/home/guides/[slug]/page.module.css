@@ -299,7 +299,7 @@
 
 .title {
   font-family: var(--font-poppins), 'Poppins', ui-sans-serif, sans-serif;
-  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  font-size: 2rem;
   font-weight: var(--font-weight-semibold, 600);
   line-height: 1.15;
   letter-spacing: -0.015em;
@@ -962,4 +962,3 @@
   color: #fff;
   border-color: var(--color-primary);
 }
-
