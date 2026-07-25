@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { Phone } from '@phosphor-icons/react';
+import { Phone, X } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import styles from './BlueCallingOverlay.module.css';
 
@@ -33,26 +33,44 @@ export default function BlueCallingOverlay({ onAccept, onDecline }: BlueCallingO
   }, [onDecline, play]);
 
   return (
-    <div className={styles.backdrop} onClick={onDecline}>
-      <div className={styles.card} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.avatarCircle}>
-          <Phone size={40} weight="fill" />
+    <div className={styles.overlay} onClick={onDecline}>
+      <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.titleBar}>
+          <h3 className={styles.title}>INCOMING VOICE CALL</h3>
+          <button
+            type="button"
+            className={styles.closeButton}
+            onClick={onDecline}
+            aria-label="Close modal"
+          >
+            Close
+          </button>
         </div>
 
-        <div className={styles.nameRow}>
-          <span className={styles.name}>Blue</span>
-        </div>
-        <span className={styles.callingText}>is calling...</span>
+        <div className={styles.content}>
+          <div className={styles.avatarWrapper}>
+            <div className={styles.avatarCircle}>
+              <Phone size={32} weight="fill" />
+            </div>
+            <div className={styles.pingRing} />
+          </div>
 
-        <div className={styles.buttons}>
-          <button className={styles.declineBtn} onClick={onDecline} type="button">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M22 2L2 22M2 2l20 20" />
-            </svg>
-          </button>
-          <button className={styles.acceptBtn} onClick={onAccept} type="button">
-            <Phone size={28} weight="fill" />
-          </button>
+          <div className={styles.callerInfo}>
+            <span className={styles.badge}>VOICE SESSION</span>
+            <h2 className={styles.name}>Blue</h2>
+            <p className={styles.callingText}>is calling your terminal...</p>
+          </div>
+
+          <div className={styles.actions}>
+            <button className={styles.declineButton} onClick={onDecline} type="button">
+              <X size={18} weight="bold" />
+              <span>Decline</span>
+            </button>
+            <button className={styles.acceptButton} onClick={onAccept} type="button">
+              <Phone size={18} weight="fill" />
+              <span>Accept Call</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
