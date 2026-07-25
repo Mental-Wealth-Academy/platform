@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -34,7 +34,10 @@ import GuideMaterials from '@/components/guides/GuideMaterials';
 import type { GuideMaterial } from '@/lib/guide-materials-db';
 import type { GuideRecord, GuideMethodRecord, GuideLink } from '@/lib/guides-db';
 import { getWellbeingDomain } from '@/lib/wellbeing-domains';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
+
+const sceneUrl = dailySceneBackgroundUrl();
 
 type PageProps = { params: { slug: string } };
 
@@ -254,11 +257,18 @@ export default function GuidePage({ params }: PageProps) {
     !!data && data.prereqs.length > 0 && progressResolved && missingPrereqs.length > 0;
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.guideLayout}>
-      <main className={styles.page}>
-        {loading && <div className={styles.state}>Loading guide…</div>}
-        {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
+    <div className={styles.layout} style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}>
+      <div className={styles.scene} aria-hidden="true" />
+      <div className={styles.guideWrapper}>
+        <div className={styles.globalPanel}>
+          <div className={styles.panelHeader}>
+            <span className={styles.panelTitleJa}>知識</span>
+            <span className={styles.panelTitle}>Learn anything</span>
+          </div>
+          <div className={styles.guideLayout}>
+            <main className={styles.page}>
+              {loading && <div className={styles.state}>Loading guide…</div>}
+              {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
 
         {data && !loading && (
           <>
@@ -536,6 +546,8 @@ export default function GuidePage({ params }: PageProps) {
           dependentCount={data.dependents.length}
         />
       )}
+          </div>
+        </div>
       </div>
     </div>
   );

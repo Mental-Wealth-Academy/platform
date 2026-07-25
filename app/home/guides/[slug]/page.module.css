@@ -2,20 +2,107 @@
   position: relative;
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
-  /* Dot grid — far quieter behind text than the old 32px line grid. */
-  background-image: radial-gradient(
-    color-mix(in oklch, var(--color-primary) 16%, transparent) 1px,
-    transparent 1.5px
-  );
-  background-size: 24px 24px;
-  background-position: -1px -1px;
+  background-color: var(--color-background);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 :global([data-theme="dark"]) .layout {
   background-color: #0d0e16;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+}
+
+.scene {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 248, 255, 0.72) 0%, rgba(247, 248, 255, 0.58) 55%, rgba(247, 248, 255, 0.74) 100%),
+    var(--page-scene, none) center / cover no-repeat,
+    #f7f8ff;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+:global([data-theme="dark"]) .scene {
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    var(--page-scene, none) center / cover no-repeat,
+    var(--color-surface-base);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+.guideWrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 48px 24px;
+}
+
+.globalPanel {
+  padding: 0 18px 18px;
+  background-color: var(--palette-on-dark);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 0 6px rgba(0, 0, 0, 0.10),
+    0 6px 3px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+:global([data-theme="dark"]) .globalPanel {
+  background-color: var(--color-surface-3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 -18px;
+  padding: 12px 20px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid var(--color-primary-hover);
+  flex-shrink: 0;
+}
+
+:global([data-theme="dark"]) .panelHeader {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+}
+
+.panelTitleJa {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.panelTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+:global([data-theme="dark"]) .panelTitle {
+  color: #d6d9ee;
 }
 
 .guideLayout {
