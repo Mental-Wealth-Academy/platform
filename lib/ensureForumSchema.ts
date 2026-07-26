@@ -63,6 +63,7 @@ async function _ensureForumSchemaImpl() {
       username VARCHAR(32) NOT NULL UNIQUE,
       selected_avatar_id VARCHAR(50) NULL,
       avatar_url TEXT NULL,
+      bio TEXT NULL,
       privy_user_id VARCHAR(255) NULL UNIQUE,
       wallet_address VARCHAR(255) NOT NULL,
       gender VARCHAR(10) NULL,
@@ -249,6 +250,18 @@ async function _ensureForumSchemaImpl() {
   } catch (err: any) {
     if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
       console.warn('Error adding selected_avatar_id column:', err);
+    }
+  }
+
+  // Add bio column if it doesn't exist
+  try {
+    await sqlQuery(`
+      ALTER TABLE users 
+      ADD COLUMN bio TEXT NULL
+    `);
+  } catch (err: any) {
+    if (!err?.message?.includes('already exists') && !err?.message?.includes('duplicate')) {
+      console.warn('Error adding bio column:', err);
     }
   }
 

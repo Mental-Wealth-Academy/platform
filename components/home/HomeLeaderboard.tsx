@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSound } from '@/hooks/useSound';
 import styles from './HomeLeaderboard.module.css';
+import UserProfileModal from './UserProfileModal';
 
 interface LeaderboardUser {
   rank: number;
@@ -22,6 +23,7 @@ function formatShards(n: number): string {
 export default function HomeLeaderboard() {
   const [users, setUsers] = useState<LeaderboardUser[] | null>(null);
   const [open, setOpen] = useState(false);
+  const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
   const { play } = useSound();
 
   useEffect(() => {
@@ -75,7 +77,15 @@ export default function HomeLeaderboard() {
         ) : (
           <div className={styles.rows}>
             {rows.map((u) => (
-              <div key={u.rank} className={styles.row}>
+              <div 
+                key={u.rank} 
+                className={styles.row}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedUsername(u.username);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <span className={styles.rank}>{u.rank}</span>
                 {u.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -113,7 +123,12 @@ export default function HomeLeaderboard() {
             </div>
             <div className={styles.modalList}>
               {(users ?? []).map((u) => (
-                <div key={u.rank} className={styles.modalRow}>
+                <div 
+                  key={u.rank} 
+                  className={styles.modalRow}
+                  onClick={() => setSelectedUsername(u.username)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <span className={styles.modalRank}>{u.rank}</span>
                   {u.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -131,6 +146,13 @@ export default function HomeLeaderboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {selectedUsername && (
+        <UserProfileModal 
+          username={selectedUsername} 
+          onClose={() => setSelectedUsername(null)} 
+        />
       )}
     </>
   );

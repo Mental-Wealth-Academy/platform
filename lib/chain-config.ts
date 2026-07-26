@@ -93,6 +93,10 @@ export function getCbBTCAddress(): string | null {
   return getChainConfig().cbBTcAddress;
 }
 
+export function getUsdcAddress(): string {
+  return getChainConfig().usdcAddress;
+}
+
 export function getRpcUrl(): string {
   return getChainConfig().rpcUrl;
 }
