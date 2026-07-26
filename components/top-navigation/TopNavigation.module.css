@@ -851,15 +851,7 @@
   background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
-/* ── Compact top nav — collapse centerNav + nav into dropdown ──
-   .nav carries the profile slot and Call Blue, so the dropdown covers Call Blue
-   and .mobileActions restores profile/wallet access from here down. */
-@media (max-width: 1380px) {
-  .centerNav { display: none; }
-  .nav { display: none; }
-  .compactMenuWrap { display: flex; margin-left: auto; }
-  .mobileActions { display: flex; margin-left: 8px; }
-}
+/* ── Compact top nav — collapse centerNav + nav into dropdown on mobile/tablet (<= 900px) ── */
 
 /* Compact top nav — tablet landscape / small-desktop range.
    Tightens spacing so everything (incl. Ask Blue) fits without clipping. */
