@@ -5,15 +5,19 @@ import { createPortal } from 'react-dom';
 import type { CSSProperties, FormEvent } from 'react';
 import Image from 'next/image';
 import TreasurySnapshotCard from '@/components/treasury-snapshot/TreasurySnapshotCard';
-import { HowToButton } from '@/components/treasury-how-to/TreasuryHowTo';
 import dynamic from 'next/dynamic';
 import CtaButton from '@/components/shared/CtaButton';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import { useSound } from '@/hooks/useSound';
 import styles from './page.module.css';
 import type { CoinPrice, TreasuryBalance, CategorizedMarkets, MarketCategory, MarketRow } from '@/lib/market-api';
 
 const ProMembershipModal = dynamic(() => import('@/components/pro-membership-modal/ProMembershipModal'), { ssr: false });
+
+// The same daily pixel-art scene the quest board and Blue's stage draw from, so
+// the trading desk reads as part of the same world.
+const sceneUrl = dailySceneBackgroundUrl();
 
 // ── Helpers ──
 
@@ -507,10 +511,8 @@ export default function Markets() {
   const [isTradeChatSending, setIsTradeChatSending] = useState(false);
   const [isTradeExecuting, setIsTradeExecuting] = useState(false);
   const [isMembershipOpen, setIsMembershipOpen] = useState(false);
-  const [isModelDetailsOpen, setIsModelDetailsOpen] = useState(false);
-  // The quant column is pinned open on wide screens; the drawer toggle only
-  // matters below the desktop breakpoint.
-  const [isDesktopModels, setIsDesktopModels] = useState(false);
+  // The board's main tab: the market feed, or Blue's quant engine readout.
+  const [boardTab, setBoardTab] = useState<'markets' | 'quant'>('markets');
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
@@ -639,25 +641,6 @@ export default function Markets() {
       science: INITIAL_VISIBLE_MARKETS,
     });
   }, [kalshiMarkets]);
-
-  useEffect(() => {
-    if (!isModelDetailsOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsModelDetailsOpen(false);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModelDetailsOpen]);
-
-  useEffect(() => {
-    const query = window.matchMedia('(min-width: 1101px)');
-    const sync = () => setIsDesktopModels(query.matches);
-    sync();
-    query.addEventListener('change', sync);
-    return () => query.removeEventListener('change', sync);
-  }, []);
 
   // Surface the Daemon spotlight once, a beat after load, if it hasn't been seen.
   useEffect(() => {
@@ -1037,84 +1020,37 @@ export default function Markets() {
   }, [hasVipMembershipCard, isTradeExecuting]);
 
   return (
-    <main className={styles.main}>
-      <div className={styles.pageLayout}>
+    <main
+      className={styles.main}
+      style={{ '--trades-scene': `url(${sceneUrl})` } as CSSProperties}
+    >
+      <div className={styles.scene} aria-hidden="true" />
+      <div className={styles.content}>
 
-        {/* ── Status Bar ── */}
-        <div className={styles.statusBar}>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>model</span>
-            <span className={styles.statusHighlight}>Black-Scholes binary</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>markets:</span>
-            <span className={styles.statusValue}>elections politics culture science</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>MC_paths:</span>
-            <span className={styles.statusValue}>200,000</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>feeds:</span>
-            <span className={styles.statusValue}>30-60s</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>pulse:</span>
-            <span className={styles.statusValue}>1.2s</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>edge_threshold:</span>
-            <span className={styles.statusHighlight}>3%</span>
-          </div>
-          <div className={styles.statusItem}>
-            <span className={styles.statusLabel}>kelly:</span>
-            <span className={styles.statusValue}>0.25x</span>
-          </div>
-          {lastPriceUpdate > 0 && (
-            <div className={styles.statusItem}>
-              <LastUpdatedLabel timestamp={lastPriceUpdate} />
+        {/* ── Left column: treasury balance, token holdings and wallet as one piece ── */}
+        <aside className={styles.sideColumn}>
+          <section className={styles.deskPanel} aria-label="Trades treasury">
+            <div className={styles.panelHead}>
+              <span className={styles.panelHeadTitle}>
+                <span className={styles.panelHeadJa} lang="ja">金庫</span> Trades Treasury
+              </span>
+              <button
+                type="button"
+                className={styles.treasuryReceiptHint}
+                onClick={() => setIsReceiptOpen(true)}
+              >
+                Receipts
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
             </div>
-          )}
-          <div className={styles.statusItem}>
-            <button
-              type="button"
-              className={styles.modelDetailsButton}
-              onClick={() => setIsModelDetailsOpen(true)}
-            >
-              Model details
-            </button>
-          </div>
-        </div>
 
-        {isModelDetailsOpen && (
-          <button
-            type="button"
-            className={styles.modelDetailsBackdrop}
-            aria-label="Close model details"
-            onClick={() => setIsModelDetailsOpen(false)}
-          />
-        )}
-
-        {/* ── Dashboard Grid: treasury + Quant engine stack column 1, markets fill column 2 ── */}
-        <div className={styles.grid}>
-
-          {/* Treasury balance and the moved wallet snapshot share the left stack. */}
-          <div className={styles.treasuryStack}>
+            <div className={styles.treasuryBody}>
             {(() => {
               const rangeLen = TREASURY_RANGES.find((range) => range.id === treasuryRange)?.len ?? 80;
               return (
-                <div className={styles.treasuryFloat} aria-label="Trades treasury">
-                  <span className={styles.treasuryFloatTitle}>Trades Treasury</span>
-                  <button
-                    type="button"
-                    className={styles.treasuryReceiptHint}
-                    onClick={() => setIsReceiptOpen(true)}
-                  >
-                    Receipts
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
+                <div className={styles.treasuryFloat}>
                   {!balance && !balanceError && <TreasuryQuickSkeleton />}
                   {balanceError && !balance && <span className={styles.errorText}>Failed to load balance</span>}
                   {balance && (
@@ -1144,28 +1080,87 @@ export default function Markets() {
                 </div>
               );
             })()}
-            <TreasurySnapshotCard />
-          </div>
+              <TreasurySnapshotCard />
+            </div>
+          </section>
+        </aside>
 
-          {/* ════ POP-UP: Model Parameters ════ */}
-          <aside
-            className={`${styles.modelsColumn} ${isModelDetailsOpen ? styles.modelsColumnOpen : ''}`}
-            aria-hidden={!(isDesktopModels || isModelDetailsOpen)}
-            aria-label="Blue Quantum Engine"
-            aria-modal={!isDesktopModels && isModelDetailsOpen}
-            role={isDesktopModels ? 'complementary' : 'dialog'}
-          >
-            <div className={styles.modelDrawerHeader}>
-              <h2 className={styles.modelDrawerTitle}>Blue Quantum Engine</h2>
-              <div className={styles.modelDrawerActions}>
-                <HowToButton />
-                <button
-                  type="button"
-                  className={styles.modelDrawerClose}
-                  onClick={() => setIsModelDetailsOpen(false)}
-                >
-                  Close
-                </button>
+        {/* ── Right column: the market board, with Blue's quant engine one tab over ── */}
+        <div className={styles.boardColumn}>
+          <section className={styles.deskPanel} aria-label="Prediction markets">
+            <div className={styles.panelHead}>
+              <span className={styles.panelHeadTitle}>
+                <span className={styles.panelHeadJa} lang="ja">市場</span> Prediction Markets
+              </span>
+              {lastPriceUpdate > 0 && <LastUpdatedLabel timestamp={lastPriceUpdate} />}
+            </div>
+
+            <div className={styles.boardToolbar}>
+              <div className={styles.searchBar}>
+                <input
+                  type="search"
+                  className={styles.searchInput}
+                  value={marketSearch}
+                  onChange={(event) => setMarketSearch(event.target.value)}
+                  onClick={() => play('input-focus')}
+                  placeholder="Search markets"
+                  aria-label="Search markets"
+                />
+                <svg className={styles.searchIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2.5" />
+                  <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
+
+            <div className={styles.boardTabs} role="tablist" aria-label="Trading desk sections">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={boardTab === 'markets'}
+                className={`${styles.boardTab} ${boardTab === 'markets' ? styles.boardTabActive : ''}`}
+                onClick={() => { play('click'); setBoardTab('markets'); }}
+              >
+                Markets
+                {orderedMarkets.length > 0 && <span className={styles.boardTabCount}>{orderedMarkets.length}</span>}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={boardTab === 'quant'}
+                className={`${styles.boardTab} ${boardTab === 'quant' ? styles.boardTabActive : ''}`}
+                onClick={() => { play('click'); setBoardTab('quant'); }}
+              >
+                Quant
+              </button>
+            </div>
+
+          {/* ════ Quant tab: Blue's model readout ════ */}
+          <div className={styles.modelsColumn} hidden={boardTab !== 'quant'}>
+            <div className={styles.statusBar}>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>model</span>
+                <span className={styles.statusHighlight}>Black-Scholes binary</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>MC_paths:</span>
+                <span className={styles.statusValue}>200,000</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>feeds:</span>
+                <span className={styles.statusValue}>30-60s</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>pulse:</span>
+                <span className={styles.statusValue}>1.2s</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>edge_threshold:</span>
+                <span className={styles.statusHighlight}>3%</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>kelly:</span>
+                <span className={styles.statusValue}>0.25x</span>
               </div>
             </div>
 
@@ -1351,27 +1346,11 @@ export default function Markets() {
                 Blue only considers a trade when her estimate and the market price are at least 3% apart.
               </p>
             </div>
-          </aside>
+          </div>
 
-          {/* ════ CENTER: Charts ════ */}
-
-          {/* Kalshi Signal Markets */}
-          <div className={`${styles.panel} ${styles.chartPanel} ${styles.kalshiPanel}`}>
+          {/* ════ Markets tab: the community feed Blue trades from ════ */}
+          <div className={styles.kalshiPanel} hidden={boardTab !== 'markets'}>
             <div className={styles.feedControls}>
-              <div className={styles.feedSearch}>
-                <svg className={styles.feedSearchIcon} width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                  <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-                <input
-                  type="search"
-                  className={styles.feedSearchInput}
-                  value={marketSearch}
-                  onChange={(event) => setMarketSearch(event.target.value)}
-                  placeholder="Search markets"
-                  aria-label="Search markets"
-                />
-              </div>
               <div className={styles.feedTabs} role="tablist" aria-label="Market filter">
                 <button
                   type="button"
@@ -1493,8 +1472,10 @@ export default function Markets() {
               )}
             </div>
           </div>
+          </section>
+        </div>
 
-          {/* ════ Blue Trading Chat panel ════ */}
+        {/* ════ Blue Trading Chat panel ════ */}
           <section
             className={`${styles.blueTradeColumn} ${isChatOpen ? styles.blueTradeColumnOpen : ''}`}
             aria-label="Blue trading chat"
@@ -1591,8 +1572,6 @@ export default function Markets() {
               </button>
             </form>
           </section>
-
-        </div>
 
         {/* ── Docked chat launcher + one-time Daemon spotlight ── */}
         <div className={styles.chatDock}>

@@ -1,42 +1,22 @@
+/* Sits inside the trades treasury panel — the panel owns the chrome, so this
+   block is just the holdings, flush with the balance card above it. */
 .card {
   width: 100%;
-  padding: 16px;
-  background: color-mix(in oklch, var(--color-surface-1) 94%, white);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, var(--color-border-subtle));
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
 }
 
-.header {
+.footer {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 12px 16px;
-  margin: -16px -16px 12px;
-  border-radius: 10px 10px 0 0;
-  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1));
-  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 16%, var(--color-border-subtle));
-}
-
-.kanji,
-.title {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.kanji {
-  color: var(--color-primary);
-  letter-spacing: 0.08em;
-}
-
-.title {
-  color: var(--color-text-dark);
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .swapBadge {
-  margin-left: auto;
-  padding: 3px 7px;
+  flex-shrink: 0;
+  padding: 5px 12px;
   border-radius: 999px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   color: var(--color-primary);
@@ -94,10 +74,11 @@
 .metric {
   position: relative;
   min-width: 0;
-  padding: 9px 36px 9px 10px;
-  border-radius: 10px;
+  padding: 10px 36px 10px 11px;
+  border-radius: 12px;
   background: color-mix(in oklch, var(--color-primary) 5%, var(--color-surface-1));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .primaryMetric {
@@ -105,7 +86,8 @@
   min-height: 88px;
   padding: 16px 54px 16px 14px;
   background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-1));
-  border-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 .primaryMetric .metricIcon {
@@ -117,7 +99,8 @@
 .secondaryMetric {
   min-height: 68px;
   background: color-mix(in oklch, var(--color-primary-hover) 68%, var(--color-surface-3));
-  border-color: color-mix(in oklch, var(--color-primary) 30%, var(--color-border-strong));
+  border-color: color-mix(in oklch, var(--color-primary) 40%, var(--color-border-strong));
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 45%, transparent);
 }
 
 .secondaryMetric .metricLabel,
@@ -175,11 +158,8 @@
 .walletLink {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  margin-top: 9px;
-  padding: 7px 2px 0;
-  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  min-width: 0;
   color: var(--color-primary);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -189,14 +169,6 @@
 
 .walletLink:hover {
   color: var(--color-primary-hover);
-}
-
-:global([data-theme="dark"]) .card {
-  background: var(--color-surface-3);
-}
-
-:global([data-theme="dark"]) .header {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-3));
 }
 
 :global([data-theme="dark"]) .primaryMetric {

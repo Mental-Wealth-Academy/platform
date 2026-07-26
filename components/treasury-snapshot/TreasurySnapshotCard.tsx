@@ -53,19 +53,7 @@ export default function TreasurySnapshotCard() {
 
   return (
     <>
-      <section className={styles.card} aria-labelledby="blue-treasures-title">
-        <div className={styles.header}>
-          <span className={styles.kanji} lang="ja">宝物</span>
-          <span id="blue-treasures-title" className={styles.title}>Blue&apos;s Treasures</span>
-          <button
-            type="button"
-            className={styles.swapBadge}
-            onClick={() => setShowTreasurySwap(true)}
-          >
-            Swap
-          </button>
-        </div>
-
+      <section className={styles.card} aria-label="Treasury holdings">
         {treasuryLoading ? (
           <div className={styles.skeleton} aria-label="Loading Blue's treasures" aria-live="polite">
             <span /><span /><span />
@@ -100,12 +88,21 @@ export default function TreasurySnapshotCard() {
                 </strong>
               </div>
             </div>
-            {treasury.wallet.address && treasury.wallet.explorerUrl && (
-              <a className={styles.walletLink} href={treasury.wallet.explorerUrl} target="_blank" rel="noreferrer">
-                <span>Wallet {shortAddress(treasury.wallet.address)}</span>
-                <span aria-hidden="true">↗</span>
-              </a>
-            )}
+            <div className={styles.footer}>
+              {treasury.wallet.address && treasury.wallet.explorerUrl && (
+                <a className={styles.walletLink} href={treasury.wallet.explorerUrl} target="_blank" rel="noreferrer">
+                  <span>Wallet {shortAddress(treasury.wallet.address)}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              )}
+              <button
+                type="button"
+                className={styles.swapBadge}
+                onClick={() => setShowTreasurySwap(true)}
+              >
+                Swap
+              </button>
+            </div>
           </>
         ) : null}
       </section>

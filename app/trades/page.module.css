@@ -19,23 +19,270 @@
   /* Rose red from the original quant desk — used for No stances and the SKIP
      signal, where "down vs up" needs a real second hue. */
   --markets-no: #E2567B;
+  position: relative;
   height: calc(100dvh - 72px - var(--banner-height, 0px));
   min-height: calc(100dvh - 72px - var(--banner-height, 0px));
   max-height: calc(100dvh - 72px - var(--banner-height, 0px));
-  margin-left: var(--sidebar-width, 272px);
-  background: var(--color-background);
+  margin-left: var(--sidebar-width, 265px);
+  display: flex;
+  background-color: #f7f8ff;
+  overflow: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* The day's pixel-art scene — the same backdrop the quest board and Blue's
+   stage use, so the desk reads as part of the same world. `--trades-scene` is
+   set inline by the page; grid lines and a scrim keep the panels legible. */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 248, 255, 0.72) 0%, rgba(247, 248, 255, 0.58) 55%, rgba(247, 248, 255, 0.74) 100%),
+    var(--trades-scene, none) center / cover no-repeat,
+    #f7f8ff;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 26px;
+  padding: 18px 24px;
   overflow: hidden;
 }
 
-.pageLayout {
+/* Left column — the treasury piece. */
+.sideColumn {
+  width: clamp(340px, 28vw, 430px);
+  flex-shrink: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
+}
+
+/* Right column — the market board / quant engine. */
+.boardColumn {
+  flex: 1;
+  min-width: 0;
+  max-width: 880px;
   min-height: 0;
-  padding: 0;
-  gap: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Shared panel shell (matches the quest board) ── */
+.deskPanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.72);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 2px solid var(--color-primary-hover);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+}
+
+.panelHead {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.panelHeadTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+}
+
+.panelHeadJa {
+  color: var(--color-primary);
+}
+
+.panelHead .lastUpdated,
+.panelHead .treasuryReceiptHint {
+  margin-left: auto;
+}
+
+/* Treasury body — scrolls if the balances outgrow the column. */
+.treasuryBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ── Board toolbar: market search, styled like the top-nav Search Academy ── */
+.boardToolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.searchBar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 18px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in oklch, var(--color-primary) 11%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, rgba(232, 85, 109, 0.08) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, rgba(116, 196, 101, 0.08) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in oklch, var(--color-primary) 8%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, #fbfcff 0%, #eef3ff 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 25%, transparent);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  cursor: text;
+}
+
+.searchBar:hover {
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, rgba(232, 85, 109, 0.10) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, rgba(116, 196, 101, 0.10) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in oklch, var(--color-primary) 10%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, #f8faff 0%, #e8f0ff 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+}
+
+.searchBar:focus-within {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in oklch, var(--color-primary) 10%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, rgba(232, 85, 109, 0.07) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, rgba(116, 196, 101, 0.07) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in oklch, var(--color-primary) 6%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, #ffffff 0%, #f0f5ff 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-regular, 400);
+  letter-spacing: 0.02em;
+  color: rgba(26, 29, 51, 0.95);
+  text-transform: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchInput::placeholder {
+  color: rgba(26, 29, 51, 0.45);
+  opacity: 1;
+  text-transform: none;
+}
+
+.searchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--color-text-soft);
+  opacity: 0.75;
+}
+
+.searchBar:focus-within .searchIcon {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+/* ── Board tabs: Markets / Quant ── */
+.boardTabs {
+  flex-shrink: 0;
+  display: flex;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+}
+
+.boardTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(26, 29, 51, 0.48);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.14s ease, border-color 0.14s ease;
+}
+
+.boardTab:hover {
+  color: rgba(26, 29, 51, 0.72);
+}
+
+.boardTabActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.boardTabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
 }
 
 .lockedPageLayout {
@@ -125,27 +372,28 @@
   color: var(--color-text-dark);
 }
 
-/* ── Top Status Bar ── */
+/* ── Engine telemetry strip (top of the Quant tab) ── */
 .statusBar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   flex-shrink: 0;
-  height: var(--markets-status-height);
-  gap: 24px;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid var(--color-border-subtle);
+  gap: 8px;
+  margin-bottom: 4px;
   font-family: var(--font-button);
   font-size: 11px;
   color: var(--color-text-muted);
-  overflow-x: auto;
-  white-space: nowrap;
 }
 
 .statusItem {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 6%, #ffffff);
+  white-space: nowrap;
 }
 
 .statusLabel {
@@ -218,25 +466,6 @@
   text-align: right;
 }
 
-/* ── Dashboard Grid ── */
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 2px;
-  flex: 1;
-  background: var(--markets-light-gutter);
-  min-height: 0;
-  overflow: hidden;
-}
-
-@media (min-width: 1101px) {
-  .grid {
-    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-}
-
 /* ── Panel Base ── */
 .panel {
   background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
@@ -281,17 +510,11 @@
 
 /* ── Feed controls: tabs + search (Kalshi / Polymarket feel) ── */
 .feedControls {
-  position: sticky;
-  top: 0;
-  z-index: 4;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  align-items: center;
+  justify-content: flex-start;
   gap: 10px;
-  padding: 10px 0 12px;
-  margin-bottom: 2px;
-  background: var(--markets-light-panel-raised);
-  border-bottom: 1px solid var(--markets-light-border);
+  margin-bottom: 12px;
 }
 
 .feedTabs {
@@ -346,44 +569,6 @@
 .feedTabActive .feedTabCount {
   background: rgba(255, 255, 255, 0.22);
   color: #ffffff;
-}
-
-.feedSearch {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.feedSearchIcon {
-  position: absolute;
-  left: 11px;
-  color: var(--color-text-faint);
-  pointer-events: none;
-}
-
-.feedSearchInput {
-  width: 100%;
-  height: 38px;
-  padding: 0 12px 0 32px;
-  border: 1px solid var(--markets-light-border-strong);
-  border-radius: 999px;
-  background: var(--markets-light-panel-raised);
-  color: var(--color-text-dark);
-  font-family: var(--font-primary);
-  font-size: 13px;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.feedSearchInput::placeholder {
-  color: var(--color-text-faint);
-}
-
-.feedSearchInput:focus {
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .feedEmpty {
@@ -459,19 +644,8 @@
   margin-right: 5px;
 }
 
-:global([data-theme="dark"]) .feedControls {
-  background: var(--markets-dark-panel);
-  border-bottom-color: var(--color-border-subtle);
-}
-
 :global([data-theme="dark"]) .feedTabs {
   background: color-mix(in oklch, var(--color-text-light) 6%, transparent);
-}
-
-:global([data-theme="dark"]) .feedSearchInput {
-  background: color-mix(in oklch, var(--markets-dark-panel-low) 70%, transparent);
-  border-color: var(--color-border-subtle);
-  color: var(--color-text-dark);
 }
 
 :global([data-theme="dark"]) .voteIntro {
@@ -491,132 +665,23 @@
   letter-spacing: 0.05em;
 }
 
-.modelDetailsButton {
-  border: 1px solid color-mix(in oklch, var(--color-tertiary) 24%, transparent);
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--color-tertiary) 8%, transparent);
-  color: var(--color-secondary);
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 6px 10px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.modelDetailsButton:hover {
-  background: #FFFFFF;
-  transform: translateY(-1px);
-}
-
-.modelDetailsBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 310;
-  border: 0;
-  background: rgba(26, 29, 51, 0.22);
-  cursor: default;
-}
-
-/* ── Left Column: Model Parameters ── */
+/* ── Quant tab: Blue's model readout ── */
 .modelsColumn {
-  position: fixed;
-  top: calc(72px + var(--markets-top-bars-height) + 12px);
-  bottom: 12px;
-  left: calc(var(--sidebar-width, 272px) + 12px);
-  z-index: 320;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: min(430px, calc(100vw - var(--sidebar-width, 272px) - 40px));
-  padding: 12px;
-  border: 1px solid rgba(26, 29, 51, 0.1);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel-low) 100%);
-  box-shadow: 0 24px 80px rgba(26, 29, 51, 0.22);
-  min-height: 0;
+  padding: 16px 18px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-18px) scale(0.985);
-  transition:
-    opacity var(--duration-fast) var(--ease-default),
-    transform var(--duration-fast) var(--ease-default),
-    visibility var(--duration-fast) var(--ease-default);
-  visibility: hidden;
 }
 
-.modelsColumnOpen {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0) scale(1);
-  visibility: visible;
-}
-
-/* On wide screens the quant engine is pinned open as the left column of the
-   grid — the drawer treatment (and its toggle button) only applies below the
-   desktop breakpoint. */
-@media (min-width: 1101px) {
-  .modelsColumn {
-    position: static;
-    grid-column: 1;
-    grid-row: 2;
-    z-index: auto;
-    width: auto;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    opacity: 1;
-    pointer-events: auto;
-    transform: none;
-    visibility: visible;
-    transition: none;
-  }
-
-  .modelDrawerClose,
-  .modelDetailsButton,
-  .modelDetailsBackdrop {
-    display: none;
-  }
-}
-
-.modelDrawerHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 4px 4px 8px;
-  flex: 0 0 auto;
-}
-
-.modelDrawerActions {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.modelDrawerKicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--color-text-muted);
-  font-family: var(--font-button);
-  font-size: 9px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-}
-
-.modelDrawerKicker::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--color-primary);
-  flex-shrink: 0;
+/* Tab panels are toggled with the `hidden` attribute — the display rules above
+   would otherwise win over it. */
+.modelsColumn[hidden],
+.kalshiPanel[hidden] {
+  display: none;
 }
 
 /* Quiet, thin scrollbars for the scrolling panels (no harsh default bar). */
@@ -650,52 +715,19 @@
   background-clip: padding-box;
 }
 
-.modelDrawerTitle {
-  margin: 0;
-  color: var(--color-text-dark);
-  font-family: var(--font-secondary);
-  font-size: 16px;
-  line-height: 1.2;
-  text-wrap: balance;
-}
-
-.modelDrawerClose {
-  border: 1px solid rgba(26, 29, 51, 0.12);
-  border-radius: 999px;
-  background: #FFFFFF;
-  color: var(--color-text-soft);
-  font-family: var(--font-button);
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 7px 10px;
-  cursor: pointer;
-}
-
-.modelDrawerIntro {
-  margin: -2px 4px 4px;
-  color: var(--color-text-soft);
-  font-family: var(--font-button);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
 .modelPanel {
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
+  background: #ffffff;
   padding: 16px 18px;
-  border: 1px solid rgba(26, 29, 51, 0.08);
-  border-radius: var(--radius-md);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 30%, transparent);
   flex: 0 0 auto;
 }
 
-.modelPanel:nth-of-type(odd) {
-  background: linear-gradient(180deg, var(--markets-light-panel) 0%, var(--markets-light-panel-low) 100%);
-}
-
 .modelPanel:last-child {
-  background: linear-gradient(180deg, var(--markets-light-green) 0%, var(--markets-light-panel) 100%);
-  border-color: color-mix(in oklch, var(--color-tertiary) 18%, transparent);
+  background: linear-gradient(180deg, var(--markets-light-green) 0%, #ffffff 100%);
+  border-color: color-mix(in oklch, var(--color-tertiary) 34%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-tertiary) 34%, transparent);
 }
 
 .modelName {
@@ -792,36 +824,15 @@
 }
 
 /* ── Center Charts ── */
-.chartPanel {
-  grid-column: 1 / 3;
-  min-height: 0;
-  position: relative;
-}
-
+/* Markets tab: the scrolling market feed. */
 .kalshiPanel {
-  grid-column: 1;
-  grid-row: 2;
+  flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--markets-light-panel-raised);
-}
-
-/* On desktop the market feed owns the full height of column 2; column 1 stacks
-   the treasury card (row 1) above the Quant engine (row 2). */
-@media (min-width: 1101px) {
-  .kalshiPanel {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-}
-
-.treasuryPanel {
-  grid-column: 1;
-  grid-row: 1;
-  min-height: 0;
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
-  border-color: var(--color-border-subtle);
 }
 
 .chartPlaceholder {
@@ -1926,49 +1937,24 @@
 .marketArena {
   display: block;
   position: relative;
-  padding: 14px;
-  border-radius: calc(var(--radius-lg) - 2px);
-  border: 1px solid rgba(26, 29, 51, 0.06);
-  background:
-    radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--color-primary) 8%, transparent) 1px, transparent 0);
-  background-size: 16px 16px;
-  background-color: #F9FBFF;
+  padding: 0;
+  background: transparent;
 }
 
-/* ── Treasury card ──
-   Compact panel in column 1 / row 1, above the Quant engine. It's a button that
-   opens the execution-receipt pop-up. Fills its grid cell (the markets own all
-   of column 2) — never a full-width band. */
+/* ── Treasury balance block ──
+   The top half of the left panel: hero balance, the drifting ticker lines and
+   the range filter. The token holdings sit directly beneath it. */
 .treasuryFloat {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: auto;
-  padding: 14px 16px;
-  border: none;
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-panel) 100%);
-}
-
-.treasuryStack {
-  grid-column: 1;
-  grid-row: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-  padding-bottom: 8px;
-  background: var(--markets-light-panel);
-}
-
-.treasuryFloatTitle {
-  font-family: var(--font-secondary);
-  font-size: 16px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: 0;
-  color: var(--color-text-dark);
-  text-wrap: balance;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 14px 15px 13px;
+  border-radius: 12px;
+  border: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: #ffffff;
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 /* "Receipts" badge button, top-right of the treasury card. */
@@ -2840,12 +2826,12 @@
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  border: 1px solid var(--markets-light-border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.94);
+  border: 2px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-radius: 12px;
+  background: #ffffff;
   content-visibility: auto;
   contain-intrinsic-size: 132px;
-  box-shadow: 0 1px 2px rgba(26, 29, 51, 0.04);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
   transition:
     transform var(--duration-fast) var(--ease-default),
     box-shadow var(--duration-fast) var(--ease-default),
@@ -2856,10 +2842,7 @@
 .marketItem:hover {
   transform: translateY(-1px);
   border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base));
-  box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-primary) 30%, transparent),
-    0 6px 16px rgba(26, 29, 51, 0.06);
+  box-shadow: 0 6px 0 color-mix(in oklch, var(--color-primary) 50%, transparent);
 }
 
 :global([data-theme="dark"]) .marketItem:hover {
@@ -2869,20 +2852,12 @@
 
 /* The selected market: pinned first in the feed with a ring + glow so it reads
    as the featured item. Persists after the pop-up closes. */
-.marketItemFeatured {
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-  background: linear-gradient(180deg, var(--markets-light-panel-raised) 0%, var(--markets-light-tint) 100%);
-  box-shadow:
-    0 0 0 3px color-mix(in oklch, var(--color-primary) 16%, transparent),
-    0 18px 38px color-mix(in oklch, var(--color-primary) 14%, transparent);
-  transform: translateY(-2px);
-}
-
+.marketItemFeatured,
 .marketItemFeatured:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 60%, transparent);
-  box-shadow:
-    0 0 0 3px color-mix(in oklch, var(--color-primary) 20%, transparent),
-    0 20px 42px color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: var(--color-primary);
+  background: linear-gradient(180deg, #ffffff 0%, var(--markets-light-tint) 100%);
+  box-shadow: 0 4px 0 var(--color-primary);
+  transform: translateY(-1px);
 }
 
 /* Non-selected cards read secondary while one market is featured. */
@@ -3069,10 +3044,38 @@
 @media (max-width: 900px) {
   .main {
     margin-left: 0;
-    height: calc(100dvh - 72px);
-    min-height: calc(100dvh - 72px);
-    max-height: calc(100dvh - 72px);
-    padding-top: 66px;
+    height: calc(100dvh - var(--banner-height, 0px));
+    min-height: calc(100dvh - var(--banner-height, 0px));
+    max-height: calc(100dvh - var(--banner-height, 0px));
+    padding-top: 72px;
+  }
+
+  /* One column: the treasury piece stacks above the board. */
+  .content {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 14px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sideColumn,
+  .boardColumn {
+    width: 100%;
+    max-width: none;
+    flex: 0 0 auto;
+  }
+
+  .deskPanel {
+    flex: 0 0 auto;
+  }
+
+  .treasuryBody,
+  .kalshiPanel,
+  .modelsColumn {
+    flex: none;
+    overflow: visible;
   }
 
   .lockedPageLayout {
@@ -3092,40 +3095,16 @@
     font-size: 15px;
   }
 
-  .grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .modelsColumn {
-    top: calc(72px + var(--markets-top-bars-height) + 12px);
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    width: auto;
-  }
-
   .modelPanel {
     min-width: auto;
   }
 
-  .chartPanel,
-  .kalshiPanel {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  /* No side nav on mobile — the treasury card is a slim full-width header row. */
   .treasuryFloat {
     padding: 12px 14px;
   }
 
   .balanceHero {
-    font-size: 20px;
-  }
-
-  .treasuryFloat .treasuryQuickSpark {
-    display: none;
+    font-size: 24px;
   }
 
   .blueTradeColumn {
@@ -3147,16 +3126,79 @@
   --markets-dark-panel-raised: oklch(25.5% 0.028 270);
   --markets-dark-warm: oklch(23% 0.033 48);
   --markets-dark-green: oklch(24% 0.042 150);
+  background-color: var(--color-surface-base);
+}
+
+:global([data-theme="dark"]) .scene {
   background:
-    radial-gradient(circle at 78% 0%, color-mix(in oklch, var(--color-accent) 8%, transparent), transparent 34%),
-    radial-gradient(circle at 16% 18%, color-mix(in oklch, var(--color-tertiary) 9%, transparent), transparent 28%),
-    linear-gradient(180deg, var(--markets-dark-panel-low) 0%, var(--color-background) 44%),
-    linear-gradient(
-      90deg,
-      color-mix(in oklch, var(--color-text-light) 3%, transparent) 0%,
-      transparent 45%,
-      color-mix(in oklch, var(--color-surface-2) 22%, transparent) 100%
-    );
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    var(--trades-scene, none) center / cover no-repeat,
+    var(--color-surface-base);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+:global([data-theme="dark"]) .deskPanel {
+  background-color: rgba(21, 23, 42, 0.76);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .panelHead {
+  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
+  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .panelHeadTitle {
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .boardToolbar,
+:global([data-theme="dark"]) .boardTabs {
+  border-bottom-color: rgba(150, 170, 255, 0.14);
+}
+
+:global([data-theme="dark"]) .searchBar {
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in oklch, var(--color-primary) 16%, transparent) 0%, transparent 26%),
+    radial-gradient(circle, rgba(126, 154, 255, 0.12) 0.6px, transparent 0.9px),
+    rgba(255, 255, 255, 0.04);
+  background-size: auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+:global([data-theme="dark"]) .searchInput {
+  color: rgba(238, 243, 255, 0.95);
+}
+
+:global([data-theme="dark"]) .searchInput::placeholder {
+  color: rgba(226, 234, 255, 0.45);
+}
+
+:global([data-theme="dark"]) .boardTab {
+  color: rgba(226, 234, 255, 0.48);
+}
+
+:global([data-theme="dark"]) .boardTab:hover {
+  color: rgba(226, 234, 255, 0.72);
+}
+
+:global([data-theme="dark"]) .boardTabActive {
+  color: #c2ccff;
+  border-bottom-color: #c2ccff;
+}
+
+:global([data-theme="dark"]) .boardTabCount {
+  background: rgba(150, 170, 255, 0.18);
+  color: #c2ccff;
+}
+
+:global([data-theme="dark"]) .statusItem {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(150, 170, 255, 0.18);
 }
 
 :global([data-theme="dark"]) .lockedPanel {
@@ -3179,60 +3221,16 @@
   color: var(--color-text-dark);
 }
 
-:global([data-theme="dark"]) .statusBar {
-  background: color-mix(in oklch, var(--color-surface-base) 88%, transparent);
-  border-bottom-color: var(--color-border-subtle);
-}
-
 :global([data-theme="dark"]) .shardBar {
   background: color-mix(in oklch, var(--color-surface-2) 68%, var(--color-surface-1));
   border-bottom-color: var(--color-border-subtle);
 }
 
-:global([data-theme="dark"]) .grid,
 :global([data-theme="dark"]) .blueTradeColumn {
   border-color: var(--color-border-strong);
 }
 
-/* The 2px grid gutter (cell dividers) must be dark in dark mode — otherwise the
-   lines above the engine and to the right of column 1 read as light borders. */
-:global([data-theme="dark"]) .grid {
-  background: var(--markets-dark-gutter);
-}
-
-:global([data-theme="dark"]) .modelsColumn {
-  background: linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
-  border-color: var(--color-border-strong);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
-}
-
-:global([data-theme="dark"]) .modelDetailsBackdrop {
-  background: rgba(7, 8, 14, 0.66);
-}
-
-:global([data-theme="dark"]) .modelDetailsButton {
-  background: color-mix(in oklch, var(--markets-dark-green) 54%, transparent);
-  border-color: color-mix(in oklch, var(--color-tertiary) 34%, transparent);
-  color: color-mix(in oklch, var(--color-tertiary) 74%, var(--color-text-light));
-}
-
-:global([data-theme="dark"]) .modelDetailsButton:hover,
-:global([data-theme="dark"]) .modelDrawerClose {
-  background: var(--markets-dark-panel-raised);
-  border-color: var(--color-border-strong);
-  color: var(--color-text-soft);
-}
-
-:global([data-theme="dark"]) .modelDrawerTitle {
-  color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .modelDrawerIntro {
-  color: var(--color-text-muted);
-}
-
 :global([data-theme="dark"]) .panel,
-:global([data-theme="dark"]) .modelPanel,
 :global([data-theme="dark"]) .marketRow {
   background:
     linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
@@ -3242,28 +3240,17 @@
     0 12px 28px color-mix(in oklch, var(--color-background) 34%, transparent);
 }
 
-:global([data-theme="dark"]) .modelsColumn {
-  gap: 3px;
-}
-
-:global([data-theme="dark"]) .modelPanel:nth-child(odd) {
-  background:
-    linear-gradient(180deg, var(--markets-dark-panel) 0%, var(--markets-dark-panel-low) 100%);
-}
-
-:global([data-theme="dark"]) .modelPanel:nth-child(even) {
-  background:
-    linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
+:global([data-theme="dark"]) .modelPanel {
+  background: #1a2138;
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 34%, transparent);
 }
 
 :global([data-theme="dark"]) .modelPanel:last-child {
   background:
-    linear-gradient(180deg, color-mix(in oklch, var(--markets-dark-green) 72%, var(--markets-dark-panel)) 0%, var(--markets-dark-panel-low) 100%);
-  border-color: color-mix(in oklch, var(--color-tertiary) 28%, transparent);
-}
-
-:global([data-theme="dark"]) .kalshiPanel {
-  background: var(--markets-dark-panel);
+    linear-gradient(180deg, color-mix(in oklch, var(--markets-dark-green) 72%, var(--markets-dark-panel)) 0%, #1a2138 100%);
+  border-color: color-mix(in oklch, var(--color-tertiary) 34%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-tertiary) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .logPanel {
@@ -3271,11 +3258,10 @@
     linear-gradient(180deg, var(--markets-dark-panel-low) 0%, color-mix(in oklch, var(--markets-dark-panel) 72%, var(--color-background)) 100%);
 }
 
-:global([data-theme="dark"]) .treasuryPanel,
 :global([data-theme="dark"]) .treasuryFloat {
-  background:
-    linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
-  border-color: var(--color-border-subtle);
+  background: #1a2138;
+  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
 /* The receipt pop-up keeps its light thermal-paper look even in dark mode. */
@@ -3393,16 +3379,16 @@
 }
 
 :global([data-theme="dark"]) .marketItem {
-  background: color-mix(in oklch, var(--markets-dark-panel-low) 68%, transparent);
-  border-color: var(--color-border-subtle);
+  background: #1a2138;
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 38%, transparent);
 }
 
-:global([data-theme="dark"]) .marketItemFeatured {
-  background: linear-gradient(180deg, var(--markets-dark-panel-raised) 0%, var(--markets-dark-panel) 100%);
-  border-color: color-mix(in oklch, var(--color-primary) 55%, transparent);
-  box-shadow:
-    0 0 0 3px color-mix(in oklch, var(--color-primary) 24%, transparent),
-    0 18px 38px rgba(0, 0, 0, 0.42);
+:global([data-theme="dark"]) .marketItemFeatured,
+:global([data-theme="dark"]) .marketItemFeatured:hover {
+  background: #1a2138;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 0 var(--color-primary);
 }
 
 :global([data-theme="dark"]) .marketFeaturedTag {
