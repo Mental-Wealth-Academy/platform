@@ -17,11 +17,9 @@ async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
   });
   if (!res.ok) throw new Error('TTS request failed');
 
-  const { audio } = await res.json();
-  if (!audio) throw new Error('No audio data');
+  const blob = await res.blob();
+  if (!blob.size) throw new Error('No audio data');
 
-  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mpeg' });
   const url = URL.createObjectURL(blob);
 
   return new Promise<void>((resolve, reject) => {

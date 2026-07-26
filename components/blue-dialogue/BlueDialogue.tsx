@@ -29,11 +29,9 @@ async function fetchBlueAudio(
     signal,
   });
   if (!res.ok) throw new Error('TTS request failed');
-  const { audio } = await res.json();
-  if (!audio) throw new Error('No audio data');
+  const blob = await res.blob();
+  if (!blob.size) throw new Error('No audio data');
 
-  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mpeg' });
   const url = URL.createObjectURL(blob);
   const el = new Audio(url);
   el.volume = 0.5;

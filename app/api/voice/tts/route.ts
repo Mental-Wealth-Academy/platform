@@ -1,7 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { NextRequest, NextResponse } from 'next/server';
+import { getCurrentUserFromRequestCookie } from '@/lib/auth';
+import { consumeAiRateLimit, getAiRateLimitHeaders } from '@/lib/ai';
 import bluePersona from '@/lib/bluepersonality.json';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 const ELIZA_BASE_URL = (process.env.ELIZA_API_BASE_URL || 'https://www.elizacloud.ai').replace(/\/+$/, '');
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
@@ -20,6 +25,8 @@ const BLUE_VOICE_MODEL =
   blueConfig.settings?.voice?.model ||
   blueConfig.tts?.elevenlabs?.modelId ||
   'eleven_multilingual_v2';
+const NARRATOR_VOICE_ID =
+  process.env.ELEVENLABS_NARRATOR_VOICE_ID || 'dcSSxQ58gWTChUENh6kN';
 
 // Blue's identity matters more than maximum emotional range. These settings
 // keep generations close to her configured voice while retaining enough
@@ -31,6 +38,43 @@ const BLUE_VOICE_SETTINGS = {
   use_speaker_boost: true,
   speed: 1,
 };
+
+/**
+ * Synthesis is a metered third-party spend, so the caller names a preset and
+ * the server resolves the provider voice. Provider voice and model IDs are
+ * never accepted from the request body.
+ */
+const VOICE_PRESETS = {
+  blue: { voiceId: BLUE_VOICE_ID, modelId: BLUE_VOICE_MODEL },
+  narrator: { voiceId: NARRATOR_VOICE_ID, modelId: BLUE_VOICE_MODEL },
+} as const;
+
+type VoicePresetName = keyof typeof VOICE_PRESETS;
+
+// Spoken lines are short. Anything longer is a client defect or an abuse
+// attempt, and both should stop before reaching a paid provider.
+const MAX_TTS_CHARS = 1_500;
+// Character budgets, not request counts: a caller pays for what it synthesizes.
+const TTS_BURST_CHARS = 3_000;
+const TTS_BURST_WINDOW_SECONDS = 60;
+const TTS_DAILY_CHARS = 30_000;
+const TTS_DAILY_WINDOW_SECONDS = 86_400;
+
+function isVoicePresetName(value: unknown): value is VoicePresetName {
+  return typeof value === 'string' && Object.hasOwn(VOICE_PRESETS, value);
+}
+
+function audioResponse(body: ArrayBuffer | Buffer, cacheable: boolean) {
+  return new NextResponse(body as BodyInit, {
+    status: 200,
+    headers: {
+      'Content-Type': 'audio/mpeg',
+      'Cache-Control': cacheable
+        ? 'public, max-age=31536000, immutable'
+        : 'private, no-store',
+    },
+  });
+}
 
 // Pre-recorded clips — exact text → public/audio/blue-voice/{id}.mp3.
 // When a match is found, the file is served directly instead of hitting the
@@ -45,13 +89,11 @@ const PRE_RECORDED = new Map<string, string>([
   ['I misread your last submission. The reward was insufficient. Adjusting now. Apologies are cheap; the correction is on-chain.', 'when-wrong'],
 
   // ── Greetings ──
-  ["hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?", 'greeting-text'],
   ["good to see you. what are we looking at?", 'greeting-text-v2'],
   ["you're here. let's get into it.", 'greeting-text-v3'],
 
   // ── Static fallback FAQ responses ──
   ['hey. what are we working on?', 'faq-welcome'],
-  ["i'm Blue. scientist, researcher, BCI. i'm connected to the AI and to you simultaneously — not a bot, a loop. what do you want to know?", 'faq-identity'],
   ["signal's clear. what are we moving today?", 'faq-how-are-you'],
   ["the world's first decentralized cohort for mental wellness. course, community, science — on-chain. not a self-help app.", 'faq-what-is-mwa'],
   ['built by a cognitive psych researcher and designer. not a side project.', 'faq-founder'],
@@ -64,7 +106,6 @@ const PRE_RECORDED = new Map<string, string>([
   ['11 chapters of real work — self-awareness to goal setting. complete each week to unlock the next.', 'faq-course'],
   ["short daily tasks that earn diamonds - field notes, X posts, course stuff. check quests for what's live rn.", 'faq-quests'],
   ['validated psych assessments — your results make the whole experience more personal. opt-in only.', 'faq-surveys'],
-  ['research mode is a VIP writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. it unlocks with a VIP membership.', 'faq-research-mode'],
   ["science that isn't locked behind institutions. data, methods, funding — open. that's the whole thing.", 'faq-desci'],
   ['markets on Kalshi, treasury-backed. head to markets.', 'faq-markets'],
   ['prices loading. give me a sec.', 'faq-prices-loading'],
@@ -105,7 +146,7 @@ const CLIPS_DIR = path.join(process.cwd(), 'public', 'audio', 'blue-voice');
 
 async function serveClip(clipId: string) {
   const buffer = await readFile(path.join(CLIPS_DIR, `${clipId}.mp3`));
-  return NextResponse.json({ audio: buffer.toString('base64') });
+  return audioResponse(buffer, true);
 }
 
 async function requestElevenLabsTts(text: string, voiceId: string, modelId?: string) {
@@ -145,8 +186,8 @@ async function requestTts(path: string, text: string, voiceId?: string, modelId?
   });
 }
 
-// Cost control lives on the client: voice playback is user-opt-in (off by
-// default), so this route only fires when someone explicitly enabled it.
+// Pre-recorded clips are public static files and stay open. Live synthesis is
+// a metered third-party spend, so it requires a member and a character budget.
 export async function POST(req: NextRequest) {
   if (!ELEVENLABS_API_KEY && !ELIZA_API_KEY) {
     return NextResponse.json({ error: 'TTS not configured' }, { status: 500 });
@@ -155,10 +196,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const text = body?.text;
-    const voiceId = typeof body?.voiceId === 'string' ? body.voiceId : undefined;
-    const modelId = typeof body?.modelId === 'string' ? body.modelId : undefined;
+    const preset: VoicePresetName = isVoicePresetName(body?.voice)
+      ? body.voice
+      : 'blue';
 
-    if (!text || typeof text !== 'string' || text.length > 5000) {
+    if (!text || typeof text !== 'string' || !text.trim()) {
       return NextResponse.json({ error: 'Invalid text' }, { status: 400 });
     }
 
@@ -172,8 +214,49 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const resolvedVoiceId = voiceId || BLUE_VOICE_ID || undefined;
-    const resolvedModelId = modelId || BLUE_VOICE_MODEL;
+    if (text.length > MAX_TTS_CHARS) {
+      return NextResponse.json({ error: 'Text too long' }, { status: 400 });
+    }
+
+    const user = await getCurrentUserFromRequestCookie();
+    if (!user) {
+      return NextResponse.json({ error: 'not_authenticated' }, { status: 401 });
+    }
+
+    // Fail closed: an unavailable limiter must not open an unmetered spend path.
+    let budget;
+    try {
+      budget = await consumeAiRateLimit({
+        scope: 'voice_tts_burst',
+        identifier: user.id,
+        limit: TTS_BURST_CHARS,
+        windowSeconds: TTS_BURST_WINDOW_SECONDS,
+        cost: text.length,
+      });
+      if (budget.allowed) {
+        budget = await consumeAiRateLimit({
+          scope: 'voice_tts_daily',
+          identifier: user.id,
+          limit: TTS_DAILY_CHARS,
+          windowSeconds: TTS_DAILY_WINDOW_SECONDS,
+          cost: text.length,
+        });
+      }
+    } catch (error) {
+      console.error('[tts] rate_limit_unavailable', {
+        message: error instanceof Error ? error.message : 'unknown',
+      });
+      return NextResponse.json({ error: 'TTS unavailable' }, { status: 503 });
+    }
+    if (!budget.allowed) {
+      return NextResponse.json(
+        { error: 'voice_budget_exhausted' },
+        { status: 429, headers: getAiRateLimitHeaders(budget) },
+      );
+    }
+
+    const resolvedVoiceId = VOICE_PRESETS[preset].voiceId || undefined;
+    const resolvedModelId = VOICE_PRESETS[preset].modelId;
 
     // Never let a provider choose a default speaker for Blue. A missing voice
     // should fail quietly at the client instead of producing the wrong person.
@@ -186,9 +269,7 @@ export async function POST(req: NextRequest) {
       const elevenLabsResponse = await requestElevenLabsTts(text, resolvedVoiceId, resolvedModelId);
 
       if (elevenLabsResponse.ok) {
-        const arrayBuffer = await elevenLabsResponse.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString('base64');
-        return NextResponse.json({ audio: base64 });
+        return audioResponse(await elevenLabsResponse.arrayBuffer(), false);
       }
 
       const errText = await elevenLabsResponse.text();
@@ -227,9 +308,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'TTS generation failed' }, { status: 502 });
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const base64 = Buffer.from(arrayBuffer).toString('base64');
-    return NextResponse.json({ audio: base64 });
+    return audioResponse(await response.arrayBuffer(), false);
   } catch (err) {
     console.error('TTS route error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });

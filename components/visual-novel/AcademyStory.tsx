@@ -10,7 +10,6 @@ import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './WeekOneVisualNovel.module.css';
 
 const NARRATION_PREF_KEY = 'weekOneVN.narrationEnabled';
-const NARRATOR_VOICE_ID = 'dcSSxQ58gWTChUENh6kN';
 
 const CHECK_IN_QUESTIONS = [
   'How many days did you do your field notes?',
@@ -389,15 +388,14 @@ export default function AcademyStory({
         const response = await fetch('/api/voice/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, voiceId: NARRATOR_VOICE_ID }),
+          body: JSON.stringify({ text, voice: 'narrator' }),
           signal: controller.signal,
         });
         if (!response.ok) throw new Error('Narration request failed');
-        const { audio } = await response.json() as { audio?: string };
-        if (!audio || controller.signal.aborted) return;
+        const blob = await response.blob();
+        if (!blob.size || controller.signal.aborted) return;
 
-        const bytes = Uint8Array.from(atob(audio), (character) => character.charCodeAt(0));
-        const url = URL.createObjectURL(new Blob([bytes], { type: 'audio/mpeg' }));
+        const url = URL.createObjectURL(blob);
         if (narrationObjectUrlRef.current) URL.revokeObjectURL(narrationObjectUrlRef.current);
         narrationObjectUrlRef.current = url;
 
