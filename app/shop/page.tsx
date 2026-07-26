@@ -33,6 +33,16 @@ interface ShopItem {
 
 const shopItems: ShopItem[] = [
   {
+    id: 'orbiters-book',
+    title: 'Orbiters of The Horizon',
+    sub: 'By Jhinn Bay',
+    desc: 'The official publication of the Ethereal Horizon. A spiritual commitment and a loving surrender to the small daily actions of orbiters that compounds into world peace.',
+    price: '35 USDC',
+    image: '/images/orbits-book-cover.png',
+    category: 'Stationery',
+    badge: 'new',
+  },
+  {
     id: 'shirt',
     title: 'The Academy Shirt',
     sub: 'Official MWA Uniform',
