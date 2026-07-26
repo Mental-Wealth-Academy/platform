@@ -26,6 +26,11 @@ export interface BlueRagEmbeddingConfig {
   provider: 'eliza' | 'openai-compatible' | 'hash-dev';
 }
 
+function isElizaHost(config: BlueRagEmbeddingConfig): boolean {
+  return config.provider === 'eliza'
+    || config.baseUrl.toLowerCase().includes('elizacloud.ai');
+}
+
 export function getBlueRagEmbeddingConfig(): BlueRagEmbeddingConfig | null {
   const explicitEmbeddingKey = process.env.RAG_EMBEDDING_API_KEY || process.env.RAB_EMBEDDING_API_KEY || '';
   const elizaKey = process.env.ELIZA_API_KEY || '';
@@ -113,6 +118,13 @@ export async function embedBlueRagTexts(texts: string[]): Promise<{
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${config.apiKey}`,
+        // Eliza Cloud redirects www to its apex host, and fetch drops
+        // Authorization across a host change, so the request would arrive
+        // unauthenticated. X-API-Key survives the redirect, which is why the
+        // chat client has always sent both.
+        ...(isElizaHost(config)
+          ? { 'X-API-Key': config.apiKey }
+          : {}),
       },
       body: JSON.stringify({
         model: config.model,
