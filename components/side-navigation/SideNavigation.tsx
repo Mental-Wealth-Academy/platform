@@ -46,14 +46,13 @@ interface NavSection {
   badgeType?: 'default' | 'highlight' | 'muted' | 'pro';
 }
 
-// Trading and Lists moved here from the top nav; both stay public.
 const proFeaturesSection: NavSection = {
   id: 'extras',
   label: 'Pro Features',
   badge: 'Pro',
   badgeType: 'pro',
   items: [
-    { id: 'markets', label: 'Trading', href: '/trades', iconSrc: '/icons/nav-trades-v1.svg' },
+    { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg?v=4' },
     { id: 'lists', label: 'Lists', href: '/list', iconSrc: '/icons/nav-journal-v3.svg' },
   ],
 };
@@ -80,12 +79,6 @@ const primaryNavItems: NavItem[] = [
     label: 'Genetics',
     href: '/genetics',
     iconSrc: '/icons/genetics.svg?v=4',
-  },
-  {
-    id: 'simulations',
-    label: 'Pocket News',
-    href: '/simulation',
-    iconSrc: '/icons/nav-simulations-v2.svg?v=4',
   },
 ];
 

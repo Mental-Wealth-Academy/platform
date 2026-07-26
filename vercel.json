@@ -3,6 +3,17 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
+  "functions": {
+    "api/trade.js": {
+      "regions": ["cdg1", "ams1"]
+    },
+    "app/api/treasury/trade/**/*": {
+      "regions": ["cdg1", "ams1"]
+    },
+    "app/api/treasury/trades/**/*": {
+      "regions": ["cdg1", "ams1"]
+    }
+  },
   "crons": [
     {
       "path": "/api/treasury/trade",
