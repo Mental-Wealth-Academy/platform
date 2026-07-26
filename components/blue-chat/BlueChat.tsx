@@ -541,9 +541,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.dispatchEvent(new CustomEvent('blueChatToggle', { detail: true }));
+    }
     return () => {
       document.body.style.overflow = '';
+      window.dispatchEvent(new CustomEvent('blueChatToggle', { detail: false }));
       // Stop any in-progress speech/recording when chat closes
       voiceAbortRef.current?.abort();
       recognitionRef.current?.stop();

@@ -47,6 +47,24 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
   const [muted, setMuted] = useState(false);
   const [avatarState, setAvatarState] = useState<AvatarState>('loading');
   const [segmentIndex, setSegmentIndex] = useState(() => livePosition().index);
+  const isChatOpenRef = useRef(false);
+
+  useEffect(() => {
+    const handleBlueChatToggle = (e: Event) => {
+      const customEvent = e as CustomEvent<boolean>;
+      isChatOpenRef.current = customEvent.detail;
+      const audio = audioRef.current;
+      if (!audio) return;
+      
+      const { index } = livePosition();
+      const segment = SEGMENTS[index];
+      const baseVolume = Math.min(1, Math.max(0, segment.playbackGain ?? 1));
+      
+      audio.volume = isChatOpenRef.current ? baseVolume * 0.15 : baseVolume;
+    };
+    window.addEventListener('blueChatToggle', handleBlueChatToggle);
+    return () => window.removeEventListener('blueChatToggle', handleBlueChatToggle);
+  }, []);
 
   const ensureAudioAnalyser = useCallback(async () => {
     const audio = audioRef.current;
@@ -92,7 +110,8 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
     setSegmentIndex(index);
 
     audio.muted = wantMuted;
-    audio.volume = Math.min(1, Math.max(0, segment.playbackGain ?? 1));
+    const baseVolume = Math.min(1, Math.max(0, segment.playbackGain ?? 1));
+    audio.volume = isChatOpenRef.current ? baseVolume * 0.15 : baseVolume;
     if (!audio.src.endsWith(segment.file)) {
       audio.src = segment.file;
     }
