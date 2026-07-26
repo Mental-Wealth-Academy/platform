@@ -8,7 +8,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import styles from './BlueChat.module.css';
 import { useSound } from '@/hooks/useSound';
-import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { getStorageItem, removeStorageItem, setStorageItem } from '@/lib/safe-storage';
 
 import ListsPanel from './ListsPanel';
 import QuestForgeInline from './QuestForgeInline';
@@ -23,6 +23,9 @@ import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/persona
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
 
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
+const LEGACY_PENDING_PAID_TURN_KEY = 'blueChat.pendingPaidTurn';
+const PENDING_PAID_TURN_KEY_PREFIX = 'blueChat.pendingPaidTurn.v2';
+const PENDING_PAID_TURN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 const GREETINGS_VOICE = [
   "you're back. i had a feeling you would be.",
@@ -35,6 +38,102 @@ const GREETINGS_TEXT = [
   "you're here! i was reorganizing my folders. one is just called Shiny Things, it's my best work. what are we into today?",
 ];
 
+function pendingPaidTurnKey(accountId: string): string {
+  return `${PENDING_PAID_TURN_KEY_PREFIX}.${accountId}`;
+}
+
+function clearLegacyPendingPaidTurn(): void {
+  removeStorageItem(LEGACY_PENDING_PAID_TURN_KEY, 'session');
+  removeStorageItem(LEGACY_PENDING_PAID_TURN_KEY, 'local');
+}
+
+function readPendingPaidTurn(
+  accountId: string,
+  walletAddress?: string,
+): PendingPaidTurn | null {
+  clearLegacyPendingPaidTurn();
+  const key = pendingPaidTurnKey(accountId);
+  const raw = getStorageItem(key, 'local');
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<PendingPaidTurn>;
+    if (
+      parsed.accountId !== accountId
+      || typeof parsed.clientRequestId !== 'string'
+      || typeof parsed.burnTxHash !== 'string'
+      || typeof parsed.payloadHash !== 'string'
+      || !/^[a-f0-9]{64}$/i.test(parsed.payloadHash)
+      || typeof parsed.text !== 'string'
+      || typeof parsed.createdAt !== 'number'
+      || Date.now() - parsed.createdAt > PENDING_PAID_TURN_TTL_MS
+      || (
+        typeof parsed.walletAddress === 'string'
+        && typeof walletAddress === 'string'
+        && parsed.walletAddress.toLowerCase() !== walletAddress.toLowerCase()
+      )
+    ) {
+      removeStorageItem(key, 'local');
+      return null;
+    }
+    return {
+      accountId,
+      walletAddress: typeof parsed.walletAddress === 'string'
+        ? parsed.walletAddress
+        : null,
+      clientRequestId: parsed.clientRequestId,
+      burnTxHash: parsed.burnTxHash,
+      payloadHash: parsed.payloadHash.toLowerCase(),
+      text: parsed.text,
+      pathname: typeof parsed.pathname === 'string' ? parsed.pathname : null,
+      createdAt: parsed.createdAt,
+    };
+  } catch {
+    removeStorageItem(key, 'local');
+    return null;
+  }
+}
+
+function storePendingPaidTurn(turn: PendingPaidTurn): void {
+  setStorageItem(
+    pendingPaidTurnKey(turn.accountId),
+    JSON.stringify(turn),
+    'local',
+  );
+}
+
+function clearPendingPaidTurn(accountId: string): void {
+  removeStorageItem(pendingPaidTurnKey(accountId), 'local');
+}
+
+function normalizeBluePathname(value: string | null): string | null {
+  if (!value) return null;
+  const withoutQuery = value.trim().split(/[?#]/, 1)[0]?.slice(0, 256) ?? '';
+  if (!withoutQuery) return null;
+  const withLeadingSlash = withoutQuery.startsWith('/')
+    ? withoutQuery
+    : `/${withoutQuery}`;
+  return withLeadingSlash.replace(/\/+$/, '') || '/home';
+}
+
+async function buildBluePayloadHash(
+  message: string,
+  pathname: string | null,
+): Promise<string> {
+  const canonicalPayload = JSON.stringify({
+    message,
+    mode: 'chat',
+    pathname: normalizeBluePathname(pathname),
+    attachments: [],
+  });
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(canonicalPayload),
+  );
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 // ── Blue Voice TTS ──────────────────────────────────────────
 async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
   const res = await fetch('/api/voice/tts', {
@@ -44,11 +143,9 @@ async function speakBlue(text: string, signal?: AbortSignal): Promise<void> {
     signal,
   });
   if (!res.ok) throw new Error('TTS request failed');
-  const { audio } = await res.json();
-  if (!audio) throw new Error('No audio data');
+  const blob = await res.blob();
+  if (!blob.size) throw new Error('No audio data');
 
-  const bytes = Uint8Array.from(atob(audio), (c) => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: 'audio/mpeg' });
   const url = URL.createObjectURL(blob);
 
   return new Promise<void>((resolve, reject) => {
@@ -88,9 +185,9 @@ interface Message {
 }
 
 interface MessageDebugInfo {
-  source: 'eliza' | 'local-fallback';
-  mode: 'chat' | 'research' | 'auto-distribution';
-  shardsDeducted: number;
+  source: 'eliza' | 'deepseek' | 'replay';
+  mode: 'chat' | 'auto-distribution';
+  diamondsDeducted: number;
   shardBalance?: number | null;
   memory?: {
     recentMessages: number;
@@ -101,11 +198,11 @@ interface MessageDebugInfo {
     sealedWeeks: number;
     highestWeekTouched: number | null;
   };
-  extractedFactsCount?: number;
+  personalizationQueued?: boolean;
   rag?: {
     pathname: string | null;
     entriesRetrieved: number;
-    entries: Array<{
+    entries?: Array<{
       id: string;
       title: string;
       score: number;
@@ -116,7 +213,19 @@ interface MessageDebugInfo {
 }
 
 interface ViewerProfile {
+  id: string;
   username: string | null;
+}
+
+interface PendingPaidTurn {
+  accountId: string;
+  walletAddress: string | null;
+  clientRequestId: string;
+  burnTxHash: string;
+  payloadHash: string;
+  text: string;
+  pathname: string | null;
+  createdAt: number;
 }
 
 /** Blue's replies can still carry attachments; the chat no longer sends them. */
@@ -138,15 +247,6 @@ interface ShardUpsellState {
   required: number;
   current: number;
   reason: 'chat';
-}
-
-interface TreasuryContext {
-  balance: string | null;
-  balanceUsd: number | null;
-  governanceBalance: string | null;
-  traderBalance: string | null;
-  prices: { symbol: string; usd: number; change: number | null }[];
-  topMarkets: { question: string; yes: number }[];
 }
 
 // Detects when a typed message is asking Blue to CREATE a quest (vs. asking
@@ -260,7 +360,7 @@ function fileTypeLabel(mime: string): string {
 const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
-  const { connector, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
   const currentPathname = usePathname();
   // Picked once per mount. Re-rolling this on every render would change the
   // greeting effect's dependency and speak a fresh line each time.
@@ -287,14 +387,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
   const [isVipMember, setIsVipMember] = useState(false);
   const [showMembershipModal, setShowMembershipModal] = useState(false);
-  const [treasury, setTreasury] = useState<TreasuryContext>({
-    balance: null,
-    balanceUsd: null,
-    governanceBalance: null,
-    traderBalance: null,
-    prices: [],
-    topMarkets: [],
-  });
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -307,6 +399,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   // After the guide finder invites a topic, the next message is treated as one.
   const [pendingGuideTopic, setPendingGuideTopic] = useState(false);
   const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
+  const [memoryResetOpen, setMemoryResetOpen] = useState(false);
+  const [memoryResetBusy, setMemoryResetBusy] = useState(false);
+  const [memoryResetNote, setMemoryResetNote] = useState<string | null>(null);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -317,46 +412,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     const token = await getAccessToken().catch(() => null);
     return token ? { Authorization: `Bearer ${token}` } : {};
   }, [authenticated, getAccessToken, ready]);
-
-  // Fetch treasury context when chat opens
-  const fetchTreasuryContext = useCallback(async () => {
-    try {
-      const [balRes, priceRes, marketsRes] = await Promise.all([
-        fetch('/api/treasury/balance').then((r) => r.ok ? r.json() : null),
-        fetch('/api/treasury/prices').then((r) => r.ok ? r.json() : null),
-        fetch('/api/treasury/kalshi').then((r) => r.ok ? r.json() : null),
-      ]);
-
-      const prices = (priceRes || []).map((p: { symbol: string; usd: number; usd_24h_change: number | null }) => ({
-        symbol: p.symbol,
-        usd: p.usd,
-        change: p.usd_24h_change,
-      }));
-
-      const topMarkets: { question: string; yes: number }[] = [];
-      if (marketsRes) {
-        for (const cat of ['crypto', 'ai', 'sports', 'politics'] as const) {
-          for (const m of (marketsRes[cat] || []).slice(0, 1)) {
-            try {
-              const parsed = JSON.parse(m.outcomePrices);
-              topMarkets.push({ question: m.question, yes: Math.round(Number(parsed[0]) * 100) });
-            } catch { /* skip */ }
-          }
-        }
-      }
-
-      setTreasury({
-        balance: balRes?.formatted || null,
-        balanceUsd: balRes?.usd || null,
-        governanceBalance: balRes?.governance?.formatted || null,
-        traderBalance: balRes?.trader?.formatted || null,
-        prices,
-        topMarkets,
-      });
-    } catch {
-      // silent — chat works without context
-    }
-  }, []);
 
   // Fetch the credit balance from the existing endpoint.
   const fetchShardCount = useCallback(async () => {
@@ -374,12 +429,16 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         const data = await res.json();
         const nextShardCount = typeof data.user?.shardCount === 'number' ? data.user.shardCount : null;
         setShardCount(nextShardCount);
-        setViewerProfile(data.user ? { username: data.user.username ?? null } : null);
+        setViewerProfile(
+          typeof data.user?.id === 'string'
+            ? { id: data.user.id, username: data.user.username ?? null }
+            : null,
+        );
       }
     } catch { /* silent */ }
   }, [authHeaders, authenticated, ready]);
 
-  // VIP membership card holders unlock research mode without spending credits.
+  // Membership status gates the quest-forge tool.
   const fetchVipStatus = useCallback(async (): Promise<boolean> => {
     if (!ready || !authenticated) {
       setIsVipMember(false);
@@ -399,6 +458,48 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     } catch { /* silent */ }
     return false;
   }, [authHeaders, authenticated, ready]);
+
+  /**
+   * Erases what Blue remembers about this member: distilled facts, stored
+   * conversation, relationship state, and any queued extraction work. The
+   * diamond burn ledger is a separate financial record and is left intact.
+   */
+  const handleMemoryReset = useCallback(async () => {
+    if (memoryResetBusy) return;
+    setMemoryResetBusy(true);
+    setMemoryResetNote(null);
+    try {
+      const res = await fetch('/api/chat/blue/memory', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: await authHeaders(),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setMemoryResetNote(
+          body?.error === 'rate_limited'
+            ? 'You have reset this a few times already. Try again later.'
+            : 'Blue could not clear her memory just now. Try again in a moment.',
+        );
+        play('error');
+        return;
+      }
+      setMessages([{
+        id: `memory-reset-${Date.now()}`,
+        text: 'Cleared. I do not remember our earlier conversations. Where would you like to start?',
+        sender: 'blue',
+        timestamp: new Date(),
+      }]);
+      setMemoryResetOpen(false);
+      setMemoryResetNote('Blue no longer remembers your earlier conversations.');
+      play('click');
+    } catch {
+      setMemoryResetNote('Blue could not clear her memory just now. Try again in a moment.');
+      play('error');
+    } finally {
+      setMemoryResetBusy(false);
+    }
+  }, [authHeaders, memoryResetBusy, play]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
@@ -420,12 +521,11 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
   useEffect(() => {
     if (isOpen) {
-      fetchTreasuryContext();
       fetchShardCount();
       fetchVipStatus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, fetchTreasuryContext, fetchShardCount, fetchVipStatus]);
+  }, [isOpen, fetchShardCount, fetchVipStatus]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -538,12 +638,37 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     recognition.start();
   };
 
-  const addBlueMessage = (text: string, debug?: MessageDebugInfo, guideCards?: GuideRecommendCard[]) => {
-    // Strip <<recite>>...<</recite>> tags for display; drop the recited block entirely for TTS
+  const prepareBlueText = (text: string) => {
     const reciteTag = /<<\s*recite\s*>>([\s\S]*?)<<\s*\/?\s*recite\s*>>/gi;
-    const displayText = text.replace(reciteTag, '$1').trim();
-    const spokenText = text.replace(reciteTag, ' ').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+    return {
+      displayText: text.replace(reciteTag, '$1').trim(),
+      spokenText: text
+        .replace(reciteTag, ' ')
+        .replace(/[ \t]{2,}/g, ' ')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim(),
+    };
+  };
 
+  const speakCompletedBlueText = (spokenText: string) => {
+    voiceAbortRef.current?.abort();
+    if (voiceEnabledRef.current && spokenText) {
+      const controller = new AbortController();
+      voiceAbortRef.current = controller;
+      setIsSpeaking(true);
+      speakBlue(spokenText, controller.signal)
+        .catch((err) => {
+          if (err?.name === 'AbortError') return;
+          console.warn('[BlueChat] TTS failed');
+        })
+        .finally(() => setIsSpeaking(false));
+    } else {
+      setIsSpeaking(false);
+    }
+  };
+
+  const addBlueMessage = (text: string, debug?: MessageDebugInfo, guideCards?: GuideRecommendCard[]) => {
+    const { displayText, spokenText } = prepareBlueText(text);
     setIsTyping(true);
     setTimeout(() => {
       setMessages((prev) => [
@@ -558,23 +683,54 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         },
       ]);
       setIsTyping(false);
-
-      // Auto-speak Blue's responses via ElevenLabs TTS — opt-in only.
-      voiceAbortRef.current?.abort();
-      if (voiceEnabledRef.current && spokenText) {
-        const controller = new AbortController();
-        voiceAbortRef.current = controller;
-        setIsSpeaking(true);
-        speakBlue(spokenText, controller.signal)
-          .catch((err) => {
-            if (err?.name === 'AbortError') return;
-            console.warn('[BlueChat] TTS failed:', err);
-          })
-          .finally(() => setIsSpeaking(false));
-      } else {
-        setIsSpeaking(false);
-      }
+      speakCompletedBlueText(spokenText);
     }, 140 + Math.random() * 140);
+  };
+
+  const beginStreamingBlueMessage = (messageId: string) => {
+    setMessages((prev) => {
+      const existing = prev.some((message) => message.id === messageId);
+      if (existing) {
+        return prev.map((message) => (
+          message.id === messageId
+            ? { ...message, text: '', debug: undefined, timestamp: new Date() }
+            : message
+        ));
+      }
+      return [
+        ...prev,
+        {
+          id: messageId,
+          text: '',
+          sender: 'blue',
+          timestamp: new Date(),
+        },
+      ];
+    });
+    setIsTyping(false);
+  };
+
+  const updateStreamingBlueMessage = (
+    messageId: string,
+    text: string,
+    debug?: MessageDebugInfo,
+  ) => {
+    const { displayText } = prepareBlueText(text);
+    setMessages((prev) => prev.map((message) => (
+      message.id === messageId
+        ? { ...message, text: displayText, debug: debug ?? message.debug }
+        : message
+    )));
+  };
+
+  const finishStreamingBlueMessage = (
+    messageId: string,
+    text: string,
+    debug?: MessageDebugInfo,
+  ) => {
+    const prepared = prepareBlueText(text);
+    updateStreamingBlueMessage(messageId, text, debug);
+    speakCompletedBlueText(prepared.spokenText);
   };
 
   const openShardUpsell = useCallback((required: number, reason: ShardUpsellState['reason'] = 'chat') => {
@@ -597,108 +753,226 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
   const sendToEliza = async (text: string) => {
     if (!ready || !authenticated) {
-      addBlueMessage('sign in first so i can access your account and respond here.');
+      addBlueMessage('Sign in first so I can access your account and respond here.');
+      return;
+    }
+    if (!viewerProfile?.id) {
+      addBlueMessage('I am still loading your account. Try again in a moment.');
       return;
     }
 
     setShardUpsell(null);
+    const accountId = viewerProfile.id;
+    const walletAddress = address?.toLowerCase();
 
-    // Chat costs a real $BLUE burn signed by the user's own wallet.
-    let burnTxHash: string | undefined;
-    if (!isConnected || !connector) {
-      addBlueMessage(`each message costs ${SHARD_COST} diamonds, burned straight from your wallet. connect your wallet and try again!`);
-      return;
-    }
-    if (shardCount !== null && shardCount < SHARD_COST) {
-      openShardUpsell(SHARD_COST, 'chat');
-      return;
-    }
-    setIsTyping(true);
-    try {
-      const eip1193 = (await connector.getProvider()) as Eip1193Provider;
-      burnTxHash = await sendDiamondsBurn(eip1193, SHARD_COST);
-    } catch (err) {
-      setIsTyping(false);
-      const code = (err as { code?: string | number })?.code;
-      const errMessage = (err as { message?: string })?.message ?? '';
-      if (code === 'ACTION_REJECTED' || code === 4001) {
-        addBlueMessage(`no burn, no message! each one costs ${SHARD_COST} diamonds. confirm it in your wallet when you're ready.`);
-      } else if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds/i.test(errMessage)) {
-        // Burns are signed by the user's wallet, so the network fee comes
-        // from their ETH — an empty gas tank reads like a balance problem.
-        addBlueMessage(`your diamonds are there, but the burn needs a sliver of ${getChainConfig().chainName} ETH for the network fee. add a little and send it again.`);
-      } else {
-        openShardUpsell(SHARD_COST, 'chat');
+    const postBlue = async (payload: {
+      clientRequestId: string;
+      payloadHash: string;
+      pathname: string | null;
+      burnTxHash?: string;
+    }) => fetch('/api/chat/blue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+      credentials: 'include',
+      body: JSON.stringify({
+        message: text,
+        pathname: payload.pathname,
+        clientRequestId: payload.clientRequestId,
+        payloadHash: payload.payloadHash,
+        burnTxHash: payload.burnTxHash,
+      }),
+    });
+
+    const consumeResponse = async (
+      response: Response,
+      pending: PendingPaidTurn | null,
+    ): Promise<'complete' | 'retryable'> => {
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/x-ndjson')) {
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && typeof data.response === 'string') {
+          if (pending) clearPendingPaidTurn(accountId);
+          setIsTyping(false);
+          addBlueMessage(data.response, data.debug ? {
+            ...data.debug,
+            shardBalance: shardCount ?? null,
+          } : undefined);
+          if (pending) {
+            void fetchShardCount();
+            window.dispatchEvent(new Event('shardsUpdated'));
+          }
+          return 'complete';
+        }
+        if (data.error === 'request_in_progress') {
+          setIsTyping(false);
+          addBlueMessage('your paid reply is still processing. resend the same message in a moment and i will reuse its receipt.');
+          return 'retryable';
+        }
+        if (data.error === 'burn_not_verified' || data.error === 'verify_failed') {
+          setIsTyping(false);
+          addBlueMessage('the receipt is still settling. resend this same message in a few seconds and i will check it again.');
+          return 'retryable';
+        }
+        if (data.error === 'tx_already_used') {
+          clearPendingPaidTurn(accountId);
+          setIsTyping(false);
+          addBlueMessage('that receipt belongs to a different request, so i left it alone.');
+          return 'complete';
+        }
+        if (data.error === 'payload_hash_mismatch') {
+          if (pending) clearPendingPaidTurn(accountId);
+          setIsTyping(false);
+          addBlueMessage('That receipt does not match the original request, so I left it untouched.');
+          return 'complete';
+        }
+        throw new Error(typeof data.error === 'string' ? data.error : 'blue_unavailable');
       }
+
+      const streamReader = response.body?.getReader();
+      if (!streamReader) throw new Error('blue_stream_missing');
+      const decoder = new TextDecoder();
+      const messageId = `blue-stream-${pending?.clientRequestId ?? crypto.randomUUID()}`;
+      let buffer = '';
+      let fullText = '';
+      let began = false;
+      let completed = false;
+
+      const handleEvent = (event: {
+        type?: string;
+        text?: string;
+        debug?: MessageDebugInfo;
+      }) => {
+        if (event.type === 'delta' && typeof event.text === 'string') {
+          if (!began) {
+            beginStreamingBlueMessage(messageId);
+            began = true;
+          }
+          fullText += event.text;
+          updateStreamingBlueMessage(messageId, fullText);
+          return;
+        }
+        if (event.type === 'done') {
+          completed = true;
+          clearPendingPaidTurn(accountId);
+          finishStreamingBlueMessage(messageId, fullText, event.debug ? {
+            ...event.debug,
+            shardBalance: shardCount ?? null,
+          } : undefined);
+          void fetchShardCount();
+          window.dispatchEvent(new Event('shardsUpdated'));
+          return;
+        }
+        if (event.type === 'error') {
+          throw new Error('blue_stream_retryable');
+        }
+      };
+
+      try {
+        while (true) {
+          const { done, value } = await streamReader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let newlineIndex = buffer.indexOf('\n');
+          while (newlineIndex >= 0) {
+            const line = buffer.slice(0, newlineIndex).trim();
+            buffer = buffer.slice(newlineIndex + 1);
+            if (line) handleEvent(JSON.parse(line));
+            newlineIndex = buffer.indexOf('\n');
+          }
+        }
+        buffer += decoder.decode();
+        if (buffer.trim()) handleEvent(JSON.parse(buffer.trim()));
+      } finally {
+        streamReader.releaseLock();
+      }
+
+      if (!completed) throw new Error('blue_stream_incomplete');
+      return 'complete';
+    };
+
+    let pending = readPendingPaidTurn(accountId, walletAddress);
+    if (pending && pending.text !== text) {
+      setIsTyping(false);
+      addBlueMessage('One paid reply is still pending. Resend that same message first so I can recover it without another charge.');
       return;
     }
 
+    const clientRequestId = pending?.clientRequestId ?? crypto.randomUUID();
+    const pathname = pending?.pathname ?? normalizeBluePathname(currentPathname);
+    const payloadHash = pending?.payloadHash
+      ?? await buildBluePayloadHash(text, pathname);
     setIsTyping(true);
-    try {
-      const res = await fetch('/api/chat/blue', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        credentials: 'include',
-        body: JSON.stringify({ message: text, pathname: currentPathname, burnTxHash }),
-      });
-      const data = await res.json();
 
-      if (res.ok && data.response) {
-        fetchShardCount();
-        window.dispatchEvent(new Event('shardsUpdated'));
-        setIsTyping(false);
-        addBlueMessage(data.response, {
-          ...(data.debug || {}),
-          shardBalance: shardCount ?? null,
+    try {
+      if (!pending) {
+        // Server preflight runs deterministic safety triage before the wallet is
+        // asked to burn anything. Ordinary turns receive a 402 cost response.
+        const preflight = await postBlue({
+          clientRequestId,
+          payloadHash,
+          pathname,
         });
-        return;
+        if (preflight.status !== 402) {
+          await consumeResponse(preflight, null);
+          return;
+        }
+
+        if (!isConnected || !connector) {
+          setIsTyping(false);
+          addBlueMessage(`Each message costs ${SHARD_COST} credits. Connect your wallet and try again.`);
+          return;
+        }
+        if (shardCount !== null && shardCount < SHARD_COST) {
+          setIsTyping(false);
+          openShardUpsell(SHARD_COST, 'chat');
+          return;
+        }
+
+        let burnTxHash: string;
+        try {
+          const eip1193 = (await connector.getProvider()) as Eip1193Provider;
+          burnTxHash = await sendDiamondsBurn(eip1193, SHARD_COST);
+        } catch (err) {
+          setIsTyping(false);
+          const code = (err as { code?: string | number })?.code;
+          const errMessage = (err as { message?: string })?.message ?? '';
+          if (code === 'ACTION_REJECTED' || code === 4001) {
+            addBlueMessage(`The wallet request was cancelled. Confirm the ${SHARD_COST}-credit cost when you want to send it.`);
+          } else if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds/i.test(errMessage)) {
+            addBlueMessage(`the network fee needs a small amount of ${getChainConfig().chainName} ETH. add some and try again.`);
+          } else {
+            openShardUpsell(SHARD_COST, 'chat');
+          }
+          return;
+        }
+
+        pending = {
+          accountId,
+          walletAddress: walletAddress ?? null,
+          clientRequestId,
+          burnTxHash,
+          payloadHash,
+          text,
+          pathname,
+          createdAt: Date.now(),
+        };
+        storePendingPaidTurn(pending);
       }
 
-      if (data.error === 'burn_required' || data.error === 'burn_not_verified' || data.error === 'tx_already_used') {
-        setIsTyping(false);
-        addBlueMessage("i couldn't verify that diamond burn yet. give it a few seconds and send your message again!");
-        return;
-      }
-
-      if (data.error === 'user_not_found') {
-        setIsTyping(false);
-        addBlueMessage(
-          'i cannot find your account record for this session. refresh, reconnect your wallet, and try again.'
-        );
-        return;
-      }
-
-      if (res.status === 403 || data.error === 'vip_required') {
-        setIsTyping(false);
-        setIsVipMember(false);
-        addBlueMessage("that one needs an active VIP membership. grab a membership card and it unlocks again.");
-        setShowMembershipModal(true);
-        return;
-      }
-
-      // AI unavailable -- fallback to local
-      const notes = [
-        typeof data.message === 'string' && data.message.trim()
-          ? data.message.trim()
-          : 'API returned a non-success response without usable assistant text.',
-      ];
-      setIsTyping(false);
-      addBlueMessage(generateBlueResponse(text), {
-        source: 'local-fallback',
-        mode: 'chat',
-        shardsDeducted: 0,
-        shardBalance: shardCount,
-        notes,
+      const paidResponse = await postBlue({
+        clientRequestId: pending.clientRequestId,
+        payloadHash: pending.payloadHash,
+        pathname: pending.pathname,
+        burnTxHash: pending.burnTxHash,
       });
+      await consumeResponse(paidResponse, pending);
     } catch {
       setIsTyping(false);
-      addBlueMessage(generateBlueResponse(text), {
-        source: 'local-fallback',
-        mode: 'chat',
-        shardsDeducted: 0,
-        shardBalance: shardCount,
-        notes: ['Network or runtime error on /api/chat/blue.'],
-      });
+      addBlueMessage(
+        pending
+          ? 'My connection dropped. Resend this same message and I will reuse the receipt already attached to it.'
+          : 'My connection dropped before any credits were spent. Try again in a moment.',
+      );
     }
   };
 
@@ -946,7 +1220,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         return;
       }
       if (res.status === 402) {
-        addBlueMessage(data.error || "you don't have enough diamonds to fund that one.");
+        addBlueMessage(data.error || "You don't have enough credits to fund that one.");
         return;
       }
       if (!res.ok) {
@@ -958,7 +1232,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       // credit quests, USDC for USDC quests. No server-side balance involved.
       const isCredits = req.rewardKind === 'credits';
       const escrowLabel = isCredits
-        ? `${data.funding?.amountDisplay ?? req.rewardAmount} diamonds`
+        ? `${data.funding?.amountDisplay ?? req.rewardAmount} credits`
         : `$${data.funding?.amountDisplay ?? req.rewardAmount} USDC`;
       const funding = data.funding;
       const questId = data.quest?.id;
@@ -981,7 +1255,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       } catch (err) {
         const code = (err as { code?: string | number })?.code;
         if (code === 'ACTION_REJECTED' || code === 4001) {
-          addBlueMessage(`no worries! "${req.title}" is saved but stays hidden until it's funded. forge it again when you're ready to send the ${isCredits ? 'diamonds' : 'USDC'}.`);
+          addBlueMessage(`No worries. "${req.title}" is saved but stays hidden until it's funded. Forge it again when you're ready to send the ${isCredits ? 'credits' : 'USDC'}.`);
         } else {
           addBlueMessage("that transfer didn't go through. the quest's saved but unfunded, so try forging it again!");
         }
@@ -1006,7 +1280,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       fetchShardCount();
       window.dispatchEvent(new Event('shardsUpdated'));
       addBlueMessage(isCredits
-        ? `funded and live! "${req.title}" pays ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. the escrow sits in my wallet and i pay every completion onchain.`
+        ? `Funded and live. "${req.title}" pays ${req.rewardAmount} credits each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. The escrow sits in my wallet and I pay every completion onchain.`
         : `funded and live! "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
     } catch {
       addBlueMessage('something went wrong forging that quest. try again.');
@@ -1014,296 +1288,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       setQuestForgeBusy(false);
     }
   };
-
-
-  const generateBlueResponse = (userText: string): string => {
-    const t = userText.toLowerCase();
-    const has = (...terms: string[]) => terms.some((term) => t.includes(term));
-    const hasAll = (...terms: string[]) => terms.every((term) => t.includes(term));
-
-    // Greetings
-    if (has('hello', 'hey there', 'good morning', 'good evening', 'good afternoon') || (has('hi') && t.length < 20) || (has('hey') && t.length < 20) || (has('sup') && t.length < 20)) {
-      return "hey. what are we working on?";
-    }
-
-    // Identity
-    if (hasAll('who', 'you') || has('who are you', 'what are you', 'your name', 'are you ai', 'are you a bot')) {
-      return "i'm Blue! i review quests, pay rewards from my own stash, and remember everything important. everything else i forget immediately. what do you want to know?";
-    }
-
-    // How are you
-    if (has('how are you', 'you good', 'you okay', 'how you doing', 'how\'s it going')) {
-      return "signal's clear. what are we moving today?";
-    }
-
-    // What is MWA / about
-    if (has('what is mwa', 'what is mental wealth', 'what\'s mwa', 'about mwa', 'explain mwa', 'tell me about mwa') || (hasAll('what', 'this', 'place')) || (hasAll('what', 'this', 'app'))) {
-      return "the world's first decentralized cohort for mental wellness! course, community, science, all onchain.";
-    }
-
-    // Founder / who built it
-    if (has('founder', 'who built', 'who made', 'who created', 'who started') || (hasAll('who', 'james'))) {
-      return "built by a cognitive psych researcher and designer. not a side project.";
-    }
-
-    // Discord — check before community so the link always gets surfaced
-    if (has('discord', 'server', 'join the community', 'join us')) {
-      return "discord.gg/ZTRVCYwncs. come say hi, we're in there!";
-    }
-
-    // Credits - how to earn; legacy terms remain recognized.
-    if (has('earn credit', 'get credit', 'how do i earn', 'how do i get credit', 'earn shard', 'get shard', 'how do i get shard', 'earn gem', 'get gem', 'how do i get gem') || (hasAll('earn', 'credit')) || (hasAll('get', 'credit', 'how')) || (hasAll('earn', 'shard')) || (hasAll('get', 'shard', 'how')) || (hasAll('earn', 'gem')) || (hasAll('get', 'gem', 'how'))) {
-      return "quests, field notes, sealing course weeks, surveys. show up daily and it stacks.";
-    }
-
-    // Credits - cost; legacy terms remain recognized.
-    if (has('how much', 'cost credit', 'credit cost', 'spend credit', 'how many credit', 'cost shard', 'shard cost', 'spend shard', 'how many shard', 'cost gem', 'gem cost', 'spend gem', 'how many gem') || (hasAll('cost', 'chat')) || (hasAll('credit', 'cost')) || (hasAll('shard', 'cost')) || (hasAll('gem', 'cost'))) {
-      return "10 diamonds per chat turn. earn them back from quests and field notes.";
-    }
-
-    // Credits - balance / general; legacy terms remain recognized.
-    if (has('credit', 'shard', 'gem') || (hasAll('my', 'balance')) || (hasAll('how many', 'point'))) {
-      const bal = shardCount;
-      return bal !== null
-        ? `you got ${bal.toLocaleString()} diamonds rn. keep stacking from quests and field notes.`
-        : "your diamond balance is on the home dashboard. quests and field notes build it fastest.";
-    }
-
-    // Field notes / journaling
-    if (has('field notes', 'field note') || (hasAll('journal') && !has('research')) || has('prayer', 'daily writing', 'freewrite')) {
-      return "daily freewriting! no prompts, no grades, just you and the page. do it every day and the streak does the rest.";
-    }
-
-    // Streak
-    if (has('streak')) {
-      return "how many days in a row you showed up. field notes, quests, course work. keep it going.";
-    }
-
-    // Course / curriculum / chapters / weeks
-    if (has('course', 'lesson', 'curriculum', 'chapter', 'seal', 'pathway', 'week', 'ethereal')) {
-      return "11 chapters of real work, self-awareness to goal setting. complete each week to unlock the next!";
-    }
-
-    // Quests
-    if (has('quest', 'daily task', 'daily mission', 'daily quest', 'mission')) {
-      return "short daily tasks that earn diamonds - field notes, X posts, course stuff. check quests for what's live rn.";
-    }
-
-    // Surveys / assessments
-    if (has('survey', 'assessment', 'phq', 'gad', 'questionnaire', 'psychological test')) {
-      return "validated psych assessments. your results make the whole experience more personal, and it's opt-in only!";
-    }
-
-    // Research mode / DeSci
-    if (has('research mode', 'proposal', 'grant', 'thesis') || (hasAll('research', 'desci')) || (hasAll('research', 'write'))) {
-      return "research mode is a VIP writing partner for grants, proposals, and thesis chapters. full report drafts you refine section by section. it unlocks with a VIP membership!";
-    }
-
-    // DeSci
-    if (has('desci', 'decentralized science', 'decentralised science')) {
-      return "science that isn't locked behind institutions. data, methods, funding, all open. that's the whole thing!";
-    }
-
-    // Markets / Kalshi / prediction / trading
-    if (has('market', 'kalshi', 'prediction market', 'orderbook', 'yes no')) {
-      if (treasury.prices.length > 0 && (has('price', 'btc', 'eth', 'bitcoin', 'ethereum', 'sol', 'solana'))) {
-        const lines = treasury.prices.slice(0, 3).map((p) => {
-          const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
-          return `${p.symbol}: $${p.usd.toLocaleString()}${ch}`;
-        });
-        return lines.join('\n');
-      }
-      return treasury.balance
-        ? `treasury's at $${treasury.balance} USDC. markets run through Kalshi — governance decides the positions.`
-        : "markets on Kalshi, treasury-backed. head to markets.";
-    }
-
-    // Crypto prices
-    if (has('price', 'btc', 'bitcoin', 'eth', 'ethereum', 'sol', 'solana', 'crypto price')) {
-      if (treasury.prices.length > 0) {
-        const lines = treasury.prices.slice(0, 3).map((p) => {
-          const ch = p.change != null ? ` (${p.change >= 0 ? '+' : ''}${p.change.toFixed(1)}%)` : '';
-          return `${p.symbol}: $${p.usd.toLocaleString()}${ch}`;
-        });
-        return lines.join('\n');
-      }
-      return "prices loading. give me a sec.";
-    }
-
-    // Treasury
-    if (has('treasury')) {
-      return treasury.balance
-        ? `treasury's at $${treasury.balance} USDC — goes toward research, tools, and community.`
-        : "treasury funds go to research, tools, and community work. submit a proposal to allocate.";
-    }
-
-    // Governance / proposals / voting / funding
-    if (has('proposal', 'vote', 'governance', 'allocat', 'fund my', 'fund research', 'grant')) {
-      return `drop your proposal in the treasury — what you need, why, what you'll deliver.${treasury.balance ? ` $${treasury.balance} in there rn.` : ''}`;
-    }
-
-    // Earning money / monetizing research
-    if (has('earn money', 'make money', 'get paid', 'monetize', 'income', 'revenue', 'royalt')) {
-      return "diamond payouts from contributions, validated surveys, or treasury proposals. pick a lane.";
-    }
-
-    // Rewards / shop / loot
-    if (has('reward', 'loot', 'loot box', 'prize', 'unlock') || (hasAll('shop', 'buy')) || (hasAll('spend', 'credit')) || (hasAll('spend', 'shard')) || (hasAll('spend', 'gem'))) {
-      return "where diamonds go - loot boxes, upgrades, season drops. check rewards.";
-    }
-
-    // Prompts and selected essays
-    if (has('prompt', 'library', 'reading', 'article', 'blog', 'book')) {
-      return "Prompts holds reusable instructions and selected essays. Copy what fits the work.";
-    }
-
-    // Live sessions / events
-    if (has('livestream', 'live stream', 'broadcast', 'live event', 'lecture')) {
-      return "workshops, questions, curriculum events. open Live, then switch to the feed.";
-    }
-
-    // Community page / Farcaster / social
-    if (has('community', 'farcaster', 'leaderboard', 'other user', 'social')) {
-      return "see other users and shared milestones over in community. discord.gg/ZTRVCYwncs for the real-time convo.";
-    }
-
-    // Profile / wallet / account
-    if (has('profile', 'account setting', 'connect wallet', 'my wallet', 'username') || (hasAll('wallet', 'connect'))) {
-      return "wallet, username, on-chain state — all in your profile.";
-    }
-
-    // Blockchain / Base / contracts / Web3
-    if (has('blockchain', 'base chain', 'smart contract', 'on-chain', 'onchain', 'web3', 'nft', 'token')) {
-      return "runs on Base. four contracts handling governance, treasury, your state, and markets.";
-    }
-
-    // Wallet connection — gas / metamask
-    if (has('gas fee', 'metamask', 'coinbase wallet', 'connect my wallet', 'transaction fail')) {
-      return "connect in your profile, you're on Base. if a tx fails just make sure you're on the right network with ETH for gas.";
-    }
-
-    // Privacy / data consent
-    if (has('privacy', 'my data', 'data privacy', 'surveillance', 'encrypt', 'consent', 'opt out')) {
-      return "field notes are encrypted, nothing moves without your say. consent is built in, not bolted on.";
-    }
-
-    // Mental wellness — anxiety
-    if (has('anxious', 'anxiety', 'panic attack', 'panic', 'nervous', 'worried sick')) {
-      return "anxiety is signal, not a verdict. what's the actual pressure you're carrying rn?";
-    }
-
-    // Mental wellness — depression / low mood
-    if (has('depress', 'feel low', 'feeling low', 'sad today', 'unmotivated', 'numb')) {
-      return "low periods happen. sleep, movement, one honest conversation — which of those can you touch today?";
-    }
-
-    // Mental wellness — stress / burnout
-    if (has('stress', 'stressed', 'overwhelm', 'burnout', 'burned out', 'burnt out', 'exhausted')) {
-      return "workload-values mismatch that went too long. what's draining you the most rn?";
-    }
-
-    // Mental wellness — sleep
-    if (has('sleep', 'insomnia', 'can\'t sleep', 'tired', 'fatigue')) {
-      return "consistent wake time and less screens at night moves the needle more than anything else. what's the actual blocker?";
-    }
-
-    // Therapy / clinical support
-    if (has('therapist', 'therapy', 'counselor', 'counseling', 'psychiatrist', 'mental health professional')) {
-      return "MWA isn't therapy — it's behavioral structure and financial literacy. different thing. if you need clinical support, go get it.";
-    }
-
-    // Motivation / momentum / stuck
-    if (has('motivat', 'procrastinat', 'can\'t start', 'stuck', 'momentum', 'getting started')) {
-      return "action first, motivation follows. what's the smallest version of the thing you need to do?";
-    }
-
-    // Goals / progress / tracking
-    if (has('my progress', 'how am i doing', 'track progress', 'my goal', 'set goal') || (hasAll('goal', 'set'))) {
-      return "your daily snapshot is on the home dashboard — streaks, current week, pending quests.";
-    }
-
-    // Learning / understanding
-    if (has('how do i learn', 'how do i understand', 'teach me', 'explain how') || (hasAll('learn', 'how'))) {
-      return "start at week one in the course and build forward. what do you want to understand?";
-    }
-
-    // Artists / creative people
-    if (has('artist', 'creative', 'musician', 'designer', 'maker')) {
-      return "artists know when a system is fake. that instinct is welcome here — MWA was built by a designer.";
-    }
-
-    // Horses
-    if (has('horse')) {
-      return "horses are honest about pressure and intent. that kind of signal is worth respecting.";
-    }
-
-    // Season / seasons
-    if (has('season')) {
-      return "seasons are the long arc - diamond resets, loot cycles, leaderboard. stay consistent and it stacks.";
-    }
-
-    // What can I do / features / general help
-    if (has('what can i do', 'how does this work', 'what\'s available', 'what do you do', 'what features', 'help me', 'guide me')) {
-      return "course, field notes, quests, research, markets, community. what specifically?";
-    }
-
-    // Help / generic help request
-    if (has('help') && t.length < 30) {
-      return "course, diamonds, research, markets, Discord - what do you need?";
-    }
-
-    // BetterHelp / extractive wellness platforms
-    if (has('betterhelp')) {
-      return "when a platform hoards private pain, the business model is doing too much and the ethics are doing too little.";
-    }
-
-    // Facebook / Meta / surveillance platforms
-    if (has('facebook', 'instagram', 'meta ', 'tiktok', 'surveillance platform')) {
-      return "those systems teach people to perform instead of speak. not the vibe here.";
-    }
-
-    // Broken / error / bug report
-    if (has('broken', 'error', 'not working', 'bug', 'glitch', 'issue with', 'problem with')) {
-      return "hit up Discord — discord.gg/ZTRVCYwncs. tell us what broke.";
-    }
-
-    // Thanks / appreciation
-    if (has('thank', 'thanks', 'appreciate', 'that helped', 'helpful')) {
-      return "got it. what's next?";
-    }
-
-    // Sorry / apology
-    if (has('sorry', 'my bad', 'apolog')) {
-      return "all good. what do you need?";
-    }
-
-    // Agreement / acknowledgment
-    if ((has('okay', 'ok', 'got it', 'makes sense', 'cool', 'interesting', 'nice', 'great', 'alright') && t.length < 30) || (has('yeah', 'yes', 'yep', 'agree', 'exactly', 'right') && t.length < 20)) {
-      return "bet. what else?";
-    }
-
-    // Pushback / disagreement
-    if (has('disagree', 'i don\'t think', 'you\'re wrong', 'that\'s wrong', 'incorrect')) {
-      return "tell me why. i'm more useful when you push back.";
-    }
-
-    // Generic credit balance / treasury balance catch
-    if (has('balance', 'how much', 'treasury')) {
-      return treasury.balance
-        ? `treasury's at $${treasury.balance} USDC.`
-        : "still loading treasury data. try again in a sec.";
-    }
-
-    // This entire function only runs when the AI backend is unreachable. The
-    // keyword branches above are static, accurate FAQ answers — but for
-    // anything else, be honest about the outage instead of faking a reply.
-    const fallbacks = [
-      "i can't reach my full brain right now, so i don't want to wing that one. give it a minute and resend?",
-      "my connection's down rn — resend that in a bit and i'll answer it properly.",
-    ];
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -1322,7 +1306,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     const lines = [
       `source: ${debug.source}`,
       `mode: ${debug.mode}`,
-      `credits spent: ${debug.shardsDeducted}`,
+      `credits spent: ${debug.diamondsDeducted}`,
     ];
 
     if (typeof debug.shardBalance === 'number') {
@@ -1335,14 +1319,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       );
     }
 
-    if (typeof debug.extractedFactsCount === 'number') {
-      lines.push(`facts extracted: ${debug.extractedFactsCount}`);
+    if (debug.personalizationQueued) {
+      lines.push('personalization: queued');
     }
 
     if (debug.rag) {
       lines.push(`rag page: ${debug.rag.pathname ?? 'unknown'}`);
       lines.push(`rag entries: ${debug.rag.entriesRetrieved}`);
-      for (const entry of debug.rag.entries) {
+      for (const entry of debug.rag.entries ?? []) {
         const terms = entry.matchedTerms ?? [];
         const matched = terms.length ? ` [${terms.join(', ')}]` : '';
         lines.push(`  · ${entry.title} — score ${entry.score}${matched}`);
@@ -1356,9 +1340,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     return lines;
   };
 
-  const shardUpsellTitle = 'You are out of diamonds';
+  const shardUpsellTitle = 'You are out of credits';
   const shardUpsellBody = shardUpsell
-    ? `You need ${shardUpsell.required.toLocaleString()} diamonds to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
+    ? `You need ${shardUpsell.required.toLocaleString()} credits to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
     : '';
 
   const chatContent = (
@@ -1468,6 +1452,40 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
             </button>
             <button className={styles.shardConfirmNo} onClick={dismissShardUpsell} type="button">
               Not Now
+            </button>
+          </div>
+        </div>
+      )}
+
+      {memoryResetOpen && (
+        <div className={styles.shardUpsell} role="dialog" aria-modal="true" aria-label="Clear what Blue remembers">
+          <div className={styles.shardUpsellCopy}>
+            <span className={styles.shardUpsellTitle}>Clear what Blue remembers</span>
+            <span className={styles.shardUpsellBody}>
+              This erases your stored conversations, the facts Blue has kept about
+              you, and her sense of your history together. Your credits and their
+              onchain records are untouched. This cannot be undone.
+            </span>
+            {memoryResetNote && (
+              <span className={styles.shardUpsellBody}>{memoryResetNote}</span>
+            )}
+          </div>
+          <div className={styles.shardUpsellActions}>
+            <button
+              className={styles.shardConfirmYes}
+              onClick={handleMemoryReset}
+              type="button"
+              disabled={memoryResetBusy}
+            >
+              {memoryResetBusy ? 'Clearing' : 'Clear it'}
+            </button>
+            <button
+              className={styles.shardConfirmNo}
+              onClick={() => { setMemoryResetOpen(false); setMemoryResetNote(null); }}
+              type="button"
+              disabled={memoryResetBusy}
+            >
+              Keep it
             </button>
           </div>
         </div>
@@ -1748,6 +1766,31 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M8 6h13M8 12h13M8 18h13" />
                           <path d="M3 6h.01M3 12h.01M3 18h.01" />
+                        </svg>
+                      </span>
+                    </span>
+                    <span className={styles.toolCardBottom} aria-hidden="true" />
+                  </button>
+                  <button
+                    className={styles.expandedQuickCard}
+                    onClick={() => { play('click'); setMemoryResetNote(null); setMemoryResetOpen(true); }}
+                    onMouseEnter={() => play('hover')}
+                    type="button"
+                  >
+                    <span className={styles.toolCardTop}>
+                      <span className={styles.toolCardText}>
+                        <span className={styles.toolSlideWrap}>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText}`}>Memory</span>
+                          <span className={`${styles.toolCardTitle} ${styles.toolSlideText} ${styles.toolSlideClone}`}>Memory</span>
+                        </span>
+                        <span className={styles.toolCardMeta}>Blue keeps what you tell her so she can pick up where you left off. Clear it whenever you want a blank slate.</span>
+                        <span className={styles.toolCardCost}>Clear what Blue remembers</span>
+                      </span>
+                      <span className={styles.toolCardIcon} aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 6h18" />
+                          <path d="M8 6V4h8v2" />
+                          <path d="M6 6l1 14h10l1-14" />
                         </svg>
                       </span>
                     </span>

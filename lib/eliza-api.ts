@@ -1,6 +1,9 @@
 /**
- * Eliza Cloud API Client
- * Handles communication with Eliza Cloud API for chat completions and TTS
+ * Eliza Cloud API client.
+ *
+ * The production gateway requires stream mode. This client normalizes its SSE
+ * and data-stream variants into plain text chunks while enforcing a deadline,
+ * one bounded transient retry, and a small process-local circuit breaker.
  */
 
 interface ElizaChatMessage {
@@ -10,264 +13,314 @@ interface ElizaChatMessage {
 
 interface ElizaChatRequest {
   messages: ElizaChatMessage[];
-  id?: string; // Model ID (optional, defaults to Claude Sonnet through Eliza Cloud)
-  maxTokens?: number; // Output token cap (optional)
+  id?: string;
+  maxTokens?: number;
+  temperature?: number;
+  signal?: AbortSignal;
+  timeoutMs?: number;
 }
 
-interface ElizaChatResponse {
-  choices?: Array<{
-    message: {
-      role: string;
-      content: string;
+interface ElizaChatStream {
+  stream: ReadableStream<string>;
+  provider: 'eliza';
+}
+
+const DEFAULT_TIMEOUT_MS = 30_000;
+const MAX_TIMEOUT_MS = 60_000;
+const CIRCUIT_FAILURE_THRESHOLD = 3;
+const CIRCUIT_OPEN_MS = 30_000;
+const TRANSIENT_STATUSES = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+
+function boundedTimeout(value: number | undefined): number {
+  if (!Number.isFinite(value)) return DEFAULT_TIMEOUT_MS;
+  return Math.max(2_000, Math.min(MAX_TIMEOUT_MS, Number(value)));
+}
+
+function delay(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException('Aborted', 'AbortError'));
+      return;
+    }
+
+    const timer = setTimeout(resolve, ms);
+    const abort = () => {
+      clearTimeout(timer);
+      reject(new DOMException('Aborted', 'AbortError'));
     };
-  }>;
-  error?: {
-    message: string;
-  };
+    signal?.addEventListener('abort', abort, { once: true });
+  });
 }
-
 
 class ElizaAPIClient {
-  private baseUrl: string;
-  private apiKey: string | null;
+  private readonly baseUrl: string;
+  private readonly apiKey: string | null;
+  private consecutiveFailures = 0;
+  private circuitOpenUntil = 0;
 
   constructor() {
-    // Default to localhost for development, can be overridden with env var
     let baseUrl = process.env.ELIZA_API_BASE_URL || 'http://localhost:3001';
-    
-    // Remove trailing slashes and /api/v1 if present (the path is added in the methods)
-    baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
-    baseUrl = baseUrl.replace(/\/api\/v1$/, ''); // Remove /api/v1 if present
-    
+    baseUrl = baseUrl.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
     this.baseUrl = baseUrl;
     this.apiKey = process.env.ELIZA_API_KEY || null;
   }
 
-  /**
-   * Get authorization headers
-   */
   private getHeaders(): HeadersInit {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
-
     if (this.apiKey) {
-      headers['Authorization'] = `Bearer ${this.apiKey}`;
+      headers.Authorization = `Bearer ${this.apiKey}`;
       headers['X-API-Key'] = this.apiKey;
     }
-
     return headers;
   }
 
-  /**
-   * Chat completion using Eliza API
-   * Uses Vercel AI SDK format with role and parts
-   * Handles streaming SSE responses from Eliza Cloud
-   */
-  async chat(request: ElizaChatRequest): Promise<string> {
-    try {
-      const url = `${this.baseUrl}/api/v1/chat/completions`;
-      // Sonnet is a live, tested Eliza Cloud model ID; the previous Gemini alias
-      // billed requests but could return an empty stream.
-      const model = request.id || process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
-      console.log('Calling Eliza API:', { url, hasApiKey: !!this.apiKey, modelId: model });
+  private recordSuccess() {
+    this.consecutiveFailures = 0;
+    this.circuitOpenUntil = 0;
+  }
 
-      // stream:true is required — the non-streaming path on Eliza Cloud 500s
-      // inside its billing-ledger write. Streaming returns content fine, and
-      // parseSSEResponse below collects the full reply.
-      const body: Record<string, unknown> = {
-        model,
-        messages: request.messages,
-        stream: true,
-      };
-      if (typeof request.maxTokens === 'number') {
-        body.max_tokens = request.maxTokens;
-      }
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch {
-          errorData = { message: errorText || response.statusText };
-        }
-        console.error('Eliza API error response:', {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData,
-          url,
-          hasApiKey: !!this.apiKey,
-        });
-
-        // Provide specific error messages for common issues
-        if (response.status === 401) {
-          if (!this.apiKey) {
-            throw new Error('Eliza API key is missing. Please set ELIZA_API_KEY in your environment variables.');
-          } else {
-            throw new Error('Eliza API key is invalid or expired. Please check your ELIZA_API_KEY configuration.');
-          }
-        }
-
-        throw new Error(errorData.error?.message || errorData.message || `Eliza API error: ${response.status} ${response.statusText}`);
-      }
-
-      const responseText = await response.text();
-      const preview = responseText.substring(0, 400);
-      console.log('Eliza API raw response:', {
-        status: response.status,
-        contentType: response.headers.get('content-type'),
-        responseLength: responseText.length,
-        responsePreview: preview,
-      });
-
-      const trimmed = responseText.trimStart();
-
-      // SSE format: starts with "data:"
-      if (trimmed.startsWith('data:')) {
-        const fullText = this.parseSSEResponse(responseText);
-        console.log('Parsed SSE response, length:', fullText.length);
-        if (!fullText) {
-          throw new Error(`Eliza API returned empty SSE response. Raw: ${preview}`);
-        }
-        return fullText;
-      }
-
-      // Vercel AI SDK Data Stream Protocol (no data: wrapper): starts with hex digit + colon
-      if (/^[0-9a-f]:/.test(trimmed)) {
-        const fullText = this.parseSSEResponse(responseText);
-        console.log('Parsed data-stream response, length:', fullText.length);
-        if (!fullText) {
-          throw new Error(`Eliza API returned empty data-stream response. Raw: ${preview}`);
-        }
-        return fullText;
-      }
-
-      // JSON response
-      let data: ElizaChatResponse;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        throw new Error(`Eliza API returned unrecognised format. Raw: ${preview}`);
-      }
-
-      if (data.error) {
-        throw new Error(data.error.message || 'Eliza API returned an error');
-      }
-
-      if (data.choices && data.choices.length > 0) {
-        const content = data.choices[0].message?.content || '';
-        if (!content) throw new Error(`Eliza API returned empty choices content. Raw: ${preview}`);
-        return content;
-      }
-
-      const text = (data as any).text || (data as any).content || (data as any).response || '';
-      if (text) return text;
-
-      throw new Error(`No content found in Eliza API response. Raw: ${preview}`);
-    } catch (error: any) {
-      // Handle fetch errors specifically
-      if (error.message?.includes('fetch') || error.code === 'ECONNREFUSED' || error.message?.includes('ECONNREFUSED')) {
-        const connectionError = new Error(`Unable to connect to Eliza API at ${this.baseUrl}. Please ensure Eliza Cloud API is running or check your ELIZA_API_BASE_URL configuration.`);
-        console.error('Eliza API connection error:', {
-          message: connectionError.message,
-          baseUrl: this.baseUrl,
-          hasApiKey: !!this.apiKey,
-          originalError: error.message,
-        });
-        throw connectionError;
-      }
-
-      console.error('Eliza API chat error:', {
-        message: error.message,
-        stack: error.stack,
-        baseUrl: this.baseUrl,
-        hasApiKey: !!this.apiKey,
-        errorCode: error.code,
-      });
-      throw error;
+  private recordFailure() {
+    this.consecutiveFailures += 1;
+    if (this.consecutiveFailures >= CIRCUIT_FAILURE_THRESHOLD) {
+      this.circuitOpenUntil = Date.now() + CIRCUIT_OPEN_MS;
     }
   }
 
-  /**
-   * Parse Server-Sent Events (SSE) streaming response from Eliza Cloud
-   * Extracts text-delta events and concatenates them into full response
-   */
-  private parseSSEResponse(sseText: string): string {
-    const lines = sseText.split('\n');
+  private createAbortContext(signal: AbortSignal | undefined, timeoutMs: number) {
+    const controller = new AbortController();
+    const abortFromCaller = () => controller.abort(signal?.reason);
+    signal?.addEventListener('abort', abortFromCaller, { once: true });
+    const timer = setTimeout(
+      () => controller.abort(new DOMException('Provider deadline exceeded', 'TimeoutError')),
+      timeoutMs,
+    );
+
+    return {
+      controller,
+      cleanup: () => {
+        clearTimeout(timer);
+        signal?.removeEventListener('abort', abortFromCaller);
+      },
+    };
+  }
+
+  private async openCompletion(request: ElizaChatRequest) {
+    if (Date.now() < this.circuitOpenUntil) {
+      throw new Error('Eliza provider circuit is temporarily open');
+    }
+
+    const url = `${this.baseUrl}/api/v1/chat/completions`;
+    const model = request.id
+      || process.env.ELIZA_CHAT_MODEL
+      || 'anthropic/claude-sonnet-4.6';
+    const body: Record<string, unknown> = {
+      model,
+      messages: request.messages,
+      stream: true,
+    };
+    if (typeof request.maxTokens === 'number') {
+      body.max_tokens = Math.max(1, Math.floor(request.maxTokens));
+    }
+    if (typeof request.temperature === 'number') {
+      body.temperature = Math.max(0, Math.min(2, request.temperature));
+    }
+
+    const timeoutMs = boundedTimeout(request.timeoutMs);
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      const abortContext = this.createAbortContext(request.signal, timeoutMs);
+      const startedAt = Date.now();
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: this.getHeaders(),
+          body: JSON.stringify(body),
+          signal: abortContext.controller.signal,
+        });
+
+        if (!response.ok) {
+          // Consume the body so the connection can be reused. Provider text is
+          // deliberately excluded from logs and thrown errors.
+          await response.text().catch(() => '');
+          abortContext.cleanup();
+
+          const retryable = TRANSIENT_STATUSES.has(response.status);
+          console.warn('[Eliza] completion rejected', {
+            status: response.status,
+            model,
+            attempt: attempt + 1,
+            elapsedMs: Date.now() - startedAt,
+            retryable,
+          });
+
+          lastError = new Error(
+            response.status === 401 || response.status === 403
+              ? 'Eliza authentication failed'
+              : `Eliza request failed with status ${response.status}`,
+          );
+          if (retryable && attempt === 0 && !request.signal?.aborted) {
+            await delay(180 + Math.floor(Math.random() * 120), request.signal);
+            continue;
+          }
+          break;
+        }
+
+        if (!response.body) {
+          abortContext.cleanup();
+          lastError = new Error('Eliza returned an empty response body');
+          break;
+        }
+
+        console.info('[Eliza] completion connected', {
+          status: response.status,
+          model,
+          attempt: attempt + 1,
+          elapsedMs: Date.now() - startedAt,
+        });
+        this.recordSuccess();
+        return {
+          response,
+          cleanup: abortContext.cleanup,
+          abort: () => abortContext.controller.abort(),
+        };
+      } catch (error: unknown) {
+        abortContext.cleanup();
+        lastError = error;
+        if (request.signal?.aborted) throw error;
+        if (attempt === 0) {
+          await delay(180 + Math.floor(Math.random() * 120), request.signal);
+          continue;
+        }
+      }
+    }
+
+    this.recordFailure();
+    const name = lastError instanceof Error ? lastError.name : 'ProviderError';
+    console.error('[Eliza] completion unavailable', { model, errorType: name });
+    throw new Error(
+      name === 'AbortError' || name === 'TimeoutError'
+        ? 'Eliza request timed out'
+        : 'Eliza provider is unavailable',
+    );
+  }
+
+  async chatStream(request: ElizaChatRequest): Promise<ElizaChatStream> {
+    const opened = await this.openCompletion(request);
+    const source = opened.response.body!;
+    const decoder = new TextDecoder();
+    let upstreamReader: ReadableStreamDefaultReader<Uint8Array> | null = null;
+
+    const stream = new ReadableStream<string>({
+      start: async (controller) => {
+        upstreamReader = source.getReader();
+        let buffer = '';
+        let emitted = false;
+
+        const emitPayload = (rawLine: string) => {
+          const line = rawLine.trim();
+          if (!line || line === '[DONE]' || line.startsWith(':') || line.startsWith('event:')) {
+            return;
+          }
+          const payload = line.startsWith('data:')
+            ? line.slice(5).trimStart()
+            : line;
+          if (!payload || payload === '[DONE]') return;
+          const text = this.parseStreamPayload(payload);
+          if (text) {
+            emitted = true;
+            controller.enqueue(text);
+          }
+        };
+
+        try {
+          while (true) {
+            const { done, value } = await upstreamReader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            let newlineIndex = buffer.indexOf('\n');
+            while (newlineIndex >= 0) {
+              const line = buffer.slice(0, newlineIndex);
+              buffer = buffer.slice(newlineIndex + 1);
+              emitPayload(line);
+              newlineIndex = buffer.indexOf('\n');
+            }
+          }
+
+          buffer += decoder.decode();
+          if (buffer.trim()) emitPayload(buffer);
+          if (!emitted) throw new Error('Eliza returned no assistant text');
+          controller.close();
+        } catch {
+          this.recordFailure();
+          controller.error(new Error('Eliza response stream failed'));
+        } finally {
+          opened.cleanup();
+          upstreamReader?.releaseLock();
+          upstreamReader = null;
+        }
+      },
+      cancel: async () => {
+        opened.abort();
+        await upstreamReader?.cancel().catch(() => undefined);
+        opened.cleanup();
+      },
+    });
+
+    return { stream, provider: 'eliza' };
+  }
+
+  async chat(request: ElizaChatRequest): Promise<string> {
+    const { stream } = await this.chatStream(request);
+    const reader = stream.getReader();
     let fullText = '';
-    let sawEventPayload = false;
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-
-      if (trimmed.startsWith('data:')) {
-        sawEventPayload = true;
-        const payload = trimmed.slice(5).trimStart();
-        if (payload === '[DONE]') continue;
-        if (!payload) continue;
-        fullText += this.parseSSEPayload(payload);
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullText += value;
       }
+    } finally {
+      reader.releaseLock();
     }
-
-    if (!fullText && !sawEventPayload) {
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed === '[DONE]') continue;
-        fullText += this.parseSSEPayload(trimmed);
-      }
-    }
-
+    if (!fullText.trim()) throw new Error('Eliza returned no assistant text');
     return fullText;
   }
 
-  private parseSSEPayload(payload: string): string {
-    // Vercel AI SDK Data Stream Protocol: 0:"text delta", e:{...}, d:{...}
+  private parseStreamPayload(payload: string): string {
     const dataStreamMatch = payload.match(/^([0-9a-f]):([\s\S]*)$/);
     if (dataStreamMatch) {
       const [, streamType, streamValue] = dataStreamMatch;
-      if (streamType === '0') {
-        try {
-          const text = JSON.parse(streamValue);
-          return typeof text === 'string' ? text : '';
-        } catch {
-          return streamValue;
-        }
+      if (streamType !== '0') return '';
+      try {
+        const text = JSON.parse(streamValue);
+        return typeof text === 'string' ? text : '';
+      } catch {
+        return streamValue;
       }
-      // Non-text stream parts (e, d, 2, 8, etc.) are metadata — skip
-      return '';
     }
 
+    let parsed: unknown;
     try {
-      const event = JSON.parse(payload);
-      return this.extractTextFromEvent(event);
+      parsed = JSON.parse(payload);
     } catch {
       return payload;
     }
+    return this.extractTextFromEvent(parsed);
   }
 
   private extractTextFromEvent(event: unknown): string {
     if (typeof event === 'string') return event;
-    if (typeof event === 'number' || typeof event === 'boolean') return String(event);
     if (!event || typeof event !== 'object') return '';
-
     if (Array.isArray(event)) {
       return event.map((item) => this.extractTextFromEvent(item)).join('');
     }
 
     const data = event as Record<string, any>;
-
-    // Surface API errors embedded in SSE events
-    const errMsg = data.error?.message || (typeof data.error === 'string' ? data.error : null);
-    if (errMsg) throw new Error(`Eliza API stream error: ${errMsg}`);
-
+    if (data.error) throw new Error('Eliza stream reported an error');
     if (typeof data.textDelta === 'string') return data.textDelta;
     if (typeof data.delta === 'string') return data.delta;
     if (typeof data.text === 'string') return data.text;
@@ -291,18 +344,14 @@ class ElizaAPIClient {
       if (typeof first?.text === 'string') return first.text;
       if (typeof first?.delta === 'string') return first.delta;
     }
-    for (const key of ['content', 'text', 'delta', 'response', 'result', 'message', 'output']) {
-      const value = data[key];
-      const extracted = this.extractTextFromEvent(value);
-      if (extracted) return extracted;
-    }
     return '';
   }
-
 }
 
-// Export singleton instance
 export const elizaAPI = new ElizaAPIClient();
 
-// Export types
-export type { ElizaChatMessage, ElizaChatRequest };
+export type {
+  ElizaChatMessage,
+  ElizaChatRequest,
+  ElizaChatStream,
+};

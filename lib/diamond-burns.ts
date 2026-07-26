@@ -47,6 +47,7 @@ export async function verifyDiamondsTransferTx(
   from: string,
   to: string,
   minWholeDiamonds: number,
+  options: { timeoutMs?: number } = {},
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const tokenAddress = getDiamondsTokenAddress();
   if (!tokenAddress) return { ok: false, reason: 'token_not_configured' };
@@ -54,7 +55,11 @@ export async function verifyDiamondsTransferTx(
   const client = await getBurnClient();
   const hash = txHash as `0x${string}`;
   let receipt: TransactionReceipt | null = await client
-    .waitForTransactionReceipt({ hash, confirmations: 1, timeout: 30_000 })
+    .waitForTransactionReceipt({
+      hash,
+      confirmations: 1,
+      timeout: Math.max(1_000, Math.min(30_000, options.timeoutMs ?? 30_000)),
+    })
     .catch(() => null);
   if (!receipt) {
     receipt = await client.getTransactionReceipt({ hash }).catch(() => null);
@@ -89,8 +94,15 @@ export async function verifyDiamondBurnTx(
   txHash: string,
   userWallet: string,
   minWholeDiamonds: number,
+  options: { timeoutMs?: number } = {},
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
-  return verifyDiamondsTransferTx(txHash, userWallet, BURN_ADDRESS, minWholeDiamonds);
+  return verifyDiamondsTransferTx(
+    txHash,
+    userWallet,
+    BURN_ADDRESS,
+    minWholeDiamonds,
+    options,
+  );
 }
 
 let burnSchemaEnsured = false;
@@ -104,8 +116,42 @@ export async function ensureBurnLedgerSchema() {
       purpose VARCHAR(32) NOT NULL,
       amount INTEGER NOT NULL,
       tx_hash VARCHAR(80) NOT NULL UNIQUE,
+      request_id VARCHAR(80),
+      payload_hash VARCHAR(64),
+      status VARCHAR(16) NOT NULL DEFAULT 'reserved',
+      response_text TEXT,
+      lease_expires_at TIMESTAMP,
+      output_started_at TIMESTAMP,
+      completed_at TIMESTAMP,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )
+    );
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS request_id VARCHAR(80);
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS payload_hash VARCHAR(64);
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'reserved';
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS response_text TEXT;
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS lease_expires_at TIMESTAMP;
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS output_started_at TIMESTAMP;
+    ALTER TABLE diamond_burns
+      ADD COLUMN IF NOT EXISTS completed_at TIMESTAMP;
+    UPDATE diamond_burns
+      SET status = 'completed',
+          completed_at = COALESCE(completed_at, created_at)
+      WHERE request_id IS NULL
+        AND status = 'reserved';
+    UPDATE diamond_burns
+      SET lease_expires_at = created_at + INTERVAL '2 minutes'
+      WHERE status = 'reserved'
+        AND lease_expires_at IS NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS diamond_burns_request_id_unique
+      ON diamond_burns (user_id, purpose, request_id)
+      WHERE request_id IS NOT NULL;
+    ALTER TABLE diamond_burns ENABLE ROW LEVEL SECURITY;
   `);
   burnSchemaEnsured = true;
 }
@@ -116,6 +162,8 @@ export interface BurnRecordInput {
   purpose: string;
   amount: number;
   txHash: string;
+  requestId?: string;
+  payloadHash?: string;
 }
 
 /**
@@ -126,14 +174,36 @@ export async function recordDiamondBurn(input: BurnRecordInput): Promise<boolean
   await ensureBurnLedgerSchema();
   try {
     await sqlQuery(
-      `INSERT INTO diamond_burns (user_id, wallet_address, purpose, amount, tx_hash)
-       VALUES (:userId, :walletAddress, :purpose, :amount, :txHash)`,
+      `INSERT INTO diamond_burns
+         (
+           user_id,
+           wallet_address,
+           purpose,
+           amount,
+           tx_hash,
+           request_id,
+           payload_hash,
+           lease_expires_at
+         )
+       VALUES
+         (
+           :userId,
+           :walletAddress,
+           :purpose,
+           :amount,
+           :txHash,
+           :requestId,
+           :payloadHash,
+           CURRENT_TIMESTAMP + INTERVAL '2 minutes'
+         )`,
       {
         userId: input.userId,
         walletAddress: input.walletAddress,
         purpose: input.purpose,
         amount: input.amount,
         txHash: input.txHash.toLowerCase(),
+        requestId: input.requestId ?? null,
+        payloadHash: input.payloadHash ?? null,
       },
     );
     return true;
@@ -143,13 +213,184 @@ export async function recordDiamondBurn(input: BurnRecordInput): Promise<boolean
   }
 }
 
+export interface DiamondBurnResult {
+  txHash: string;
+  requestId: string | null;
+  payloadHash: string | null;
+  status: 'reserved' | 'output_started' | 'completed';
+  responseText: string | null;
+  createdAt: string;
+  leaseExpiresAt: string | null;
+}
+
+/**
+ * Resolve a previously claimed burn for an idempotent retry. The lookup is
+ * scoped to the authenticated user and purpose so a client cannot replay
+ * another member's receipt.
+ */
+export async function getDiamondBurnResult(
+  txHash: string,
+  userId: string,
+  purpose: string,
+): Promise<DiamondBurnResult | null> {
+  await ensureBurnLedgerSchema();
+  const rows = await sqlQuery<Array<{
+    tx_hash: string;
+    request_id: string | null;
+    payload_hash: string | null;
+    status: string;
+    response_text: string | null;
+    created_at: string | Date;
+    lease_expires_at: string | Date | null;
+  }>>(
+    `SELECT
+       tx_hash,
+       request_id,
+       payload_hash,
+       status,
+       response_text,
+       created_at,
+       lease_expires_at
+     FROM diamond_burns
+     WHERE tx_hash = :txHash
+       AND user_id = :userId
+       AND purpose = :purpose
+     LIMIT 1`,
+    {
+      txHash: txHash.toLowerCase(),
+      userId,
+      purpose,
+    },
+  );
+  const row = rows[0];
+  if (!row) return null;
+  return {
+    txHash: row.tx_hash,
+    requestId: row.request_id,
+    payloadHash: row.payload_hash,
+    status: row.status === 'completed'
+      ? 'completed'
+      : row.status === 'output_started'
+        ? 'output_started'
+        : 'reserved',
+    responseText: row.response_text,
+    createdAt: new Date(row.created_at).toISOString(),
+    leaseExpiresAt: row.lease_expires_at
+      ? new Date(row.lease_expires_at).toISOString()
+      : null,
+  };
+}
+
+/**
+ * Consume a reservation before its first assistant delta leaves the server.
+ * The stored prefix gives a retry something safe to replay if the invocation
+ * freezes immediately after this write.
+ */
+export async function markDiamondBurnOutputStarted(
+  txHash: string,
+  userId: string,
+  requestId: string,
+  payloadHash: string,
+  responsePrefix: string,
+): Promise<boolean> {
+  await ensureBurnLedgerSchema();
+  const rows = await sqlQuery<Array<{ tx_hash: string }>>(
+    `UPDATE diamond_burns
+     SET status = 'output_started',
+         response_text = :responsePrefix,
+         lease_expires_at = NULL,
+         output_started_at = COALESCE(output_started_at, CURRENT_TIMESTAMP)
+     WHERE tx_hash = :txHash
+       AND user_id = :userId
+       AND request_id = :requestId
+       AND payload_hash = :payloadHash
+       AND status = 'reserved'
+     RETURNING tx_hash`,
+    {
+      txHash: txHash.toLowerCase(),
+      userId,
+      requestId,
+      payloadHash,
+      responsePrefix,
+    },
+  );
+  return Boolean(rows[0]);
+}
+
+/**
+ * Atomically reclaim a reservation after its generation lease expires. This
+ * lets a crashed request retry while preventing two live requests from
+ * generating against the same paid receipt.
+ */
+export async function reclaimDiamondBurnReservation(
+  txHash: string,
+  userId: string,
+  requestId: string,
+  payloadHash: string,
+): Promise<boolean> {
+  await ensureBurnLedgerSchema();
+  const rows = await sqlQuery<Array<{ tx_hash: string }>>(
+    `UPDATE diamond_burns
+     SET lease_expires_at = CURRENT_TIMESTAMP + INTERVAL '2 minutes'
+     WHERE tx_hash = :txHash
+       AND user_id = :userId
+       AND request_id = :requestId
+       AND payload_hash = :payloadHash
+       AND status = 'reserved'
+       AND (
+         lease_expires_at IS NULL
+         OR lease_expires_at <= CURRENT_TIMESTAMP
+       )
+     RETURNING tx_hash`,
+    {
+      txHash: txHash.toLowerCase(),
+      userId,
+      requestId,
+      payloadHash,
+    },
+  );
+  return Boolean(rows[0]);
+}
+
+/** Persist the paid result before the response is considered complete. */
+export async function completeDiamondBurn(
+  txHash: string,
+  userId: string,
+  requestId: string,
+  payloadHash: string,
+  responseText: string,
+): Promise<void> {
+  await ensureBurnLedgerSchema();
+  await sqlQuery(
+    `UPDATE diamond_burns
+     SET status = 'completed',
+         response_text = :responseText,
+         lease_expires_at = NULL,
+         completed_at = CURRENT_TIMESTAMP
+     WHERE tx_hash = :txHash
+       AND user_id = :userId
+       AND request_id = :requestId
+       AND payload_hash = :payloadHash`,
+    {
+      txHash: txHash.toLowerCase(),
+      userId,
+      requestId,
+      payloadHash,
+      responseText,
+    },
+  );
+}
+
 /**
  * Release a reserved burn so the same tx can be retried — only for spends
  * where the paid-for action failed after the burn was claimed.
  */
 export async function releaseDiamondBurn(txHash: string, userId: string): Promise<void> {
   await sqlQuery(
-    `DELETE FROM diamond_burns WHERE tx_hash = :txHash AND user_id = :userId`,
+    `DELETE FROM diamond_burns
+     WHERE tx_hash = :txHash
+       AND user_id = :userId
+       AND status = 'reserved'`,
     { txHash: txHash.toLowerCase(), userId },
   );
 }
