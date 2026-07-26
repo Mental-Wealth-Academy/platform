@@ -1,14 +1,11 @@
 /**
  * Trading Engine — Edge Detection (dry-run)
  *
- * Scans Kalshi markets for model-vs-market divergence and emits
- * sized SIGNAL entries. Execution is intentionally not wired in
- * this build — Kalshi requires RSA-signed requests and a separate
- * funding rail, both of which are out of scope until we wire a real
- * trading desk.
+ * Scans Polymarket markets for model-vs-market divergence and emits
+ * sized SIGNAL entries. The output of runTradingCycle() is consumed
+ * by the /markets page via execution-log-store and rendered live.
  *
- * The output of runTradingCycle() is consumed by the /markets page
- * via execution-log-store and rendered live.
+ * Trade placement uses lib/polymarket-trading.ts (CLOB V2, HMAC-signed).
  */
 
 import {
@@ -57,11 +54,12 @@ export interface ExecutableTradePlan {
   signal: EdgeSignal;
   position: SizedPosition;
   order: {
+    tokenId: string;
     ticker: string;
-    side: 'yes' | 'no';
-    count: number;
-    priceCents: number;
-    priceDollars: number;
+    side: 'BUY' | 'SELL';
+    price: number;         // 0-1 decimal
+    size: number;           // number of shares
+    priceCents: number;     // kept for display compatibility
     notionalUSD: number;
   };
 }
@@ -192,7 +190,7 @@ export function sizePositions(signals: EdgeSignal[]): SizedPosition[] {
   return positions;
 }
 
-function getOrderPriceDollars(signal: EdgeSignal): number {
+function getOrderPrice(signal: EdgeSignal): number {
   const [yesProb, noProb] = parseOutcomePrices(signal.market.outcomePrices);
   const fallbackYes = Math.max(0.01, Math.min(0.99, yesProb));
   const fallbackNo = Math.max(0.01, Math.min(0.99, noProb));
@@ -213,9 +211,12 @@ export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan |
     return { plan: null, logs };
   }
 
-  const priceDollars = getOrderPriceDollars(topPosition.signal);
-  const priceCents = Math.max(1, Math.min(99, Math.round(priceDollars * 100)));
-  const count = Math.max(1, Math.floor(topPosition.sizeUSD / Math.max(priceDollars, 0.01)));
+  const price = getOrderPrice(topPosition.signal);
+  const priceCents = Math.max(1, Math.min(99, Math.round(price * 100)));
+  const count = Math.max(1, Math.floor(topPosition.sizeUSD / Math.max(price, 0.01)));
+
+  // The tokenId from the MarketRow — needed for Polymarket CLOB order placement.
+  const tokenId = (topPosition.signal.market as MarketRow & { tokenId?: string }).tokenId || topPosition.signal.market.ticker;
 
   return {
     logs,
@@ -223,12 +224,13 @@ export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan |
       signal: topPosition.signal,
       position: topPosition,
       order: {
+        tokenId,
         ticker: topPosition.signal.market.ticker,
-        side: topPosition.signal.side === 'BUY' ? 'yes' : 'no',
-        count,
+        side: topPosition.signal.side,
+        price,
+        size: count,
         priceCents,
-        priceDollars,
-        notionalUSD: count * priceDollars,
+        notionalUSD: count * price,
       },
     },
   };
@@ -236,7 +238,7 @@ export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan |
 
 /**
  * Full trading cycle (dry-run): scan -> size -> log.
- * No order placement — Kalshi execution is not wired.
+ * No order placement — execution is triggered separately via staff route.
  */
 export async function runTradingCycle(): Promise<TradingLog[]> {
   const allLogs: TradingLog[] = [];

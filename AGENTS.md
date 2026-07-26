@@ -17,8 +17,7 @@ Gamified mental-wealth education app on Base. Solo builder (James); prototype-to
 ## Dormant — do not build on these without asking
 - DAO governance (BlueKillStreak) and the proposal/voting flows
 - Chainlink CRE workflows (`cre-workflows/`)
-- Kalshi trader-bot automation and the vote-to-trade desk backend
-- Polymarket (fully deprecated; `lib/market-api.ts` is a Kalshi shim)
+- Kalshi (deprecated; `lib/kalshi-api.ts` and `lib/kalshi-trading.ts` remain on disk but are not imported)
 
 ## House rules
 - No emojis, no all-caps, no "X not Y" framing, anywhere

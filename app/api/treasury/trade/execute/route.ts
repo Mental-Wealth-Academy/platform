@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildTopTradePlan, type TradingLog } from '@/lib/trading-engine';
-import { placeKalshiOrder } from '@/lib/kalshi-trading';
+import { placePolymarketOrder } from '@/lib/polymarket-trading';
 import { setExecutionLogs, type PositionEntry } from '@/lib/execution-log-store';
 import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 import { isStaffUser } from '@/lib/staff-auth';
@@ -41,11 +41,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!process.env.KALSHI_API_KEY_ID || !process.env.KALSHI_API_PRIVATE_KEY) {
+  if (!process.env.POLYMARKET_CLOB_API_KEY || !process.env.POLYMARKET_CLOB_SECRET) {
     return NextResponse.json(
       {
-        error: 'kalshi_unconfigured',
-        message: 'Kalshi credentials are missing. Set KALSHI_API_KEY_ID and KALSHI_API_PRIVATE_KEY.',
+        error: 'polymarket_unconfigured',
+        message: 'Polymarket CLOB credentials are missing. Set POLYMARKET_CLOB_API_KEY, POLYMARKET_CLOB_SECRET, and POLYMARKET_CLOB_PASSPHRASE.',
       },
       { status: 503, headers: rateLimitHeaders },
     );
@@ -66,11 +66,12 @@ export async function POST(request: Request) {
     }
 
     const clientOrderId = randomUUID();
-    const order = await placeKalshiOrder({
-      ticker: plan.order.ticker,
+    const order = await placePolymarketOrder({
+      tokenId: plan.order.tokenId,
       side: plan.order.side,
-      count: plan.order.count,
-      priceCents: plan.order.priceCents,
+      size: plan.order.size,
+      price: plan.order.price,
+      orderType: 'FOK',
       clientOrderId,
     });
 
@@ -80,8 +81,8 @@ export async function POST(request: Request) {
         action: 'TRADE',
         asset: plan.signal.asset,
         details:
-          `${plan.order.side.toUpperCase()} ${plan.order.ticker} @ ${plan.order.priceCents}c x ${plan.order.count} ` +
-          `kelly:${(plan.position.kellyFraction * 100).toFixed(2)}% order:${order.order_id || clientOrderId}`,
+          `${plan.order.side} ${plan.order.ticker} @ ${(plan.order.price * 100).toFixed(0)}c x ${plan.order.size} ` +
+          `kelly:${(plan.position.kellyFraction * 100).toFixed(2)}% order:${order.order_id || order.id || clientOrderId}`,
         timestamp: Date.now(),
       },
     ];
@@ -89,10 +90,10 @@ export async function POST(request: Request) {
     const livePositions: PositionEntry[] = [
       {
         asset: plan.signal.asset,
-        side: plan.order.side.toUpperCase(),
-        price: plan.order.priceDollars.toFixed(4),
+        side: plan.order.side,
+        price: plan.order.price.toFixed(4),
         size: plan.order.notionalUSD.toFixed(2),
-        sizeMatched: plan.order.notionalUSD.toFixed(2),
+        sizeMatched: order.size_matched || plan.order.notionalUSD.toFixed(2),
         status: order.status || 'submitted',
       },
     ];
@@ -106,7 +107,7 @@ export async function POST(request: Request) {
         plan: {
           ticker: plan.order.ticker,
           side: plan.order.side,
-          count: plan.order.count,
+          count: plan.order.size,
           priceCents: plan.order.priceCents,
           notionalUSD: Number(plan.order.notionalUSD.toFixed(2)),
         },

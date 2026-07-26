@@ -1,22 +1,23 @@
 import { providers, Contract } from 'ethers';
 
-// ── Re-exports for Kalshi (replaces former Polymarket exports) ──
+// ── Re-exports for Polymarket (replaces former Kalshi exports) ──
 
 export {
   fetchCategorizedMarkets,
-  fetchKalshiMarkets,
-  fetchKalshiBtcTrades,
-  fetchKalshiOrderbook,
-} from './kalshi-api';
+  fetchPolymarketMarkets,
+  fetchPolymarketRecentTrades,
+  fetchPolymarketOrderbook,
+} from './polymarket-api';
 export type {
   CategorizedMarkets,
   MarketCategory,
   MarketRow,
   RecentTrade,
-  KalshiMarket,
-  KalshiTrade,
-  KalshiOrderbookSide,
-} from './kalshi-api';
+  PolymarketMarket,
+  PolymarketEvent,
+  OrderbookSide,
+} from './polymarket-api';
+
 
 // ── Types ──
 

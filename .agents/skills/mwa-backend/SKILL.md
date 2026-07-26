@@ -14,7 +14,7 @@ The MWA backend, mapped. This skill is the index — pick the reference that mat
 - **Data**: Supabase Postgres, accessed via `lib/db.ts`. Schema is bootstrapped by `lib/ensure*Schema.ts` files (one per table family).
 - **AI agent**: Blue, backed by Eliza Cloud API (`lib/eliza-api.ts`) with persistent memory in Supabase (`lib/blue-memory.ts`) and an on-chain wallet (`lib/blue-wallet.ts`).
 - **Workflows**: 3 Chainlink CRE workflows in `cre-workflows/` — `blue-review`, `auto-execute`, `trade-execute`.
-- **Markets**: Kalshi (current) via `lib/kalshi-api.ts` and `lib/kalshi-trading.ts`. Polymarket is deprecated — `lib/market-api.ts` is now a Kalshi re-export shim.
+- **Markets**: Polymarket (current) via lib/polymarket-api.ts and lib/polymarket-trading.ts. Kalshi is deprecated — lib/kalshi-api.ts and lib/kalshi-trading.ts remain on disk but are not imported.
 
 ## Routing
 

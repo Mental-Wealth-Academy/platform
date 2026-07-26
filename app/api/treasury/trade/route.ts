@@ -8,7 +8,7 @@ export const maxDuration = 60;
 
 /**
  * POST /api/treasury/trade
- * Trading cron endpoint — scans for edge and executes trades.
+ * Trading cron endpoint — scans Polymarket for edge and generates dry-run logs.
  * Protected by CRON_SECRET header (Vercel cron or manual trigger).
  */
 export async function POST(request: Request) {

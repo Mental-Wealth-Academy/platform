@@ -4,14 +4,14 @@
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
   "functions": {
-    "api/trade.js": {
-      "regions": ["cdg1", "ams1"]
-    },
     "app/api/treasury/trade/**/*": {
-      "regions": ["cdg1", "ams1"]
+      "regions": ["arn1", "dub1"]
     },
     "app/api/treasury/trades/**/*": {
-      "regions": ["cdg1", "ams1"]
+      "regions": ["arn1", "dub1"]
+    },
+    "app/api/treasury/markets/**/*": {
+      "regions": ["arn1", "dub1"]
     }
   },
   "crons": [

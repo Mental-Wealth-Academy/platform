@@ -178,13 +178,13 @@ function normalCDF(x: number): number {
   return 0.5 * (1 + sign * y);
 }
 
-/** Find a BTC-related Kalshi market, return Yes price as % */
+/** Find a BTC-related market, return Yes price as % */
 function findBtcMarket(markets: CategorizedMarkets | null): number | null {
   if (!markets) return null;
   const allMarkets = Object.values(markets).flat() as MarketRow[];
   const match = allMarkets.find((m: MarketRow) =>
-    /^KXBTC/i.test(m.event_ticker || m.ticker) ||
-    /btc|bitcoin/i.test(m.question),
+    /btc|bitcoin/i.test(m.question) ||
+    /btc|bitcoin/i.test(m.event_ticker || m.ticker),
   );
   if (!match) return null;
   const [yes] = parseOutcomePrices(match.outcomePrices);
@@ -563,9 +563,9 @@ export default function Markets() {
     }
   }, []);
 
-  const fetchKalshi = useCallback(async () => {
+  const fetchMarkets = useCallback(async () => {
     try {
-      const res = await fetch('/api/treasury/kalshi');
+      const res = await fetch('/api/treasury/markets');
       if (!res.ok) throw new Error();
       const data: CategorizedMarkets = await res.json();
       setKalshiMarkets(data);
@@ -613,19 +613,19 @@ export default function Markets() {
     // Initial fetch
     fetchPrices();
     fetchBalance();
-    fetchKalshi();
+    fetchMarkets();
 
     // Polling intervals
     const priceInterval = setInterval(fetchPrices, 30_000);
     const balanceInterval = setInterval(fetchBalance, 60_000);
-    const kalshiInterval = setInterval(fetchKalshi, 60_000);
+    const kalshiInterval = setInterval(fetchMarkets, 60_000);
 
     return () => {
       clearInterval(priceInterval);
       clearInterval(balanceInterval);
       clearInterval(kalshiInterval);
     };
-  }, [fetchPrices, fetchBalance, fetchKalshi]);
+  }, [fetchPrices, fetchBalance, fetchMarkets]);
 
   useEffect(() => {
     void fetchAccountStatus();
@@ -859,7 +859,7 @@ export default function Markets() {
         }))
         .slice(0, 6)
         .join('\n')
-      : 'Kalshi feed not loaded';
+      : 'Polymarket feed not loaded';
 
     const recentExecution = executionLogs.slice(0, 5).map((log) => (
       `${formatTradeTime(String(log.timestamp / 1000))} ${log.action}${log.asset ? ` ${log.asset}` : ''}: ${log.details}`
@@ -875,7 +875,7 @@ export default function Markets() {
       'You are Blue responding inside the /markets trading desk.',
       'The user wants Blue to trade for them. Treat direct trade requests as trading instructions for the protected trading engine.',
       'If the user asks to "stage the highest-conviction trade", treat that as the strongest staging request and explicitly weigh trade size, the price gap threshold, live asks, open positions, and execution safety before answering.',
-      'Execution is VIP-gated. Only the verified VIP Membership Card wallet can submit a live Kalshi order.',
+      'Execution is VIP-gated. Only the verified VIP Membership Card wallet can submit a live Polymarket order.',
       'Do not claim an order filled unless the execution log confirms it. If execution is not confirmed, say you are routing, monitoring, or preparing the trade.',
       'When useful, answer with the intended market, direction, sizing posture, risk check, and next execution step. Keep it concise and conversational.',
       '',
@@ -999,7 +999,7 @@ export default function Markets() {
       } = await res.json();
 
       if (!res.ok || !data.success || !data.plan) {
-        const failureMessage = data.message || 'kalshi execution did not complete.';
+        const failureMessage = data.message || 'execution did not complete.';
         setTradeChatMessages((current) => [
           ...current,
           { role: 'blue', text: failureMessage, timestamp: Date.now() },
@@ -1016,7 +1016,7 @@ export default function Markets() {
       const sideLabel = data.plan.side.toUpperCase();
       const confirmation =
         `vip route confirmed: ${sideLabel} ${data.plan.ticker} @ ${data.plan.priceCents}c x ${data.plan.count}. ` +
-        `kalshi status: ${data.order?.status || 'submitted'}.`;
+        `polymarket status: ${data.order?.status || 'submitted'}.`;
 
       setTradeChatMessages((current) => [
         ...current,
@@ -1027,7 +1027,7 @@ export default function Markets() {
         ...current,
         {
           role: 'blue',
-          text: 'the vip router hit an execution error before Kalshi confirmed the order.',
+          text: 'the vip router hit an execution error before Polymarket confirmed the order.',
           timestamp: Date.now(),
         },
       ]);

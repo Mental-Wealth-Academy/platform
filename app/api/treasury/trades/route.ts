@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { fetchKalshiBtcTrades } from '@/lib/market-api';
+import { fetchPolymarketRecentTrades } from '@/lib/market-api';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const trades = await fetchKalshiBtcTrades();
+    const trades = await fetchPolymarketRecentTrades();
     return NextResponse.json(trades);
   } catch (err) {
     console.error('GET /api/treasury/trades error:', err);
