@@ -20,8 +20,8 @@ interface ProfileData {
 }
 
 function formatTokens(n: number): string {
-  if (n >= 1_000_000) return \`\${(n / 1_000_000).toFixed(2)}M\`;
-  if (n >= 1_000) return \`\${(n / 1_000).toFixed(2)}k\`;
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(2)}k`;
   return n.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
@@ -32,7 +32,7 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch(\`/api/leaderboard/profile/\${encodeURIComponent(username)}\`)
+    fetch(`/api/leaderboard/profile/${encodeURIComponent(username)}`)
       .then((r) => r.json())
       .then((res) => {
         if (!cancelled && !res.error) {
@@ -102,9 +102,9 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
                 <span className={styles.statLabel}>Quests</span>
                 <span className={styles.statValue}>{data.questsCompleted.toLocaleString()}</span>
               </div>
-              <div className={\`\${styles.statCard} \${styles.full}\`}>
+              <div className={`${styles.statCard} ${styles.full}`}>
                 <span className={styles.statLabel}>Diamonds</span>
-                <span className={\`\${styles.statValue} \${styles.primary}\`}>
+                <span className={`${styles.statValue} ${styles.primary}`}>
                   {formatTokens(data.diamonds)}
                 </span>
               </div>
