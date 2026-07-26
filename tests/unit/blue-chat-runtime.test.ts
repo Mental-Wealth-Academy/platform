@@ -199,6 +199,46 @@ describe('Blue paid streaming invariants', () => {
   });
 });
 
+describe('Blue paid-reply recovery', () => {
+  const client = readRepoFile('components/blue-chat/BlueChat.tsx');
+
+  it('offers a replay control instead of asking for the original message back', () => {
+    // The receipt is bound to the message that paid for it, so a different
+    // message can never clear it. Before this, the only way out was retyping
+    // the original exactly, which deadlocked the chat.
+    expect(client).toContain('setPendingRecovery(pending)');
+    expect(client).toContain('const recoverPendingTurn');
+    expect(client).toContain('styles.recoveryButton');
+    expect(client).not.toContain('Resend that same message first');
+  });
+
+  it('replays the stored text rather than whatever is typed now', () => {
+    const start = client.indexOf('const recoverPendingTurn');
+    const body = client.slice(start, start + 500);
+
+    expect(body).toContain('const { text } = pendingRecovery');
+    expect(body).toContain('submitUserMessage(text)');
+  });
+
+  it('can abandon a receipt that will never verify', () => {
+    const start = client.indexOf('const discardPendingTurn');
+    const body = client.slice(start, start + 500);
+
+    expect(start).toBeGreaterThan(-1);
+    expect(body).toContain('clearPendingPaidTurn');
+    expect(body).toContain('setPendingRecovery(null)');
+  });
+
+  it('clears the prompt once a matching turn goes through', () => {
+    const guard = client.indexOf('if (pending && pending.text !== text)');
+    const cleared = client.indexOf('setPendingRecovery(null);', guard);
+    const requestId = client.indexOf('const clientRequestId = pending?.clientRequestId', guard);
+
+    expect(cleared).toBeGreaterThan(guard);
+    expect(requestId).toBeGreaterThan(cleared);
+  });
+});
+
 describe('Blue memory erasure control', () => {
   const client = readRepoFile('components/blue-chat/BlueChat.tsx');
 

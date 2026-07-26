@@ -2650,3 +2650,61 @@
   border-color: rgba(153, 246, 228, 0.95);
   color: #ffffff;
 }
+
+/* ── Paid-reply recovery ──────────────────────────────────────
+   A receipt is bound to the message that paid for it, so a different message
+   cannot carry it. This offers the replay directly instead of asking the
+   member to retype the original from memory. */
+.recoveryPrompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px auto 4px;
+  padding: 16px;
+  max-width: 320px;
+  text-align: center;
+}
+
+.recoveryButton {
+  padding: 9px 20px;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 20px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-action);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.recoveryButton:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.recoveryButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.recoveryNote {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: rgba(var(--bc-ink), 0.5);
+}
+
+.recoveryDiscard {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: rgba(var(--bc-ink), 0.4);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.recoveryDiscard:hover {
+  color: rgba(var(--bc-ink), 0.7);
+}

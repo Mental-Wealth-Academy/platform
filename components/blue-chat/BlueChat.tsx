@@ -399,6 +399,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   // After the guide finder invites a topic, the next message is treated as one.
   const [pendingGuideTopic, setPendingGuideTopic] = useState(false);
   const [openDebugMessageId, setOpenDebugMessageId] = useState<string | null>(null);
+  const [pendingRecovery, setPendingRecovery] = useState<PendingPaidTurn | null>(null);
   const [memoryResetOpen, setMemoryResetOpen] = useState(false);
   const [memoryResetBusy, setMemoryResetBusy] = useState(false);
   const [memoryResetNote, setMemoryResetNote] = useState<string | null>(null);
@@ -892,10 +893,15 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     let pending = readPendingPaidTurn(accountId, walletAddress);
     if (pending && pending.text !== text) {
+      // The receipt is tied to the earlier message, so this one cannot carry it.
+      // Everything needed to finish that turn is already stored, so offer to
+      // replay it rather than asking the member to retype it from memory.
       setIsTyping(false);
-      addBlueMessage('One paid reply is still pending. Resend that same message first so I can recover it without another charge.');
+      setPendingRecovery(pending);
+      addBlueMessage('One paid reply is still waiting. Let me finish it first, at no extra cost.');
       return;
     }
+    setPendingRecovery(null);
 
     const clientRequestId = pending?.clientRequestId ?? crypto.randomUUID();
     const pathname = pending?.pathname ?? normalizeBluePathname(currentPathname);
@@ -1030,6 +1036,30 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
   // Shared pipeline for typed and voice input — appends the user message,
   // runs intent detection (quest forge, course delete, guide finder), then
   // sends to Blue.
+  /**
+   * Finish a paid turn whose reply never arrived. The stored receipt carries
+   * the original text, so the member never has to retype it, and the server
+   * replays the same burn rather than charging again.
+   */
+  const recoverPendingTurn = () => {
+    if (!pendingRecovery || isTyping) return;
+    const { text } = pendingRecovery;
+    setPendingRecovery(null);
+    play('click');
+    submitUserMessage(text);
+  };
+
+  /**
+   * Abandon a stuck receipt. Without this a burn that can never verify would
+   * block every later message, which is worse than losing the retry.
+   */
+  const discardPendingTurn = () => {
+    if (viewerProfile?.id) clearPendingPaidTurn(viewerProfile.id);
+    setPendingRecovery(null);
+    play('click');
+    addBlueMessage('Cleared. That reply is gone, and those credits stay spent. Ask me anything.');
+  };
+
   const submitUserMessage = (text: string) => {
     setMessages((prev) => [...prev, {
       id: Date.now().toString(),
@@ -1418,6 +1448,30 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {pendingRecovery && (
+          <div className={styles.recoveryPrompt}>
+            <button
+              type="button"
+              className={styles.recoveryButton}
+              onClick={recoverPendingTurn}
+              onMouseEnter={() => play('soft-hover')}
+              disabled={isTyping}
+            >
+              Retry paid reply
+            </button>
+            <span className={styles.recoveryNote}>
+              Your credits are already covered for this one.
+            </span>
+            <button
+              type="button"
+              className={styles.recoveryDiscard}
+              onClick={discardPendingTurn}
+            >
+              Discard it
+            </button>
           </div>
         )}
 
