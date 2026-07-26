@@ -64,6 +64,20 @@ class Config:
     INTERVIEW_LLM_BASE_URL = os.environ.get('INTERVIEW_LLM_BASE_URL') or LLM_BASE_URL
     INTERVIEW_LLM_MODEL_NAME = os.environ.get('INTERVIEW_LLM_MODEL_NAME') or LLM_MODEL_NAME
 
+    # Every provider call carries an explicit wall-clock timeout. Without one a
+    # stalled upstream holds a worker until the platform kills the process.
+    LLM_TIMEOUT_SECONDS = float(os.environ.get('LLM_TIMEOUT_SECONDS', '120'))
+    # Transient-failure attempts made by this client. The SDKs' own retries are
+    # disabled so the total wait stays predictable.
+    LLM_MAX_ATTEMPTS = int(os.environ.get('LLM_MAX_ATTEMPTS', '3'))
+
+    # Report run logs record prompts and tool output for debugging. Capping the
+    # stored text keeps a run log from growing without bound and limits how much
+    # member-derived material sits in a debug artefact.
+    REPORT_LOG_MAX_DETAIL_CHARS = int(
+        os.environ.get('REPORT_LOG_MAX_DETAIL_CHARS', '4000')
+    )
+
     # Zep configuration
     ZEP_API_KEY = os.environ.get('ZEP_API_KEY')
 

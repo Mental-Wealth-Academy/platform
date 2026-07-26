@@ -63,6 +63,28 @@ class ReportLogger:
         """Get elapsed time from start to now (in seconds)"""
         return (datetime.now() - self.start_time).total_seconds()
 
+    @staticmethod
+    def _bound_detail(value: Any, limit: int) -> Any:
+        """
+        Cap any string inside a log detail.
+
+        A run log is a debugging artefact that holds prompts, retrieved context,
+        and tool output. Unbounded, one report can write tens of megabytes and
+        keep far more member-derived text on disk than debugging ever needs.
+        """
+        if isinstance(value, str):
+            if len(value) <= limit:
+                return value
+            return f"{value[:limit]}… [truncated, {len(value)} chars total]"
+        if isinstance(value, dict):
+            return {
+                key: ReportLogger._bound_detail(item, limit)
+                for key, item in value.items()
+            }
+        if isinstance(value, list):
+            return [ReportLogger._bound_detail(item, limit) for item in value]
+        return value
+
     def log(
         self,
         action: str,
@@ -77,7 +99,8 @@ class ReportLogger:
         Args:
             action: Action type, e.g. 'start', 'tool_call', 'llm_response', 'section_complete', etc.
             stage: Current stage, e.g. 'planning', 'generating', 'completed'
-            details: Detailed content dictionary, not truncated
+            details: Detailed content dictionary; long strings are capped by
+                Config.REPORT_LOG_MAX_DETAIL_CHARS
             section_title: Current section title (optional)
             section_index: Current section index (optional)
         """
@@ -89,7 +112,7 @@ class ReportLogger:
             "stage": stage,
             "section_title": section_title,
             "section_index": section_index,
-            "details": details
+            "details": self._bound_detail(details, Config.REPORT_LOG_MAX_DETAIL_CHARS)
         }
 
         # Append to JSONL file
@@ -193,7 +216,7 @@ class ReportLogger:
         result: str,
         iteration: int
     ):
-        """Record tool invocation result (full content, not truncated)"""
+        """Record tool invocation result (capped by the run-log detail limit)"""
         self.log(
             action="tool_result",
             stage="generating",
@@ -202,7 +225,7 @@ class ReportLogger:
             details={
                 "iteration": iteration,
                 "tool_name": tool_name,
-                "result": result,  # Full result, not truncated
+                "result": result,  # Capped centrally by ReportLogger.log
                 "result_length": len(result),
                 "message": f"Tool {tool_name} returned result"
             }

@@ -4,6 +4,7 @@ Detects which provider to use based on the API key prefix.
 """
 
 import json
+import random
 import re
 import time
 from typing import Optional, Dict, Any, List
@@ -67,11 +68,15 @@ class LLMClient:
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
         )
 
+        # max_retries=0 keeps this client's retry loop the only one. Leaving the
+        # SDK default on multiplies attempts and makes the real wait unbounded.
         if api_key.startswith('sk-ant-'):
             from anthropic import Anthropic
             return Anthropic(
                 api_key=api_key,
                 default_headers={"User-Agent": browser_ua},
+                timeout=Config.LLM_TIMEOUT_SECONDS,
+                max_retries=0,
             ), True
 
         from openai import OpenAI
@@ -79,7 +84,29 @@ class LLMClient:
             api_key=api_key,
             base_url=base_url,
             default_headers={"User-Agent": browser_ua},
+            timeout=Config.LLM_TIMEOUT_SECONDS,
+            max_retries=0,
         ), False
+
+    @staticmethod
+    def _log_usage(model: str, usage, started_at: float, streamed: bool) -> None:
+        """Record what a call cost. Token counts, never prompt or completion text."""
+        input_tokens = (
+            getattr(usage, "prompt_tokens", None)
+            or getattr(usage, "input_tokens", None)
+        )
+        output_tokens = (
+            getattr(usage, "completion_tokens", None)
+            or getattr(usage, "output_tokens", None)
+        )
+        logger.info(
+            "llm_call model=%s streamed=%s duration_ms=%d input_tokens=%s output_tokens=%s",
+            model,
+            streamed,
+            int((time.monotonic() - started_at) * 1000),
+            input_tokens if input_tokens is not None else "unknown",
+            output_tokens if output_tokens is not None else "unknown",
+        )
 
     @staticmethod
     def _requires_streaming(api_key: str, base_url: str) -> bool:
@@ -188,7 +215,9 @@ class LLMClient:
         if system_msg:
             kwargs["system"] = system_msg
 
+        started_at = time.monotonic()
         response = client.messages.create(**kwargs)
+        self._log_usage(model, getattr(response, "usage", None), started_at, False)
         content = response.content[0].text
         return content
 
@@ -212,28 +241,36 @@ class LLMClient:
         if response_format:
             kwargs["response_format"] = response_format
 
+        max_attempts = max(1, Config.LLM_MAX_ATTEMPTS)
         response = None
-        for attempt in range(3):
+        for attempt in range(max_attempts):
+            started_at = time.monotonic()
             try:
                 response = client.chat.completions.create(**kwargs, stream=stream)
                 if stream:
-                    content = ''.join(
-                        chunk.choices[0].delta.content or ''
-                        for chunk in response
-                        if chunk.choices and chunk.choices[0].delta
-                    ).strip()
+                    parts = []
+                    stream_usage = None
+                    for chunk in response:
+                        stream_usage = getattr(chunk, "usage", None) or stream_usage
+                        if chunk.choices and chunk.choices[0].delta:
+                            parts.append(chunk.choices[0].delta.content or '')
+                    content = ''.join(parts).strip()
                     if not content:
                         raise RuntimeError("Streaming completion returned empty content")
+                    self._log_usage(model, stream_usage, started_at, True)
                     return content
                 break
             except Exception as exc:
-                if attempt == 2 or not self._is_retryable_openai_error(exc):
+                if attempt == max_attempts - 1 or not self._is_retryable_openai_error(exc):
                     raise
-                delay = 2 ** attempt
+                # Jittered backoff: identical retry storms from parallel section
+                # workers otherwise land on the upstream at the same instant.
+                delay = (2 ** attempt) * (1 + random.random() * 0.25)
                 logger.warning(
-                    "OpenAI-compatible request failed transiently (attempt %s/3): %s. "
-                    "Retrying in %ss.",
+                    "OpenAI-compatible request failed transiently (attempt %s/%s): %s. "
+                    "Retrying in %.1fs.",
                     attempt + 1,
+                    max_attempts,
                     str(exc)[:200],
                     delay,
                 )
@@ -242,6 +279,7 @@ class LLMClient:
         if response is None:
             raise RuntimeError("OpenAI-compatible request completed without a response")
 
+        self._log_usage(model, getattr(response, "usage", None), started_at, False)
         content = response.choices[0].message.content or ''
         # Strip <think> tags from reasoning models
         content = re.sub(r'<think>[\s\S]*?</think>', '', content).strip()
