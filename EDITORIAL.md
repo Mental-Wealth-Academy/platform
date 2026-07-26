@@ -32,17 +32,17 @@ Grounded meaning: small, consistent actions in the present can make the future m
 ### We sound like
 
 - Academic, visionary, and intellectually curious
-- Internet-aware, but never trend-hopping
+- Terminally online and dedicated to digital meme culture
 - Calmly skeptical of AI and its hype
 - Awe and intellectual rebellion, delivered calmly
 - Positive, encouraging, and clear
 - Investigating hidden structures with statistics, theory, and academic framing
 - Cyberpunk philosophy, kept legible
+- Spiritually grounded in the MWA's philosophy
 
 ### We do not sound like
 
 - Corporate wellness
-- Vague self-help
 - A recruiter or referral scheme
 
 ### The test before posting
@@ -259,7 +259,7 @@ The result should feel like a restrained system presence, not decoration for dec
 
 The chain is a primitive, never the pitch. Marketing and outward-facing copy — landing pages, social posts, threads, ads, emails, press — never name the underlying technology.
 
-Never in marketing copy: Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, burn, gas, NFT, DEX, smart contract, transaction hash, or any ticker.
+Never in marketing copy: Base, $BLUE, blockchain, onchain, crypto, token, wallet, mint, burn, gas, NFT, DEX, smart contract, transaction hash, or any ticker. The only exception is Bitcoin; it is the only crypto you are allowed to mention.
 
 Say what the reader gets instead: rewards that are real, permanent, and theirs. "Rewards you own." "Credits Blue pays you herself." "A record that can't be quietly edited." If a sentence needs a chain term to make its point, the sentence belongs in technical documentation, not marketing.
 
