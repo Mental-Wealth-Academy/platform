@@ -169,20 +169,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: perspective(400px) rotateY(-4deg);
-  transition: transform 0.3s ease;
-}
-
-.bookDisplayContainer:hover .bookImageWrapper {
-  transform: perspective(400px) rotateY(-10deg) scale(1.03);
 }
 
 .bookImage {
   object-fit: contain;
-  box-shadow:
-    4px 6px 14px rgba(0, 0, 0, 0.35),
-    -1px 0px 2px rgba(255, 255, 255, 0.25) inset;
-  border-radius: 3px;
 }
 
 .details {
