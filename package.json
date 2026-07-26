@@ -22,7 +22,9 @@
     "check-blue-wallet": "tsx scripts/check-blue-wallet.ts",
     "check-interactions": "tsx scripts/check-contract-interactions.ts",
     "seed:blue-rag": "tsx scripts/seed-blue-rag.ts",
+    "seed:blue-rag:deploy": "tsx scripts/seed-blue-rag.ts --deploy",
     "eval:blue-rag": "tsx scripts/evaluate-blue-rag.ts",
+    "eval:ai-behavior": "tsx scripts/evaluate-ai-behavior.ts",
     "collect:kalshi": "tsx scripts/collect-kalshi-snapshot.ts",
     "test": "vitest run",
     "test:watch": "vitest"

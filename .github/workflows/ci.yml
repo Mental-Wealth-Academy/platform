@@ -32,6 +32,12 @@ jobs:
       - name: Test
         run: npm test --if-present
 
+      - name: Blue retrieval evaluation
+        run: BLUE_RAG_EVAL_FORCE_LOCAL=1 npm run eval:blue-rag
+
+      - name: AI behaviour evaluation
+        run: npm run eval:ai-behavior
+
       - name: Install Blue server dependencies
         run: npm install --legacy-peer-deps
         working-directory: blue-server
