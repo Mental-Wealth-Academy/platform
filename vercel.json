@@ -16,32 +16,8 @@
   },
   "crons": [
     {
-      "path": "/api/treasury/trade",
+      "path": "/api/cron/daily-suite",
       "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/voting/proposal/review-sweep",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/membership/reconcile",
-      "schedule": "0 4 * * *"
-    },
-    {
-      "path": "/api/events/reminders",
-      "schedule": "0 13 * * *"
-    },
-    {
-      "path": "/api/guides/revision-check",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/blue-memory-retention",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/reflections",
-      "schedule": "0 12 * * *"
     }
   ]
 }
