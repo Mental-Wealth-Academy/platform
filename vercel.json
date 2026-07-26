@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && npm run seed:blue-rag:deploy",
   "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
@@ -23,6 +23,10 @@
     {
       "path": "/api/guides/revision-check",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/blue-memory-retention",
+      "schedule": "0 3 * * *"
     },
     {
       "path": "/api/cron/reflections",
