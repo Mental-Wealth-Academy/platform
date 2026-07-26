@@ -244,8 +244,8 @@ export const ProblemMap: React.FC = () => {
           </div>
           <p className={styles.stageCopy}>
             Legacy platforms offer stagnant curricula and few social features, leaving
-            many online students isolated. Next-gen courses should hold Gen-Z and
-            Gen-Alpha attention while improving global education.
+            many online students isolated. Next-gen courses should hold student
+            attention while improving global education.
           </p>
           <div className={styles.nodeField} aria-hidden="true">
             <div className={styles.nodeGrid}>

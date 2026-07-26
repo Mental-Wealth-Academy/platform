@@ -9,7 +9,7 @@ export const LANDING_FAQ_ITEMS: LandingFaqItem[] = [
     id: 'what-is-community-education',
     question: 'What is community education?',
     answer:
-      'Community education is learning built around the people doing it. At Mental Wealth Academy that looks like structured guides, practical missions, peer discussion, and a shared library that grows with every note a member writes.',
+      'Community education is learning built around the people doing it. At Mental Wealth Academy that looks like structured guides, practical missions, peer discussion, and a shared library that grows with reviewed contributions from members.',
   },
   {
     id: 'cohort-based-collaborative-learning',
@@ -27,7 +27,7 @@ export const LANDING_FAQ_ITEMS: LandingFaqItem[] = [
     id: 'what-is-mwa',
     question: 'What is Mental Wealth Academy?',
     answer:
-      'Mental Wealth Academy is a community education platform built on connected guides, practical missions, and peer learning. Members follow their curiosity, write down what they learn, and every contribution strengthens a shared knowledge network.',
+      'Mental Wealth Academy is a community education platform built on connected guides, practical missions, and peer learning. Members follow their curiosity, write down what they learn, and verified contributions strengthen a shared knowledge network under strict editorial review.',
   },
   {
     id: 'who-is-blue',
@@ -81,7 +81,7 @@ export const LANDING_FAQ_ITEMS: LandingFaqItem[] = [
     id: 'data-handling',
     question: 'How does MWA handle the data gathered?',
     answer:
-      'Consented survey, reflection, quest, and assessment data is cleaned first. Personally linked information is protected and validated measures are scored before anything reaches a model-training workflow, and what participation involves is explained before any information is collected.',
+      'All personal data is encrypted at rest and in transit. Consented survey, quest, and assessment data is cleaned first. User reflections are strictly private and never used for model training. Personally linked information is protected, and what participation involves is explained before any information is collected.',
   },
   {
     id: 'membership',
@@ -93,6 +93,6 @@ export const LANDING_FAQ_ITEMS: LandingFaqItem[] = [
     id: 'course',
     question: 'How does the 12-week course work?',
     answer:
-      'The first season moves through Security, Identity, Power, and Connection. Each module pairs reading and reflection with research-backed assessments, including WHO-5, PSS-10, GSE, and BRS, so you can watch your progress against established measures.',
+      'The first season moves through Security, Identity, Power, and Connection. Each module pairs reading and reflection with research-backed assessments, including GSE and BRS, so you can watch your progress against established measures.',
   },
 ];

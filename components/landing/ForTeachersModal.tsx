@@ -46,7 +46,6 @@ export default function ForTeachersModal() {
   const { play } = useSound();
   const [isOpen, setIsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [aiAssist, setAiAssist] = useState(true);
   const [activeTab, setActiveTab] = useState<TeacherTab>('course');
 
   const open = () => {
@@ -172,20 +171,16 @@ export default function ForTeachersModal() {
                       <span className={styles.teachersFieldLabel}>Work email</span>
                       <input className={styles.teachersInput} name="email" type="email" required />
                     </label>
-                    <button
-                      type="button"
-                      className={`${styles.teachersAssist} ${styles.teachersAssistWide}`}
-                      aria-pressed={aiAssist}
-                      onClick={() => setAiAssist((enabled) => !enabled)}
-                    >
-                      <span className={styles.teachersAssistLabel}>AI Assist?</span>
-                      <span
-                        className={`${styles.teachersAssistToggle} ${aiAssist ? styles.teachersAssistToggleOn : ''}`}
-                        aria-hidden="true"
-                      >
-                        <span className={styles.teachersAssistKnob} />
-                      </span>
-                    </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                        <input type="checkbox" name="ferpa" required />
+                        <span className={styles.teachersFieldLabel} style={{ marginBottom: 0 }}>I comply with FERPA requirements</span>
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                        <input type="checkbox" name="studentData" required />
+                        <span className={styles.teachersFieldLabel} style={{ marginBottom: 0 }}>I agree to the Student Data Agreement</span>
+                      </label>
+                    </div>
                   </div>
                 )}
                 {activeTab === 'materials' && (
