@@ -76,16 +76,18 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
         </button>
 
         {loading || !data ? (
-          <div className={styles.loading}>loading profile...</div>
+          <div className={styles.loading}>Loading profile...</div>
         ) : (
           <>
             <div className={styles.header}>
-              {data.avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img className={styles.avatar} src={data.avatarUrl} alt="" />
-              ) : (
-                <div className={styles.avatar} />
-              )}
+              <div className={styles.avatarContainer}>
+                {data.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className={styles.avatar} src={data.avatarUrl} alt="" />
+                ) : (
+                  <div className={styles.avatar} />
+                )}
+              </div>
               <div className={styles.username}>{data.username}</div>
             </div>
 
@@ -93,28 +95,62 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
               {data.bio || "No bio yet."}
             </div>
 
-            <div className={styles.statsGrid}>
-              <div className={styles.statCard}>
-                <span className={styles.statLabel}>Field Notes</span>
-                <span className={styles.statValue}>{data.fieldNotes.toLocaleString()}</span>
+            <div className={styles.contentBody}>
+              {/* Top stats grid: Field Notes & Quests */}
+              <div className={styles.statsGrid}>
+                <div className={`${styles.tactileCard} ${styles.topStatCard}`}>
+                  <div className={styles.statHeader}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/icons/notebook-writing.svg" alt="" className={styles.statIcon} />
+                    <span className={styles.statLabel}>Field Notes</span>
+                  </div>
+                  <span className={styles.statValue}>{data.fieldNotes.toLocaleString()}</span>
+                </div>
+
+                <div className={`${styles.tactileCard} ${styles.topStatCard}`}>
+                  <div className={styles.statHeader}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/icons/rewards.svg" alt="" className={styles.statIcon} />
+                    <span className={styles.statLabel}>Quests</span>
+                  </div>
+                  <span className={styles.statValue}>{data.questsCompleted.toLocaleString()}</span>
+                </div>
               </div>
-              <div className={styles.statCard}>
-                <span className={styles.statLabel}>Quests</span>
-                <span className={styles.statValue}>{data.questsCompleted.toLocaleString()}</span>
-              </div>
-              <div className={`${styles.statCard} ${styles.full}`}>
-                <span className={styles.statLabel}>Diamonds</span>
-                <span className={`${styles.statValue} ${styles.primary}`}>
-                  {formatTokens(data.diamonds)}
-                </span>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statLabel}>Bitcoin</span>
-                <span className={styles.statValue}>{formatTokens(data.bitcoin)}</span>
-              </div>
-              <div className={styles.statCard}>
-                <span className={styles.statLabel}>USDC</span>
-                <span className={styles.statValue}>{formatTokens(data.usdc)}</span>
+
+              {/* Currencies section: Diamonds, Bitcoin, USDC stacked vertically */}
+              <div className={styles.currenciesSection}>
+                <div className={`${styles.tactileCard} ${styles.currencyRow}`}>
+                  <div className={styles.currencyLeft}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/icons/ui-diamond.svg" alt="" className={styles.currencyIcon} />
+                    <span className={styles.currencyName}>Diamonds</span>
+                  </div>
+                  <span className={`${styles.currencyValue} ${styles.diamondsValue}`}>
+                    {formatTokens(data.diamonds)}
+                  </span>
+                </div>
+
+                <div className={`${styles.tactileCard} ${styles.currencyRow}`}>
+                  <div className={styles.currencyLeft}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/tokens/cbbtc.webp" alt="" className={styles.currencyIcon} />
+                    <span className={styles.currencyName}>Bitcoin</span>
+                  </div>
+                  <span className={`${styles.currencyValue} ${styles.btcValue}`}>
+                    {formatTokens(data.bitcoin)}
+                  </span>
+                </div>
+
+                <div className={`${styles.tactileCard} ${styles.currencyRow}`}>
+                  <div className={styles.currencyLeft}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/tokens/usdc.webp" alt="" className={styles.currencyIcon} />
+                    <span className={styles.currencyName}>USDC</span>
+                  </div>
+                  <span className={`${styles.currencyValue} ${styles.usdcValue}`}>
+                    {formatTokens(data.usdc)}
+                  </span>
+                </div>
               </div>
             </div>
           </>

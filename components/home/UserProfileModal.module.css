@@ -1,32 +1,32 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(8, 10, 26, 0.55);
+  background: rgba(8, 10, 26, 0.6);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 20px;
   z-index: 1100;
-  animation: leaderModalFade 0.18s ease-out;
+  animation: modalFade 0.18s ease-out;
 }
 
 .modalCard {
   position: relative;
-  width: min(440px, 100%);
+  width: min(420px, 100%);
   max-height: 90vh;
   background: #ffffff;
-  border: 2px solid var(--color-primary-hover);
+  border: 2px solid var(--color-primary-hover, #3b82f6);
   border-radius: 20px;
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30),
-    0 30px 70px rgba(8, 10, 26, 0.35);
+    0 6px 0 var(--color-primary, #2563eb),
+    0 0 12px rgba(0, 0, 0, 0.12),
+    0 12px 6px rgba(0, 0, 0, 0.25),
+    0 30px 60px rgba(8, 10, 26, 0.35);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  animation: leaderModalPop 0.22s cubic-bezier(0.2, 0.8, 0.2, 1.05);
+  animation: modalPop 0.22s cubic-bezier(0.2, 0.8, 0.2, 1.05);
 }
 
 .modalClose {
@@ -36,116 +36,209 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: none;
-  background: rgba(26, 29, 51, 0.06);
+  border: 2px solid rgba(26, 29, 51, 0.12);
+  background: #f4f6fa;
   color: #1a1d33;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
   z-index: 2;
+  box-shadow: 0 2px 0 rgba(26, 29, 51, 0.1);
 }
 
 .modalClose:hover {
-  background: rgba(26, 29, 51, 0.12);
+  background: #e8ecf5;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 rgba(26, 29, 51, 0.15);
 }
 
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 24px 16px;
-  gap: 16px;
+  padding: 28px 24px 12px;
+  gap: 12px;
+}
+
+.avatarContainer {
+  position: relative;
 }
 
 .avatar {
-  width: 96px;
-  height: 96px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   object-fit: cover;
   background: rgba(26, 29, 51, 0.08);
-  border: 3px solid var(--color-primary);
+  border: 3px solid var(--color-primary, #2563eb);
+  box-shadow:
+    0 4px 12px rgba(37, 99, 235, 0.25),
+    inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .username {
-  font-family: var(--font-secondary);
-  font-size: 1.4rem;
+  font-family: var(--font-secondary, sans-serif);
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #2a2f52;
+  color: #1e2342;
+  letter-spacing: -0.01em;
 }
 
 .bio {
-  font-family: var(--font-primary);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #6b7194;
+  font-family: var(--font-primary, sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #5c6285;
   text-align: center;
-  padding: 0 24px 24px;
-  border-bottom: 1px solid rgba(26, 29, 51, 0.08);
+  padding: 0 24px 16px;
+  border-bottom: 1px dashed rgba(26, 29, 51, 0.12);
+  margin-bottom: 4px;
+}
+
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 20px 24px;
 }
 
 .statsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 24px;
+  gap: 12px;
 }
 
-.statCard {
+/* Skeuomorphic Tactile Inner Cards */
+.tactileCard {
+  background: linear-gradient(180deg, #ffffff 0%, #f7f9fd 100%);
+  border: 2px solid color-mix(in oklch, var(--color-primary, #2563eb) 20%, #c9d0eb);
+  border-radius: 14px;
+  box-shadow:
+    0 3px 0 color-mix(in oklch, var(--color-primary, #2563eb) 25%, #b4bddf),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 4px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.tactileCard:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 0 color-mix(in oklch, var(--color-primary, #2563eb) 30%, #9faadb),
+    inset 0 1px 0 #ffffff,
+    0 6px 12px rgba(0, 0, 0, 0.07);
+}
+
+.topStatCard {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: rgba(26, 29, 51, 0.03);
-  border-radius: 12px;
-  gap: 8px;
+  padding: 14px 12px;
+  gap: 6px;
 }
 
-.statCard.full {
-  grid-column: 1 / -1;
-  flex-direction: row;
-  justify-content: space-between;
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.85;
 }
 
 .statLabel {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #8c92b2;
+  letter-spacing: 0.06em;
+  color: #646b96;
 }
 
 .statValue {
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2a2f52;
+  font-family: var(--font-mono, monospace);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e2342;
 }
 
-.statValue.primary {
-  color: var(--color-primary);
-  font-size: 1.25rem;
+/* Stacked Currency Rows */
+.currenciesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.currencyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+}
+
+.currencyLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.currencyIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+.currencyName {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #3b4168;
+}
+
+.currencyValue {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1e2342;
+}
+
+.diamondsValue {
+  color: var(--color-primary, #2563eb);
+}
+
+.btcValue {
+  color: #d97706;
+}
+
+.usdcValue {
+  color: #2563eb;
 }
 
 .loading {
   padding: 48px;
   text-align: center;
-  font-family: var(--font-secondary);
-  font-size: 1rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9rem;
   color: #6b7194;
 }
 
-@keyframes leaderModalFade {
+@keyframes modalFade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes leaderModalPop {
-  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
