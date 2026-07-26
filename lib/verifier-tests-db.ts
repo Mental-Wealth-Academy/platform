@@ -36,6 +36,21 @@ export const MIN_SUBJECT_LENGTH = 2;
 export const MAX_SUBJECT_LENGTH = 120;
 export const MAX_LEVEL = 5;
 
+/**
+ * A credential may only be issued from objectively keyed items. Written answers
+ * are collected for the record and shown back to the candidate, and they carry
+ * no score, because no deterministic check can tell subject competence from a
+ * long paragraph.
+ */
+export const MIN_KEYED_QUESTIONS_FOR_CREDENTIAL = 6;
+
+/**
+ * Generation sources whose questions are not grounded in the requested subject.
+ * A test from one of these still runs, so a provider outage does not break the
+ * surface, but passing it cannot grant reviewing authority.
+ */
+const UNGROUNDED_TEST_SOURCES = new Set(['fallback']);
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export interface VerifierCredential {
@@ -74,6 +89,8 @@ export interface VerifierTestReviewItem {
   correct: boolean;
   correctAnswer: string | null;
   explanation: string | null;
+  /** False for written and scale items, which are recorded without a score. */
+  scored: boolean;
 }
 
 export interface GradeResult {
@@ -85,6 +102,8 @@ export interface GradeResult {
   passThreshold: number;
   credential: VerifierCredential | null;
   review: VerifierTestReviewItem[];
+  /** Present when a pass did not grant a credential, naming what blocked it. */
+  credentialWithheldReason?: 'ungrounded_test' | 'insufficient_keyed_questions';
 }
 
 interface AnswersMap {
@@ -190,7 +209,13 @@ Return the JSON only.`;
 async function callOpenRouter(userPrompt: string): Promise<string> {
   const openRouterKey = process.env.OPENROUTER_API_KEY;
   if (!openRouterKey) throw new Error('OPENROUTER_API_KEY not configured');
-  const model = process.env.OPENROUTER_TEST_MODEL || process.env.OPENROUTER_MODEL || 'openrouter/free';
+  // A credentialing test is not the place for a router that picks whatever
+  // free model is available. The model must be named explicitly, or this
+  // provider is skipped and generation falls through to the pinned one.
+  const model = process.env.OPENROUTER_TEST_MODEL || process.env.OPENROUTER_MODEL;
+  if (!model || model === 'openrouter/free') {
+    throw new Error('OPENROUTER_TEST_MODEL must name an explicit model');
+  }
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -230,11 +255,15 @@ async function callEliza(userPrompt: string): Promise<string> {
 }
 
 /**
- * Deterministic fallback verifier test — a curated, answer-keyed knowledge
+ * Deterministic fallback verifier test — a curated, answer-keyed reviewing
  * assessment used when no AI provider returns a valid generation. It is
  * subject-parameterised so a request never hard-fails, and it passes the same
  * validator as model output (6 multiple_choice with answer + explanation, 2
- * short_answer). Reviewing-judgement items are subject-agnostic on purpose.
+ * short_answer).
+ *
+ * Its items test reviewing judgement rather than the requested subject, so
+ * `gradeVerifierTest` records a pass on this test without issuing a credential.
+ * See UNGROUNDED_TEST_SOURCES.
  */
 function buildFallbackTest(subject: string): GeneratedTest {
   return {
@@ -493,39 +522,55 @@ function isMcCorrect(q: StoredQuestion & { options: string[]; answer: number }, 
  * Score a set of answers against the stored questions, as a 0–100 integer
  * fraction of credited questions.
  *
+ * Default (completeness) behaviour:
  * - short_answer: credited when the trimmed answer clears MIN_SHORT_ANSWER_CHARS.
  * - scale: credited for a value in 1..5.
- * - multiple_choice WITH an answer key (new verifier tests): credited only when
- *   the selection is correct, so the credential reflects real subject competence.
+ * - multiple_choice WITH an answer key: credited only when the selection is correct.
  * - multiple_choice WITHOUT a key (legacy rows / survey-shaped fixtures): any
  *   non-empty selection counts — the historical completeness behaviour is kept.
+ *
+ * With `keyedOnly`, only answer-keyed multiple_choice items count, toward both
+ * the credited total and the denominator. This is the mode credential decisions
+ * use: length and mere completeness never contribute to reviewing authority.
  */
-export function scoreAnswers(questions: StoredQuestion[], answers: AnswersMap): number {
+export function scoreAnswers(
+  questions: StoredQuestion[],
+  answers: AnswersMap,
+  options?: { keyedOnly?: boolean },
+): number {
   if (!Array.isArray(questions) || questions.length === 0) return 0;
+  const keyedOnly = options?.keyedOnly === true;
+  const scored = keyedOnly ? questions.filter(hasAnswerKey) : questions;
+  if (scored.length === 0) return 0;
+
   let credited = 0;
-  for (const q of questions) {
+  for (const q of scored) {
     const answer = answers?.[q.id] ?? answers?.[String(q.id)];
-    if (q.type === 'short_answer') {
+    if (hasAnswerKey(q)) {
+      if (isMcCorrect(q, answer)) credited += 1;
+    } else if (q.type === 'short_answer') {
       if (typeof answer === 'string' && answer.trim().length >= MIN_SHORT_ANSWER_CHARS) credited += 1;
     } else if (q.type === 'scale') {
       const n = Number(answer);
       if (Number.isFinite(n) && n >= 1 && n <= 5) credited += 1;
-    } else if (hasAnswerKey(q)) {
-      if (isMcCorrect(q, answer)) credited += 1;
-    } else {
+    } else if (typeof answer === 'string' ? answer.trim().length > 0 : Number.isFinite(Number(answer))) {
       // Legacy multiple_choice without a key: any non-empty selection counts.
-      if (typeof answer === 'string' ? answer.trim().length > 0 : Number.isFinite(Number(answer))) {
-        credited += 1;
-      }
+      credited += 1;
     }
   }
-  return Math.round((credited / questions.length) * 100);
+  return Math.round((credited / scored.length) * 100);
+}
+
+/** Number of stored questions that carry a usable answer key. */
+export function countKeyedQuestions(questions: StoredQuestion[]): number {
+  return Array.isArray(questions) ? questions.filter(hasAnswerKey).length : 0;
 }
 
 /**
- * Build per-question feedback for display after submission. For answer-keyed MC
- * items it reports correctness, the correct option text, and the explanation;
- * for written / scale items it reports whether the item met its completeness bar.
+ * Build per-question feedback for display after submission. Answer-keyed items
+ * report correctness, the correct option text, and the explanation. Written and
+ * scale items are marked unscored, because a completeness check cannot judge
+ * whether an answer was any good.
  */
 function buildReview(questions: StoredQuestion[], answers: AnswersMap): VerifierTestReviewItem[] {
   return questions.map((q) => {
@@ -540,18 +585,10 @@ function buildReview(questions: StoredQuestion[], answers: AnswersMap): Verifier
         correct: isMcCorrect(q, answer),
         correctAnswer: String(q.options[q.answer]),
         explanation,
+        scored: true,
       };
     }
-    if (q.type === 'short_answer') {
-      const met = typeof answer === 'string' && answer.trim().length >= MIN_SHORT_ANSWER_CHARS;
-      return { id: q.id, correct: met, correctAnswer: null, explanation };
-    }
-    if (q.type === 'scale') {
-      const n = Number(answer);
-      return { id: q.id, correct: Number.isFinite(n) && n >= 1 && n <= 5, correctAnswer: null, explanation };
-    }
-    const answered = typeof answer === 'string' ? answer.trim().length > 0 : Number.isFinite(Number(answer));
-    return { id: q.id, correct: answered, correctAnswer: null, explanation };
+    return { id: q.id, correct: false, correctAnswer: null, explanation, scored: false };
   });
 }
 
@@ -584,9 +621,10 @@ export async function gradeVerifierTest(
       metadata: { subject?: string; level?: number } | null;
       questions: StoredQuestion[] | null;
       completed_at: string | null;
+      source: string | null;
     }>>(
       client,
-      `SELECT id, user_id, purpose, metadata, questions, completed_at
+      `SELECT id, user_id, purpose, metadata, questions, completed_at, source
        FROM generated_tests
        WHERE id = :testId
        FOR UPDATE`,
@@ -611,9 +649,19 @@ export async function gradeVerifierTest(
     }
 
     const questions = Array.isArray(row.questions) ? row.questions : [];
-    const score = scoreAnswers(questions, answers);
+    // Credential decisions read keyed items only, so a long written answer can
+    // never buy reviewing authority.
+    const score = scoreAnswers(questions, answers, { keyedOnly: true });
     const passed = score >= PASS_THRESHOLD;
     const review = buildReview(questions, answers);
+
+    const keyedQuestionCount = countKeyedQuestions(questions);
+    const credentialWithheldReason: GradeResult['credentialWithheldReason'] =
+      UNGROUNDED_TEST_SOURCES.has(String(row.source ?? ''))
+        ? 'ungrounded_test'
+        : keyedQuestionCount < MIN_KEYED_QUESTIONS_FOR_CREDENTIAL
+          ? 'insufficient_keyed_questions'
+          : undefined;
 
     await sqlQueryWithClient(
       client,
@@ -625,7 +673,7 @@ export async function gradeVerifierTest(
     );
 
     let credential: VerifierCredential | null = null;
-    if (passed) {
+    if (passed && !credentialWithheldReason) {
       // Upsert: raise max_level to the tested level only if higher. GREATEST keeps
       // any existing higher credential intact (a pass never demotes).
       const credRows = await sqlQueryWithClient<Array<{
@@ -664,6 +712,9 @@ export async function gradeVerifierTest(
       passThreshold: PASS_THRESHOLD,
       credential,
       review,
+      ...(passed && credentialWithheldReason
+        ? { credentialWithheldReason }
+        : {}),
     };
   });
 }

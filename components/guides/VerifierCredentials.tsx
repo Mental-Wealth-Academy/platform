@@ -34,6 +34,8 @@ interface ReviewItem {
   correct: boolean;
   correctAnswer: string | null;
   explanation: string | null;
+  /** Written and scale items are recorded without a score. */
+  scored?: boolean;
 }
 
 interface VerifierTest {
@@ -72,7 +74,12 @@ export default function VerifierCredentials() {
   const [test, setTest] = useState<VerifierTest | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{ score: number; passed: boolean; passThreshold: number } | null>(null);
+  const [result, setResult] = useState<{
+    score: number;
+    passed: boolean;
+    passThreshold: number;
+    credentialWithheldReason?: string;
+  } | null>(null);
   // Snapshot of the just-graded test + per-question feedback, shown after submit.
   const [reviewData, setReviewData] = useState<{ questions: VerifierTestQuestion[]; review: ReviewItem[] } | null>(null);
 
@@ -174,11 +181,16 @@ export default function VerifierCredentials() {
         setError(data.error ?? 'Could not submit your answers.');
         return;
       }
-      setResult({ score: data.score, passed: data.passed, passThreshold: data.passThreshold });
+      setResult({
+        score: data.score,
+        passed: data.passed,
+        passThreshold: data.passThreshold,
+        credentialWithheldReason: data.credentialWithheldReason,
+      });
       if (Array.isArray(data.review) && test) {
         setReviewData({ questions: test.questions, review: data.review as ReviewItem[] });
       }
-      if (data.passed) {
+      if (data.passed && !data.credentialWithheldReason) {
         play('celebration');
         setTest(null);
         setAnswers({});
@@ -273,8 +285,15 @@ export default function VerifierCredentials() {
               Scored {result.score}%. You need {result.passThreshold}% to qualify — try again.
             </p>
           )}
-          {result && result.passed && (
+          {result && result.passed && !result.credentialWithheldReason && (
             <p className={styles.success}>Passed with {result.score}%. Credential granted.</p>
+          )}
+          {result && result.passed && result.credentialWithheldReason && (
+            <p className={styles.error}>
+              Passed with {result.score}%, but this test was built without your
+              subject material, so it cannot grant a credential. Request a new
+              test and sit it again.
+            </p>
           )}
 
           <button
@@ -386,9 +405,15 @@ export default function VerifierCredentials() {
               return (
                 <li key={q.id} className={styles.reviewItem}>
                   <p className={styles.reviewQuestion}>{q.question}</p>
-                  <span className={item.correct ? styles.reviewCorrect : styles.reviewIncorrect}>
-                    {item.correct ? 'Correct' : 'Not quite'}
-                  </span>
+                  {item.scored === false ? (
+                    <span className={styles.reviewUnscored}>
+                      Recorded for the panel to read
+                    </span>
+                  ) : (
+                    <span className={item.correct ? styles.reviewCorrect : styles.reviewIncorrect}>
+                      {item.correct ? 'Correct' : 'Not quite'}
+                    </span>
+                  )}
                   {item.correctAnswer && !item.correct && (
                     <p className={styles.reviewAnswer}>Best answer: {item.correctAnswer}</p>
                   )}

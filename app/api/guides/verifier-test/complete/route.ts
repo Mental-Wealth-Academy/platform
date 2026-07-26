@@ -19,9 +19,10 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
  *
  * Body: { testId: string, answers: Record<questionId, string | number> }
  *
- * Grading is delegated to gradeVerifierTest in lib/verifier-tests-db, which
- * reuses the same completeness rules as app/api/generate-test/complete (every
- * question answered; short answers clear the character minimum). The credential
+ * Grading is delegated to gradeVerifierTest in lib/verifier-tests-db. The score
+ * behind a credential comes from answer-keyed items only; written answers are
+ * recorded for the panel and carry no score. A pass on an ungrounded fallback
+ * test returns credentialWithheldReason instead of a credential. The credential
  * upsert and the completed_at write happen in one transaction there.
  */
 export async function POST(request: Request) {
