@@ -3,11 +3,6 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
-  "functions": {
-    "app/api/**/*": {
-      "regions": ["arn1", "dub1"]
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/daily-suite",
