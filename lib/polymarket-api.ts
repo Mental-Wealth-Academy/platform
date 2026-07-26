@@ -19,40 +19,38 @@ const CLOB_BASE = 'https://clob.polymarket.com';
 
 // ── Native Polymarket types ──
 
-export interface PolymarketOutcome {
-  title: string;
-  price: number;
-}
-
 export interface PolymarketMarket {
   id: string;
-  condition_id: string;
+  conditionId?: string;
+  condition_id?: string;
   question: string;
   description?: string;
+  slug?: string;
   market_slug?: string;
-  end_date_iso?: string;
+  endDate?: string;
+  endDateIso?: string;
   closed?: boolean;
   active?: boolean;
   archived?: boolean;
-  accepting_orders?: boolean;
+  clobTokenIds?: string;
   tokens?: Array<{
     token_id: string;
     outcome: string;
     price?: number;
     winner?: boolean;
   }>;
-  outcomes?: string[];
-  outcome_prices?: string;
-  volume?: number;
-  volume_num?: number;
-  liquidity?: number;
-  liquidity_num?: number;
-  best_bid?: number;
-  best_ask?: number;
-  last_trade_price?: number;
+  outcomes?: string;
+  outcomePrices?: string;
+  volume?: number | string;
+  volumeNum?: number;
+  liquidity?: number | string;
+  liquidityNum?: number;
+  bestBid?: number;
+  bestAsk?: number;
+  lastTradePrice?: number;
   image?: string;
   icon?: string;
-  tags?: string[];
+  tags?: any[];
   group_item_title?: string;
 }
 
@@ -61,18 +59,19 @@ export interface PolymarketEvent {
   slug?: string;
   title: string;
   description?: string;
-  end_date_iso?: string;
+  endDate?: string;
+  endDateIso?: string;
   closed?: boolean;
   active?: boolean;
   archived?: boolean;
   image?: string;
   icon?: string;
-  tags?: string[];
+  tags?: any[];
   markets: PolymarketMarket[];
-  volume?: number;
-  volume_num?: number;
-  liquidity?: number;
-  liquidity_num?: number;
+  volume?: number | string;
+  volumeNum?: number;
+  liquidity?: number | string;
+  liquidityNum?: number;
 }
 
 // ── Compat shape (matches former kalshi-api exports) ──
@@ -85,7 +84,7 @@ export interface MarketRow {
   liquidity: number;
   endDate: string;
   active: boolean;
-  ticker: string;          // Polymarket condition_id (replaces Kalshi ticker)
+  ticker: string;          // Polymarket conditionId (replaces Kalshi ticker)
   event_ticker: string;    // Polymarket event id
   yes_ask: number;
   no_ask: number;
@@ -133,10 +132,6 @@ function num(s: string | number | undefined | null, fallback = 0): number {
   return isFinite(n) ? n : fallback;
 }
 
-/**
- * Parse Polymarket's outcome_prices string (JSON array like `["0.55","0.45"]`)
- * into a [yesProb, noProb] tuple.
- */
 function parseOutcomePrices(raw: string | undefined): [number, number] {
   if (!raw) return [0, 0];
   try {
@@ -147,102 +142,107 @@ function parseOutcomePrices(raw: string | undefined): [number, number] {
   }
 }
 
+function parseClobTokenIds(raw: string | undefined): [string | undefined, string | undefined] {
+  if (!raw) return [undefined, undefined];
+  try {
+    const arr = JSON.parse(raw);
+    return [arr[0], arr[1]];
+  } catch {
+    return [undefined, undefined];
+  }
+}
+
+function extractTagStrings(tagsRaw?: any[]): string[] {
+  if (!tagsRaw || !Array.isArray(tagsRaw)) return [];
+  const res: string[] = [];
+  for (const t of tagsRaw) {
+    if (typeof t === 'string') res.push(t.toLowerCase());
+    else if (typeof t === 'object' && t !== null) {
+      if (t.slug) res.push(String(t.slug).toLowerCase());
+      if (t.label) res.push(String(t.label).toLowerCase());
+    }
+  }
+  return res;
+}
+
 // ── Category mapping ──
 
 const MARKET_CATEGORIES: MarketCategory[] = ['elections', 'politics', 'culture', 'science'];
 
-/**
- * Map a Polymarket event/market into one of our four display categories
- * using tags and title keyword matching.
- */
-function categorize(event: PolymarketEvent, market: PolymarketMarket): MarketCategory | null {
+function categorize(event: PolymarketEvent, market: PolymarketMarket): MarketCategory {
   const tags = [
-    ...(event.tags || []),
-    ...(market.tags || []),
-  ].map((t) => t.toLowerCase());
-  const title = `${event.title} ${market.question}`.toLowerCase();
+    ...extractTagStrings(event.tags),
+    ...extractTagStrings(market.tags),
+  ];
+  const title = `${event.title || ''} ${market.question || ''}`.toLowerCase();
 
   // Elections
   if (
-    tags.some((t) => t === 'elections' || t === 'election' || t === 'midterms' || t === 'presidential') ||
-    /\b(election|ballot|electoral|nominee|primary|caucus|presidential)\b/.test(title)
+    tags.some((t) => t.includes('election') || t.includes('presidential') || t.includes('midterm')) ||
+    /\b(election|ballot|electoral|nominee|primary|caucus|presidential|governor)\b/.test(title)
   ) {
     return 'elections';
   }
 
   // Politics
   if (
-    tags.some((t) => t === 'politics' || t === 'policy' || t === 'government' || t === 'geopolitics' || t === 'regulation' || t === 'congress' || t === 'legislation') ||
-    /\b(congress|senate|legislation|impeach|supreme court|sanctions|tariff|president|veto|executive order|treaty|ceasefire|war|nato|un|border)\b/.test(title)
+    tags.some((t) => t.includes('politic') || t.includes('policy') || t.includes('government') || t.includes('geopolitic') || t.includes('congress')) ||
+    /\b(congress|senate|house|legislation|impeach|supreme court|sanctions|tariff|president|biden|trump|harris|vance|newsom|putin|zelensky|ceasefire|war|nato)\b/.test(title)
   ) {
     return 'politics';
   }
 
-  // Science
+  // Science / Tech / Crypto / Macro
   if (
-    tags.some((t) => t === 'science' || t === 'technology' || t === 'ai' || t === 'crypto' || t === 'bitcoin' || t === 'climate' || t === 'space' || t === 'health') ||
-    /\b(ai|bitcoin|btc|ethereum|crypto|spacex|nasa|climate|vaccine|fda|patent|quantum|model|gpt|llm)\b/.test(title)
+    tags.some((t) => t.includes('science') || t.includes('tech') || t.includes('ai') || t.includes('crypto') || t.includes('bitcoin') || t.includes('space')) ||
+    /\b(ai|bitcoin|btc|ethereum|solana|crypto|spacex|nasa|climate|vaccine|fda|patent|quantum|model|gpt|llm|deepseek|openai|anthropic|fed|rate|inflation|cpi|gdp)\b/.test(title)
   ) {
     return 'science';
   }
 
-  // Culture
+  // Culture / Sports / Entertainment / Media
   if (
-    tags.some((t) => t === 'entertainment' || t === 'sports' || t === 'culture' || t === 'social' || t === 'pop culture' || t === 'media' || t === 'celebrity') ||
-    /\b(nfl|nba|super bowl|oscar|grammy|box office|movie|album|twitter|tiktok|youtube|elon|celebrity)\b/.test(title)
+    tags.some((t) => t.includes('entertainment') || t.includes('sports') || t.includes('culture') || t.includes('pop') || t.includes('media') || t.includes('movie')) ||
+    /\b(nfl|nba|super bowl|oscar|grammy|box office|movie|album|twitter|tiktok|youtube|elon|musk|mrbeast|gta)\b/.test(title)
   ) {
     return 'culture';
   }
 
-  // Fallback: put untagged political-ish events in politics, otherwise culture
-  if (/\b(trump|biden|harris|obama|putin|zelensky|xi jinping|modi|macron)\b/.test(title)) return 'politics';
-
-  return null;
+  return 'politics';
 }
 
-// Light junk filter — keep legitimate markets, drop spam.
 const BLOCKLIST = /tweet count|number of (?:tweets|posts)|zodiac|astrology|onlyfans/i;
 
 const PER_CATEGORY = 8;
-const MAX_DAYS_OUT = 730;
 const EVENTS_PAGE_LIMIT = 100;
-const MAX_EVENT_PAGES = 4;
+const MAX_EVENT_PAGES = 3;
 
 function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
-  // Parse outcome prices from the market
-  const [yesProb, noProb] = parseOutcomePrices(m.outcome_prices);
+  const [yesProb, noProb] = parseOutcomePrices(m.outcomePrices);
+  const [yesTokenId] = parseClobTokenIds(m.clobTokenIds);
 
-  // Find the YES token for order placement
-  const yesToken = m.tokens?.find((t) => t.outcome?.toLowerCase() === 'yes');
-  const noToken = m.tokens?.find((t) => t.outcome?.toLowerCase() === 'no');
-
-  // Prefer token prices if available, fall back to outcome_prices
-  const finalYes = yesToken?.price ?? yesProb;
-  const finalNo = noToken?.price ?? noProb;
+  const conditionId = m.conditionId || m.condition_id || m.id;
+  const endDate = m.endDateIso || m.endDate || event.endDateIso || event.endDate || '';
 
   return {
-    id: m.condition_id || m.id,
+    id: conditionId,
     question: m.group_item_title
       ? `${event.title} — ${m.group_item_title}`
       : (m.question || event.title),
-    outcomePrices: JSON.stringify([finalYes, finalNo]),
-    volume: num(m.volume_num ?? m.volume),
-    liquidity: num(m.liquidity_num ?? m.liquidity),
-    endDate: m.end_date_iso || event.end_date_iso || '',
-    active: Boolean(m.active && !m.closed && !m.archived),
-    ticker: m.condition_id || m.id,
+    outcomePrices: JSON.stringify([yesProb, noProb]),
+    volume: num(m.volumeNum ?? m.volume ?? event.volumeNum ?? event.volume),
+    liquidity: num(m.liquidityNum ?? m.liquidity ?? event.liquidityNum ?? event.liquidity),
+    endDate,
+    active: m.active !== false && !m.closed && !m.archived,
+    ticker: conditionId,
     event_ticker: event.id,
-    yes_ask: finalYes,
-    no_ask: finalNo,
+    yes_ask: yesProb,
+    no_ask: noProb,
     iconUrl: event.image || event.icon || m.image || m.icon,
-    tokenId: yesToken?.token_id,
+    tokenId: yesTokenId,
   };
 }
 
-/**
- * Score: 40% balance (closer to 50/50), 25% volume (capped), 35% end-date proximity.
- * Same scoring formula as the former Kalshi client.
- */
 function score(m: MarketRow): number {
   let yes: number;
   try {
@@ -251,17 +251,17 @@ function score(m: MarketRow): number {
   } catch {
     return -1;
   }
-  if (yes <= 0.02 || yes >= 0.98) return -1;
+  if (yes <= 0.01 || yes >= 0.99) return -1;
 
   const now = Date.now();
-  const maxMs = MAX_DAYS_OUT * 86_400_000;
-  const endMs = m.endDate ? new Date(m.endDate).getTime() - now : Infinity;
-  if (endMs <= 0 || endMs > maxMs) return -1;
+  const maxMs = 5 * 365 * 86_400_000;
+  const endMs = m.endDate ? new Date(m.endDate).getTime() - now : 86_400_000 * 30;
+  if (endMs <= 0) return -1;
 
   const vol = Number(m.volume) || 0;
   const balance = 1 - Math.abs(yes - 0.5) * 2;
-  const proximity = 1 - endMs / maxMs;
-  return balance * 0.40 + Math.min(vol / 10_000, 1.0) * 0.25 + proximity * 0.35;
+  const proximity = Math.max(0, 1 - endMs / maxMs);
+  return balance * 0.40 + Math.min(vol / 10_000, 1.0) * 0.35 + proximity * 0.25;
 }
 
 // ── Fetchers ──
@@ -277,10 +277,12 @@ async function fetchEventsPage(offset = 0): Promise<PolymarketEvent[]> {
     ascending: 'false',
   });
 
-  // Retry once on 429 with a short backoff.
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const res = await fetch(`${GAMMA_BASE}/events?${params}`, { cache: 'no-store' });
+      const res = await fetch(`${GAMMA_BASE}/events?${params}`, {
+        cache: 'no-store',
+        headers: { 'User-Agent': 'MentalWealthAcademy/1.0' },
+      });
       if (res.status === 429) {
         await new Promise((r) => setTimeout(r, 300 + Math.random() * 300));
         continue;
@@ -296,10 +298,9 @@ async function fetchEventsPage(offset = 0): Promise<PolymarketEvent[]> {
 }
 
 /**
- * Fetch markets across Elections / Politics / Culture / Science. Pages Polymarket's
- * active events, buckets them by tag/title matching, then keeps the
- * highest-scoring near-term markets per bucket.
- * 5-min in-memory cache; returns stale on failure.
+ * Fetch markets across Elections / Politics / Culture / Science.
+ * Pages Polymarket's open active events, categorizes them into display buckets,
+ * and keeps top-scoring near-term markets.
  */
 export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
   if (_grouped && Date.now() - _grouped.ts < MARKETS_CACHE_MS) return _grouped.data;
@@ -315,13 +316,11 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
 
       for (const evt of events) {
         for (const m of evt.markets || []) {
-          if (!m.active || m.closed || m.archived) continue;
+          if (m.active === false || m.closed || m.archived) continue;
           if (BLOCKLIST.test(m.question || '')) continue;
           if (BLOCKLIST.test(evt.title || '')) continue;
 
           const cat = categorize(evt, m);
-          if (!cat) continue;
-
           const row = toRow(evt, m);
           const s = score(row);
           if (s < 0) continue;
@@ -345,8 +344,7 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
 }
 
 /**
- * Loose top-level export — returns the same flat list of markets used by
- * the categorizer. Kept for backwards compatibility.
+ * Flat list of markets for backwards compatibility.
  */
 export async function fetchPolymarketMarkets(): Promise<MarketRow[]> {
   const cats = await fetchCategorizedMarkets();
@@ -354,47 +352,43 @@ export async function fetchPolymarketMarkets(): Promise<MarketRow[]> {
 }
 
 /**
- * Recent trades from Polymarket. Fetches from the Gamma API activity endpoint.
- * 30s cache.
+ * Recent trades from Polymarket Gamma API.
  */
 export async function fetchPolymarketRecentTrades(): Promise<RecentTrade[]> {
   if (_trades && Date.now() - _trades.ts < TRADES_CACHE_MS) return _trades.data;
 
-  const url = `${GAMMA_BASE}/activity?limit=50`;
+  const url = 'https://data-api.polymarket.com/trades?limit=50';
 
   try {
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, {
+      cache: 'no-store',
+      headers: { 'User-Agent': 'MentalWealthAcademy/1.0' },
+    });
     if (res.status === 429 && _trades) return _trades.data;
     if (!res.ok) throw new Error(`Polymarket activity ${res.status}`);
 
     const json = await res.json();
     const raw: Array<{
-      asset?: string;
-      type?: string;
+      side?: string;
       price?: number | string;
       size?: number | string;
-      side?: string;
-      timestamp?: string | number;
+      timestamp?: number | string;
       title?: string;
       slug?: string;
       outcome?: string;
-      market_slug?: string;
-      event_slug?: string;
     }> = Array.isArray(json) ? json : [];
 
-    const mapped: RecentTrade[] = raw
-      .filter((t) => t.type === 'trade' || t.price != null)
-      .map((t) => ({
-        price: num(t.price),
-        size: num(t.size),
-        side: (t.side?.toLowerCase() === 'sell' ? 'SELL' : 'BUY') as 'BUY' | 'SELL',
-        timestamp: typeof t.timestamp === 'number'
-          ? t.timestamp
-          : new Date(t.timestamp || 0).getTime(),
-        title: t.title || t.asset || '',
-        slug: t.market_slug || t.event_slug || t.slug || '',
-        outcome: t.outcome || (t.side?.toLowerCase() === 'sell' ? 'NO' : 'YES'),
-      }));
+    const mapped: RecentTrade[] = raw.map((t) => ({
+      price: num(t.price),
+      size: num(t.size),
+      side: t.side === 'SELL' ? 'SELL' : 'BUY',
+      timestamp: typeof t.timestamp === 'number'
+        ? (t.timestamp < 1e11 ? t.timestamp * 1000 : t.timestamp)
+        : new Date(t.timestamp || 0).getTime(),
+      title: t.title || '',
+      slug: t.slug || '',
+      outcome: t.outcome || (t.side === 'SELL' ? 'NO' : 'YES'),
+    }));
 
     _trades = { data: mapped, ts: Date.now() };
     return mapped;
@@ -406,15 +400,16 @@ export async function fetchPolymarketRecentTrades(): Promise<RecentTrade[]> {
 
 /**
  * Orderbook for a single Polymarket market via CLOB API.
- * No cache — orderbooks are point-in-time and consumed live.
  */
 export async function fetchPolymarketOrderbook(tokenId: string): Promise<OrderbookSide> {
   const url = `${CLOB_BASE}/book?token_id=${encodeURIComponent(tokenId)}`;
-  const res = await fetch(url, { cache: 'no-store' });
+  const res = await fetch(url, {
+    cache: 'no-store',
+    headers: { 'User-Agent': 'MentalWealthAcademy/1.0' },
+  });
   if (!res.ok) throw new Error(`Polymarket orderbook ${res.status}`);
   const json = await res.json();
 
-  // CLOB book response: { bids: [{price, size}], asks: [{price, size}] }
   const bids: Array<{ price: string | number; size: string | number }> = json.bids || [];
   const asks: Array<{ price: string | number; size: string | number }> = json.asks || [];
 
