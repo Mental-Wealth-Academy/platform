@@ -34,7 +34,7 @@ interface ShopItem {
 const shopItems: ShopItem[] = [
   {
     id: 'orbiters-book',
-    title: 'Orbiters of The Horizon',
+    title: 'Angels of the Horizon',
     sub: 'By Jhinn Bay',
     desc: 'The official publication of the Ethereal Horizon. A spiritual commitment and a loving surrender to the small daily actions of orbiters that compounds into world peace.',
     price: '35 USDC',

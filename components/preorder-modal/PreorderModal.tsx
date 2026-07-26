@@ -79,7 +79,7 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
         <div className={styles.content}>
           <div className={styles.headerGroup}>
             <span className={styles.badge}>Official Release</span>
-            <h2 className={styles.heading}>Orbiters of The Horizon</h2>
+            <h2 className={styles.heading}>Angels of the Horizon</h2>
             <p className={styles.subheading}>By Jhinn Bay</p>
           </div>
 
@@ -89,7 +89,7 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
             <div className={styles.bookImageWrapper}>
               <Image
                 src="/images/orbits-book-cover.png"
-                alt="Orbiters of The Horizon book cover by Jhinn Bay"
+                alt="Angels of the Horizon book cover by Jhinn Bay"
                 width={220}
                 height={285}
                 priority
