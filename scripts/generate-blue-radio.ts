@@ -118,7 +118,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'community',
     title: 'Always by your side',
-    text: "Other Academic Angels are creating affirmations right now, right here in our pocket-world. Somebody finished week nine recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard spiritual work feels lighter when others are manifesting wealth next to you. I am pretty sure that is science. It is at least a fact, which is my favorite part about science.",
+    text: "Other Academic Angels are creating affirmations right now, right here in our pocket-world. Somebody finished their affirmations recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when others are building wealth right next to you. I am pretty sure that is science. It is at least a fact, which is my favorite part about science.",
   },
   {
     id: 'pocket-world-thesis',
