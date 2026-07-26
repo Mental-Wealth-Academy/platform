@@ -92,10 +92,10 @@
   margin: -18px -18px 18px;
 }
 
-/* Even outer gutter on the DAG surfaces — the same 16px frame /dao and the
-   guide pages use, so the learn index sits in the page identically. */
+/* Wider outer gutter on the DAG surfaces so the learn index breathes away from
+   the viewport edges; scales down toward the /dao 16px frame on narrow widths. */
 .learnLayout .pageColumns {
-  padding: 16px;
+  padding: clamp(16px, 2.5vw, 40px) clamp(16px, 3.5vw, 56px) 16px;
 }
 
 :global([data-theme="dark"]) .learnLayout .globalPanel {
