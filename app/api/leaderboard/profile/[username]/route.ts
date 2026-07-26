@@ -67,36 +67,16 @@ export async function GET(
     // 2. Fetch Field Notes count
     let fieldNotesCount = 0;
     try {
-      const counts = await sqlQuery<Array<{ count: string | number }>>(
-        `SELECT COUNT(*) as count FROM daily_note_completions
-         WHERE user_id = :userId`,
+      await ensureActivityEventsSchema();
+      const fnRows = await sqlQuery<Array<{ count: string | number }>>(
+        `SELECT GREATEST(
+           (SELECT COALESCE(SUM(count), 0) FROM activity_events WHERE user_id = :userId AND kind = 'field_note'),
+           (SELECT COUNT(*) FROM daily_note_completions WHERE user_id = :userId)
+         ) as count`,
         { userId: user.id }
       );
-      if (counts.length > 0 && Number(counts[0].count) > 0) {
-        fieldNotesCount = Number(counts[0].count);
-      } else {
-        const prayers = await sqlQuery<Array<{ progress_data: any }>>(
-          `SELECT progress_data FROM prayers
-           WHERE user_id = :userId
-           LIMIT 1`,
-          { userId: user.id }
-        );
-        if (prayers.length > 0) {
-          const pd = prayers[0].progress_data;
-          let allWeekPages: Record<string, Array<{ content?: string }>> = {};
-          if (pd && !pd.encrypted && pd.allWeekPages) {
-            allWeekPages = pd.allWeekPages;
-          }
-          for (const entries of Object.values(allWeekPages)) {
-            if (Array.isArray(entries)) {
-              for (const entry of entries) {
-                if (typeof entry?.content === 'string' && entry.content.trim().length > 0) {
-                  fieldNotesCount++;
-                }
-              }
-            }
-          }
-        }
+      if (fnRows.length > 0) {
+        fieldNotesCount = Number(fnRows[0].count);
       }
     } catch (e) {
       console.warn('Could not fetch field notes count:', e);
@@ -105,15 +85,12 @@ export async function GET(
     // 3. Fetch Quests count
     let questsCompleted = 0;
     try {
-      const quests = await sqlQuery<Array<{ quest_id: string }>>(
-        `SELECT quest_id FROM quests WHERE user_id = :userId`,
+      const questRows = await sqlQuery<Array<{ count: string | number }>>(
+        `SELECT COUNT(*) as count FROM quests WHERE user_id = :userId`,
         { userId: user.id }
       );
-      for (const row of quests) {
-        const definition = getQuestDefinitionForStoredQuestId(row.quest_id);
-        if (definition) {
-          questsCompleted++;
-        }
+      if (questRows.length > 0) {
+        questsCompleted = Number(questRows[0].count);
       }
     } catch (e) {
       console.warn('Could not fetch quests count:', e);

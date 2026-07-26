@@ -110,14 +110,14 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
                 <div className={`${styles.tactileCard} ${styles.topStatCard}`}>
                   <div className={styles.statHeader}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/icons/rewards.svg" alt="" className={styles.statIcon} />
+                    <img src="/icons/nav-quests-v3.svg" alt="" className={styles.statIcon} />
                     <span className={styles.statLabel}>Quests</span>
                   </div>
                   <span className={styles.statValue}>{data.questsCompleted.toLocaleString()}</span>
                 </div>
               </div>
 
-              {/* Currencies section: Diamonds, Bitcoin, USDC stacked vertically */}
+              {/* Currencies section: Diamonds, Bitcoin */}
               <div className={styles.currenciesSection}>
                 <div className={`${styles.tactileCard} ${styles.currencyRow}`}>
                   <div className={styles.currencyLeft}>
@@ -138,17 +138,6 @@ export default function UserProfileModal({ username, onClose }: UserProfileModal
                   </div>
                   <span className={`${styles.currencyValue} ${styles.btcValue}`}>
                     {formatTokens(data.bitcoin)}
-                  </span>
-                </div>
-
-                <div className={`${styles.tactileCard} ${styles.currencyRow}`}>
-                  <div className={styles.currencyLeft}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/tokens/usdc.webp" alt="" className={styles.currencyIcon} />
-                    <span className={styles.currencyName}>USDC</span>
-                  </div>
-                  <span className={`${styles.currencyValue} ${styles.usdcValue}`}>
-                    {formatTokens(data.usdc)}
                   </span>
                 </div>
               </div>
