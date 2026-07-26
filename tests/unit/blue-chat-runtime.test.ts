@@ -229,6 +229,20 @@ describe('Blue paid-reply recovery', () => {
     expect(body).toContain('setPendingRecovery(null)');
   });
 
+  it('reports a named server failure instead of blaming the connection', () => {
+    // ai_unavailable had no branch, so it fell through to a generic throw and
+    // surfaced as "My connection dropped", which sent members into a retry loop
+    // against a provider that was never going to answer.
+    expect(client).toContain("data.error === 'ai_unavailable'");
+    expect(client).toContain('I can\'t reach my own provider right now');
+    expect(client).toContain('Blue could not finish that turn');
+  });
+
+  it('keeps the recovery control on screen after a retryable failure', () => {
+    expect(client).toContain("if (outcome === 'retryable') setPendingRecovery(pending)");
+    expect(client).toContain('if (stillPending) setPendingRecovery(stillPending)');
+  });
+
   it('clears the prompt once a matching turn goes through', () => {
     const guard = client.indexOf('if (pending && pending.text !== text)');
     const cleared = client.indexOf('setPendingRecovery(null);', guard);

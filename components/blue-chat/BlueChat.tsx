@@ -814,6 +814,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           addBlueMessage('the receipt is still settling. resend this same message in a few seconds and i will check it again.');
           return 'retryable';
         }
+        if (data.error === 'ai_unavailable' || data.error === 'ai_unconfigured') {
+          // The server already released the receipt, so a retry costs nothing.
+          // Say what actually happened rather than blaming the connection.
+          setIsTyping(false);
+          addBlueMessage("I can't reach my own provider right now. Your credits are still attached to this message, so retrying will not charge you again.");
+          return 'retryable';
+        }
         if (data.error === 'tx_already_used') {
           clearPendingPaidTurn(accountId);
           setIsTyping(false);
@@ -971,13 +978,23 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         pathname: pending.pathname,
         burnTxHash: pending.burnTxHash,
       });
-      await consumeResponse(paidResponse, pending);
-    } catch {
+      const outcome = await consumeResponse(paidResponse, pending);
+      // A retryable outcome leaves the receipt in storage, so keep the recovery
+      // control on screen rather than stranding it behind a retyped message.
+      if (outcome === 'retryable') setPendingRecovery(pending);
+    } catch (error) {
       setIsTyping(false);
+      // A named server error is a fact worth repeating. Reporting every failure
+      // as a dropped connection sent members back to retype the same message
+      // against a provider that was never going to answer.
+      const code = error instanceof Error ? error.message : '';
+      const named = code && code !== 'blue_unavailable' && !code.includes(' ');
+      const stillPending = pending ?? readPendingPaidTurn(accountId, walletAddress);
+      if (stillPending) setPendingRecovery(stillPending);
       addBlueMessage(
-        pending
-          ? 'My connection dropped. Resend this same message and I will reuse the receipt already attached to it.'
-          : 'My connection dropped before any credits were spent. Try again in a moment.',
+        stillPending
+          ? `${named ? `Blue could not finish that turn (${code}).` : 'My connection dropped.'} Your credits stay attached to this message, so retrying costs nothing extra.`
+          : `${named ? `Blue could not start that turn (${code}).` : 'My connection dropped before any credits were spent.'} Try again in a moment.`,
       );
     }
   };
