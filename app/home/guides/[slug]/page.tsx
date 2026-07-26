@@ -35,6 +35,7 @@ import type { GuideMaterial } from '@/lib/guide-materials-db';
 import type { GuideRecord, GuideMethodRecord, GuideLink } from '@/lib/guides-db';
 import { getWellbeingDomain } from '@/lib/wellbeing-domains';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
+import { GuideArticleSkeleton, GuideDetailsSkeleton } from './GuideSkeleton';
 import styles from './page.module.css';
 
 const sceneUrl = dailySceneBackgroundUrl();
@@ -267,7 +268,7 @@ export default function GuidePage({ params }: PageProps) {
               <span className={styles.panelTitle}>Learn anything</span>
             </div>
             <main className={styles.page}>
-              {loading && <div className={styles.state}>Loading guide…</div>}
+              {loading && <GuideArticleSkeleton />}
               {notFound && !loading && <div className={styles.state}>Guide not found.</div>}
 
         {data && !loading && (
@@ -545,6 +546,7 @@ export default function GuidePage({ params }: PageProps) {
         )}
       </main>
           </div>
+          {loading && <GuideDetailsSkeleton />}
           {data && !loading && (
             <GuideDetails
               guide={data.guide}

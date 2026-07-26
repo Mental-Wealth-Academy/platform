@@ -45,7 +45,9 @@
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
-  padding: 16px;
+  /* Same outer gutter as the learn index (app/home/page.module.css) so the DAG
+     surfaces frame their content identically. */
+  padding: clamp(16px, 2.5vw, 40px) clamp(16px, 3.5vw, 56px) 16px;
 }
 
 .globalPanel {
@@ -114,8 +116,9 @@
    gutter instead of pooling all the empty space on the right. */
 .guideLayout {
   display: grid;
-  grid-template-columns: minmax(0, 880px) minmax(300px, 360px);
-  justify-content: center;
+  /* The article panel fills whatever the details rail leaves, so the middle
+     piece runs edge to edge inside the gutter instead of capping at 880px. */
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
   align-items: start;
   gap: 16px;
   padding: 0;
@@ -123,7 +126,7 @@
 
 /* Walkthrough and assemble run the same frame without the details rail. */
 .singleColumn {
-  grid-template-columns: minmax(0, 1180px);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .page {

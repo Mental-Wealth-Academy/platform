@@ -1,35 +1,6 @@
-.layout {
-  position: relative;
-  margin-left: var(--sidebar-width, 265px);
-  min-height: 100vh;
-  background-color: var(--color-background, #ffffff);
-  background-image: radial-gradient(
-    color-mix(in oklch, var(--color-primary) 16%, transparent) 1px,
-    transparent 1.5px
-  );
-  background-size: 24px 24px;
-  background-position: -1px -1px;
-  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-:global([data-theme="dark"]) .layout {
-  background-color: #0d0e16;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
-}
-
-/* Mirrors the loaded page frame (../page.module.css) so nothing jumps: even
-   16px outer gutter, matched tracks, leftover width split by centring. */
-.guideLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 880px) minmax(300px, 360px);
-  justify-content: center;
-  align-items: start;
-  gap: 16px;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
+/* Skeleton parts only. The frame around them — layout, gutter, panel, header
+   band — comes from the loaded page's own module (../page.module.css) so the
+   two can never drift apart. */
 .page {
   display: flex;
   flex-direction: column;
@@ -166,19 +137,9 @@
   border-radius: 3px;
 }
 
-@media (max-width: 1100px) {
-  .guideLayout {
-    grid-template-columns: 1fr;
-    padding: 24px;
-  }
-
+@media (max-width: 1080px) {
   .guideDetails {
     position: static;
-  }
-}
-
-@media (max-width: 900px) {
-  .layout {
-    margin-left: 0;
+    max-width: 440px;
   }
 }

@@ -37,8 +37,8 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  /* Even outer gutter, matching /dao and the rest of the DAG surfaces. */
-  padding: 16px;
+  /* Same outer gutter as the rest of the DAG surfaces. */
+  padding: clamp(16px, 2.5vw, 40px) clamp(16px, 3.5vw, 56px) 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
