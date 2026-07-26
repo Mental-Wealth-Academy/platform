@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-26T15:32:43.779Z",
-  "totalSeconds": 824.86,
+  "generatedAt": "2026-07-26T15:34:51.236Z",
+  "totalSeconds": 558.71,
   "segments": [
     {
       "id": "station-ident",
@@ -71,13 +71,6 @@
       "file": "/audio/blue-radio/pocket-world-thesis.mp3",
       "playbackGain": 0.56,
       "seconds": 273.44
-    },
-    {
-      "id": "thousand-year-question",
-      "title": "The thousand-year question",
-      "file": "/audio/blue-radio/thousand-year-question.mp3",
-      "playbackGain": 0.56,
-      "seconds": 266.15
     },
     {
       "id": "signoff",
