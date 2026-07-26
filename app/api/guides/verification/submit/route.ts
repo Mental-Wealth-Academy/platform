@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { requireVip } from '@/lib/guide-api-auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { submitGuideForVerification } from '@/lib/guide-verification-db';
+import { processGuideAdvisoryJob } from '@/lib/ai/guide-advisory';
+import { AiGatewayError } from '@/lib/ai';
 import {
   verificationSubmitBodySchema,
   zodErrorBody,
@@ -10,6 +12,7 @@ import {
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 /**
  * POST /api/guides/verification/submit
@@ -50,11 +53,10 @@ export async function POST(request: Request) {
 
     const panel = await submitGuideForVerification(body.guideId);
 
-    // Fire-and-forget: kick the CRE guide-review advisory workflow. In production
-    // the DON also picks this up from the guide-verification submission; this
-    // local trigger keeps the advisory score fresh even without the on-chain path.
-    // Failures are non-fatal — the panel can proceed without the advisory score.
-    void triggerCreReview(request, body.guideId, panel.id);
+    // Advisory generation has a durable idempotent job record. We wait for the
+    // bounded task here so serverless shutdown cannot silently discard it.
+    // Failure remains non-fatal because only the human panel resolves a guide.
+    await triggerGuideAdvisory(body.guideId, panel.id);
 
     return NextResponse.json(
       {
@@ -72,23 +74,22 @@ export async function POST(request: Request) {
 }
 
 /**
- * Notify the CRE score callback that a new panel needs an advisory score.
- * The actual AI scoring happens in cre-workflows/guide-review (DON) or via the
- * server-side fallback the callback route performs. We just signal it here.
+ * Run one bounded advisory job. Job state and failures are persisted by the
+ * shared service, so an operator can safely retry the legacy callback endpoint.
  */
-async function triggerCreReview(request: Request, guideId: string, panelId: string): Promise<void> {
+async function triggerGuideAdvisory(guideId: string, panelId: string): Promise<void> {
   try {
-    const baseUrl = request.url.split('/api')[0];
-    await fetch(`${baseUrl}/api/guides/verification/cre-score`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-cre-callback-secret': process.env.CRE_CALLBACK_SECRET || process.env.INTERNAL_API_SECRET || '',
-        'x-cre-trigger': 'server',
-      },
-      body: JSON.stringify({ guideId, panelId, trigger: true }),
+    await processGuideAdvisoryJob({
+      guideId,
+      panelId,
     });
-  } catch (e) {
-    console.error('CRE advisory trigger failed (non-fatal):', e);
+  } catch (error) {
+    console.error('[guide-advisory] submit_processing_failed', {
+      panelId,
+      code:
+        error instanceof AiGatewayError
+          ? error.code
+          : 'guide_advisory_failed',
+    });
   }
 }
