@@ -36,7 +36,7 @@ const shopItems: ShopItem[] = [
     id: 'orbiters-book',
     title: 'Angels of the Horizon',
     sub: 'By Jhinn Bay',
-    desc: 'The official publication of the Ethereal Horizon. A spiritual commitment and a loving surrender to the small daily actions of orbiters that compounds into world peace.',
+    desc: 'The official publication of the Ethereal Horizon. A spiritual commitment and a loving surrender to the small daily actions of angels creating affirmations that compound into worldwide peace.',
     price: '35 USDC',
     image: '/images/orbits-book-cover.png',
     category: 'Stationery',
