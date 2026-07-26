@@ -6,6 +6,18 @@ import { seedBlueRagKnowledgeBase } from '../lib/blue-rag-index';
 dotenv.config({ path: '.env.local' });
 
 async function main() {
+  if (
+    process.argv.includes('--deploy')
+    && process.env.VERCEL_ENV !== 'production'
+  ) {
+    console.log(JSON.stringify({
+      ok: true,
+      skipped: true,
+      reason: 'non-production-deployment',
+    }));
+    process.exit(0);
+  }
+
   if (!isDbConfigured()) {
     throw new Error('DATABASE_URL or POSTGRES_* env vars are required to seed Blue RAG.');
   }

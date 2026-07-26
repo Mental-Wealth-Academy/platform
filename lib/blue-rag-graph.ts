@@ -1,12 +1,18 @@
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
 import { BLUE_KNOWLEDGE, type BlueKnowledgeEntry } from './blue-knowledge';
-import { embedBlueRagTexts, toPgVectorLiteral } from './blue-rag-embeddings';
+import { embedBlueRagQuery, toPgVectorLiteral } from './blue-rag-embeddings';
 import { ensureBlueRagReady } from './blue-rag-index';
 import { isDbConfigured, sqlQuery } from './db';
 import { ensureBlueRagSchema } from './ensureBlueRagSchema';
 
 type RetrievalIntent = 'casual' | 'navigation' | 'factual' | 'account_state' | 'research' | 'creative';
 type RetrievalSource = 'knowledge' | 'memory_fact' | 'recent_message';
+type RetrievalMode = 'database' | 'local' | 'local-fallback';
+type RetrievalFallbackReason =
+  | 'database_unconfigured'
+  | 'index_unavailable'
+  | 'database_empty'
+  | 'database_error';
 
 export interface BlueRagMemoryFact {
   category: string;
@@ -27,6 +33,7 @@ export interface BlueRagInput {
   recentFacts?: BlueRagMemoryFact[];
   recentMessages?: BlueRagRecentMessage[];
   limit?: number;
+  maxContextChars?: number;
   forceLocal?: boolean;
   persistTrace?: boolean;
 }
@@ -92,7 +99,8 @@ export interface BlueRagResult {
   entries: BlueRagEntry[];
   quality: BlueRagQuality;
   contextText: string;
-  retrievalMode: 'database' | 'local';
+  retrievalMode: RetrievalMode;
+  fallbackReason?: RetrievalFallbackReason | null;
   traceId?: string | null;
 }
 
@@ -122,34 +130,31 @@ const STOPWORDS = new Set([
   'could', 'should', 'about', 'into', 'just', 'your', 'mine', 'tell', 'know',
   'doe', 'does', 'doing', 'been', 'being', 'than', 'then', 'some', 'said', 'like', 'please',
   'need', 'want', 'make', 'give', 'show', 'help', 'blue', 'much', 'many', 'find',
-  'exact', 'exactly', 'get', 'gets', 'suppo', 'supposed',
+  'exact', 'exactly', 'get', 'gets', 'suppo', 'supposed', 'let', 'use', 'used',
+  'explain',
 ]);
 
 const CONCEPT_ALIASES: Record<string, string[]> = {
   company: ['mwa', 'mental wealth', 'academy', 'mission', 'founder', 'james', 'desci', 'decentralized science'],
-  credits: ['credits', 'credit', 'shards', 'gems', 'currency', 'cost', 'spend', 'earn', 'reward', 'tickets', 'usdc'],
+  credits: ['credits', 'credit', 'currency', 'cost', 'spend', 'earn', 'reward', 'tickets', 'usdc'],
   course: ['course', 'curriculum', 'week', 'seal', 'pathway', 'lesson', 'task', 'inner artist', 'shadow work', 'creativity', 'season'],
   quests: ['quest', 'quests', 'daily', 'mission', 'field notes', 'journal', 'streak', 'usdc rewards'],
   research: ['research', 'grant', 'proposal', 'thesis', 'paper', 'study', 'experiment', 'academic'],
-  markets: ['markets', 'kalshi', 'prediction', 'trade', 'treasury', 'orderbook', 'yes', 'no'],
   membership: ['vip', 'membership', 'member', 'card', 'nft', 'lifetime', 'stripe', 'upgrade', 'academic angel', 'staff tier'],
   account: ['profile', 'wallet', 'account', 'username', 'settings', 'on-chain', 'privy'],
   community: ['community', 'farcaster', 'neynar', 'leaderboard', 'people', 'social'],
   surveys: ['survey', 'surveys', 'assessment', 'questionnaire', 'quiz', 'personality', 'badge', 'certificate', 'psychological'],
   blue: ['blue', 'persona', 'assistant', 'daemon', 'agent', 'azura', 'headset', 'brain interface'],
   events: ['events', 'event', 'tickets', 'guest', 'refresh', 'reset', 'paywall'],
-  treasury: ['community treasury', 'treasury', 'voting rights', 'proposal access', 'reinvest'],
   safety: ['safety', 'anonymous', 'anonymity', 'profile picture', 'asynchronous', 'privacy'],
 };
 
 const ROUTE_TERMS: Record<string, string[]> = {
   '/home': ['dashboard', 'guides', 'progress', 'streak', 'overview', 'home'],
-  '/dao': ['dao', 'world', 'treasury', 'blue'],
+  '/dao': ['live', 'world', 'broadcast', 'blue'],
   '/shadow-work': ['course', 'curriculum', 'week', 'seal', 'pathway'],
   '/quests': ['quests', 'daily', 'field notes', 'completion'],
-  '/markets': ['markets', 'kalshi', 'prediction', 'treasury', 'trade'],
-  '/research': ['research', 'grant', 'proposal', 'thesis', 'paper'],
-  '/community': ['community', 'farcaster', 'social', 'treasury', 'events'],
+  '/community': ['community', 'farcaster', 'social', 'events'],
   '/prompts': ['prompts', 'library', 'reading', 'blog'],
   '/library': ['prompts', 'library', 'reading', 'blog'],
   '/profile': ['profile', 'wallet', 'account', 'username'],
@@ -158,6 +163,19 @@ const ROUTE_TERMS: Record<string, string[]> = {
   '/surveys': ['surveys', 'assessment', 'questionnaire'],
   '/events': ['events', 'tickets', 'guest', 'refresh', 'reset'],
 };
+
+const DEFAULT_CONTEXT_CHAR_BUDGET = 3_600;
+const MIN_CONTEXT_CHAR_BUDGET = 600;
+const MAX_CONTEXT_CHAR_BUDGET = 6_000;
+const RETRIEVAL_CACHE_MAX = 100;
+const RETRIEVAL_CACHE_TTL_MS = 60_000;
+
+interface CachedRetrieval {
+  expiresAt: number;
+  value: ScoredDocument[];
+}
+
+const publicRetrievalCache = new Map<string, CachedRetrieval>();
 
 function normalizeRoute(pathname: string | null | undefined): string {
   if (!pathname) return '';
@@ -210,7 +228,6 @@ function classifyIntent(message: string, tokens: string[], concepts: string[]): 
   if (concepts.includes('account') || /\b(my|mine|me)\b/.test(normalized) && /\b(progress|wallet|credits|profile|streak|quests?)\b/.test(normalized)) return 'account_state';
   if (/\b(where|open|find|page|screen|tab|go)\b/.test(normalized)) return 'navigation';
   if (/\b(write|draft|caption|post|campaign|rewrite|edit)\b/.test(normalized)) return 'creative';
-  if (tokens.length <= 2 && concepts.length === 0) return 'casual';
   return 'factual';
 }
 
@@ -224,7 +241,9 @@ function rewriteQuery(input: Pick<BlueRagInput, 'message' | 'pathname'>): QueryR
   const aliasTerms = concepts.flatMap((concept) => CONCEPT_ALIASES[concept] ?? []);
   const routeExpansionTerms = originalTokens.length <= 2 ? routeTerms.flatMap(tokenize) : [];
   const canonicalTerms = unique(originalTokens);
-  const expandedTerms = unique([...canonicalTerms, ...aliasTerms.flatMap(tokenize)]);
+  const canonicalTermSet = new Set(canonicalTerms);
+  const expandedTerms = unique(aliasTerms.flatMap(tokenize))
+    .filter((term) => !canonicalTermSet.has(term));
   const intent = classifyIntent(original, originalTokens, concepts);
 
   return {
@@ -235,8 +254,8 @@ function rewriteQuery(input: Pick<BlueRagInput, 'message' | 'pathname'>): QueryR
     expandedTerms,
     expandedQueries: unique([
       normalized,
-      [...originalTokens, ...concepts].join(' '),
-      [...routeExpansionTerms, ...originalTokens].join(' '),
+      [...originalTokens, ...expandedTerms].join(' '),
+      [...routeExpansionTerms, ...originalTokens, ...expandedTerms].join(' '),
     ]).filter((query) => query.trim().length > 0),
     route,
   };
@@ -300,8 +319,12 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
     }
   }
 
-  const queryTerms = unique(query.expandedTerms);
-  const queryConcepts = new Set(conceptsForText(query.expandedTerms.join(' ')));
+  const canonicalTerms = unique(query.canonicalTerms);
+  const aliasTerms = unique(query.expandedTerms);
+  const queryConcepts = new Set(conceptsForText([
+    query.normalized,
+    ...query.expandedTerms,
+  ].join(' ')));
   const avgLength = documents.reduce((sum, doc) => sum + doc.tokens.length, 0) / docCount || 1;
 
   const scored = documents.map((doc) => {
@@ -310,7 +333,7 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
 
     let lexical = 0;
     const matchedTerms: string[] = [];
-    for (const term of queryTerms) {
+    for (const term of canonicalTerms) {
       const frequency = tokenCounts.get(term) ?? 0;
       if (!frequency) continue;
       matchedTerms.push(term);
@@ -320,15 +343,15 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
       lexical += idf * ((frequency * 2.2) / denominator);
     }
 
+    const aliasMatches = aliasTerms.filter((term) => tokenCounts.has(term));
+    const aliasRecall = aliasTerms.length ? aliasMatches.length / aliasTerms.length : 0;
     const docConcepts = new Set(doc.concepts);
     const semanticHits = [...queryConcepts].filter((concept) => docConcepts.has(concept)).length;
-    const semantic = queryConcepts.size ? semanticHits / queryConcepts.size : 0;
+    const conceptRecall = queryConcepts.size ? semanticHits / queryConcepts.size : 0;
+    const semantic = conceptRecall * 0.75 + aliasRecall * 0.25;
 
     const lowered = `${doc.title} ${doc.keywords.join(' ')} ${doc.body}`.toLowerCase();
-    const phrase = query.expandedQueries.reduce((score, phraseQuery) => {
-      if (!phraseQuery || phraseQuery.length < 4) return score;
-      return score + (lowered.includes(phraseQuery.toLowerCase()) ? 1 : 0);
-    }, 0);
+    const phrase = exactPhraseScore(query, doc, lowered);
 
     const exactRoute = query.route && doc.routes.includes(query.route) ? 1 : 0;
     const globalRoute = doc.routes.includes('*') ? 0.35 : 0;
@@ -337,6 +360,8 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
 
     return {
       ...doc,
+      // Match reporting and trust use exact user terms. Alias hits are candidate
+      // recall signals only and never satisfy evidence coverage.
       matchedTerms: unique(matchedTerms),
       score: 0,
       components: {
@@ -351,7 +376,6 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
 
   const max = {
     lexical: Math.max(1, ...scored.map((doc) => doc.components.lexical)),
-    phrase: Math.max(1, ...scored.map((doc) => doc.components.phrase)),
   };
 
   return scored
@@ -359,21 +383,51 @@ function scoreDocuments(query: QueryRewrite, documents: RetrievalDocument[]): Sc
       const components = {
         lexical: doc.components.lexical / max.lexical,
         semantic: doc.components.semantic,
-        phrase: doc.components.phrase / max.phrase,
+        phrase: doc.components.phrase,
         route: doc.components.route,
         authority: doc.components.authority,
       };
       const score =
-        components.lexical * 0.42
-        + components.semantic * 0.28
-        + components.phrase * 0.10
-        + components.route * 0.12
-        + components.authority * 0.08;
+        components.lexical * 0.58
+        + components.phrase * 0.20
+        + components.semantic * 0.08
+        + components.route * 0.07
+        + components.authority * 0.07;
 
       return { ...doc, components, score };
     })
-    .filter((doc) => doc.score > 0.08 || doc.components.route >= 1)
+    .filter((doc) => (
+      doc.matchedTerms.length > 0
+      || doc.components.phrase > 0
+      || doc.components.semantic > 0.12
+      || doc.components.route >= 1
+    ))
     .sort((a, b) => b.score - a.score);
+}
+
+function exactPhraseScore(
+  query: QueryRewrite,
+  doc: RetrievalDocument,
+  loweredDocument: string,
+): number {
+  if (query.normalized.length >= 4 && loweredDocument.includes(query.normalized)) {
+    return 1;
+  }
+
+  const queryTokens = query.canonicalTerms;
+  if (queryTokens.length === 0) return 0;
+  const documentTokens = doc.tokens.join(' ');
+
+  for (let size = Math.min(4, queryTokens.length); size >= 2; size -= 1) {
+    for (let index = 0; index <= queryTokens.length - size; index += 1) {
+      const phrase = queryTokens.slice(index, index + size).join(' ');
+      if (documentTokens.includes(phrase)) {
+        return Math.min(1, 0.45 + (size / queryTokens.length) * 0.55);
+      }
+    }
+  }
+
+  return queryTokens.length === 1 && doc.tokens.includes(queryTokens[0]) ? 0.35 : 0;
 }
 
 async function retrieveScoredDocuments(args: {
@@ -382,14 +436,34 @@ async function retrieveScoredDocuments(args: {
   recentMessages: BlueRagRecentMessage[];
   limit: number;
   forceLocal?: boolean;
-}): Promise<{ scored: ScoredDocument[]; retrievalMode: 'database' | 'local' }> {
-  const requireDatabase = process.env.BLUE_RAG_REQUIRE_DATABASE === '1' || process.env.NODE_ENV === 'production';
+}): Promise<{
+  scored: ScoredDocument[];
+  retrievalMode: RetrievalMode;
+  fallbackReason?: RetrievalFallbackReason | null;
+}> {
+  if (args.query.intent === 'casual') {
+    return { scored: [], retrievalMode: 'local' };
+  }
 
   if (!args.forceLocal && isDbConfigured()) {
     try {
-      const ready = await ensureBlueRagReady();
+      const [ready, guideStateStamp] = await Promise.all([
+        ensureBlueRagReady(),
+        getPublishedGuideStateStamp(),
+      ]);
       if (ready.ready) {
-        const dbScored = await retrieveDbScoredDocuments(args.query, args.limit * 8);
+        const cacheKey = [
+          ready.corpusHash,
+          guideStateStamp,
+          args.query.normalized,
+          args.query.route,
+          args.limit,
+        ].join(':');
+        let dbScored = getCachedPublicRetrieval(cacheKey);
+        if (!dbScored) {
+          dbScored = await retrieveDbScoredDocuments(args.query, args.limit * 8);
+          setCachedPublicRetrieval(cacheKey, dbScored);
+        }
         if (dbScored.length) {
           const memoryScored = scoreDocuments(args.query, buildRuntimeMemoryDocuments({
             recentFacts: args.recentFacts,
@@ -400,18 +474,21 @@ async function retrieveScoredDocuments(args: {
             retrievalMode: 'database',
           };
         }
+        return buildLocalRetrieval(args, 'database_empty');
       }
-      if (requireDatabase) {
-        return { scored: [], retrievalMode: 'database' };
-      }
+      return buildLocalRetrieval(args, 'index_unavailable');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'unknown db rag error';
       console.warn('Blue RAG database retrieval unavailable, falling back to local:', message);
-      if (requireDatabase) {
-        return { scored: [], retrievalMode: 'database' };
-      }
+      return buildLocalRetrieval(args, 'database_error');
     }
   }
+
+  const fallbackReason = !args.forceLocal
+    && (process.env.NODE_ENV === 'production' || process.env.BLUE_RAG_REQUIRE_DATABASE === '1')
+    ? 'database_unconfigured'
+    : null;
+  if (fallbackReason) return buildLocalRetrieval(args, fallbackReason);
 
   return {
     scored: scoreDocuments(args.query, buildDocuments({
@@ -422,6 +499,32 @@ async function retrieveScoredDocuments(args: {
       limit: args.limit,
     })),
     retrievalMode: 'local',
+  };
+}
+
+function buildLocalRetrieval(
+  args: {
+    query: QueryRewrite;
+    recentFacts: BlueRagMemoryFact[];
+    recentMessages: BlueRagRecentMessage[];
+    limit: number;
+  },
+  fallbackReason: RetrievalFallbackReason,
+): {
+  scored: ScoredDocument[];
+  retrievalMode: 'local-fallback';
+  fallbackReason: RetrievalFallbackReason;
+} {
+  return {
+    scored: scoreDocuments(args.query, buildDocuments({
+      message: args.query.original,
+      pathname: args.query.route,
+      recentFacts: args.recentFacts,
+      recentMessages: args.recentMessages,
+      limit: args.limit,
+    })),
+    retrievalMode: 'local-fallback',
+    fallbackReason,
   };
 }
 
@@ -455,7 +558,10 @@ function buildRuntimeMemoryDocuments(input: Pick<BlueRagInput, 'recentFacts' | '
 async function retrieveDbScoredDocuments(query: QueryRewrite, candidateLimit: number): Promise<ScoredDocument[]> {
   await ensureBlueRagSchema();
 
-  const lexicalRows = await sqlQuery<DbCandidateRow[]>(
+  const candidateTerms = unique([...query.canonicalTerms, ...query.expandedTerms]);
+  const queryText = candidateTerms.map((term) => `"${term}"`).join(' OR ')
+    || query.normalized;
+  const lexicalPromise = sqlQuery<DbCandidateRow[]>(
     `WITH q AS (
        SELECT websearch_to_tsquery('english', :queryText) AS query
      )
@@ -475,22 +581,46 @@ async function retrieveDbScoredDocuments(query: QueryRewrite, candidateLimit: nu
      CROSS JOIN q
      WHERE s.enabled = TRUE
        AND (
+         s.source_type <> 'published_guide'
+         OR EXISTS (
+           SELECT 1
+           FROM guides current_guide
+           WHERE current_guide.id::text = s.metadata->>'guideId'
+             AND current_guide.status = 'published'
+             AND current_guide.updated_at::text = s.metadata->>'guideUpdatedAt'
+         )
+       )
+       AND (
          c.search_vector @@ q.query
          OR (:route <> '' AND c.route = :route)
        )
      ORDER BY ts_rank_cd(c.search_vector, q.query) DESC, c.updated_at DESC
      LIMIT :limit`,
     {
-      queryText: query.expandedQueries[0] || query.normalized,
+      queryText,
       route: query.route,
       limit: candidateLimit,
     }
   );
 
+  // Lexical retrieval and the external embedding request start together. The
+  // exact cosine query follows only after its embedding is available.
+  const embeddingPromise = embedBlueRagQuery(query.normalized)
+    .catch((error: unknown) => {
+      console.warn(
+        'Blue RAG vector search skipped:',
+        error instanceof Error ? error.message : 'unknown embedding error',
+      );
+      return null;
+    });
+  const [lexicalRows, embeddingResult] = await Promise.all([
+    lexicalPromise,
+    embeddingPromise,
+  ]);
+
   let vectorRows: DbCandidateRow[] = [];
-  try {
-    const embeddingResult = await embedBlueRagTexts([query.expandedQueries.join('\n') || query.normalized]);
-    const embedding = toPgVectorLiteral(embeddingResult.embeddings[0]);
+  if (embeddingResult) {
+    const embedding = toPgVectorLiteral(embeddingResult.embedding);
     vectorRows = await sqlQuery<DbCandidateRow[]>(
       `SELECT
          c.id,
@@ -506,6 +636,16 @@ async function retrieveDbScoredDocuments(query: QueryRewrite, candidateLimit: nu
        FROM blue_rag_chunks c
        JOIN blue_rag_sources s ON s.id = c.source_id
        WHERE s.enabled = TRUE
+         AND (
+           s.source_type <> 'published_guide'
+           OR EXISTS (
+             SELECT 1
+             FROM guides current_guide
+             WHERE current_guide.id::text = s.metadata->>'guideId'
+               AND current_guide.status = 'published'
+               AND current_guide.updated_at::text = s.metadata->>'guideUpdatedAt'
+           )
+         )
        ORDER BY c.embedding <=> :embedding::vector
        LIMIT :limit`,
       {
@@ -513,12 +653,50 @@ async function retrieveDbScoredDocuments(query: QueryRewrite, candidateLimit: nu
         limit: candidateLimit,
       }
     );
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'unknown embedding error';
-    console.warn('Blue RAG vector search skipped:', message);
   }
 
   return mergeDbCandidates(query, [...lexicalRows, ...vectorRows]);
+}
+
+async function getPublishedGuideStateStamp(): Promise<string> {
+  const rows = await sqlQuery<Array<{
+    published_count: number | string;
+    latest_update: string | null;
+  }>>(
+    `SELECT
+       COUNT(*) AS published_count,
+       MAX(updated_at)::text AS latest_update
+     FROM guides
+     WHERE status = 'published'`,
+  );
+  return [
+    Number(rows[0]?.published_count ?? 0),
+    rows[0]?.latest_update ?? 'none',
+  ].join(':');
+}
+
+function getCachedPublicRetrieval(key: string): ScoredDocument[] | null {
+  const cached = publicRetrievalCache.get(key);
+  if (!cached) return null;
+  if (cached.expiresAt <= Date.now()) {
+    publicRetrievalCache.delete(key);
+    return null;
+  }
+  publicRetrievalCache.delete(key);
+  publicRetrievalCache.set(key, cached);
+  return cached.value;
+}
+
+function setCachedPublicRetrieval(key: string, value: ScoredDocument[]): void {
+  publicRetrievalCache.set(key, {
+    expiresAt: Date.now() + RETRIEVAL_CACHE_TTL_MS,
+    value,
+  });
+  while (publicRetrievalCache.size > RETRIEVAL_CACHE_MAX) {
+    const oldestKey = publicRetrievalCache.keys().next().value as string | undefined;
+    if (!oldestKey) break;
+    publicRetrievalCache.delete(oldestKey);
+  }
 }
 
 function mergeDbCandidates(query: QueryRewrite, rows: DbCandidateRow[]): ScoredDocument[] {
@@ -561,38 +739,35 @@ function mergeDbCandidates(query: QueryRewrite, rows: DbCandidateRow[]): ScoredD
     const lowered = `${doc.title} ${doc.keywords.join(' ')} ${doc.body}`.toLowerCase();
     const canonicalMatches = query.canonicalTerms.filter((term) => doc.tokens.includes(term));
     const canonicalCoverage = query.canonicalTerms.length ? canonicalMatches.length / query.canonicalTerms.length : 1;
-    const matchedTerms = unique([
-      ...canonicalMatches,
-      ...query.expandedTerms.filter((term) => doc.tokens.includes(term)),
-    ]);
-    const queryConcepts = new Set(conceptsForText(query.expandedTerms.join(' ')));
+    const matchedTerms = unique(canonicalMatches);
+    const queryConcepts = new Set(conceptsForText([
+      query.normalized,
+      ...query.expandedTerms,
+    ].join(' ')));
     const docConcepts = new Set(doc.concepts);
     const semanticConceptHits = [...queryConcepts].filter((concept) => docConcepts.has(concept)).length;
     const conceptSemantic = queryConcepts.size ? semanticConceptHits / queryConcepts.size : 0;
-    const phrase = query.expandedQueries.reduce((score, phraseQuery) => {
-      if (!phraseQuery || phraseQuery.length < 4) return score;
-      return score + (lowered.includes(phraseQuery.toLowerCase()) ? 1 : 0);
-    }, 0);
+    const phrase = exactPhraseScore(query, doc, lowered);
     const exactRoute = query.route && doc.routes.includes(query.route) ? 1 : 0;
     const globalRoute = doc.routes.includes('*') ? 0.35 : 0;
 
     const components = {
-      lexical: Math.max(row.lexical / maxLexical, canonicalCoverage),
+      lexical: canonicalCoverage * (0.75 + 0.25 * (row.lexical / maxLexical)),
       semantic: Math.max(
-        row.vectorSimilarity * (0.25 + 0.75 * canonicalCoverage),
+        row.vectorSimilarity * (0.15 + 0.85 * canonicalCoverage),
         conceptSemantic * canonicalCoverage
       ),
-      phrase: Math.min(1, phrase),
+      phrase,
       route: Math.max(exactRoute, globalRoute),
       authority: 1,
     };
 
     const score =
-      components.lexical * 0.42
-      + components.semantic * 0.22
-      + components.phrase * 0.08
-      + components.route * 0.18
-      + components.authority * 0.10;
+      components.lexical * 0.55
+      + components.phrase * 0.20
+      + components.semantic * 0.12
+      + components.route * 0.06
+      + components.authority * 0.07;
 
     return {
       ...doc,
@@ -663,19 +838,42 @@ function rerankDocuments(scored: ScoredDocument[], limit: number): BlueRagEntry[
 }
 
 function evaluateQuality(query: QueryRewrite, entries: BlueRagEntry[]): BlueRagQuality {
+  if (query.intent === 'casual') {
+    return {
+      trusted: true,
+      label: 'medium',
+      needsGrounding: false,
+      coverage: 1,
+      topScore: 0,
+      margin: 0,
+      sourceDiversity: 0,
+      reasons: [],
+    };
+  }
+
   const topScore = entries[0]?.score ?? 0;
   const secondScore = entries[1]?.score ?? 0;
   const margin = Math.max(0, topScore - secondScore);
-  const selectedTerms = new Set(entries.flatMap((entry) => tokenize([entry.title, entry.body, entry.matchedTerms.join(' ')].join(' '))));
+  // Coverage is derived only from the title and body that survived the context
+  // budget. Scoring metadata can describe the full chunk and must not raise
+  // trust for evidence the model never receives.
+  const selectedTerms = new Set(entries.flatMap((entry) => (
+    tokenize([entry.title, entry.body].join(' '))
+  )));
   const requiredTerms = query.canonicalTerms.filter((term) => !STOPWORDS.has(term));
   const coveredTerms = requiredTerms.filter((term) => selectedTerms.has(term));
   const coverage = requiredTerms.length ? coveredTerms.length / requiredTerms.length : 1;
   const missingTerms = requiredTerms.filter((term) => !selectedTerms.has(term));
-  const rareMissingTerms = missingTerms.filter((term) => term.length >= 4 || /^[A-Z0-9]{3,}$/i.test(term));
+  const acronymTerms = new Set(
+    (query.original.match(/\b[A-Z0-9]{2,}\b/g) ?? []).flatMap(tokenize),
+  );
+  const rareMissingTerms = missingTerms.filter((term) => (
+    term.length >= 4 || /\d/.test(term) || acronymTerms.has(term)
+  ));
   const sourceDiversity = new Set(entries.map((entry) => entry.source)).size;
   const hasKnowledge = entries.some((entry) => entry.source === 'knowledge');
   const sensitive = /\b(price|cost|contract|wallet|trade|treasury|medical|diagnos|therapy|privacy|consent|payout|funding)\b/i.test(query.original);
-  const needsGrounding = query.intent !== 'casual' && query.intent !== 'creative';
+  const needsGrounding = query.intent !== 'creative';
 
   const reasons: string[] = [];
   if (!entries.length) reasons.push('no retrieval candidates survived scoring');
@@ -712,21 +910,85 @@ function evaluateQuality(query: QueryRewrite, entries: BlueRagEntry[]): BlueRagQ
   };
 }
 
-function formatContext(query: QueryRewrite, entries: BlueRagEntry[], quality: BlueRagQuality): string {
+function fitEvidenceToBudget(
+  query: QueryRewrite,
+  entries: BlueRagEntry[],
+  requestedBudget: number | undefined,
+): { entries: BlueRagEntry[]; maxChars: number } {
+  const maxChars = Math.min(
+    MAX_CONTEXT_CHAR_BUDGET,
+    Math.max(MIN_CONTEXT_CHAR_BUDGET, requestedBudget ?? DEFAULT_CONTEXT_CHAR_BUDGET),
+  );
+  if (query.intent === 'casual') return { entries: [], maxChars };
+
+  // Reserve enough room for the retrieval instruction. Quality is calculated
+  // after this step so excluded text can never satisfy trust.
+  let remaining = maxChars - 420;
+  const included: BlueRagEntry[] = [];
+
+  for (const entry of entries) {
+    const sourceLabel = entry.source === 'knowledge'
+      ? 'product knowledge'
+      : entry.source === 'memory_fact'
+        ? 'user memory'
+        : 'recent chat';
+    const prefix = `${included.length + 1}. [${sourceLabel}] ${entry.title}: `;
+    const fullLength = prefix.length + entry.body.length + 1;
+    if (fullLength <= remaining) {
+      included.push(entry);
+      remaining -= fullLength;
+      continue;
+    }
+
+    const bodyBudget = remaining - prefix.length - 1;
+    if (bodyBudget >= 120) {
+      included.push({
+        ...entry,
+        body: clipAtWordBoundary(entry.body, bodyBudget),
+      });
+    }
+    break;
+  }
+
+  return { entries: included, maxChars };
+}
+
+function formatContext(
+  query: QueryRewrite,
+  entries: BlueRagEntry[],
+  quality: BlueRagQuality,
+  maxChars: number,
+): string {
+  if (query.intent === 'casual') return '';
+
   const lines = [
-    'Blue retrieval context.',
-    `Retrieval query: ${query.expandedQueries[0] || query.normalized}`,
-    `Retrieval quality: ${quality.label}; trusted=${quality.trusted ? 'yes' : 'no'}; coverage=${quality.coverage}; topScore=${quality.topScore}.`,
     quality.trusted
-      ? 'Use the facts below silently. Do not invent MWA-specific facts outside this context.'
-      : 'Retrieval is weak. If the user asks for MWA-specific facts, say you do not have enough context and ask one tight clarifying question instead of guessing.',
+      ? 'MWA evidence. Use these facts silently and stay within them for product-specific claims.'
+      : 'MWA evidence is incomplete. For product-specific facts, state the gap and ask one focused question.',
     ...entries.map((entry, index) => {
-      const sourceLabel = entry.source === 'knowledge' ? 'knowledge' : entry.source === 'memory_fact' ? 'user memory' : 'recent chat';
-      return `${index + 1}. [${sourceLabel}; score=${entry.score}] ${entry.title}: ${entry.body}`;
+      const sourceLabel = entry.source === 'knowledge'
+        ? 'product knowledge'
+        : entry.source === 'memory_fact'
+          ? 'user memory'
+          : 'recent chat';
+      return `${index + 1}. [${sourceLabel}] ${entry.title}: ${entry.body}`;
     }),
   ];
+  const context = lines.join('\n');
+  if (context.length > maxChars) {
+    // fitEvidenceToBudget reserves more than this header consumes. Failing
+    // closed keeps quality and supplied evidence aligned if that invariant is
+    // changed later.
+    return 'MWA evidence is incomplete. For product-specific facts, state the gap and ask one focused question.';
+  }
+  return context;
+}
 
-  return lines.join('\n');
+function clipAtWordBoundary(value: string, maxChars: number): string {
+  if (value.length <= maxChars) return value;
+  const clipped = value.slice(0, Math.max(0, maxChars - 1));
+  const boundary = clipped.lastIndexOf(' ');
+  return `${clipped.slice(0, boundary > maxChars * 0.7 ? boundary : clipped.length).trimEnd()}…`;
 }
 
 async function persistRetrievalTrace(args: {
@@ -735,7 +997,7 @@ async function persistRetrievalTrace(args: {
   query: QueryRewrite;
   entries: BlueRagEntry[];
   quality: BlueRagQuality;
-  retrievalMode: 'database' | 'local';
+  retrievalMode: RetrievalMode;
   startedAt: number;
   persistTrace?: boolean;
 }): Promise<string | null> {
@@ -808,6 +1070,7 @@ const RagState = Annotation.Root({
   recentFacts: Annotation<BlueRagMemoryFact[]>({ value: (_left, right) => right, default: () => [] }),
   recentMessages: Annotation<BlueRagRecentMessage[]>({ value: (_left, right) => right, default: () => [] }),
   limit: Annotation<number | undefined>(),
+  maxContextChars: Annotation<number | undefined>(),
   forceLocal: Annotation<boolean | undefined>(),
   persistTrace: Annotation<boolean | undefined>(),
   startedAt: Annotation<number>(),
@@ -815,8 +1078,10 @@ const RagState = Annotation.Root({
   scored: Annotation<ScoredDocument[]>({ value: (_left, right) => right, default: () => [] }),
   entries: Annotation<BlueRagEntry[]>({ value: (_left, right) => right, default: () => [] }),
   quality: Annotation<BlueRagQuality | undefined>(),
-  retrievalMode: Annotation<'database' | 'local'>(),
+  retrievalMode: Annotation<RetrievalMode>(),
+  fallbackReason: Annotation<RetrievalFallbackReason | null | undefined>(),
   traceId: Annotation<string | null | undefined>(),
+  contextMaxChars: Annotation<number>(),
   contextText: Annotation<string>(),
 });
 
@@ -838,32 +1103,37 @@ const blueRagGraph = new StateGraph(RagState)
   .addNode('rerank', (state: typeof RagState.State) => ({
     entries: rerankDocuments(state.scored, state.limit ?? 6),
   }))
+  .addNode('budget_evidence', (state: typeof RagState.State) => {
+    if (!state.query) return { entries: [], contextMaxChars: DEFAULT_CONTEXT_CHAR_BUDGET };
+    const fitted = fitEvidenceToBudget(
+      state.query,
+      state.entries,
+      state.maxContextChars,
+    );
+    return {
+      entries: fitted.entries,
+      contextMaxChars: fitted.maxChars,
+    };
+  })
   .addNode('evaluate', (state: typeof RagState.State) => ({
     quality: state.query ? evaluateQuality(state.query, state.entries) : undefined,
   }))
-  .addNode('trace', async (state: typeof RagState.State) => ({
-    traceId: state.query && state.quality
-      ? await persistRetrievalTrace({
-          userId: state.userId,
-          requestId: state.requestId,
-          query: state.query,
-          entries: state.entries,
-          quality: state.quality,
-          retrievalMode: state.retrievalMode ?? 'local',
-          startedAt: state.startedAt,
-          persistTrace: state.persistTrace,
-        })
-      : null,
-  }))
   .addNode('assemble_context', (state: typeof RagState.State) => ({
-    contextText: state.query && state.quality ? formatContext(state.query, state.entries, state.quality) : '',
+    contextText: state.query && state.quality
+      ? formatContext(
+          state.query,
+          state.entries,
+          state.quality,
+          state.contextMaxChars ?? DEFAULT_CONTEXT_CHAR_BUDGET,
+        )
+      : '',
   }))
   .addEdge(START, 'rewrite_query')
   .addEdge('rewrite_query', 'hybrid_search')
   .addEdge('hybrid_search', 'rerank')
-  .addEdge('rerank', 'evaluate')
-  .addEdge('evaluate', 'trace')
-  .addEdge('trace', 'assemble_context')
+  .addEdge('rerank', 'budget_evidence')
+  .addEdge('budget_evidence', 'evaluate')
+  .addEdge('evaluate', 'assemble_context')
   .addEdge('assemble_context', END)
   .compile();
 
@@ -876,10 +1146,13 @@ export async function runBlueRagGraph(input: BlueRagInput): Promise<BlueRagResul
     recentFacts: input.recentFacts ?? [],
     recentMessages: input.recentMessages ?? [],
     limit: input.limit ?? 6,
+    maxContextChars: input.maxContextChars ?? DEFAULT_CONTEXT_CHAR_BUDGET,
     forceLocal: input.forceLocal,
     persistTrace: input.persistTrace,
     startedAt: Date.now(),
     retrievalMode: 'local',
+    fallbackReason: null,
+    contextMaxChars: DEFAULT_CONTEXT_CHAR_BUDGET,
     contextText: '',
   });
 
@@ -887,12 +1160,28 @@ export async function runBlueRagGraph(input: BlueRagInput): Promise<BlueRagResul
     throw new Error('Blue RAG graph failed to produce retrieval state');
   }
 
-  return {
+  const result: BlueRagResult = {
     query: state.query,
     entries: state.entries,
     quality: state.quality,
     contextText: state.contextText,
     retrievalMode: state.retrievalMode ?? 'local',
-    traceId: state.traceId ?? null,
+    fallbackReason: state.fallbackReason ?? null,
+    traceId: null,
   };
+
+  if (input.persistTrace && state.query.intent !== 'casual') {
+    void persistRetrievalTrace({
+      userId: input.userId,
+      requestId: input.requestId,
+      query: state.query,
+      entries: state.entries,
+      quality: state.quality,
+      retrievalMode: state.retrievalMode ?? 'local',
+      startedAt: state.startedAt,
+      persistTrace: true,
+    });
+  }
+
+  return result;
 }

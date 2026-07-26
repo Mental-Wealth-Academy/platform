@@ -91,6 +91,21 @@ async function _ensureBlueRagSchemaImpl() {
   `);
 
   await sqlQuery(`
+    CREATE TABLE IF NOT EXISTS blue_rag_index_manifests (
+      id TEXT PRIMARY KEY,
+      corpus_hash TEXT NOT NULL,
+      embedding_provider VARCHAR(48) NOT NULL,
+      embedding_model TEXT NOT NULL,
+      embedding_dim INTEGER NOT NULL,
+      chunk_version TEXT NOT NULL,
+      source_count INTEGER NOT NULL,
+      chunk_count INTEGER NOT NULL,
+      metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+      seeded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await sqlQuery(`
     CREATE TABLE IF NOT EXISTS blue_rag_eval_cases (
       id TEXT PRIMARY KEY,
       suite TEXT NOT NULL DEFAULT 'default',
@@ -142,15 +157,10 @@ async function _ensureBlueRagSchemaImpl() {
   await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_rag_traces_user_created ON blue_rag_retrieval_traces(user_id, created_at DESC)`);
   await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_blue_rag_eval_cases_suite ON blue_rag_eval_cases(suite, enabled)`);
 
-  try {
-    await sqlQuery(`
-      CREATE INDEX IF NOT EXISTS idx_blue_rag_chunks_embedding
-      ON blue_rag_chunks USING ivfflat (embedding vector_cosine_ops)
-      WITH (lists = 100)
-    `);
-  } catch (err: any) {
-    console.warn('Blue RAG vector index creation skipped:', err?.message);
-  }
+  // The corpus is deliberately small. Exact cosine ordering is more accurate
+  // and avoids an IVFFlat index whose old 100-list configuration exceeded the
+  // useful partition count by a wide margin.
+  await sqlQuery(`DROP INDEX IF EXISTS idx_blue_rag_chunks_embedding`);
 
   try {
     await sqlQuery(`DROP TRIGGER IF EXISTS update_blue_rag_sources_updated_at ON blue_rag_sources`);
@@ -171,4 +181,12 @@ async function _ensureBlueRagSchemaImpl() {
   } catch (err: any) {
     console.warn('Error creating blue_rag_chunks updated_at trigger:', err?.message);
   }
+
+  await sqlQuery(`ALTER TABLE blue_rag_sources ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_chunks ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_retrieval_traces ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_index_manifests ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_eval_cases ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_eval_runs ENABLE ROW LEVEL SECURITY`);
+  await sqlQuery(`ALTER TABLE blue_rag_eval_results ENABLE ROW LEVEL SECURITY`);
 }

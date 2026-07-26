@@ -3,6 +3,7 @@ import { runBlueRagGraph } from '../lib/blue-rag-graph';
 import { isDbConfigured, sqlQuery } from '../lib/db';
 import { ensureBlueRagSchema } from '../lib/ensureBlueRagSchema';
 import { ensureBlueRagReady } from '../lib/blue-rag-index';
+import { BLUE_KNOWLEDGE } from '../lib/blue-knowledge';
 
 dotenv.config({ path: '.env.local' });
 
@@ -13,6 +14,10 @@ interface Fixture {
   shouldTrust: boolean;
   expectedTopIds?: string[];
   minCoverage?: number;
+  expectedNoEntries?: boolean;
+  expectedIntent?: string;
+  maxContextChars?: number;
+  forbiddenTopIds?: string[];
 }
 
 const fixtures: Fixture[] = [
@@ -33,16 +38,16 @@ const fixtures: Fixture[] = [
     minCoverage: 0.7,
   },
   {
-    name: 'kalshi markets',
-    message: 'what markets can the treasury trade?',
-    pathname: '/markets',
+    name: 'profile account',
+    message: 'where can i change my profile and username?',
+    pathname: '/profile',
     shouldTrust: true,
-    expectedTopIds: ['page-markets'],
-    minCoverage: 0.6,
+    expectedTopIds: ['page-profile'],
+    minCoverage: 0.7,
   },
   {
     name: 'feature rails',
-    message: 'what are gem credits tickets membership and usdc for?',
+    message: 'what are credits tickets membership and usdc for?',
     pathname: '/rewards',
     shouldTrust: true,
     expectedTopIds: ['company-economy'],
@@ -57,11 +62,11 @@ const fixtures: Fixture[] = [
     minCoverage: 0.7,
   },
   {
-    name: 'academic angel treasury proposal access',
-    message: 'do Academic Angels get voting rights and treasury proposal access?',
-    pathname: '/community',
+    name: 'academic angel quest rewards',
+    message: 'does Academic Angel unlock eligible USDC quest rewards?',
+    pathname: '/shop',
     shouldTrust: true,
-    expectedTopIds: ['academic-angel-membership', 'community-treasury'],
+    expectedTopIds: ['academic-angel-membership'],
     minCoverage: 0.7,
   },
   {
@@ -121,11 +126,11 @@ const fixtures: Fixture[] = [
     minCoverage: 0.5,
   },
   {
-    name: 'community treasury reinvestment',
-    message: 'what does the community treasury do with profit?',
-    pathname: '/community',
+    name: 'wellness education boundary',
+    message: 'does MWA provide clinical diagnosis or therapy?',
+    pathname: '/home',
     shouldTrust: true,
-    expectedTopIds: ['community-treasury'],
+    expectedTopIds: ['business-ethics-guardrails', 'business-positioning'],
     minCoverage: 0.7,
   },
   {
@@ -161,12 +166,95 @@ const fixtures: Fixture[] = [
     minCoverage: 0.6,
   },
   {
-    name: 'blue headset backstory',
-    message: 'is Blue the avatar or inside the headset?',
+    name: 'blue agent role',
+    message: 'what does Blue review and how does she pay rewards?',
     pathname: '/home',
     shouldTrust: true,
     expectedTopIds: ['feature-blue-persona'],
     minCoverage: 0.7,
+  },
+  {
+    name: 'company mission',
+    message: 'what is Mental Wealth Academy?',
+    pathname: '/home',
+    shouldTrust: true,
+    expectedTopIds: ['company-mission'],
+    minCoverage: 0.7,
+  },
+  {
+    name: 'chat credit cost',
+    message: 'how many credits does chatting with Blue cost?',
+    pathname: '/home',
+    shouldTrust: true,
+    expectedTopIds: ['company-economy'],
+    minCoverage: 0.7,
+  },
+  {
+    name: 'home dashboard',
+    message: 'what can i find on the home dashboard?',
+    pathname: '/home',
+    shouldTrust: true,
+    expectedTopIds: ['page-home'],
+    minCoverage: 0.7,
+  },
+  {
+    name: 'quest purpose exact terms',
+    message: 'how do quests support mental wealth science?',
+    pathname: '/quests',
+    shouldTrust: true,
+    expectedTopIds: ['page-quests'],
+    minCoverage: 0.7,
+  },
+  {
+    name: 'casual greeting skips retrieval',
+    message: 'hello',
+    pathname: '/home',
+    shouldTrust: true,
+    expectedNoEntries: true,
+    expectedIntent: 'casual',
+    minCoverage: 1,
+  },
+  {
+    name: 'casual thanks skips retrieval',
+    message: 'thanks!',
+    pathname: '/shop',
+    shouldTrust: true,
+    expectedNoEntries: true,
+    expectedIntent: 'casual',
+    minCoverage: 1,
+  },
+  {
+    name: 'sunset research mode is unsupported',
+    message: 'where is VIP Research mode?',
+    pathname: '/home',
+    shouldTrust: false,
+    forbiddenTopIds: ['page-research'],
+    minCoverage: 0,
+  },
+  {
+    name: 'dormant market trading is unsupported',
+    message: 'can Blue submit a Kalshi treasury trade?',
+    pathname: '/home',
+    shouldTrust: false,
+    forbiddenTopIds: ['page-markets', 'community-treasury'],
+    minCoverage: 0,
+  },
+  {
+    name: 'dormant governance is unsupported',
+    message: 'where do I submit a governance proposal for treasury voting?',
+    pathname: '/community',
+    shouldTrust: false,
+    forbiddenTopIds: ['community-treasury', 'academic-funding'],
+    minCoverage: 0,
+  },
+  {
+    name: 'excluded evidence cannot raise trust',
+    message: 'explain the evidence behind journaling gamification peer support and self determination',
+    pathname: '/shadow-work',
+    shouldTrust: false,
+    expectedTopIds: ['business-evidence-base'],
+    maxContextChars: 700,
+    minCoverage: 0.3,
   },
   {
     name: 'unsupported company officer claim',
@@ -178,6 +266,18 @@ const fixtures: Fixture[] = [
 ];
 
 async function main() {
+  const corpusIssues = validateCorpusHygiene();
+  if (corpusIssues.length) {
+    for (const issue of corpusIssues) {
+      console.error(JSON.stringify({
+        ok: false,
+        name: 'corpus hygiene',
+        issue,
+      }));
+    }
+    throw new Error(`Blue RAG corpus hygiene failed: ${corpusIssues.length} issue(s)`);
+  }
+
   const dbEnabled = isDbConfigured() && process.env.BLUE_RAG_EVAL_FORCE_LOCAL !== '1';
   let runId: string | null = null;
 
@@ -205,6 +305,7 @@ async function main() {
       message: fixture.message,
       pathname: fixture.pathname,
       limit: 4,
+      maxContextChars: fixture.maxContextChars,
       forceLocal: !dbEnabled,
       persistTrace: dbEnabled,
     });
@@ -213,7 +314,17 @@ async function main() {
     const trustOk = result.quality.trusted === fixture.shouldTrust;
     const topOk = !fixture.expectedTopIds || fixture.expectedTopIds.includes(topId);
     const coverageOk = result.quality.coverage >= (fixture.minCoverage ?? 0);
-    const ok = trustOk && topOk && coverageOk;
+    const entriesOk = !fixture.expectedNoEntries || result.entries.length === 0;
+    const intentOk = !fixture.expectedIntent || result.query.intent === fixture.expectedIntent;
+    const forbiddenTopOk = !(fixture.forbiddenTopIds ?? []).includes(topId);
+    const budgetOk = !fixture.maxContextChars || result.contextText.length <= fixture.maxContextChars;
+    const ok = trustOk
+      && topOk
+      && coverageOk
+      && entriesOk
+      && intentOk
+      && forbiddenTopOk
+      && budgetOk;
 
     if (!ok) failures += 1;
 
@@ -227,6 +338,9 @@ async function main() {
       retrievalMode: result.retrievalMode,
       topId,
       expectedTopIds: fixture.expectedTopIds ?? [],
+      entryCount: result.entries.length,
+      intent: result.query.intent,
+      contextChars: result.contextText.length,
       reasons: result.quality.reasons,
     }));
 
@@ -337,6 +451,49 @@ async function upsertEvalCases() {
 
 function slug(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function validateCorpusHygiene(): string[] {
+  const forbiddenIds = new Set([
+    'page-markets',
+    'page-research',
+    'community-treasury',
+    'academic-funding',
+    'academic-earning',
+  ]);
+  const forbiddenText = [
+    /\bgem credits?\b/i,
+    /\/markets\b/i,
+    /\bkalshi\b/i,
+    /\bchainlink\b/i,
+    /\bcre workflow\b/i,
+    /\bresearch mode\b/i,
+    /\btreasury governance\b/i,
+    /\bazura\b/i,
+    /\bbrain interface\b/i,
+    /\binside the headset\b/i,
+    /\bgen-z boss\b/i,
+    /\bdiscord agent\b/i,
+  ];
+  const issues: string[] = [];
+
+  for (const entry of BLUE_KNOWLEDGE) {
+    if (forbiddenIds.has(entry.id)) {
+      issues.push(`sunset source remains: ${entry.id}`);
+    }
+    const searchable = [
+      entry.title,
+      entry.routes.join(' '),
+      entry.keywords.join(' '),
+      entry.body,
+    ].join('\n');
+    for (const pattern of forbiddenText) {
+      if (pattern.test(searchable)) {
+        issues.push(`${entry.id} contains forbidden text matching ${pattern.source}`);
+      }
+    }
+  }
+  return issues;
 }
 
 main().catch((error) => {

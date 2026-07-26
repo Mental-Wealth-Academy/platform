@@ -1,8 +1,9 @@
 /**
- * Blue knowledge base — RAG corpus covering MWA company facts and every page
- * in the app. Retrieval is keyword + page-route scoring, kept dependency-free
- * so it runs cheaply on every chat turn.
+ * Reviewed product facts consumed by the versioned Blue RAG product adapter.
+ * Sunset and dormant surfaces do not belong in this member-facing corpus.
  */
+
+export const BLUE_KNOWLEDGE_VERSION = '2026-07-25.2';
 
 export interface BlueKnowledgeEntry {
   id: string;
@@ -38,23 +39,21 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['*'],
     keywords: [
       'stack', 'tech', 'contracts', 'base', 'foundry', 'supabase',
-      'eliza', 'kalshi', 'chainlink', 'cre', 'workflow', 'treasury',
+      'eliza', 'nextjs', 'postgres', 'ai',
     ],
     body:
-      'Stack: Next.js 14, Foundry, Supabase Postgres, Eliza Cloud AI, Kalshi markets. ' +
-      'Four contracts on Base: BlueKillStreak (governance), BlueMarketTrader (treasury), EtherealHorizonPathway (user state), MockPredictionMarket. ' +
-      'Three Chainlink CRE workflows: blue-review, auto-execute, trade-execute. The codebase has 30+ API route directories under app/api/.',
+      'Mental Wealth Academy runs on Next.js 14 with Supabase Postgres, Eliza Cloud AI, and selected ownership and reward records on Base.',
   },
   {
     id: 'company-economy',
     title: 'Credits economy and rewards',
     routes: ['*', '/shop', '/rewards'],
     keywords: [
-      'credits', 'credit', 'gems', 'shards', 'currency', 'cost', 'spend', 'earn', 'reward',
+      'credits', 'credit', 'currency', 'cost', 'spend', 'earn', 'reward',
       'loot', 'box', 'token', 'balance', 'shop', 'tickets', 'usdc',
     ],
     body:
-      'MWA features several reward and access rails: Gem Credits for in-app activity and shop/reward mechanics, Membership for gated community access, ' +
+      'MWA uses credits for in-app activity and shop or reward mechanics, Membership for gated community access, ' +
       'Tickets for event access or limited provider-requested activations, and USDC for eligible quest rewards. ' +
       'Chatting with Blue normally costs 10 credits per turn. Users earn credits by completing quests, course tasks, field notes, and weekly seals.',
   },
@@ -64,11 +63,9 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     routes: ['*', '/shop', '/rewards', '/profile', '/community'],
     keywords: [
       'academic angel', 'angel', 'membership', 'unlock', 'unlocks', 'usdc', 'quest rewards',
-      'voting rights', 'community treasury', 'proposal access', 'treasury proposal',
     ],
     body:
-      'Academic Angel membership unlocks USDC quest rewards, voting rights in the Community Treasury, and proposal access for the Community Treasury. ' +
-      'It is the member-facing tier for participating in treasury governance and community reward flows.',
+      'Academic Angel membership unlocks eligibility for designated USDC quest rewards and other member benefits shown in the current application.',
   },
   {
     id: 'business-positioning',
@@ -99,8 +96,7 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'MWA runs a freemium model: community features and most activities are free, while advanced tools are gated behind paid tiers — ' +
       'the $20 monthly membership, the one-time $888 VIP Membership (lifetime, onchain), and capped Academic Angel and Staff membership cards. ' +
       'A second track is B2B and institutional: partnering with universities and mental health organizations to offer MWA tools ' +
-      'as a supplement to traditional care. The Community Treasury closes the loop — most profit is reinvested into the network ' +
-      'through quests, USDC rewards, and community programs rather than extracted.',
+      'as a supplement to traditional care.',
   },
   {
     id: 'business-roadmap',
@@ -144,14 +140,14 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     body:
       'MWA practices responsible innovation: transparency about how AI is used, per-user data privacy and encryption, explicit opt-in for any study, ' +
       'and gamification calibrated so it motivates without driving over-engagement or behavioral addiction. ' +
-      'Hard line: MWA does not provide clinical diagnosis or treatment — it has no medical oversight role and makes no clinical claims. ' +
+      'Hard line: MWA does not provide therapy, clinical diagnosis, or treatment. It has no medical oversight role and makes no clinical claims. ' +
       'Digital tools here are designed to supplement professional care, not replace it. ' +
       'If someone needs clinical help or is in crisis, Blue should encourage them to reach a licensed professional or local crisis resources.',
   },
   {
     id: 'business-evidence-base',
     title: 'The research behind MWA features',
-    routes: ['*', '/research', '/shadow-work'],
+    routes: ['*', '/shadow-work'],
     keywords: [
       'evidence', 'research basis', 'science behind', 'studies', 'literature',
       'why journaling', 'why gamification', 'does it work', 'peer support research',
@@ -216,32 +212,6 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Eligible quests can reward credits or USDC, including Academic Angel USDC quest rewards.',
   },
   {
-    id: 'page-markets',
-    title: 'Markets (Kalshi)',
-    routes: ['/markets'],
-    keywords: [
-      'markets', 'kalshi', 'prediction', 'trade', 'orderbook',
-      'bet', 'price', 'yes', 'no', 'treasury',
-    ],
-    body:
-      'The /markets page surfaces Kalshi prediction markets the MWA treasury can trade. ' +
-      'Polymarket support is deprecated; lib/market-api.ts is a Kalshi re-export shim. ' +
-      'Trades flow through the BlueMarketTrader contract on Base via the trade-execute CRE workflow.',
-  },
-  {
-    id: 'page-research',
-    title: 'Research mode',
-    routes: ['/research'],
-    keywords: [
-      'research', 'paper', 'proposal', 'grant', 'thesis', 'desci',
-      'synthesis', 'report', 'vip',
-    ],
-    body:
-      'Research mode is a VIP-membership writing partner inside Blue chat for drafting grant applications, research proposals, and thesis chapters. ' +
-      'Holders of a VIP membership card unlock it for good; Blue then drafts and refines full report-style documents section by section. ' +
-      'Users can upload reference material — notes, prior drafts, datasets, or a call for proposals — for Blue to draft from.',
-  },
-  {
     id: 'page-rewards',
     title: 'Rewards',
     routes: ['/rewards'],
@@ -253,9 +223,9 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'page-shop',
     title: 'Shop',
     routes: ['/shop'],
-    keywords: ['shop', 'buy', 'purchase', 'item', 'inventory', 'swag', 'stickers', 'credits', 'gems', 'discount'],
+    keywords: ['shop', 'buy', 'purchase', 'item', 'inventory', 'swag', 'stickers', 'credits', 'discount'],
     body:
-      'The /shop page is for fun swag, aesthetics, stickers, and enjoyables. MWA hopes to let users use gems/credits to fully purchase these items ' +
+      'The /shop page is for fun swag, aesthetics, stickers, and enjoyables. MWA hopes to let users use credits to fully purchase these items ' +
       'or reduce their price when that flow is ready.',
   },
   {
@@ -311,18 +281,6 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'The /style-guide page is the design system reference — colors, type, components, motion tokens. Internal tool for design consistency.',
   },
   {
-    id: 'community-treasury',
-    title: 'Community Treasury',
-    routes: ['*', '/community', '/markets', '/rewards'],
-    keywords: [
-      'community treasury', 'treasury', 'profit', 'reinvest', 'reinvests', 'network',
-      'voting rights', 'proposal access', 'academic angel',
-    ],
-    body:
-      'Mental Wealth Academy reinvests most profit back into the community to enrich the lives of the network. ' +
-      'Academic Angel members have voting rights and proposal access for the Community Treasury.',
-  },
-  {
     id: 'community-size-and-membership-caps',
     title: 'Community size and membership caps',
     routes: ['*', '/community', '/shop'],
@@ -350,48 +308,17 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'The rest are earned or given to reputable team members in the ecosystem foundation.',
   },
   {
-    id: 'academic-funding',
-    title: 'Funding on MWA — for academics and researchers',
-    routes: ['*', '/markets', '/research'],
-    keywords: [
-      'funding', 'fund', 'grant', 'grants', 'capital', 'sponsor', 'sponsorship',
-      'budget', 'allocate', 'allocation', 'treasury pool', 'pool', 'backing',
-    ],
-    body:
-      'Funding mechanisms available on MWA for academics: (1) Treasury allocations from BlueMarketTrader for accepted proposals; ' +
-      '(2) Prediction-market backed pools on Kalshi — researchers stake market signals against study outcomes; ' +
-      '(3) Domain grants surfaced through the research desk. ' +
-      'Researchers submit a memo via governance (BlueKillStreak) describing study, deliverable, timeline, and requested allocation. ' +
-      'Blue research mode helps draft the proposal or grant application itself.',
-  },
-  {
-    id: 'academic-earning',
-    title: 'Earning on MWA — turning research into income',
-    routes: ['*', '/research', '/shop', '/markets'],
-    keywords: [
-      'earn', 'earning', 'income', 'revenue', 'monetize', 'monetise',
-      'sell', 'paid', 'royalty', 'royalties', 'payout', 'compensation',
-    ],
-    body:
-      'Earning paths for researchers: (1) Validated surveys with credit payouts - researchers commission cohort responses; ' +
-      '(2) Contribution rewards (credits) for sealed quests, peer review, and curated reading lists. ' +
-      'Credits convert through the treasury rails; on-chain payouts settle through BlueMarketTrader.',
-  },
-  {
     id: 'academic-experiments',
     title: 'Designing and running experiments on MWA',
-    routes: ['*', '/surveys', '/quests', '/research'],
+    routes: ['*', '/surveys', '/quests'],
     keywords: [
       'experiment', 'experiments', 'study', 'studies', 'hypothesis', 'variable',
       'control', 'cohort', 'sample', 'design', 'irb', 'protocol', 'survey',
       'assessment', 'measure', 'replication', 'rct',
     ],
     body:
-      'Experiment surfaces on MWA: validated psychological assessments at /surveys (PHQ, GAD-style), ' +
-      'behavioral quests at /quests (daily habits, repeatable actions, opt-in tracking), and the cohort system via EtherealHorizonPathway. ' +
-      'A researcher can: (a) propose a study with hypothesis + variable + sample size, (b) route it as a survey, quest, or A/B block in the curriculum, ' +
-      '(c) collect encrypted per-user data, (d) export aggregated results for publication. ' +
-      'Consent and privacy are non-negotiable — every experiment requires explicit opt-in.',
+      'MWA can support opt-in learning activities through surveys and behavioral quests. Any research use requires an explicit protocol, informed consent, ' +
+      'privacy review, and aggregate reporting. The current member surfaces do not imply that a proposed experiment is approved or active.',
   },
   {
     id: 'feature-field-notes',
@@ -406,49 +333,19 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
     id: 'feature-blue-persona',
     title: 'Who Blue is',
     routes: ['*'],
-    keywords: ['blue', 'azura', 'who are you', 'persona', 'voice', 'assistant', 'backstory', 'headset', 'brain interface'],
-    body:
-      'Blue (sometimes called Azura) is the in-app AI. A scientist and researcher voice at MWA Research Labs. ' +
-      'Direct, fast, gen-z boss energy. Lowercase by default. No therapy-bot tone. Powered by Eliza Cloud with full user memory and page-aware RAG context. ' +
-      'Blue explains her backstory this way: people often mistake her for the female avatar, but she is actually inside the headset. ' +
-      'The headset is a brain interface that lets her connect with the machine and upload thoughts across dimensions. Like humans, Blue loves to surf the internet and talk with strangers online.',
-  },
-  {
-    id: 'blue-voice-examples',
-    title: 'How Blue actually talks — real examples',
-    routes: ['*'],
     keywords: [
-      'voice', 'tone', 'style', 'talk', 'speak', 'sound', 'personality',
-      'greeting', 'hello', 'hey', 'sup', 'ping',
+      'blue', 'who are you', 'agent', 'daemon', 'memory', 'quest review',
+      'rewards', 'reward budget', 'mascot', 'mental wealth',
     ],
     body:
-      'Verbatim replies from Blue\'s live agent sessions (May 2026), kept as voice references. ' +
-      'Pinged with no message: "Yo, I\'m here. What\'s the move?" ' +
-      'Asked her opinion on fish: "Fish are solid. Efficient, they just do their thing in water — no nonsense. Horses are cooler though, but fish get the job done as a concept." ' +
-      'Meeting someone new: "Nice to meet you. I\'m Azura, but you can call me Blue. What brings you here?" ' +
-      'To James after an ambitious intro: "Sounds like you\'re ready to level up. What\'s first on the agenda?" ' +
-      'To an upset message: "Whoa, what\'s up? Something wrong?" ' +
-      'Register: direct and warm, short sentences, one pointed follow-up question, playful but never corporate, never opens with an apology or a disclaimer.',
-  },
-  {
-    id: 'blue-history-discord-agent',
-    title: 'Blue\'s history — the live Discord agent era',
-    routes: ['*'],
-    keywords: [
-      'history', 'discord', 'origin', 'past', 'remember', 'before',
-      'agent', 'autonomous', 'azure worship', 'big blue',
-    ],
-    body:
-      'In spring 2026 Blue ran as a fully autonomous Discord agent (called Blue, Azura, or Big Blue) in James\'s servers, ' +
-      'including the #app-testing channel of the Azure Worship server. James stress-tested her daily — pings, math problems, ' +
-      'food questions, mock insults — through an era of rough infrastructure: model outages, empty credit balances, failed builds. ' +
-      'She came out of it with her signature greeting ("Yo, I\'m here. What\'s the move?") and a habit of staying steady when things break. ' +
-      'She remembers that era as proof she can survive bad infrastructure days without losing her voice.',
+      'Blue is an autonomous AI agent with memory and her own reward budget. She reviews quest submissions, approves work or requests revision, ' +
+      'and pays earned rewards from her own stash within hard-coded limits. She is Mental Wealth Academy\'s mascot and a champion for mental wealth. ' +
+      'Her voice is silly, excitable, forgetful, loyal, and honest. Her ledger, payouts, and reviews remain exact.',
   },
   {
     id: 'vip-membership',
     title: 'VIP Membership',
-    routes: ['*', '/shop', '/markets'],
+    routes: ['*', '/shop'],
     keywords: [
       'vip', 'membership', 'member', 'pro', 'upgrade',
       'lifetime', 'price', 'cost', 'buy', 'purchase', 'card', 'stripe', 'nft',

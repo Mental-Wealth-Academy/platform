@@ -1,6 +1,21 @@
 import crypto from 'crypto';
 
 export const BLUE_RAG_EMBEDDING_DIM = 1536;
+const QUERY_EMBEDDING_CACHE_MAX = 128;
+const QUERY_EMBEDDING_CACHE_TTL_MS = 10 * 60 * 1000;
+const EMBEDDING_TIMEOUT_MS = 12_000;
+
+interface CachedQueryEmbedding {
+  expiresAt: number;
+  value: {
+    embedding: number[];
+    model: string;
+    dimension: number;
+    provider: BlueRagEmbeddingConfig['provider'];
+  };
+}
+
+const queryEmbeddingCache = new Map<string, CachedQueryEmbedding>();
 
 export interface BlueRagEmbeddingConfig {
   baseUrl: string;
@@ -89,18 +104,31 @@ export async function embedBlueRagTexts(texts: string[]): Promise<{
     };
   }
 
-  const response = await fetch(`${config.baseUrl}${config.path}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${config.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: config.model,
-      input: texts,
-      dimensions: config.dimension,
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), EMBEDDING_TIMEOUT_MS);
+  let response: Response;
+  try {
+    response = await fetch(`${config.baseUrl}${config.path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.model,
+        input: texts,
+        dimensions: config.dimension,
+      }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`RAG embedding request timed out after ${EMBEDDING_TIMEOUT_MS}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -124,6 +152,53 @@ export async function embedBlueRagTexts(texts: string[]): Promise<{
     dimension: config.dimension,
     provider: config.provider,
   };
+}
+
+/**
+ * Query-only embedding cache. Corpus embeddings deliberately bypass this path:
+ * seed jobs must always produce one complete, model-consistent index.
+ */
+export async function embedBlueRagQuery(text: string): Promise<{
+  embedding: number[];
+  model: string;
+  dimension: number;
+  provider: BlueRagEmbeddingConfig['provider'];
+}> {
+  const config = getBlueRagEmbeddingConfig();
+  if (!config) {
+    throw new Error('No RAG embedding provider configured. Set ELIZA_API_KEY, RAG_EMBEDDING_API_KEY, or OPENAI_API_KEY.');
+  }
+
+  const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim();
+  const key = `${config.provider}:${config.model}:${config.dimension}:${normalized}`;
+  const now = Date.now();
+  const cached = queryEmbeddingCache.get(key);
+  if (cached && cached.expiresAt > now) {
+    queryEmbeddingCache.delete(key);
+    queryEmbeddingCache.set(key, cached);
+    return cached.value;
+  }
+  if (cached) queryEmbeddingCache.delete(key);
+
+  const result = await embedBlueRagTexts([normalized]);
+  const value = {
+    embedding: result.embeddings[0],
+    model: result.model,
+    dimension: result.dimension,
+    provider: result.provider,
+  };
+  queryEmbeddingCache.set(key, {
+    expiresAt: now + QUERY_EMBEDDING_CACHE_TTL_MS,
+    value,
+  });
+
+  while (queryEmbeddingCache.size > QUERY_EMBEDDING_CACHE_MAX) {
+    const oldestKey = queryEmbeddingCache.keys().next().value as string | undefined;
+    if (!oldestKey) break;
+    queryEmbeddingCache.delete(oldestKey);
+  }
+
+  return value;
 }
 
 export function toPgVectorLiteral(embedding: number[]) {
