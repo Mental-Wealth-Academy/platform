@@ -150,6 +150,7 @@ app.get("/", (_req, res) => {
     mode: initMode,
     endpoints: {
       "POST /chat": "Send a message and receive a response",
+      "POST /api/v1/chat/completions": "OpenAI-compatible completions, the shape the app requests",
       "GET /health": "Health check endpoint",
     },
   });
@@ -165,6 +166,137 @@ app.get("/health", (_req, res) => {
   });
 });
 
+/**
+ * Generate one Blue turn through the ElizaOS runtime.
+ *
+ * Both the legacy `/chat` shape and the OpenAI-compatible completions shape run
+ * through here, so this local runtime cannot drift from what the app requests.
+ */
+async function generateBlueTurn(
+  message: string,
+  rawUserId?: string,
+): Promise<{ responseText: string; userId: UUID }> {
+  if (!runtime) {
+    throw Object.assign(new Error("Blue runtime not initialized"), { status: 503 });
+  }
+
+  const userId = stringToUuid(rawUserId || uuidv4()) as UUID;
+  const roomId = stringToUuid(`blue-chat-${rawUserId || userId}`) as UUID;
+
+  try {
+    const worldId = stringToUuid("blue-world") as UUID;
+    await ensureConnection(runtime, {
+      agentId: runtime.agentId,
+      entityId: userId,
+      roomId,
+      worldId,
+      userName: rawUserId || "anonymous",
+      name: rawUserId || "Anonymous User",
+      source: "rest_api",
+    });
+  } catch (connErr: any) {
+    elizaLogger.warn("ensureConnection failed:", connErr.message?.slice(0, 100));
+  }
+
+  const messageMemory = createMessageMemory({
+    id: uuidv4() as UUID,
+    entityId: userId,
+    roomId,
+    content: {
+      text: message,
+      source: "rest_api",
+      channelType: ChannelType.DM,
+    },
+  });
+
+  let responseText = "";
+  try {
+    await runtime.messageService?.handleMessage(
+      runtime,
+      messageMemory,
+      async (content) => {
+        if (content?.text) responseText += content.text;
+        return [];
+      }
+    );
+  } catch (msgErr: any) {
+    elizaLogger.warn("Message pipeline error:", msgErr.message?.slice(0, 120));
+  }
+
+  return {
+    responseText: responseText || "I'm here. Give me something to work with.",
+    userId,
+  };
+}
+
+/** Collapse an OpenAI-style message list into the single turn Eliza accepts. */
+function lastUserMessage(messages: unknown): string | null {
+  if (!Array.isArray(messages)) return null;
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const entry = messages[index] as { role?: unknown; content?: unknown };
+    if (entry?.role === "user" && typeof entry.content === "string" && entry.content.trim()) {
+      return entry.content;
+    }
+  }
+  return null;
+}
+
+app.post("/api/v1/chat/completions", async (req, res) => {
+  const message = lastUserMessage(req.body?.messages);
+  if (!message) {
+    return res.status(400).json({ error: { message: "messages must include a user turn" } });
+  }
+
+  let responseText: string;
+  try {
+    ({ responseText } = await generateBlueTurn(message, req.body?.user));
+  } catch (err: any) {
+    const status = err.status ?? 500;
+    return res.status(status).json({ error: { message: err.message || "Internal error" } });
+  }
+
+  const model = typeof req.body?.model === "string" ? req.body.model : "blue-local";
+  const created = Math.floor(Date.now() / 1000);
+  const id = `chatcmpl-${uuidv4()}`;
+
+  // The app asks for stream:true on its bounded completion path, so honour it.
+  if (req.body?.stream) {
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    });
+    res.write(`data: ${JSON.stringify({
+      id,
+      object: "chat.completion.chunk",
+      created,
+      model,
+      choices: [{ index: 0, delta: { role: "assistant", content: responseText }, finish_reason: null }],
+    })}\n\n`);
+    res.write(`data: ${JSON.stringify({
+      id,
+      object: "chat.completion.chunk",
+      created,
+      model,
+      choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
+    })}\n\n`);
+    res.write("data: [DONE]\n\n");
+    return res.end();
+  }
+
+  return res.json({
+    id,
+    object: "chat.completion",
+    created,
+    model,
+    choices: [{
+      index: 0,
+      message: { role: "assistant", content: responseText },
+      finish_reason: "stop",
+    }],
+  });
+});
+
 app.post("/chat", async (req, res) => {
   try {
     const { message, userId: rawUserId } = req.body;
@@ -173,59 +305,7 @@ app.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "message is required" });
     }
 
-    if (!runtime) {
-      return res.status(503).json({ error: "Blue runtime not initialized" });
-    }
-
-    const userId = stringToUuid(rawUserId || uuidv4()) as UUID;
-    const roomId = stringToUuid(`blue-chat-${rawUserId || userId}`) as UUID;
-
-    try {
-      const worldId = stringToUuid("blue-world") as UUID;
-      await ensureConnection(runtime, {
-        agentId: runtime.agentId,
-        entityId: userId,
-        roomId,
-        worldId,
-        userName: rawUserId || "anonymous",
-        name: rawUserId || "Anonymous User",
-        source: "rest_api",
-      });
-    } catch (connErr: any) {
-      elizaLogger.warn("ensureConnection failed:", connErr.message?.slice(0, 100));
-    }
-
-    const messageMemory = createMessageMemory({
-      id: uuidv4() as UUID,
-      entityId: userId,
-      roomId,
-      content: {
-        text: message,
-        source: "rest_api",
-        channelType: ChannelType.DM,
-      },
-    });
-
-    let responseText = "";
-
-    try {
-      await runtime.messageService?.handleMessage(
-        runtime,
-        messageMemory,
-        async (content) => {
-          if (content?.text) {
-            responseText += content.text;
-          }
-          return [];
-        }
-      );
-    } catch (msgErr: any) {
-      elizaLogger.warn("Message pipeline error:", msgErr.message?.slice(0, 120));
-    }
-
-    if (!responseText) {
-      responseText = "I'm here. Give me something to work with.";
-    }
+    const { responseText, userId } = await generateBlueTurn(message, rawUserId);
 
     res.json({
       response: responseText,
@@ -235,7 +315,7 @@ app.post("/chat", async (req, res) => {
     });
   } catch (err: any) {
     elizaLogger.error("Chat error:", err.message);
-    res.status(500).json({ error: err.message || "Internal error" });
+    res.status(err.status ?? 500).json({ error: err.message || "Internal error" });
   }
 });
 
