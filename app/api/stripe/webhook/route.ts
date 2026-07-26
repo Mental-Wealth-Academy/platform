@@ -3,6 +3,7 @@ import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { sqlQuery } from '@/lib/db';
 import { ensureMembershipSchema } from '@/lib/ensureMembershipSchema';
+import { ensureShopFiatPurchasesSchema } from '@/lib/ensureShopFiatPurchasesSchema';
 import { deliverMembershipOrder } from '@/lib/membership-fulfillment';
 
 export const runtime = 'nodejs';
@@ -11,11 +12,7 @@ export const dynamic = 'force-dynamic';
 /**
  * POST /api/stripe/webhook
  *
- * Stripe-driven fulfilment for VIP Membership purchases. On a successful
- * payment, Blue transfers one membership NFT to the buyer's wallet.
- *
- * Idempotency: a conditional UPDATE claims the order out of pending/paid
- * before the transfer runs, so duplicate webhook deliveries are no-ops.
+ * Stripe webhook handler for both shop fiat purchases and VIP Membership orders/subscriptions.
  */
 export async function POST(request: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -35,12 +32,35 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (err) {
-    console.error('[membership webhook] signature verification failed:', err);
+    console.error('[stripe webhook] signature verification failed:', err);
     return NextResponse.json({ error: 'Invalid signature.' }, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
+
+    // Shop item checkout session
+    if (session.metadata?.itemId && session.metadata?.userId) {
+      await ensureShopFiatPurchasesSchema();
+      const itemId = session.metadata.itemId;
+      const userId = session.metadata.userId;
+      const amountCents = session.amount_total ?? 0;
+      const sessionId = session.id;
+
+      try {
+        await sqlQuery(
+          `INSERT INTO shop_fiat_purchases (user_id, item_id, amount_cents, stripe_session_id)
+           VALUES (:userId, :itemId, :amountCents, :sessionId)
+           ON CONFLICT (stripe_session_id) DO NOTHING`,
+          { userId, itemId, amountCents, sessionId }
+        );
+      } catch (err) {
+        console.error('[shop webhook] Failed to record fiat purchase:', err);
+      }
+      return NextResponse.json({ received: true });
+    }
+
+    // Membership subscription checkout session
     const recordId = session.metadata?.membershipSubscriptionId;
     if (recordId && session.mode === 'subscription') {
       await ensureMembershipSchema();
@@ -97,7 +117,7 @@ export async function POST(request: Request) {
     if (orderId) {
       await ensureMembershipSchema();
       await sqlQuery(
-          `UPDATE membership_orders
+        `UPDATE membership_orders
             SET status='failed', error=:err, updated_at=CURRENT_TIMESTAMP
           WHERE id=:id AND stripe_payment_intent_id=:paymentIntentId
             AND status IN ('pending', 'paid')`,
