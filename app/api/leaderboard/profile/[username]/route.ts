@@ -134,9 +134,9 @@ export async function GET(
         const btcAddr = getCbBTCAddress();
         const usdcAddr = getUsdcAddress();
 
-        if (diamondsAddr) contracts.push({ address: diamondsAddr as \`0x\${string}\`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as \`0x\${string}\`] });
-        if (btcAddr) contracts.push({ address: btcAddr as \`0x\${string}\`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as \`0x\${string}\`] });
-        if (usdcAddr) contracts.push({ address: usdcAddr as \`0x\${string}\`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as \`0x\${string}\`] });
+        if (diamondsAddr) contracts.push({ address: diamondsAddr as `0x${string}`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as `0x${string}`] });
+        if (btcAddr) contracts.push({ address: btcAddr as `0x${string}`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as `0x${string}`] });
+        if (usdcAddr) contracts.push({ address: usdcAddr as `0x${string}`, abi: erc20Abi, functionName: 'balanceOf', args: [user.wallet_address as `0x${string}`] });
 
         const results = await client.multicall({
           contracts: contracts as any,
