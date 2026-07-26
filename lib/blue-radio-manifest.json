@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-26T15:34:51.236Z",
-  "totalSeconds": 558.71,
+  "generatedAt": "2026-07-26T16:59:03.997Z",
+  "totalSeconds": 563.9,
   "segments": [
     {
       "id": "station-ident",
@@ -11,10 +11,10 @@
     },
     {
       "id": "what-is-mwa",
-      "title": "What this place is",
+      "title": "Welcome, the new Gods",
       "file": "/audio/blue-radio/what-is-mwa.mp3",
       "playbackGain": 0.56,
-      "seconds": 26.8
+      "seconds": 30.79
     },
     {
       "id": "mental-wealth-idea",
@@ -25,17 +25,17 @@
     },
     {
       "id": "the-course",
-      "title": "The twelve week course",
+      "title": "Blue Manifesto",
       "file": "/audio/blue-radio/the-course.mp3",
       "playbackGain": 0.56,
-      "seconds": 32.74
+      "seconds": 32.51
     },
     {
       "id": "field-notes",
       "title": "Field notes",
       "file": "/audio/blue-radio/field-notes.mp3",
       "playbackGain": 0.56,
-      "seconds": 27.63
+      "seconds": 33.34
     },
     {
       "id": "quests-and-credits",
@@ -60,10 +60,10 @@
     },
     {
       "id": "community",
-      "title": "The people next to you",
+      "title": "Always by your side",
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
-      "seconds": 25.5
+      "seconds": 21.22
     },
     {
       "id": "pocket-world-thesis",

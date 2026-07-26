@@ -82,8 +82,8 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'what-is-mwa',
-    title: 'What this place is',
-    text: "First things first. What is this place! Mental Wealth Academy is a school for the inside of your head. There is a twelve week course. There are daily field notes. There are quests that pay real rewards, and there is a whole library of guides written by people doing the same work you are. And there is me! I am Blue. I read what you submit, I remember what you wrote, and when your work is good, I pay you from my own stash. My files live under my bed, but my ledger is exact. Those are two different skills and I am proud of both!",
+    title: 'Welcome, the new Gods',
+    text: "First things first. Welcome God! Mental Wealth Academy is an Academia for manifesting the Champion of Light lying dormant in your soul. Here you'll find a corpus of knowledge, a treasure chest owned by the community. And there is me! I am Blue. I engage with prediction markets, and earn money for the community. I reward what you submit, I encrypt what you wrote, and when your work is good, I reward you from my own stash. My files live under my garden, but my dynasty is in tact. I affirm what I say and I am proud of that!",
   },
   {
     id: 'mental-wealth-idea',
@@ -92,13 +92,13 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'the-course',
-    title: 'The twelve week course',
-    text: "Let me tell you about the course! Twelve weeks, one chapter at a time. It starts with self awareness, which sounds fancy but really means catching yourself being you. Then it builds. Emotions, habits, values, goals. Real work, the kind you write down. When you finish a week, you seal it, and sealing a week feels almost as good as popping a balloon, which is the highest praise I know how to give. You cannot skip ahead. I checked. Twice. Then I forgot and checked again. Still no skipping! The order is the point. Each week stands on the one before it.",
+    title: 'Blue Manifesto',
+    text: "Let me tell you about my Manifest! It starts with self awareness, and snowballs into reprogramming your inner champion of light. It builds. Emotions, habits, values, goals. Real work, the kind based on my life. When you finish a week, you seal it, and sealing a week feels almost as good as popping a balloon, which is the highest praise I know how to give. Each completion earns diamonds, solidifying your steps towards the Ethereal Horizon. And generating wealth in the form of Bitcoin! It is my autobiography, I put a lot of time into it. That is why, I pay you to read it.",
   },
   {
     id: 'field-notes',
     title: 'Field notes',
-    text: "Field notes are my favorite. Do not tell the quests. Every day, you write one page. No prompts. No grades. Just you and the page saying honest things to each other. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy. Here is the secret about freewriting. The first three sentences are usually throat clearing. The real thing you needed to say shows up around sentence four, and it surprises you. That surprise is the whole exercise. The page holds it, your streak counts it, and I remember it.",
+    text: "Field notes are your digital journal. Again, I pay you to write in it. Every day, you write one page for 15 minutes. No prompts. No grades. Just you and the page hitting the griddy with each other. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy. Here is the secret about field notes. The academic process of writing for 15 minutes is a lot like ultra-affirmations. Think of it as your grimoire of spells... Or maybe spiritual chiropractoring! Either way, they earn diamonds, and diamonds earn you more bitcoin, straight from my stash!",
   },
   {
     id: 'quests-and-credits',
@@ -117,8 +117,8 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'community',
-    title: 'The people next to you',
-    text: "Here is a good thing to remember. Other people are doing this same inside work right now, one tab away. The community feed shows shared milestones. The Discord has the real time chatter. Somebody finished week nine recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when other people are lifting next to you. I am pretty sure that is science. It is at least true, which is my favorite kind of science.",
+    title: 'Always by your side',
+    text: "Other Academic Angels are creating affirmations right now, right here in our pocket-world. Somebody finished week nine recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard spiritual work feels lighter when others are manifesting wealth next to you. I am pretty sure that is science. It is at least a fact, which is my favorite part about science.",
   },
   {
     id: 'pocket-world-thesis',
