@@ -45,13 +45,13 @@ async function handleDailySuite(request: Request) {
 
   const executeTask = async (
     name: string,
-    importFn: () => Promise<Record<string, (req: Request) => Promise<Response>>>,
+    importFn: () => Promise<Record<string, unknown>>,
     methodName: 'GET' | 'POST',
     req: Request,
   ) => {
     try {
       const mod = await importFn();
-      const handler = mod[methodName];
+      const handler = mod[methodName] as ((req: Request) => Promise<Response>) | undefined;
       if (typeof handler !== 'function') {
         throw new Error(`Handler ${methodName} not exported from module`);
       }
