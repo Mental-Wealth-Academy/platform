@@ -1,7 +1,7 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
+import UserProfileModal from '@/components/home/UserProfileModal';
 import styles from './UpcomingEvent.module.css';
 
 interface LeaderboardUser {
@@ -19,6 +19,7 @@ function formatCredits(n: number): string {
 
 export default function UpcomingEvent() {
   const [users, setUsers] = useState<LeaderboardUser[] | null>(null);
+  const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,42 +44,55 @@ export default function UpcomingEvent() {
   const topUsers = (users ?? []).slice(0, 5);
 
   return (
-    <section className={styles.card} aria-labelledby="leaderboard-title">
-      <div className={styles.header}>
-        <span className={styles.kanji} lang="ja">成績</span>
-        <span id="leaderboard-title" className={styles.headerTitle}>Leaderboard</span>
-        <span className={styles.subject}>Top 5</span>
-      </div>
-      <div className={styles.body}>
-        {users === null ? (
-          <div className={styles.loadingState}>
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className={styles.skeletonRow} />
-            ))}
-          </div>
-        ) : topUsers.length === 0 ? (
-          <div className={styles.emptyState}>No rankings yet</div>
-        ) : (
-          <ol className={styles.userList}>
-            {topUsers.map((user) => (
-              <li key={user.rank} className={styles.userRow}>
-                <span className={`${styles.userRank} ${user.rank === 1 ? styles.rankTop : ''}`}>
-                  {user.rank}
-                </span>
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="" className={styles.userAvatar} />
-                ) : (
-                  <span className={styles.avatarFallback}>
-                    {user.username ? user.username.slice(0, 2).toUpperCase() : '??'}
+    <>
+      <section className={styles.card} aria-labelledby="leaderboard-title">
+        <div className={styles.header}>
+          <span className={styles.kanji} lang="ja">成績</span>
+          <span id="leaderboard-title" className={styles.headerTitle}>Leaderboard</span>
+        </div>
+        <div className={styles.body}>
+          {users === null ? (
+            <div className={styles.loadingState}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className={styles.skeletonRow} />
+              ))}
+            </div>
+          ) : topUsers.length === 0 ? (
+            <div className={styles.emptyState}>No rankings yet</div>
+          ) : (
+            <ol className={styles.userList}>
+              {topUsers.map((user) => (
+                <li
+                  key={user.rank}
+                  className={styles.userRow}
+                  onClick={() => setSelectedUsername(user.username)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <span className={`${styles.userRank} ${user.rank === 1 ? styles.rankTop : ''}`}>
+                    {user.rank}
                   </span>
-                )}
-                <span className={styles.userName}>{user.username}</span>
-                <span className={styles.userCredits}>{formatCredits(user.shards)} credits</span>
-              </li>
-            ))}
-          </ol>
-        )}
-      </div>
-    </section>
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt="" className={styles.userAvatar} />
+                  ) : (
+                    <span className={styles.avatarFallback}>
+                      {user.username ? user.username.slice(0, 2).toUpperCase() : '??'}
+                    </span>
+                  )}
+                  <span className={styles.userName}>{user.username}</span>
+                  <span className={styles.userCredits}>{formatCredits(user.shards)} credits</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
+
+      {selectedUsername && (
+        <UserProfileModal
+          username={selectedUsername}
+          onClose={() => setSelectedUsername(null)}
+        />
+      )}
+    </>
   );
 }
