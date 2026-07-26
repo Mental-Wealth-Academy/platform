@@ -900,15 +900,14 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
 
     let pending = readPendingPaidTurn(accountId, walletAddress);
     if (pending && pending.text !== text) {
-      // The receipt is tied to the earlier message, so this one cannot carry it.
-      // Everything needed to finish that turn is already stored, so offer to
-      // replay it rather than asking the member to retype it from memory.
-      setIsTyping(false);
+      // An unfinished receipt belongs to an earlier message and cannot carry
+      // this one. Offer to replay it, but never hold this turn hostage: a new
+      // message is a new conversation and pays its own way.
       setPendingRecovery(pending);
-      addBlueMessage('One paid reply is still waiting. Let me finish it first, at no extra cost.');
-      return;
+      pending = null;
+    } else {
+      setPendingRecovery(null);
     }
-    setPendingRecovery(null);
 
     const clientRequestId = pending?.clientRequestId ?? crypto.randomUUID();
     const pathname = pending?.pathname ?? normalizeBluePathname(currentPathname);
@@ -1480,7 +1479,8 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
               Retry paid reply
             </button>
             <span className={styles.recoveryNote}>
-              Your credits are already covered for this one.
+              An earlier message was paid for but never answered. Retrying it
+              costs nothing extra, and you can keep chatting either way.
             </span>
             <button
               type="button"

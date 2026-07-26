@@ -212,6 +212,19 @@ describe('Blue paid-reply recovery', () => {
     expect(client).not.toContain('Resend that same message first');
   });
 
+  it('never blocks a new message behind an unfinished receipt', () => {
+    // A refresh means a new conversation. An old receipt is offered for replay,
+    // and this turn goes on to pay its own way with a fresh request id.
+    const guard = client.indexOf('if (pending && pending.text !== text)');
+    const body = client.slice(guard, guard + 420);
+
+    expect(body).toContain('pending = null');
+    // No early return: the fresh-burn path below must still be reachable.
+    expect(body).not.toContain('return;');
+    expect(client.indexOf('const clientRequestId = pending?.clientRequestId', guard))
+      .toBeGreaterThan(guard);
+  });
+
   it('replays the stored text rather than whatever is typed now', () => {
     const start = client.indexOf('const recoverPendingTurn');
     const body = client.slice(start, start + 500);

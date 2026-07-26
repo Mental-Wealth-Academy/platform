@@ -1,8 +1,14 @@
 import type { AiTaskName, AiTaskProfile } from './types';
 
+/**
+ * Eliza serves many upstreams behind one key, and their balances are separate:
+ * an exhausted Anthropic balance returns "credit balance is too low" while
+ * openai/* models on the same key keep working. Keeping this in an env var lets
+ * a dead upstream be routed around without a deploy.
+ */
 const ELIZA_SONNET = {
   provider: 'eliza',
-  model: 'anthropic/claude-sonnet-4.6',
+  model: process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6',
 } as const;
 
 /**
