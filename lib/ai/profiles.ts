@@ -11,6 +11,11 @@ const ELIZA_SONNET = {
   model: process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6',
 } as const;
 
+const ELIZA_HAIKU = {
+  provider: 'eliza',
+  model: process.env.ELIZA_FAST_MODEL || 'anthropic/claude-3-5-haiku-20241022',
+} as const;
+
 /**
  * DeepSeek retired the `deepseek-chat` slug; the API now serves
  * `deepseek-v4-flash` and `deepseek-v4-pro`. The old name returns a 400, which
@@ -54,7 +59,7 @@ export const AI_TASK_PROFILES: Readonly<Record<AiTaskName, AiTaskProfile>> = {
   blue_chat_short: {
     task: 'blue_chat_short',
     promptVersion: 'blue-chat-runtime-v1',
-    providers: [ELIZA_SONNET, DEEPSEEK_FLASH],
+    providers: [ELIZA_HAIKU, DEEPSEEK_FLASH],
     maxInputChars: 24_000,
     maxOutputChars: 4_000,
     maxOutputTokens: 240,
