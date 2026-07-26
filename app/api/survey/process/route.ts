@@ -194,7 +194,7 @@ Respond as Blue analyzing these survey responses.`
         Authorization: `Bearer ${deepseekKey}`,
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: process.env.DEEPSEEK_MODEL || 'deepseek-v4-flash',
         messages: [
           {
             role: 'system',

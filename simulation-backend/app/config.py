@@ -53,7 +53,7 @@ class Config:
     # as DeepSeek while the primary Eliza model handles simulation generation.
     LLM_FALLBACK_API_KEY = os.environ.get('LLM_FALLBACK_API_KEY')
     LLM_FALLBACK_BASE_URL = os.environ.get('LLM_FALLBACK_BASE_URL', 'https://api.deepseek.com/v1')
-    LLM_FALLBACK_MODEL_NAME = os.environ.get('LLM_FALLBACK_MODEL_NAME', 'deepseek-chat')
+    LLM_FALLBACK_MODEL_NAME = os.environ.get('LLM_FALLBACK_MODEL_NAME', 'deepseek-v4-flash')
 
     # Report and interview surfaces are high-volume interactive work; they can
     # use Haiku while setup/simulation work remains on the primary Opus model.
