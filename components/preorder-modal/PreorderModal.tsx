@@ -90,8 +90,8 @@ export default function PreorderModal({ isOpen, onClose }: PreorderModalProps) {
               <Image
                 src="/images/orbits-book-cover.png"
                 alt="Orbiters of The Horizon book cover by Jhinn Bay"
-                width={140}
-                height={190}
+                width={220}
+                height={285}
                 priority
                 className={styles.bookImage}
               />
