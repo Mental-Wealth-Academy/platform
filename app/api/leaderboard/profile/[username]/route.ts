@@ -10,7 +10,7 @@ import {
   resolveVerifiedRpcUrl,
 } from '@/lib/chain-config';
 import { ensureForumSchema } from '@/lib/ensureForumSchema';
-import { getQuestDefinitionForStoredQuestId, QUEST_DEFINITIONS } from '@/lib/quest-definitions';
+import { ensureActivityEventsSchema } from '@/lib/ensureActivityEventsSchema';
 
 export const dynamic = 'force-dynamic';
 
