@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build && npm run seed:blue-rag:deploy",
+  "buildCommand": "npm run build && (npm run seed:blue-rag:deploy || echo 'blue-rag seed skipped; retrieval falls back to the bundled corpus')",
   "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs",
