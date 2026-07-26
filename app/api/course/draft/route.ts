@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { elizaAPI } from '@/lib/eliza-api';
+import { z } from 'zod';
+import { runAiStructured } from '@/lib/ai';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { walletHasMembershipAccess } from '@/lib/membership-access';
 import type { CourseData } from '@/lib/personal-course';
@@ -7,18 +8,12 @@ import type { CourseData } from '@/lib/personal-course';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
-const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
-const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
-const CHAT_MODEL = process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
-
-const DRAFT_SYSTEM_PROMPT = `You are a course curriculum designer for Mental Wealth Academy, a mental wellness platform.
+const DRAFT_SYSTEM_PROMPT = `You are a course curriculum designer for Mental Wealth Academy, an educational gameworld.
 Generate a practical 4-week micro-course based on the user's topic and goal.
 
-RULES:
-- Generate ONLY concrete, behavioral tasks — specific actions the user will take each day or week.
-- Do NOT make factual claims about medicine, neuroscience, or psychology research. No "studies show..." statements.
+Rules:
+- Generate concrete, behavioral tasks: specific actions the user will take each day or week.
+- Do not make factual claims about medicine, neuroscience, or psychology research. Avoid "studies show..." statements.
 - Tasks must be actionable: "write for 5 minutes each morning", "take a 10-minute walk", "practice one breathing exercise before bed".
 - Each week has a short theme (2–4 words), a weekly read, and exactly 4 tasks.
 - Tasks are 1 sentence each, plain language, active voice.
@@ -26,55 +21,49 @@ RULES:
 - Build on widely accepted behavioral principles: small steps, consistency, gradual progression, reflection.
 - Week 1 should be very gentle. Week 4 should lock in the habit.
 
-WEEKLY READ:
+Weekly read:
 - Each week includes a "read": a short reflective passage that frames that week's theme and motivates the tasks.
 - "read.title" is a short, evocative title (2–5 words) tied to the week's theme.
 - "read.body" is 2–3 short paragraphs (plain language, warm, second person "you"), separated by a blank line (\\n\\n).
 - The read is reflective and practical — it sets up the mindset for the week. No factual/medical/research claims.
 
-Return ONLY raw JSON, no prose, no markdown fences, exactly this shape:
+Return raw JSON only, with no prose or markdown fences, in exactly this shape:
 {"title":"string","focus":"string","weeks":[{"weekNumber":1,"theme":"string","read":{"title":"string","body":"string"},"tasks":["","","",""]},{"weekNumber":2,"theme":"string","read":{"title":"string","body":"string"},"tasks":["","","",""]},{"weekNumber":3,"theme":"string","read":{"title":"string","body":"string"},"tasks":["","","",""]},{"weekNumber":4,"theme":"string","read":{"title":"string","body":"string"},"tasks":["","","",""]}]}`;
 
-async function callDeepSeek(prompt: string): Promise<string> {
-  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: DEEPSEEK_MODEL,
-      messages: [
-        { role: 'system', content: DRAFT_SYSTEM_PROMPT },
-        { role: 'user', content: prompt },
-      ],
-      response_format: { type: 'json_object' },
-      stream: false,
-      max_tokens: 2600,
-    }),
+const nonEmptyString = z.string().trim().min(1);
+const courseReadSchema = z.object({
+  title: nonEmptyString,
+  body: nonEmptyString,
+}).strict();
+const courseWeekSchema = z.object({
+  weekNumber: z.number().int().min(1).max(4),
+  theme: nonEmptyString,
+  read: courseReadSchema,
+  tasks: z.array(nonEmptyString).length(4),
+}).strict();
+const courseDraftSchema: z.ZodType<CourseData> = z.object({
+  title: nonEmptyString,
+  focus: nonEmptyString,
+  weeks: z.array(courseWeekSchema).length(4),
+}).strict().superRefine((course, context) => {
+  course.weeks.forEach((week, index) => {
+    if (week.weekNumber !== index + 1) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Week ${index + 1} must use weekNumber ${index + 1}.`,
+        path: ['weeks', index, 'weekNumber'],
+      });
+    }
   });
-  if (!response.ok) throw new Error(`DeepSeek error: ${response.status}`);
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content || typeof content !== 'string') throw new Error('DeepSeek returned empty response');
-  return content;
+});
+
+function configuredAiProviderExists(): boolean {
+  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.ELIZA_API_KEY);
 }
 
-function parseCourse(raw: string): CourseData | null {
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) return null;
-  try {
-    const parsed = JSON.parse(match[0]) as Record<string, unknown>;
-    if (
-      typeof parsed.title !== 'string' ||
-      typeof parsed.focus !== 'string' ||
-      !Array.isArray(parsed.weeks) ||
-      (parsed.weeks as unknown[]).length !== 4
-    ) return null;
-    return parsed as unknown as CourseData;
-  } catch {
-    return null;
-  }
+function aiErrorCode(error: unknown): string | null {
+  if (!error || typeof error !== 'object' || !('code' in error)) return null;
+  return typeof error.code === 'string' ? error.code : null;
 }
 
 export async function POST(request: Request) {
@@ -98,33 +87,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Tell Blue what you want to learn.' }, { status: 400 });
   }
 
-  let raw: string;
+  if (!configuredAiProviderExists()) {
+    return NextResponse.json({ error: 'No LLM configured.' }, { status: 503 });
+  }
+
+  let course: CourseData;
   try {
-    if (DEEPSEEK_API_KEY) {
-      raw = await callDeepSeek(prompt);
-    } else if (ELIZA_API_KEY) {
-      raw = await elizaAPI.chat({
-        messages: [
-          { role: 'system', content: DRAFT_SYSTEM_PROMPT },
-          { role: 'user', content: prompt },
-        ],
-        id: CHAT_MODEL,
-        maxTokens: 2600,
-      });
-    } else {
-      return NextResponse.json({ error: 'No LLM configured.' }, { status: 503 });
-    }
+    const result = await runAiStructured<CourseData>({
+      task: 'content_draft',
+      messages: [
+        { role: 'system', content: DRAFT_SYSTEM_PROMPT },
+        { role: 'user', content: prompt },
+      ],
+      schema: courseDraftSchema,
+      schemaName: 'course_draft',
+      schemaDescription:
+        'A course title and focus with exactly four ordered weeks numbered 1 through 4. Each week has a theme, a read with title and body, and exactly four non-empty task strings.',
+      signal: request.signal,
+    });
+    course = result.data;
   } catch (err) {
+    if (aiErrorCode(err) === 'ai_schema_invalid') {
+      return NextResponse.json(
+        { error: 'Could not generate a course from that. Try being more specific about your topic and goal.' },
+        { status: 422 },
+      );
+    }
     console.error('[course/draft] LLM call failed:', err);
     return NextResponse.json({ error: 'Course generation failed. Try again.' }, { status: 500 });
   }
 
-  const course = parseCourse(raw);
-  if (!course) {
-    return NextResponse.json(
-      { error: 'Could not generate a course from that. Try being more specific about your topic and goal.' },
-      { status: 422 },
-    );
-  }
   return NextResponse.json({ course });
 }

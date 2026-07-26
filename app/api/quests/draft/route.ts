@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { runAiStructured } from '@/lib/ai';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { walletHasMembershipAccess } from '@/lib/membership-access';
-import { elizaAPI } from '@/lib/eliza-api';
 import {
   FORGE_LIMITS,
   FORGE_TYPES,
-  isRewardKind,
   roundUsdc,
   type QuestForgeType,
   type RewardKind,
@@ -13,12 +13,6 @@ import {
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
-const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
-const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
-const CHAT_MODEL = process.env.ELIZA_CHAT_MODEL || 'anthropic/claude-sonnet-4.6';
 
 export interface QuestDraft {
   title: string;
@@ -31,7 +25,7 @@ export interface QuestDraft {
 
 const DRAFT_SYSTEM_PROMPT = `You turn a member's plain-language request into a single structured community quest for Mental Wealth Academy. A quest is a short task other members complete to earn a reward the requester is funding.
 
-Return ONLY raw JSON, no prose, in exactly this shape:
+Return raw JSON only, with no prose, in exactly this shape:
 {"title":"string","description":"string","questType":"no-proof"|"proof-required","rewardKind":"credits"|"usdc","rewardAmount":number,"targetCount":number}
 
 Rules:
@@ -91,70 +85,57 @@ function heuristicDraft(prompt: string): QuestDraft {
   };
 }
 
-async function callDeepSeekJson(prompt: string): Promise<string> {
-  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: DEEPSEEK_MODEL,
-      messages: [
-        { role: 'system', content: DRAFT_SYSTEM_PROMPT },
-        { role: 'user', content: prompt },
-      ],
-      response_format: { type: 'json_object' },
-      stream: false,
-      max_tokens: 600,
-    }),
+function questDraftSchema(prompt: string): z.ZodType<QuestDraft> {
+  const fallback = heuristicDraft(prompt);
+  const schema = z.object({
+    title: z.unknown().optional(),
+    description: z.unknown().optional(),
+    questType: z.unknown().optional(),
+    rewardKind: z.unknown().optional(),
+    rewardAmount: z.unknown().optional(),
+    targetCount: z.unknown().optional(),
+  }).passthrough().transform((parsed): QuestDraft => {
+    const title = typeof parsed.title === 'string' && parsed.title.trim()
+      ? parsed.title.trim().slice(0, FORGE_LIMITS.titleMax)
+      : fallback.title;
+    const description = typeof parsed.description === 'string' && parsed.description.trim()
+      ? parsed.description.trim().slice(0, FORGE_LIMITS.descMax)
+      : fallback.description;
+    const questType: QuestForgeType = FORGE_TYPES.has(parsed.questType as QuestForgeType)
+      ? (parsed.questType as QuestForgeType)
+      : fallback.questType;
+    // The local parser is the authority for the money rail. This prevents a
+    // model from turning a credits request into a real-money draft.
+    const rewardKind: RewardKind = fallback.rewardKind;
+    const targetCount = clampInt(
+      Number(parsed.targetCount),
+      FORGE_LIMITS.targetMin,
+      FORGE_LIMITS.targetMax,
+      fallback.targetCount,
+    );
+
+    const rawReward = Number(parsed.rewardAmount);
+    const rewardAmount = rewardKind === 'usdc'
+      ? Number.isFinite(rawReward)
+        ? roundUsdc(Math.min(FORGE_LIMITS.usdcMax, Math.max(FORGE_LIMITS.usdcMin, rawReward)))
+        : roundUsdc(Math.min(
+            FORGE_LIMITS.usdcMax,
+            Math.max(FORGE_LIMITS.usdcMin, fallback.rewardAmount),
+          ))
+      : clampInt(
+          rawReward,
+          FORGE_LIMITS.creditsMin,
+          FORGE_LIMITS.creditsMax,
+          fallback.rewardAmount,
+        );
+
+    return { title, description, questType, rewardKind, rewardAmount, targetCount };
   });
-  if (!response.ok) {
-    throw new Error(`DeepSeek draft error: ${response.status}`);
-  }
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content || typeof content !== 'string') throw new Error('DeepSeek returned empty draft');
-  return content;
+  return schema as unknown as z.ZodType<QuestDraft>;
 }
 
-function parseAndClamp(raw: string, prompt: string): QuestDraft {
-  // Pull the first JSON object out of the response, tolerating stray prose.
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) return heuristicDraft(prompt);
-
-  let parsed: Record<string, unknown>;
-  try {
-    parsed = JSON.parse(match[0]);
-  } catch {
-    return heuristicDraft(prompt);
-  }
-
-  const fallback = heuristicDraft(prompt);
-
-  const title = typeof parsed.title === 'string' && parsed.title.trim()
-    ? parsed.title.trim().slice(0, FORGE_LIMITS.titleMax)
-    : fallback.title;
-  const description = typeof parsed.description === 'string' && parsed.description.trim()
-    ? parsed.description.trim().slice(0, FORGE_LIMITS.descMax)
-    : fallback.description;
-  const questType: QuestForgeType = FORGE_TYPES.has(parsed.questType as QuestForgeType)
-    ? (parsed.questType as QuestForgeType)
-    : fallback.questType;
-  const rewardKind: RewardKind = isRewardKind(parsed.rewardKind) ? parsed.rewardKind : fallback.rewardKind;
-  const targetCount = clampInt(Number(parsed.targetCount), FORGE_LIMITS.targetMin, FORGE_LIMITS.targetMax, fallback.targetCount);
-
-  let rewardAmount: number;
-  const rawReward = Number(parsed.rewardAmount);
-  if (rewardKind === 'usdc') {
-    rewardAmount = Number.isFinite(rawReward)
-      ? roundUsdc(Math.min(FORGE_LIMITS.usdcMax, Math.max(FORGE_LIMITS.usdcMin, rawReward)))
-      : fallback.rewardAmount;
-  } else {
-    rewardAmount = clampInt(rawReward, FORGE_LIMITS.creditsMin, FORGE_LIMITS.creditsMax, 50);
-  }
-
-  return { title, description, questType, rewardKind, rewardAmount, targetCount };
+function configuredAiProviderExists(): boolean {
+  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.ELIZA_API_KEY);
 }
 
 /**
@@ -184,18 +165,20 @@ export async function POST(request: Request) {
 
   let draft: QuestDraft;
   try {
-    if (DEEPSEEK_API_KEY) {
-      draft = parseAndClamp(await callDeepSeekJson(prompt), prompt);
-    } else if (ELIZA_API_KEY) {
-      const raw = await elizaAPI.chat({
+    if (configuredAiProviderExists()) {
+      const result = await runAiStructured<QuestDraft>({
+        task: 'structured_extract',
         messages: [
           { role: 'system', content: DRAFT_SYSTEM_PROMPT },
           { role: 'user', content: prompt },
         ],
-        id: CHAT_MODEL,
-        maxTokens: 600,
+        schema: questDraftSchema(prompt),
+        schemaName: 'quest_draft',
+        schemaDescription:
+          'One quest with a title, description, quest type, reward kind, per-completion reward amount, and target completion count.',
+        signal: request.signal,
       });
-      draft = parseAndClamp(raw, prompt);
+      draft = result.data;
     } else {
       draft = heuristicDraft(prompt);
     }
