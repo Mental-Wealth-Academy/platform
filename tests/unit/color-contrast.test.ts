@@ -10,15 +10,32 @@ for (const match of root.matchAll(/(--[\w-]+):\s*([^;]+);/g)) {
   variables.set(match[1], match[2].trim());
 }
 
-function resolveHex(token: string, seen = new Set<string>()): string {
+/**
+ * Resolve a semantic token to sRGB. The palette is authored in a mix of hex and
+ * oklch, and either has to be measurable or the contrast gate silently stops
+ * covering whichever tokens moved to the other notation.
+ */
+function resolveSrgb(token: string, seen = new Set<string>()): [number, number, number] {
   if (seen.has(token)) throw new Error(`Circular color token: ${token}`);
   seen.add(token);
   const value = variables.get(token);
   if (!value) throw new Error(`Missing color token: ${token}`);
-  if (/^#[\da-f]{6}$/i.test(value)) return value;
+  if (/^#[\da-f]{6}$/i.test(value)) return hexToSrgb(value);
+
+  const oklch = value.match(
+    /^oklch\(\s*([\d.]+)%\s+([\d.]+)\s+([\d.]+)(?:deg)?\s*\)$/i,
+  );
+  if (oklch) {
+    return oklchToSrgb(Number(oklch[1]) / 100, Number(oklch[2]), Number(oklch[3]));
+  }
+
   const reference = value.match(/^var\((--[\w-]+)\)$/)?.[1];
-  if (!reference) throw new Error(`${token} must resolve to a six-digit hex value for contrast testing`);
-  return resolveHex(reference, seen);
+  if (!reference) {
+    throw new Error(
+      `${token} must resolve to a hex or plain oklch value for contrast testing, received ${value}`,
+    );
+  }
+  return resolveSrgb(reference, seen);
 }
 
 function hexToSrgb(hex: string): [number, number, number] {
@@ -78,7 +95,7 @@ describe('semantic color contrast', () => {
 
   for (const [foreground, background] of pairs) {
     it(`${foreground} passes on ${background}`, () => {
-      const ratio = contrast(hexToSrgb(resolveHex(foreground)), hexToSrgb(resolveHex(background)));
+      const ratio = contrast(resolveSrgb(foreground), resolveSrgb(background));
       expect(ratio).toBeGreaterThanOrEqual(4.5);
     });
   }
@@ -86,7 +103,7 @@ describe('semantic color contrast', () => {
   it('keeps every optional action theme readable with small on-action text', () => {
     const actionLightness = Number(css.match(/--color-action:\s*oklch\(([\d.]+)%/)?.[1]) / 100;
     const themes = Array.from(css.matchAll(/\[data-color="([^"]+)"\]\s*{\s*--accent-h:\s*([\d.]+);\s*--accent-c:\s*([\d.]+);/g));
-    const onAction = hexToSrgb(resolveHex('--color-on-action'));
+    const onAction = resolveSrgb('--color-on-action');
 
     expect(themes.length).toBeGreaterThan(0);
     for (const [, name, hue, chroma] of themes) {
@@ -96,7 +113,7 @@ describe('semantic color contrast', () => {
   });
 
   it('keeps muted light-mode text readable on the canvas', () => {
-    const canvas = hexToSrgb(resolveHex('--color-canvas'));
+    const canvas = resolveSrgb('--color-canvas');
     const muted = compositeRgba(variables.get('--color-text-muted') ?? '', canvas);
     expect(contrast(muted, canvas)).toBeGreaterThanOrEqual(4.5);
   });

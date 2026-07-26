@@ -105,7 +105,7 @@ export default function SupportModal({ isOpen, onClose }: SupportModalProps) {
               </>
             ) : (
               <>
-                <p className={styles.prompt}>We'd love to hear your thoughts!</p>
+                <p className={styles.prompt}>We&apos;d love to hear your thoughts!</p>
                 <ol className={styles.list}>
                   <li>What feature or improvement are you suggesting?</li>
                   <li>How would it make the Academy better?</li>
