@@ -13,8 +13,7 @@ export const dynamic = 'force-dynamic';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-// Image uploads only (e.g. profile avatars). Text reference files for Blue's
-// research mode are read in the browser and never hit this endpoint.
+// Image uploads only (for example, profile avatars).
 const IMAGE_EXT: Record<string, string> = {
   'image/png': 'png',
   'image/jpeg': 'jpg',

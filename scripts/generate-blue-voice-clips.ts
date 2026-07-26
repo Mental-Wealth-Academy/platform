@@ -114,12 +114,6 @@ const CLIPS: Clip[] = [
     text: "you're back. i had a feeling you would be.",
   },
   {
-    id: 'greeting-text',
-    dir: 'blue-voice',
-    priority: 1,
-    text: "hey, i'm blue. your research partner in the digital matrix. what are we analyzing today?",
-  },
-  {
     id: 'greeting-text-v2',
     dir: 'blue-voice',
     priority: 1,
@@ -138,12 +132,6 @@ const CLIPS: Clip[] = [
     dir: 'blue-voice',
     priority: 2,
     text: 'hey. what are we working on?',
-  },
-  {
-    id: 'faq-identity',
-    dir: 'blue-voice',
-    priority: 2,
-    text: "i'm Blue. scientist, researcher, BCI. i'm connected to the AI and to you simultaneously — not a bot, a loop. what do you want to know?",
   },
   {
     id: 'faq-how-are-you',
@@ -216,12 +204,6 @@ const CLIPS: Clip[] = [
     dir: 'blue-voice',
     priority: 2,
     text: 'validated psych assessments — your results make the whole experience more personal. opt-in only.',
-  },
-  {
-    id: 'faq-research-mode',
-    dir: 'blue-voice',
-    priority: 2,
-    text: 'research mode is a VIP writing partner for grants, proposals, and thesis chapters — full report drafts you refine section by section. it unlocks with a VIP membership.',
   },
   {
     id: 'faq-desci',
