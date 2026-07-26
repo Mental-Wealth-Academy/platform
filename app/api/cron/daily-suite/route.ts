@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
 
-import { POST as runTreasuryTrade } from '@/app/api/treasury/trade/route';
-import { GET as runReviewSweep } from '@/app/api/voting/proposal/review-sweep/route';
-import { GET as runMembershipReconcile } from '@/app/api/membership/reconcile/route';
-import { GET as runEventReminders } from '@/app/api/events/reminders/route';
-import { GET as runGuideRevisionCheck } from '@/app/api/guides/revision-check/route';
-import { GET as runMemoryRetention } from '@/app/api/cron/blue-memory-retention/route';
-import { GET as runReflections } from '@/app/api/cron/reflections/route';
-
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 /**
  * Daily Master Cron Suite
- * Consolidates all daily automated maintenance tasks into a single endpoint
- * to comply with Vercel Hobby plan cron limits (max 2 crons per project).
+ * Consolidates all daily automated maintenance tasks into a single endpoint.
+ * Uses dynamic imports to keep cold-start module evaluation lightweight.
  */
 async function handleDailySuite(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -51,9 +43,19 @@ async function handleDailySuite(request: Request) {
 
   const tasks: Record<string, unknown> = {};
 
-  const executeTask = async (name: string, fn: (req: Request) => Promise<Response>, req: Request) => {
+  const executeTask = async (
+    name: string,
+    importFn: () => Promise<Record<string, (req: Request) => Promise<Response>>>,
+    methodName: 'GET' | 'POST',
+    req: Request,
+  ) => {
     try {
-      const res = await fn(req);
+      const mod = await importFn();
+      const handler = mod[methodName];
+      if (typeof handler !== 'function') {
+        throw new Error(`Handler ${methodName} not exported from module`);
+      }
+      const res = await handler(req);
       const data = await res.json().catch(() => ({ status: res.status, text: 'Non-JSON response' }));
       tasks[name] = { ok: res.ok, status: res.status, data };
     } catch (err) {
@@ -62,13 +64,13 @@ async function handleDailySuite(request: Request) {
     }
   };
 
-  await executeTask('treasuryTrade', runTreasuryTrade, subRequestPost);
-  await executeTask('proposalReviewSweep', runReviewSweep, subRequestGet);
-  await executeTask('membershipReconcile', runMembershipReconcile, subRequestGet);
-  await executeTask('eventReminders', runEventReminders, subRequestGet);
-  await executeTask('guideRevisionCheck', runGuideRevisionCheck, subRequestGet);
-  await executeTask('blueMemoryRetention', runMemoryRetention, subRequestGet);
-  await executeTask('reflections', runReflections, subRequestGet);
+  await executeTask('treasuryTrade', () => import('@/app/api/treasury/trade/route'), 'POST', subRequestPost);
+  await executeTask('proposalReviewSweep', () => import('@/app/api/voting/proposal/review-sweep/route'), 'GET', subRequestGet);
+  await executeTask('membershipReconcile', () => import('@/app/api/membership/reconcile/route'), 'GET', subRequestGet);
+  await executeTask('eventReminders', () => import('@/app/api/events/reminders/route'), 'GET', subRequestGet);
+  await executeTask('guideRevisionCheck', () => import('@/app/api/guides/revision-check/route'), 'GET', subRequestGet);
+  await executeTask('blueMemoryRetention', () => import('@/app/api/cron/blue-memory-retention/route'), 'GET', subRequestGet);
+  await executeTask('reflections', () => import('@/app/api/cron/reflections/route'), 'GET', subRequestGet);
 
   return NextResponse.json({
     ok: true,
