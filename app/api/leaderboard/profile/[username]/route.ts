@@ -67,30 +67,32 @@ export async function GET(
     // 2. Fetch Field Notes count
     let fieldNotesCount = 0;
     try {
-      const prayers = await sqlQuery<Array<{ progress_data: any }>>(
-        `SELECT progress_data FROM prayers
-         WHERE user_id = :userId
-         LIMIT 1`,
+      const counts = await sqlQuery<Array<{ count: string | number }>>(
+        `SELECT COUNT(*) as count FROM daily_note_completions
+         WHERE user_id = :userId`,
         { userId: user.id }
       );
-      if (prayers.length > 0) {
-        let allWeekPages: Record<string, Array<{ content?: string }>> = {};
-        const pd = prayers[0].progress_data;
-        // Notice: We don't decrypt other users' field notes here. We just count them if they are public
-        // or just count the entries in allWeekPages if they are structured.
-        // The structure might be encrypted so we might not be able to count perfectly if it's completely encrypted, 
-        // but we'll try parsing allWeekPages if it's exposed.
-        if (pd && !pd.encrypted && pd.allWeekPages) {
-          allWeekPages = pd.allWeekPages;
-        } else if (pd && pd.encrypted && pd.allWeekPages) {
-           // If the outer structure has allWeekPages (which happens sometimes)
-           allWeekPages = pd.allWeekPages;
-        }
-        for (const entries of Object.values(allWeekPages)) {
-          if (Array.isArray(entries)) {
-            for (const entry of entries) {
-              if (typeof entry?.content === 'string' && entry.content.trim().length > 0) {
-                fieldNotesCount++;
+      if (counts.length > 0 && Number(counts[0].count) > 0) {
+        fieldNotesCount = Number(counts[0].count);
+      } else {
+        const prayers = await sqlQuery<Array<{ progress_data: any }>>(
+          `SELECT progress_data FROM prayers
+           WHERE user_id = :userId
+           LIMIT 1`,
+          { userId: user.id }
+        );
+        if (prayers.length > 0) {
+          const pd = prayers[0].progress_data;
+          let allWeekPages: Record<string, Array<{ content?: string }>> = {};
+          if (pd && !pd.encrypted && pd.allWeekPages) {
+            allWeekPages = pd.allWeekPages;
+          }
+          for (const entries of Object.values(allWeekPages)) {
+            if (Array.isArray(entries)) {
+              for (const entry of entries) {
+                if (typeof entry?.content === 'string' && entry.content.trim().length > 0) {
+                  fieldNotesCount++;
+                }
               }
             }
           }
