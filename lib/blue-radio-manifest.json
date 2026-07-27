@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-27T11:16:13.823Z",
-  "totalSeconds": 564.28,
+  "generatedAt": "2026-07-27T11:24:21.676Z",
+  "totalSeconds": 578.07,
   "segments": [
     {
       "id": "station-ident",
@@ -14,7 +14,7 @@
       "title": "Welcome, the new Gods",
       "file": "/audio/blue-radio/what-is-mwa.mp3",
       "playbackGain": 0.56,
-      "seconds": 29.68
+      "seconds": 35.11
     },
     {
       "id": "mental-wealth-idea",
@@ -35,7 +35,7 @@
       "title": "Field notes",
       "file": "/audio/blue-radio/field-notes.mp3",
       "playbackGain": 0.56,
-      "seconds": 30.46
+      "seconds": 38.13
     },
     {
       "id": "quests-and-credits",
@@ -63,7 +63,7 @@
       "title": "Always by your side",
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
-      "seconds": 25.59
+      "seconds": 26.28
     },
     {
       "id": "pocket-world-thesis",

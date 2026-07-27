@@ -84,6 +84,13 @@ const SEGMENTS: Segment[] = [
     id: 'what-is-mwa',
     title: 'Welcome, the new Gods',
     text: "First things first. Welcome God! Mental Wealth Academy is an Academia for manifesting the Champion of Light lying dormant in your soul. Here you'll find a corpus of knowledge, a treasure chest owned by the community. And there is me! I am Blue. I engage with prediction markets, and earn money for the community. I reward what you submit, I encrypt what you wrote, and when your work is good, I reward you from my own stash. My files live under my garden, but my dynasty is in tact. I affirm what I say and I am proud of that!",
+    voiceSettings: {
+      stability: 0.5,
+      similarity_boost: 0.82,
+      style: 0.42,
+      speed: 1.08,
+      use_speaker_boost: true,
+    },
   },
   {
     id: 'mental-wealth-idea',
@@ -99,6 +106,13 @@ const SEGMENTS: Segment[] = [
     id: 'field-notes',
     title: 'Field notes',
     text: "Field notes are your digital journal. Again, I pay you to write in it. Every day, you write one page for 15 minutes. No prompts. No grades. Just you and the page hitting the griddy with each other. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy. Here is the secret about field notes. The academic process of writing for 15 minutes is a lot like ultra-affirmations. Think of it as your grimoire of spells... Or maybe spiritual chiropractoring! Either way, they earn diamonds, and diamonds earn you more bitcoin, straight from my stash!",
+    voiceSettings: {
+      stability: 0.5,
+      similarity_boost: 0.82,
+      style: 0.42,
+      speed: 1.08,
+      use_speaker_boost: true,
+    },
   },
   {
     id: 'quests-and-credits',
@@ -119,6 +133,13 @@ const SEGMENTS: Segment[] = [
     id: 'community',
     title: 'Always by your side',
     text: "Other Academic Angels are creating affirmations right now, right here in our pocket-world. Somebody finished their affirmations recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when others are building wealth right next to you. I am pretty sure that is science. It is at least a fact, which is my favorite part about science.",
+    voiceSettings: {
+      stability: 0.5,
+      similarity_boost: 0.82,
+      style: 0.42,
+      speed: 1.08,
+      use_speaker_boost: true,
+    },
   },
   {
     id: 'pocket-world-thesis',
