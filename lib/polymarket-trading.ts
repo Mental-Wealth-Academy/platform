@@ -25,6 +25,12 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
+import { wrapUsdcToPusd } from './polymarket-collateral';
+
+/** Auto-wrap is on unless explicitly disabled, so the agent is self-funding by default. */
+function autoWrapEnabled(): boolean {
+  return process.env.POLYMARKET_AUTO_WRAP?.trim().toLowerCase() !== 'false';
+}
 
 export const POLYMARKET_CLOB_BASE =
   (process.env.POLYMARKET_CLOB_BASE_URL || 'https://clob.polymarket.com').replace(/\/+$/, '');
@@ -232,11 +238,26 @@ export async function placePolymarketOrder(
 
   if (side === Side.BUY) {
     const initialCollateral = await fetchPolymarketCollateralBalance();
-    const collateral =
+    let collateral =
       initialCollateral.usd <= 0 || !initialCollateral.hasAllowance
         ? await refreshPolymarketCollateralBalance()
         : initialCollateral;
     const requiredUsd = input.size * input.price;
+
+    // Blue funds herself: short collateral is topped up from her own USDC.e
+    // through the permissionless onramp rather than failing the trade.
+    if (collateral.usd + Number.EPSILON < requiredUsd && autoWrapEnabled()) {
+      try {
+        const wrap = await wrapUsdcToPusd();
+        if (wrap.wrapped) {
+          collateral = await refreshPolymarketCollateralBalance();
+        }
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        console.error('Polymarket auto-wrap failed:', detail);
+      }
+    }
+
     if (collateral.usd + Number.EPSILON < requiredUsd) {
       throw new Error(
         `Polymarket collateral is ${collateral.formatted} pUSD; ${requiredUsd.toFixed(2)} pUSD is required.`,

@@ -60,6 +60,7 @@ export interface TreasuryAccountSnapshot {
     usdc: TreasuryMetric;
     credits: TreasuryMetric;
     tradingCollateral: TreasuryMetric;
+    wrappableUsdc: TreasuryMetric;
     polygonNative: TreasuryMetric;
   };
 }
@@ -88,6 +89,7 @@ export interface TreasurySnapshot {
     usdc: TreasuryMetric;
     credits: TreasuryMetric;
     tradingCollateral: TreasuryMetric;
+    wrappableUsdc: TreasuryMetric;
     polygonNative: TreasuryMetric;
   };
   accounts: TreasuryAccountSnapshot[];
@@ -365,6 +367,7 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       usdc: { amount: null, symbol: 'USDC', usdcValue: null },
       credits: { amount: null, symbol: 'BLUE', usdcValue: null },
       tradingCollateral: { amount: null, symbol: 'pUSD', usdcValue: null },
+      wrappableUsdc: { amount: null, symbol: 'USDC.e', usdcValue: null },
       polygonNative: { amount: null, symbol: 'POL', usdcValue: null },
     },
     accounts: [],
@@ -447,14 +450,19 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
   const cbBtcAmount = cbBtcBalance === null ? null : formatUnits(cbBtcBalance, 8);
   const usdcAmount = usdcBalance === null ? null : formatUnits(usdcBalance, 6);
   const creditsAmount = creditsBalance === null ? null : formatUnits(creditsBalance, 18);
+  // pUSD is the only token the CLOB will trade against. USDC.e is reported
+  // separately because it has to be wrapped first, and native USDC is excluded
+  // entirely since the onramp does not accept it.
+  const tradingCollateralAmount = polygonReads.pUsd === null
+    ? null
+    : formatUnits(polygonReads.pUsd, 6);
+  const wrappableUsdcAmount = polygonReads.usdcBridged === null
+    ? null
+    : formatUnits(polygonReads.usdcBridged, 6);
   const polygonStableBalance = sumComplete([
     polygonReads.pUsd,
-    polygonReads.usdc,
     polygonReads.usdcBridged,
   ]);
-  const tradingCollateralAmount = polygonStableBalance === null
-    ? null
-    : formatUnits(polygonStableBalance, 6);
   const polygonNativeAmount = polygonReads.native === null
     ? null
     : formatEther(polygonReads.native);
@@ -501,6 +509,7 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       account.role === 'trader' &&
       polygonReads.address?.toLowerCase() === account.address.toLowerCase();
     const accountTradingCollateral = isPolygonTrader ? tradingCollateralAmount : '0';
+    const accountWrappableUsdc = isPolygonTrader ? wrappableUsdcAmount : '0';
     const accountPolygonNative = isPolygonTrader ? polygonNativeAmount : '0';
     const baseAccountValue = aggregateUsdcValue({
       nativeAmount: accountNative,
@@ -561,6 +570,11 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
           symbol: 'pUSD',
           usdcValue: accountTradingCollateral,
         },
+        wrappableUsdc: {
+          amount: accountWrappableUsdc,
+          symbol: 'USDC.e',
+          usdcValue: accountWrappableUsdc,
+        },
         polygonNative: {
           amount: accountPolygonNative,
           symbol: 'POL',
@@ -617,6 +631,11 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
         amount: tradingCollateralAmount,
         symbol: 'pUSD',
         usdcValue: tradingCollateralAmount,
+      },
+      wrappableUsdc: {
+        amount: wrappableUsdcAmount,
+        symbol: 'USDC.e',
+        usdcValue: wrappableUsdcAmount,
       },
       polygonNative: {
         amount: polygonNativeAmount,

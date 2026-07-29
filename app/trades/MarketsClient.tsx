@@ -150,6 +150,7 @@ interface TradeChatMessage {
 interface AccountStatusResponse {
   hasLinkedAccount?: boolean;
   hasVipMembershipCard?: boolean;
+  isStaff?: boolean;
   walletAddress?: string;
 }
 
@@ -514,6 +515,9 @@ export default function Markets() {
   // The board's main tab: the market feed, or Blue's quant engine readout.
   const [boardTab, setBoardTab] = useState<'markets' | 'quant'>('markets');
   const [hasVipMembershipCard, setHasVipMembershipCard] = useState<boolean | null>(null);
+  const [isStaff, setIsStaff] = useState<boolean | null>(null);
+  // Staff hold execution authority server-side, so the desk unlocks for them too.
+  const canExecuteTrades = hasVipMembershipCard === true || isStaff === true;
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<{ category: MarketCategory; market: MarketRow } | null>(null);
   // Modal visibility is intentionally separate from the selection: closing the
@@ -606,8 +610,10 @@ export default function Markets() {
 
       const data: AccountStatusResponse = await res.json();
       setHasVipMembershipCard(Boolean(data.hasVipMembershipCard));
+      setIsStaff(Boolean(data.isStaff));
     } catch {
       setHasVipMembershipCard(false);
+      setIsStaff(false);
     }
   }, []);
 
@@ -957,7 +963,7 @@ export default function Markets() {
   const handleExecuteTrade = useCallback(async (sourceText: string) => {
     if (isTradeExecuting) return;
 
-    if (hasVipMembershipCard !== true) {
+    if (!canExecuteTrades) {
       setIsMembershipOpen(true);
       return;
     }
@@ -1020,7 +1026,7 @@ export default function Markets() {
     } finally {
       setIsTradeExecuting(false);
     }
-  }, [hasVipMembershipCard, isTradeExecuting]);
+  }, [canExecuteTrades, isTradeExecuting]);
 
   return (
     <main
@@ -1520,9 +1526,9 @@ export default function Markets() {
                           onClick={() => void handleExecuteTrade(tradeChatMessages[index - 1]?.text || message.text)}
                           disabled={isTradeExecuting}
                         >
-                          {hasVipMembershipCard === true
+                          {canExecuteTrades
                             ? (isTradeExecuting ? 'Routing...' : 'Execute this trade')
-                            : (hasVipMembershipCard === null ? 'Checking VIP...' : 'VIP card required')}
+                            : (hasVipMembershipCard === null ? 'Checking access...' : 'VIP card required')}
                         </button>
                       )}
                     </div>

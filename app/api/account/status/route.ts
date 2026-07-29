@@ -4,6 +4,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured } from '@/lib/db';
 import { walletHasMembershipAccess } from '@/lib/membership-access';
 import { walletHoldsAcademicAngel } from '@/lib/academic-angels';
+import { isStaffUser } from '@/lib/staff-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -88,6 +89,7 @@ export async function GET(request: Request) {
         hasLinkedAccount,
         hasVipMembershipCard,
         hasAcademicAngel,
+        isStaff: isStaffUser(user),
         walletAddress: checkedWalletAddress || undefined,
         linkedWalletAddress: user.walletAddress || undefined,
       },

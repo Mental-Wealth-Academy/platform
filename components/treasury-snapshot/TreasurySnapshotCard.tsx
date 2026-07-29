@@ -101,7 +101,7 @@ export default function TreasurySnapshotCard() {
               </div>
               <div className={`${styles.metric} ${styles.secondaryMetric}`}>
                 <Image className={styles.metricIcon} src="/tokens/usdc.webp" alt="" width={20} height={20} />
-                <span className={styles.metricLabel}>USDC</span>
+                <span className={styles.metricLabel}>Base USDC</span>
                 <strong className={styles.metricValue}>
                   {formatBalance(treasury.balances.usdc.amount, 2)}
                   {treasury.balances.usdc.amount !== null && <small> USDC</small>}
@@ -114,8 +114,17 @@ export default function TreasurySnapshotCard() {
                   {formatBalance(treasury.balances.tradingCollateral.amount, 2)}
                   {treasury.balances.tradingCollateral.amount !== null && <small> pUSD</small>}
                 </strong>
+                <span className={styles.metricQuote}>Tradable on the CLOB</span>
+              </div>
+              <div className={`${styles.metric} ${styles.secondaryMetric}`}>
+                <Image className={styles.metricIcon} src="/tokens/usdc.webp" alt="" width={20} height={20} />
+                <span className={styles.metricLabel}>Polygon USDC.e</span>
+                <strong className={styles.metricValue}>
+                  {formatBalance(treasury.balances.wrappableUsdc.amount, 2)}
+                  {treasury.balances.wrappableUsdc.amount !== null && <small> USDC.e</small>}
+                </strong>
                 <span className={styles.metricQuote}>
-                  {formatBalance(treasury.balances.polygonNative.amount, 4)} POL available for gas
+                  Wrap into pUSD before trading. {formatBalance(treasury.balances.polygonNative.amount, 4)} POL for gas
                 </span>
               </div>
               <div className={`${styles.metric} ${styles.secondaryMetric}`}>
