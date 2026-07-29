@@ -226,6 +226,7 @@ const MAX_EVENT_PAGES = 3;
 function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
   const [yesProb, noProb] = parseOutcomePrices(m.outcomePrices);
   const [yesTokenId, noTokenId] = parseClobTokenIds(m.clobTokenIds);
+  const isSoleMarket = (event.markets?.length ?? 0) <= 1;
 
   const conditionId = m.conditionId || m.condition_id || m.id;
   const endDate = m.endDateIso || m.endDate || event.endDateIso || event.endDate || '';
@@ -236,8 +237,12 @@ function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
       ? `${event.title} — ${m.group_item_title}`
       : (m.question || event.title),
     outcomePrices: JSON.stringify([yesProb, noProb]),
-    volume: num(m.volumeNum ?? m.volume ?? event.volumeNum ?? event.volume),
-    liquidity: num(m.liquidityNum ?? m.liquidity ?? event.liquidityNum ?? event.liquidity),
+    // Event totals only stand in for a single-market event. Falling back to them
+    // inside a multi-market event reports the whole event's volume on every row.
+    volume: num(m.volumeNum ?? m.volume ?? (isSoleMarket ? (event.volumeNum ?? event.volume) : 0)),
+    liquidity: num(
+      m.liquidityNum ?? m.liquidity ?? (isSoleMarket ? (event.liquidityNum ?? event.liquidity) : 0),
+    ),
     endDate,
     active:
       m.active !== false &&
@@ -247,7 +252,10 @@ function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
     ticker: conditionId,
     event_ticker: event.id,
     yes_ask: num(m.bestAsk, yesProb),
-    no_ask: noProb,
+    // On a binary market the NO ask is the complement of the YES bid. Using the
+    // NO midpoint instead understates it by half the spread, which shows a price
+    // nobody can fill at and makes NO limit orders miss the book.
+    no_ask: num(m.bestBid) > 0 ? 1 - num(m.bestBid) : noProb,
     iconUrl: event.image || event.icon || m.image || m.icon,
     tokenId: yesTokenId,
     noTokenId,
