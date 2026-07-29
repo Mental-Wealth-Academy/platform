@@ -18,6 +18,16 @@ function formatBalance(amount: string | null, maximumFractionDigits: number): st
   });
 }
 
+function formatUsdcValue(amount: string | null): string | null {
+  if (amount === null) return null;
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return null;
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 function shortAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
@@ -70,6 +80,24 @@ export default function TreasurySnapshotCard() {
                   {formatBalance(treasury.balances.cbBtc.amount, 8)}
                   {treasury.balances.cbBtc.amount !== null && <small> Bitcoin</small>}
                 </strong>
+                {formatUsdcValue(treasury.balances.cbBtc.usdcValue) && (
+                  <span className={styles.metricQuote}>
+                    {formatUsdcValue(treasury.balances.cbBtc.usdcValue)} USDC
+                  </span>
+                )}
+              </div>
+              <div className={`${styles.metric} ${styles.secondaryMetric}`}>
+                <Image className={styles.metricIcon} src="/tokens/eth.png" alt="" width={20} height={20} />
+                <span className={styles.metricLabel}>Ether</span>
+                <strong className={styles.metricValue}>
+                  {formatBalance(treasury.balances.native.amount, 6)}
+                  {treasury.balances.native.amount !== null && <small> ETH</small>}
+                </strong>
+                {formatUsdcValue(treasury.balances.native.usdcValue) && (
+                  <span className={styles.metricQuote}>
+                    {formatUsdcValue(treasury.balances.native.usdcValue)} USDC
+                  </span>
+                )}
               </div>
               <div className={`${styles.metric} ${styles.secondaryMetric}`}>
                 <Image className={styles.metricIcon} src="/tokens/usdc.webp" alt="" width={20} height={20} />
@@ -86,6 +114,7 @@ export default function TreasurySnapshotCard() {
                   {formatBalance(treasury.balances.credits.amount, 2)}
                   {treasury.balances.credits.amount !== null && <small> Diamonds</small>}
                 </strong>
+                <span className={styles.metricQuote}>Unpriced</span>
               </div>
             </div>
             <div className={styles.footer}>

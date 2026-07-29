@@ -1,0 +1,109 @@
+{
+  "chainId": 8453,
+  "completedAt": "2026-07-29T16:14:19Z",
+  "snapshotBlock": "49276112",
+  "v1Token": "0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f",
+  "v2Token": "0x143AeC3D2A2491f030c978003F2B3D05D4Ac3ec5",
+  "blueAddress": "0x0920553CcA188871b146ee79f562B4Af46aB4f8a",
+  "expectedFinalSupply": "199999601000000000000000000",
+  "expectedFinalBlueBalance": "199991075000000000000000000",
+  "transactions": [
+    {
+      "type": "transfer",
+      "recipient": "0xC365D44630C7e95cdB75CA8B81Ad670aA08F49E3",
+      "amount": "5231000000000000000000",
+      "hash": "0x157573cabec05600f54312edda666eb2fcf55399ab0b13fb4be52010d2414123",
+      "blockNumber": "49276145"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0x84D55C4BB3d4062f74F096Fcdf58E1A9d7405d95",
+      "amount": "1200000000000000000000",
+      "hash": "0x26ab2ff636ebe65c01255134332b37395bdc8d594e797739c315f656120175a9",
+      "blockNumber": "49276146"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xf634FbDE23BDEa5Da3FCA3a3484ED05540593bb9",
+      "amount": "985000000000000000000",
+      "hash": "0xe3e2bb75dc5be252da1dbd1244025fc6bacfe75b6c05273f675da9831f5ae94a",
+      "blockNumber": "49276147"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0x814Ab3ae3A4E07F1E13b39F6cd9aEbD53c48AD79",
+      "amount": "210000000000000000000",
+      "hash": "0x9369f22bbe5e6acd967f22c98b0efe510aa661b333ce4e41ee2e60919ac55780",
+      "blockNumber": "49276148"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0x181E3345C332178cbEf5caEA0eca196c9D78bB57",
+      "amount": "100000000000000000000",
+      "hash": "0xcd9b72d68621e02698c7eccbc715901eeb724465d4983a7a9e4884b6a0815376",
+      "blockNumber": "49276149"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0x8e2913A92DEB13d796e6D99D1471AF3d2d4353ab",
+      "amount": "100000000000000000000",
+      "hash": "0x869334bf52ff149dd1e0d89547608c522895a647e41136f15cebeb2fb9955b32",
+      "blockNumber": "49276149"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0x9ee59B0f7687eD2b91BB0452D8d8759D576Bc0D4",
+      "amount": "100000000000000000000",
+      "hash": "0x115ddca7cfd6f69388aa25cfa075cc783c68b856beb22171000fa0472d0d6b98",
+      "blockNumber": "49276150"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xA4838F4C97baF5EBeb1644567AD5b23eabd5851B",
+      "amount": "100000000000000000000",
+      "hash": "0x1ffd5c3324fdc34fb65417137434eb34d6954c8f087d14f7bdc591ea35b3a5e8",
+      "blockNumber": "49276151"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xb9a70296E3B35D55d4271B7e775f77f7be7645Ae",
+      "amount": "100000000000000000000",
+      "hash": "0xa0643591b160937ed6f6a0db272ba1051eae399b4d10ded4f0fc325e9f576af1",
+      "blockNumber": "49276152"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xBeDa829a0d2fBdC8519748AE81895e89e137e83D",
+      "amount": "100000000000000000000",
+      "hash": "0xf3302c05660eb672aeb0def7818f394481a48dd3737e2f5b8ba701f1b3e48a5d",
+      "blockNumber": "49276153"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xD56B047bfC67862573A1208334a3527e3d141f5b",
+      "amount": "100000000000000000000",
+      "hash": "0x3613f8c2e4752c11ab4d37f196f57d9f75c311e7c20888016f622267298b548a",
+      "blockNumber": "49276153"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xDF8c38df79C1a234cF264285a335490FD75eCfE2",
+      "amount": "100000000000000000000",
+      "hash": "0x1012d04f679f9c4aa321e0037e04382fe10f26649830085a9a5be33b3485dc77",
+      "blockNumber": "49276154"
+    },
+    {
+      "type": "transfer",
+      "recipient": "0xFca5369a73E86807012591FBC020B9ADE119FD1D",
+      "amount": "100000000000000000000",
+      "hash": "0xd91d828bba508c5f73eb91face4cdcf2f315b9cd6492ad7d35358d118c03d909",
+      "blockNumber": "49276155"
+    },
+    {
+      "type": "burn",
+      "amount": "399000000000000000000",
+      "hash": "0x030f339c00c2a7a03cda2b08db90e886fac00870e34bac648c81c396a542e826",
+      "blockNumber": "49276156"
+    }
+  ]
+}

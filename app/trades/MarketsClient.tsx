@@ -1057,6 +1057,7 @@ export default function Markets() {
                     <>
                       <div className={styles.treasuryQuickPrimary}>
                         <div className={styles.balanceHero}>${balance.formatted}</div>
+                        <div className={styles.balanceLabel}>Priceable treasury value in USDC</div>
                       </div>
                       <div className={styles.treasuryQuickSpark}>
                         <TickerLine key={`a-${treasuryRange}`} len={rangeLen} stroke="var(--color-primary)" strokeWidth={2} opacity={0.85} />

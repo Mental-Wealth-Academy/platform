@@ -1,4 +1,4 @@
-import { providers, Contract } from 'ethers';
+import { fetchTreasurySnapshot } from './treasury-snapshot';
 
 // ── Re-exports for Polymarket (replaces former Kalshi exports) ──
 
@@ -33,8 +33,10 @@ export interface TreasuryBalance {
   raw: string;
   formatted: string;
   usd: number;
+  wallet: { raw: string; formatted: string; usd: number };
   governance: { raw: string; formatted: string; usd: number };
   trader: { raw: string; formatted: string; usd: number };
+  updatedAt: string;
 }
 
 export interface OrderFlowMetrics {
@@ -64,22 +66,6 @@ const SYMBOL_MAP: Record<string, string> = {
   ripple: 'XRP',
   'pax-gold': 'GOLD',
 };
-
-const CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_BLUE_KILLSTREAK_ADDRESS ||
-  '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
-const TRADER_ADDRESS =
-  process.env.NEXT_PUBLIC_BLUE_MARKET_TRADER_ADDRESS || '';
-const USDC_ADDRESS =
-  process.env.NEXT_PUBLIC_USDC_ADDRESS ||
-  '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
-const RPC_URL =
-  process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org';
-
-const USDC_ABI = [
-  'function balanceOf(address) view returns (uint256)',
-  'function decimals() view returns (uint8)',
-];
 
 // ── Fetchers ──
 
@@ -120,39 +106,43 @@ function formatUsd(n: number): string {
 }
 
 /**
- * Fetch on-chain USDC balance of both the governance and trader contracts.
- * Returns individual balances plus a combined total.
- * 60s module-level cache; falls back to cached/fallback on error.
+ * Fetch the verified USDC-equivalent value of Blue's wallet and configured
+ * treasury contracts. The underlying snapshot includes native ETH, USDC, and
+ * cbBTC. Diamonds remain visible as an unpriced holding until a liquid market
+ * supplies a defensible quote.
  */
 export async function fetchTreasuryBalance(): Promise<TreasuryBalance> {
   if (_balance && Date.now() - _balance.ts < 60_000) return _balance.data;
 
   try {
-    const provider = new providers.JsonRpcProvider(RPC_URL);
-    const usdc = new Contract(USDC_ADDRESS, USDC_ABI, provider);
-
-    const decimals: number = await usdc.decimals();
-    const divisor = 10 ** Number(decimals);
-
-    const govRaw = await usdc.balanceOf(CONTRACT_ADDRESS);
-    const govNum = Number(govRaw) / divisor;
-
-    let traderRaw = '0';
-    let traderNum = 0;
-    if (TRADER_ADDRESS) {
-      const rawBal = await usdc.balanceOf(TRADER_ADDRESS);
-      traderRaw = rawBal.toString();
-      traderNum = Number(rawBal) / divisor;
+    const snapshot = await fetchTreasurySnapshot();
+    const totalValue = Number(snapshot.valuation.amountUsdc);
+    if (
+      snapshot.valuation.amountUsdc === null ||
+      !Number.isFinite(totalValue) ||
+      totalValue < 0
+    ) {
+      throw new Error('Treasury valuation is unavailable.');
     }
 
-    const totalNum = govNum + traderNum;
+    const accountValue = (role: 'wallet' | 'governance' | 'trader') => {
+      const value = Number(snapshot.accounts.find((account) => account.role === role)?.valueUsdc);
+      const amount = Number.isFinite(value) && value >= 0 ? value : 0;
+      return {
+        raw: BigInt(Math.round(amount * 1_000_000)).toString(),
+        formatted: formatUsd(amount),
+        usd: amount,
+      };
+    };
 
     const result: TreasuryBalance = {
-      raw: (BigInt(govRaw.toString()) + BigInt(traderRaw)).toString(),
-      formatted: formatUsd(totalNum),
-      usd: totalNum,
-      governance: { raw: govRaw.toString(), formatted: formatUsd(govNum), usd: govNum },
-      trader: { raw: traderRaw, formatted: formatUsd(traderNum), usd: traderNum },
+      raw: BigInt(Math.round(totalValue * 1_000_000)).toString(),
+      formatted: formatUsd(totalValue),
+      usd: totalValue,
+      wallet: accountValue('wallet'),
+      governance: accountValue('governance'),
+      trader: accountValue('trader'),
+      updatedAt: snapshot.updatedAt,
     };
 
     _balance = { data: result, ts: Date.now() };
@@ -160,7 +150,6 @@ export async function fetchTreasuryBalance(): Promise<TreasuryBalance> {
   } catch (err) {
     console.error('fetchTreasuryBalance error:', err);
     if (_balance) return _balance.data;
-    const fallback = { raw: '0', formatted: '0.00', usd: 0 };
-    return { raw: '0', formatted: '5,252.00', usd: 5252, governance: { raw: '0', formatted: '5,252.00', usd: 5252 }, trader: fallback };
+    throw new Error('Treasury balance is unavailable.');
   }
 }

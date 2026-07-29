@@ -56,6 +56,7 @@ const VAULT_ABI = [
   { type: 'function', name: 'pendingRewards', stateMutability: 'view', inputs: [{ type: 'address' }], outputs: [{ type: 'uint256' }] },
   { type: 'function', name: 'depositReflections', stateMutability: 'nonpayable', inputs: [{ type: 'uint256' }], outputs: [] },
   { type: 'function', name: 'process', stateMutability: 'nonpayable', inputs: [{ type: 'uint256' }], outputs: [{ type: 'uint256' }, { type: 'uint256' }] },
+  { type: 'function', name: 'holderCount', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
 ] as const;
 
 const CBBTC_ABI = [
@@ -89,9 +90,9 @@ async function main() {
   const vault = cfg.reflectionVaultAddress as `0x${string}`;
   const cbbtc = cfg.cbBTcAddress as `0x${string}`;
 
-  // The sequencer RPC serves consistent state; free-tier load-balanced
-  // endpoints (Alchemy) lag across replicas and make every assertion flaky.
-  const rpcUrl = process.env.E2E_RPC_URL || 'https://sepolia.base.org';
+  // Flashblocks exposes current sequencer state; standard load-balanced RPCs
+  // can confirm a transaction before every replica can read its new state.
+  const rpcUrl = process.env.E2E_RPC_URL || 'https://sepolia-preconf.base.org';
   const client = createPublicClient({ chain: baseSepolia, transport: http(rpcUrl) });
   const wallet = createWalletClient({ account: blue, chain: baseSepolia, transport: http(rpcUrl) });
 
@@ -198,11 +199,25 @@ async function main() {
   console.log('\n[6] Batch payout via process()');
   const before = await Promise.all(holders.map((h) =>
     client.readContract({ address: cbbtc, abi: CBBTC_ABI, functionName: 'balanceOf', args: [h.address] })));
-  // Explicit gas limit: estimating against a lagging replica undercounts the
-  // payout loop and the tx dies out-of-gas onchain (seen on Alchemy free tier).
-  await send('vault.process(600000)', {
-    address: vault, abi: VAULT_ABI, functionName: 'process', args: [600000n], gas: 1_200_000n,
-  });
+  // A persistent rehearsal vault can contain holders from earlier runs. Walk
+  // bounded batches until this run's targets are paid instead of assuming one
+  // process call starts close enough to them in the queue.
+  const holderCount = Number(await client.readContract({
+    address: vault, abi: VAULT_ABI, functionName: 'holderCount',
+  }));
+  let pendAfterPay = pend;
+  for (
+    let attempt = 1;
+    attempt <= Math.max(2, holderCount) && (pendAfterPay[0] > 0n || pendAfterPay[1] > 0n);
+    attempt++
+  ) {
+    // Explicit gas limit: estimating against a lagging replica undercounts the
+    // payout loop and the tx dies out-of-gas onchain (seen on free-tier RPCs).
+    await send(`vault.process(600000) batch ${attempt}`, {
+      address: vault, abi: VAULT_ABI, functionName: 'process', args: [600000n], gas: 1_200_000n,
+    });
+    pendAfterPay = await readPendings();
+  }
   const after = await Promise.all(holders.map((h) =>
     client.readContract({ address: cbbtc, abi: CBBTC_ABI, functionName: 'balanceOf', args: [h.address] })));
   check('holder1 received their pending cbBTC', after[0] - before[0] >= pend[0] && pend[0] > 0n,
@@ -210,16 +225,19 @@ async function main() {
   check('holder2 received their pending cbBTC', after[1] - before[1] >= pend[1] && pend[1] > 0n,
     `+${formatUnits(after[1] - before[1], 8)} cbBTC`);
   check('holder3 received nothing', after[2] === before[2]);
-  const pendAfterPay = await readPendings();
   check('pendings cleared after process()', pendAfterPay[0] === 0n && pendAfterPay[1] === 0n);
 
   // ── 8. Share resync on transfer ──
   console.log('\n[7] Share resync on transfer');
   const gasFund = await wallet.sendTransaction({ to: holders[0].address, value: parseEther('0.00005'), nonce: nonce++ });
   await client.waitForTransactionReceipt({ hash: gasFund });
-  const h1Wallet = createWalletClient({ account: holders[0], chain: baseSepolia, transport: http(cfg.rpcUrl) });
+  const h1Wallet = createWalletClient({ account: holders[0], chain: baseSepolia, transport: http(rpcUrl) });
   const moveTx = await h1Wallet.writeContract({
     address: token, abi: DIAMONDS_ABI, functionName: 'transfer', args: [holders[1].address, parseUnits('700', 18)],
+    // A lagging estimator can miss the recipient-side vault sync because the
+    // token intentionally catches vault failures. Reserve enough gas to prove
+    // both share updates execute on the sequencer.
+    gas: 300_000n,
   });
   await client.waitForTransactionReceipt({ hash: moveTx });
   // holder1 drops to 800 BLUE — below the 1,000 threshold, so their share must

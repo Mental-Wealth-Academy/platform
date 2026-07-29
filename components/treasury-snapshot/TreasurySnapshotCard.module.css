@@ -155,6 +155,22 @@
   font-weight: 800;
 }
 
+.metricQuote {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.secondaryMetric .metricQuote {
+  color: color-mix(in oklch, var(--color-text-light) 72%, transparent);
+}
+
 .walletLink {
   display: flex;
   align-items: center;

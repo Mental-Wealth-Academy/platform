@@ -1,0 +1,81 @@
+{
+  "chainId": 8453,
+  "token": "0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f",
+  "name": "Diamonds",
+  "symbol": "BLUE",
+  "decimals": 18,
+  "deployBlock": "48102746",
+  "snapshotBlock": "49276112",
+  "capturedAt": "2026-07-29T16:13:27.871Z",
+  "transferEventCount": 114,
+  "totalSupply": "200000001000000000000000000",
+  "reconstructedSupply": "200000001000000000000000000",
+  "holderCount": 15,
+  "blueAddress": "0x0920553CcA188871b146ee79f562B4Af46aB4f8a",
+  "blueBalance": "199991075000000000000000000",
+  "deadAddress": "0x000000000000000000000000000000000000dEaD",
+  "deadBalance": "400000000000000000000",
+  "migratableHolderCount": 13,
+  "holders": [
+    {
+      "address": "0x0920553CcA188871b146ee79f562B4Af46aB4f8a",
+      "amount": "199991075000000000000000000"
+    },
+    {
+      "address": "0xC365D44630C7e95cdB75CA8B81Ad670aA08F49E3",
+      "amount": "5231000000000000000000"
+    },
+    {
+      "address": "0x84D55C4BB3d4062f74F096Fcdf58E1A9d7405d95",
+      "amount": "1200000000000000000000"
+    },
+    {
+      "address": "0xf634FbDE23BDEa5Da3FCA3a3484ED05540593bb9",
+      "amount": "985000000000000000000"
+    },
+    {
+      "address": "0x000000000000000000000000000000000000dEaD",
+      "amount": "400000000000000000000"
+    },
+    {
+      "address": "0x814Ab3ae3A4E07F1E13b39F6cd9aEbD53c48AD79",
+      "amount": "210000000000000000000"
+    },
+    {
+      "address": "0x181E3345C332178cbEf5caEA0eca196c9D78bB57",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0x8e2913A92DEB13d796e6D99D1471AF3d2d4353ab",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0x9ee59B0f7687eD2b91BB0452D8d8759D576Bc0D4",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xA4838F4C97baF5EBeb1644567AD5b23eabd5851B",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xb9a70296E3B35D55d4271B7e775f77f7be7645Ae",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xBeDa829a0d2fBdC8519748AE81895e89e137e83D",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xD56B047bfC67862573A1208334a3527e3d141f5b",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xDF8c38df79C1a234cF264285a335490FD75eCfE2",
+      "amount": "100000000000000000000"
+    },
+    {
+      "address": "0xFca5369a73E86807012591FBC020B9ADE119FD1D",
+      "amount": "100000000000000000000"
+    }
+  ]
+}

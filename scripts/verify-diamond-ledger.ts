@@ -1,8 +1,9 @@
 /**
  * Prove every diamond interaction actually happened onchain.
  *
- * Cross-checks the two server ledgers against the active chain
- * (chain-config decides mainnet vs Sepolia):
+ * Cross-checks the two server ledgers against every known deployment on Base
+ * mainnet and Base Sepolia. The ledger predates chain metadata, so historical
+ * rows can legitimately belong to either network.
  *
  *   diamond_onchain_rewards (earning) — every 'sent' row must have a real
  *     Transfer of the right amount to the right wallet in its tx receipt.
@@ -21,10 +22,11 @@
  */
 import { providers, utils } from 'ethers';
 import { sqlQuery } from '../lib/db';
-import { getChainConfig } from '../lib/chain-config';
 
 const TRANSFER_TOPIC = utils.id('Transfer(address,address,uint256)');
 const DEAD = '0x000000000000000000000000000000000000dead';
+const BASE_MAINNET_V1 = '0x4a25cea1f05c6725dc90849fbaaff00d67342b3f';
+const BASE_SEPOLIA_V2 = '0xd116e780ca9ec3984e7682e095aab50006a9c160';
 
 interface RewardRow {
   id: string; user_id: string; wallet_address: string; source: string;
@@ -36,37 +38,99 @@ interface BurnRow {
   amount: number; tx_hash: string;
 }
 
+interface DeploymentTarget {
+  name: string;
+  provider: providers.StaticJsonRpcProvider;
+  tokens: Set<string>;
+}
+
 function topicAddr(topic: string): string {
   return ('0x' + topic.slice(-40)).toLowerCase();
 }
 
+function tokenSet(...candidates: Array<string | undefined>): Set<string> {
+  return new Set(
+    candidates
+      .filter((candidate): candidate is string => /^0x[a-fA-F0-9]{40}$/.test(candidate || ''))
+      .map((candidate) => candidate.toLowerCase()),
+  );
+}
+
 async function main() {
   const limit = Number((process.argv.find(a => a.startsWith('--limit=')) || '').split('=')[1] || 1000);
-  const cfg = getChainConfig();
-  const token = cfg.diamondsTokenAddress.toLowerCase();
-  const provider = new providers.StaticJsonRpcProvider(cfg.rpcUrl, { chainId: cfg.chainId, name: 'base' });
-  console.log(`Chain: ${cfg.chainName} (${cfg.chainId})  token: ${token}\n`);
+  const targets: DeploymentTarget[] = [
+    {
+      name: 'Base mainnet',
+      provider: new providers.StaticJsonRpcProvider(
+        process.env.BASE_RPC_URL ||
+          process.env.NEXT_PUBLIC_BASE_RPC_URL ||
+          'https://mainnet.base.org',
+        { chainId: 8453, name: 'base' },
+      ),
+      tokens: tokenSet(
+        process.env.DIAMONDS_TOKEN_ADDRESS,
+        process.env.NEXT_PUBLIC_DIAMONDS_TOKEN_ADDRESS,
+        process.env.DIAMONDS_V1_TOKEN_ADDRESS,
+        BASE_MAINNET_V1,
+      ),
+    },
+    {
+      name: 'Base Sepolia',
+      provider: new providers.StaticJsonRpcProvider(
+        process.env.BASE_SEPOLIA_RPC_URL ||
+          process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL ||
+          'https://sepolia-preconf.base.org',
+        { chainId: 84532, name: 'base-sepolia' },
+      ),
+      tokens: tokenSet(
+        process.env.DIAMONDS_SEPOLIA_TOKEN_ADDRESS,
+        process.env.NEXT_PUBLIC_DIAMONDS_SEPOLIA_TOKEN_ADDRESS,
+        BASE_SEPOLIA_V2,
+      ),
+    },
+  ];
+  console.log('Known deployments:');
+  for (const target of targets) {
+    console.log(`  ${target.name}: ${[...target.tokens].join(', ')}`);
+  }
+  console.log('');
 
   let bad = 0;
+  const verifiedByTarget = new Map<string, number>();
 
   const verifyTx = async (
     txHash: string, wallet: string, amount: number,
     direction: 'in' | 'burn',
   ): Promise<string | null> => {
-    const receipt = await provider.getTransactionReceipt(txHash).catch(() => null);
-    if (!receipt) return 'tx not found on this chain';
-    if (receipt.status !== 1) return 'tx reverted';
     const required = utils.parseUnits(String(amount), 18);
-    for (const log of receipt.logs) {
-      if (log.address.toLowerCase() !== token) continue;
-      if (log.topics[0] !== TRANSFER_TOPIC || log.topics.length < 3) continue;
-      const from = topicAddr(log.topics[1]);
-      const to = topicAddr(log.topics[2]);
-      const value = utils.defaultAbiCoder.decode(['uint256'], log.data)[0];
-      if (direction === 'in' && to === wallet.toLowerCase() && value.gte(required)) return null;
-      if (direction === 'burn' && from === wallet.toLowerCase() && to === DEAD && value.gte(required)) return null;
+    let receiptFound = false;
+
+    for (const target of targets) {
+      const receipt = await target.provider.getTransactionReceipt(txHash).catch(() => null);
+      if (!receipt) continue;
+      receiptFound = true;
+      if (receipt.status !== 1) continue;
+
+      for (const log of receipt.logs) {
+        if (!target.tokens.has(log.address.toLowerCase())) continue;
+        if (log.topics[0] !== TRANSFER_TOPIC || log.topics.length < 3) continue;
+        const from = topicAddr(log.topics[1]);
+        const to = topicAddr(log.topics[2]);
+        const value = utils.defaultAbiCoder.decode(['uint256'], log.data)[0];
+        const matches =
+          direction === 'in'
+            ? to === wallet.toLowerCase() && value.gte(required)
+            : from === wallet.toLowerCase() && to === DEAD && value.gte(required);
+        if (matches) {
+          verifiedByTarget.set(target.name, (verifiedByTarget.get(target.name) || 0) + 1);
+          return null;
+        }
+      }
     }
-    return 'no matching BLUE Transfer in receipt (wrong chain, wrong token, or no-op tx)';
+
+    return receiptFound
+      ? 'no matching BLUE Transfer in receipt (wrong token, amount, wallet, or no-op tx)'
+      : 'tx not found on Base mainnet or Base Sepolia';
   };
 
   // ── Earning ledger ──
@@ -80,10 +144,10 @@ async function main() {
 
   for (const r of rewards) {
     if (r.status !== 'sent') continue;
-    if (!r.tx_hash) { console.log(`  BAD   sent row ${r.id} has no tx_hash`); bad++; continue; }
+    if (!r.tx_hash) { console.log(`  bad   sent row ${r.id} has no tx_hash`); bad++; continue; }
     const problem = await verifyTx(r.tx_hash, r.wallet_address, r.amount, 'in');
     if (problem) {
-      console.log(`  BAD   ${r.source}/${r.ref_id} ${r.amount} BLUE -> ${r.wallet_address}\n        tx ${r.tx_hash}: ${problem}`);
+      console.log(`  bad   ${r.source}/${r.ref_id} ${r.amount} BLUE -> ${r.wallet_address}\n        tx ${r.tx_hash}: ${problem}`);
       bad++;
     }
   }
@@ -108,12 +172,16 @@ async function main() {
     for (const b of burns) {
       const problem = await verifyTx(b.tx_hash, b.wallet_address, b.amount, 'burn');
       if (problem) {
-        console.log(`  BAD   ${b.purpose} ${b.amount} BLUE from ${b.wallet_address}\n        tx ${b.tx_hash}: ${problem}`);
+        console.log(`  bad   ${b.purpose} ${b.amount} BLUE from ${b.wallet_address}\n        tx ${b.tx_hash}: ${problem}`);
         bad++;
       }
     }
   }
 
+  console.log('\nVerified transfers by deployment:');
+  for (const target of targets) {
+    console.log(`  ${target.name}: ${verifiedByTarget.get(target.name) || 0}`);
+  }
   console.log(bad === 0
     ? '\nLedger and chain agree — every recorded diamond interaction is real.'
     : `\n${bad} ledger row(s) do NOT match the chain — investigate before mainnet.`);
