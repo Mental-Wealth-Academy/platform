@@ -32,6 +32,7 @@ export interface PolymarketMarket {
   closed?: boolean;
   active?: boolean;
   archived?: boolean;
+  acceptingOrders?: boolean;
   clobTokenIds?: string;
   tokens?: Array<{
     token_id: string;
@@ -52,6 +53,8 @@ export interface PolymarketMarket {
   icon?: string;
   tags?: any[];
   group_item_title?: string;
+  orderMinSize?: number | string;
+  events?: PolymarketEvent[];
 }
 
 export interface PolymarketEvent {
@@ -90,6 +93,9 @@ export interface MarketRow {
   no_ask: number;
   iconUrl?: string;
   tokenId?: string;        // YES token id, needed for order placement
+  noTokenId?: string;      // NO token id, used when the model favors NO
+  minOrderSize?: number;
+  slug?: string;
 }
 
 export interface RecentTrade {
@@ -219,7 +225,7 @@ const MAX_EVENT_PAGES = 3;
 
 function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
   const [yesProb, noProb] = parseOutcomePrices(m.outcomePrices);
-  const [yesTokenId] = parseClobTokenIds(m.clobTokenIds);
+  const [yesTokenId, noTokenId] = parseClobTokenIds(m.clobTokenIds);
 
   const conditionId = m.conditionId || m.condition_id || m.id;
   const endDate = m.endDateIso || m.endDate || event.endDateIso || event.endDate || '';
@@ -233,13 +239,20 @@ function toRow(event: PolymarketEvent, m: PolymarketMarket): MarketRow {
     volume: num(m.volumeNum ?? m.volume ?? event.volumeNum ?? event.volume),
     liquidity: num(m.liquidityNum ?? m.liquidity ?? event.liquidityNum ?? event.liquidity),
     endDate,
-    active: m.active !== false && !m.closed && !m.archived,
+    active:
+      m.active !== false &&
+      !m.closed &&
+      !m.archived &&
+      m.acceptingOrders !== false,
     ticker: conditionId,
     event_ticker: event.id,
-    yes_ask: yesProb,
+    yes_ask: num(m.bestAsk, yesProb),
     no_ask: noProb,
     iconUrl: event.image || event.icon || m.image || m.icon,
     tokenId: yesTokenId,
+    noTokenId,
+    minOrderSize: Math.max(1, num(m.orderMinSize, 1)),
+    slug: m.slug || m.market_slug,
   };
 }
 
@@ -349,6 +362,56 @@ export async function fetchCategorizedMarkets(): Promise<CategorizedMarkets> {
 export async function fetchPolymarketMarkets(): Promise<MarketRow[]> {
   const cats = await fetchCategorizedMarkets();
   return MARKET_CATEGORIES.flatMap((cat) => cats[cat]);
+}
+
+/**
+ * Resolve one exact Polymarket market by slug.
+ *
+ * Execution uses this path instead of the broad discovery scanner so a staff
+ * trade cannot drift to a different market as rankings and prices change.
+ */
+export async function fetchPolymarketMarketBySlug(slug: string): Promise<MarketRow> {
+  const normalizedSlug = slug.trim();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalizedSlug)) {
+    throw new Error('Polymarket target slug is missing or invalid.');
+  }
+
+  const response = await fetch(
+    `${GAMMA_BASE}/markets?slug=${encodeURIComponent(normalizedSlug)}`,
+    {
+      cache: 'no-store',
+      headers: { 'User-Agent': 'MentalWealthAcademy/1.0' },
+      signal: AbortSignal.timeout(8_000),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Polymarket target lookup returned ${response.status}.`);
+  }
+
+  const payload = await response.json() as PolymarketMarket[];
+  const market = Array.isArray(payload) ? payload[0] : null;
+  if (!market) {
+    throw new Error(`Polymarket target "${normalizedSlug}" was not found.`);
+  }
+  if (
+    market.active === false ||
+    market.closed ||
+    market.archived ||
+    market.acceptingOrders === false
+  ) {
+    throw new Error(`Polymarket target "${normalizedSlug}" is not accepting orders.`);
+  }
+
+  const event = market.events?.[0] || {
+    id: '',
+    title: market.question,
+    markets: [market],
+  };
+  const row = toRow(event, market);
+  if (!row.active || !row.tokenId || !row.noTokenId) {
+    throw new Error(`Polymarket target "${normalizedSlug}" has incomplete order data.`);
+  }
+  return row;
 }
 
 /**

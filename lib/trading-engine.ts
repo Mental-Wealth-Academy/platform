@@ -13,9 +13,11 @@
 import {
   fetchPrices,
   fetchCategorizedMarkets,
+  fetchPolymarketMarketBySlug,
   type CoinPrice,
   type MarketRow,
 } from './market-api';
+import { fetchPolymarketCollateralBalance } from './polymarket-trading';
 
 // ── Model Constants (mirrored from /markets page) ──
 
@@ -25,12 +27,16 @@ const R_FREE = 0.0433;
 const SIGMA_B = 0.328;
 const EDGE_THRESHOLD = 3.0;
 const KELLY_FRACTION = 0.25;
+const DEFAULT_TARGET_SLUG =
+  'will-there-be-no-change-in-fed-interest-rates-after-the-july-2026-meeting';
+const DEFAULT_TARGET_OUTCOME = 'YES';
+const DEFAULT_MAX_TRADE_USDC = 5;
+const DEFAULT_MAX_ENTRY_PRICE = 0.75;
 
 // ── Risk Limits (kept for reference / sizing math) ──
 
 const MAX_POSITION_PCT = 0.05;       // 5% of trading balance per position
 const MAX_TOTAL_EXPOSURE_PCT = 0.40; // 40% total exposure
-const NOTIONAL_BALANCE = 5000;       // dry-run notional in USD for sizing
 
 // ── Types ──
 
@@ -59,6 +65,7 @@ export interface ExecutableTradePlan {
     tokenId: string;
     ticker: string;
     side: 'BUY' | 'SELL';
+    outcome: 'YES' | 'NO';
     price: number;         // 0-1 decimal
     size: number;           // number of shares
     priceCents: number;     // kept for display compatibility
@@ -162,9 +169,11 @@ export async function scanForEdge(): Promise<{ signals: EdgeSignal[]; logs: Trad
 }
 
 /** Apply quarter-Kelly + risk limits to size positions (notional, dry-run). */
-export function sizePositions(signals: EdgeSignal[]): SizedPosition[] {
+export function sizePositions(signals: EdgeSignal[], balance: number): SizedPosition[] {
+  if (!Number.isFinite(balance) || balance < 0) {
+    throw new Error('Trading balance must be a finite, non-negative number.');
+  }
   const positions: SizedPosition[] = [];
-  const balance = NOTIONAL_BALANCE;
   const maxPerPosition = balance * MAX_POSITION_PCT;
   let totalExposure = 0;
 
@@ -192,47 +201,126 @@ export function sizePositions(signals: EdgeSignal[]): SizedPosition[] {
   return positions;
 }
 
-function getOrderPrice(signal: EdgeSignal): number {
-  const [yesProb, noProb] = parseOutcomePrices(signal.market.outcomePrices);
-  const fallbackYes = Math.max(0.01, Math.min(0.99, yesProb));
-  const fallbackNo = Math.max(0.01, Math.min(0.99, noProb));
-
-  if (signal.side === 'BUY') {
-    return signal.market.yes_ask > 0 ? signal.market.yes_ask : fallbackYes;
+export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan | null; logs: TradingLog[] }> {
+  const logs: TradingLog[] = [];
+  const targetSlug =
+    process.env.POLYMARKET_TARGET_MARKET_SLUG?.trim() || DEFAULT_TARGET_SLUG;
+  const configuredOutcome =
+    process.env.POLYMARKET_TARGET_OUTCOME?.trim().toUpperCase() ||
+    DEFAULT_TARGET_OUTCOME;
+  if (configuredOutcome !== 'YES' && configuredOutcome !== 'NO') {
+    throw new Error('POLYMARKET_TARGET_OUTCOME must be YES or NO.');
   }
 
-  return signal.market.no_ask > 0 ? signal.market.no_ask : fallbackNo;
-}
+  const maxTradeUsdc = Number(
+    process.env.POLYMARKET_MAX_TRADE_USDC || DEFAULT_MAX_TRADE_USDC,
+  );
+  const maxEntryPrice = Number(
+    process.env.POLYMARKET_MAX_ENTRY_PRICE || DEFAULT_MAX_ENTRY_PRICE,
+  );
+  if (!Number.isFinite(maxTradeUsdc) || maxTradeUsdc <= 0) {
+    throw new Error('POLYMARKET_MAX_TRADE_USDC must be a positive number.');
+  }
+  if (
+    !Number.isFinite(maxEntryPrice) ||
+    maxEntryPrice < 0.01 ||
+    maxEntryPrice > 0.99
+  ) {
+    throw new Error('POLYMARKET_MAX_ENTRY_PRICE must be between 0.01 and 0.99.');
+  }
 
-export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan | null; logs: TradingLog[] }> {
-  const { signals, logs } = await scanForEdge();
-  const positions = sizePositions(signals);
-  const topPosition = positions[0];
+  const market = await fetchPolymarketMarketBySlug(targetSlug);
+  const [yesPrice, noPrice] = parseOutcomePrices(market.outcomePrices);
+  const outcome = configuredOutcome;
+  const price = outcome === 'YES'
+    ? (market.yes_ask > 0 ? market.yes_ask : yesPrice)
+    : (market.no_ask > 0 ? market.no_ask : noPrice);
+  const tokenId = outcome === 'YES' ? market.tokenId : market.noTokenId;
 
-  if (!topPosition) {
+  if (!tokenId || !Number.isFinite(price) || price < 0.01 || price > 0.99) {
+    logs.push({
+      action: 'ERROR',
+      asset: 'FED',
+      details: `The ${outcome} outcome does not have executable order data.`,
+      timestamp: Date.now(),
+    });
     return { plan: null, logs };
   }
 
-  const price = getOrderPrice(topPosition.signal);
-  const priceCents = Math.max(1, Math.min(99, Math.round(price * 100)));
-  const count = Math.max(1, Math.floor(topPosition.sizeUSD / Math.max(price, 0.01)));
+  logs.push({
+    action: 'SCAN',
+    asset: 'FED',
+    details:
+      `Target locked: BUY ${outcome} "${market.question}" at ${(price * 100).toFixed(1)}c.`,
+    timestamp: Date.now(),
+  });
 
-  // The tokenId from the MarketRow — needed for Polymarket CLOB order placement.
-  const tokenId = (topPosition.signal.market as MarketRow & { tokenId?: string }).tokenId || topPosition.signal.market.ticker;
+  if (price > maxEntryPrice) {
+    logs.push({
+      action: 'HALT',
+      asset: 'FED',
+      details:
+        `Target ask ${(price * 100).toFixed(1)}c exceeds the ${(maxEntryPrice * 100).toFixed(1)}c entry cap.`,
+      timestamp: Date.now(),
+    });
+    return { plan: null, logs };
+  }
+
+  const collateral = await fetchPolymarketCollateralBalance();
+  logs.push({
+    action: collateral.usd > 0 ? 'SCAN' : 'HALT',
+    details: `Trading collateral: ${collateral.formatted} pUSD.`,
+    timestamp: Date.now(),
+  });
+  if (collateral.usd <= 0) return { plan: null, logs };
+
+  const spendLimit = Math.min(collateral.usd, maxTradeUsdc);
+  const count = Math.floor(spendLimit / price);
+  const minOrderSize = Math.max(1, market.minOrderSize || 1);
+  if (count < minOrderSize) {
+    logs.push({
+      action: 'HALT',
+      asset: 'FED',
+      details:
+        `${spendLimit.toFixed(2)} pUSD cannot cover the ${minOrderSize}-share minimum at ${(price * 100).toFixed(1)}c.`,
+      timestamp: Date.now(),
+    });
+    return { plan: null, logs };
+  }
+
+  const priceCents = Math.max(1, Math.min(99, Math.round(price * 100)));
+  const notionalUSD = count * price;
+  const signal: EdgeSignal = {
+    asset: 'FED',
+    market,
+    modelFair: price * 100,
+    mktPrice: price * 100,
+    divergence: 0,
+    side: 'BUY',
+    d2: 0,
+    Nd2: price,
+  };
+  const position: SizedPosition = {
+    signal,
+    kellyFraction: notionalUSD / collateral.usd,
+    sizeUSD: notionalUSD,
+    shares: count,
+  };
 
   return {
     logs,
     plan: {
-      signal: topPosition.signal,
-      position: topPosition,
+      signal,
+      position,
       order: {
         tokenId,
-        ticker: topPosition.signal.market.ticker,
-        side: topPosition.signal.side,
+        ticker: market.ticker,
+        side: 'BUY',
+        outcome,
         price,
         size: count,
         priceCents,
-        notionalUSD: count * price,
+        notionalUSD,
       },
     },
   };
@@ -253,7 +341,15 @@ export async function runTradingCycle(): Promise<TradingLog[]> {
     return allLogs;
   }
 
-  const positions = sizePositions(signals);
+  const collateral = await fetchPolymarketCollateralBalance();
+  allLogs.push({
+    action: collateral.usd > 0 ? 'SCAN' : 'HALT',
+    details: `Trading collateral: ${collateral.formatted} pUSD.`,
+    timestamp: Date.now(),
+  });
+  if (collateral.usd <= 0) return allLogs;
+
+  const positions = sizePositions(signals, collateral.usd);
 
   for (const pos of positions) {
     allLogs.push({

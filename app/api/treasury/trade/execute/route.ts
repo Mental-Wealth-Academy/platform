@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'node:crypto';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildTopTradePlan, type TradingLog } from '@/lib/trading-engine';
 import { placePolymarketOrder } from '@/lib/polymarket-trading';
 import { setExecutionLogs, type PositionEntry } from '@/lib/execution-log-store';
 import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 import { isStaffUser } from '@/lib/staff-auth';
+import {
+  claimPolymarketTrade,
+  completePolymarketTrade,
+  failPolymarketTrade,
+} from '@/lib/polymarket-trade-ledger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -41,16 +45,36 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!process.env.POLYMARKET_CLOB_API_KEY || !process.env.POLYMARKET_CLOB_SECRET) {
+  if (
+    !process.env.POLYMARKET_WALLET_PRIVATE_KEY ||
+    !process.env.POLYMARKET_PROXY_WALLET
+  ) {
     return NextResponse.json(
       {
         error: 'polymarket_unconfigured',
-        message: 'Polymarket CLOB credentials are missing. Set POLYMARKET_CLOB_API_KEY, POLYMARKET_CLOB_SECRET, and POLYMARKET_CLOB_PASSPHRASE.',
+        message: 'Polymarket signer or proxy wallet configuration is missing.',
       },
       { status: 503, headers: rateLimitHeaders },
     );
   }
 
+  const body = await request.json().catch(() => null) as {
+    requestId?: unknown;
+  } | null;
+  const requestId = typeof body?.requestId === 'string'
+    ? body.requestId.trim()
+    : '';
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(requestId)) {
+    return NextResponse.json(
+      {
+        error: 'invalid_request_id',
+        message: 'A valid trade request ID is required.',
+      },
+      { status: 400, headers: rateLimitHeaders },
+    );
+  }
+
+  let tradeClaimed = false;
   try {
     const { plan, logs } = await buildTopTradePlan();
     if (!plan) {
@@ -65,14 +89,64 @@ export async function POST(request: Request) {
       );
     }
 
-    const clientOrderId = randomUUID();
+    const publicPlan = {
+      ticker: plan.order.ticker,
+      side: plan.order.outcome,
+      count: plan.order.size,
+      priceCents: plan.order.priceCents,
+      notionalUSD: Number(plan.order.notionalUSD.toFixed(2)),
+    };
+    const targetKey =
+      `${plan.signal.market.slug || plan.order.ticker}:${plan.order.outcome}`;
+    const claim = await claimPolymarketTrade({
+      requestId,
+      targetKey,
+      userId: user.id,
+      plan: publicPlan,
+    });
+    if (!claim.claimed) {
+      if (claim.row.request_id === requestId && claim.row.status === 'submitted') {
+        return NextResponse.json(
+          {
+            success: true,
+            duplicate: true,
+            order: claim.row.response,
+            plan: claim.row.plan,
+            message: 'This trade request was already submitted.',
+          },
+          { headers: rateLimitHeaders },
+        );
+      }
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'trade_already_claimed',
+          message:
+            claim.row.status === 'failed'
+              ? 'This market trade is locked after a failed submission and needs manual review.'
+              : 'This market trade has already been claimed.',
+          requestId: claim.row.request_id,
+          status: claim.row.status,
+          orderId: claim.row.order_id,
+        },
+        { status: 409, headers: rateLimitHeaders },
+      );
+    }
+    tradeClaimed = true;
+
     const order = await placePolymarketOrder({
       tokenId: plan.order.tokenId,
       side: plan.order.side,
       size: plan.order.size,
       price: plan.order.price,
       orderType: 'FOK',
-      clientOrderId,
+      clientOrderId: requestId,
+    });
+    const orderId = order.orderID || order.order_id || order.id || requestId;
+    await completePolymarketTrade({
+      requestId,
+      orderId,
+      response: order,
     });
 
     const executionLogs: TradingLog[] = [
@@ -81,8 +155,8 @@ export async function POST(request: Request) {
         action: 'TRADE',
         asset: plan.signal.asset,
         details:
-          `${plan.order.side} ${plan.order.ticker} @ ${(plan.order.price * 100).toFixed(0)}c x ${plan.order.size} ` +
-          `kelly:${(plan.position.kellyFraction * 100).toFixed(2)}% order:${order.order_id || order.id || clientOrderId}`,
+          `BUY ${plan.order.outcome} ${plan.order.ticker} @ ${(plan.order.price * 100).toFixed(0)}c x ${plan.order.size} ` +
+          `notional:${plan.order.notionalUSD.toFixed(2)} pUSD order:${orderId}`,
         timestamp: Date.now(),
       },
     ];
@@ -90,7 +164,7 @@ export async function POST(request: Request) {
     const livePositions: PositionEntry[] = [
       {
         asset: plan.signal.asset,
-        side: plan.order.side,
+        side: 'BUY',
         price: plan.order.price.toFixed(4),
         size: plan.order.notionalUSD.toFixed(2),
         sizeMatched: order.size_matched || plan.order.notionalUSD.toFixed(2),
@@ -104,13 +178,7 @@ export async function POST(request: Request) {
       {
         success: true,
         order,
-        plan: {
-          ticker: plan.order.ticker,
-          side: plan.order.side,
-          count: plan.order.size,
-          priceCents: plan.order.priceCents,
-          notionalUSD: Number(plan.order.notionalUSD.toFixed(2)),
-        },
+        plan: publicPlan,
         logs: executionLogs,
         positions: livePositions,
       },
@@ -118,6 +186,13 @@ export async function POST(request: Request) {
     );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Trade execution failed.';
+    if (tradeClaimed) {
+      try {
+        await failPolymarketTrade(requestId, message);
+      } catch (ledgerError) {
+        console.error('Polymarket trade ledger failure:', ledgerError);
+      }
+    }
     console.error('POST /api/treasury/trade/execute error:', message);
     return NextResponse.json(
       { error: 'trade_execution_failed', message },

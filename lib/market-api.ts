@@ -5,6 +5,7 @@ import { fetchTreasurySnapshot } from './treasury-snapshot';
 export {
   fetchCategorizedMarkets,
   fetchPolymarketMarkets,
+  fetchPolymarketMarketBySlug,
   fetchPolymarketRecentTrades,
   fetchPolymarketOrderbook,
 } from './polymarket-api';

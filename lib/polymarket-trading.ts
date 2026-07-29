@@ -1,149 +1,268 @@
 /**
- * Polymarket CLOB V2 — authenticated trading client.
+ * Polymarket CLOB V2 authenticated trading client.
  *
- * Places orders against Polymarket's Central Limit Order Book using
- * HMAC-SHA256 signed requests (L2 auth). Credentials are derived once
- * via EIP-712 wallet signature and stored as env vars.
- *
- * Required environment variables:
- *   POLYMARKET_CLOB_API_KEY      — L2 API key
- *   POLYMARKET_CLOB_SECRET       — L2 HMAC secret
- *   POLYMARKET_CLOB_PASSPHRASE   — L2 passphrase
- *
- * Collateral: pUSD on Polygon (V2, post April 2026).
+ * Uses the official V2 SDK so each order receives both layers required by
+ * production: the wallet's EIP-712 order signature and L2 HMAC API auth.
+ * Collateral is pUSD on Polygon.
  */
 
-import { createHmac } from 'node:crypto';
+import {
+  AssetType,
+  Chain,
+  ClobClient,
+  OrderType,
+  Side,
+  SignatureTypeV2,
+  type ApiKeyCreds,
+  type OrderResponse,
+} from '@polymarket/clob-client-v2';
+import {
+  createWalletClient,
+  formatUnits,
+  getAddress,
+  http,
+  isAddress,
+} from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { polygon } from 'viem/chains';
 
 export const POLYMARKET_CLOB_BASE =
   (process.env.POLYMARKET_CLOB_BASE_URL || 'https://clob.polymarket.com').replace(/\/+$/, '');
 
-const ORDER_PATH = '/orders';
-
-// ── Types ──
+const POLYGON_RPC_URL =
+  process.env.POLYGON_RPC_URL || 'https://polygon-bor-rpc.publicnode.com';
+const PUSD_DECIMALS = 6;
 
 export interface PolymarketOrderRequest {
   tokenId: string;
   side: 'BUY' | 'SELL';
-  price: number;       // 0-1 decimal
-  size: number;        // number of shares
+  price: number;
+  size: number;
   orderType?: 'FOK' | 'GTC';
   clientOrderId?: string;
 }
 
 export interface PolymarketOrderResponse {
   id?: string;
-  status?: string;
+  orderID?: string;
   order_id?: string;
-  market?: string;
-  asset_id?: string;
-  side?: string;
-  original_size?: string;
+  status?: string;
+  errorMsg?: string;
+  success?: boolean;
   size_matched?: string;
-  price?: string;
-  outcome?: string;
-  created_at?: string;
-  expiration?: string;
-  type?: string;
+  takingAmount?: string;
+  makingAmount?: string;
+  transactionsHashes?: string[];
+  tradeIDs?: string[];
 }
 
-// ── Credentials ──
+export interface PolymarketCollateralBalance {
+  raw: string;
+  formatted: string;
+  usd: number;
+  allowanceCount: number;
+  hasAllowance: boolean;
+}
 
-function getPolymarketCredentials() {
-  const apiKey = process.env.POLYMARKET_CLOB_API_KEY?.trim() || '';
-  const secret = process.env.POLYMARKET_CLOB_SECRET?.trim() || '';
-  const passphrase = process.env.POLYMARKET_CLOB_PASSPHRASE?.trim() || '';
+let authenticatedClient: ClobClient | null = null;
+let authenticatedClientPromise: Promise<ClobClient> | null = null;
 
-  if (!apiKey || !secret || !passphrase) {
-    throw new Error(
-      'Polymarket CLOB credentials missing. Set POLYMARKET_CLOB_API_KEY, POLYMARKET_CLOB_SECRET, and POLYMARKET_CLOB_PASSPHRASE.',
-    );
+function resolveSignatureType(): SignatureTypeV2 {
+  const configured = process.env.POLYMARKET_SIGNATURE_TYPE?.trim();
+  if (!configured) return SignatureTypeV2.POLY_PROXY;
+
+  const value = Number(configured);
+  if (
+    value !== SignatureTypeV2.EOA &&
+    value !== SignatureTypeV2.POLY_PROXY &&
+    value !== SignatureTypeV2.POLY_GNOSIS_SAFE &&
+    value !== SignatureTypeV2.POLY_1271
+  ) {
+    throw new Error('POLYMARKET_SIGNATURE_TYPE must be 0, 1, 2, or 3.');
+  }
+  return value;
+}
+
+function buildPolymarketClient(creds?: ApiKeyCreds): ClobClient {
+  const rawPrivateKey = process.env.POLYMARKET_WALLET_PRIVATE_KEY?.trim();
+  const funder = (
+    process.env.POLYMARKET_DEPOSIT_WALLET_ADDRESS ||
+    process.env.POLYMARKET_PROXY_WALLET ||
+    ''
+  ).trim();
+  if (!rawPrivateKey) {
+    throw new Error('Polymarket signer is missing.');
+  }
+  if (!isAddress(funder)) {
+    throw new Error('Polymarket funder wallet is missing or invalid.');
   }
 
-  return { apiKey, secret, passphrase };
-}
-
-// ── HMAC-SHA256 signing (L2 auth) ──
-
-function createHmacSignature(
-  secret: string,
-  timestamp: string,
-  method: string,
-  path: string,
-  body: string,
-): string {
-  const message = `${timestamp}${method.toUpperCase()}${path}${body}`;
-  return createHmac('sha256', Buffer.from(secret, 'base64'))
-    .update(message)
-    .digest('base64');
-}
-
-async function signedPolymarketFetch(path: string, init: RequestInit = {}) {
-  const { apiKey, secret, passphrase } = getPolymarketCredentials();
-  const timestamp = (Date.now() / 1000).toFixed(0);
-  const method = (init.method || 'GET').toUpperCase();
-  const body = typeof init.body === 'string' ? init.body : '';
-  const signature = createHmacSignature(secret, timestamp, method, path, body);
-
-  const headers = new Headers(init.headers);
-  headers.set('Content-Type', 'application/json');
-  headers.set('POLY-ADDRESS', apiKey);
-  headers.set('POLY-SIGNATURE', signature);
-  headers.set('POLY-TIMESTAMP', timestamp);
-  headers.set('POLY-NONCE', timestamp);
-  headers.set('POLY-PASSPHRASE', passphrase);
-
-  return fetch(`${POLYMARKET_CLOB_BASE}${path}`, {
-    ...init,
-    method,
-    headers,
-    cache: 'no-store',
+  const privateKey = (
+    rawPrivateKey.startsWith('0x') ? rawPrivateKey : `0x${rawPrivateKey}`
+  ) as `0x${string}`;
+  const account = privateKeyToAccount(privateKey);
+  const signer = createWalletClient({
+    account,
+    chain: polygon,
+    transport: http(POLYGON_RPC_URL, { timeout: 8_000 }),
+  });
+  return new ClobClient({
+    host: POLYMARKET_CLOB_BASE,
+    chain: Chain.POLYGON,
+    signer,
+    creds,
+    signatureType: resolveSignatureType(),
+    funderAddress: getAddress(funder),
+    useServerTime: true,
+    retryOnError: true,
+    throwOnError: true,
   });
 }
 
-// ── Order placement ──
+function configuredApiCredentials(): ApiKeyCreds | undefined {
+  const key = process.env.POLYMARKET_CLOB_API_KEY?.trim();
+  const secret = process.env.POLYMARKET_CLOB_SECRET?.trim();
+  const passphrase = process.env.POLYMARKET_CLOB_PASSPHRASE?.trim();
+  if (!key || !secret || !passphrase) return undefined;
+  return { key, secret, passphrase };
+}
+
+async function getPolymarketClient(forceWalletDerivation = false): Promise<ClobClient> {
+  if (!forceWalletDerivation && authenticatedClient) return authenticatedClient;
+  if (!forceWalletDerivation && authenticatedClientPromise) {
+    return authenticatedClientPromise;
+  }
+
+  authenticatedClientPromise = (async () => {
+    if (!forceWalletDerivation) {
+      const configured = configuredApiCredentials();
+      if (configured) {
+        authenticatedClient = buildPolymarketClient(configured);
+        return authenticatedClient;
+      }
+    }
+
+    const l1Client = buildPolymarketClient();
+    let derived: ApiKeyCreds;
+    try {
+      derived = await l1Client.deriveApiKey();
+    } catch {
+      derived = await l1Client.createApiKey();
+    }
+    authenticatedClient = buildPolymarketClient(derived);
+    return authenticatedClient;
+  })();
+
+  try {
+    return await authenticatedClientPromise;
+  } finally {
+    authenticatedClientPromise = null;
+  }
+}
+
+function isInvalidApiKey(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /unauthorized|invalid api key/i.test(message);
+}
+
+export async function fetchPolymarketCollateralBalance(): Promise<PolymarketCollateralBalance> {
+  let client = await getPolymarketClient();
+  let result;
+  try {
+    result = await client.getBalanceAllowance({
+      asset_type: AssetType.COLLATERAL,
+    });
+  } catch (error) {
+    if (!isInvalidApiKey(error)) throw error;
+    client = await getPolymarketClient(true);
+    result = await client.getBalanceAllowance({
+      asset_type: AssetType.COLLATERAL,
+    });
+  }
+  const raw = result.balance || '0';
+  const formatted = formatUnits(BigInt(raw), PUSD_DECIMALS);
+  const usd = Number(formatted);
+  if (!Number.isFinite(usd) || usd < 0) {
+    throw new Error('Polymarket returned an invalid collateral balance.');
+  }
+
+  const allowances = Object.values(result.allowances || {});
+  return {
+    raw,
+    formatted,
+    usd,
+    allowanceCount: allowances.length,
+    hasAllowance: allowances.some((allowance) => BigInt(allowance) > 0n),
+  };
+}
+
+function normalizeOrderResponse(response: OrderResponse): PolymarketOrderResponse {
+  return {
+    ...response,
+    id: response.orderID,
+    order_id: response.orderID,
+    size_matched: response.takingAmount,
+  };
+}
 
 export async function placePolymarketOrder(
   input: PolymarketOrderRequest,
 ): Promise<PolymarketOrderResponse> {
-  const price = Math.max(0.01, Math.min(0.99, input.price));
-  const size = Math.max(1, Math.floor(input.size));
-
-  const payload: Record<string, string | number> = {
-    token_id: input.tokenId,
-    side: input.side,
-    price,
-    size,
-    type: input.orderType || 'FOK',
-  };
-
-  if (input.clientOrderId) {
-    payload.client_order_id = input.clientOrderId;
+  if (!/^\d+$/.test(input.tokenId)) {
+    throw new Error('Polymarket outcome token ID is missing or invalid.');
+  }
+  if (!Number.isFinite(input.price) || input.price < 0.01 || input.price > 0.99) {
+    throw new Error('Polymarket order price must be between 0.01 and 0.99.');
+  }
+  if (!Number.isFinite(input.size) || input.size <= 0) {
+    throw new Error('Polymarket order size must be positive.');
   }
 
-  const body = JSON.stringify(payload);
+  const side = input.side === 'BUY' ? Side.BUY : Side.SELL;
+  const orderType = input.orderType || 'FOK';
 
-  const response = await signedPolymarketFetch(ORDER_PATH, {
-    method: 'POST',
-    body,
-  });
+  if (side === Side.BUY) {
+    const collateral = await fetchPolymarketCollateralBalance();
+    const requiredUsd = input.size * input.price;
+    if (collateral.usd + Number.EPSILON < requiredUsd) {
+      throw new Error(
+        `Polymarket collateral is ${collateral.formatted} pUSD; ${requiredUsd.toFixed(2)} pUSD is required.`,
+      );
+    }
+    if (!collateral.hasAllowance) {
+      throw new Error('Polymarket collateral allowance is missing.');
+    }
+  }
+  const client = await getPolymarketClient();
 
-  const rawText = await response.text();
-  let parsed: Record<string, unknown> | null = null;
-  try {
-    parsed = rawText ? JSON.parse(rawText) : null;
-  } catch {
-    parsed = null;
+  let response: OrderResponse;
+  if (orderType === 'GTC') {
+    response = await client.createAndPostOrder(
+      {
+        tokenID: input.tokenId,
+        price: input.price,
+        side,
+        size: input.size,
+      },
+      undefined,
+      OrderType.GTC,
+    ) as OrderResponse;
+  } else {
+    response = await client.createAndPostMarketOrder(
+      {
+        tokenID: input.tokenId,
+        amount: side === Side.BUY ? input.size * input.price : input.size,
+        price: input.price,
+        side,
+        orderType: OrderType.FOK,
+      },
+      undefined,
+      OrderType.FOK,
+    ) as OrderResponse;
   }
 
-  if (!response.ok) {
-    const message =
-      (parsed as Record<string, string>)?.error ||
-      (parsed as Record<string, string>)?.message ||
-      rawText ||
-      `Polymarket order failed with status ${response.status}`;
-    throw new Error(String(message));
+  if (!response.success || response.errorMsg) {
+    throw new Error(response.errorMsg || 'Polymarket rejected the order.');
   }
-
-  return (parsed || {}) as PolymarketOrderResponse;
+  return normalizeOrderResponse(response);
 }

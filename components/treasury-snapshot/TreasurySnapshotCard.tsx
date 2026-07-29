@@ -108,6 +108,17 @@ export default function TreasurySnapshotCard() {
                 </strong>
               </div>
               <div className={`${styles.metric} ${styles.secondaryMetric}`}>
+                <Image className={styles.metricIcon} src="/tokens/usdc.webp" alt="" width={20} height={20} />
+                <span className={styles.metricLabel}>Polymarket collateral</span>
+                <strong className={styles.metricValue}>
+                  {formatBalance(treasury.balances.tradingCollateral.amount, 2)}
+                  {treasury.balances.tradingCollateral.amount !== null && <small> pUSD</small>}
+                </strong>
+                <span className={styles.metricQuote}>
+                  {formatBalance(treasury.balances.polygonNative.amount, 4)} POL available for gas
+                </span>
+              </div>
+              <div className={`${styles.metric} ${styles.secondaryMetric}`}>
                 <Image className={styles.metricIcon} src="/icons/ui-diamond.svg" alt="" width={20} height={20} />
                 <span className={styles.metricLabel}>Diamonds</span>
                 <strong className={styles.metricValue}>

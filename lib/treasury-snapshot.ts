@@ -7,7 +7,7 @@ import {
   type Address,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { base, baseSepolia } from 'viem/chains';
+import { base, baseSepolia, polygon } from 'viem/chains';
 import {
   getChainConfig,
   getRpcCandidates,
@@ -26,11 +26,16 @@ const ERC20_BALANCE_ABI = [
 
 const DEFAULT_BLUE_ADDRESS = '0x0920553CcA188871b146ee79f562B4Af46aB4f8a';
 const DEFAULT_GOVERNANCE_ADDRESS = '0x09a4FEfEe8245B644713546FDF28b4160218f7Fc';
+const POLYMARKET_PUSD_ADDRESS = '0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB';
+const POLYGON_USDC_ADDRESS = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
+const POLYGON_USDCE_ADDRESS = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+const POLYGON_EXPLORER_URL = 'https://polygonscan.com';
 const TREASURY_PRICE_CACHE_MS = 60_000;
 
 interface TreasuryPrices {
   nativeInUsdc: number;
   bitcoinInUsdc: number;
+  polygonInUsdc: number | null;
   asOf: string;
 }
 
@@ -54,6 +59,8 @@ export interface TreasuryAccountSnapshot {
     cbBtc: TreasuryMetric;
     usdc: TreasuryMetric;
     credits: TreasuryMetric;
+    tradingCollateral: TreasuryMetric;
+    polygonNative: TreasuryMetric;
   };
 }
 
@@ -80,6 +87,8 @@ export interface TreasurySnapshot {
     cbBtc: TreasuryMetric;
     usdc: TreasuryMetric;
     credits: TreasuryMetric;
+    tradingCollateral: TreasuryMetric;
+    polygonNative: TreasuryMetric;
   };
   accounts: TreasuryAccountSnapshot[];
   updatedAt: string;
@@ -137,6 +146,14 @@ function configuredTreasuryAccounts(treasuryAddress: Address): Array<{
     seen.add(normalized);
     return [{ role: candidate.role, address: candidate.address as Address }];
   });
+}
+
+function resolvePolymarketWallet(): Address | null {
+  const configured =
+    process.env.NEXT_PUBLIC_BLUE_MARKET_TRADER_ADDRESS ||
+    process.env.POLYMARKET_PROXY_WALLET ||
+    '';
+  return isAddress(configured) ? configured as Address : null;
 }
 
 function sumComplete(values: Array<bigint | null>): bigint | null {
@@ -205,7 +222,7 @@ async function fetchTreasuryPrices(): Promise<TreasuryPrices> {
   }
 
   const response = await fetch(
-    'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,usd-coin&vs_currencies=usd',
+    'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,polygon-ecosystem-token,usd-coin&vs_currencies=usd',
     {
       cache: 'no-store',
       headers: { 'User-Agent': 'MentalWealthAcademy/1.0' },
@@ -236,10 +253,81 @@ async function fetchTreasuryPrices(): Promise<TreasuryPrices> {
   const data: TreasuryPrices = {
     nativeInUsdc: nativeUsd / usdcUsd,
     bitcoinInUsdc: bitcoinUsd / usdcUsd,
+    polygonInUsdc: Number.isFinite(Number(payload['polygon-ecosystem-token']?.usd))
+      ? Number(payload['polygon-ecosystem-token']?.usd) / usdcUsd
+      : null,
     asOf: new Date().toISOString(),
   };
   treasuryPriceCache = { data, timestamp: Date.now() };
   return data;
+}
+
+interface PolygonTreasuryReads {
+  address: Address | null;
+  native: bigint | null;
+  pUsd: bigint | null;
+  usdc: bigint | null;
+  usdcBridged: bigint | null;
+}
+
+async function fetchPolygonTreasuryReads(): Promise<PolygonTreasuryReads> {
+  const address = resolvePolymarketWallet();
+  const empty: PolygonTreasuryReads = {
+    address,
+    native: null,
+    pUsd: null,
+    usdc: null,
+    usdcBridged: null,
+  };
+  if (!address) return empty;
+
+  const rpcUrls = Array.from(new Set([
+    process.env.POLYGON_RPC_URL,
+    'https://polygon-bor-rpc.publicnode.com',
+    'https://polygon-rpc.com',
+  ].filter((value): value is string => Boolean(value))));
+  const clients = rpcUrls.map((url) =>
+    createPublicClient({
+      chain: polygon,
+      transport: http(url, { timeout: 5_000 }),
+    })
+  );
+  const readWithFallback = async <T>(
+    read: (client: (typeof clients)[number]) => Promise<T>,
+  ): Promise<T> => {
+    let lastError: unknown;
+    for (const client of clients) {
+      try {
+        return await read(client);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError instanceof Error
+      ? lastError
+      : new Error('All Polygon treasury RPC reads failed.');
+  };
+  const tokenBalance = (token: Address) =>
+    readWithFallback<bigint>((client) => client.readContract({
+      address: token,
+      abi: ERC20_BALANCE_ABI,
+      functionName: 'balanceOf',
+      args: [address],
+    }));
+  const reads = await Promise.allSettled([
+    readWithFallback<bigint>((client) => client.getBalance({ address })),
+    tokenBalance(POLYMARKET_PUSD_ADDRESS),
+    tokenBalance(POLYGON_USDC_ADDRESS),
+    tokenBalance(POLYGON_USDCE_ADDRESS),
+  ]);
+
+  return {
+    address,
+    native: fulfilledValue<bigint>(reads[0]),
+    pUsd: fulfilledValue<bigint>(reads[1]),
+    usdc: fulfilledValue<bigint>(reads[2]),
+    usdcBridged: fulfilledValue<bigint>(reads[3]),
+  };
 }
 
 export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
@@ -267,7 +355,7 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
     valuation: {
       amountUsdc: null,
       formattedUsdc: null,
-      pricedSymbols: ['ETH', 'USDC', 'cbBTC'],
+      pricedSymbols: ['ETH', 'USDC', 'cbBTC', 'pUSD', 'POL'],
       unpricedSymbols: ['BLUE'],
       priceAsOf: null,
     },
@@ -276,6 +364,8 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       cbBtc: { amount: null, symbol: 'cbBTC', usdcValue: null },
       usdc: { amount: null, symbol: 'USDC', usdcValue: null },
       credits: { amount: null, symbol: 'BLUE', usdcValue: null },
+      tradingCollateral: { amount: null, symbol: 'pUSD', usdcValue: null },
+      polygonNative: { amount: null, symbol: 'POL', usdcValue: null },
     },
     accounts: [],
     updatedAt: new Date().toISOString(),
@@ -305,7 +395,7 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
       : new Error('All treasury RPC reads failed.');
   };
   const configuredAccounts = configuredTreasuryAccounts(treasuryAddress);
-  const [accountReads, pricesResult] = await Promise.all([
+  const [accountReads, polygonReads, pricesResult] = await Promise.all([
     Promise.all(configuredAccounts.map(async (account) => {
       const reads = await Promise.allSettled([
         readWithFallback<bigint>((client) =>
@@ -339,6 +429,7 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
         credits: fulfilledValue<bigint>(reads[3]),
       };
     })),
+    fetchPolygonTreasuryReads(),
     fetchTreasuryPrices().then(
       (prices) => prices,
       (error) => {
@@ -356,36 +447,94 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
   const cbBtcAmount = cbBtcBalance === null ? null : formatUnits(cbBtcBalance, 8);
   const usdcAmount = usdcBalance === null ? null : formatUnits(usdcBalance, 6);
   const creditsAmount = creditsBalance === null ? null : formatUnits(creditsBalance, 18);
-  const totalValueUsdc = aggregateUsdcValue({
+  const polygonStableBalance = sumComplete([
+    polygonReads.pUsd,
+    polygonReads.usdc,
+    polygonReads.usdcBridged,
+  ]);
+  const tradingCollateralAmount = polygonStableBalance === null
+    ? null
+    : formatUnits(polygonStableBalance, 6);
+  const polygonNativeAmount = polygonReads.native === null
+    ? null
+    : formatEther(polygonReads.native);
+  const baseValueUsdc = aggregateUsdcValue({
     nativeAmount,
     cbBtcAmount,
     usdcAmount,
     prices: pricesResult,
   });
+  const stableValue = numericAmount(tradingCollateralAmount);
+  const polygonAmount = numericAmount(polygonNativeAmount);
+  const polygonValue = polygonAmount === null
+    ? null
+    : polygonAmount === 0
+      ? 0
+      : pricesResult?.polygonInUsdc
+        ? polygonAmount * pricesResult.polygonInUsdc
+        : null;
+  const totalValueUsdc =
+    baseValueUsdc === null || stableValue === null || polygonValue === null
+      ? null
+      : (Number(baseValueUsdc) + stableValue + polygonValue).toFixed(6);
   const readValues = accountReads.flatMap((account) => [
     account.native,
     account.cbBtc,
     account.usdc,
     account.credits,
   ]);
+  readValues.push(
+    polygonReads.native,
+    polygonReads.pUsd,
+    polygonReads.usdc,
+    polygonReads.usdcBridged,
+  );
   const completedReadCount = readValues.filter((value) => value !== null).length;
-  const expectedReadCount = configuredAccounts.length * 4;
+  const expectedReadCount = configuredAccounts.length * 4 + 4;
   const accounts: TreasuryAccountSnapshot[] = accountReads.map((account) => {
     const accountNative = account.native === null ? null : formatEther(account.native);
     const accountCbBtc = account.cbBtc === null ? null : formatUnits(account.cbBtc, 8);
     const accountUsdc = account.usdc === null ? null : formatUnits(account.usdc, 6);
     const accountCredits = account.credits === null ? null : formatUnits(account.credits, 18);
 
+    const isPolygonTrader =
+      account.role === 'trader' &&
+      polygonReads.address?.toLowerCase() === account.address.toLowerCase();
+    const accountTradingCollateral = isPolygonTrader ? tradingCollateralAmount : '0';
+    const accountPolygonNative = isPolygonTrader ? polygonNativeAmount : '0';
+    const baseAccountValue = aggregateUsdcValue({
+      nativeAmount: accountNative,
+      cbBtcAmount: accountCbBtc,
+      usdcAmount: accountUsdc,
+      prices: pricesResult,
+    });
+    const accountPolygonAmount = numericAmount(accountPolygonNative);
+    const accountPolygonValue = accountPolygonAmount === null
+      ? null
+      : accountPolygonAmount === 0
+        ? 0
+        : pricesResult?.polygonInUsdc
+          ? accountPolygonAmount * pricesResult.polygonInUsdc
+          : null;
+    const accountTradingValue = numericAmount(accountTradingCollateral);
+    const accountValueUsdc =
+      baseAccountValue === null ||
+      accountPolygonValue === null ||
+      accountTradingValue === null
+        ? null
+        : (
+          Number(baseAccountValue) +
+          accountPolygonValue +
+          accountTradingValue
+        ).toFixed(6);
+
     return {
       role: account.role,
       address: account.address,
-      explorerUrl: `${cfg.explorerUrl}/address/${account.address}`,
-      valueUsdc: aggregateUsdcValue({
-        nativeAmount: accountNative,
-        cbBtcAmount: accountCbBtc,
-        usdcAmount: accountUsdc,
-        prices: pricesResult,
-      }),
+      explorerUrl: isPolygonTrader
+        ? `${POLYGON_EXPLORER_URL}/address/${account.address}`
+        : `${cfg.explorerUrl}/address/${account.address}`,
+      valueUsdc: accountValueUsdc,
       balances: {
         native: {
           amount: accountNative,
@@ -406,6 +555,19 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
           amount: accountCredits,
           symbol: 'BLUE',
           usdcValue: null,
+        },
+        tradingCollateral: {
+          amount: accountTradingCollateral,
+          symbol: 'pUSD',
+          usdcValue: accountTradingCollateral,
+        },
+        polygonNative: {
+          amount: accountPolygonNative,
+          symbol: 'POL',
+          usdcValue: valueInUsdc(
+            accountPolygonNative,
+            pricesResult?.polygonInUsdc ?? null,
+          ),
         },
       },
     };
@@ -450,6 +612,19 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
         amount: creditsAmount,
         symbol: 'BLUE',
         usdcValue: null,
+      },
+      tradingCollateral: {
+        amount: tradingCollateralAmount,
+        symbol: 'pUSD',
+        usdcValue: tradingCollateralAmount,
+      },
+      polygonNative: {
+        amount: polygonNativeAmount,
+        symbol: 'POL',
+        usdcValue: valueInUsdc(
+          polygonNativeAmount,
+          pricesResult?.polygonInUsdc ?? null,
+        ),
       },
     },
     accounts,

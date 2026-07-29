@@ -968,7 +968,10 @@ export default function Markets() {
       const res = await fetch('/api/treasury/trade/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sourceText }),
+        body: JSON.stringify({
+          requestId: crypto.randomUUID(),
+          sourceText,
+        }),
       });
 
       const data: {
@@ -976,7 +979,7 @@ export default function Markets() {
         error?: string;
         message?: string;
         order?: { status?: string };
-        plan?: { side: 'yes' | 'no'; ticker: string; count: number; priceCents: number };
+        plan?: { side: 'YES' | 'NO'; ticker: string; count: number; priceCents: number };
         logs?: ExecutionLogEntry[];
         positions?: LivePosition[];
       } = await res.json();
