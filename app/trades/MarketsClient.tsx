@@ -977,6 +977,7 @@ export default function Markets() {
         body: JSON.stringify({
           requestId: crypto.randomUUID(),
           sourceText,
+          slug: selectedMarket?.market.slug,
         }),
       });
 
@@ -1026,7 +1027,7 @@ export default function Markets() {
     } finally {
       setIsTradeExecuting(false);
     }
-  }, [canExecuteTrades, isTradeExecuting]);
+  }, [canExecuteTrades, isTradeExecuting, selectedMarket]);
 
   return (
     <main

@@ -71,10 +71,21 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null) as {
     requestId?: unknown;
+    slug?: unknown;
   } | null;
   const requestId = typeof body?.requestId === 'string'
     ? body.requestId.trim()
     : '';
+  // The market the desk is showing. Without it the plan falls back to a
+  // configured target, which is how a trade can land on a different market
+  // than the one under discussion.
+  const requestedSlug = typeof body?.slug === 'string' ? body.slug.trim() : '';
+  if (requestedSlug && !/^[a-z0-9-]{3,200}$/i.test(requestedSlug)) {
+    return NextResponse.json(
+      { error: 'invalid_slug', message: 'The requested market slug is malformed.' },
+      { status: 400, headers: rateLimitHeaders },
+    );
+  }
   if (!/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(requestId)) {
     return NextResponse.json(
       {
@@ -87,7 +98,7 @@ export async function POST(request: Request) {
 
   let tradeClaimed = false;
   try {
-    const { plan, logs } = await buildTopTradePlan();
+    const { plan, logs } = await buildTopTradePlan(requestedSlug || undefined);
     if (!plan) {
       const skipLogs: TradingLog[] = [
         ...logs,

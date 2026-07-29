@@ -201,10 +201,19 @@ export function sizePositions(signals: EdgeSignal[], balance: number): SizedPosi
   return positions;
 }
 
-export async function buildTopTradePlan(): Promise<{ plan: ExecutableTradePlan | null; logs: TradingLog[] }> {
+/**
+ * Builds the trade to execute. The caller passes the market it is actually
+ * showing the user; without that the plan falls back to a configured target,
+ * which can differ from the market on screen.
+ */
+export async function buildTopTradePlan(
+  requestedSlug?: string,
+): Promise<{ plan: ExecutableTradePlan | null; logs: TradingLog[] }> {
   const logs: TradingLog[] = [];
   const targetSlug =
-    process.env.POLYMARKET_TARGET_MARKET_SLUG?.trim() || DEFAULT_TARGET_SLUG;
+    requestedSlug?.trim() ||
+    process.env.POLYMARKET_TARGET_MARKET_SLUG?.trim() ||
+    DEFAULT_TARGET_SLUG;
   const configuredOutcome =
     process.env.POLYMARKET_TARGET_OUTCOME?.trim().toUpperCase() ||
     DEFAULT_TARGET_OUTCOME;
