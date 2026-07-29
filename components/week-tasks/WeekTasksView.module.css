@@ -75,6 +75,11 @@
   border-color: color-mix(in srgb, var(--task-accent) 36%, var(--color-border-subtle));
 }
 
+.taskCardActive {
+  background: color-mix(in srgb, var(--task-accent) 7%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--task-accent) 56%, var(--color-border-subtle));
+}
+
 .taskAccent {
   width: 3px;
   height: 26px;
@@ -227,6 +232,10 @@
   transform: rotate(180deg);
 }
 
+.expandArrowPanel {
+  transform: rotate(-90deg);
+}
+
 /* Card content (expanded) */
 .taskCardContent {
   padding: 0 16px 16px;
@@ -250,6 +259,41 @@
 
 .taskEditor {
   margin-bottom: 14px;
+}
+
+.taskPanelCard {
+  overflow: hidden;
+}
+
+.taskPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.taskPanelClose {
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  color: var(--color-text-faint);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.taskPanelClose:hover {
+  color: var(--color-text-dark);
+  background: var(--color-surface-2);
+  border-color: var(--color-border-strong);
 }
 
 /* Mark complete button */

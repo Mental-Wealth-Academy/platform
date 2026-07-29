@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Weekly aeo and seo research brief for Mental Wealth Academy." />
+    <title>Collecting Money From The Future — Mental Wealth Academy</title>
+    <style>
+      :root {
+        --ink: #161820;
+        --muted: #5d6270;
+        --rule: #cbd0da;
+        --paper: #f8f6f0;
+        --blue: #465be0;
+        --blue-deep: #263589;
+        --tint: #e9edff;
+        --serif: Georgia, 'Times New Roman', serif;
+        --sans: Arial, Helvetica, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: #d9dce2;
+        font-family: var(--serif);
+        line-height: 1.5;
+      }
+
+      .paper {
+        width: min(1180px, calc(100% - 32px));
+        margin: 24px auto;
+        padding: 26px clamp(20px, 4vw, 54px) 48px;
+        background: var(--paper);
+        box-shadow: 0 16px 46px rgb(27 31 48 / 18%);
+      }
+
+      .masthead {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        padding-bottom: 14px;
+        border-bottom: 5px solid var(--ink);
+      }
+
+      .kicker,
+      .dateline,
+      .section-label,
+      th,
+      .tag {
+        font-family: var(--sans);
+        font-size: 0.71rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .kicker { color: var(--blue-deep); }
+      .dateline { color: var(--muted); text-align: right; }
+
+      h1, h2, h3, p { margin-top: 0; }
+
+      h1 {
+        max-width: 900px;
+        margin: 12px 0 0;
+        font-size: clamp(2.5rem, 6vw, 5.4rem);
+        line-height: 0.92;
+        letter-spacing: -0.06em;
+      }
+
+      .deck {
+        max-width: 850px;
+        margin: 20px 0 26px;
+        font-size: clamp(1.1rem, 2vw, 1.35rem);
+        line-height: 1.35;
+      }
+
+      .lead-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 0.65fr;
+        gap: 28px;
+        padding: 22px 0 28px;
+        border-block: 1px solid var(--rule);
+      }
+
+      .lead-grid p { font-size: 1.06rem; }
+      .pullquote {
+        margin: 0;
+        padding: 0 0 0 20px;
+        border-left: 4px solid var(--blue);
+        color: var(--blue-deep);
+        font-size: 1.35rem;
+        font-style: italic;
+        line-height: 1.22;
+      }
+
+      .summary {
+        margin: 30px 0 4px;
+        padding: 18px 20px;
+        border-top: 3px solid var(--blue);
+        background: var(--tint);
+      }
+
+      .summary h2,
+      section > h2 {
+        margin-bottom: 12px;
+        font-size: 1.6rem;
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+      }
+
+      .summary p { margin-bottom: 0; }
+
+      section {
+        margin-top: 38px;
+        break-inside: avoid;
+      }
+
+      .section-label { margin-bottom: 5px; color: var(--blue-deep); }
+
+      .note {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .table-wrap { overflow-x: auto; }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+        font-size: 0.96rem;
+      }
+
+      th {
+        padding: 9px 11px;
+        color: var(--muted);
+        text-align: left;
+        border-bottom: 2px solid var(--ink);
+      }
+
+      td {
+        padding: 14px 11px;
+        vertical-align: top;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      td:first-child { font-weight: 700; }
+      .answer { font-size: 1.02rem; line-height: 1.45; }
+
+      .tag {
+        display: inline-block;
+        margin: 0 0 7px;
+        padding: 3px 6px;
+        color: var(--blue-deep);
+        border: 1px solid currentColor;
+        font-size: 0.61rem;
+      }
+
+      a {
+        color: var(--blue-deep);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+
+      .two-column {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .brief {
+        padding: 18px;
+        border-top: 3px solid var(--ink);
+        background: #fffdf8;
+      }
+
+      .brief h3 { margin-bottom: 9px; font-size: 1.25rem; line-height: 1.12; }
+      .brief p:last-child { margin-bottom: 0; }
+
+      .guardrail {
+        padding: 21px 22px;
+        color: #fff;
+        background: var(--blue-deep);
+      }
+
+      .guardrail h2 { margin-bottom: 10px; font-size: 1.55rem; }
+      .guardrail p { margin-bottom: 0; }
+      .guardrail a { color: #fff; }
+
+      .checklist { list-style: none; margin: 0; padding: 0; counter-reset: steps; }
+      .checklist li {
+        position: relative;
+        padding: 14px 0 14px 50px;
+        border-bottom: 1px solid var(--rule);
+        counter-increment: steps;
+      }
+      .checklist li::before {
+        position: absolute;
+        top: 11px;
+        left: 0;
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        color: #fff;
+        background: var(--blue);
+        border-radius: 50%;
+        content: counter(steps);
+        font-family: var(--sans);
+        font-weight: 700;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 42px;
+        padding-top: 15px;
+        color: var(--muted);
+        border-top: 1px solid var(--ink);
+        font-family: var(--sans);
+        font-size: 0.76rem;
+      }
+
+      @media (max-width: 720px) {
+        .paper { width: 100%; margin: 0; }
+        .masthead, .lead-grid, .two-column, footer { display: block; }
+        .dateline { margin-top: 10px; text-align: left; }
+        .pullquote { margin-top: 22px; }
+        footer p + p { margin-top: 8px; }
+      }
+
+      @media print {
+        body { background: #fff; }
+        .paper { width: 100%; margin: 0; box-shadow: none; }
+        a { color: var(--ink); }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="paper">
+      <header class="masthead">
+        <div>
+          <div class="kicker">Mental Wealth Academy · Research Desk</div>
+          <h1>Collecting Money From The Future</h1>
+        </div>
+        <div class="dateline">Weekly aeo + seo brief<br />July 28, 2026</div>
+      </header>
+
+      <p class="deck">
+        A practical research brief for educators, professors, and online workshop facilitators building social learning spaces with clear purpose.
+      </p>
+
+      <div class="lead-grid">
+        <div>
+          <p>
+            This week’s signal is consistent: educators want peer work that produces visible thinking. Generic discussion prompts carry less trust in the age of ai. The stronger alternative is a cohort with a shared artifact, clear roles, useful feedback, and a next session built from the work.
+          </p>
+          <p>
+            Mental Wealth Academy already has credible frequently asked question answers for community education, cohort learning, facilitator responsibility, privacy, attendance, and clinical boundaries. The next opportunity is a public facilitator playbook that turns those answers into a practical teaching method.
+          </p>
+        </div>
+        <blockquote class="pullquote">
+          “Shared milestones, teach-backs, and useful feedback give a learning group a reason to return.”
+        </blockquote>
+      </div>
+
+      <aside class="summary">
+        <h2>The week’s recommendation</h2>
+        <p>
+          Publish an educator-facing guide: <strong>How to Run an AI-Resilient Online Cohort Discussion.</strong> Pair it with a reusable peer-feedback rubric and a public cohort-detail template.
+        </p>
+      </aside>
+
+      <section>
+        <div class="section-label">Aeo opportunity</div>
+        <h2>Three questions the site should answer directly</h2>
+        <p class="note">Recommended answers are written for direct extraction in search and answer engines.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Direct website answer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>How can educators create an online learning community that produces real participation?</td>
+                <td class="answer">Mental Wealth Academy gives educators connected guides, practical missions, and peer study structures. Members bring field notes and teach-backs into discussion, so each cohort produces useful feedback and a stronger shared library.</td>
+              </tr>
+              <tr>
+                <td>How does cohort-based collaborative learning work?</td>
+                <td class="answer">A cohort moves through shared milestones with regular exchange. Members complete their own work, then return for discussion, teach-backs, and feedback that make progress visible to the group.</td>
+              </tr>
+              <tr>
+                <td>Can a mental-wellness cohort provide support while keeping clear educational boundaries?</td>
+                <td class="answer">Mental Wealth Academy offers structured learning, reflection, and peer learning. Each cohort names its facilitator, publishes privacy expectations, and routes clinical concerns to qualified providers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Content desk</div>
+        <h2>Two high-intent gaps</h2>
+        <div class="two-column">
+          <article class="brief">
+            <span class="tag">Demand inference</span>
+            <h3>Ai-resilient online cohort discussion playbook</h3>
+            <p>
+              Recent professor discussions point to a need for subject-specific, hands-on workshop design with continued follow-up. Create a facilitator protocol around a shared artifact, rotating roles, bounded prompt, teach-back, peer feedback, and a revision loop.
+            </p>
+            <p>
+              <a href="https://www.reddit.com/r/Professors/comments/1to9zo1/whats_the_best_pedagogical_workshop_you_ever/">Read the current professor discussion</a>
+            </p>
+          </article>
+          <article class="brief">
+            <span class="tag">Search-led template</span>
+            <h3>Peer-feedback rubric for online workshops</h3>
+            <p>
+              Moodle and Blackboard document the machinery of submissions, allocation, grading, and participation. Mental Wealth Academy can lead with the learning method: peer feedback that creates a reusable lesson, field note, or teaching artifact.
+            </p>
+            <p>
+              <a href="https://docs.moodle.org/405/en/Workshop">Moodle’s Workshop documentation</a><br />
+              <a href="https://help.anthology.com/blackboard/instructor/en/interact-with-students/discussions/group-discussions.html">Blackboard’s group-discussion documentation</a>
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Keyword watch</div>
+        <h2>A focused quick win for the coming week</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Long-tail keyword</th>
+                <th>Intent</th>
+                <th>Why it fits</th>
+                <th>Page type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>how to run an ai-resilient online cohort discussion</td>
+                <td>Informational, with facilitator-toolkit intent</td>
+                <td><span class="tag">Inference</span><br />It joins the live professor concern with the Academy’s strengths: cohorts, practical missions, field notes, and peer feedback.</td>
+                <td>Search-led facilitator playbook with a downloadable discussion protocol and links to the community-education and cohort frequently asked question answers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Community signal</div>
+        <h2>Trust comes from concrete operating details</h2>
+        <div class="two-column">
+          <article class="brief">
+            <h3>What facilitators are asking for</h3>
+            <p>
+              Professors describe the strongest professional development as content-specific, hands-on collaboration with time to build lessons together and revisit the work after the session.
+            </p>
+            <p><a href="https://www.reddit.com/r/Professors/comments/1to9zo1/whats_the_best_pedagogical_workshop_you_ever/">Source: r/Professors</a></p>
+          </article>
+          <article class="brief">
+            <h3>What a cohort page should show</h3>
+            <p>
+              Name the facilitator, learning artifact, discussion format, feedback cadence, schedule, privacy compact, and escalation boundary. Details make an educational space easier to trust before anyone joins.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="guardrail">
+        <h2>Positioning guardrail</h2>
+        <p>
+          Call the offer an <strong>educational peer cohort</strong> when members share milestones, make artifacts, teach back, and return for useful feedback. Legacy dashboard language centers settings, allocation, grades, deadlines, and participation statistics. The Academy’s public story should lead with the learning exchange. Canva, Duolingo, and Healthy Gamer each show the market value of collaboration, social accountability, and explicit group structure.
+          <a href="https://www.canva.com/education/">Canva Education</a> ·
+          <a href="https://blog.duolingo.com/friends-social-features/">Duolingo social features</a> ·
+          <a href="https://www.healthygamer.gg/about/coaching">Healthy Gamer group coaching</a>
+        </p>
+      </section>
+
+      <section>
+        <div class="section-label">Editorial calendar</div>
+        <h2>Five moves for this week</h2>
+        <ol class="checklist">
+          <li>Publish the ai-resilient cohort-discussion playbook.</li>
+          <li>Add a peer-feedback rubric and teach-back template.</li>
+          <li>Create a public cohort-detail template matching the current frequently asked question promises.</li>
+          <li>Add sitemap and robots routes, then include the frequently asked question page and new playbook.</li>
+          <li>Link the playbook from the community-education and cohort frequently asked question sections.</li>
+        </ol>
+      </section>
+
+      <footer>
+        <p>Mental Wealth Academy · Research Desk</p>
+        <p>Read-only research sprint · July 28, 2026</p>
+      </footer>
+    </main>
+  </body>
+</html>

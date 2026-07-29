@@ -5,6 +5,8 @@
  * sized SIGNAL entries. The output of runTradingCycle() is consumed
  * by the /markets page via execution-log-store and rendered live.
  *
+ * TODO: Follow this account for market picks: https://polymarket.com/@imjustken?tab=activity
+ *
  * Trade placement uses lib/polymarket-trading.ts (CLOB V2, HMAC-signed).
  */
 

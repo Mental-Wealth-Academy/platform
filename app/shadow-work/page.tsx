@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
-import Banner from '@/components/banner/Banner';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import MobileSplash from '@/components/mobile-splash/MobileSplash';
@@ -19,9 +17,6 @@ const TexturedBackground = dynamic(() => import('@/components/textured-backgroun
   loading: () => null,
 });
 const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
-  ssr: false,
-});
-const AcademyStory = dynamic(() => import('@/components/visual-novel/AcademyStory'), {
   ssr: false,
 });
 
@@ -45,12 +40,6 @@ const WEEKLY_READINGS = [
   { title: 'A Sense of Self-Protection', author: 'Blue', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md' },
   { title: 'A Sense of Autonomy', author: 'Blue', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md' },
   { title: 'A Sense of Trust', author: 'Blue', description: 'Choose the next concrete action before the full outcome is visible.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md' },
-];
-
-const WEEK_TITLES = [
-  'Week 0', 'Week 1', 'Week 2', 'Week 3', 'Week 4',
-  'Week 5', 'Week 6', 'Week 7', 'Week 8',
-  'Week 9', 'Week 10', 'Week 11', 'Week 12', 'Week 13',
 ];
 
 function parseMarkdownSimple(md: string): string {
@@ -137,7 +126,6 @@ export default function CoursePage() {
     setStorageItem('mwa-shadow-work-intro-seen', 'true');
   };
   const [isReaderOpen, setIsReaderOpen] = useState(false);
-  const [isAcademyStoryOpen, setIsAcademyStoryOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
   const [viewWeek, setViewWeek] = useState<number | null>(null);
@@ -236,17 +224,6 @@ export default function CoursePage() {
 
   const getWeekStatus = (week: number) => weekStatuses.find(w => w.weekNumber === week);
 
-  // Per-week {completed, total}, reported by the mission list — powers the
-  // panel badge (diamonds left + XP-square progress bar).
-  const [weekStats, setWeekStats] = useState<Record<number, { completed: number; total: number }>>({});
-  const handleStats = useCallback((s: { weekNumber: number; completed: number; total: number }) => {
-    setWeekStats(prev => {
-      const cur = prev[s.weekNumber];
-      if (cur && cur.completed === s.completed && cur.total === s.total) return prev;
-      return { ...prev, [s.weekNumber]: { completed: s.completed, total: s.total } };
-    });
-  }, []);
-
   const handleFocus = useCallback((e: React.FocusEvent) => {
     const tag = (e.target as HTMLElement).tagName;
     if (tag === 'TEXTAREA' || tag === 'INPUT') play('click');
@@ -308,14 +285,11 @@ export default function CoursePage() {
 
   const resolvedViewWeek = viewWeek ?? 1;
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
-  const handleOpenReading = useCallback((index: number) => {
-    setReaderIndex(index);
-    setIsAcademyStoryOpen(true);
-  }, []);
 
-  const [rightContent, setRightContent] = useState<'reading' | null>(null);
+  const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [taskPanelTarget, setTaskPanelTarget] = useState<HTMLDivElement | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
-  const rightPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
@@ -324,14 +298,10 @@ export default function CoursePage() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // On phones the reading panel stacks below the missions, so opening it
-  // without scrolling to it reads as the tap doing nothing.
   useEffect(() => {
-    if (isDesktop || rightContent !== 'reading') return;
-    requestAnimationFrame(() => {
-      rightPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }, [rightContent, isDesktop]);
+    setSelectedTaskId(null);
+    setRightContent(null);
+  }, [resolvedViewWeek]);
 
   return (
     <>
@@ -343,95 +313,9 @@ export default function CoursePage() {
           <TexturedBackground />
         </div>
       )}
-      <Banner
-        backHref="/home"
-        tone="neutral"
-        actions={(() => {
-              const stats = weekStats[resolvedViewWeek];
-              if (!stats || stats.total === 0) return null;
-              const diamondsLeft = Math.max(0, stats.total - stats.completed) * 50;
-              return (
-                <div className={styles.panelBadgeRow}>
-                  <span className={styles.panelBadgeDiamonds}>
-                    <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
-                    {diamondsLeft}
-                  </span>
-                  <span
-                    className={styles.panelBadgeProgress}
-                    role="progressbar"
-                    aria-valuenow={stats.completed}
-                    aria-valuemin={0}
-                    aria-valuemax={stats.total}
-                    aria-label={`${stats.completed} of ${stats.total} tasks complete`}
-                  >
-                    {Array.from({ length: stats.total }).map((_, i) => (
-                      <span
-                        key={i}
-                        className={`${styles.panelBadgeSquare} ${i < stats.completed ? styles.panelBadgeSquareFilled : ''}`}
-                      />
-                    ))}
-                  </span>
-                </div>
-              );
-            })()}
-      />
-      <main className={styles.content} onFocus={handleFocus}>
-        <section className={styles.controlPanel} aria-labelledby="course-title">
-            <div className={styles.panelBody}>
-              <div className={styles.panelAvatarWrap}>
-                <Image src="/blue/blue-home.png" alt="Blue" width={120} height={120} className={styles.panelAvatar} />
-              </div>
-              <div className={styles.panelHeader}>
-                <span className={styles.courseEyebrow}>Seasonal study program</span>
-                <h1 id="course-title" className={styles.panelTitle}>Creative Healing</h1>
-                <p className={styles.panelDescription}>A guided journey to unlock your inner creativity.</p>
-                <dl className={styles.courseMeta} aria-label="Course details">
-                  <div className={styles.courseMetaItem}>
-                    <dt className={styles.courseMetaLabel}>Faculty</dt>
-                    <dd className={styles.courseMetaValue}>Blue</dd>
-                  </div>
-                  <div className={styles.courseMetaItem}>
-                    <dt className={styles.courseMetaLabel}>Duration</dt>
-                    <dd className={styles.courseMetaValue}>12 weeks</dd>
-                  </div>
-                  <div className={styles.courseMetaItem}>
-                    <dt className={styles.courseMetaLabel}>Format</dt>
-                    <dd className={styles.courseMetaValue}>Reading, practice, evidence</dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-        </section>
-
-        <nav className={styles.curriculumRail} aria-label="Course outline">
-          <div className={styles.curriculumRailHeader}>
-            <span className={styles.curriculumRailKicker}>Curriculum</span>
-            <strong className={styles.curriculumRailTitle}>Course outline</strong>
-          </div>
-          <div className={styles.weekNavDots}>
-            {Array.from({ length: 12 }, (_, i) => {
-              const w = i + 1;
-              const status = getWeekStatus(w);
-              const isCurrent = !seasonLoading && w === resolvedViewWeek;
-              return (
-                <button
-                  key={w}
-                  className={`${styles.weekDot} ${isCurrent ? styles.weekDotActive : ''} ${status?.isSealed ? styles.weekDotSealed : ''} ${seasonLoading ? styles.weekDotLoading : ''}`}
-                  onClick={() => { play('click'); setViewWeek(w); }}
-                  title={`Week ${w}: ${WEEK_TITLES[w]}`}
-                  disabled={seasonLoading}
-                  aria-current={isCurrent ? 'step' : undefined}
-                >
-                  <span className={styles.weekDotNumber}>Week {w}</span>
-                  <span className={styles.weekDotStatus}>{status?.isSealed ? 'Sealed' : isCurrent ? 'Current' : ''}</span>
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-
-        <section className={styles.weeklyShell} aria-label="Course materials">
-          <div className={styles.leftCol}>
+      <main className={`${styles.content} ${styles.contentSimple}`} onFocus={handleFocus}>
+        <section className={`${styles.weeklyShell} ${styles.weeklyShellSimple}`} aria-label="Course materials">
+          <div className={`${styles.leftCol} ${styles.leftColSimple}`}>
             <div
               className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
               onTouchStart={handleTouchStart}
@@ -464,7 +348,14 @@ export default function CoursePage() {
                   onClick={() => {
                     play('click');
                     const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
-                    handleOpenReading(idx);
+                    setReaderIndex(idx);
+                    setSelectedTaskId(null);
+                    if (isDesktop) {
+                      setRightContent('reading');
+                    } else {
+                      setRightContent(null);
+                      setIsReaderOpen(true);
+                    }
                   }}
                   onMouseEnter={() => play('hover')}
                 >
@@ -495,16 +386,26 @@ export default function CoursePage() {
                   isLocked={resolvedViewWeek > activeWeek}
                   initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
                   initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
-                  onSealComplete={handleSealComplete}
-                  onStats={handleStats}
+                  onSealComplete={(weekNumber, txHash) => {
+                    setSelectedTaskId(null);
+                    setRightContent(null);
+                    handleSealComplete(weekNumber, txHash);
+                  }}
+                  selectedSectionId={selectedTaskId}
+                  onSectionSelect={(sectionId) => {
+                    setSelectedTaskId(sectionId);
+                    setRightContent(sectionId ? 'task' : null);
+                  }}
+                  renderDetailInPanel={isDesktop}
+                  detailPortalTarget={taskPanelTarget}
                 />
               </>
             )}
             </div>
           </div>
 
-        {/* ── Right panel — Weekly Read opens here (stacks below missions on mobile) ── */}
-        <aside className={styles.rightPanel} ref={rightPanelRef} aria-label="Weekly reading">
+        {/* ── Right panel — desktop reading and mission detail ── */}
+        <aside className={`${styles.rightPanel} ${styles.rightPanelSimple}`} aria-label="Course detail">
           {rightContent === 'reading' && (
             <div className={styles.popupCard}>
               <div className={styles.inlineReaderInner}>
@@ -514,6 +415,9 @@ export default function CoursePage() {
                 />
               </div>
             </div>
+          )}
+          {isDesktop && rightContent === 'task' && selectedTaskId && (
+            <div ref={setTaskPanelTarget} className={styles.taskPanelHost} />
           )}
         </aside>
         </section>
@@ -527,14 +431,6 @@ export default function CoursePage() {
           author={currentReading.author}
           markdownPath={currentReading.markdownPath}
           slug={currentReading.slug}
-        />
-      )}
-      {isAcademyStoryOpen && (
-        <AcademyStory
-          isOpen={isAcademyStoryOpen}
-          onClose={() => setIsAcademyStoryOpen(false)}
-          weekNumber={readerIndex}
-          weekTitle={currentReading.title}
         />
       )}
       <CourseTour />

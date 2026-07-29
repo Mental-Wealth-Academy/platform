@@ -71,6 +71,13 @@
   grid-row: 2;
 }
 
+.contentSimple {
+  display: block;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 24px 72px;
+}
+
 /* ============================================ */
 /* SKELETON PRIMITIVES                          */
 /* ============================================ */
@@ -397,6 +404,16 @@
   gap: 0;
 }
 
+.weeklyShellSimple {
+  background: transparent;
+  background-image: none;
+  border: 0;
+}
+
+.weeklyShellSimple:has(> .rightPanel > *) {
+  gap: 24px;
+}
+
 /* ── Curriculum rail ── */
 
 .curriculumRail {
@@ -532,6 +549,10 @@
 .leftCol {
   min-width: 0;
   padding: 28px 32px 48px;
+}
+
+.leftColSimple {
+  padding: 0;
 }
 
 .weekContent {
@@ -788,12 +809,20 @@
   display: none;
 }
 
+.rightPanelSimple {
+  padding: 0;
+}
+
 .popupCard {
   position: relative;
   background: var(--color-surface-1);
   border: 1px solid var(--color-border-subtle);
   border-radius: 16px;
   overflow: hidden;
+}
+
+.taskPanelHost {
+  min-width: 0;
 }
 
 .popupCard .inlineReaderInner {
@@ -1148,6 +1177,18 @@
     padding: 0 32px 40px;
     margin: 0;
   }
+
+  .contentSimple {
+    padding: 28px 24px 72px;
+  }
+
+  .leftColSimple {
+    padding: 0;
+  }
+
+  .rightPanelSimple {
+    padding: 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1165,6 +1206,10 @@
 }
 
 @media (max-width: 640px) {
+  .contentSimple {
+    padding: 20px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
   .panelBody {
     grid-template-columns: 58px minmax(0, 1fr);
     gap: 18px;
@@ -1213,8 +1258,16 @@
     padding: 24px 20px 40px;
   }
 
+  .leftColSimple {
+    padding: 0;
+  }
+
   .rightPanel {
     padding: 0 20px 40px;
+  }
+
+  .rightPanelSimple {
+    padding: 0;
   }
 
   .readingCard,

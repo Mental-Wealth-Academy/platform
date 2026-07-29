@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { createPortal } from 'react-dom';
 import { usePrivy } from '@privy-io/react-auth';
 import styles from './WeekTasksView.module.css';
 import jStyles from '@/components/accordion-journal/AccordionJournalCard.module.css';
@@ -83,6 +84,12 @@ interface WeekTasksViewProps {
   onSealComplete?: (weekNumber: number, txHash: string | null) => void;
   /** Reports week progress so a parent can render a diamonds/progress badge. */
   onStats?: (stats: { weekNumber: number; completed: number; total: number }) => void;
+  /** Controlled section selection used by the desktop course detail panel. */
+  selectedSectionId?: string | null;
+  onSectionSelect?: (sectionId: string | null) => void;
+  /** Keep task editors in the list below this breakpoint; portal them on desktop. */
+  renderDetailInPanel?: boolean;
+  detailPortalTarget?: HTMLElement | null;
 }
 
 export default function WeekTasksView({
@@ -93,6 +100,10 @@ export default function WeekTasksView({
   initialSealTxHash,
   onSealComplete,
   onStats,
+  selectedSectionId,
+  onSectionSelect,
+  renderDetailInPanel = false,
+  detailPortalTarget,
 }: WeekTasksViewProps) {
   const { sections: fetchedSections, loading: sectionsLoading } = useCourseSections('creative-healing', weekNumber);
   const journalSections: JournalSection[] = useMemo(
@@ -265,9 +276,16 @@ export default function WeekTasksView({
   const totalSections = journalSections.length;
   const canSeal = completedCount >= totalSections && !isSealed;
 
+  const activeSectionId = selectedSectionId === undefined ? expandedSection : selectedSectionId;
+
   const toggleExpand = (id: string) => {
-    play(expandedSection === id ? 'toggle-off' : 'toggle-on');
-    setExpandedSection(prev => prev === id ? null : id);
+    const nextId = activeSectionId === id ? null : id;
+    play(nextId === null ? 'toggle-off' : 'toggle-on');
+    if (onSectionSelect) {
+      onSectionSelect(nextId);
+      return;
+    }
+    setExpandedSection(nextId);
   };
 
   // Completion is permanent: finished tasks can't be unchecked, and the
@@ -639,15 +657,76 @@ export default function WeekTasksView({
       }}
     >
       {journalSections.map((section, idx) => {
-        const isOpen = expandedSection === section.id;
+        const isOpen = activeSectionId === section.id;
         const isDone = completedSections.has(section.id);
         const artVariant = getTaskArtVariant(section);
         const taskAccent = TASK_ACCENTS[idx % TASK_ACCENTS.length];
+        const expandedContent = (
+          <div className={styles.taskCardContent}>
+            <p className={styles.taskInstructions}>{section.instructions}</p>
+            <div
+              className={styles.taskEditor}
+              onFocus={(e) => {
+                // Selects have their own onPointerDown sound; skip to avoid double-play.
+                if ((e.target as HTMLElement).tagName !== 'SELECT') play('hover');
+              }}
+            >
+              {renderSectionContent(section)}
+            </div>
+            {!isSealed && (
+              <button
+                type="button"
+                className={`${styles.markDoneBtn} ${isDone ? styles.markDoneBtnActive : ''}`}
+                onClick={() => markComplete(section.id)}
+                onMouseEnter={() => play('hover')}
+                disabled={isDone}
+              >
+                {isDone ? (
+                  'Completed'
+                ) : (
+                  <>
+                    Complete task
+                    <span className={styles.markDoneCredits}>
+                      <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
+                      +50 diamonds
+                    </span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        );
+        const desktopDetail = (
+          <div
+            className={`${styles.taskCard} ${styles.taskPanelCard} ${isDone ? styles.taskCardDone : ''}`}
+            style={{ '--task-accent': taskAccent } as React.CSSProperties}
+          >
+            <div className={styles.taskPanelHeader}>
+              <span className={styles.taskAccent} aria-hidden="true" />
+              <div className={`${styles.taskArtwork} ${styles[`taskArtwork${artVariant[0].toUpperCase()}${artVariant.slice(1)}` as keyof typeof styles]}`} aria-hidden="true">
+                <div className={styles.taskArtworkGlow} />
+                <div className={styles.taskArtworkLine} />
+              </div>
+              <span className={styles.taskTitle}>{section.title}</span>
+              <button
+                type="button"
+                className={styles.taskPanelClose}
+                onClick={() => onSectionSelect?.(null)}
+                aria-label={`Close ${section.title}`}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+            {expandedContent}
+          </div>
+        );
         return (
           <div
             key={section.id}
             data-tour={idx === 0 ? 'course-mission' : undefined}
-            className={`${styles.taskCard} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}
+            className={`${styles.taskCard} ${isOpen ? styles.taskCardActive : ''} ${isDone ? styles.taskCardDone : ''} ${isSealed ? styles.taskCardSealed : ''}`}
             style={{ '--task-accent': taskAccent } as React.CSSProperties}
           >
             <button
@@ -678,7 +757,7 @@ export default function WeekTasksView({
                   <div className={styles.taskCheckEmpty} />
                 )}
                 <svg
-                  className={`${styles.expandArrow} ${isOpen ? styles.expandArrowOpen : ''}`}
+                  className={`${styles.expandArrow} ${renderDetailInPanel ? styles.expandArrowPanel : (isOpen ? styles.expandArrowOpen : '')}`}
                   width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                   strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                 >
@@ -688,39 +767,9 @@ export default function WeekTasksView({
             </button>
 
             {isOpen && (
-              <div className={styles.taskCardContent}>
-                <p className={styles.taskInstructions}>{section.instructions}</p>
-                <div
-                  className={styles.taskEditor}
-                  onFocus={(e) => {
-                    // Selects have their own onPointerDown sound; skip to avoid double-play.
-                    if ((e.target as HTMLElement).tagName !== 'SELECT') play('hover');
-                  }}
-                >
-                  {renderSectionContent(section)}
-                </div>
-                {!isSealed && (
-                  <button
-                    type="button"
-                    className={`${styles.markDoneBtn} ${isDone ? styles.markDoneBtnActive : ''}`}
-                    onClick={() => markComplete(section.id)}
-                    onMouseEnter={() => play('hover')}
-                    disabled={isDone}
-                  >
-                    {isDone ? (
-                      'Completed'
-                    ) : (
-                      <>
-                        Complete task
-                        <span className={styles.markDoneCredits}>
-                          <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
-                          +50 diamonds
-                        </span>
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
+              renderDetailInPanel
+                ? (detailPortalTarget ? createPortal(desktopDetail, detailPortalTarget) : null)
+                : expandedContent
             )}
           </div>
         );
