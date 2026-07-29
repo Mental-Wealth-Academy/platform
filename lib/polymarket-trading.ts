@@ -69,7 +69,7 @@ let authenticatedClientPromise: Promise<ClobClient> | null = null;
 
 function resolveSignatureType(): SignatureTypeV2 {
   const configured = process.env.POLYMARKET_SIGNATURE_TYPE?.trim();
-  if (!configured) return SignatureTypeV2.POLY_PROXY;
+  if (!configured) return SignatureTypeV2.POLY_GNOSIS_SAFE;
 
   const value = Number(configured);
   if (
