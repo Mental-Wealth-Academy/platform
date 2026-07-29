@@ -11,7 +11,8 @@
  *   - Polygon mainnet only.
  *   - Read-only without --execute.
  *   - Skips any approval that is already set, so it is idempotent.
- *   - Signs with POLYMARKET_WALLET_PRIVATE_KEY and refuses if that key does not
+ *   - Signs with POLYMARKET_WALLET_PRIVATE_KEY (or AZURA_PRIVATE_KEY) and refuses
+ *     if that key does not
  *     match POLYMARKET_PROXY_WALLET (EOA mode requires signer === funder).
  *
  * Check:
@@ -32,6 +33,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
+import { resolvePolymarketSignerKey } from '../lib/polymarket-signer';
 
 const POLYGON_RPC_URL =
   process.env.POLYGON_RPC_URL || 'https://polygon-bor-rpc.publicnode.com';
@@ -81,11 +83,7 @@ const ctfAbi = [
 async function main() {
   const execute = process.argv.includes('--execute');
 
-  const rawKey = process.env.POLYMARKET_WALLET_PRIVATE_KEY?.trim();
-  if (!rawKey) throw new Error('POLYMARKET_WALLET_PRIVATE_KEY is missing.');
-  const account = privateKeyToAccount(
-    (rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`) as `0x${string}`,
-  );
+  const account = privateKeyToAccount(resolvePolymarketSignerKey());
 
   const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '2';
   const funder = process.env.POLYMARKET_PROXY_WALLET?.trim();

@@ -26,6 +26,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
 import { wrapUsdcToPusd } from './polymarket-collateral';
+import { resolvePolymarketSignerKey } from './polymarket-signer';
 
 /** Auto-wrap is on unless explicitly disabled, so the agent is self-funding by default. */
 function autoWrapEnabled(): boolean {
@@ -90,23 +91,16 @@ function resolveSignatureType(): SignatureTypeV2 {
 }
 
 function buildPolymarketClient(creds?: ApiKeyCreds): ClobClient {
-  const rawPrivateKey = process.env.POLYMARKET_WALLET_PRIVATE_KEY?.trim();
   const funder = (
     process.env.POLYMARKET_DEPOSIT_WALLET_ADDRESS ||
     process.env.POLYMARKET_PROXY_WALLET ||
     ''
   ).trim();
-  if (!rawPrivateKey) {
-    throw new Error('Polymarket signer is missing.');
-  }
   if (!isAddress(funder)) {
     throw new Error('Polymarket funder wallet is missing or invalid.');
   }
 
-  const privateKey = (
-    rawPrivateKey.startsWith('0x') ? rawPrivateKey : `0x${rawPrivateKey}`
-  ) as `0x${string}`;
-  const account = privateKeyToAccount(privateKey);
+  const account = privateKeyToAccount(resolvePolymarketSignerKey());
   const signer = createWalletClient({
     account,
     chain: polygon,

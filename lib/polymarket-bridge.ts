@@ -22,6 +22,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { base } from 'viem/chains';
+import { resolvePolymarketSignerKey } from './polymarket-signer';
 
 export const BRIDGE_BASE_URL = 'https://bridge.polymarket.com';
 export const BASE_CHAIN_ID = 8453;
@@ -82,11 +83,7 @@ function builderHeaders(): Record<string, string> {
 }
 
 function tradingAccount() {
-  const raw = process.env.POLYMARKET_WALLET_PRIVATE_KEY?.trim();
-  if (!raw) throw new Error('POLYMARKET_WALLET_PRIVATE_KEY is missing.');
-  return privateKeyToAccount(
-    (raw.startsWith('0x') ? raw : `0x${raw}`) as `0x${string}`,
-  );
+  return privateKeyToAccount(resolvePolymarketSignerKey());
 }
 
 /**

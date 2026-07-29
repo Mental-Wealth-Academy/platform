@@ -21,6 +21,7 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
+import { resolvePolymarketSignerKey } from './polymarket-signer';
 
 /** Permissionless wrapper: USDC.e in, pUSD out, 1:1. */
 export const COLLATERAL_ONRAMP_ADDRESS =
@@ -93,11 +94,7 @@ export interface CollateralPosition {
 }
 
 function tradingAccount() {
-  const raw = process.env.POLYMARKET_WALLET_PRIVATE_KEY?.trim();
-  if (!raw) throw new Error('POLYMARKET_WALLET_PRIVATE_KEY is missing.');
-  return privateKeyToAccount(
-    (raw.startsWith('0x') ? raw : `0x${raw}`) as `0x${string}`,
-  );
+  return privateKeyToAccount(resolvePolymarketSignerKey());
 }
 
 function publicClient() {
