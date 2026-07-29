@@ -8,7 +8,11 @@ import {
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { base, baseSepolia } from 'viem/chains';
-import { getChainConfig, resolveVerifiedRpcUrl } from '@/lib/chain-config';
+import {
+  getChainConfig,
+  getRpcCandidates,
+  resolveVerifiedRpcUrl,
+} from '@/lib/chain-config';
 
 const ERC20_BALANCE_ABI = [
   {
@@ -118,7 +122,10 @@ function configuredTreasuryAccounts(treasuryAddress: Address): Array<{
     },
     {
       role: 'trader',
-      address: process.env.NEXT_PUBLIC_BLUE_MARKET_TRADER_ADDRESS || '',
+      address:
+        process.env.NEXT_PUBLIC_BLUE_MARKET_TRADER_ADDRESS ||
+        process.env.POLYMARKET_PROXY_WALLET ||
+        '',
     },
   ];
   const seen = new Set<string>();
@@ -278,30 +285,50 @@ export async function fetchTreasurySnapshot(): Promise<TreasurySnapshot> {
 
   const rpcUrl = await resolveVerifiedRpcUrl();
   const chain = cfg.chainId === baseSepolia.id ? baseSepolia : base;
-  const client = createPublicClient({ chain, transport: http(rpcUrl) });
+  const rpcUrls = Array.from(new Set([rpcUrl, ...getRpcCandidates()]));
+  const clients = rpcUrls.map((url) =>
+    createPublicClient({ chain, transport: http(url, { timeout: 5_000 }) })
+  );
+  const readWithFallback = async <T>(
+    read: (client: (typeof clients)[number]) => Promise<T>,
+  ): Promise<T> => {
+    let lastError: unknown;
+    for (const client of clients) {
+      try {
+        return await read(client);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError instanceof Error
+      ? lastError
+      : new Error('All treasury RPC reads failed.');
+  };
   const configuredAccounts = configuredTreasuryAccounts(treasuryAddress);
   const [accountReads, pricesResult] = await Promise.all([
     Promise.all(configuredAccounts.map(async (account) => {
       const reads = await Promise.allSettled([
-        client.getBalance({ address: account.address }),
-        client.readContract({
+        readWithFallback<bigint>((client) =>
+          client.getBalance({ address: account.address })
+        ),
+        readWithFallback<bigint>((client) => client.readContract({
           address: cbBtcAddress,
           abi: ERC20_BALANCE_ABI,
           functionName: 'balanceOf',
           args: [account.address],
-        }),
-        client.readContract({
+        })),
+        readWithFallback<bigint>((client) => client.readContract({
           address: usdcAddress,
           abi: ERC20_BALANCE_ABI,
           functionName: 'balanceOf',
           args: [account.address],
-        }),
-        client.readContract({
+        })),
+        readWithFallback<bigint>((client) => client.readContract({
           address: creditsAddress,
           abi: ERC20_BALANCE_ABI,
           functionName: 'balanceOf',
           args: [account.address],
-        }),
+        })),
       ]);
 
       return {

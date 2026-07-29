@@ -115,6 +115,14 @@ const FALLBACK_RPCS: Record<number, string[]> = {
 
 let verifiedRpcCache: { chainId: number; url: string } | null = null;
 
+export function getRpcCandidates(): string[] {
+  const cfg = getChainConfig();
+  return Array.from(new Set([
+    cfg.rpcUrl,
+    ...(FALLBACK_RPCS[cfg.chainId] || []),
+  ]));
+}
+
 /**
  * Server-side guard: find an RPC that provably serves the active chain and
  * answers the operation class Diamonds writes depend on. The probe is a real
@@ -143,7 +151,7 @@ export async function resolveVerifiedRpcUrl(): Promise<string> {
     }, 'latest'],
   });
 
-  const candidates = [cfg.rpcUrl, ...(FALLBACK_RPCS[cfg.chainId] || [])];
+  const candidates = getRpcCandidates();
   for (const url of candidates) {
     try {
       const res = await fetch(url, {
