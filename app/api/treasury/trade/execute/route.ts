@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { buildTopTradePlan, type TradingLog } from '@/lib/trading-engine';
 import { placePolymarketOrder } from '@/lib/polymarket-trading';
+import { resolvePolymarketSignerKey } from '@/lib/polymarket-signer';
 import { setExecutionLogs, type PositionEntry } from '@/lib/execution-log-store';
 import { getClientIdentifier, checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 import { isStaffUser } from '@/lib/staff-auth';
@@ -45,14 +46,24 @@ export async function POST(request: Request) {
     );
   }
 
-  if (
-    !process.env.POLYMARKET_WALLET_PRIVATE_KEY ||
-    !process.env.POLYMARKET_PROXY_WALLET
-  ) {
+  // Resolve the signer rather than checking one variable, so the fallback to
+  // Blue's wallet key counts as configured here too.
+  try {
+    resolvePolymarketSignerKey();
+  } catch (error) {
     return NextResponse.json(
       {
         error: 'polymarket_unconfigured',
-        message: 'Polymarket signer or proxy wallet configuration is missing.',
+        message: error instanceof Error ? error.message : 'Polymarket signer is missing.',
+      },
+      { status: 503, headers: rateLimitHeaders },
+    );
+  }
+  if (!process.env.POLYMARKET_PROXY_WALLET) {
+    return NextResponse.json(
+      {
+        error: 'polymarket_unconfigured',
+        message: 'Polymarket proxy wallet configuration is missing.',
       },
       { status: 503, headers: rateLimitHeaders },
     );
