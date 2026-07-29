@@ -196,6 +196,15 @@ export async function fetchPolymarketCollateralBalance(): Promise<PolymarketColl
   };
 }
 
+export async function refreshPolymarketCollateralBalance(): Promise<PolymarketCollateralBalance> {
+  await fetchPolymarketCollateralBalance();
+  const client = await getPolymarketClient();
+  await client.updateBalanceAllowance({
+    asset_type: AssetType.COLLATERAL,
+  });
+  return fetchPolymarketCollateralBalance();
+}
+
 function normalizeOrderResponse(response: OrderResponse): PolymarketOrderResponse {
   return {
     ...response,
@@ -222,7 +231,11 @@ export async function placePolymarketOrder(
   const orderType = input.orderType || 'FOK';
 
   if (side === Side.BUY) {
-    const collateral = await fetchPolymarketCollateralBalance();
+    const initialCollateral = await fetchPolymarketCollateralBalance();
+    const collateral =
+      initialCollateral.usd <= 0 || !initialCollateral.hasAllowance
+        ? await refreshPolymarketCollateralBalance()
+        : initialCollateral;
     const requiredUsd = input.size * input.price;
     if (collateral.usd + Number.EPSILON < requiredUsd) {
       throw new Error(

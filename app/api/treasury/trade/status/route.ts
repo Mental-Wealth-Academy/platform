@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { isAddress } from 'viem';
 import { fetchPolymarketMarketBySlug } from '@/lib/polymarket-api';
-import { fetchPolymarketCollateralBalance } from '@/lib/polymarket-trading';
+import {
+  fetchPolymarketCollateralBalance,
+  refreshPolymarketCollateralBalance,
+} from '@/lib/polymarket-trading';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,10 +38,14 @@ export async function GET() {
   }
 
   try {
-    const [market, collateral] = await Promise.all([
+    const [market, initialCollateral] = await Promise.all([
       fetchPolymarketMarketBySlug(targetSlug),
       fetchPolymarketCollateralBalance(),
     ]);
+    const collateral =
+      initialCollateral.usd <= 0 || !initialCollateral.hasAllowance
+        ? await refreshPolymarketCollateralBalance()
+        : initialCollateral;
     const outcome = targetOutcome === 'NO' ? 'NO' : 'YES';
     const tokenId = outcome === 'YES' ? market.tokenId : market.noTokenId;
     const ask = outcome === 'YES' ? market.yes_ask : market.no_ask;
