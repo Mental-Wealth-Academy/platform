@@ -43,7 +43,7 @@
     "@nouns/sdk": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
     "@pixiv/three-vrm": "^3.5.5",
-    "@polymarket/clob-client-v2": "^1.0.6",
+    "@polymarket/clob-client-v2": "^1.1.0",
     "@privy-io/react-auth": "^3.18.0",
     "@privy-io/server-auth": "^1.32.5",
     "@privy-io/wagmi": "^4.0.3",
