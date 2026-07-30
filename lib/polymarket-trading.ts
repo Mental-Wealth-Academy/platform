@@ -27,6 +27,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
 import { wrapUsdcToPusd } from './polymarket-collateral';
 import { resolvePolymarketSignerKey } from './polymarket-signer';
+import { readProxyStatus } from './polymarket-proxy';
 
 /** Auto-wrap is on unless explicitly disabled, so the agent is self-funding by default. */
 function autoWrapEnabled(): boolean {
@@ -258,7 +259,18 @@ export async function placePolymarketOrder(
       );
     }
     if (!collateral.hasAllowance) {
-      throw new Error('Polymarket collateral allowance is missing.');
+      // A proxy cannot approve anything before it exists onchain, and Polymarket
+      // deploys it and sets its approvals together on the first trade. Blocking
+      // here would make that first trade unreachable, so the exchange decides.
+      // Once the proxy is deployed a missing allowance is a real fault again.
+      const status = await readProxyStatus();
+      if (status.deployed) {
+        throw new Error('Polymarket collateral allowance is missing.');
+      }
+      console.warn(
+        `Polymarket proxy ${status.proxy} is not deployed yet; letting the exchange ` +
+          'deploy it and set allowances on this first order.',
+      );
     }
   }
   const client = await getPolymarketClient();
