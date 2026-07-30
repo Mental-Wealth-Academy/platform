@@ -15,6 +15,7 @@
  */
 import { createPublicClient, formatEther, formatUnits, getAddress, http } from 'viem';
 import { base } from 'viem/chains';
+import { polymarketSignerAddress } from '../lib/polymarket-proxy';
 import {
   BASE_CHAIN_ID,
   bridgeFromBase,
@@ -44,10 +45,13 @@ async function main() {
   const symbol = flag('symbol');
   const amountRaw = flag('amount');
 
-  const wallet = resolveCollateralWallet();
+  const wallet = await resolveCollateralWallet();
   const addresses = await requestDepositAddresses(wallet);
+  // Funds leave Blue's Base EOA; the proxy is only the destination.
+  const source = polymarketSignerAddress();
 
-  console.log(`Collateral wallet  ${wallet}`);
+  console.log(`Source wallet      ${source}  (Base)`);
+  console.log(`Collateral wallet  ${wallet}  (Polygon proxy)`);
   console.log(`Bridge address     ${addresses.evm}  (send from Base)`);
   console.log('');
 
@@ -62,7 +66,7 @@ async function main() {
         { timeout: 15_000 },
       ),
     });
-    const nativeBalance = await client.getBalance({ address: wallet });
+    const nativeBalance = await client.getBalance({ address: source });
     console.log(`Base ETH  ${formatEther(nativeBalance)}`);
 
     for (const asset of assets) {
@@ -73,7 +77,7 @@ async function main() {
           address: getAddress(asset.token.address),
           abi: erc20Abi,
           functionName: 'balanceOf',
-          args: [wallet],
+          args: [source],
         });
         if (held > 0n) {
           console.log(`Base ${asset.token.symbol}  ${formatUnits(held, asset.token.decimals)}`);

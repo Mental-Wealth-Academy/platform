@@ -22,6 +22,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts';
 import { polygon } from 'viem/chains';
 import { resolvePolymarketSignerKey } from './polymarket-signer';
+import { resolveOwnedProxy } from './polymarket-proxy';
 
 /** Permissionless wrapper: USDC.e in, pUSD out, 1:1. */
 export const COLLATERAL_ONRAMP_ADDRESS =
@@ -105,33 +106,19 @@ function publicClient() {
 }
 
 /**
- * Wrapping credits pUSD to the funder. In EOA mode (signature type 0) the funder
- * is the signer itself; any other mode means the collateral belongs to a proxy or
- * Safe and we refuse rather than silently wrap into the wrong account.
+ * Wrapping credits pUSD to the funder, which is the proxy the signer owns.
+ * Ownership is checked against the factory so a misconfigured funder cannot
+ * quietly receive the collateral.
  */
-function resolveFunder(signer: Address): Address {
-  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '2';
-  const configured = (
-    process.env.POLYMARKET_DEPOSIT_WALLET_ADDRESS ||
-    process.env.POLYMARKET_PROXY_WALLET ||
-    ''
-  ).trim();
-  if (!configured) throw new Error('Polymarket funder wallet is missing.');
-  const funder = getAddress(configured);
-
-  if (signatureType !== '0') {
+async function resolveFunder(): Promise<Address> {
+  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '1';
+  if (signatureType === '0') {
     throw new Error(
-      `POLYMARKET_SIGNATURE_TYPE is ${signatureType}; wrapping from this wallet would ` +
-        'credit an account it does not control. Fund the proxy through Polymarket instead.',
+      'POLYMARKET_SIGNATURE_TYPE is 0, but Polymarket does not accept a raw EOA as ' +
+        'the maker. Use the proxy wallet and signature type 1 or 2.',
     );
   }
-  if (funder !== signer) {
-    throw new Error(
-      `EOA mode requires signer === funder, but the signer is ${signer} and the ` +
-        `funder is ${funder}.`,
-    );
-  }
-  return funder;
+  return resolveOwnedProxy();
 }
 
 export async function readCollateralPosition(): Promise<CollateralPosition> {
@@ -169,7 +156,7 @@ export async function wrapUsdcToPusd(options: {
   dryRun?: boolean;
 } = {}): Promise<WrapResult> {
   const account = tradingAccount();
-  const funder = resolveFunder(account.address);
+  const funder = await resolveFunder();
   const client = publicClient();
 
   const [usdceBalance, pUsdBefore, pol] = await Promise.all([

@@ -23,6 +23,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts';
 import { base } from 'viem/chains';
 import { resolvePolymarketSignerKey } from './polymarket-signer';
+import { resolveOwnedProxy } from './polymarket-proxy';
 
 export const BRIDGE_BASE_URL = 'https://bridge.polymarket.com';
 export const BASE_CHAIN_ID = 8453;
@@ -87,34 +88,22 @@ function tradingAccount() {
 }
 
 /**
- * The wallet the bridge should credit. In EOA mode that is the signer itself;
- * any other signature type means collateral belongs to a proxy we do not control
- * from here, so we refuse rather than bridge into the wrong account.
+ * The wallet the bridge should credit.
+ *
+ * Polymarket rejects raw EOAs as order makers, so collateral belongs in the
+ * proxy the signer owns. Ownership is verified against the factory rather than
+ * trusted from configuration, which is what keeps a deposit from landing in
+ * someone else's wallet.
  */
-export function resolveCollateralWallet(): Address {
-  const account = tradingAccount();
-  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '2';
-  const configured = (
-    process.env.POLYMARKET_DEPOSIT_WALLET_ADDRESS ||
-    process.env.POLYMARKET_PROXY_WALLET ||
-    ''
-  ).trim();
-  if (!configured) throw new Error('Polymarket funder wallet is missing.');
-  const funder = getAddress(configured);
-
-  if (signatureType !== '0') {
+export async function resolveCollateralWallet(): Promise<Address> {
+  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '1';
+  if (signatureType === '0') {
     throw new Error(
-      `POLYMARKET_SIGNATURE_TYPE is ${signatureType}; bridging from this wallet would ` +
-        'credit an account it does not control.',
+      'POLYMARKET_SIGNATURE_TYPE is 0, but Polymarket does not accept a raw EOA as ' +
+        'the maker. Use the proxy wallet and signature type 1 or 2.',
     );
   }
-  if (funder !== account.address) {
-    throw new Error(
-      `EOA mode requires signer === funder, but the signer is ${account.address} ` +
-        `and the funder is ${funder}.`,
-    );
-  }
-  return funder;
+  return resolveOwnedProxy();
 }
 
 export async function fetchSupportedAssets(): Promise<SupportedAsset[]> {
@@ -153,7 +142,7 @@ export async function findBaseAsset(symbol: string): Promise<SupportedAsset> {
 export async function requestDepositAddresses(
   walletAddress?: Address,
 ): Promise<BridgeDepositAddresses> {
-  const address = walletAddress || resolveCollateralWallet();
+  const address = walletAddress || await resolveCollateralWallet();
   const res = await fetch(`${BRIDGE_BASE_URL}/deposit`, {
     method: 'POST',
     headers: builderHeaders(),
@@ -181,7 +170,7 @@ export async function requestDepositAddresses(
 }
 
 export async function getDepositStatus(walletAddress?: Address): Promise<unknown> {
-  const address = walletAddress || resolveCollateralWallet();
+  const address = walletAddress || await resolveCollateralWallet();
   const res = await fetch(`${BRIDGE_BASE_URL}/status/${address}`, {
     headers: builderHeaders(),
   });
@@ -200,7 +189,7 @@ export async function bridgeFromBase(options: {
   dryRun?: boolean;
 }): Promise<BridgeSendResult> {
   const account = tradingAccount();
-  resolveCollateralWallet();
+  await resolveCollateralWallet();
 
   const asset = await findBaseAsset(options.symbol);
   const { evm: to } = await requestDepositAddresses();
