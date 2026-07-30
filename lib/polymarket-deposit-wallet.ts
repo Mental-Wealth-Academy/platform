@@ -33,6 +33,13 @@ export const DEPOSIT_WALLET_IMPLEMENTATION =
 /** EIP-7702 delegation indicator: 0xef0100 followed by the 20-byte target. */
 const DELEGATION_PREFIX = '0xef0100';
 
+/**
+ * Intrinsic floor for a type-4 transaction: 21000 base plus 25000 for the single
+ * authorization, with headroom. Polygon gas is cheap enough that overshooting the
+ * limit costs nothing, while undershooting rejects the transaction outright.
+ */
+const DELEGATION_GAS_FLOOR = 120_000n;
+
 const POLYGON_RPC_URL =
   process.env.POLYGON_RPC_URL || 'https://polygon-bor-rpc.publicnode.com';
 
@@ -161,10 +168,23 @@ export async function delegateToDepositWallet(options: {
     executor: 'self',
   });
 
+  // A type-4 transaction pays 21000 base plus 25000 per authorization, above the
+  // 21000 default a plain transfer would be given. Estimation does not always
+  // account for the authorization list, so the floor is set explicitly.
+  const estimated = await client
+    .estimateGas({
+      account,
+      to: account.address,
+      value: 0n,
+    })
+    .catch(() => 0n);
+  const gas = estimated > DELEGATION_GAS_FLOOR ? estimated : DELEGATION_GAS_FLOOR;
+
   const hash = await wallet.sendTransaction({
     authorizationList: [authorization],
     to: account.address,
     value: 0n,
+    gas,
   });
   const receipt = await client.waitForTransactionReceipt({ hash });
   if (receipt.status !== 'success') {
