@@ -96,7 +96,7 @@ function tradingAccount() {
  * someone else's wallet.
  */
 export async function resolveCollateralWallet(): Promise<Address> {
-  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '1';
+  const signatureType = process.env.POLYMARKET_SIGNATURE_TYPE?.trim() || '2';
   if (signatureType === '0') {
     throw new Error(
       'POLYMARKET_SIGNATURE_TYPE is 0, but Polymarket does not accept a raw EOA as ' +
