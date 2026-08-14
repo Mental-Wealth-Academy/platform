@@ -9,16 +9,19 @@ import {
   House,
   IconProps,
   ClipboardText,
-  UserCircle,
+  MoonStars,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
 type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 
+/* On phones the home tab lands on the DAO dashboard and the personal tab lands
+   on Shadow Work. /home and /profile (the verifier queue) stay desktop
+   surfaces — neither earns a slot in a five-tab bar. */
 const NAV_ITEMS = [
-  { id: 'profile', label: 'Profile', href: '/profile', icon: UserCircle },
+  { id: 'shadow-work', label: 'Shadow', href: '/shadow-work', icon: MoonStars },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
-  { id: 'home', label: 'Home', href: '/home', icon: House },
+  { id: 'home', label: 'DAO', href: '/dao', icon: House },
   { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
 ] as const;
 

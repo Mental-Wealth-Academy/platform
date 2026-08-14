@@ -63,9 +63,16 @@ function parseMarkdownSimple(md: string): string {
 interface CourseInlineReaderProps {
   reading: typeof WEEKLY_READINGS[0];
   onBack: () => void;
+  backLabel?: string;
+  footer?: React.ReactNode;
 }
 
-function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
+function CourseInlineReader({
+  reading,
+  onBack,
+  backLabel = '← Back to journal',
+  footer,
+}: CourseInlineReaderProps) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -81,7 +88,7 @@ function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
   return (
     <div className={styles.inlineReader}>
       <button type="button" className={styles.inlineReaderBack} onClick={onBack}>
-        ← Back to journal
+        {backLabel}
       </button>
       <div className={styles.inlineReaderHeader}>
         <span className={styles.inlineReaderCategory}>{reading.category}</span>
@@ -99,6 +106,7 @@ function CourseInlineReader({ reading, onBack }: CourseInlineReaderProps) {
           dangerouslySetInnerHTML={{ __html: parseMarkdownSimple(content) }}
         />
       )}
+      {!loading && footer}
     </div>
   );
 }
@@ -344,18 +352,17 @@ export default function CoursePage() {
                 <button
                   type="button"
                   data-tour="course-reading"
-                  className={`${styles.readingCard} ${isDesktop && rightContent === 'reading' ? styles.readingCardActive : ''}`}
+                  className={`${styles.readingCard} ${rightContent === 'reading' ? styles.readingCardActive : ''}`}
+                  aria-expanded={!isDesktop ? rightContent === 'reading' : undefined}
                   onClick={() => {
                     play('click');
                     const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
                     setReaderIndex(idx);
                     setSelectedTaskId(null);
-                    if (isDesktop) {
-                      setRightContent('reading');
-                    } else {
-                      setRightContent(null);
-                      setIsReaderOpen(true);
-                    }
+                    // Desktop opens the reading in the side panel; on phones it
+                    // unfolds as plain text right here, above the coursework,
+                    // instead of throwing a full-screen modal over the page.
+                    setRightContent(prev => (prev === 'reading' ? null : 'reading'));
                   }}
                   onMouseEnter={() => play('hover')}
                 >
@@ -372,6 +379,25 @@ export default function CoursePage() {
                     <path d="M9 18l6-6-6-6"/>
                   </svg>
                 </button>
+
+                {!isDesktop && rightContent === 'reading' && (
+                  <div className={styles.inlineReaderMobile}>
+                    <CourseInlineReader
+                      reading={WEEKLY_READINGS[readerIndex]}
+                      onBack={() => setRightContent(null)}
+                      backLabel="← Close reading"
+                      footer={
+                        <button
+                          type="button"
+                          className={styles.inlineReaderDiscuss}
+                          onClick={() => { play('click'); setIsReaderOpen(true); }}
+                        >
+                          Join the discussion
+                        </button>
+                      }
+                    />
+                  </div>
+                )}
 
                 <div className={styles.missionsHeadingRow}>
                   <span className={styles.missionsDivider} />
@@ -406,7 +432,7 @@ export default function CoursePage() {
 
         {/* ── Right panel — desktop reading and mission detail ── */}
         <aside className={`${styles.rightPanel} ${styles.rightPanelSimple}`} aria-label="Course detail">
-          {rightContent === 'reading' && (
+          {isDesktop && rightContent === 'reading' && (
             <div className={styles.popupCard}>
               <div className={styles.inlineReaderInner}>
                 <CourseInlineReader

@@ -152,9 +152,12 @@
 }
 
 @media (max-width: 768px) {
-  /* Clear the fixed mobile nav so the last cards never slide underneath. */
+  /* The page shell already subtracts the fixed nav's clearance from its own
+     height, so the old 120px + safe-area cushion here was counted twice and
+     read as a blank slab under the last card. 24px of breathing room is all
+     this needs. */
   .bentoScrollWithMorningNote {
-    padding-bottom: calc(120px + max(env(safe-area-inset-bottom, 0px), 20px));
+    padding-bottom: 24px;
   }
 }
 

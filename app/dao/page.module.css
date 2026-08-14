@@ -31,5 +31,11 @@
   .pageLayout {
     --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
     height: calc(100dvh - var(--mobile-nav-clearance) - var(--banner-height, 0px));
+    /* What actually remains after the banner, the top nav and the bottom nav.
+       Descendants size the hero against this — a bare 100dvh overshoots by the
+       whole nav stack and leaves a dead band under the scene. */
+    --mobile-content-height: calc(
+      100dvh - 72px - var(--mobile-nav-clearance) - var(--banner-height, 0px)
+    );
   }
 }

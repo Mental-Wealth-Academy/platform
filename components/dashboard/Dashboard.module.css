@@ -82,7 +82,15 @@
     align-items: stretch;
     gap: 16px;
     width: 100%;
-    overflow-x: hidden;
+    /* `overflow-x: hidden` alone computes overflow-y to `auto`, which turned
+       this into a nested scroller: the parent scroll area stopped scrolling,
+       the scene was clipped mid-card and the parent's bottom padding showed up
+       as a dead band. `clip` on one axis leaves the other truly visible. */
+    overflow-x: clip;
+    overflow-y: visible;
+    /* Never let the parent scroll column squash this to its own height —
+       the stack is taller than the viewport by design and should scroll. */
+    flex: 0 0 auto;
     padding-top: 12px;
   }
 
@@ -110,8 +118,12 @@
     padding-top: 8px;
   }
 
+  /* The scene is the hero: it fills the slot the page actually has (viewport
+     minus banner, top nav and bottom nav) rather than a bare 100dvh, which
+     ran a full nav stack past the bottom of the scroll area. */
   .blueSceneWrap {
-    height: 100dvh;
+    height: calc(var(--mobile-content-height, 100dvh) - 24px);
+    min-height: 320px;
     flex: none;
   }
 

@@ -691,6 +691,13 @@
   opacity: 1;
 }
 
+/* Expanded inline (phones): the chevron turns down to read as a disclosure. */
+.readingCardActive .readingArrow,
+.readingCardActive:hover .readingArrow {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
 /* ── Reading skeleton lines ── */
 
 .readingMediaSkeleton {
@@ -928,6 +935,53 @@
 .inlineReaderBody strong {
   font-weight: var(--type-weight-semibold);
   color: var(--color-text-dark);
+}
+
+/* ── Weekly read, unfolded in place above the coursework (phones/tablets) ──
+   Below 1024px there is no side panel to put the reading in, and a full-screen
+   modal buries the week's tasks. The text sits inline instead, directly under
+   the card that opened it. */
+
+.inlineReaderMobile {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  background: var(--color-surface-1);
+  padding: 18px 16px 0;
+}
+
+.inlineReaderMobile .inlineReader {
+  gap: 14px;
+  padding: 0;
+}
+
+.inlineReaderMobile .inlineReaderTitle {
+  font-size: 1.25rem;
+}
+
+.inlineReaderMobile .inlineReaderBody {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.inlineReaderDiscuss {
+  align-self: flex-start;
+  margin: 0 0 18px;
+  padding: 9px 16px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--type-font-label);
+  font-size: 12px;
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.inlineReaderDiscuss:hover {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border-subtle));
 }
 
 /* ============================================ */
@@ -1194,20 +1248,29 @@
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
+    /* globals.css drops body's 72px offset below 900px, so every page has to
+       clear the fixed top nav itself — without this the reading card slid
+       under the header. */
+    padding-top: 72px;
+    /* Border-box, so the nav offset lives inside the viewport height instead
+       of pushing a short week 72px past the fold. */
+    min-height: 100dvh;
   }
 
   .bgViz {
     left: 0;
   }
 
+  /* body already reserves 80px for the fixed bottom nav; this only tops it up
+     to the nav's real height plus a little air. */
   .content {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 640px) {
   .contentSimple {
-    padding: 20px 16px calc(96px + env(safe-area-inset-bottom, 0px));
+    padding: 16px 16px calc(40px + env(safe-area-inset-bottom, 0px));
   }
 
   .panelBody {

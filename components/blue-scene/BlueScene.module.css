@@ -751,7 +751,11 @@
   .scene {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
+    /* Fill whatever the wrapper hands us. A hard 100dvh here — plus the
+       tablet rule's 520px floor — overflowed short phones and left the
+       cards below stranded under a dead band. */
+    height: 100%;
+    min-height: 0;
   }
 
   .sceneHeader {
