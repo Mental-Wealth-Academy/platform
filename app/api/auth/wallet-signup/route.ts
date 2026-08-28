@@ -98,13 +98,32 @@ export async function POST(request: Request) {
     // accounts, and only if the user has an email-based Privy account
     // linked (wallet-only signups have no email to send to, by design).
     // Wrapped so a Resend/Privy hiccup can never fail account creation.
+    let signupEmail: string | null = null;
     try {
-      const email = await getEmailAddressFromRequest();
-      if (email) {
-        await sendMeetBlueEmail(email);
+      signupEmail = await getEmailAddressFromRequest();
+      if (signupEmail) {
+        await sendMeetBlueEmail(signupEmail);
       }
     } catch (notifyErr) {
       console.error('Welcome email failed (non-blocking):', notifyErr);
+    }
+
+    // Feature 3: nurture sequence — separate N8N workflow, fires only if
+    // the same email lookup above found an address. Reuses signupEmail
+    // rather than calling getEmailAddressFromRequest() a second time.
+    // Own env var, own webhook, own workflow — isolated from Feature 1
+    // and Feature 2 so none of the three can break another.
+    if (signupEmail && process.env.N8N_NURTURE_START_WEBHOOK_URL) {
+      try {
+        await fetch(process.env.N8N_NURTURE_START_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: signupEmail, userId }),
+          signal: AbortSignal.timeout(5000),
+        });
+      } catch (nurtureErr) {
+        console.error('Nurture sequence trigger failed (non-blocking):', nurtureErr);
+      }
     }
 
     return NextResponse.json({ ok: true, userId, existing: false });
