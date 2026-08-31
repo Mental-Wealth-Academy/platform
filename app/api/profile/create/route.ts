@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isAvatarValidForUser, getAvatarByAvatarId, getAssignedAvatars } from '@/lib/avatars';
 import { deliverDiamondsOnchain } from '@/lib/diamonds-onchain';
+import { checkBirthdayValue } from '@/lib/birthday';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -118,16 +119,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const birthdayDate = new Date(`${birthday}T00:00:00.000Z`);
-  if (
-    Number.isNaN(birthdayDate.getTime()) ||
-    birthdayDate.toISOString().slice(0, 10) !== birthday ||
-    birthdayDate > new Date()
-  ) {
+  // Same rule the onboarding form shows inline: a real date, not in the
+  // future, and inside the allowed age range.
+  const birthdayCheck = checkBirthdayValue(birthday);
+  if (!birthdayCheck.value) {
     return NextResponse.json(
       {
         error: 'Invalid birthday.',
-        message: 'Birthday must be a real date that is not in the future.',
+        message: birthdayCheck.error || 'Birthday must be a real date that is not in the future.',
       },
       { status: 400 }
     );

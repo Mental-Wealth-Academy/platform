@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 import { usePrivy } from '@privy-io/react-auth';
 import { setStorageItem } from '@/lib/safe-storage';
 import { buildAxisAvatarUrl } from '@/lib/axis-avatar';
+import { checkBirthdayParts, MIN_SIGNUP_AGE } from '@/lib/birthday';
 import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
 import styles from './OnboardingModal.module.css';
 
@@ -45,7 +46,11 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   const [username, setUsername] = useState('');
   const [gender, setGender] = useState('');
-  const [birthday, setBirthday] = useState('');
+  // The three date boxes are held separately so a half-typed date can never be
+  // mistaken for a complete one (a lone month used to read as a valid value and
+  // only failed at the very last step).
+  const [birthdayParts, setBirthdayParts] = useState({ month: '', day: '', year: '' });
+  const [birthdayTouched, setBirthdayTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
@@ -54,12 +59,27 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
 
   const usernameRegex = useMemo(() => /^[a-zA-Z0-9_]{5,32}$/, []);
   const isUsernameValid = usernameRegex.test(username);
+  const birthdayCheck = useMemo(() => checkBirthdayParts(birthdayParts), [birthdayParts]);
+  const birthday = birthdayCheck.value;
+  // Hold the message back until the field has been left alone or filled in, so
+  // typing "1" into the month box doesn't shout at anyone mid-keystroke.
+  const birthdayError =
+    birthdayTouched || birthdayCheck.complete ? birthdayCheck.error : null;
+  // Redden only the box at fault; a whole-date problem (future, age) marks all three.
+  const birthdayFieldInvalid = (field: 'month' | 'day' | 'year') =>
+    !!birthdayError && (birthdayCheck.field === null || birthdayCheck.field === field);
   const isDetailsValid =
     isUsernameValid &&
     usernameAvailable !== false &&
     !checkingUsername &&
     !!gender &&
     !!birthday;
+
+  const setBirthdayField = useCallback((field: 'month' | 'day' | 'year', raw: string) => {
+    const digits = raw.replace(/\D/g, '').slice(0, field === 'year' ? 4 : 2);
+    setBirthdayParts((prev) => ({ ...prev, [field]: digits }));
+    setError(null);
+  }, []);
 
   // On open, confirm an account exists on the server BEFORE showing any
   // questions. If the user is signed in with Privy but has no server account
@@ -213,7 +233,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       if (forceReady) {
         setUsername('preview_user');
         setGender('female');
-        setBirthday('2000-01-15');
+        setBirthdayParts({ month: '01', day: '15', year: '2000' });
         setSelectedAvatarId('preview#0');
         setUsernameAvailable(true);
         setCheckingUsername(false);
@@ -221,9 +241,10 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
         setSelectedAvatarId(null);
         setUsername('');
         setGender('');
-        setBirthday('');
+        setBirthdayParts({ month: '', day: '', year: '' });
         setUsernameAvailable(null);
         setCheckingUsername(false);
+        setBirthdayTouched(false);
       }
       checkingRef.current = null;
     }
@@ -255,8 +276,13 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setError('This username is already taken');
       return;
     }
-    if (!gender || !birthday) {
-      setError('Please complete your gender and birthday.');
+    if (!gender) {
+      setError('Please choose an option for sex.');
+      return;
+    }
+    if (!birthday) {
+      setBirthdayTouched(true);
+      setError(birthdayCheck.error || 'Please enter your birthday as MM / DD / YYYY.');
       return;
     }
     setStep('avatar');
@@ -290,8 +316,14 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
       setStep('details');
       return;
     }
-    if (!gender || !birthday) {
-      setError('Please complete your gender and birthday.');
+    if (!gender) {
+      setError('Please choose an option for sex.');
+      setStep('details');
+      return;
+    }
+    if (!birthday) {
+      setBirthdayTouched(true);
+      setError(birthdayCheck.error || 'Please enter your birthday as MM / DD / YYYY.');
       setStep('details');
       return;
     }
@@ -474,22 +506,21 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
               </fieldset>
 
               <div className={styles.inputGroup}>
-                <label className={styles.inputLabel}>Birthday 🎂</label>
+                <label className={styles.inputLabel} htmlFor="onboarding-bmonth">Birthday</label>
                 <div className={styles.birthdayRow}>
                   <input
+                    id="onboarding-bmonth"
                     name="bmonth"
                     type="text"
                     inputMode="numeric"
                     placeholder="MM"
                     maxLength={2}
-                    value={birthday ? birthday.split('-')[1] || '' : ''}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, '').slice(0, 2);
-                      const year = birthday?.split('-')[0] || '';
-                      const day = birthday?.split('-')[2] || '';
-                      setBirthday(v ? `${year}-${v}-${day}` : '');
-                    }}
-                    className={styles.birthdayInput}
+                    value={birthdayParts.month}
+                    onChange={(e) => setBirthdayField('month', e.target.value)}
+                    onBlur={() => setBirthdayTouched(true)}
+                    aria-invalid={birthdayFieldInvalid('month')}
+                    aria-describedby="onboarding-birthday-hint"
+                    className={`${styles.birthdayInput} ${birthdayFieldInvalid('month') ? styles.birthdayInputInvalid : ''}`}
                     autoComplete="bday-month"
                   />
                   <span className={styles.birthdaySep}>/</span>
@@ -499,13 +530,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                     inputMode="numeric"
                     placeholder="DD"
                     maxLength={2}
-                    value={birthday ? birthday.split('-')[2] || '' : ''}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, '').slice(0, 2);
-                      const parts = birthday?.split('-') || ['', '', ''];
-                      setBirthday(v ? `${parts[0]}-${parts[1]}-${v}` : birthday?.slice(0, 7) || '');
-                    }}
-                    className={styles.birthdayInput}
+                    value={birthdayParts.day}
+                    onChange={(e) => setBirthdayField('day', e.target.value)}
+                    onBlur={() => setBirthdayTouched(true)}
+                    aria-invalid={birthdayFieldInvalid('day')}
+                    aria-describedby="onboarding-birthday-hint"
+                    className={`${styles.birthdayInput} ${birthdayFieldInvalid('day') ? styles.birthdayInputInvalid : ''}`}
                     autoComplete="bday-day"
                   />
                   <span className={styles.birthdaySep}>/</span>
@@ -515,16 +545,22 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose, onCo
                     inputMode="numeric"
                     placeholder="YYYY"
                     maxLength={4}
-                    value={birthday ? birthday.split('-')[0] || '' : ''}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-                      const parts = birthday?.split('-') || ['', '', ''];
-                      setBirthday(v ? `${v}-${parts[1]}-${parts[2]}` : '');
-                    }}
-                    className={`${styles.birthdayInput} ${styles.birthdayYear}`}
+                    value={birthdayParts.year}
+                    onChange={(e) => setBirthdayField('year', e.target.value)}
+                    onBlur={() => setBirthdayTouched(true)}
+                    aria-invalid={birthdayFieldInvalid('year')}
+                    aria-describedby="onboarding-birthday-hint"
+                    className={`${styles.birthdayInput} ${styles.birthdayYear} ${birthdayFieldInvalid('year') ? styles.birthdayInputInvalid : ''}`}
                     autoComplete="bday-year"
                   />
                 </div>
+                <p
+                  id="onboarding-birthday-hint"
+                  className={birthdayError ? styles.inputError : styles.inputHint}
+                  role={birthdayError ? 'alert' : undefined}
+                >
+                  {birthdayError || `Month / day / year, and you must be at least ${MIN_SIGNUP_AGE}`}
+                </p>
               </div>
             </div>
 

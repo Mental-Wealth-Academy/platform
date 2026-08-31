@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
+import { useDevOnboarding } from '@/components/useDevMode';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
@@ -171,6 +172,15 @@ export default function HomePage() {
   const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
+  // True only once the account exists AND onboarding has been finished (a
+  // placeholder user_* name means the profile step is still open). Every
+  // post-signup moment — Blue's daily/weekly pop-up, the first-run guide, the
+  // daily-note nudge — waits on this so nothing lands mid-signup.
+  const [profileComplete, setProfileComplete] = useState(false);
+  const devOnboarding = useDevOnboarding();
+  // Dev onboarding drives the flow without a Privy session, so it stands in for
+  // a finished profile when rehearsing the post-signup moments.
+  const postSignupReady = profileComplete || devOnboarding;
   const [bookmarkedCount, setBookmarkedCount] = useState(0);
 
   useEffect(() => {
@@ -193,6 +203,7 @@ export default function HomePage() {
   // line. The weekly check-in lives here because field notes do.
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (!postSignupReady) return;
 
     const today = localDateKey();
     if (getStorageItem(COURSES_DIALOGUE_DATE_KEY) === today) return;
@@ -258,7 +269,7 @@ export default function HomePage() {
       cancelled = true;
       if (timer) window.clearTimeout(timer);
     };
-  }, []);
+  }, [postSignupReady]);
 
   const handleIntroClose = () => {
     setIntroOpen(false);
@@ -326,24 +337,35 @@ export default function HomePage() {
     return token ? { Authorization: `Bearer ${token}` } : {};
   }, [getAccessToken]);
 
+  const loadMe = useCallback(async () => {
+    try {
+      const headers = await authHeaders();
+      const res = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers });
+      if (!res.ok) return;
+      const data = await res.json();
+      setNotebookEntriesUnlocked((data?.user?.shardCount ?? 0) >= 3_000);
+      const name: string | null = data?.user?.username ?? null;
+      setProfileComplete(!!name && !name.startsWith('user_'));
+    } catch {
+      setNotebookEntriesUnlocked(false);
+    }
+  }, [authHeaders]);
+
   useEffect(() => {
     if (!ready || !authenticated) {
       setNotebookEntriesUnlocked(false);
+      setProfileComplete(false);
       return;
     }
+    loadMe();
+  }, [ready, authenticated, loadMe]);
 
-    (async () => {
-      try {
-        const headers = await authHeaders();
-        const res = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers });
-        if (!res.ok) return;
-        const data = await res.json();
-        setNotebookEntriesUnlocked((data?.user?.shardCount ?? 0) >= 3_000);
-      } catch {
-        setNotebookEntriesUnlocked(false);
-      }
-    })();
-  }, [ready, authenticated, authHeaders]);
+  // Onboarding finishing is what flips profileComplete, and it fires this event.
+  useEffect(() => {
+    const onProfileUpdated = () => { loadMe(); };
+    window.addEventListener('profileUpdated', onProfileUpdated);
+    return () => window.removeEventListener('profileUpdated', onProfileUpdated);
+  }, [loadMe]);
 
   const loadPersonalCourse = useCallback(async () => {
     try {
@@ -838,7 +860,7 @@ export default function HomePage() {
 
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
 
-      {!learnOnly && <FeatureTour />}
+      {!learnOnly && postSignupReady && <FeatureTour />}
 
       {!learnOnly && (weeklyScript ? (
         <BlueDialogue

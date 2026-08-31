@@ -179,6 +179,12 @@
   box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
+.birthdayInputInvalid,
+.birthdayInputInvalid:focus {
+  border-color: #d63c3c;
+  box-shadow: 0 0 0 4px rgba(214, 60, 60, 0.12);
+}
+
 .birthdaySep {
   font-size: 18px;
   color: var(--color-text-dark);
@@ -321,6 +327,16 @@
   margin-top: 8px;
 }
 
+/* Inline field-level message. Plain text, no highlight block — the boxed
+   .error style is reserved for the step-level message. */
+.inputError {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #d63c3c;
+  text-align: left;
+  margin-top: 8px;
+}
+
 .loadingState {
   width: 100%;
   padding: 40px 0;
@@ -365,9 +381,13 @@
   box-shadow: 0 12px 32px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
+/* fadeUp's `both` fill mode holds opacity at 1, so the disabled state also
+   desaturates and drops its glow to stay visibly inert. */
 .primaryButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  filter: grayscale(0.8);
+  box-shadow: none;
 }
 
 .secondaryButton {
@@ -743,7 +763,8 @@
     margin-bottom: 6px;
   }
 
-  .inputHint {
+  .inputHint,
+  .inputError {
     font-size: 11px;
     margin-top: 6px;
   }
@@ -844,6 +865,10 @@
 
 :global([data-theme="dark"]) .inputHint {
   color: rgba(227, 225, 238, 0.35);
+}
+
+:global([data-theme="dark"]) .inputError {
+  color: #ff8a8a;
 }
 
 :global([data-theme="dark"]) .loadingState {
