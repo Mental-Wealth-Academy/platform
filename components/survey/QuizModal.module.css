@@ -404,8 +404,12 @@
     font-size: 14px;
   }
 
+  .quizModalOptions {
+    gap: 14px;
+  }
+
   .quizModalOption {
-    padding: 12px 14px;
+    padding: 14px 16px;
   }
 
   .quizModalOptionText {

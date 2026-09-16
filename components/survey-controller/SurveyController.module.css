@@ -471,9 +471,26 @@
     overflow: visible;
   }
   .videoWrapper { max-height: min(42vw, 220px); }
+  .surveyList {
+    padding: 6px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+  .surveyItem {
+    padding: 13px 14px;
+    border-radius: 10px;
+    gap: 4px;
+  }
 }
 
 @media (max-width: 560px) {
   .controller { padding: 12px; }
   .helperText { display: none; }
+  .surveyList {
+    padding: 8px;
+    gap: 12px;
+  }
+  .surveyItem {
+    padding: 14px;
+  }
 }

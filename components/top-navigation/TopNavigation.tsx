@@ -180,6 +180,22 @@ const TopNavigation: React.FC = () => {
           </a>
         </div>
 
+        <Link
+          href="/shop"
+          className={styles.mobileJewel}
+          aria-label="Shop credits"
+          onClick={() => play('navigation')}
+        >
+          <Image
+            src="/icons/ui-diamond.svg"
+            alt=""
+            width={24}
+            height={24}
+            className={styles.mobileJewelIcon}
+            priority
+          />
+        </Link>
+
         <div className={styles.searchWrapper}>
           <div className={styles.searchBar}>
             <input

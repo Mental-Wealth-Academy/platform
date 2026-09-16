@@ -182,7 +182,7 @@
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-streak) 24%, transparent);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .panel {
     width: 100%;
     padding: 12px 14px;

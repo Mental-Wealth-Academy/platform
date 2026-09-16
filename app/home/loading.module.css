@@ -179,7 +179,7 @@
   .layout { margin-left: 0; }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .layout { padding-bottom: 84px; }
   .pageColumns { padding: 12px; }
   .globalPanel { padding-inline: 12px; }

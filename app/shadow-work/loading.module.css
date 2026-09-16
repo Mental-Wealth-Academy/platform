@@ -35,9 +35,7 @@
   }
 
   .loaderCard {
-    width: min(220px, calc(100vw - 40px));
-    min-height: 180px;
-    border-radius: 24px;
+    display: none;
   }
 }
 

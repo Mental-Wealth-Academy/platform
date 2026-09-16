@@ -428,7 +428,7 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .pageColumns {
     padding: 12px 10px;
   }

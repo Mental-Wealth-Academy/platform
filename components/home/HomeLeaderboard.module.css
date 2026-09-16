@@ -130,10 +130,20 @@
   color: rgba(246, 248, 237, 0.6);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .card {
     min-width: 0;
+    width: 100%;
+    flex: none;
+    height: auto;
+    min-height: 132px;
     padding: 12px 14px;
+  }
+
+  .rows {
+    flex: none;
+    min-height: auto;
+    gap: 6px;
   }
 }
 
