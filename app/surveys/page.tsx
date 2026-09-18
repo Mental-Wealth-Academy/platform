@@ -10,7 +10,10 @@ import AttachmentCertificateMint from '@/components/survey/AttachmentCertificate
 import { STANDARD_SURVEYS } from '@/components/survey/Surveys';
 import type { Survey, SurveyAnswers, SurveyResults } from '@/components/survey/types';
 import { VIA_SURVEY } from '@/components/survey/viaQuestions';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
+
+const sceneUrl = dailySceneBackgroundUrl();
 
 const AVAILABLE_SURVEYS: Survey[] = [VIA_SURVEY, ...STANDARD_SURVEYS];
 
@@ -139,7 +142,11 @@ export default function SurveysPage() {
   }, []);
 
   return (
-    <div className={styles.pageLayout}>
+    <div
+      className={styles.pageLayout}
+      style={{ '--quests-scene': `url(${sceneUrl})` } as React.CSSProperties}
+    >
+      <div className={styles.scene} aria-hidden="true" />
       <main className={styles.content}>
         <SurveyController
           selectedSurveyId={selectedSurveyId}

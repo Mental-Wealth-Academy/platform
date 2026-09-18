@@ -4,12 +4,28 @@
   height: calc(100dvh - 72px - var(--banner-height, 0px));
   min-height: 0;
   display: flex;
-  background: var(--color-background);
+  background-color: var(--color-scene-bg);
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
+    var(--color-scene-bg);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
 .content {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-width: 0;
   min-height: 0;
@@ -22,7 +38,7 @@
 }
 
 :global([data-theme="dark"]) .pageLayout {
-  background: var(--color-surface-base);
+  background-color: var(--color-scene-bg);
 }
 
 @media (max-width: 900px) {

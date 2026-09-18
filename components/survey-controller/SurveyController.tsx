@@ -6,13 +6,38 @@ import Button from '@/components/button/Button';
 import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
 
-const OPTION_COLORS = ['#5168ff', '#8b5cf6', '#2dd4bf', '#34d399'];
+const OPTION_COLORS = [
+  'var(--color-survey-tab-strengths)',
+  'var(--color-survey-tab-bigfive)',
+  'var(--color-survey-tab-moral)',
+  'var(--color-survey-tab-attachment)',
+];
 
 const SURVEY_TYPES = [
-  { id: 'via-character-strengths', label: 'Character Strengths', sub: '240-item VIA inventory' },
-  { id: 'big-five', label: 'Big Five Personality', sub: 'Validated OCEAN model' },
-  { id: 'moral-foundations', label: 'Moral Foundations', sub: "Haidt's 5-foundation model" },
-  { id: 'attachment-style', label: 'Attachment Style', sub: 'Secure, anxious, or avoidant' },
+  {
+    id: 'via-character-strengths',
+    label: 'Character Strengths',
+    sub: '240-item VIA inventory',
+    shortDesc: "Discover your signature strengths across 24 virtues with UPenn's validated inventory.",
+  },
+  {
+    id: 'big-five',
+    label: 'Big Five Personality',
+    sub: 'Validated OCEAN model',
+    shortDesc: 'Map your OCEAN traits to see how you operate across five core scientific dimensions.',
+  },
+  {
+    id: 'moral-foundations',
+    label: 'Moral Foundations',
+    sub: "Haidt's 5-foundation model",
+    shortDesc: 'Uncover the intuitive values and ethics that drive your sense of right and wrong.',
+  },
+  {
+    id: 'attachment-style',
+    label: 'Attachment Style',
+    sub: 'Secure, anxious, or avoidant',
+    shortDesc: 'Decode how you connect, build trust, and respond under relational pressure.',
+  },
 ] as const;
 
 type SurveyType = (typeof SURVEY_TYPES)[number];
@@ -40,9 +65,7 @@ interface SurveyControllerProps {
 export default function SurveyController({
   userName = 'Welcome',
   version = 'V.e1-MWA36B',
-  characterImageSrc = '/videos/bluehome.mp4',
-  characterPosterSrc,
-  deferVideo = true,
+  characterImageSrc = '/exxies.png',
   difficulty: initialDifficulty = 101,
   showDifficulty = true,
   ctaLabel = 'Sign form to begin',
@@ -54,40 +77,7 @@ export default function SurveyController({
 }: SurveyControllerProps) {
   const [difficulty, setDifficulty] = useState(initialDifficulty);
   const [selectedSurvey, setSelectedSurvey] = useState<SurveyType>(() => getSurveyTypeById(selectedSurveyId));
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(!deferVideo);
-  const [isVideoReady, setIsVideoReady] = useState(false);
-  const imagePanelRef = useRef<HTMLDivElement>(null);
   const shardReward = getTestShardReward(difficulty);
-
-  useEffect(() => {
-    if (!deferVideo || shouldLoadVideo || !characterImageSrc.endsWith('.mp4')) return;
-    const el = imagePanelRef.current;
-    if (!el) return;
-
-    const load = () => {
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(() => setShouldLoadVideo(true), { timeout: 1800 });
-        return;
-      }
-      setTimeout(() => setShouldLoadVideo(true), 900);
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer.disconnect();
-        load();
-      },
-      { rootMargin: '160px' },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [characterImageSrc, deferVideo, shouldLoadVideo]);
-
-  useEffect(() => {
-    setIsVideoReady(false);
-  }, [characterImageSrc]);
 
   useEffect(() => {
     setSelectedSurvey(getSurveyTypeById(selectedSurveyId));
@@ -122,71 +112,48 @@ export default function SurveyController({
         </span>
       </section>
 
-      {/* Character video / blue panel */}
-      <div className={styles.videoPanel} ref={imagePanelRef}>
-        <div className={styles.videoWrapper}>
-          {characterImageSrc.endsWith('.mp4') ? (
-            shouldLoadVideo ? (
-              <>
-                <video
-                  className={`${styles.characterVideo} ${isVideoReady ? styles.characterVideoReady : ''}`}
-                  src={characterImageSrc}
-                  poster={characterPosterSrc}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  controlsList="nodownload nofullscreen noremoteplayback"
-                  aria-label="Blue avatar"
-                  onLoadedData={() => setIsVideoReady(true)}
-                  onCanPlay={() => setIsVideoReady(true)}
-                />
-                {!isVideoReady && <div className={styles.videoLoadingShell} aria-hidden="true" />}
-              </>
-            ) : (
-              <div className={styles.videoLoadingShell} aria-hidden="true" />
-            )
-          ) : characterImageSrc ? (
-            <Image
-              src={characterImageSrc}
-              alt="Character"
-              fill
-              sizes="397px"
-              style={{ objectFit: 'cover' }}
-            />
-          ) : (
-            <div className={styles.imagePlaceholder} />
-          )}
+      {/* Character image banner & short description */}
+      <div className={styles.imagePanel}>
+        <div className={styles.imageWrapper}>
+          <Image
+            src={characterImageSrc && !characterImageSrc.endsWith('.mp4') ? characterImageSrc : '/exxies.png'}
+            alt="Academy characters"
+            fill
+            sizes="(max-width: 900px) 100vw, 420px"
+            className={styles.characterBannerImage}
+            priority
+          />
         </div>
         <div className={styles.videoReview}>
-          <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · review</div>
+          <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · overview</div>
           <p className={styles.videoReviewText}>
-            Pick something. Answer it. I&apos;ll try to figure out what it means before you do. If I win, I&apos;ll give you some diamonds.
+            {selectedSurvey.shortDesc}
           </p>
         </div>
       </div>
 
-      {/* Survey type selector */}
+      {/* Survey type selector - vertical tabs */}
       <div className={styles.persona}>
         <span className={styles.eyebrow}>Survey type</span>
-        <ul className={styles.surveyList} role="listbox">
+        <div className={styles.surveyList} role="tablist" aria-orientation="vertical">
           {SURVEY_TYPES.map((survey, i) => (
-            <li
+            <button
+              type="button"
               key={survey.id}
-              role="option"
+              role="tab"
               aria-selected={survey.id === selectedSurvey.id}
               className={`${styles.surveyItem} ${survey.id === selectedSurvey.id ? styles.surveyItemActive : ''}`}
               style={{ '--accent': OPTION_COLORS[i] } as React.CSSProperties}
               onClick={() => handleSelectSurvey(survey)}
             >
-              <span className={styles.surveyItemLabel}>{survey.label}</span>
-              <span className={styles.surveyItemSub}>{survey.sub}</span>
-            </li>
+              <span className={styles.surveyItemIndicator} aria-hidden="true" />
+              <div className={styles.surveyItemContent}>
+                <span className={styles.surveyItemLabel}>{survey.label}</span>
+                <span className={styles.surveyItemSub}>{survey.sub}</span>
+              </div>
+            </button>
           ))}
-        </ul>
+        </div>
       </div>
 
       {/* Difficulty scale */}

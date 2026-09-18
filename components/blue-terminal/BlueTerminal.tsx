@@ -355,7 +355,7 @@ export default function BlueTerminal({
 
       <footer className={styles.brandFooter}>
         <span aria-hidden="true" />
-        <p>Investing in the human spirit, with the mind of tomorrow.</p>
+        <p>Investing in the human spirit, with the heart of tomorrow.</p>
         <span aria-hidden="true" />
       </footer>
     </section>

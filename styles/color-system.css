@@ -56,6 +56,23 @@
   --bg-grid-dots-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
   --bg-grid-dots-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
   --bg-grid-dots: var(--bg-grid-dots-light);
+  --shadow-scene-card: 0 6px 0 var(--color-primary), 0 0px 10px rgba(0, 0, 0, 0.14), 0 10px 5px rgba(0, 0, 0, 0.30);
+  --shadow-hero-indigo: 0 4px 14px rgba(30, 27, 75, 0.45);
+
+  /* Saturated survey tab colors */
+  --color-survey-tab-strengths: #4361ee;
+  --color-survey-tab-bigfive: #9333ea;
+  --color-survey-tab-moral: #06b6d4;
+  --color-survey-tab-attachment: #10b981;
+
+  /* Assessment engine dark indigo hero tokens */
+  --color-hero-indigo-bg: linear-gradient(135deg, #3730a3 0%, #2e2680 60%, #1e1b4b 100%);
+  --color-hero-indigo-border: #4f46e5;
+  --color-hero-indigo-text: #ffffff;
+  --color-hero-indigo-eyebrow: rgba(224, 231, 255, 0.85);
+  --color-hero-indigo-chip-bg: rgba(67, 56, 202, 0.45);
+  --color-hero-indigo-chip-border: rgba(129, 140, 248, 0.45);
+  --color-hero-indigo-chip-text: #c7d2fe;
 
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);

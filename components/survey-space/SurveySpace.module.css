@@ -5,9 +5,13 @@
   flex: 1;
   min-width: 0;
   min-height: 0;
-  background: var(--color-grey-950);
-  border: 1px solid var(--color-grey-600-50);
-  border-radius: var(--radius-lg);
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 16px;
+  box-shadow: var(--shadow-scene-card);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -119,8 +123,10 @@
 /* ===== Light Mode ===== */
 
 :global(:root:not([data-theme="dark"])) .space {
-  background: #f8f9fa;
-  border-color: rgba(26, 27, 36, 0.12);
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-scene-card);
 }
 
 :global(:root:not([data-theme="dark"])) .header {

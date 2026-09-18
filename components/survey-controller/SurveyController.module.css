@@ -33,12 +33,12 @@
   border-radius: 16px;
   overflow: hidden;
   color: var(--c-fg);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
-  background:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(180deg, #11131b 0%, #0c0d17 60%);
-  background-size: 28px 28px, 28px 28px, auto;
+  border: 2px solid var(--color-primary-hover);
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: var(--shadow-scene-card);
 }
 
 /* ----- shared kit primitives ----- */
@@ -65,16 +65,18 @@
   border-radius: 12px;
   padding: 10px 14px;
   overflow: hidden;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 22%, transparent) 0%, rgba(151, 36, 166, 0.10) 60%, rgba(12, 13, 23, 0.6) 100%),
-    rgba(17, 19, 27, 0.92);
+  border: 1px solid var(--color-hero-indigo-border);
+  background: var(--color-hero-indigo-bg);
+  box-shadow: var(--shadow-hero-indigo);
 }
 .heroText {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+}
+.heroText .eyebrow {
+  color: var(--color-hero-indigo-eyebrow);
 }
 .heroTitle {
   margin: 0;
@@ -83,7 +85,7 @@
   font-size: clamp(15px, 2.2vh, 18px);
   letter-spacing: -0.01em;
   line-height: 1.15;
-  color: var(--c-fg);
+  color: var(--color-hero-indigo-text);
 }
 .heroVersion {
   margin-left: auto;
@@ -95,13 +97,14 @@
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--c-blue-text);
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  color: var(--color-hero-indigo-chip-text);
+  background: var(--color-hero-indigo-chip-bg);
+  border: 1px solid var(--color-hero-indigo-chip-border);
+  border-radius: 4px;
   padding: 4px 7px;
 }
 
-/* ----- persona selector ----- */
+/* ----- persona selector / vertical tabs ----- */
 .persona {
   display: flex;
   flex-direction: column;
@@ -109,39 +112,71 @@
 }
 .surveyList {
   margin: 0;
-  padding: 4px;
+  padding: 5px;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  background: var(--c-card-soft);
+  gap: 4px;
+  background: color-mix(in oklch, var(--color-surface-base) 70%, transparent);
   border: 1px solid var(--c-border);
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .surveyItem {
-  --accent: rgba(255, 255, 255, 0.6);
+  --accent: var(--color-survey-tab-strengths);
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  border-radius: 7px;
-  border: 1px solid color-mix(in srgb, var(--accent) 32%, rgba(255, 255, 255, 0.14));
-  background: color-mix(in srgb, var(--accent) 9%, rgba(255, 255, 255, 0.05));
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   cursor: pointer;
-  transition: background 0.14s ease, border-color 0.14s ease;
+  text-align: left;
+  font: inherit;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
 .surveyItem:hover {
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 16%, rgba(255, 255, 255, 0.05));
+  border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 .surveyItemActive,
 .surveyItemActive:hover {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.05));
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.surveyItemIndicator {
+  width: 4px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--accent);
+  opacity: 0.4;
+  flex-shrink: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.surveyItem:hover .surveyItemIndicator {
+  opacity: 0.8;
+  transform: scaleY(1.1);
+}
+.surveyItemActive .surveyItemIndicator,
+.surveyItemActive:hover .surveyItemIndicator {
+  opacity: 1;
+  transform: scaleY(1.15);
+}
+.surveyItemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 .surveyItemLabel {
   font-family: var(--f-headline);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   color: var(--c-fg);
 }
@@ -150,10 +185,11 @@
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--c-fg-faint);
+  color: var(--c-fg-soft);
 }
 
-/* ----- video / blue panel ----- */
+/* ----- image / blue panel ----- */
+.imagePanel,
 .videoPanel {
   position: relative;
   min-height: 0;
@@ -161,10 +197,9 @@
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
-  background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 0%, rgba(12, 13, 23, 0.94) 100%),
-    #000;
+  background: color-mix(in oklch, var(--color-surface-base) 85%, transparent);
 }
+.imageWrapper,
 .videoWrapper {
   position: relative;
   width: 100%;
@@ -173,7 +208,14 @@
   max-height: clamp(128px, 26vh, 210px);
   border-radius: 10px;
   overflow: hidden;
-  background: #000;
+  background: color-mix(in oklch, var(--color-surface-base) 95%, transparent);
+}
+.characterBannerImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 25%;
 }
 .characterVideo {
   width: 100%;
@@ -364,66 +406,57 @@
 /* ===== Light Mode ===== */
 
 :global(:root:not([data-theme="dark"])) .controller {
-  --c-card: rgba(255, 255, 255, 0.86);
-  --c-card-soft: rgba(255, 255, 255, 0.72);
-  --c-border: rgba(30, 34, 54, 0.12);
-  --c-fg: #1a1d33;
-  --c-fg-soft: rgba(26, 29, 51, 0.74);
-  --c-fg-muted: rgba(26, 29, 51, 0.56);
-  --c-fg-faint: rgba(26, 29, 51, 0.42);
+  --c-card: var(--color-scene-card-bg);
+  --c-card-soft: color-mix(in srgb, var(--color-scene-card-bg) 80%, transparent);
+  --c-border: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --c-fg: var(--palette-ink);
+  --c-fg-soft: color-mix(in srgb, var(--palette-ink) 76%, transparent);
+  --c-fg-muted: color-mix(in srgb, var(--palette-ink) 56%, transparent);
+  --c-fg-faint: color-mix(in srgb, var(--palette-ink) 42%, transparent);
 
-  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  background:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 248, 255, 0.82) 100%);
-  box-shadow: 0 18px 48px rgba(38, 45, 84, 0.12);
+  border: 2px solid var(--color-primary-hover);
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
+  box-shadow: var(--shadow-scene-card);
 }
 
-:global(:root:not([data-theme="dark"])) .hero {
-  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
-  background:
-    linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, rgba(249, 250, 255, 0.9) 68%),
-    #ffffff;
-}
-
-:global(:root:not([data-theme="dark"])) .heroVersion,
 :global(:root:not([data-theme="dark"])) .shardBadge {
   background: color-mix(in oklch, var(--color-primary) 9%, transparent);
   border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .surveyList {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(30, 34, 54, 0.12);
+  background: color-mix(in srgb, var(--color-scene-card-bg) 85%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .surveyItem {
-  border-color: color-mix(in srgb, var(--accent) 42%, rgba(24, 32, 51, 0.18));
-  background: color-mix(in srgb, var(--accent) 10%, rgba(255, 255, 255, 0.88));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .surveyItem:hover {
-  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
-  background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.88));
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .surveyItemActive,
 :global(:root:not([data-theme="dark"])) .surveyItemActive:hover {
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 22%, rgba(255, 255, 255, 0.88));
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
+:global(:root:not([data-theme="dark"])) .imagePanel,
 :global(:root:not([data-theme="dark"])) .videoPanel {
-  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
-  background:
-    linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, rgba(255, 255, 255, 0.82) 100%),
-    #eef3ff;
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-scene-card-bg));
 }
 
+:global(:root:not([data-theme="dark"])) .imageWrapper,
 :global(:root:not([data-theme="dark"])) .videoWrapper,
 :global(:root:not([data-theme="dark"])) .characterVideo {
-  background: #eef3ff;
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-scene-card-bg));
 }
 
 :global(:root:not([data-theme="dark"])) .videoLoadingShell {
