@@ -292,6 +292,28 @@ export default function CoursePage() {
   };
 
   const resolvedViewWeek = viewWeek ?? 1;
+
+  const goToWeek = useCallback((direction: 'prev' | 'next') => {
+    play('click');
+    if (direction === 'prev') {
+      if (resolvedViewWeek > 1) {
+        setSwipeAnim('right');
+        setTimeout(() => {
+          setViewWeek(w => Math.max(1, (w ?? 1) - 1));
+          setSwipeAnim('none');
+        }, 150);
+      }
+    } else {
+      if (resolvedViewWeek < 12) {
+        setSwipeAnim('left');
+        setTimeout(() => {
+          setViewWeek(w => Math.min(12, (w ?? 1) + 1));
+          setSwipeAnim('none');
+        }, 150);
+      }
+    }
+  }, [resolvedViewWeek, play]);
+
   const weekReading = WEEKLY_READINGS[Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1)];
 
   const [rightContent, setRightContent] = useState<'reading' | 'task' | null>(null);
@@ -324,6 +346,39 @@ export default function CoursePage() {
       <main className={`${styles.content} ${styles.contentSimple}`} onFocus={handleFocus}>
         <section className={`${styles.weeklyShell} ${styles.weeklyShellSimple}`} aria-label="Course materials">
           <div className={`${styles.leftCol} ${styles.leftColSimple}`}>
+            <nav className={styles.weekNav} aria-label="Week navigation">
+              <button
+                type="button"
+                className={styles.weekNavArrow}
+                onClick={() => goToWeek('prev')}
+                onMouseEnter={() => play('hover')}
+                disabled={resolvedViewWeek <= 1}
+                aria-label="Previous week"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+
+              <div className={styles.weekNavCenter}>
+                <span className={styles.weekNavKicker}>Creative Healing</span>
+                <span className={styles.weekNavLabel}>Week {resolvedViewWeek} of 12</span>
+              </div>
+
+              <button
+                type="button"
+                className={styles.weekNavArrow}
+                onClick={() => goToWeek('next')}
+                onMouseEnter={() => play('hover')}
+                disabled={resolvedViewWeek >= 12}
+                aria-label="Next week"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </nav>
+
             <div
               className={`${styles.weekContent} ${swipeAnim === 'left' ? styles.weekContentSwipeLeft : swipeAnim === 'right' ? styles.weekContentSwipeRight : ''}`}
               onTouchStart={handleTouchStart}

@@ -41,6 +41,15 @@ function avatarColor(name: string): string {
   return colors[Math.abs(hash) % colors.length];
 }
 
+function getOtherThemeIndex(name: string): number {
+  if (!name) return 0;
+  let hash = 0;
+  for (let i = 0; i < name.length; i += 1) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % 6;
+}
+
 function formatTime(iso: string): string {
   if (!iso) return '';
   const d = new Date(iso);
@@ -66,6 +75,8 @@ interface ChatRoomProps {
 export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const { getAccessToken } = usePrivy();
   const { play } = useSound();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
@@ -275,6 +286,34 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, [messages]);
 
+  // ── Fetch current user for self-message bubble identification ──
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const token = await getAccessToken().catch(() => null);
+        const headers: HeadersInit = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch('/api/me', {
+          cache: 'no-store',
+          headers,
+          credentials: 'include',
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (active && data?.user) {
+          if (data.user.id) setCurrentUserId(String(data.user.id));
+          if (data.user.username) setCurrentUsername(String(data.user.username));
+        }
+      } catch {
+        // best-effort
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [getAccessToken]);
+
   // ── Fetch unread notification count ──
   const fetchUnread = useCallback(async () => {
     try {
@@ -336,6 +375,10 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     if (res.ok) {
       const data = await res.json();
       setInput('');
+      if (data.message) {
+        if (data.message.user_id) setCurrentUserId(String(data.message.user_id));
+        if (data.message.username) setCurrentUsername(String(data.message.username));
+      }
       // optimistic insert so the message appears instantly
       const optimistic: ChatMessage = {
         id: data.message.id,
@@ -404,37 +447,52 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         {messages.length === 0 ? (
           <p className={styles.chatEmpty}>No messages yet. Start the conversation.</p>
         ) : (
-          messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`${styles.chatMessage} ${msg.type === 'system' ? styles.chatSystem : ''}`}
-            >
-              {msg.type === 'system' ? (
-                <p className={styles.systemText}>{msg.message}</p>
-              ) : (
-                <>
-                  <span
-                    className={styles.msgAvatar}
-                    style={
-                      msg.avatarUrl
-                        ? { backgroundImage: `url(${msg.avatarUrl})`, backgroundSize: 'cover' }
-                        : { background: avatarColor(msg.username) }
-                    }
-                    aria-hidden="true"
-                  >
-                    {!msg.avatarUrl && msg.username.charAt(0).toUpperCase()}
-                  </span>
-                  <div className={styles.msgBody}>
-                    <div className={styles.msgMeta}>
-                      <span className={styles.msgUsername}>{msg.username}</span>
-                      <span className={styles.msgTime}>{formatTime(msg.createdAt)}</span>
-                    </div>
+          messages.map((msg) => {
+            if (msg.type === 'system') {
+              return (
+                <div key={msg.id} className={`${styles.chatMessage} ${styles.chatSystem}`}>
+                  <p className={styles.systemText}>{msg.message}</p>
+                </div>
+              );
+            }
+
+            const isSelf = Boolean(
+              (currentUserId && msg.userId && String(msg.userId) === currentUserId) ||
+              (currentUsername && msg.username && msg.username.toLowerCase() === currentUsername.toLowerCase())
+            );
+
+            const bubbleThemeClass = isSelf
+              ? styles.bubbleSelf
+              : `${styles.bubbleOther} ${styles[`bubbleTheme${getOtherThemeIndex(msg.username)}` as keyof typeof styles] ?? ''}`;
+
+            return (
+              <div
+                key={msg.id}
+                className={`${styles.chatMessage} ${isSelf ? styles.chatMessageSelf : ''}`}
+              >
+                <span
+                  className={styles.msgAvatar}
+                  style={
+                    msg.avatarUrl
+                      ? { backgroundImage: `url(${msg.avatarUrl})`, backgroundSize: 'cover' }
+                      : { background: avatarColor(msg.username) }
+                  }
+                  aria-hidden="true"
+                >
+                  {!msg.avatarUrl && msg.username.charAt(0).toUpperCase()}
+                </span>
+                <div className={styles.msgBody}>
+                  <div className={styles.msgMeta}>
+                    <span className={styles.msgUsername}>{msg.username}</span>
+                    <span className={styles.msgTime}>{formatTime(msg.createdAt)}</span>
+                  </div>
+                  <div className={`${styles.msgBubble} ${bubbleThemeClass}`}>
                     <p className={styles.msgText}>{highlightMentions(msg.message)}</p>
                   </div>
-                </>
-              )}
-            </div>
-          ))
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
 

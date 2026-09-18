@@ -566,27 +566,30 @@
   min-height: 108px;
   margin: 0;
   padding: 14px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 26%, var(--color-border-subtle));
   border-radius: 16px;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .readingCard {
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .readingCard:hover {
-  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-primary) 22%, transparent);
 }
 
 .readingCardActive,
 .readingCardActive:hover {
-  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-1));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
   border-color: var(--color-primary);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-primary) 24%, transparent);
 }
 
 .readingAccent {
@@ -598,12 +601,13 @@
   width: 80px;
   height: 80px;
   flex-shrink: 0;
-  border: 1px solid var(--color-border-subtle);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border-subtle));
   border-radius: 12px;
   overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
 .readingThumbImg {
@@ -659,8 +663,8 @@
 .readingArrow {
   position: relative;
   z-index: 1;
-  color: var(--color-text-faint);
-  opacity: 0.6;
+  color: var(--color-primary);
+  opacity: 0.9;
   flex-shrink: 0;
   transition: transform 0.12s ease, opacity 0.12s ease;
 }
@@ -937,43 +941,73 @@
 .weekNav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px 0;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
+  border-radius: 14px;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--color-primary) 8%, transparent);
 }
 
 .weekNavArrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  width: auto;
-  height: 32px;
-  padding: 0 11px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 7px;
-  color: var(--color-text-dark);
-  font-family: var(--type-font-label);
-  font-size: 11px;
-  font-weight: var(--type-weight-semibold);
-  letter-spacing: 0.02em;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: var(--color-surface-base);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border-subtle));
+  border-radius: 10px;
+  color: var(--color-primary);
   cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary) 12%, transparent);
+  transition: all 0.15s ease;
 }
 
 .weekNavArrow:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--color-primary) 36%, var(--color-border-subtle));
+  background: var(--color-primary);
+  color: var(--color-on-action);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .weekNavArrow:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.95);
 }
 
 .weekNavArrow:disabled {
-  opacity: 0.25;
+  opacity: 0.3;
   cursor: not-allowed;
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-faint);
+  box-shadow: none;
+}
+
+.weekNavCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.weekNavKicker {
+  font-family: var(--type-font-code);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.weekNavLabel {
+  font-family: var(--type-font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-dark);
 }
 
 .contentDesktop {

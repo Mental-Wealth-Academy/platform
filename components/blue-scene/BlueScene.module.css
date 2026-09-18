@@ -404,8 +404,21 @@
   }
 
   .radioBlueWrap {
-    inset: 54px 0 12px;
-    align-items: center;
+    inset: 44px 0 0;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .radioBlue {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+  }
+
+  .radioVrmCanvas {
+    inset: 0;
   }
 
   .gardenArchiveFolder {
@@ -414,7 +427,7 @@
   }
 
   .radioArchiveFolder {
-    top: 12px;
+    top: 52px;
     right: 10px;
   }
 }
@@ -759,14 +772,11 @@
   }
 
   .sceneHeader {
-    display: flex;
-    position: static;
-    flex-shrink: 0;
-    padding-inline: 12px;
+    display: none;
   }
 
   .liveFeed {
-    top: 46px;
+    inset: 0;
   }
 
   .sceneFooter {

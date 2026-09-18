@@ -63,30 +63,35 @@
 .taskCard {
   --task-accent: var(--color-primary);
   width: 100%;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--task-accent) 7%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border: 1.5px solid color-mix(in srgb, var(--task-accent) 26%, var(--color-border-subtle));
   border-radius: 14px;
   overflow: hidden;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--task-accent) 8%, transparent);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .taskCard:hover {
-  background: color-mix(in srgb, var(--task-accent) 4%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--task-accent) 36%, var(--color-border-subtle));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--task-accent) 13%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border-color: color-mix(in srgb, var(--task-accent) 55%, var(--color-border-subtle));
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--task-accent) 18%, transparent);
 }
 
 .taskCardActive {
-  background: color-mix(in srgb, var(--task-accent) 7%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--task-accent) 56%, var(--color-border-subtle));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--task-accent) 14%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
+  border-color: var(--task-accent);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--task-accent) 22%, transparent);
 }
 
 .taskAccent {
-  width: 3px;
-  height: 26px;
+  width: 4px;
+  height: 28px;
   border-radius: 999px;
   background: var(--task-accent);
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 1;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--task-accent) 60%, transparent);
 }
 
 .taskCardSealed {
@@ -114,14 +119,15 @@
 
 /* Accent tile — 26px bordered tile with a flat accent wash (studio rowIcon). */
 .taskArtwork {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   position: relative;
   overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  border: 1.5px solid color-mix(in srgb, var(--task-accent) 35%, transparent);
   flex-shrink: 0;
-  background: color-mix(in srgb, var(--task-accent) 10%, var(--color-surface-base));
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--color-surface-base));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--task-accent) 22%, transparent);
 }
 
 /* Variant classes kept for the stored per-task art keys — all resolve to the
@@ -132,7 +138,7 @@
 .taskArtworkBloom,
 .taskArtworkRibbon,
 .taskArtworkPrism {
-  background: color-mix(in srgb, var(--task-accent) 10%, var(--color-surface-base));
+  background: color-mix(in srgb, var(--task-accent) 18%, var(--color-surface-base));
 }
 
 .taskArtworkGlow,
@@ -207,6 +213,7 @@
   border: none;
   border-radius: 6px;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-positive) 35%, transparent);
 }
 
 .taskCheckDone svg {
@@ -217,10 +224,11 @@
 .taskCheckEmpty {
   width: 22px;
   height: 22px;
-  border: 1px solid var(--color-border-strong);
-  background: var(--color-surface-base);
+  border: 1.5px solid color-mix(in srgb, var(--task-accent) 35%, var(--color-border-strong));
+  background: color-mix(in srgb, var(--task-accent) 4%, var(--color-surface-base));
   border-radius: 6px;
   flex-shrink: 0;
+  transition: border-color 0.12s ease, background 0.12s ease;
 }
 
 .expandArrow {
@@ -303,17 +311,18 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 10px;
+  padding: 11px;
   font-family: var(--type-font-label);
-  font-size: 12px;
-  font-weight: var(--type-weight-semibold);
+  font-size: 13px;
+  font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--task-accent, var(--week-color, var(--color-primary)));
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 28%, transparent);
-  border-radius: 8px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 14%, var(--color-surface-base)) 0%, color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 8%, var(--color-surface-base)) 100%);
+  border: 1.5px solid color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 38%, transparent);
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 14%, transparent);
+  transition: all 0.15s ease;
 }
 
 .markDoneCredits {
@@ -322,24 +331,27 @@
   gap: 4px;
   font-size: 10px;
   font-weight: var(--type-weight-semibold);
-  opacity: 0.7;
+  opacity: 0.85;
   letter-spacing: 0.03em;
 }
 
 .markDoneBtn:hover {
-  background: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 14%, transparent);
-  border-color: color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 48%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 22%, var(--color-surface-base)) 0%, color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 14%, var(--color-surface-base)) 100%);
+  border-color: var(--task-accent, var(--week-color, var(--color-primary)));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--task-accent, var(--week-color, var(--color-primary))) 24%, transparent);
 }
 
 .markDoneBtnActive {
-  background: var(--color-positive-muted);
-  border-color: color-mix(in srgb, var(--color-positive) 40%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-positive) 16%, var(--color-surface-base)) 0%, var(--color-positive-muted) 100%);
+  border-color: color-mix(in srgb, var(--color-positive) 50%, transparent);
   color: var(--color-positive);
+  font-weight: 700;
 }
 
 .markDoneBtnActive:hover {
-  background: var(--color-positive-muted);
-  border-color: color-mix(in srgb, var(--color-positive) 55%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-positive) 22%, var(--color-surface-base)) 0%, var(--color-positive-muted) 100%);
+  border-color: var(--color-positive);
   color: var(--color-positive);
 }
 
@@ -362,9 +374,9 @@
 
 .progressText {
   font-family: var(--type-font-code);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: var(--type-weight-semibold);
-  color: var(--color-text-muted);
+  color: var(--color-text-dark);
   text-align: center;
   letter-spacing: 0.04em;
 }
@@ -377,25 +389,29 @@
   padding: 14px 28px;
   font-family: var(--type-font-label);
   font-size: 14px;
-  font-weight: var(--type-weight-semibold);
+  font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--color-text-faint);
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-muted);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-2)) 0%, var(--color-surface-2) 100%);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border-subtle));
   border-radius: 999px;
   cursor: not-allowed;
-  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-primary) 8%, transparent);
+  transition: all 0.15s ease;
 }
 
 .sealBtnReady {
   color: var(--color-on-positive);
-  background: var(--color-positive);
+  background: linear-gradient(135deg, var(--palette-positive) 0%, var(--color-positive-hover) 100%);
   border-color: var(--color-positive);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-positive) 40%, transparent);
   cursor: pointer;
 }
 
 .sealBtnReady:hover {
-  opacity: 0.85;
+  opacity: 1;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--color-positive) 50%, transparent);
 }
 
 .sealHint {

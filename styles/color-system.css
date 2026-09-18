@@ -90,6 +90,57 @@
   --color-grey-600-50: rgba(85, 85, 101, 0.5);
   --color-grey-900: #11121C;
   --color-grey-950: #0C0D17;
+
+  /* Chat bubble tokens - Self */
+  --color-chat-bubble-self-bg: linear-gradient(148deg, #eeeaff 0%, #dfe4ff 50%, #cad7ff 100%);
+  --color-chat-bubble-self-border: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  --color-chat-bubble-self-text: #28335f;
+  --color-chat-bubble-self-shadow-drop: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  --color-chat-bubble-self-shadow-inner: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  --color-chat-bubble-self-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  /* Chat bubble tokens - Other user themes (deterministic by username) */
+  --color-chat-bubble-0-bg: linear-gradient(148deg, #eaf8f0 0%, #d5f2e3 50%, #c1ebd5 100%);
+  --color-chat-bubble-0-border: color-mix(in oklch, #047857 24%, transparent);
+  --color-chat-bubble-0-text: #0d4731;
+  --color-chat-bubble-0-shadow-drop: color-mix(in oklch, #047857 14%, transparent);
+  --color-chat-bubble-0-shadow-inner: color-mix(in oklch, #047857 8%, transparent);
+  --color-chat-bubble-0-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  --color-chat-bubble-1-bg: linear-gradient(148deg, #f5efff 0%, #eadbff 50%, #dec4ff 100%);
+  --color-chat-bubble-1-border: color-mix(in oklch, #7844D0 24%, transparent);
+  --color-chat-bubble-1-text: #3b1d6b;
+  --color-chat-bubble-1-shadow-drop: color-mix(in oklch, #7844D0 14%, transparent);
+  --color-chat-bubble-1-shadow-inner: color-mix(in oklch, #7844D0 8%, transparent);
+  --color-chat-bubble-1-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  --color-chat-bubble-2-bg: linear-gradient(148deg, #fff8ea 0%, #feeed0 50%, #fde1b2 100%);
+  --color-chat-bubble-2-border: color-mix(in oklch, #BF8400 24%, transparent);
+  --color-chat-bubble-2-text: #543900;
+  --color-chat-bubble-2-shadow-drop: color-mix(in oklch, #BF8400 14%, transparent);
+  --color-chat-bubble-2-shadow-inner: color-mix(in oklch, #BF8400 8%, transparent);
+  --color-chat-bubble-2-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  --color-chat-bubble-3-bg: linear-gradient(148deg, #fff0f3 0%, #fedce5 50%, #fcc8d7 100%);
+  --color-chat-bubble-3-border: color-mix(in oklch, #EC4899 24%, transparent);
+  --color-chat-bubble-3-text: #5f152d;
+  --color-chat-bubble-3-shadow-drop: color-mix(in oklch, #EC4899 14%, transparent);
+  --color-chat-bubble-3-shadow-inner: color-mix(in oklch, #EC4899 8%, transparent);
+  --color-chat-bubble-3-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  --color-chat-bubble-4-bg: linear-gradient(148deg, #edf6ff 0%, #d6ebff 50%, #bee0ff 100%);
+  --color-chat-bubble-4-border: color-mix(in oklch, #0284c7 24%, transparent);
+  --color-chat-bubble-4-text: #0c3d61;
+  --color-chat-bubble-4-shadow-drop: color-mix(in oklch, #0284c7 14%, transparent);
+  --color-chat-bubble-4-shadow-inner: color-mix(in oklch, #0284c7 8%, transparent);
+  --color-chat-bubble-4-shadow-highlight: rgba(255, 255, 255, 0.7);
+
+  --color-chat-bubble-5-bg: linear-gradient(148deg, #f0f2ff 0%, #dfe4ff 50%, #cbd4ff 100%);
+  --color-chat-bubble-5-border: color-mix(in oklch, #4451B8 24%, transparent);
+  --color-chat-bubble-5-text: #1e255e;
+  --color-chat-bubble-5-shadow-drop: color-mix(in oklch, #4451B8 14%, transparent);
+  --color-chat-bubble-5-shadow-inner: color-mix(in oklch, #4451B8 8%, transparent);
+  --color-chat-bubble-5-shadow-highlight: rgba(255, 255, 255, 0.7);
 }
 
 [data-theme="dark"] {
@@ -107,6 +158,56 @@
   --color-text-muted: rgba(235, 232, 247, 0.64);
   --color-text-soft: rgba(235, 232, 247, 0.78);
   --color-text-faint: rgba(235, 232, 247, 0.46);
+
+  /* Chat bubble tokens (Dark) */
+  --color-chat-bubble-self-bg: linear-gradient(148deg, #252b4e 0%, #1a1e38 100%);
+  --color-chat-bubble-self-border: color-mix(in oklch, var(--color-primary) 36%, transparent);
+  --color-chat-bubble-self-text: #e6ecff;
+  --color-chat-bubble-self-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-self-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-self-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-0-bg: linear-gradient(148deg, #133325 0%, #0d241a 100%);
+  --color-chat-bubble-0-border: color-mix(in oklch, #10B981 35%, transparent);
+  --color-chat-bubble-0-text: #dcfce7;
+  --color-chat-bubble-0-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-0-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-0-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-1-bg: linear-gradient(148deg, #2e1a47 0%, #1f1131 100%);
+  --color-chat-bubble-1-border: color-mix(in oklch, #7844D0 40%, transparent);
+  --color-chat-bubble-1-text: #f1e6ff;
+  --color-chat-bubble-1-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-1-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-1-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-2-bg: linear-gradient(148deg, #382508 0%, #261904 100%);
+  --color-chat-bubble-2-border: color-mix(in oklch, #BF8400 40%, transparent);
+  --color-chat-bubble-2-text: #fff0cc;
+  --color-chat-bubble-2-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-2-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-2-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-3-bg: linear-gradient(148deg, #3a1523 0%, #270c16 100%);
+  --color-chat-bubble-3-border: color-mix(in oklch, #EC4899 40%, transparent);
+  --color-chat-bubble-3-text: #ffe4ec;
+  --color-chat-bubble-3-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-3-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-3-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-4-bg: linear-gradient(148deg, #10293d 0%, #0a1b28 100%);
+  --color-chat-bubble-4-border: color-mix(in oklch, #38bdf8 35%, transparent);
+  --color-chat-bubble-4-text: #e0f2fe;
+  --color-chat-bubble-4-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-4-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-4-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-chat-bubble-5-bg: linear-gradient(148deg, #1b2046 0%, #121630 100%);
+  --color-chat-bubble-5-border: color-mix(in oklch, #4451B8 40%, transparent);
+  --color-chat-bubble-5-text: #e5e9ff;
+  --color-chat-bubble-5-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-5-shadow-inner: rgba(0, 0, 0, 0.25);
+  --color-chat-bubble-5-shadow-highlight: rgba(255, 255, 255, 0.12);
 }
 
 /* Explicit light values support nested previews inside a dark application
