@@ -1,0 +1,23 @@
+# Large files exceeding Vercel 100MB limit
+*.pdf
+*.csv
+data/
+
+# Foundry and smart contracts
+contracts/
+
+# Simulation backend & analysis
+simulation-backend/
+analysis/
+
+# Scratch & temp
+.tmp/
+_to_delete/
+.claude/
+
+# Workflows
+cre-workflows/
+
+# Git & config
+.git
+.github

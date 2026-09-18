@@ -404,6 +404,31 @@
   box-shadow: 0 0 28px rgba(122, 86, 198, 0.34), 0 4px 14px rgba(122, 86, 198, 0.22);
 }
 
+/* PWA variant */
+.fancyButtonPwa {
+  width: auto;
+  min-width: 200px;
+  background: var(--color-pwa-btn-bg);
+  border-color: var(--color-pwa-btn-border);
+  box-shadow: 0 0 18px var(--color-pwa-btn-shadow);
+}
+
+.fancyButtonPwa .fancyButtonInner {
+  border-color: var(--color-pwa-btn-border);
+  box-shadow: var(--shadow-pwa-btn-inner);
+  background-color: var(--color-pwa-btn-inner-bg);
+  background-image: none;
+  color: var(--color-pwa-btn-text);
+}
+
+.fancyButtonPwa .fancyButtonIcon {
+  color: var(--color-pwa-btn-text);
+}
+
+.fancyButtonPwa:hover:not(:disabled) {
+  box-shadow: 0 0 28px var(--color-pwa-btn-shadow-hover), 0 4px 14px var(--color-pwa-btn-shadow);
+}
+
 .fancyButtonLabel {
   display: inline-flex;
   align-items: center;
@@ -4040,7 +4065,228 @@
   .teachersOverlay,
   .teachersModal,
   .teachersPanel,
-  .teachersSuccess {
+  .teachersSuccess,
+  .pwaOverlay,
+  .pwaModal {
     animation: none !important;
+  }
+}
+
+/* PWA Installation Modal */
+.pwaOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-pwa-overlay-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+  animation: pwaFadeIn 0.2s ease-out both;
+}
+
+@keyframes pwaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pwaModal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--color-pwa-modal-bg);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-radius: 20px;
+  padding: 26px 24px 22px;
+  box-shadow: var(--shadow-pwa-modal);
+  animation: pwaPopIn 0.28s var(--hero-ease-out) both;
+}
+
+@keyframes pwaPopIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pwaClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pwaClose:hover {
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  transform: scale(1.05);
+}
+
+.pwaHeader {
+  margin-bottom: 18px;
+}
+
+.pwaAppCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--color-pwa-card-bg);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: 14px;
+}
+
+.pwaAppIconWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pwaAppIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.pwaAppMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pwaAppName {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.pwaAppDomain {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.pwaBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.pwaTitle {
+  font-family: var(--font-primary);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 6px;
+}
+
+.pwaSubtitle {
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  margin: 0 0 18px;
+}
+
+.pwaSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.pwaStepRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--color-pwa-step-bg);
+  border-radius: 12px;
+}
+
+.pwaStepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-pwa-step-num-bg);
+  color: var(--palette-on-dark);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.pwaStepContent {
+  flex: 1;
+}
+
+.pwaStepText {
+  font-family: var(--font-primary);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.pwaHighlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--palette-action-blue);
+  vertical-align: middle;
+}
+
+.pwaActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pwaConfirmBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 12px;
+  background: var(--palette-action-blue);
+  color: var(--palette-on-dark);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-pwa-confirm);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.pwaConfirmBtn:hover {
+  background: var(--palette-action-blue-hover);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 520px) {
+  .pwaModal {
+    padding: 22px 18px 18px;
   }
 }

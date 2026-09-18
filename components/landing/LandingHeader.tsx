@@ -144,12 +144,13 @@ export const LandingHeader: React.FC = () => {
           className={styles.logoLink}
           onMouseEnter={() => play('hover')}
           onClick={() => play('click')}
+          aria-label="Mental Wealth Academy Home"
         >
           <Image
-            src="/icons/logo-mwa-horizontal.png"
+            src="/icons/mwa-mascot-logo.png"
             alt="Mental Wealth Academy"
-            width={160}
-            height={58}
+            width={48}
+            height={48}
             className={styles.logo}
             priority
           />

@@ -59,6 +59,22 @@
   --shadow-scene-card: 0 6px 0 var(--color-primary), 0 0px 10px rgba(0, 0, 0, 0.14), 0 10px 5px rgba(0, 0, 0, 0.30);
   --shadow-hero-indigo: 0 4px 14px rgba(30, 27, 75, 0.45);
 
+  /* PWA installation tokens */
+  --color-pwa-btn-bg: #E7E1F7;
+  --color-pwa-btn-border: rgba(61, 43, 168, 0.3);
+  --color-pwa-btn-shadow: rgba(122, 86, 198, 0.22);
+  --color-pwa-btn-shadow-hover: rgba(122, 86, 198, 0.36);
+  --color-pwa-btn-inner-bg: #F3EFFC;
+  --color-pwa-btn-text: #3D2BA8;
+  --color-pwa-overlay-bg: rgba(10, 12, 24, 0.72);
+  --color-pwa-modal-bg: rgba(248, 249, 255, 0.98);
+  --color-pwa-card-bg: rgba(255, 255, 255, 0.88);
+  --shadow-pwa-modal: 0 24px 70px rgba(0, 0, 0, 0.40);
+  --shadow-pwa-btn-inner: inset 0 1px 0 rgba(255, 255, 255, 0.60);
+  --color-pwa-step-bg: rgba(81, 104, 255, 0.08);
+  --color-pwa-step-num-bg: var(--palette-action-blue);
+  --shadow-pwa-confirm: 0 4px 16px rgba(70, 91, 224, 0.35);
+
   /* Saturated survey tab colors */
   --color-survey-tab-strengths: #4361ee;
   --color-survey-tab-bigfive: #9333ea;

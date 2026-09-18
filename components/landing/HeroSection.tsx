@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
-import ForTeachersModal from './ForTeachersModal';
+import LandingInstallPwaButton from './LandingInstallPwaButton';
 import { LandingScene } from './LandingScene';
 import HeroFloatingPanels from './HeroFloatingPanels';
 import ThinkingOrbBadge from './ThinkingOrbBadge';
@@ -73,7 +73,7 @@ export const HeroSection: React.FC = () => {
           </h1>
           <div className={styles.heroActions}>
             <LandingEnterAcademyButton dark />
-            <ForTeachersModal />
+            <LandingInstallPwaButton />
           </div>
         </div>
 
