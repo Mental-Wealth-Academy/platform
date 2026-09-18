@@ -97,6 +97,9 @@
   --color-fieldnotes-backdrop-mobile: #000000;
   --color-fieldnotes-title-text: #1a1d33;
   --color-fieldnotes-title-text-dark: rgba(244, 247, 255, 0.96);
+  --color-fieldnotes-scrim-bottom: #ffffff;
+  --color-fieldnotes-scrim-mid: rgba(255, 255, 255, 0.85);
+  --color-fieldnotes-scrim-top: rgba(255, 255, 255, 0);
 
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);
@@ -286,6 +289,9 @@
   --color-scene-scrim-bot: var(--color-scene-scrim-dark-bot);
   --color-scene-bg: var(--color-surface-base);
   --bg-grid-dots: var(--bg-grid-dots-dark);
+  --color-fieldnotes-scrim-bottom: #0b0d14;
+  --color-fieldnotes-scrim-mid: rgba(11, 13, 20, 0.85);
+  --color-fieldnotes-scrim-top: rgba(11, 13, 20, 0);
 }
 
 /* Explicit light values support nested previews inside a dark application

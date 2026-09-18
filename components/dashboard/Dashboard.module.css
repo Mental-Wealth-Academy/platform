@@ -129,20 +129,34 @@
 
   .sidebarWrap {
     gap: 18px;
-    padding-bottom: 96px;
+    padding-bottom: 140px;
   }
 
   .fieldNotesWrapper {
     position: fixed;
-    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 24px);
-    max-width: 460px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     margin: 0;
     z-index: 150;
-    pointer-events: auto;
+    pointer-events: none;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    padding: 0 12px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 16px);
+    background: linear-gradient(
+      to top,
+      var(--color-fieldnotes-scrim-bottom) 0%,
+      var(--color-fieldnotes-scrim-mid) 45%,
+      var(--color-fieldnotes-scrim-top) 100%
+    );
+  }
+
+  .fieldNotesWrapper > * {
+    width: 100%;
+    max-width: 460px;
+    pointer-events: auto;
   }
 }
 

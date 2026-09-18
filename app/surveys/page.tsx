@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import SurveyController from '@/components/survey-controller/SurveyController';
 import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal from '@/components/blue-terminal/BlueTerminal';
@@ -65,6 +65,15 @@ export default function SurveysPage() {
   const [surveyResults, setSurveyResults] = useState<SurveyResults | null>(null);
   const [mintInfo, setMintInfo] = useState<{ username: string; walletAddress: string; profileType: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 900px)');
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   const selectedSurvey = useMemo(() => getSurveyById(selectedSurveyId), [selectedSurveyId]);
   const selectedSurveyIntro = useMemo(() => getSurveyIntroCopy(selectedSurvey), [selectedSurvey]);
@@ -149,7 +158,7 @@ export default function SurveysPage() {
       <div className={styles.scene} aria-hidden="true" />
       <main className={styles.content}>
         <SurveyController
-          userName="Discover Your Type Shi"
+          userName="You Toxic or Fun Type Shi?"
           selectedSurveyId={selectedSurveyId}
           onSurveyTypeChange={handleSurveyTypeChange}
           onStartSurvey={handleStartSurvey}
@@ -159,7 +168,7 @@ export default function SurveysPage() {
         <SurveySpace
           label=""
           badges={[]}
-          className={!showQuizModal && !showResultsModal && !showMintInterstitial ? styles.idleSurveySpace : ''}
+          className={(!showQuizModal && !showResultsModal && !showMintInterstitial) || (isMobile && (showQuizModal || showResultsModal)) ? styles.idleSurveySpace : ''}
         >
           {showQuizModal ? (
             <QuizModal
@@ -169,7 +178,7 @@ export default function SurveysPage() {
                 setActiveSurvey(null);
               }}
               survey={activeSurvey}
-              variant="inline"
+              variant={isMobile ? 'modal' : 'inline'}
               onComplete={handleSurveyComplete}
             />
           ) : showMintInterstitial && mintInfo ? (
@@ -188,7 +197,7 @@ export default function SurveysPage() {
                 setSurveyResults(null);
               }}
               results={surveyResults}
-              variant="inline"
+              variant={isMobile ? 'modal' : 'inline'}
             />
           ) : (
             <BlueTerminal

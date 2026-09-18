@@ -19,10 +19,10 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
    on Shadow Work. /home and /profile (the verifier queue) stay desktop
    surfaces — neither earns a slot in a five-tab bar. */
 const NAV_ITEMS = [
-  { id: 'shadow-work', label: 'Shadow', href: '/shadow-work', icon: MoonStars },
+  { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
   { id: 'home', label: 'Home', href: '/dao', icon: House },
-  { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
+  { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
 ] as const;
 
 const NavIconMark: React.FC<{
