@@ -66,3 +66,7 @@ simulation-backend/.env
 simulation-backend/uploads/
 simulation-backend/**/__pycache__/
 data/kalshi-snapshots.csv
+
+# Scratch & temp
+.tmp/
+_to_delete/
