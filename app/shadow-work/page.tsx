@@ -10,12 +10,9 @@ import MobileSplash from '@/components/mobile-splash/MobileSplash';
 import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
 
-const TexturedBackground = dynamic(() => import('@/components/textured-background/TexturedBackground'), {
-  ssr: false,
-  loading: () => null,
-});
 const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
   ssr: false,
 });
@@ -111,9 +108,10 @@ function CourseInlineReader({
   );
 }
 
+const sceneUrl = dailySceneBackgroundUrl();
+
 export default function CoursePage() {
   const { ready, authenticated, getAccessToken } = usePrivy();
-  const [showAmbientViz, setShowAmbientViz] = useState(false);
   const [seasonLoading, setSeasonLoading] = useState(true);
   const [weekStatuses, setWeekStatuses] = useState<WeekStatus[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -147,27 +145,6 @@ export default function CoursePage() {
   const touchCurrentX = useRef(0);
   const isSwiping = useRef(false);
 
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let idleId: number | null = null;
-
-    const revealAmbientViz = () => setShowAmbientViz(true);
-
-    if ('requestIdleCallback' in window) {
-      idleId = window.requestIdleCallback(revealAmbientViz, { timeout: 1200 });
-    } else {
-      timeoutId = setTimeout(revealAmbientViz, 300);
-    }
-
-    return () => {
-      if (idleId !== null && 'cancelIdleCallback' in window) {
-        window.cancelIdleCallback(idleId);
-      }
-      if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     fetch('/api/season', { cache: 'no-store' })
@@ -337,12 +314,11 @@ export default function CoursePage() {
     <>
     <MobileSplash />
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated} onSettled={() => setAuthFlowSettled(true)}>
-    <div className={styles.pageLayout}>
-      {showAmbientViz && (
-        <div className={styles.bgViz}>
-          <TexturedBackground />
-        </div>
-      )}
+    <div
+      className={styles.pageLayout}
+      style={{ '--quests-scene': `url(${sceneUrl})` } as React.CSSProperties}
+    >
+      <div className={styles.scene} aria-hidden="true" />
       <main className={`${styles.content} ${styles.contentSimple}`} onFocus={handleFocus}>
         <section className={`${styles.weeklyShell} ${styles.weeklyShellSimple}`} aria-label="Course materials">
           <div className={`${styles.leftCol} ${styles.leftColSimple}`}>

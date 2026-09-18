@@ -11,6 +11,7 @@ import ComponentRenderer from '@/components/course-renderers/ComponentRenderer';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import type { CourseRecord, ChapterRecord, LessonRecord } from '@/lib/course-content-db';
 import type { VipCourseFull, VipProgressRecord, CourseComponentRecord } from '@/lib/vip-course-db';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
 import courseStyles from '../page.module.css';
 
@@ -18,6 +19,8 @@ const TexturedBackground = dynamic(() => import('@/components/textured-backgroun
   ssr: false,
   loading: () => null,
 });
+
+const sceneUrl = dailySceneBackgroundUrl();
 
 const ANGEL_IMAGE = 'https://i.imgur.com/KkpN9as.png';
 const COMPLETION_REWARD = 50;
@@ -318,7 +321,11 @@ export default function CourseSlugPage({ params }: PageProps) {
     const taskComponents = components.filter((c) => !(c.componentType === 'rich_text' && c.title === 'Weekly Read'));
 
     return (
-      <div className={courseStyles.pageLayout}>
+      <div
+        className={courseStyles.pageLayout}
+        style={{ '--quests-scene': `url(${sceneUrl})` } as React.CSSProperties}
+      >
+        <div className={courseStyles.scene} aria-hidden="true" />
         <Banner
           backHref="/home"
           tone="neutral"

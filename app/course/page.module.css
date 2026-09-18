@@ -14,34 +14,35 @@
   margin-left: var(--sidebar-width, 265px);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
-  background-color: var(--color-background);
+  background-color: var(--color-scene-bg);
   color: var(--color-text-dark);
 }
 
-/* Flat direction: nothing on this surface carries elevation. Embedded
-   renderers (missions, rewards) inherit the rule so the page stays flat. */
-.pageLayout,
-.pageLayout * {
-  box-shadow: none !important;
-}
-
 :global([data-theme="dark"]) .pageLayout {
-  background-color: var(--color-background);
+  background-color: var(--color-scene-bg);
 }
 
-/* Light mode stays on the shared brand canvas — the course surface should feel
-   like the rest of the academy. */
-
-.bgViz {
+.scene {
   position: fixed;
   top: 0;
   left: var(--sidebar-width, 265px);
   right: 0;
   bottom: 0;
   z-index: 0;
-  opacity: 0.14;
   pointer-events: none;
-  overflow: hidden;
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
+    var(--color-scene-bg);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+@media (max-width: 900px) {
+  .scene {
+    left: 0;
+  }
 }
 
 .content {
@@ -794,10 +795,25 @@
 
 .popupCard {
   position: relative;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid color-mix(in srgb, var(--color-primary-hover) 35%, transparent);
   border-radius: 16px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 4px 14px color-mix(in srgb, var(--palette-ink) 8%, transparent),
+    0 12px 28px color-mix(in srgb, var(--palette-ink) 12%, transparent);
   overflow: hidden;
+}
+
+:global([data-theme="dark"]) .popupCard {
+  border-color: color-mix(in srgb, var(--color-primary-hover) 40%, transparent);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 4px 14px color-mix(in srgb, var(--palette-night) 30%, transparent),
+    0 12px 28px color-mix(in srgb, var(--palette-night) 40%, transparent);
 }
 
 .popupCard .inlineReaderInner {

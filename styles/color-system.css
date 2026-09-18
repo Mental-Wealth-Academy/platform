@@ -27,6 +27,36 @@
   --palette-night: #121212; /* neutral near-black; unified landing dark */
   --palette-on-dark: #FFFFFF;
 
+  /* Rainbow spectrum palette */
+  --color-rainbow-rose: #ff3366;
+  --color-rainbow-orange: #ff8800;
+  --color-rainbow-gold: #ffd000;
+  --color-rainbow-emerald: #00d68f;
+  --color-rainbow-cyan: #00b8ff;
+  --color-rainbow-indigo: #625aff;
+  --color-rainbow-violet: #b43bf5;
+
+  /* Scene backdrop tokens (matching /quests) */
+  --color-scene-canvas: #f7f8ff;
+  --color-scene-scrim-light-top: rgba(247, 248, 255, 0.72);
+  --color-scene-scrim-light-mid: rgba(247, 248, 255, 0.58);
+  --color-scene-scrim-light-bot: rgba(247, 248, 255, 0.74);
+  --color-scene-scrim-dark-top: rgba(10, 12, 28, 0.86);
+  --color-scene-scrim-dark-mid: rgba(10, 12, 28, 0.80);
+  --color-scene-scrim-dark-bot: rgba(10, 12, 28, 0.88);
+  --color-scene-card-bg-light: rgba(255, 255, 255, 0.78);
+  --color-scene-card-bg-dark: rgba(21, 23, 42, 0.82);
+
+  --color-scene-card-bg: var(--color-scene-card-bg-light);
+  --color-scene-scrim-top: var(--color-scene-scrim-light-top);
+  --color-scene-scrim-mid: var(--color-scene-scrim-light-mid);
+  --color-scene-scrim-bot: var(--color-scene-scrim-light-bot);
+  --color-scene-bg: var(--color-scene-canvas);
+
+  --bg-grid-dots-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  --bg-grid-dots-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  --bg-grid-dots: var(--bg-grid-dots-light);
+
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);
   --color-brand: var(--palette-academy-blue);
@@ -208,6 +238,13 @@
   --color-chat-bubble-5-shadow-drop: rgba(0, 0, 0, 0.35);
   --color-chat-bubble-5-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-5-shadow-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-scene-card-bg: var(--color-scene-card-bg-dark);
+  --color-scene-scrim-top: var(--color-scene-scrim-dark-top);
+  --color-scene-scrim-mid: var(--color-scene-scrim-dark-mid);
+  --color-scene-scrim-bot: var(--color-scene-scrim-dark-bot);
+  --color-scene-bg: var(--color-surface-base);
+  --bg-grid-dots: var(--bg-grid-dots-dark);
 }
 
 /* Explicit light values support nested previews inside a dark application
