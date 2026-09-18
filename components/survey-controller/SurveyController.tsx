@@ -63,7 +63,7 @@ interface SurveyControllerProps {
 }
 
 export default function SurveyController({
-  userName = 'Welcome',
+  userName = 'Discover Your Type Shi',
   version = 'V.e1-MWA36B',
   characterImageSrc = '/exxies.png',
   difficulty: initialDifficulty = 101,

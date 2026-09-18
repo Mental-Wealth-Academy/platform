@@ -9,6 +9,7 @@ interface SurveySpaceProps {
   label?: string;
   badges?: BadgePill[];
   children?: React.ReactNode;
+  className?: string;
 }
 
 export default function SurveySpace({
@@ -20,9 +21,10 @@ export default function SurveySpace({
     { label: 'Badge' },
   ],
   children,
+  className = '',
 }: SurveySpaceProps) {
   return (
-    <div className={styles.space}>
+    <div className={`${styles.space} ${className}`}>
       {(label || badges.length > 0) && (
         <div className={styles.header}>
           <span className={styles.label}>{label}</span>

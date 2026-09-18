@@ -16,7 +16,9 @@ export default function Dashboard() {
       {/* ── Sidebar: upcoming event + Field Notes + Global Chat ── */}
       <aside className={styles.sidebarWrap}>
         <UpcomingEvent />
-        <SidebarFieldNotes />
+        <div className={styles.fieldNotesWrapper}>
+          <SidebarFieldNotes />
+        </div>
         <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
       </aside>
     </div>

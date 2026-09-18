@@ -129,7 +129,24 @@
 
   .sidebarWrap {
     gap: 18px;
+    padding-bottom: 96px;
   }
+
+  .fieldNotesWrapper {
+    position: fixed;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: 480px;
+    margin: 0 auto;
+    z-index: 150;
+    pointer-events: auto;
+  }
+}
+
+.fieldNotesWrapper {
+  width: 100%;
 }
 
 .leaderboardCard {

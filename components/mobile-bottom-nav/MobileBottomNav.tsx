@@ -21,7 +21,7 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
 const NAV_ITEMS = [
   { id: 'shadow-work', label: 'Shadow', href: '/shadow-work', icon: MoonStars },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
-  { id: 'home', label: 'DAO', href: '/dao', icon: House },
+  { id: 'home', label: 'Home', href: '/dao', icon: House },
   { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
 ] as const;
 

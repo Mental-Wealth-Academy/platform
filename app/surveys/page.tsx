@@ -149,13 +149,18 @@ export default function SurveysPage() {
       <div className={styles.scene} aria-hidden="true" />
       <main className={styles.content}>
         <SurveyController
+          userName="Discover Your Type Shi"
           selectedSurveyId={selectedSurveyId}
           onSurveyTypeChange={handleSurveyTypeChange}
           onStartSurvey={handleStartSurvey}
           showDifficulty={false}
           ctaLabel="Begin survey"
         />
-        <SurveySpace label="" badges={[]}>
+        <SurveySpace
+          label=""
+          badges={[]}
+          className={!showQuizModal && !showResultsModal && !showMintInterstitial ? styles.idleSurveySpace : ''}
+        >
           {showQuizModal ? (
             <QuizModal
               isOpen={showQuizModal}

@@ -6,7 +6,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
-import MobileSplash from '@/components/mobile-splash/MobileSplash';
 import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
@@ -312,7 +311,6 @@ export default function CoursePage() {
 
   return (
     <>
-    <MobileSplash />
     <HomeWelcomeFlow onAuthenticated={handleWelcomeAuthenticated} onSettled={() => setAuthFlowSettled(true)}>
     <div
       className={styles.pageLayout}
