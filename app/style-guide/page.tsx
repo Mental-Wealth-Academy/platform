@@ -23,7 +23,7 @@ const coreColors: ColorToken[] = [
   { label: 'Canvas', token: '--color-canvas', role: 'Single light-mode foundation' },
   { label: 'Academy Blue', token: '--color-brand', role: 'Brand marks and signature moments' },
   { label: 'Action Blue', token: '--color-action', role: 'Primary controls and links', foreground: '--color-on-action' },
-  { label: 'Academy Indigo', token: '--color-positive', role: 'Rewards, progress, and positive states', foreground: '--color-on-positive' },
+  { label: 'Growth Emerald', token: '--color-positive', role: 'Mastery, progress, and completed states', foreground: '--color-on-positive' },
   { label: 'Study Violet', token: '--color-accent', role: 'Restrained secondary emphasis', foreground: '--color-on-accent' },
   { label: 'Blackpill Text', token: '--color-text-dark', role: 'Primary text and precise detail' },
 ];

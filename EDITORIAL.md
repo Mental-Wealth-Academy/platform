@@ -197,9 +197,10 @@ The logo should feel like a strange artifact from another planet. It does not ne
 - Academy Blue: `#5168FF` - our flagship brand shade
 - Action Blue: `#465BE0` - accessible primary actions and small text on filled controls
 - Blackpill Text: `#1A1B24` - bluish black for smooth dark text
-- Canvas: `#F6F8FE` - the single light-mode foundation, a cool blue-white (`oklch(98% 0.008 270)` in code)
-- Academy Indigo: `#50599B` - rewards, progress, and positive signals
-- Study Violet: `#7A56C6` - restrained emphasis and secondary accents
+- Canvas: `#F6F8FE` - the single light-mode foundation, a cool blue-white (`oklch(98.2% 0.016 268)` in code)
+- Growth Emerald: `#047857` - mastery, progress, and completed positive signals
+- Study Violet: `#7844D0` - restrained emphasis and secondary accents
+- Solar Amber: `#BF8400` - achievements, ratings, and warm harmonic contrast
 
 Cards stay flat: a clear border, a `12px` corner radius, and minimal shadow.
 

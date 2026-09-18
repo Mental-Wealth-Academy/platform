@@ -1252,6 +1252,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  color: var(--color-warning-text);
+  font-weight: 600;
 }
 
 .learnReviewsButton {
@@ -1264,7 +1266,7 @@
 .learnOverviewStars {
   display: inline-flex;
   gap: 2px;
-  color: var(--color-brand);
+  color: var(--color-warning);
 }
 
 .learnOverviewBlue {

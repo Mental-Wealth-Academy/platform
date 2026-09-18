@@ -172,7 +172,7 @@
 .leaderIcon {
   font-size: 0.78rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-warning);
   line-height: 1;
 }
 
@@ -447,7 +447,7 @@
 .leaderModalIcon {
   font-size: 0.78rem;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-warning);
   line-height: 1;
 }
 

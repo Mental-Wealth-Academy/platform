@@ -67,14 +67,14 @@
   display: block;
   height: 10px;
   border-radius: 0 4px 4px 0;
-  background: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-base));
+  background: color-mix(in oklch, var(--color-positive) 14%, var(--color-surface-base));
 }
 
 .fill {
   display: block;
   height: 100%;
   border-radius: 0 4px 4px 0;
-  background: var(--color-primary);
+  background: var(--color-positive);
 }
 
 .rowValue {
