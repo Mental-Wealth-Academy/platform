@@ -90,6 +90,14 @@
   --color-hero-indigo-chip-border: rgba(129, 140, 248, 0.45);
   --color-hero-indigo-chip-text: #c7d2fe;
 
+  /* Field Notes modal & prep dialogue tokens */
+  --color-fieldnotes-overlay-bg: rgba(6, 8, 20, 0.78);
+  --color-fieldnotes-modal-bg: #15172a;
+  --color-fieldnotes-modal-light-bg: #ffffff;
+  --color-fieldnotes-backdrop-mobile: #000000;
+  --color-fieldnotes-title-text: #1a1d33;
+  --color-fieldnotes-title-text-dark: rgba(244, 247, 255, 0.96);
+
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);
   --color-brand: var(--palette-academy-blue);

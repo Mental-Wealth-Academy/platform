@@ -134,14 +134,15 @@
 
   .fieldNotesWrapper {
     position: fixed;
-    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
-    left: 14px;
-    right: 14px;
-    width: auto;
-    max-width: 480px;
-    margin: 0 auto;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 460px;
+    margin: 0;
     z-index: 150;
     pointer-events: auto;
+    box-sizing: border-box;
   }
 }
 

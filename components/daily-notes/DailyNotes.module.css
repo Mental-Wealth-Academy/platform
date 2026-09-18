@@ -919,26 +919,32 @@
 }
 
 .modalHeader {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  padding: 12px 18px;
-  gap: 12px;
+  justify-content: space-between;
+  padding: 14px 20px;
+  gap: 16px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
 }
 
-.modalHeaderEnd {
-  display: block;
+.modalHeaderTitle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-fieldnotes-title-text);
 }
 
 .timerCountHeader {
-  justify-self: center;
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 700;
   letter-spacing: 0.04em;
   background: transparent;
   border: 0;
   padding: 0;
+  margin-left: auto;
 }
 
 .modalCloseBtn {
@@ -1274,14 +1280,16 @@
 /* ─── Mobile: true full-screen journal view ─── */
 @media (max-width: 768px) {
   .modalOverlay {
-    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 16px));
-    padding: 0 0 var(--mobile-nav-clearance);
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    padding: 0;
     align-items: stretch;
     justify-content: stretch;
   }
 
   .modalBackdrop {
-    background: transparent;
+    background: var(--color-fieldnotes-backdrop-mobile);
     backdrop-filter: none;
   }
 
@@ -1290,7 +1298,7 @@
     width: 100%;
     border-radius: 0;
     height: 100%;
-    min-height: 0;
+    min-height: 100%;
     animation: none;
     margin: 0;
     border-left: none;
@@ -1305,10 +1313,18 @@
 
   .modalHeader {
     z-index: 3;
-    padding: max(env(safe-area-inset-top, 0px), 10px) 16px 6px;
+    padding: max(env(safe-area-inset-top, 0px), 14px) 18px 12px;
     min-height: 0;
-    background: transparent;
-    backdrop-filter: none;
+    background: var(--color-fieldnotes-modal-light-bg);
+    border-bottom: 2px solid var(--color-primary-hover);
+  }
+
+  .modalHeaderTitle {
+    font-size: 13px;
+  }
+
+  .timerCountHeader {
+    font-size: 24px;
   }
 
   .writeArea {
@@ -1341,9 +1357,11 @@
     min-height: 0;
     border-radius: 0;
     border-width: 1px;
-    padding: 18px 18px 22px;
-    font-size: 17px;
-    line-height: 1.72;
+    padding: 22px 20px 26px;
+    font-family: var(--font-patrick-hand), 'Patrick Hand', cursive;
+    font-size: 22px;
+    line-height: 1.68;
+    letter-spacing: 0.01em;
     background: #000000;
     border-left: none;
     border-right: none;
@@ -1351,12 +1369,12 @@
   }
 
   .modalFooter {
-    padding: 10px 14px 14px;
+    padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
     backdrop-filter: none;
   }
 
   .submitBtn {
-    min-height: 58px;
+    min-height: 54px;
     font-size: 13px;
   }
 }
@@ -1518,8 +1536,10 @@
 
   .textarea {
     min-height: 220px;
-    padding: 14px 16px 16px;
-    font-size: 15px;
+    padding: 20px 18px 22px;
+    font-family: var(--font-patrick-hand), 'Patrick Hand', cursive;
+    font-size: 22px;
+    line-height: 1.68;
     background: #2a2a2a;
     border-radius: 0;
     border-left: none;
@@ -1767,6 +1787,10 @@
 :global([data-theme="dark"]) .modalHeader {
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-bottom-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+}
+
+:global([data-theme="dark"]) .modalHeaderTitle {
+  color: var(--color-fieldnotes-title-text-dark);
 }
 
 :global([data-theme="dark"]) .panelStatusCard {
