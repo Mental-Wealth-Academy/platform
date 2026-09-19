@@ -519,14 +519,14 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  min-width: 220px;
-  background: #fbfcff;
+  width: 280px;
+  background: var(--color-surface-base, var(--palette-canvas));
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow:
-    0 8px 32px rgba(26, 29, 51, 0.12),
+    0 12px 36px color-mix(in oklch, var(--palette-ink) 14%, transparent),
     0 2px 0 color-mix(in oklch, var(--color-primary) 18%, transparent);
-  padding: 8px;
+  padding: 10px;
   z-index: 300;
   animation: dropdownFadeIn 0.15s ease;
 }
@@ -536,92 +536,333 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 6px;
+}
+
+.dropdownAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+}
+
+.dropdownAvatarImg {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.dropdownAvatarInitials {
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.dropdownIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.dropdownDisplayName {
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownWalletChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  width: fit-content;
+}
+
+.dropdownWalletChip:hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.dropdownWalletAddr {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  letter-spacing: 0.02em;
+}
+
+.dropdownCopyHint {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.dropdownWalletCopied .dropdownCopyHint {
+  color: var(--palette-streak-green);
+}
+
+.dropdownWalletMuted {
+  font-size: 11px;
+  color: var(--color-text-soft);
+}
+
 .dropdownSection {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+}
+
+.dropdownSectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 6px 4px;
 }
 
 .dropdownSectionLabel {
   font-family: var(--font-secondary);
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-soft);
+}
+
+.dropdownNetBadge {
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  color: rgba(26, 29, 51, 0.38);
-  padding: 6px 10px 4px;
+  color: var(--color-primary);
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .dropdownDivider {
   height: 1px;
-  margin: 6px 8px;
+  margin: 6px 4px;
   background: color-mix(in oklch, var(--color-primary) 15%, transparent);
 }
 
-.dropdownPanel .dropdownNavLink {
-  height: 38px;
-  border-radius: 10px;
-  font-size: 13px;
-  border: none;
-  box-shadow: none;
-}
-
-.dropdownPanel .dropdownNavLink:hover {
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  border: none;
-  box-shadow: none;
-  transform: none;
-}
-
-.dropdownPanel .dropdownNavLink.navLinkActive {
-  background: var(--color-primary);
-  border: none;
-  box-shadow: none;
-}
-
-/* Shop is a link and Call Blue is a button, so reset the UA button chrome
-   or Call Blue renders with a default outset border. */
-.dropdownActionLink {
+.dropdownBalanceHero {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 26%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 12%, transparent), color-mix(in oklch, var(--color-primary) 4%, transparent));
+  box-shadow: inset 0 2px 8px color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.dropdownBalanceLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dropdownDiamondIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.dropdownBalanceMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.dropdownBalanceTitle {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 1.2;
+}
+
+.dropdownBalanceSub {
+  font-size: 10px;
+  color: var(--color-text-soft);
+  line-height: 1.2;
+}
+
+.dropdownBalanceHeroValue {
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.dropdownTokensRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.dropdownTokenCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 7px 9px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+}
+
+.dropdownTokenLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dropdownTokenIcon {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dropdownTokenName {
+  font-family: var(--font-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+}
+
+.dropdownTokenValue {
+  font-family: var(--font-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 65px;
+  text-align: right;
+}
+
+.dropdownActionItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   width: 100%;
-  height: 38px;
+  height: 36px;
   padding: 0 10px;
   background: transparent;
   border: none;
   text-align: left;
   border-radius: 10px;
   font-family: var(--font-secondary);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--color-text-soft);
+  color: var(--color-text-dark);
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease;
   cursor: pointer;
 }
 
-.dropdownActionLink:hover {
+.dropdownActionItem:hover {
   background: color-mix(in oklch, var(--color-primary) 8%, transparent);
   color: var(--color-primary);
 }
 
-.dropdownActionActive {
-  background: var(--color-primary);
-  color: #ffffff;
-}
-
-/* Keep the picker's round trigger inside the panel padding rather than
-   letting a negative margin hang it over the rounded edge. */
-.dropdownThemeRow {
+.dropdownSignOutButton {
   display: flex;
   align-items: center;
-  padding: 2px 4px;
+  gap: 9px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid color-mix(in oklch, var(--palette-danger) 22%, transparent);
+  border-radius: 10px;
+  font-family: var(--font-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--palette-danger);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dropdownSignOutButton:hover {
+  background: color-mix(in oklch, var(--palette-danger) 8%, transparent);
+}
+
+.dropdownAuthWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px;
+}
+
+.dropdownAuthPrompt {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dropdownAuthTitle {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.dropdownAuthText {
+  font-size: 11px;
+  color: var(--color-text-soft);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.dropdownAuthButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
 }
 
 .dropdownAuthLink {
   display: flex;
   align-items: center;
-  height: 38px;
+  justify-content: center;
+  height: 36px;
   padding: 0 10px;
   border-radius: 10px;
   background: transparent;
@@ -642,7 +883,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
+  height: 36px;
   padding: 0 10px;
   border-radius: 10px;
   background: var(--color-primary);
@@ -650,7 +891,7 @@
   font-family: var(--font-secondary);
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--palette-on-dark);
   cursor: pointer;
   transition: background 0.15s ease, transform 0.12s ease;
   box-shadow: 0 3px 8px color-mix(in oklch, var(--color-primary) 30%, transparent);
@@ -810,33 +1051,32 @@
 }
 
 :global([data-theme="dark"]) .dropdownPanel {
-  background: #1c1e2e;
+  background: var(--color-shell-background);
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 8px 32px color-mix(in oklch, var(--palette-night) 60%, transparent),
     0 2px 0 color-mix(in oklch, var(--color-primary) 20%, transparent);
-}
-
-:global([data-theme="dark"]) .dropdownSectionLabel {
-  color: rgba(255, 255, 255, 0.35);
 }
 
 :global([data-theme="dark"]) .dropdownDivider {
   background: color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
-:global([data-theme="dark"]) .dropdownActionLink {
-  color: rgba(255, 255, 255, 0.55);
+:global([data-theme="dark"]) .dropdownBalanceHero {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 20%, transparent), color-mix(in oklch, var(--color-primary) 8%, transparent));
 }
 
-:global([data-theme="dark"]) .dropdownActionLink:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
+:global([data-theme="dark"]) .dropdownTokenCard {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
-:global([data-theme="dark"]) .dropdownActionActive {
-  background: var(--color-primary);
-  color: #ffffff;
+:global([data-theme="dark"]) .dropdownActionItem {
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .dropdownActionItem:hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
 }
 
 :global([data-theme="dark"]) .dropdownAuthLink {
@@ -949,18 +1189,18 @@
     top: calc(var(--banner-height, 0px) + 72px + 8px);
     right: 12px;
     left: auto;
-    width: min(260px, calc(100vw - 24px));
+    width: min(300px, calc(100vw - 24px));
     max-height: calc(100vh - var(--banner-height, 0px) - 96px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .dropdownPanel .dropdownNavLink,
-  .dropdownActionLink,
+  .dropdownActionItem,
+  .dropdownSignOutButton,
   .dropdownAuthLink,
   .dropdownJoinButton {
-    height: 44px;
-    font-size: 14px;
+    height: 40px;
+    font-size: 13px;
   }
 }
 

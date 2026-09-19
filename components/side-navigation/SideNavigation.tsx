@@ -222,11 +222,21 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     return () => clearTimeout(timer);
   }, []);
 
-  // The mobile top-nav profile icon opens the wallet drawer via a window event.
+  // Top-nav and dropdown actions trigger drawer and modals via window events
   useEffect(() => {
-    const open = () => setWalletDrawerOpen(true);
-    window.addEventListener('openWalletDrawer', open);
-    return () => window.removeEventListener('openWalletDrawer', open);
+    const openWallet = () => setWalletDrawerOpen(true);
+    const openAvatar = () => setIsAvatarSelectorOpen(true);
+    const openUsername = () => setIsUsernameChangeModalOpen(true);
+
+    window.addEventListener('openWalletDrawer', openWallet);
+    window.addEventListener('openAvatarModal', openAvatar);
+    window.addEventListener('openUsernameModal', openUsername);
+
+    return () => {
+      window.removeEventListener('openWalletDrawer', openWallet);
+      window.removeEventListener('openAvatarModal', openAvatar);
+      window.removeEventListener('openUsernameModal', openUsername);
+    };
   }, []);
 
 

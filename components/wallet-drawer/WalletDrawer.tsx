@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { createPublicClient, http, erc20Abi } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
-import { getChainConfig } from '@/lib/chain-config';
+import { useOnchainBalances } from '@/hooks/useOnchainBalances';
 import styles from './WalletDrawer.module.css';
 
 interface WalletDrawerProps {
@@ -42,60 +40,13 @@ export default function WalletDrawer({
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Onchain wallet balances
-  const [onchainDiamonds, setOnchainDiamonds] = useState<string | null>(null);
-  const [onchainBtc, setOnchainBtc] = useState<string | null>(null);
-  const [onchainUsdc, setOnchainUsdc] = useState<string | null>(null);
-
-  const cfg = getChainConfig();
-  const hasBtc = Boolean(cfg.cbBTcAddress);
-
-  const fetchOnchainBalances = useCallback(async (addr: string) => {
-    const chain = cfg.chainId === 84532 ? baseSepolia : base;
-    const client = createPublicClient({ chain, transport: http(cfg.rpcUrl) });
-    try {
-      const a = addr as `0x${string}`;
-
-      const balanceOf = (token: string) => ({
-        address: token as `0x${string}`,
-        abi: erc20Abi,
-        functionName: 'balanceOf' as const,
-        args: [a] as const,
-      });
-      const [diamondsR, usdcR, btcR] = await client.multicall({
-        contracts: [
-          balanceOf(cfg.diamondsTokenAddress),
-          balanceOf(cfg.usdcAddress),
-          ...(cfg.cbBTcAddress ? [balanceOf(cfg.cbBTcAddress)] : []),
-        ],
-        allowFailure: true,
-      });
-
-      if (diamondsR.status === 'success') {
-        const d = Number(diamondsR.result) / 1e18;
-        setOnchainDiamonds(d < 1 ? d.toFixed(2) : Math.floor(d).toLocaleString());
-      }
-      if (usdcR.status === 'success') {
-        setOnchainUsdc((Number(usdcR.result) / 1e6).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }));
-      }
-      if (btcR && btcR.status === 'success') {
-        setOnchainBtc((Number(btcR.result) / 1e8).toFixed(8));
-      }
-    } catch { /* silent */ }
-  }, [cfg.chainId, cfg.rpcUrl, cfg.diamondsTokenAddress, cfg.usdcAddress, cfg.cbBTcAddress]);
-
-  // Fetch when opened; clear when closed
-  useEffect(() => {
-    if (open && address) {
-      void fetchOnchainBalances(address);
-    } else if (!open) {
-      setOnchainDiamonds(null);
-      setOnchainBtc(null);
-      setOnchainUsdc(null);
-    }
-  }, [open, address, fetchOnchainBalances]);
+  const {
+    diamonds: onchainDiamonds,
+    btc: onchainBtc,
+    usdc: onchainUsdc,
+    hasBtc,
+    netLabel,
+  } = useOnchainBalances(address, open);
 
   // Escape to close + body scroll lock
   useEffect(() => {
@@ -138,7 +89,6 @@ export default function WalletDrawer({
     }
   };
 
-  const netLabel = cfg.chainId === 84532 ? 'Base Sepolia' : 'Base';
 
   return (
     <>
