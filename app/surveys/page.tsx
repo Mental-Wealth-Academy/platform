@@ -15,7 +15,8 @@ import styles from './page.module.css';
 
 const sceneUrl = dailySceneBackgroundUrl();
 
-const AVAILABLE_SURVEYS: Survey[] = [VIA_SURVEY, ...STANDARD_SURVEYS];
+const [attachmentSurvey, ...otherStandardSurveys] = STANDARD_SURVEYS;
+const AVAILABLE_SURVEYS: Survey[] = [attachmentSurvey, VIA_SURVEY, ...otherStandardSurveys];
 
 function getSurveyById(id: string): Survey {
   return AVAILABLE_SURVEYS.find((survey) => survey.id === id) ?? AVAILABLE_SURVEYS[0];

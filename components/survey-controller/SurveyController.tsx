@@ -7,13 +7,19 @@ import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/
 import styles from './SurveyController.module.css';
 
 const OPTION_COLORS = [
+  'var(--color-survey-tab-attachment)',
   'var(--color-survey-tab-strengths)',
   'var(--color-survey-tab-bigfive)',
   'var(--color-survey-tab-moral)',
-  'var(--color-survey-tab-attachment)',
 ];
 
 const SURVEY_TYPES = [
+  {
+    id: 'attachment-style',
+    label: 'Attachment Style',
+    sub: 'Secure, anxious, or avoidant',
+    shortDesc: 'Decode how you connect, build trust, and respond under relational pressure.',
+  },
   {
     id: 'via-character-strengths',
     label: 'Character Strengths',
@@ -31,12 +37,6 @@ const SURVEY_TYPES = [
     label: 'Moral Foundations',
     sub: "Haidt's 5-foundation model",
     shortDesc: 'Uncover the intuitive values and ethics that drive your sense of right and wrong.',
-  },
-  {
-    id: 'attachment-style',
-    label: 'Attachment Style',
-    sub: 'Secure, anxious, or avoidant',
-    shortDesc: 'Decode how you connect, build trust, and respond under relational pressure.',
   },
 ] as const;
 
