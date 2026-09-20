@@ -146,14 +146,16 @@ export const LandingHeader: React.FC = () => {
           onClick={() => play('click')}
           aria-label="Mental Wealth Academy Home"
         >
-          <Image
-            src="/icons/mwa-mascot-logo.png"
-            alt="Mental Wealth Academy"
-            width={48}
-            height={48}
-            className={styles.logo}
-            priority
-          />
+          <span className={styles.jewel}>
+            <Image
+              src="/icons/ui-diamond.svg"
+              alt=""
+              width={24}
+              height={24}
+              className={styles.jewelIcon}
+              priority
+            />
+          </span>
         </a>
 
         <nav className={styles.sectionNav} aria-label="Section shortcuts">

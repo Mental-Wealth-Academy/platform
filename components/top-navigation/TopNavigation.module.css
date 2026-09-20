@@ -743,6 +743,30 @@
   border-radius: 10px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  text-align: left;
+}
+
+button.dropdownTokenCard,
+.dropdownTokenCardInteractive {
+  cursor: pointer;
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+button.dropdownTokenCard:hover,
+.dropdownTokenCardInteractive:hover {
+  background: color-mix(in oklch, var(--color-primary) 11%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 12%, transparent);
+  transform: translateY(-1px);
+}
+
+button.dropdownTokenCard:active,
+.dropdownTokenCardInteractive:active {
+  transform: translateY(0);
 }
 
 .dropdownTokenLeft {

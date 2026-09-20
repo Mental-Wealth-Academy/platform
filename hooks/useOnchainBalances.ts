@@ -8,6 +8,7 @@ import { getChainConfig } from '@/lib/chain-config';
 export interface OnchainBalances {
   diamonds: string | null;
   btc: string | null;
+  btcUsd: string | null;
   usdc: string | null;
   hasBtc: boolean;
   netLabel: string;
@@ -15,9 +16,50 @@ export interface OnchainBalances {
   refetch: () => Promise<void>;
 }
 
+let cachedBtcPrice: { usd: number; ts: number } | null = null;
+
+async function getBtcUsdPrice(): Promise<number | null> {
+  if (cachedBtcPrice && Date.now() - cachedBtcPrice.ts < 60_000) {
+    return cachedBtcPrice.usd;
+  }
+  try {
+    const res = await fetch('/api/treasury/prices');
+    if (!res.ok) return cachedBtcPrice?.usd ?? null;
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      const btc = data.find((c: { id?: string; symbol?: string }) => c.id === 'bitcoin' || c.symbol === 'BTC');
+      if (btc && typeof btc.usd === 'number' && btc.usd > 0) {
+        cachedBtcPrice = { usd: btc.usd, ts: Date.now() };
+        return btc.usd;
+      }
+    }
+  } catch {
+    // silent
+  }
+  return cachedBtcPrice?.usd ?? null;
+}
+
+function formatBtcUsd(amount: number, price: number | null): string {
+  if (amount === 0) return '$0.00';
+  if (!price || price <= 0) {
+    return amount < 0.0001 ? '<$0.01' : `$${(amount * 80_000).toFixed(2)}`;
+  }
+  const usdVal = amount * price;
+  if (usdVal === 0) return '$0.00';
+  if (usdVal < 0.01) return '<$0.01';
+  return (
+    '$' +
+    usdVal.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  );
+}
+
 export function useOnchainBalances(address: string | undefined, enabled = true): OnchainBalances {
   const [diamonds, setDiamonds] = useState<string | null>(null);
   const [btc, setBtc] = useState<string | null>(null);
+  const [btcUsd, setBtcUsd] = useState<string | null>(null);
   const [usdc, setUsdc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,7 +104,10 @@ export function useOnchainBalances(address: string | undefined, enabled = true):
         );
       }
       if (btcR && btcR.status === 'success') {
-        setBtc((Number(btcR.result) / 1e8).toFixed(8));
+        const rawAmount = Number(btcR.result) / 1e8;
+        setBtc(rawAmount.toFixed(8));
+        const price = await getBtcUsdPrice();
+        setBtcUsd(formatBtcUsd(rawAmount, price));
       }
     } catch {
       // silent
@@ -77,6 +122,7 @@ export function useOnchainBalances(address: string | undefined, enabled = true):
     } else if (!enabled) {
       setDiamonds(null);
       setBtc(null);
+      setBtcUsd(null);
       setUsdc(null);
     }
   }, [enabled, address, refetch]);
@@ -96,6 +142,7 @@ export function useOnchainBalances(address: string | undefined, enabled = true):
   return {
     diamonds,
     btc,
+    btcUsd,
     usdc,
     hasBtc,
     netLabel,

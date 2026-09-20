@@ -141,14 +141,101 @@
 
 .msgMeta {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
 }
 
 .msgUsername {
   font-size: 0.78rem;
   font-weight: 700;
   color: #2a2f52;
+}
+
+.surveyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1.5px 7px 1.5px 5px;
+  border-radius: 999px;
+  font-family: var(--font-primary);
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  color: var(--color-primary);
+  user-select: none;
+  cursor: default;
+  transition: transform 0.12s ease;
+}
+
+.surveyBadge:hover {
+  transform: translateY(-0.5px);
+}
+
+.surveyBadgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 4px currentColor;
+  flex-shrink: 0;
+}
+
+.surveyBadgeText {
+  white-space: nowrap;
+}
+
+.badge_attachment_style {
+  background: color-mix(in srgb, var(--color-survey-tab-attachment, #10b981) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-attachment, #10b981) 34%, transparent);
+  color: #047857;
+}
+
+.badge_big_five {
+  background: color-mix(in srgb, var(--color-survey-tab-bigfive, #9333ea) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-bigfive, #9333ea) 34%, transparent);
+  color: #7e22ce;
+}
+
+.badge_via_character_strengths,
+.badge_via_strengths {
+  background: color-mix(in srgb, var(--color-survey-tab-strengths, #4361ee) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-strengths, #4361ee) 34%, transparent);
+  color: #2563eb;
+}
+
+.badge_moral_foundations {
+  background: color-mix(in srgb, var(--color-survey-tab-moral, #06b6d4) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-moral, #06b6d4) 34%, transparent);
+  color: #0e7490;
+}
+
+:global([data-theme="dark"]) .badge_attachment_style {
+  background: color-mix(in srgb, var(--color-survey-tab-attachment, #10b981) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-attachment, #10b981) 45%, transparent);
+  color: #34d399;
+}
+
+:global([data-theme="dark"]) .badge_big_five {
+  background: color-mix(in srgb, var(--color-survey-tab-bigfive, #9333ea) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-bigfive, #9333ea) 45%, transparent);
+  color: #c084fc;
+}
+
+:global([data-theme="dark"]) .badge_via_character_strengths,
+:global([data-theme="dark"]) .badge_via_strengths {
+  background: color-mix(in srgb, var(--color-survey-tab-strengths, #4361ee) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-strengths, #4361ee) 45%, transparent);
+  color: #60a5fa;
+}
+
+:global([data-theme="dark"]) .badge_moral_foundations {
+  background: color-mix(in srgb, var(--color-survey-tab-moral, #06b6d4) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-survey-tab-moral, #06b6d4) 45%, transparent);
+  color: #22d3ee;
 }
 
 .msgTime {

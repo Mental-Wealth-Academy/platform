@@ -13,6 +13,8 @@ import { useSound } from '@/hooks/useSound';
 import { useOnchainBalances } from '@/hooks/useOnchainBalances';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
+import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
+
 interface NavLink {
   label: string;
   href: string;
@@ -38,15 +40,23 @@ const TopNavigation: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
 
   // Balances fetched when dropdown is open and authenticated
   const {
     diamonds,
     btc,
+    btcUsd,
     usdc,
     hasBtc,
     netLabel,
   } = useOnchainBalances(walletAddress, dropdownOpen && authenticated);
+
+  useEffect(() => {
+    const handleOpenSwap = () => setSwapModalOpen(true);
+    window.addEventListener('openTreasurySwapModal', handleOpenSwap);
+    return () => window.removeEventListener('openTreasurySwapModal', handleOpenSwap);
+  }, []);
 
   const [userData, setUserData] = useState<{ username: string | null; avatarUrl: string | null }>({
     username: null,
@@ -462,15 +472,25 @@ const TopNavigation: React.FC = () => {
                     {/* Tokens row (cBTC / cbBTC & USDC) */}
                     <div className={styles.dropdownTokensRow}>
                       {hasBtc && (
-                        <div className={styles.dropdownTokenCard}>
+                        <button
+                          type="button"
+                          className={`${styles.dropdownTokenCard} ${styles.dropdownTokenCardInteractive}`}
+                          onClick={() => {
+                            play('click');
+                            setDropdownOpen(false);
+                            setSwapModalOpen(true);
+                          }}
+                          title={btc ? `${btc} cbBTC · Tap to convert or swap` : 'Tap to convert or swap'}
+                          aria-label={`cbBTC balance: ${walletAddress ? (btcUsd ?? '$0.00') : 'none'}. Tap to swap or convert.`}
+                        >
                           <div className={styles.dropdownTokenLeft}>
                             <Image src="/tokens/cbbtc.webp" alt="" width={15} height={15} className={styles.dropdownTokenIcon} />
                             <span className={styles.dropdownTokenName}>cbBTC</span>
                           </div>
                           <span className={styles.dropdownTokenValue}>
-                            {walletAddress ? (btc ?? '—') : '—'}
+                            {walletAddress ? (btcUsd ?? '$0.00') : '—'}
                           </span>
-                        </div>
+                        </button>
                       )}
                       <div className={styles.dropdownTokenCard}>
                         <div className={styles.dropdownTokenLeft}>
@@ -649,6 +669,10 @@ const TopNavigation: React.FC = () => {
           )}
         </div>
       </div>
+      <TreasurySwapModal
+        open={swapModalOpen}
+        onClose={() => setSwapModalOpen(false)}
+      />
     </header>
   );
 };

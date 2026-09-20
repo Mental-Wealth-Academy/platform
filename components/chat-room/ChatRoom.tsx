@@ -8,6 +8,14 @@ import { useSound } from '@/hooks/useSound';
 import { normalizeAvatarUrl } from '@/lib/axis-avatar';
 import styles from './ChatRoom.module.css';
 
+export interface SurveyBadge {
+  surveyId: string;
+  surveyTitle: string;
+  result: string;
+  badge: string;
+  colorVar?: string;
+}
+
 interface ChatMessage {
   id: number;
   userId: string;
@@ -15,7 +23,31 @@ interface ChatMessage {
   avatarUrl: string | null;
   message: string;
   type: 'user' | 'system';
+  surveyBadge?: SurveyBadge | null;
   createdAt: string;
+}
+
+function parseSurveyBadge(raw: unknown): SurveyBadge | null {
+  if (!raw) return null;
+  if (typeof raw === 'object' && raw !== null && 'badge' in raw) {
+    return raw as SurveyBadge;
+  }
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object' && parsed.badge) {
+        return parsed as SurveyBadge;
+      }
+    } catch {
+      return {
+        surveyId: 'survey',
+        surveyTitle: 'Survey',
+        result: raw,
+        badge: raw,
+      };
+    }
+  }
+  return null;
 }
 
 function mapMessage(row: Record<string, unknown>): ChatMessage {
@@ -28,6 +60,7 @@ function mapMessage(row: Record<string, unknown>): ChatMessage {
     avatarUrl: normalizeAvatarUrl(storedAvatarUrl, `${userId}#0`),
     message: row.message as string,
     type: (row.type as 'user' | 'system') ?? 'user',
+    surveyBadge: parseSurveyBadge(row.survey_badge ?? row.surveyBadge),
     createdAt: (row.created_at ?? row.createdAt) as string,
   };
 }
@@ -387,6 +420,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         avatarUrl: data.message.avatar_url ?? null,
         message: text,
         type: 'user',
+        surveyBadge: parseSurveyBadge(data.message.survey_badge),
         createdAt: data.message.created_at,
       };
       // Sending always returns you to the newest messages.
@@ -484,6 +518,16 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
                 <div className={styles.msgBody}>
                   <div className={styles.msgMeta}>
                     <span className={styles.msgUsername}>{msg.username}</span>
+                    {msg.surveyBadge && (
+                      <span
+                        className={`${styles.surveyBadge} ${styles[`badge_${msg.surveyBadge.surveyId.replace(/-/g, '_')}`] || ''}`}
+                        title={`${msg.surveyBadge.surveyTitle}: ${msg.surveyBadge.result}`}
+                        aria-label={`Survey result: ${msg.surveyBadge.badge}`}
+                      >
+                        <span className={styles.surveyBadgeDot} aria-hidden="true" />
+                        <span className={styles.surveyBadgeText}>{msg.surveyBadge.badge}</span>
+                      </span>
+                    )}
                     <span className={styles.msgTime}>{formatTime(msg.createdAt)}</span>
                   </div>
                   <div className={`${styles.msgBubble} ${bubbleThemeClass}`}>

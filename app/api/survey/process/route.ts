@@ -9,7 +9,36 @@ import { scoreMoralFoundationsSurvey } from '@/components/survey/moralFoundation
 import { scoreAttachmentSurvey } from '@/components/survey/attachmentScoring'
 import { isDbConfigured, sqlQuery } from '@/lib/db'
 import { ensureSurveyCertificateMintsSchema } from '@/lib/ensureSurveyCertificateMintsSchema'
+import { ensureChatSchema } from '@/lib/ensureChatSchema'
+import { formatSurveyBadge, syncUserChatSurveyBadges, type SurveyBadge } from '@/lib/survey-badge'
 import { randomUUID } from 'crypto'
+
+async function recordSurveyCompletion(
+  userId: string,
+  surveyId: string,
+  profileType?: string | null
+): Promise<SurveyBadge | null> {
+  if (!isDbConfigured() || !userId) return null
+  const safeProfile = (profileType || 'Completed').trim()
+  try {
+    await ensureSurveyCertificateMintsSchema()
+    await sqlQuery(
+      `INSERT INTO survey_completions (id, user_id, survey_id, profile_type)
+       VALUES (:id, :userId, :surveyId, :profileType)
+       ON CONFLICT (user_id, survey_id) DO UPDATE SET
+         profile_type = EXCLUDED.profile_type,
+         completed_at = CURRENT_TIMESTAMP`,
+      { id: randomUUID(), userId, surveyId, profileType: safeProfile }
+    )
+    const badge = formatSurveyBadge(surveyId, safeProfile)
+    await ensureChatSchema()
+    await syncUserChatSurveyBadges(userId, badge)
+    return badge
+  } catch (err) {
+    console.error('[survey/process] Error recording completion:', err)
+    return null
+  }
+}
 
 interface ProcessSurveyRequest {
   surveyId: string
@@ -47,9 +76,13 @@ export async function POST(request: NextRequest) {
         )
       }
 
+      const profileType = viaScore.results.topStrengths?.[0]?.label ?? viaScore.results.personalizedTitle
+      const badge = await recordSurveyCompletion(user.id, surveyId, profileType)
+
       return NextResponse.json({
         success: true,
-        results: viaScore.results
+        results: viaScore.results,
+        badge,
       })
     }
 
@@ -68,7 +101,8 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      return NextResponse.json({ success: true, results: scored.results })
+      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
+      return NextResponse.json({ success: true, results: scored.results, badge })
     }
 
     if (surveyId === 'moral-foundations') {
@@ -84,7 +118,8 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      return NextResponse.json({ success: true, results: scored.results })
+      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
+      return NextResponse.json({ success: true, results: scored.results, badge })
     }
 
     if (surveyId === 'attachment-style') {
@@ -100,18 +135,7 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      if (!isDbConfigured()) {
-        return NextResponse.json({ success: false, error: 'Database not configured.' }, { status: 503 })
-      }
-      await ensureSurveyCertificateMintsSchema()
-      await sqlQuery(
-        `INSERT INTO survey_completions (id, user_id, survey_id, profile_type)
-         VALUES (:id, :userId, :surveyId, :profileType)
-         ON CONFLICT (user_id, survey_id) DO UPDATE SET
-           profile_type = EXCLUDED.profile_type,
-           completed_at = CURRENT_TIMESTAMP`,
-        { id: randomUUID(), userId: user.id, surveyId, profileType: scored.results.profileType },
-      )
+      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
       return NextResponse.json({
         success: true,
         results: scored.results,
@@ -120,11 +144,13 @@ export async function POST(request: NextRequest) {
           walletAddress: user.walletAddress,
           profileType: scored.results.profileType,
         },
+        badge,
       })
     }
 
     // Generic fallback for any unrecognised survey id
     const analysis = await generateSurveyAnalysis(surveyId, resolvedSurveyTitle, answers)
+    const badge = await recordSurveyCompletion(user.id, surveyId, resolvedSurveyTitle)
 
     return NextResponse.json({
       success: true,
@@ -137,6 +163,7 @@ export async function POST(request: NextRequest) {
         insights: [],
         timestamp: new Date().toISOString(),
       },
+      badge,
     })
 
   } catch (error) {

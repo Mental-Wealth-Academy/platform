@@ -3,6 +3,7 @@ import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureChatSchema } from '@/lib/ensureChatSchema';
 import { ensureNotificationsSchema } from '@/lib/ensureNotificationsSchema';
+import { getUserLatestSurveyBadge } from '@/lib/survey-badge';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,7 @@ type MessageRow = {
   avatar_url: string | null;
   message: string;
   type: string;
+  survey_badge: string | null;
   created_at: string;
 };
 
@@ -35,7 +37,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid after param.' }, { status: 400 });
     }
     const rows = await sqlQuery<MessageRow[]>(
-      `SELECT id, user_id, username, avatar_url, message, type, created_at
+      `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
        FROM chat_messages
        WHERE id > :afterId
        ORDER BY created_at ASC
@@ -51,7 +53,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid before param.' }, { status: 400 });
     }
     const rows = await sqlQuery<MessageRow[]>(
-      `SELECT id, user_id, username, avatar_url, message, type, created_at
+      `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
        FROM chat_messages
        WHERE id < :beforeId
        ORDER BY created_at DESC
@@ -62,7 +64,7 @@ export async function GET(request: NextRequest) {
   }
 
   const rows = await sqlQuery<MessageRow[]>(
-    `SELECT id, user_id, username, avatar_url, message, type, created_at
+    `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
      FROM chat_messages
      ORDER BY created_at DESC
      LIMIT :limit`,
@@ -140,17 +142,30 @@ export async function POST(request: Request) {
 
   await ensureChatSchema();
 
+  const badge = await getUserLatestSurveyBadge(user.id);
+  const badgeJson = badge ? JSON.stringify(badge) : null;
+
   const result = await sqlQuery<
-    Array<{ id: number; user_id: string; username: string; avatar_url: string | null; created_at: string }>
+    Array<{
+      id: number;
+      user_id: string;
+      username: string;
+      avatar_url: string | null;
+      message: string;
+      type: string;
+      survey_badge: string | null;
+      created_at: string;
+    }>
   >(
-    `INSERT INTO chat_messages (user_id, username, avatar_url, message, type)
-     VALUES (:userId, :username, :avatarUrl, :message, 'user')
-     RETURNING id, user_id, username, avatar_url, created_at`,
+    `INSERT INTO chat_messages (user_id, username, avatar_url, message, type, survey_badge)
+     VALUES (:userId, :username, :avatarUrl, :message, 'user', :badgeJson)
+     RETURNING id, user_id, username, avatar_url, message, type, survey_badge, created_at`,
     {
       userId: user.id,
       username: user.username,
       avatarUrl: user.avatarUrl,
       message,
+      badgeJson,
     }
   );
 

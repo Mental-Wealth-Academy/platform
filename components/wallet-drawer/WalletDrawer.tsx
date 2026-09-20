@@ -43,6 +43,7 @@ export default function WalletDrawer({
   const {
     diamonds: onchainDiamonds,
     btc: onchainBtc,
+    btcUsd: onchainBtcUsd,
     usdc: onchainUsdc,
     hasBtc,
     netLabel,
@@ -178,15 +179,24 @@ export default function WalletDrawer({
               </div>
 
               {hasBtc && (
-                <div className={styles.tokenCard}>
+                <button
+                  type="button"
+                  className={`${styles.tokenCard} ${styles.tokenCardInteractive}`}
+                  onClick={() => {
+                    onClose();
+                    window.dispatchEvent(new Event('openTreasurySwapModal'));
+                  }}
+                  title={onchainBtc ? `${onchainBtc} cbBTC · Tap to convert or swap` : 'Tap to convert or swap'}
+                  aria-label={`cbBTC balance: ${address ? (onchainBtcUsd ?? '$0.00') : 'none'}. Tap to swap or convert.`}
+                >
                   <div className={styles.tokenTop}>
-                     <div className={styles.tokenIcon}>
-                       <Image src="/tokens/cbbtc.webp" alt="" width={14} height={14} />
-                     </div>
+                    <div className={styles.tokenIcon}>
+                      <Image src="/tokens/cbbtc.webp" alt="" width={14} height={14} />
+                    </div>
                     <span className={styles.tokenName}>cbBTC</span>
                   </div>
-                  <span className={styles.tokenValue}>{address ? (onchainBtc ?? '—') : '—'}</span>
-                </div>
+                  <span className={styles.tokenValue}>{address ? (onchainBtcUsd ?? '$0.00') : '—'}</span>
+                </button>
               )}
             </div>
           </section>

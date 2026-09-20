@@ -86,23 +86,98 @@
   justify-self: start;
 }
 
-.logo {
-  width: 44px;
-  height: 44px;
+.jewel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  object-fit: contain;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1.5px solid color-mix(in srgb, var(--palette-on-dark) 50%, transparent);
+  box-shadow:
+    0 2px 12px color-mix(in srgb, var(--color-primary) 35%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-rainbow-cyan) 30%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-rainbow-rose) 22%, transparent);
   transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
-              width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+              box-shadow 0.24s ease,
+              width 0.3s ease,
+              height 0.3s ease;
+  z-index: 1;
 }
 
-.logoLink:hover .logo {
-  transform: scale(1.08) rotate(-2deg);
+.jewel::before {
+  content: "";
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      color-mix(in srgb, var(--palette-on-dark) 45%, transparent) 0%,
+      color-mix(in srgb, var(--palette-on-dark) 15%, transparent) 35%,
+      transparent 65%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.38 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    conic-gradient(
+      from 0deg at 50% 50%,
+      var(--color-primary) 0deg,
+      var(--color-rainbow-cyan) 48deg,
+      var(--color-rainbow-emerald) 98deg,
+      var(--color-rainbow-gold) 152deg,
+      var(--color-rainbow-orange) 204deg,
+      var(--color-rainbow-rose) 258deg,
+      var(--color-rainbow-violet) 310deg,
+      var(--color-primary) 360deg
+    );
+  animation: rainbowSpin 8s linear infinite;
+  will-change: transform;
+  z-index: 0;
 }
 
-.headerScrolled .logo {
+.jewel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--palette-on-dark) 50%, transparent) 0%,
+    color-mix(in srgb, var(--palette-on-dark) 10%, transparent) 40%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.jewelIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.logoLink:hover .jewel {
+  transform: scale(1.08);
+  box-shadow:
+    0 4px 16px color-mix(in srgb, var(--color-primary) 45%, transparent),
+    0 0 22px color-mix(in srgb, var(--color-rainbow-cyan) 38%, transparent),
+    0 0 30px color-mix(in srgb, var(--color-rainbow-rose) 30%, transparent);
+}
+
+.headerScrolled .jewel {
   width: 38px;
   height: 38px;
+}
+
+.headerScrolled .jewelIcon {
+  width: 22px;
+  height: 22px;
 }
 
 .sectionNav {
@@ -460,5 +535,14 @@
 
   .mobileMenuPanel .slideWrap {
     text-align: center;
+  }
+}
+
+@keyframes rainbowSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
