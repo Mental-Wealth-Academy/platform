@@ -124,7 +124,7 @@
     "eslint": "^8.50.0",
     "eslint-config-next": "^14.0.0",
     "raw-loader": "^4.0.2",
-    "tsx": "^4.7.0",
+    "tsx": "^4.23.13",
     "typescript": "^5.2.0",
     "vitest": "^2.1.9"
   }
