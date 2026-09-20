@@ -34,6 +34,57 @@
   50% { opacity: 1; transform: scale(1.2); }
 }
 
+/* ── Coursework task skeleton ── */
+.skeletonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.taskSkeletonCard {
+  width: 100%;
+  height: 64px;
+  border-radius: 14px;
+}
+
+.taskSkeletonButton {
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  margin-top: 4px;
+}
+
+.skeletonBlock {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-text-dark, #1c1d22) 8%, transparent);
+  pointer-events: none;
+}
+
+.skeletonBlock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: taskShimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes taskShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+:global([data-theme="dark"]) .skeletonBlock {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+
 /* Locked */
 .lockedMessage {
   display: flex;

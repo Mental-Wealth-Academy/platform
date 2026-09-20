@@ -258,7 +258,70 @@
 }
 
 .msgBubble:hover {
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+/* ── Chat skeleton loader ── */
+.skeletonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0 12px;
+  width: 100%;
+}
+
+.skeletonMsg {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeletonAvatar {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeletonMetaBar {
+  height: 10px;
+  border-radius: 999px;
+  margin-bottom: 2px;
+}
+
+.skeletonBubble {
+  border-radius: 14px;
+  min-width: 80px;
+}
+
+.skeletonBlock {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-text-dark, #1c1d22) 7%, transparent);
+}
+
+.skeletonBlock::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: chatShimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes chatShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+:global([data-theme="dark"]) .skeletonBlock {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+:global([data-theme="dark"]) .skeletonBlock::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
 }
 
 .bubbleSelf {

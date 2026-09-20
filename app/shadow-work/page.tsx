@@ -3,15 +3,19 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
-import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
 import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
-import CourseTour from '@/components/feature-tour/CourseTour';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
 
+const BlueDialogue = dynamic(() => import('@/components/blue-dialogue/BlueDialogue'), {
+  ssr: false,
+});
+const CourseTour = dynamic(() => import('@/components/feature-tour/CourseTour'), {
+  ssr: false,
+});
 const BookReaderModal = dynamic(() => import('@/components/book-reader/BookReaderModal'), {
   ssr: false,
 });
@@ -133,9 +137,27 @@ export default function CoursePage() {
   const [isReaderOpen, setIsReaderOpen] = useState(false);
   const [readerIndex, setReaderIndex] = useState(0);
   const [activeWeek, setActiveWeek] = useState<number>(0);
-  const [viewWeek, setViewWeek] = useState<number | null>(null);
+  const [viewWeek, setViewWeek] = useState<number>(1);
   const [weekEndsAt, setWeekEndsAt] = useState<string | null>(null);
   const [swipeAnim, setSwipeAnim] = useState<'none' | 'left' | 'right'>('none');
+
+  // Restore remembered view week from safe-storage on mount
+  useEffect(() => {
+    const saved = getStorageItem('mwa-shadow-work-view-week');
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      if (parsed >= 1 && parsed <= 12) {
+        setViewWeek(parsed);
+      }
+    }
+  }, []);
+
+  // Save current view week to safe-storage
+  useEffect(() => {
+    if (viewWeek != null) {
+      setStorageItem('mwa-shadow-work-view-week', String(viewWeek));
+    }
+  }, [viewWeek]);
 
   const { play } = useSound();
   const currentReading = WEEKLY_READINGS[readerIndex];
@@ -144,19 +166,15 @@ export default function CoursePage() {
   const touchCurrentX = useRef(0);
   const isSwiping = useRef(false);
 
-
   useEffect(() => {
     fetch('/api/season', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         const week = data.currentWeek ?? 0;
         setActiveWeek(week);
-        setViewWeek(Math.max(week, 1));
         setWeekEndsAt(data.weekEndsAt ?? null);
       })
-      .catch(() => {
-        setViewWeek(1);
-      })
+      .catch(() => {})
       .finally(() => {
         setSeasonLoading(false);
       });
@@ -359,103 +377,82 @@ export default function CoursePage() {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-            {seasonLoading || viewWeek === null ? (
-              <>
-                <div className={styles.readingCardSkeleton}>
-                  <div className={`${styles.readingMediaSkeleton} ${styles.skeletonBlock}`} />
-                  <div className={styles.readingInfo}>
-                    <span className={`${styles.readingCategorySkeletonLine} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.readingTitleSkeletonLine} ${styles.skeletonBlock}`} />
-                    <span className={`${styles.readingAuthorSkeletonLine} ${styles.skeletonBlock}`} />
-                  </div>
-                </div>
-                <div className={styles.weekTasksSkeleton}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <div key={i} className={`${styles.taskCardSkeleton} ${styles.skeletonBlock}`} />
-                  ))}
-                  <div className={`${styles.sealButtonSkeleton} ${styles.skeletonBlock}`} />
-                </div>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  data-tour="course-reading"
-                  className={`${styles.readingCard} ${rightContent === 'reading' ? styles.readingCardActive : ''}`}
-                  aria-expanded={!isDesktop ? rightContent === 'reading' : undefined}
-                  onClick={() => {
-                    play('click');
-                    const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
-                    setReaderIndex(idx);
-                    setSelectedTaskId(null);
-                    // Desktop opens the reading in the side panel; on phones it
-                    // unfolds as plain text right here, above the coursework,
-                    // instead of throwing a full-screen modal over the page.
-                    setRightContent(prev => (prev === 'reading' ? null : 'reading'));
-                  }}
-                  onMouseEnter={() => play('hover')}
-                >
-                  <span className={styles.readingAccent} aria-hidden="true" />
-                  <span
-                    className={styles.readingThumb}
-                    style={{ backgroundImage: `url(${JSON.stringify(weekReading.imageUrl)})` }}
-                    aria-hidden="true"
-                  />
-                  <div className={styles.readingInfo}>
-                    <span className={styles.readingTitle}>{weekReading.title}</span>
-                  </div>
-                  <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18l6-6-6-6"/>
-                  </svg>
-                </button>
-
-                {!isDesktop && rightContent === 'reading' && (
-                  <div className={styles.inlineReaderMobile}>
-                    <CourseInlineReader
-                      reading={WEEKLY_READINGS[readerIndex]}
-                      onBack={() => setRightContent(null)}
-                      backLabel="← Close reading"
-                      footer={
-                        <button
-                          type="button"
-                          className={styles.inlineReaderDiscuss}
-                          onClick={() => { play('click'); setIsReaderOpen(true); }}
-                        >
-                          Join the discussion
-                        </button>
-                      }
-                    />
-                  </div>
-                )}
-
-                <div className={styles.missionsHeadingRow}>
-                  <span className={styles.missionsDivider} />
-                  <h2 className={styles.missionsHeading}>Coursework</h2>
-                  <span className={styles.missionsDivider} />
-                </div>
-
-                <WeekTasksView
-                  key={resolvedViewWeek}
-                  weekNumber={resolvedViewWeek}
-                  enablePersistence={isAuthenticated}
-                  isLocked={resolvedViewWeek > activeWeek}
-                  initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
-                  initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
-                  onSealComplete={(weekNumber, txHash) => {
-                    setSelectedTaskId(null);
-                    setRightContent(null);
-                    handleSealComplete(weekNumber, txHash);
-                  }}
-                  selectedSectionId={selectedTaskId}
-                  onSectionSelect={(sectionId) => {
-                    setSelectedTaskId(sectionId);
-                    setRightContent(sectionId ? 'task' : null);
-                  }}
-                  renderDetailInPanel={isDesktop}
-                  detailPortalTarget={taskPanelTarget}
+              <button
+                type="button"
+                data-tour="course-reading"
+                className={`${styles.readingCard} ${rightContent === 'reading' ? styles.readingCardActive : ''}`}
+                aria-expanded={!isDesktop ? rightContent === 'reading' : undefined}
+                onClick={() => {
+                  play('click');
+                  const idx = Math.min(resolvedViewWeek, WEEKLY_READINGS.length - 1);
+                  setReaderIndex(idx);
+                  setSelectedTaskId(null);
+                  // Desktop opens the reading in the side panel; on phones it
+                  // unfolds as plain text right here, above the coursework,
+                  // instead of throwing a full-screen modal over the page.
+                  setRightContent(prev => (prev === 'reading' ? null : 'reading'));
+                }}
+                onMouseEnter={() => play('hover')}
+              >
+                <span className={styles.readingAccent} aria-hidden="true" />
+                <span
+                  className={styles.readingThumb}
+                  style={{ backgroundImage: `url(${JSON.stringify(weekReading.imageUrl)})` }}
+                  aria-hidden="true"
                 />
-              </>
-            )}
+                <div className={styles.readingInfo}>
+                  <span className={styles.readingTitle}>{weekReading.title}</span>
+                </div>
+                <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+
+              {!isDesktop && rightContent === 'reading' && (
+                <div className={styles.inlineReaderMobile}>
+                  <CourseInlineReader
+                    reading={WEEKLY_READINGS[readerIndex]}
+                    onBack={() => setRightContent(null)}
+                    backLabel="← Close reading"
+                    footer={
+                      <button
+                        type="button"
+                        className={styles.inlineReaderDiscuss}
+                        onClick={() => { play('click'); setIsReaderOpen(true); }}
+                      >
+                        Join the discussion
+                      </button>
+                    }
+                  />
+                </div>
+              )}
+
+              <div className={styles.missionsHeadingRow}>
+                <span className={styles.missionsDivider} />
+                <h2 className={styles.missionsHeading}>Coursework</h2>
+                <span className={styles.missionsDivider} />
+              </div>
+
+              <WeekTasksView
+                key={resolvedViewWeek}
+                weekNumber={resolvedViewWeek}
+                enablePersistence={isAuthenticated}
+                isLocked={resolvedViewWeek > activeWeek && activeWeek > 0}
+                initialIsSealed={getWeekStatus(resolvedViewWeek)?.isSealed}
+                initialSealTxHash={getWeekStatus(resolvedViewWeek)?.sealTxHash}
+                onSealComplete={(weekNumber, txHash) => {
+                  setSelectedTaskId(null);
+                  setRightContent(null);
+                  handleSealComplete(weekNumber, txHash);
+                }}
+                selectedSectionId={selectedTaskId}
+                onSectionSelect={(sectionId) => {
+                  setSelectedTaskId(sectionId);
+                  setRightContent(sectionId ? 'task' : null);
+                }}
+                renderDetailInPanel={isDesktop}
+                detailPortalTarget={taskPanelTarget}
+              />
             </div>
           </div>
 

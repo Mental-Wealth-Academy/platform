@@ -40,11 +40,13 @@ export async function GET(request: NextRequest) {
       `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
        FROM chat_messages
        WHERE id > :afterId
-       ORDER BY created_at ASC
+       ORDER BY id ASC
        LIMIT 30`,
       { afterId }
     );
-    return NextResponse.json({ messages: rows });
+    return NextResponse.json({ messages: rows }, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   }
 
   if (before) {
@@ -56,22 +58,26 @@ export async function GET(request: NextRequest) {
       `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
        FROM chat_messages
        WHERE id < :beforeId
-       ORDER BY created_at DESC
+       ORDER BY id DESC
        LIMIT :limit`,
       { beforeId, limit: PAGE_SIZE }
     );
-    return NextResponse.json({ messages: rows.reverse(), hasMore: rows.length >= PAGE_SIZE });
+    return NextResponse.json({ messages: rows.reverse(), hasMore: rows.length >= PAGE_SIZE }, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   }
 
   const rows = await sqlQuery<MessageRow[]>(
     `SELECT id, user_id, username, avatar_url, message, type, survey_badge, created_at
      FROM chat_messages
-     ORDER BY created_at DESC
+     ORDER BY id DESC
      LIMIT :limit`,
     { limit: PAGE_SIZE }
   );
 
-  return NextResponse.json({ messages: rows.reverse(), hasMore: rows.length >= PAGE_SIZE });
+  return NextResponse.json({ messages: rows.reverse(), hasMore: rows.length >= PAGE_SIZE }, {
+    headers: { 'Cache-Control': 'no-store, max-age=0' },
+  });
 }
 
 async function parseMentions(

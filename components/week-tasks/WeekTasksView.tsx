@@ -627,10 +627,11 @@ export default function WeekTasksView({
 
   if (isLoading || sectionsLoading) {
     return (
-      <div className={styles.loading}>
-        <div className={styles.loadingDot} />
-        <div className={styles.loadingDot} />
-        <div className={styles.loadingDot} />
+      <div className={styles.skeletonContainer} aria-busy="true" aria-label="Loading coursework">
+        {Array.from({ length: 5 }, (_, i) => (
+          <div key={i} className={`${styles.taskSkeletonCard} ${styles.skeletonBlock}`} />
+        ))}
+        <div className={`${styles.taskSkeletonButton} ${styles.skeletonBlock}`} />
       </div>
     );
   }

@@ -111,6 +111,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [input, setInput] = useState('');
@@ -196,6 +197,8 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
       }
     } catch {
       // best-effort
+    } finally {
+      setInitialLoading(false);
     }
   }, []);
 
@@ -478,7 +481,37 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         <div ref={sentinelRef} className={styles.sentinel} />
         {loadingOlder && <p className={styles.loadingOlder}>Loading older messages...</p>}
 
-        {messages.length === 0 ? (
+        {initialLoading ? (
+          <div className={styles.skeletonContainer} aria-busy="true" aria-label="Loading messages">
+            {[
+              { self: false, metaWidth: 72, bubbleWidth: '60%', height: 36 },
+              { self: false, metaWidth: 96, bubbleWidth: '45%', height: 36 },
+              { self: true, metaWidth: 64, bubbleWidth: '55%', height: 36 },
+              { self: false, metaWidth: 84, bubbleWidth: '75%', height: 52 },
+              { self: true, metaWidth: 70, bubbleWidth: '38%', height: 36 },
+              { self: false, metaWidth: 90, bubbleWidth: '68%', height: 36 },
+            ].map((s, idx) => (
+              <div
+                key={idx}
+                className={`${styles.chatMessage} ${s.self ? styles.chatMessageSelf : ''} ${styles.skeletonMsg}`}
+              >
+                <div className={`${styles.skeletonAvatar} ${styles.skeletonBlock}`} />
+                <div className={styles.msgBody}>
+                  <div className={styles.msgMeta}>
+                    <div
+                      className={`${styles.skeletonMetaBar} ${styles.skeletonBlock}`}
+                      style={{ width: s.metaWidth }}
+                    />
+                  </div>
+                  <div
+                    className={`${styles.skeletonBubble} ${styles.skeletonBlock}`}
+                    style={{ width: s.bubbleWidth, height: s.height }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : messages.length === 0 ? (
           <p className={styles.chatEmpty}>No messages yet. Start the conversation.</p>
         ) : (
           messages.map((msg) => {
