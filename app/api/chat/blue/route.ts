@@ -92,6 +92,8 @@ interface ParsedChatBody {
   burnTxHash?: unknown;
   clientRequestId?: unknown;
   payloadHash?: unknown;
+  isCall?: unknown;
+  call?: unknown;
 }
 
 interface ProviderTextStream {
@@ -650,7 +652,7 @@ function streamingBlueResponse(args: {
   userId: string;
   clientRequestId: string;
   payloadHash: string;
-  burnTxHash: string;
+  burnTxHash?: string;
   userMessage: string;
   mode: BlueMode;
   attachmentCount: number;
@@ -672,39 +674,48 @@ function streamingBlueResponse(args: {
     const partialResponse = responseText.trim();
     settlementPromise = (async () => {
       if (!partialResponse) {
-        await releaseDiamondBurn(args.burnTxHash, args.userId);
+        if (args.burnTxHash) {
+          await releaseDiamondBurn(args.burnTxHash, args.userId);
+        }
         return;
       }
 
       // Once output reaches the member, either durable record prevents a
       // disconnect from buying a second generation. A replay can heal the
       // other record if one database write was interrupted.
-      const [ledgerResult, turnResult] = await Promise.allSettled([
-        completeDiamondBurn(
-          args.burnTxHash,
-          args.userId,
-          args.clientRequestId,
-          args.payloadHash,
-          partialResponse,
-        ),
-        persistBlueTurn({
-          userId: args.userId,
-          requestId: args.clientRequestId,
-          userMessage: args.userMessage,
-          assistantMessage: partialResponse,
-          mode: args.mode,
-          attachmentCount: args.attachmentCount,
-        }),
-      ]);
-      if (ledgerResult.status === 'rejected' && turnResult.status === 'rejected') {
-        throw new Error('Blue turn settlement failed');
-      }
-      completed = true;
-      if (ledgerResult.status === 'rejected' || turnResult.status === 'rejected') {
-        console.warn('[Blue] turn settlement deferred', {
-          ledgerPending: ledgerResult.status === 'rejected',
-          turnPending: turnResult.status === 'rejected',
-        });
+      const persistPromise = persistBlueTurn({
+        userId: args.userId,
+        requestId: args.clientRequestId,
+        userMessage: args.userMessage,
+        assistantMessage: partialResponse,
+        mode: args.mode,
+        attachmentCount: args.attachmentCount,
+      });
+
+      if (args.burnTxHash) {
+        const [ledgerResult, turnResult] = await Promise.allSettled([
+          completeDiamondBurn(
+            args.burnTxHash,
+            args.userId,
+            args.clientRequestId,
+            args.payloadHash,
+            partialResponse,
+          ),
+          persistPromise,
+        ]);
+        if (ledgerResult.status === 'rejected' && turnResult.status === 'rejected') {
+          throw new Error('Blue turn settlement failed');
+        }
+        completed = true;
+        if (ledgerResult.status === 'rejected' || turnResult.status === 'rejected') {
+          console.warn('[Blue] turn settlement deferred', {
+            ledgerPending: ledgerResult.status === 'rejected',
+            turnPending: turnResult.status === 'rejected',
+          });
+        }
+      } else {
+        await persistPromise;
+        completed = true;
       }
     })();
     return settlementPromise;
@@ -726,15 +737,17 @@ function streamingBlueResponse(args: {
           if (!outputStarted) {
             pendingPrefix += delta;
             if (pendingPrefix.trim()) {
-              const consumed = await markDiamondBurnOutputStarted(
-                args.burnTxHash,
-                args.userId,
-                args.clientRequestId,
-                args.payloadHash,
-                pendingPrefix,
-              );
-              if (!consumed) {
-                throw new Error('Paid receipt could not be consumed');
+              if (args.burnTxHash) {
+                const consumed = await markDiamondBurnOutputStarted(
+                  args.burnTxHash,
+                  args.userId,
+                  args.clientRequestId,
+                  args.payloadHash,
+                  pendingPrefix,
+                );
+                if (!consumed) {
+                  throw new Error('Paid receipt could not be consumed');
+                }
               }
               outputStarted = true;
               responseText += pendingPrefix;
@@ -764,7 +777,7 @@ function streamingBlueResponse(args: {
 
         controller.enqueue(jsonLine({
           type: 'done',
-          diamondsBurned: DIAMOND_COST,
+          diamondsBurned: args.burnTxHash ? DIAMOND_COST : 0,
           debug: args.debug,
         }));
         controller.close();
@@ -787,7 +800,7 @@ function streamingBlueResponse(args: {
           ? {
               type: 'done',
               partial: true,
-              diamondsBurned: DIAMOND_COST,
+              diamondsBurned: args.burnTxHash ? DIAMOND_COST : 0,
               debug: args.debug,
             }
           : {
@@ -972,21 +985,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'payload_hash_mismatch' }, { status: 409 });
   }
 
+  const isCall = Boolean(body.isCall || body.call);
   const burnTxHash = typeof body.burnTxHash === 'string'
     ? body.burnTxHash.trim()
     : '';
-  if (!burnTxHash || !TX_HASH_PATTERN.test(burnTxHash)) {
+
+  if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
+    return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
+  }
+
+  if (!isCall && (!burnTxHash || !TX_HASH_PATTERN.test(burnTxHash))) {
     // Free preflight checks readiness before asking the wallet for a burn.
-    if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
-      return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
-    }
     return NextResponse.json({
       error: 'burn_required',
       cost: DIAMOND_COST,
     }, { status: 402 });
   }
 
-  const priorBurn = await getDiamondBurnResult(
+  if (burnTxHash) {
+    const priorBurn = await getDiamondBurnResult(
     burnTxHash,
     user.id,
     'blue_chat',
@@ -1160,8 +1177,9 @@ export async function POST(request: Request) {
       requestId: clientRequestId,
       payloadHash,
     });
-    if (!reserved) {
-      return NextResponse.json({ error: 'request_in_progress' }, { status: 409 });
+      if (!reserved) {
+        return NextResponse.json({ error: 'request_in_progress' }, { status: 409 });
+      }
     }
   }
 
@@ -1170,23 +1188,27 @@ export async function POST(request: Request) {
     requestId: clientRequestId,
   });
   if (recoveredResponse) {
-    await completeDiamondBurn(
-      burnTxHash,
-      user.id,
-      clientRequestId,
-      payloadHash,
-      recoveredResponse,
-    );
+    if (burnTxHash) {
+      await completeDiamondBurn(
+        burnTxHash,
+        user.id,
+        clientRequestId,
+        payloadHash,
+        recoveredResponse,
+      );
+    }
     return NextResponse.json({
       response: recoveredResponse,
       replayed: true,
-      diamondsBurned: DIAMOND_COST,
+      diamondsBurned: burnTxHash ? DIAMOND_COST : 0,
     });
   }
 
   const remainingRequestMs = requestDeadlineAtMs - Date.now();
   if (remainingRequestMs <= 0) {
-    await releaseDiamondBurn(burnTxHash, user.id).catch(() => undefined);
+    if (burnTxHash) {
+      await releaseDiamondBurn(burnTxHash, user.id).catch(() => undefined);
+    }
     return NextResponse.json({
       error: 'request_deadline_exceeded',
       retryable: true,
@@ -1231,7 +1253,7 @@ export async function POST(request: Request) {
       userId: user.id,
       clientRequestId,
       payloadHash,
-      burnTxHash,
+      burnTxHash: burnTxHash || undefined,
       userMessage: message,
       mode,
       attachmentCount: attachments.length,
@@ -1241,7 +1263,9 @@ export async function POST(request: Request) {
     });
   } catch (error: unknown) {
     deadlineContext.cleanup();
-    await releaseDiamondBurn(burnTxHash, user.id).catch(() => undefined);
+    if (burnTxHash) {
+      await releaseDiamondBurn(burnTxHash, user.id).catch(() => undefined);
+    }
     console.error('[Blue] turn setup failed', {
       errorType: error instanceof Error ? error.name : 'UnknownError',
     });

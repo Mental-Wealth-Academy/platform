@@ -350,3 +350,16 @@ describe('Eliza stream normalization', () => {
     })).rejects.toThrow('Eliza response stream failed');
   });
 });
+
+describe('Calling Blue gasless messages', () => {
+  it('bypasses burn requirement when isCall is passed', () => {
+    const route = readRepoFile('app/api/chat/blue/route.ts');
+    expect(route).toContain('const isCall = Boolean(body.isCall || body.call);');
+    expect(route).toContain('if (!isCall && (!burnTxHash || !TX_HASH_PATTERN.test(burnTxHash)))');
+  });
+
+  it('passes isCall when calling Blue from the client', () => {
+    const client = readRepoFile('components/blue-chat/BlueChat.tsx');
+    expect(client).toContain('isCall: true');
+  });
+});

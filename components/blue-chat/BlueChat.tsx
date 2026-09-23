@@ -775,6 +775,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
       payloadHash: string;
       pathname: string | null;
       burnTxHash?: string;
+      isCall?: boolean;
     }) => fetch('/api/chat/blue', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
@@ -785,6 +786,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
         clientRequestId: payload.clientRequestId,
         payloadHash: payload.payloadHash,
         burnTxHash: payload.burnTxHash,
+        isCall: payload.isCall ?? true,
       }),
     });
 
@@ -927,6 +929,7 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
           clientRequestId,
           payloadHash,
           pathname,
+          isCall: true,
         });
         if (preflight.status !== 402) {
           await consumeResponse(preflight, null);
