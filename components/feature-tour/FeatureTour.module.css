@@ -153,7 +153,8 @@
 @media (max-width: 600px) {
   .callout,
   .calloutCentered {
-    width: calc(100vw - 32px);
+    width: min(340px, calc(100vw - 44px));
+    max-width: calc(100vw - 44px);
   }
 }
 

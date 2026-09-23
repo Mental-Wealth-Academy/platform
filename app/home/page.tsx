@@ -226,7 +226,13 @@ export default function HomePage() {
     // A brand-new member gets the first-run intro; the weekly check-in waits
     // for a later visit so two big moments never land at once.
     if (!hasSeenIntro) {
-      openDaily();
+      const introPending = getStorageItem('mwa-home-intro-pending') === '1';
+      if (!introPending) {
+        openDaily();
+      } else {
+        setStorageItem(COURSES_INTRO_SEEN_KEY, 'true');
+        setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
+      }
       return () => {
         if (timer) window.clearTimeout(timer);
       };
@@ -244,6 +250,8 @@ export default function HomePage() {
         if (weeklyDue) {
           setWeeklyWeek(week);
           setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
+          // Mark daily spotlight so the user is not double-prompted after the weekly check-in
+          setStorageItem(`mwa-daily-spotlight-shown-${today}`, '1');
           // Ask Blue for lines personalized from her memory of this learner,
           // but never hold the moment hostage: after 3.5s the canonical
           // script opens as-is.
@@ -258,11 +266,12 @@ export default function HomePage() {
             timer = window.setTimeout(() => setWeeklyOpen(true), 500);
           });
         } else {
-          openDaily();
+          // Normal daily visit: FeatureTour's minimalist Field Notes card handles the daily check-in
+          setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
         }
       })
       .catch(() => {
-        if (!cancelled) openDaily();
+        if (!cancelled) setStorageItem(COURSES_DIALOGUE_DATE_KEY, today);
       });
 
     return () => {
@@ -860,7 +869,7 @@ export default function HomePage() {
 
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
 
-      {!learnOnly && postSignupReady && <FeatureTour />}
+      {!learnOnly && postSignupReady && <FeatureTour suppressed={weeklyOpen || introOpen} />}
 
       {!learnOnly && (weeklyScript ? (
         <BlueDialogue

@@ -69,7 +69,11 @@ const INTRO_STEPS: IntroStep[] = [
   },
 ];
 
-export default function FeatureTour() {
+export interface FeatureTourProps {
+  suppressed?: boolean;
+}
+
+export default function FeatureTour({ suppressed = false }: FeatureTourProps = {}) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('idle');
   const [remindMode, setRemindMode] = useState<RemindMode>('reminder');
@@ -142,9 +146,17 @@ export default function FeatureTour() {
     }, 80);
   }, []);
 
+  // Tear down if suppressed becomes true while a phase is active
+  useEffect(() => {
+    if (suppressed && phase !== 'idle') {
+      setPhase('idle');
+      setRect(null);
+    }
+  }, [suppressed, phase]);
+
   // Decide what (if anything) to show, once on mount.
   const initPhase = useCallback(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || suppressed) return;
 
     const introPending = getStorageItem(PENDING_KEY) === '1';
     const introSeen = getStorageItem(INTRO_SEEN_KEY) === '1';
@@ -208,7 +220,7 @@ export default function FeatureTour() {
         cancelled = true;
       };
     }
-  }, []);
+  }, [suppressed]);
 
   useEffect(() => {
     initPhase();
@@ -300,12 +312,13 @@ export default function FeatureTour() {
     if (phase === 'idle') return;
     const el = calloutRef.current;
     if (!el) return;
-    const margin = 16;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const isMobile = vw <= 600;
+    const margin = isMobile ? 22 : 16;
     const gap = 14;
     const cw = el.offsetWidth;
     const ch = el.offsetHeight;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
 
     let top: number;
     let left: number;
@@ -344,7 +357,27 @@ export default function FeatureTour() {
     el.style.opacity = '1';
   }, [rect, stepIndex, phase]);
 
-  if (typeof document === 'undefined') return null;
+  if (suppressed || typeof document === 'undefined') return null;
+
+  const renderSpotlight = (targetRect: DOMRect | null) => {
+    if (!targetRect || typeof window === 'undefined') return null;
+    const pad = 6;
+    const minEdgeMargin = 10;
+    const spotLeft = Math.max(minEdgeMargin, targetRect.left - pad);
+    const spotRight = Math.min(window.innerWidth - minEdgeMargin, targetRect.right + pad);
+    const spotWidth = Math.max(0, spotRight - spotLeft);
+    return (
+      <div
+        className={styles.spotlight}
+        style={{
+          top: targetRect.top - pad,
+          left: spotLeft,
+          width: spotWidth,
+          height: targetRect.height + pad * 2,
+        }}
+      />
+    );
+  };
 
   const blueHeader = (extra?: ReactNode, name: string = 'Blue') => (
     <div className={styles.blueHead}>
@@ -395,17 +428,7 @@ export default function FeatureTour() {
     <div className={styles.root} role="dialog" aria-modal="true" aria-label="Daily Note intro">
       <div className={`${styles.scrim} ${rect ? '' : styles.scrimSolid}`} />
 
-      {rect && (
-        <div
-          className={styles.spotlight}
-          style={{
-            top: rect.top - 6,
-            left: rect.left - 6,
-            width: rect.width + 12,
-            height: rect.height + 12,
-          }}
-        />
-      )}
+      {renderSpotlight(rect)}
 
       <div ref={calloutRef} className={styles.callout}>
         {blueHeader(
@@ -448,17 +471,7 @@ export default function FeatureTour() {
     <div className={styles.root} role="dialog" aria-modal="true" aria-label="Daily Note reminder">
       <div className={`${styles.scrim} ${rect ? '' : styles.scrimSolid}`} />
 
-      {rect && (
-        <div
-          className={styles.spotlight}
-          style={{
-            top: rect.top - 6,
-            left: rect.left - 6,
-            width: rect.width + 12,
-            height: rect.height + 12,
-          }}
-        />
-      )}
+      {renderSpotlight(rect)}
 
       <div ref={calloutRef} className={styles.callout}>
         {blueHeader()}

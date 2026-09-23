@@ -502,7 +502,7 @@
   height: 40px;
   background: transparent;
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--color-text-dark);
   cursor: pointer;
   box-shadow: 0 3px 0 color-mix(in oklch, var(--color-primary) 22%, transparent);
@@ -515,18 +515,24 @@
   color: var(--color-primary);
 }
 
+.compactMenuButtonActive {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
 .dropdownPanel {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   right: 0;
-  width: 280px;
+  width: 336px;
   background: var(--color-surface-base, var(--palette-canvas));
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   border-radius: 16px;
   box-shadow:
     0 12px 36px color-mix(in oklch, var(--palette-ink) 14%, transparent),
     0 2px 0 color-mix(in oklch, var(--color-primary) 18%, transparent);
-  padding: 10px;
+  padding: 16px;
   z-index: 300;
   animation: dropdownFadeIn 0.15s ease;
 }
@@ -650,6 +656,13 @@
   color: var(--color-text-soft);
 }
 
+.dropdownSectionSub {
+  font-family: var(--font-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
 .dropdownNetBadge {
   font-size: 10px;
   font-weight: 700;
@@ -663,8 +676,102 @@
 
 .dropdownDivider {
   height: 1px;
-  margin: 6px 4px;
+  margin: 16px 0;
   background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+}
+
+.dropdownDividerLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px;
+  padding: 0 8px;
+}
+
+.dropdownDividerLine {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+.dropdownDividerText {
+  font-family: var(--font-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-soft);
+  flex-shrink: 0;
+  text-transform: none;
+}
+
+.dropdownNavGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdownGridItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+  font-family: var(--font-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.dropdownGridItem:hover {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 36%, transparent);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.dropdownGridItem:active {
+  transform: translateY(0);
+}
+
+.dropdownGridItemActive {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.dropdownGridIconWrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+.dropdownGridIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.dropdownGridLabel {
+  font-family: var(--font-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dropdownBalanceHero {
@@ -1074,6 +1181,12 @@ button.dropdownTokenCard:active,
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
+:global([data-theme="dark"]) .compactMenuButtonActive {
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
 :global([data-theme="dark"]) .dropdownPanel {
   background: var(--color-shell-background);
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
@@ -1084,6 +1197,32 @@ button.dropdownTokenCard:active,
 
 :global([data-theme="dark"]) .dropdownDivider {
   background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownDividerLine {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownGridItem {
+  border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  color: var(--palette-text-light, #f0f2ff);
+}
+
+:global([data-theme="dark"]) .dropdownGridItem:hover {
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .dropdownGridItemActive {
+  background: color-mix(in oklch, var(--color-primary) 24%, transparent);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .dropdownGridIconWrap {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
 }
 
 :global([data-theme="dark"]) .dropdownBalanceHero {
@@ -1183,19 +1322,31 @@ button.dropdownTokenCard:active,
    flex-shrink room to resize. These sizes just strip non-essentials. */
 
 /* Tablet portrait — hide nav links, keep logo + search.
-   The compact dropdown stays: it is the only route to Shop, Call Blue, the
-   theme picker, and Login/Join once .nav is hidden. */
+   The compact hamburger dropdown stays: it is the primary route to Pages,
+   Balances, and Account settings once .nav is hidden. */
 @media (max-width: 900px) {
+  .menuButton { display: none; }
   .centerNav { display: none; }
   .nav { display: none; }
   .compactMenuWrap { display: flex; margin-left: auto; }
-  .header { padding: 0 12px; }
+  .header { padding: 0 16px; }
   .searchWrapper { padding: 0 8px; flex: 1; }
   .searchInput { min-width: 80px; max-width: 100%; }
-  .mobileActions { display: flex; margin-left: 8px; }
+
+  .dropdownPanel {
+    position: fixed;
+    top: calc(var(--banner-height, 0px) + 72px + 8px);
+    right: 8px;
+    left: auto;
+    width: min(336px, calc(100vw - 16px));
+    max-height: calc(100dvh - var(--banner-height, 0px) - 88px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
 }
 
-/* Phone — hide search, give the logo room and keep the profile icon on the right */
+/* Phone — hide search, give the logo room and keep the hamburger menu on the right */
 @media (max-width: 640px) {
   .menuButton { display: none; }
   .searchWrapper { display: none; }
@@ -1203,21 +1354,7 @@ button.dropdownTokenCard:active,
     flex: 0 0 auto;
     justify-content: flex-start;
   }
-  .mobileActions { margin-left: 8px; }
-  .header { padding: 0 12px; }
-
-  /* Pin the dropdown to the viewport instead of the trigger so it can never
-     hang off the right edge, and give rows thumb-sized hit areas. */
-  .dropdownPanel {
-    position: fixed;
-    top: calc(var(--banner-height, 0px) + 72px + 8px);
-    right: 12px;
-    left: auto;
-    width: min(300px, calc(100vw - 24px));
-    max-height: calc(100vh - var(--banner-height, 0px) - 96px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  .header { padding: 0 16px; }
 
   .dropdownActionItem,
   .dropdownSignOutButton,

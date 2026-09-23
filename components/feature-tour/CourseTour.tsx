@@ -233,12 +233,13 @@ export default function CourseTour() {
     if (phase === 'idle') return;
     const el = calloutRef.current;
     if (!el) return;
-    const margin = 16;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const isMobile = vw <= 600;
+    const margin = isMobile ? 22 : 16;
     const gap = 14;
     const cw = el.offsetWidth;
     const ch = el.offsetHeight;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
 
     let top: number;
     let left: number;
@@ -269,6 +270,26 @@ export default function CourseTour() {
 
   if (typeof document === 'undefined') return null;
 
+  const renderSpotlight = (targetRect: DOMRect | null) => {
+    if (!targetRect || typeof window === 'undefined') return null;
+    const pad = 6;
+    const minEdgeMargin = 10;
+    const spotLeft = Math.max(minEdgeMargin, targetRect.left - pad);
+    const spotRight = Math.min(window.innerWidth - minEdgeMargin, targetRect.right + pad);
+    const spotWidth = Math.max(0, spotRight - spotLeft);
+    return (
+      <div
+        className={styles.spotlight}
+        style={{
+          top: targetRect.top - pad,
+          left: spotLeft,
+          width: spotWidth,
+          height: targetRect.height + pad * 2,
+        }}
+      />
+    );
+  };
+
   const blueHeader = (extra?: ReactNode) => (
     <div className={styles.blueHead}>
       <span className={styles.blueAvatar}>
@@ -290,17 +311,7 @@ export default function CourseTour() {
     <div className={styles.root} role="dialog" aria-modal="true" aria-label="Course walkthrough">
       <div className={`${styles.scrim} ${rect ? '' : styles.scrimSolid}`} />
 
-      {rect && (
-        <div
-          className={styles.spotlight}
-          style={{
-            top: rect.top - 6,
-            left: rect.left - 6,
-            width: rect.width + 12,
-            height: rect.height + 12,
-          }}
-        />
-      )}
+      {renderSpotlight(rect)}
 
       <div ref={calloutRef} className={styles.callout}>
         {blueHeader(

@@ -28,6 +28,21 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
 ];
 
+const PAGE_LINKS: NavLink[] = [
+  { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
+  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
+  { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
+  { label: 'Library', href: '/learn', icon: '/icons/daemon.svg?v=4' },
+  { label: 'Lessons', href: '/shadow-work', icon: '/icons/nav-course-v2.svg' },
+  { label: 'Surveys', href: '/surveys', icon: '/icons/nav-surveys-v5.svg?v=4' },
+  { label: 'Simulations', href: '/simulation', icon: '/icons/nav-simulations-v2.svg?v=4' },
+  { label: 'Shop', href: '/shop', icon: '/icons/ui-diamond.svg' },
+  { label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg?v=4' },
+  { label: 'Lists', href: '/list', icon: '/icons/nav-journal-v3.svg' },
+  { label: 'Chat', href: '/chat', icon: '/icons/nav-prompts-v3.svg' },
+  { label: 'Community', href: '/community', icon: '/icons/nav-community-v2.svg' },
+];
+
 const TopNavigation: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -387,25 +402,34 @@ const TopNavigation: React.FC = () => {
           <div id="topnav-profile-slot" className={styles.profileSlot} />
         </nav>
 
-        {/* Compact dropdown — replaces centerNav + nav at <= 1380px */}
+        {/* Compact dropdown — unified mobile/tablet hamburger navigation */}
         <div className={styles.compactMenuWrap} ref={dropdownRef}>
           <button
             ref={dropdownTriggerRef}
             type="button"
-            className={styles.compactMenuButton}
+            className={`${styles.compactMenuButton} ${dropdownOpen ? styles.compactMenuButtonActive : ''}`}
             onClick={() => setDropdownOpen((prev) => !prev)}
             onMouseEnter={() => play('hover')}
-            aria-label={dropdownOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-label={dropdownOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={dropdownOpen}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {dropdownOpen ? (
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </>
+              ) : (
+                <>
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </>
+              )}
             </svg>
           </button>
           {dropdownOpen && (
-            <div className={styles.dropdownPanel} role="menu" aria-label="Account and balances menu">
+            <div className={styles.dropdownPanel} role="menu" aria-label="Navigation and account menu">
               {authenticated ? (
                 <>
                   {/* Profile Header */}
@@ -444,12 +468,17 @@ const TopNavigation: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className={styles.dropdownDivider} />
+                  {/* Divider label: Balances */}
+                  <div className={styles.dropdownDividerLabel}>
+                    <span className={styles.dropdownDividerLine} />
+                    <span className={styles.dropdownDividerText}>Balances</span>
+                    <span className={styles.dropdownDividerLine} />
+                  </div>
 
                   {/* Balances Section */}
                   <div className={styles.dropdownSection}>
                     <div className={styles.dropdownSectionHead}>
-                      <span className={styles.dropdownSectionLabel}>Balances</span>
+                      <span className={styles.dropdownSectionSub}>Credits</span>
                       <span className={styles.dropdownNetBadge}>{netLabel}</span>
                     </div>
 
@@ -484,7 +513,7 @@ const TopNavigation: React.FC = () => {
                           aria-label={`cbBTC balance: ${walletAddress ? (btcUsd ?? '$0.00') : 'none'}. Tap to swap or convert.`}
                         >
                           <div className={styles.dropdownTokenLeft}>
-                            <Image src="/tokens/cbbtc.webp" alt="" width={15} height={15} className={styles.dropdownTokenIcon} />
+                            <Image src="/tokens/cbbtc.webp" alt="" width={16} height={16} className={styles.dropdownTokenIcon} />
                             <span className={styles.dropdownTokenName}>cbBTC</span>
                           </div>
                           <span className={styles.dropdownTokenValue}>
@@ -494,7 +523,7 @@ const TopNavigation: React.FC = () => {
                       )}
                       <div className={styles.dropdownTokenCard}>
                         <div className={styles.dropdownTokenLeft}>
-                          <Image src="/tokens/usdc.webp" alt="" width={15} height={15} className={styles.dropdownTokenIcon} />
+                          <Image src="/tokens/usdc.webp" alt="" width={16} height={16} className={styles.dropdownTokenIcon} />
                           <span className={styles.dropdownTokenName}>USDC</span>
                         </div>
                         <span className={styles.dropdownTokenValue}>
@@ -504,12 +533,54 @@ const TopNavigation: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className={styles.dropdownDivider} />
+                  {/* Divider label: Pages */}
+                  <div className={styles.dropdownDividerLabel}>
+                    <span className={styles.dropdownDividerLine} />
+                    <span className={styles.dropdownDividerText}>Pages</span>
+                    <span className={styles.dropdownDividerLine} />
+                  </div>
+
+                  {/* Pages 2-Column Grid with 8 multiple px spacing */}
+                  <div className={styles.dropdownNavGrid}>
+                    {PAGE_LINKS.map((page) => {
+                      const active = pathname === page.href || pathname?.startsWith(page.href + '/');
+                      return (
+                        <Link
+                          key={page.href}
+                          href={page.href}
+                          className={`${styles.dropdownGridItem} ${active ? styles.dropdownGridItemActive : ''}`}
+                          onClick={() => {
+                            play('navigation');
+                            setDropdownOpen(false);
+                          }}
+                          aria-current={active ? 'page' : undefined}
+                        >
+                          {page.icon && (
+                            <span className={styles.dropdownGridIconWrap}>
+                              <Image
+                                src={page.icon}
+                                alt=""
+                                width={16}
+                                height={16}
+                                className={styles.dropdownGridIcon}
+                              />
+                            </span>
+                          )}
+                          <span className={styles.dropdownGridLabel}>{page.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+
+                  {/* Divider label: Account */}
+                  <div className={styles.dropdownDividerLabel}>
+                    <span className={styles.dropdownDividerLine} />
+                    <span className={styles.dropdownDividerText}>Account</span>
+                    <span className={styles.dropdownDividerLine} />
+                  </div>
 
                   {/* Account Actions Section */}
                   <div className={styles.dropdownSection}>
-                    <span className={styles.dropdownSectionLabel}>Account</span>
-
                     <button
                       type="button"
                       className={styles.dropdownActionItem}
@@ -519,7 +590,7 @@ const TopNavigation: React.FC = () => {
                         window.dispatchEvent(new Event('openAvatarModal'));
                       }}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                       </svg>
@@ -535,7 +606,7 @@ const TopNavigation: React.FC = () => {
                         window.dispatchEvent(new Event('openUsernameModal'));
                       }}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                         <line x1="7" y1="7" x2="7.01" y2="7" />
                       </svg>
@@ -550,7 +621,7 @@ const TopNavigation: React.FC = () => {
                         setDropdownOpen(false);
                       }}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <rect x="3" y="4" width="18" height="16" rx="3" />
                         <line x1="7" y1="8" x2="13" y2="8" />
                         <line x1="7" y1="12" x2="17" y2="12" />
@@ -567,7 +638,7 @@ const TopNavigation: React.FC = () => {
                         window.dispatchEvent(new Event('callBlue'));
                       }}
                     >
-                      <Phone size={15} weight="fill" aria-hidden="true" />
+                      <Phone size={16} weight="fill" aria-hidden="true" />
                       <span>Call Blue</span>
                     </button>
                   </div>
@@ -581,7 +652,7 @@ const TopNavigation: React.FC = () => {
                       className={styles.dropdownSignOutButton}
                       onClick={() => void handleSignOut()}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                         <polyline points="16 17 21 12 16 7" />
                         <line x1="21" y1="12" x2="9" y2="12" />
@@ -596,7 +667,7 @@ const TopNavigation: React.FC = () => {
                   <div className={styles.dropdownAuthPrompt}>
                     <span className={styles.dropdownAuthTitle}>Account</span>
                     <p className={styles.dropdownAuthText}>
-                      Sign in to view your diamonds, cBTC, and profile settings.
+                      Sign in to view your diamonds, cbBTC, and profile settings.
                     </p>
                   </div>
 
@@ -630,42 +701,48 @@ const TopNavigation: React.FC = () => {
                       Join Now
                     </button>
                   </div>
+
+                  {/* Divider label: Pages */}
+                  <div className={styles.dropdownDividerLabel}>
+                    <span className={styles.dropdownDividerLine} />
+                    <span className={styles.dropdownDividerText}>Pages</span>
+                    <span className={styles.dropdownDividerLine} />
+                  </div>
+
+                  {/* Pages 2-Column Grid for unauthenticated visitors */}
+                  <div className={styles.dropdownNavGrid}>
+                    {PAGE_LINKS.map((page) => {
+                      const active = pathname === page.href || pathname?.startsWith(page.href + '/');
+                      return (
+                        <Link
+                          key={page.href}
+                          href={page.href}
+                          className={`${styles.dropdownGridItem} ${active ? styles.dropdownGridItemActive : ''}`}
+                          onClick={() => {
+                            play('navigation');
+                            setDropdownOpen(false);
+                          }}
+                          aria-current={active ? 'page' : undefined}
+                        >
+                          {page.icon && (
+                            <span className={styles.dropdownGridIconWrap}>
+                              <Image
+                                src={page.icon}
+                                alt=""
+                                width={16}
+                                height={16}
+                                className={styles.dropdownGridIcon}
+                              />
+                            </span>
+                          )}
+                          <span className={styles.dropdownGridLabel}>{page.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
-          )}
-        </div>
-
-        {/* Mobile-only action — replaces the search bar on small screens */}
-        <div className={styles.mobileActions}>
-          {authenticated ? (
-            <button
-              type="button"
-              className={styles.mobileIconButton}
-              onClick={() => { play('click'); window.dispatchEvent(new Event('openWalletDrawer')); }}
-              onMouseEnter={() => play('hover')}
-              aria-label="Open wallet and profile"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M20 12V8a2 2 0 0 0-2-2H6a2 2 0 0 1 0-4h12" />
-                <path d="M4 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
-                <circle cx="16" cy="14" r="1.4" fill="currentColor" stroke="none" />
-              </svg>
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={styles.mobileIconButton}
-              onClick={handleLogin}
-              onMouseEnter={() => play('hover')}
-              aria-label="Login"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                <path d="M10 17l5-5-5-5" />
-                <path d="M15 12H3" />
-              </svg>
-            </button>
           )}
         </div>
       </div>

@@ -56,7 +56,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 35.59% 64.41%;
-  width: min(760px, calc(100vw - 32px), calc(166.667dvh - 53.334px));
+  width: min(760px, calc(100vw - 44px), calc(166.667dvh - 53.334px));
   aspect-ratio: 1065 / 639;
   opacity: 0;
   transform: translateY(6px) scale(0.985);
@@ -487,15 +487,18 @@
   font-size: clamp(0.58rem, 1.55cqw, 0.95rem);
 }
 
-@media (max-width: 560px) and (orientation: portrait) {
+@media (max-width: 640px) {
   .overlay {
     top: 0;
     align-items: center;
-    padding: 12px;
+    padding: 20px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
   }
 
   .stage {
-    width: calc(100vw - 24px);
+    width: min(440px, calc(100vw - 44px));
+    max-height: calc(100dvh - 48px);
     grid-template-columns: 38% 62%;
     border-width: 3px;
     border-radius: 14px;
