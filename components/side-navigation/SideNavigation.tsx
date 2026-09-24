@@ -171,6 +171,12 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isCallingBlue, setIsCallingBlue] = useState(false);
   const [startWithVoice, setStartWithVoice] = useState(false);
+  const [activeMood, setActiveMood] = useState<{
+    id: 'worry' | 'stress' | 'heartbreak' | 'notsure';
+    label: string;
+    prompt: string;
+    topic: string;
+  } | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isAvatarSelectorOpen, setIsAvatarSelectorOpen] = useState(false);
@@ -273,6 +279,29 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
     window.addEventListener('toggleBlueChat', blueChatHandler);
     window.addEventListener('callBlue', blueChatHandler);
 
+    const openBlueChatHandler = (e: Event) => {
+      const ce = e as CustomEvent<{
+        mood?: 'worry' | 'stress' | 'heartbreak' | 'notsure';
+        label?: string;
+        prompt?: string;
+        topic?: string;
+      } | undefined>;
+      if (ce.detail?.mood && ce.detail?.prompt) {
+        setActiveMood({
+          id: ce.detail.mood,
+          label: ce.detail.label || ce.detail.mood,
+          prompt: ce.detail.prompt,
+          topic: ce.detail.topic || ce.detail.mood,
+        });
+      } else {
+        setActiveMood(null);
+      }
+      setIsCallingBlue(false);
+      setStartWithVoice(false);
+      setIsChatOpen(true);
+    };
+    window.addEventListener('openBlueChat', openBlueChatHandler);
+
     const openProHandler = () => setIsProModalOpen(true);
     window.addEventListener('openProModal', openProHandler);
 
@@ -280,6 +309,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
       window.removeEventListener('toggleSidebar', handler);
       window.removeEventListener('toggleBlueChat', blueChatHandler);
       window.removeEventListener('callBlue', blueChatHandler);
+      window.removeEventListener('openBlueChat', openBlueChatHandler);
       window.removeEventListener('openProModal', openProHandler);
     };
   }, [onExternalMobileClose, toggleCollapsed]);
@@ -899,7 +929,18 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ externalMobileOpen, onE
 
 
       {/* Modals */}
-      {isChatOpen && <BlueChat isOpen={isChatOpen} onClose={() => { setIsChatOpen(false); setStartWithVoice(false); }} startWithVoice={startWithVoice} />}
+      {isChatOpen && (
+        <BlueChat
+          isOpen={isChatOpen}
+          onClose={() => {
+            setIsChatOpen(false);
+            setStartWithVoice(false);
+            setActiveMood(null);
+          }}
+          startWithVoice={startWithVoice}
+          activeMood={activeMood}
+        />
+      )}
       {isCallingBlue && (
         <BlueCallingOverlay
           onAccept={() => { setIsCallingBlue(false); setStartWithVoice(true); setIsChatOpen(true); }}

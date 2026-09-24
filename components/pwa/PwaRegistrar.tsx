@@ -4,6 +4,17 @@ import { useEffect } from 'react';
 
 export default function PwaRegistrar() {
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        (navigator as unknown as { standalone?: boolean }).standalone === true;
+
+      if (isStandalone && window.location.pathname === '/') {
+        window.location.replace('/dao' + window.location.search);
+        return;
+      }
+    }
+
     if (!('serviceWorker' in navigator)) {
       return;
     }

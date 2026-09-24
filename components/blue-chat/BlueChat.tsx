@@ -237,10 +237,125 @@ interface UploadedAttachment {
   extractedText?: string | null;
 }
 
+export interface BlueChatMood {
+  id: 'worry' | 'stress' | 'heartbreak' | 'notsure';
+  label: string;
+  prompt: string;
+  topic: string;
+}
+
+const MOOD_DIAGNOSTICS: Record<string, { diagnostic: string; guideCards: GuideRecommendCard[] }> = {
+  worry: {
+    diagnostic:
+      "worry usually lives in tomorrow. when your mind gets caught running worst-case simulations, the move isn't to fight the thoughts—it's to anchor back into the present moment and test whether the catastrophe is actually happening right now.",
+    guideCards: [
+      {
+        id: 'guide-mindful-breathing',
+        slug: 'mindful-breathing',
+        topicTitle: 'Mindful Breathing',
+        summary: 'Using the breath as a portable anchor to settle runaway anxiety and ground attention.',
+        estimatedMinutes: 3,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+      {
+        id: 'guide-cognitive-reframing',
+        slug: 'cognitive-reframing',
+        topicTitle: 'Cognitive Reframing',
+        summary: 'Catching and re-testing automatic thoughts to restore accuracy over dread.',
+        estimatedMinutes: 5,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+    ],
+  },
+  stress: {
+    diagnostic:
+      "stress is your nervous system's signal that demands are outpacing your bandwidth right now. let's narrow the aperture. what is one single thing we can set down or clarify?",
+    guideCards: [
+      {
+        id: 'guide-mindful-breathing',
+        slug: 'mindful-breathing',
+        topicTitle: 'Mindful Breathing',
+        summary: 'Box breathing drill to down-regulate the nervous system on demand.',
+        estimatedMinutes: 3,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+      {
+        id: 'guide-building-a-daily-practice',
+        slug: 'building-a-daily-practice',
+        topicTitle: 'Building a Daily Practice',
+        summary: 'Setting a two-minute floor so you can keep momentum without overwhelming your capacity.',
+        estimatedMinutes: 4,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+    ],
+  },
+  heartbreak: {
+    diagnostic:
+      "heartbreak is heavy, disorienting work. grief doesn't follow a neat timeline, and your nervous system is literally recalibrating to an absence. be gentle with your pacing today.",
+    guideCards: [
+      {
+        id: 'guide-journaling-practice',
+        slug: 'journaling-practice',
+        topicTitle: 'Journaling Practice',
+        summary: 'Getting the loop out of your head and onto the page with simple, low-stakes reflection.',
+        estimatedMinutes: 5,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+      {
+        id: 'guide-emotional-vocabulary',
+        slug: 'emotional-vocabulary',
+        topicTitle: 'Emotional Vocabulary',
+        summary: 'Finding precise words for complicated grief and emotional pain.',
+        estimatedMinutes: 4,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+    ],
+  },
+  notsure: {
+    diagnostic:
+      "not knowing what you feel is completely valid. sometimes emotions arrive as a blurry knot in the chest or stomach before words show up. we can untangle it step by step.",
+    guideCards: [
+      {
+        id: 'guide-emotional-vocabulary',
+        slug: 'emotional-vocabulary',
+        topicTitle: 'Emotional Vocabulary',
+        summary: 'Precision gives you leverage. Catching vague sensations and giving them accurate names.',
+        estimatedMinutes: 4,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+      {
+        id: 'guide-attention-basics',
+        slug: 'attention-basics',
+        topicTitle: 'Attention Basics',
+        summary: 'Noticing where your mental spotlight is pointing so you can see what is really happening.',
+        estimatedMinutes: 3,
+        completed: false,
+        ready: true,
+        prereqs: [],
+      },
+    ],
+  },
+};
+
 interface BlueChatProps {
   isOpen: boolean;
   onClose: () => void;
   startWithVoice?: boolean;
+  activeMood?: BlueChatMood | null;
 }
 
 interface ShardUpsellState {
@@ -357,7 +472,7 @@ function fileTypeLabel(mime: string): string {
   return 'FILE';
 }
 
-const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) => {
+const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, activeMood }) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { address, connector, isConnected } = useAccount();
@@ -368,14 +483,61 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice }) 
     const pool = startWithVoice ? GREETINGS_VOICE : GREETINGS_TEXT;
     return pool[Math.floor(Math.random() * pool.length)];
   });
-  const [messages, setMessages] = useState<Message[]>(() => [
-    {
-      id: '1',
-      text: initialGreeting,
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (activeMood) {
+      const config = MOOD_DIAGNOSTICS[activeMood.id] ?? MOOD_DIAGNOSTICS.notsure;
+      return [
+        {
+          id: `mood-user-${Date.now()}`,
+          text: activeMood.prompt,
+          sender: 'user',
+          timestamp: new Date(),
+        },
+        {
+          id: `mood-blue-${Date.now() + 1}`,
+          text: config.diagnostic,
+          sender: 'blue',
+          timestamp: new Date(),
+          guideCards: config.guideCards,
+        },
+      ];
+    }
+    return [
+      {
+        id: '1',
+        text: initialGreeting,
+        sender: 'blue',
+        timestamp: new Date(),
+      },
+    ];
+  });
+
+  const moodProcessedRef = useRef<string | null>(activeMood?.id ?? null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      moodProcessedRef.current = null;
+      return;
+    }
+    if (!activeMood || moodProcessedRef.current === activeMood.id) return;
+    moodProcessedRef.current = activeMood.id;
+
+    const config = MOOD_DIAGNOSTICS[activeMood.id] ?? MOOD_DIAGNOSTICS.notsure;
+    const userMsg: Message = {
+      id: `mood-user-${Date.now()}`,
+      text: activeMood.prompt,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+    const blueDiagMsg: Message = {
+      id: `mood-blue-${Date.now() + 1}`,
+      text: config.diagnostic,
       sender: 'blue',
       timestamp: new Date(),
-    },
-  ]);
+      guideCards: config.guideCards,
+    };
+    setMessages((prev) => [...prev, userMsg, blueDiagMsg]);
+  }, [isOpen, activeMood]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);

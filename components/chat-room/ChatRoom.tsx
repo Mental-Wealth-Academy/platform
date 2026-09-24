@@ -6,6 +6,7 @@ import { getSupabase } from '@/lib/supabase';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useSound } from '@/hooks/useSound';
 import { normalizeAvatarUrl } from '@/lib/axis-avatar';
+import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
 import styles from './ChatRoom.module.css';
 
 export interface SurveyBadge {
@@ -125,7 +126,10 @@ interface ChatRoomProps {
 }
 
 export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
-  const { getAccessToken } = usePrivy();
+  const { login, authenticated, getAccessToken } = usePrivy();
+  const devOnboarding = useDevOnboarding();
+  const isAuth = Boolean(authenticated || devOnboarding);
+  const [authNotice, setAuthNotice] = useState(false);
   const { play } = useSound();
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
@@ -432,10 +436,29 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, [unreadCount, getAccessToken]);
 
+  useEffect(() => {
+    if (authenticated) {
+      setAuthNotice(false);
+    }
+  }, [authenticated]);
+
+  const triggerLogin = useCallback(() => {
+    setAuthNotice(true);
+    if (login) {
+      login();
+    }
+  }, [login]);
+
   // ── Send message ──
   const sendMessage = useCallback(async () => {
     const text = input.trim();
     if (!text || sending) return;
+
+    if (!isAuth) {
+      triggerLogin();
+      return;
+    }
+
     setSending(true);
 
     const urlMatch = text.match(/https?:\/\/[^\s<>'"]+/i);
@@ -450,14 +473,27 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
 
     const token = await getAccessToken().catch(() => null);
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (devOnboarding) {
+      headers['x-dev-bypass'] = getDevWallet();
+    } else if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const res = await fetch('/api/chat/messages', {
       method: 'POST',
       headers,
       credentials: 'include',
       body: JSON.stringify({ message: text }),
     });
+
+    if (res.status === 401) {
+      setSending(false);
+      triggerLogin();
+      return;
+    }
+
     if (res.ok) {
+      setAuthNotice(false);
       const data = await res.json();
       setInput('');
       if (data.message) {
@@ -511,7 +547,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
     setSending(false);
     inputRef.current?.focus();
-  }, [input, sending, getAccessToken]);
+  }, [input, sending, isAuth, triggerLogin, getAccessToken, devOnboarding, fetchAfter]);
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -669,12 +705,25 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         )}
       </div>
 
+      {authNotice && !isAuth && (
+        <div className={styles.authNotice} role="alert">
+          <span>Sign in to send messages.</span>
+          <button
+            type="button"
+            className={styles.authNoticeBtn}
+            onClick={triggerLogin}
+          >
+            Sign in
+          </button>
+        </div>
+      )}
+
       <div className={styles.chatInputWrap}>
         <input
           ref={inputRef}
           className={styles.chatInput}
           type="text"
-          placeholder="Message..."
+          placeholder={isAuth ? "Message..." : "Sign in to send messages..."}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onClick={() => play('input-focus')}

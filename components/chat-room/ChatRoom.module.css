@@ -778,3 +778,40 @@
   }
 }
 
+.authNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  background: color-mix(in oklch, var(--color-primary) 10%, #ffffff);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  color: var(--color-text-dark, #1a1d33);
+}
+
+.authNoticeBtn {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.authNoticeBtn:hover {
+  opacity: 0.9;
+}
+
+:global([data-theme="dark"]) .authNotice {
+  background: color-mix(in oklch, var(--color-primary) 16%, var(--color-surface-1, #13141f));
+  border-top-color: color-mix(in oklch, var(--color-primary-hover) 28%, transparent);
+  color: #d6d9ee;
+}
+

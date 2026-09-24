@@ -73,7 +73,7 @@ export default function LandingInstallPwaButton() {
     play('click');
 
     if (isInstalled) {
-      router.push('/home');
+      router.push('/dao');
       return;
     }
 

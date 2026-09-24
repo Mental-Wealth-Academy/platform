@@ -62,7 +62,7 @@ import { Analytics } from '@vercel/analytics/next';
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
   description: 'Unlock your potential, reach your horizon.',
-  manifest: '/manifest.webmanifest?v=4',
+  manifest: '/manifest.webmanifest?v=5',
   icons: {
     icon: [
       { url: '/favicon.ico?v=4', sizes: 'any' },
@@ -157,6 +157,20 @@ export default function RootLayout({
                     document.documentElement.setAttribute('data-theme', 'dark');
                   }
                 } catch(e) {}
+              })();
+            `,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                  if (isStandalone && window.location.pathname === '/') {
+                    window.location.replace('/dao' + window.location.search);
+                  }
+                } catch (e) {}
               })();
             `,
           }}

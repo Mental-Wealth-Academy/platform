@@ -32,7 +32,13 @@
 
 @media (max-width: 768px) {
   .pageLayout {
-    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-    height: calc(100dvh - var(--mobile-nav-clearance) - var(--banner-height, 0px));
+    position: fixed;
+    top: calc(72px + var(--banner-height, 0px));
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    left: 0;
+    right: 0;
+    height: auto;
+    padding-top: 0;
+    margin-left: 0;
   }
 }

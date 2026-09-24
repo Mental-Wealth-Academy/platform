@@ -6,11 +6,11 @@ export const dynamic = 'force-static';
 export function GET() {
   return NextResponse.json(
     {
-      id: '/home',
+      id: '/dao',
       name: 'Mental Wealth Academy',
       short_name: 'MWA',
       description: 'Mental Wealth Academy installed on your home screen for faster access.',
-      start_url: '/home',
+      start_url: '/dao',
       scope: '/',
       display: 'standalone',
       orientation: 'portrait',

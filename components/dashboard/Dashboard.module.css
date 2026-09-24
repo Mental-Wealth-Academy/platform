@@ -15,6 +15,10 @@
   flex-direction: column;
 }
 
+.moodSelectorWrap {
+  width: 100%;
+}
+
 /* ── Desktop: two-column fill-height layout ── */
 @media (min-width: 1025px) {
   .dashboard {
@@ -24,6 +28,10 @@
     min-height: 100%;
     height: 100%;
     align-items: stretch;
+  }
+
+  .moodSelectorWrap {
+    display: none;
   }
 
   .blueSceneWrap {
