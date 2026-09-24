@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T03:41:44.148Z",
-  "totalSeconds": 853.37,
+  "generatedAt": "2026-09-24T04:04:36.656Z",
+  "totalSeconds": 780.13,
   "segments": [
     {
       "id": "station-ident",
@@ -8,13 +8,6 @@
       "file": "/audio/blue-radio/station-ident.mp3",
       "playbackGain": 0.56,
       "seconds": 29.02
-    },
-    {
-      "id": "what-is-mwa",
-      "title": "Welcome, the new Gods",
-      "file": "/audio/blue-radio/what-is-mwa.mp3",
-      "playbackGain": 0.56,
-      "seconds": 35.11
     },
     {
       "id": "mental-wealth-idea",
@@ -29,13 +22,6 @@
       "file": "/audio/blue-radio/the-course.mp3",
       "playbackGain": 0.56,
       "seconds": 32.51
-    },
-    {
-      "id": "field-notes",
-      "title": "Field notes",
-      "file": "/audio/blue-radio/field-notes.mp3",
-      "playbackGain": 0.56,
-      "seconds": 38.13
     },
     {
       "id": "quests-and-credits",
