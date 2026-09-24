@@ -554,28 +554,22 @@ export default function CoursePage() {
           className={styles.courseModalOverlay}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="course-modal-title"
+          aria-label="Course selection"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsCourseModalOpen(false);
           }}
         >
           <div className={styles.courseModal}>
-            <div className={styles.courseModalHeadscene}>
-              <div className={styles.courseModalHeadLeft}>
-                <span className={styles.courseModalKickerJa} lang="ja">課程</span>
-                <h2 id="course-modal-title" className={styles.courseModalTitle}>Course Selection</h2>
-              </div>
-              <button
-                type="button"
-                className={styles.courseModalClose}
-                onClick={() => setIsCourseModalOpen(false)}
-                aria-label="Close modal"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+            <button
+              type="button"
+              className={styles.courseModalClose}
+              onClick={() => setIsCourseModalOpen(false)}
+              aria-label="Close course selector"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
 
             <div className={styles.courseCarousel} role="region" aria-label="Available courses">
               {/* Card 1: Creative Healing (Active) */}
@@ -585,7 +579,7 @@ export default function CoursePage() {
                     src="/images/blue-cards/task-reminder.jpg"
                     alt=""
                     fill
-                    sizes="(max-width: 480px) 140px, 160px"
+                    sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillActive}>Active</div>
@@ -606,14 +600,14 @@ export default function CoursePage() {
                 </div>
               </div>
 
-              {/* Card 2: Inner Alchemy (Credits) */}
+              {/* Card 2: Inner Alchemy (Diamonds) */}
               <div className={`${styles.courseVerticalCard} ${styles.courseCardLocked}`}>
                 <div className={styles.courseCardVectorWrap}>
                   <Image
                     src="/images/blue-cards/soundscape.jpg"
                     alt=""
                     fill
-                    sizes="(max-width: 480px) 140px, 160px"
+                    sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillDiamonds}>
@@ -643,7 +637,7 @@ export default function CoursePage() {
                     src="/images/blue-cards/therapy-chat.jpg"
                     alt=""
                     fill
-                    sizes="(max-width: 480px) 140px, 160px"
+                    sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillVip}>VIP Pass</div>
