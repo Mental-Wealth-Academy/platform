@@ -1290,9 +1290,10 @@
   font-size: 15px;
   font-weight: 500;
   color: var(--color-text-muted);
-  line-height: 1.5;
+  line-height: 1.4;
   max-width: 540px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .courseModalClose {
@@ -2064,12 +2065,12 @@
   }
 
   .courseModalHeader {
-    padding: max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) 52px 10px 20px;
+    padding: max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) 20px 8px;
     text-align: center;
   }
 
   .courseModalHeaderCenter {
-    gap: 6px;
+    gap: 4px;
     max-width: 100%;
   }
 
@@ -2078,8 +2079,9 @@
   }
 
   .courseHeaderDesc {
-    font-size: 13.5px;
-    line-height: 1.45;
+    font-size: 13px;
+    line-height: 1.35;
+    white-space: nowrap;
   }
 
   .courseModalClose {

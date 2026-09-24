@@ -579,7 +579,7 @@ export default function CoursePage() {
               <div className={styles.courseModalHeaderCenter}>
                 <h2 className={styles.courseHeaderTitle}>Select Course</h2>
                 <p className={styles.courseHeaderDesc}>
-                  Switch between available learning paths. Weekly progression and diamonds sync automatically across tracks.
+                  Progress and diamonds stay synced across tracks.
                 </p>
               </div>
               <button
