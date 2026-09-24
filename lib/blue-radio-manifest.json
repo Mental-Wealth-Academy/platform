@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T07:00:44.880Z",
-  "totalSeconds": 820.76,
+  "generatedAt": "2026-09-24T07:09:24.650Z",
+  "totalSeconds": 616.38,
   "segments": [
     {
       "id": "station-ident",
@@ -24,20 +24,6 @@
       "seconds": 34.97
     },
     {
-      "id": "quests-and-credits",
-      "title": "Quests and credits",
-      "file": "/audio/blue-radio/quests-and-credits.mp3",
-      "playbackGain": 0.56,
-      "seconds": 27.86
-    },
-    {
-      "id": "the-library",
-      "title": "The guide library",
-      "file": "/audio/blue-radio/the-library.mp3",
-      "playbackGain": 0.56,
-      "seconds": 26.56
-    },
-    {
       "id": "station-break-blue",
       "title": "An AI in your pocket",
       "file": "/audio/blue-radio/station-break-blue.mp3",
@@ -56,7 +42,7 @@
       "title": "The pocket-world thesis",
       "file": "/audio/blue-radio/pocket-world-thesis.mp3",
       "playbackGain": 0.56,
-      "seconds": 245.53
+      "seconds": 95.57
     },
     {
       "id": "the-ethereal-horizon",

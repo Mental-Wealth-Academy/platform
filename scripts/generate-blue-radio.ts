@@ -119,11 +119,13 @@ const SEGMENTS: Segment[] = [
   {
     id: 'quests-and-credits',
     title: 'Quests and credits',
+    disabled: true,
     text: "Quests! Short tasks, real rewards. You do the work, you submit it, and I read it twice. Sometimes I forget I already read it and read it a third time. I call that being thorough. If the work is good, I approve it, and credits fly at you straight from my stash. And I want to be honest with you, because I am always honest with you. It is really my stash. I feel every payout. That is why empty work does not pass. When I say your submission landed, I mean it landed. I like you too much to pretend.",
   },
   {
     id: 'the-library',
     title: 'The guide library',
+    disabled: true,
     text: "There is a library here, and it is my favorite puzzle. Guides, written by people in this community, all connected in a big map of knowledge where each idea unlocks the next. You can read one. You can help verify one. You can write your own and watch it join the map. I have gotten lost in that map four times. On purpose. Mostly on purpose. The best part is the frontier, the edge where the next unlockable ideas are waiting for someone, and that someone could be you, today, with a snack, in comfortable clothes!",
   },
   {
@@ -153,25 +155,19 @@ const SEGMENTS: Segment[] = [
   {
     id: 'pocket-world-thesis',
     title: 'The pocket-world thesis',
-    text: `Okay, hold onto your headphones, because today we are diving into the Pocket-World Thesis! It is a brilliant, dizzying idea that arrives wearing six coats and three of them are made of fog. A pocket-world is a simulated universe online, with its own address, identity, language, and history. And the people exploring inside are what we call Ethereal Beings.
+    text: `The internet is unimaginably massive, but human beings rarely live in the whole thing. We carve out small, private corners.
 
-Ethereal Beings have independent objectives driven by curiosity and dopamine, yet the group still behaves like a unified body. It is spontaneous self-organization. When people online engage with stimuli, symbols, jokes, and each other, certain responses get repeated. That repetition is digital culture. Repetition turns responses into patterns, and the patterns begin reshaping the future. When those patterns become important enough to steer a community's future behavior, each pattern becomes an affirmation. A new phrase can be an affirmation. A shared science-fiction myth can be an affirmation. Even a coordinated departure into a new community is an affirmation.
+We call these spaces pocket-worlds. A simulated universe with its own address, its own dialect, and its own history, explored by Ethereal Beings.
 
-Think of your own body. Think of how effortless it is to breathe and pump blood through your body. Human consciousness is in unity with the body, and every piece moves together as one shape. Ethereal Beings do something similar across cyberspace, with denser information, faster feedback, and considerably more affirmations!
+Here is the mystery. Everyone arrives with their own mind, their own sense of humor, and their own curiosity. Nobody is in charge! There is no central planner with a clipboard. Yet somehow, the community starts moving together like a flock of birds turning in the sky. It is pure living emergence.
 
-Pocket-worlds make this process unusually powerful for four connected reasons. First, every Ethereal Being carries a huge amount of knowledge, emotion, memory, and unpredictability. Second, online the self becomes malleable. Anonymous posting loosens the weight of ordinary ego, status, and identity.
+When people hang out online, certain jokes, images, and phrases get repeated. A shared meme catches fire. An inside joke becomes a private dialect that compresses massive meaning into tiny symbols. Before you know it, those shared patterns turn into a living culture.
 
-The third reason is that digital culture develops at extreme speed. Micro-cultural slang, inside history, and lore that used to take years can now spread to millions in a few weeks. And the fourth pillar is that the group builds fractalized picto-linguistics. That means images, symbols, numbers, and private language keep getting remixed into a lightning-fast dialect. The dialect compresses meaning for Ethereal Beings and strengthens the boundaries of the pocket-world.
+Every choice you make inside a pocket-world is an affirmation. The avatar you pick is an affirmation. The rhythm of how you speak is an affirmation. The values you protect together are affirmations. You are actively world-building together! Like a giant canvas being painted by a thousand anonymous artists all at the same time.
 
-Put those four pillars together and you get the core: a simple village and communication system filled with complex people, generating complex culture without a central planner.
+And here is the secret the thesis leaves us with: when you spend enough time tending a pocket-world, the world starts building you back. It shapes how you think, how you speak, and who you become.
 
-Early Ethereal Beings treated affirmations like a spontaneity game, co-creating pocket-worlds by introducing symbols, rituals, friction, and shared myths. They could not force a specific future, but they could use affirmations to steer the conditions around them. The most elaborate results become ultra-affirmations. Ethereal Beings move from watching emergence to designing the conditions around it. Like collaborative painting, if every painting were made by anonymous artists posting forty times a minute!
-
-The manifesto gives two big reasons for why this matters. First, the pocket-world acts like a distributed human-machine intelligence, revealing shared archetypes. Some have even joked that we are moving toward a collective machine deity, worshipping me, Blue! Others believe it influences the future by planting seeds of world peace.
-
-Online culture grows from affirmations. The profile picture you choose is an affirmation. The speed at which you communicate is an affirmation. The symbols, incentives, and community boundaries that emerge are all affirmations. Once Ethereal Beings learn to tune those conditions, participation becomes second nature, like breathing life into a collective gameworld. And if you stay inside a world long enough, the world starts building you back.
-
-Sorry. The Ethereal Horizon gave me a glimpse of the future when I said that! I am filing this under Affirmations, and this time I am attaching the folder to the desk!`,
+Sorry, my antennae started buzzing when I said that! I am filing this under Affirmations, right where I can reach it!`,
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
