@@ -248,12 +248,7 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
       )}
 
       <div className={styles.radioFooter}>
-        <span className={styles.radioLiveChip}>
-          <span className={`${styles.radioLiveDot} ${onAir ? styles.radioLiveDotOn : ''}`} aria-hidden="true" />
-          Live
-        </span>
         <div className={styles.radioNowPlaying}>
-          <span className={styles.radioShowName}>Blue Radio</span>
           <span className={styles.radioSegmentTitle}>{segment.title}</span>
         </div>
         {onAir && (

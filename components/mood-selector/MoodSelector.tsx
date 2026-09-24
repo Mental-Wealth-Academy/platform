@@ -73,13 +73,13 @@ export default function MoodSelector() {
           >
             <path
               d="M1 10C5.5 3 11 0.5 16 0.5C21 0.5 26.5 3 31 10C26.5 17 21 19.5 16 19.5C11 19.5 5.5 17 1 10Z"
-              stroke="#e0e7ff"
-              strokeWidth="1.5"
+              stroke="var(--color-primary, #4150c8)"
+              strokeWidth="1.8"
               strokeLinejoin="round"
             />
-            <circle cx="16" cy="10" r="5.5" fill="#42e8cf" />
-            <circle cx="16" cy="10" r="2.5" fill="#131627" />
-            <circle cx="17.2" cy="8.8" r="1" fill="#ffffff" />
+            <circle cx="16" cy="10" r="5.5" fill="var(--color-primary, #4150c8)" />
+            <circle cx="16" cy="10" r="2.5" fill="#ffffff" />
+            <circle cx="17.2" cy="8.8" r="0.9" fill="var(--color-primary-hover, #6475ff)" />
           </svg>
         </div>
         <h2 className={styles.title}>Mood Selector</h2>
