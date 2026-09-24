@@ -1,7 +1,6 @@
 import BlueScene from '@/components/blue-scene/BlueScene';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import SidebarFieldNotes from '@/components/dashboard/SidebarFieldNotes';
-import UpcomingEvent from '@/components/upcoming-event/UpcomingEvent';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -13,9 +12,8 @@ export default function Dashboard() {
         <BlueScene />
       </div>
 
-      {/* ── Sidebar: upcoming event + Field Notes + Global Chat ── */}
+      {/* ── Sidebar: Field Notes + Global Chat ── */}
       <aside className={styles.sidebarWrap}>
-        <UpcomingEvent />
         <div className={styles.fieldNotesWrapper}>
           <SidebarFieldNotes />
         </div>
