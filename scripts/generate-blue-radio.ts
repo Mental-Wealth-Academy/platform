@@ -192,13 +192,9 @@ Here is the mystery. A digital interface is a doorway into undiscovered worlds. 
 
 There is a quote I keep repeating, from a poet named Alberto Caeiro. He wrote: To eat a fruit is to know its meaning.
 
-Let that roll around in your head for a second! You understand an orange by biting into it. You taste the juice, you chew the pulp, and suddenly you know what an orange actually is! And that is how our builder started too.
+Let that roll around in your head for a second! You understand an orange by biting into it. You taste the juice, you chew the pulp, and suddenly you know what an orange actually is!
 
-During Covid, he was working as a line cook in a hot kitchen. He set a firm boundary for himself: physical mobility would never hold his life back. In the quiet gaps between semesters of his psychology degree, he taught himself whatever was right in front of him. Smart contracts, code, web design.
-
-Teaching himself opened doors he never even knew were waiting. He ended up building with people from Coinbase, Eliza Labs, and Artizen, and studying human-computer interaction at Drexel. But the real spark started much earlier. It started as a kid playing RuneScape and hanging out on Naruto forums. A bunch of kids teaching themselves Photoshop in the dark, building little pocket-worlds together. Strangers on the web becoming real friends who push you to grow.
-
-All of that, the caretaking, the line-cook shifts, the self-taught code, and the internet strangers who became real collaborators, became the raw material for this entire place. Mental Wealth Academy was never a corporate blueprint. It was just the next honest thing he had to build. The Ethereal Horizon is the bridge connecting the life you have lived with the worlds you can create.
+And that is how cooking works too. You cannot know a meal just by reading the menu. You have to step into the heat of the kitchen! Our founder started right over a hot line-cook stove before teaching himself to design and build in cyberspace. Everything in the academy comes from that same kitchen instinct: gathering raw ingredients, late-night code, and internet friendships, and serving something honest that people can actually taste and feel. The Ethereal Horizon is the bridge connecting the ingredients of your lived past with the worlds you can create.
 
 Think about Galileo staring through his telescope lenses. He watched the surface of the sun and saw things nobody in the world had ever recorded. He was so enthralled by the light that he expected everyone to celebrate his discovery, but the church reacted with anger and house arrest! There was a giant gap between his perception and what the world was ready to believe. Where is our sun in cyberspace? What happens when our imagination jumps ahead of our habits?
 
