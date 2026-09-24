@@ -1316,7 +1316,7 @@
 .courseModalOverlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 99999;
   background: rgba(10, 12, 24, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1333,10 +1333,11 @@
   inset: 0;
   width: 100vw;
   height: 100dvh;
+  z-index: 100000;
   max-width: none;
   border: none;
   border-radius: 0;
-  background-color: var(--color-surface-base);
+  background-color: var(--color-scene-bg, #f4f6fc);
   background-image: var(--bg-grid-dots);
   display: flex;
   flex-direction: column;
@@ -1358,9 +1359,9 @@
 
 .courseModalClose {
   position: absolute;
-  top: max(20px, env(safe-area-inset-top, 20px));
-  right: max(20px, env(safe-area-inset-right, 20px));
-  z-index: 30;
+  top: max(20px, calc(env(safe-area-inset-top, 20px) + 8px));
+  right: max(20px, calc(env(safe-area-inset-right, 20px) + 8px));
+  z-index: 100010;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1373,7 +1374,7 @@
   cursor: pointer;
   box-shadow:
     0 3px 0 var(--color-border-subtle),
-    0 4px 12px rgba(0, 0, 0, 0.12);
+    0 4px 14px rgba(0, 0, 0, 0.14);
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
@@ -1398,9 +1399,9 @@
   height: 100%;
   max-height: 100dvh;
   box-sizing: border-box;
-  padding: 60px max(28px, calc((100vw - 1080px) / 2)) 50px;
-  scroll-padding-left: max(28px, calc((100vw - 1080px) / 2));
-  scroll-padding-right: max(28px, calc((100vw - 1080px) / 2));
+  padding: max(76px, calc(env(safe-area-inset-top, 20px) + 56px)) max(28px, calc((100vw - 1100px) / 2)) max(36px, calc(env(safe-area-inset-bottom, 20px) + 16px));
+  scroll-padding-left: max(28px, calc((100vw - 1100px) / 2));
+  scroll-padding-right: max(28px, calc((100vw - 1100px) / 2));
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -1417,11 +1418,12 @@
 }
 
 .courseVerticalCard {
-  flex: 0 0 320px;
-  width: 320px;
-  max-height: min(78vh, 600px);
+  flex: 0 0 340px;
+  width: 340px;
+  height: min(80vh, 640px);
+  max-height: min(80vh, 640px);
   scroll-snap-align: start;
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--color-surface-1);
   border: 2.5px solid var(--color-border-subtle);
   overflow: hidden;
@@ -1462,14 +1464,15 @@
 .courseCardVectorWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  min-height: 180px;
+  flex: 1 1 58%;
+  min-height: 220px;
   overflow: hidden;
   background: var(--color-surface-base);
 }
 
 .courseCardVectorImg {
   object-fit: cover;
+  object-position: center;
 }
 
 .courseCardPillActive {
@@ -1524,12 +1527,11 @@
 }
 
 .courseCardBody {
-  padding: 18px 20px 20px;
+  padding: 18px 22px 22px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex: 1;
-  justify-content: space-between;
+  flex: 0 0 auto;
 }
 
 .courseCardName {
@@ -2130,9 +2132,16 @@
     font-size: 11px;
   }
 
+  .courseModalClose {
+    top: max(16px, calc(env(safe-area-inset-top, 16px) + 8px));
+    right: max(16px, calc(env(safe-area-inset-right, 16px) + 8px));
+    width: 40px;
+    height: 40px;
+  }
+
   .courseCarousel {
     gap: 16px;
-    padding: 50px 20px 40px 20px;
+    padding: max(72px, calc(env(safe-area-inset-top, 16px) + 52px)) 20px max(28px, calc(env(safe-area-inset-bottom, 16px) + 12px)) 20px;
     scroll-padding-left: 20px;
     scroll-padding-right: 20px;
   }
@@ -2142,29 +2151,35 @@
   }
 
   .courseVerticalCard {
-    flex: 0 0 clamp(270px, 80vw, 320px);
-    width: clamp(270px, 80vw, 320px);
-    max-height: min(72vh, 520px);
-    border-radius: 18px;
+    flex: 0 0 clamp(285px, 84vw, 345px);
+    width: clamp(285px, 84vw, 345px);
+    height: calc(100dvh - max(72px, calc(env(safe-area-inset-top, 16px) + 52px)) - max(28px, calc(env(safe-area-inset-bottom, 16px) + 12px)));
+    max-height: 680px;
+    min-height: 460px;
+    border-radius: 20px;
+  }
+
+  .courseCardVectorWrap {
+    min-height: 200px;
   }
 
   .courseCardBody {
-    padding: 14px 16px 16px;
-    gap: 8px;
+    padding: 16px 18px 20px;
+    gap: 10px;
   }
 
   .courseCardName {
-    font-size: 1.18rem;
+    font-size: 1.25rem;
   }
 
   .courseCardTrack {
-    font-size: 11px;
+    font-size: 11.5px;
   }
 
   .courseBtnActive,
   .courseBtnLocked,
   .courseBtnVip {
-    padding: 10px 14px;
-    font-size: 13px;
+    padding: 12px 16px;
+    font-size: 14px;
   }
 }

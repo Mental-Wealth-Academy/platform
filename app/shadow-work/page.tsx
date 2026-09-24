@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
@@ -130,6 +131,20 @@ export default function CoursePage() {
   const [authFlowSettled, setAuthFlowSettled] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isCourseModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsCourseModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCourseModalOpen]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -549,7 +564,7 @@ export default function CoursePage() {
         onClose={handleIntroClose}
       />
 
-      {isCourseModalOpen && (
+      {isMounted && isCourseModalOpen && typeof document !== 'undefined' && createPortal(
         <div
           className={styles.courseModalOverlay}
           role="dialog"
@@ -656,7 +671,8 @@ export default function CoursePage() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
