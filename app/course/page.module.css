@@ -1222,15 +1222,16 @@
   position: fixed;
   inset: 0;
   width: 100vw;
+  height: 100%;
   height: 100dvh;
   z-index: 100000;
   max-width: none;
   border: none;
   border-radius: 0;
-  background-color: #ffedd5;
+  background-color: #c3c9fa;
   background-image:
-    radial-gradient(circle, rgba(154, 52, 18, 0.08) 1.2px, transparent 1.2px),
-    linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+    radial-gradient(circle, rgba(26, 29, 51, 0.12) 1.2px, transparent 1.2px),
+    linear-gradient(180deg, #d4d9fc 0%, #c3c9fa 100%);
   background-size: 24px 24px, 100% 100%;
   display: flex;
   flex-direction: column;
@@ -1281,7 +1282,7 @@
   font-family: var(--type-font-heading);
   font-size: 2.1rem;
   font-weight: 800;
-  color: #431407;
+  color: #1a1d33;
   letter-spacing: -0.025em;
   line-height: 1.15;
   text-align: center;
@@ -1292,7 +1293,7 @@
   font-family: var(--type-font-body);
   font-size: 15px;
   font-weight: 500;
-  color: #7c2d12;
+  color: #2e3352;
   line-height: 1.4;
   max-width: 540px;
   text-align: center;
@@ -1310,9 +1311,9 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(124, 45, 18, 0.2);
-  background: rgba(255, 255, 255, 0.65);
-  color: #7c2d12;
+  border: 1px solid rgba(26, 29, 51, 0.22);
+  background: rgba(255, 255, 255, 0.7);
+  color: #1a1d33;
   cursor: pointer;
   box-shadow: none;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
@@ -1320,8 +1321,8 @@
 
 .courseModalClose:hover {
   background: #ffffff;
-  color: #431407;
-  border-color: rgba(124, 45, 18, 0.4);
+  color: #000000;
+  border-color: rgba(26, 29, 51, 0.45);
 }
 
 .courseModalClose:active {
@@ -1864,32 +1865,32 @@
 }
 
 :global([data-theme="dark"]) .courseModal {
-  background-color: #2b170e;
+  background-color: #141628;
   background-image:
-    radial-gradient(circle, rgba(249, 115, 22, 0.12) 1.2px, transparent 1.2px),
-    linear-gradient(180deg, #180e0a 0%, #2b170e 100%);
+    radial-gradient(circle, rgba(195, 201, 250, 0.12) 1.2px, transparent 1.2px),
+    linear-gradient(180deg, #0e101f 0%, #141628 100%);
   background-size: 24px 24px, 100% 100%;
 }
 
 :global([data-theme="dark"]) .courseHeaderTitle {
-  color: #ffedd5;
+  color: #e0e7ff;
 }
 
 :global([data-theme="dark"]) .courseHeaderDesc {
-  color: #fed7aa;
+  color: #c7d2fe;
 }
 
 :global([data-theme="dark"]) .courseModalClose {
-  background: rgba(43, 23, 14, 0.65);
-  border-color: rgba(254, 215, 170, 0.2);
-  color: #fed7aa;
+  background: rgba(30, 33, 58, 0.7);
+  border-color: rgba(195, 201, 250, 0.25);
+  color: #c7d2fe;
   box-shadow: none;
 }
 
 :global([data-theme="dark"]) .courseModalClose:hover {
-  background: rgba(67, 20, 7, 0.85);
-  border-color: rgba(254, 215, 170, 0.4);
-  color: #ffedd5;
+  background: rgba(45, 50, 85, 0.9);
+  border-color: rgba(195, 201, 250, 0.5);
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .courseOptionStatusVip {
