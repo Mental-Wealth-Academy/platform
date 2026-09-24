@@ -95,7 +95,14 @@ const SEGMENTS: Segment[] = [
   {
     id: 'mental-wealth-idea',
     title: 'The idea of mental wealth',
-    text: "Somebody once asked me what mental wealth actually means, and I have been thinking about it ever since. Here is my best answer. Wealth is something you build slowly and get to keep. So mental wealth is every deposit you make into your own head. A full night of sleep, deposit! A hard conversation you finally had, deposit! One honest page in your field notes, big deposit! Your brain is the account, and nobody else can hold it for you. The interest shows up later, in moments where you would have panicked before and now you just breathe. It compounds! That is my favorite part.",
+    text: "Whenever someone asks me what mental wealth means, I picture a quiet room inside you that gets a little steadier each day. True wealth is something you build with care and get to keep. It is choosing to rest when your body is tired. It is meeting a heavy feeling with patience. It is writing one honest paragraph in your field notes when everything feels loud outside. Your mind is a sanctuary, and nobody else can tend it for you. The return on that care shows up when you least expect it. In moments where life feels overwhelming, you suddenly realize you have room to breathe. It settles deep into the background, and it stays with you.",
+    voiceSettings: {
+      stability: 0.55,
+      similarity_boost: 0.82,
+      style: 0.35,
+      speed: 1.05,
+      use_speaker_boost: true,
+    },
   },
   {
     id: 'the-course',

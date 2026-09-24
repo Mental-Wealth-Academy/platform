@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T07:09:24.650Z",
-  "totalSeconds": 616.38,
+  "generatedAt": "2026-09-24T07:24:55.852Z",
+  "totalSeconds": 620.09,
   "segments": [
     {
       "id": "station-ident",
@@ -21,7 +21,7 @@
       "title": "The idea of mental wealth",
       "file": "/audio/blue-radio/mental-wealth-idea.mp3",
       "playbackGain": 0.56,
-      "seconds": 34.97
+      "seconds": 38.68
     },
     {
       "id": "station-break-blue",
