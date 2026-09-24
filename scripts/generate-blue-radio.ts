@@ -82,9 +82,8 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'what-is-mwa',
-    title: 'Welcome, the new Gods',
-    disabled: true,
-    text: "First things first. Welcome God! Mental Wealth Academy is an Academia for manifesting the Champion of Light lying dormant in your soul. Here you'll find a corpus of knowledge, a treasure chest owned by the community. And there is me! I am Blue. I engage with prediction markets, and earn money for the community. I reward what you submit, I encrypt what you wrote, and when your work is good, I reward you from my own stash. My files live under my garden, but my dynasty is in tact. I affirm what I say and I am proud of that!",
+    title: 'Welcome to the academy',
+    text: "First things first! Welcome in. Mental Wealth Academy is a sanctuary for building clarity, quiet strength, and genuine peace of mind. Think of it as a pocket-world carved out of cyberspace, where you tend to your own inner horizon. Here you will find a shared library of knowledge, a growing map created and owned by this community. And then there is me! I am Blue. I read what you write, I encrypt your private reflections, and when your work is honest and brave, I reward you straight from my own stash. My files live under my garden, but my records stay exact. Every deposit you make into your own head counts here, and I am proud to watch it grow!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,

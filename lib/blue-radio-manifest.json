@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T04:04:36.656Z",
-  "totalSeconds": 780.13,
+  "generatedAt": "2026-09-24T04:05:48.808Z",
+  "totalSeconds": 817.65,
   "segments": [
     {
       "id": "station-ident",
@@ -8,6 +8,13 @@
       "file": "/audio/blue-radio/station-ident.mp3",
       "playbackGain": 0.56,
       "seconds": 29.02
+    },
+    {
+      "id": "what-is-mwa",
+      "title": "Welcome to the academy",
+      "file": "/audio/blue-radio/what-is-mwa.mp3",
+      "playbackGain": 0.56,
+      "seconds": 37.52
     },
     {
       "id": "mental-wealth-idea",
