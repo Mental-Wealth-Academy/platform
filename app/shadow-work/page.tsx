@@ -616,11 +616,11 @@ export default function CoursePage() {
                     sizes="(max-width: 480px) 140px, 160px"
                     className={styles.courseCardVectorImg}
                   />
-                  <div className={styles.courseCardPillCredits}>
+                  <div className={styles.courseCardPillDiamonds}>
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M12 2L2 9l10 13 10-13-10-7z" />
                     </svg>
-                    500 Credits
+                    500 Diamonds
                   </div>
                 </div>
                 <div className={styles.courseCardBody}>
@@ -631,7 +631,7 @@ export default function CoursePage() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    500 Credits
+                    500 Diamonds
                   </div>
                 </div>
               </div>
