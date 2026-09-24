@@ -441,14 +441,31 @@
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .guideCard:hover {
   border-color: var(--color-primary);
   background: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+.guideCard:hover .guideCardTitle {
+  color: var(--color-primary);
+}
+
+.guideCard:hover .guideCardGo {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.guideCard:active {
+  transform: translateY(0);
 }
 
 .guideCardHead {

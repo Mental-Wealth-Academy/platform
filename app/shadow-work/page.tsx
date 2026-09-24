@@ -585,7 +585,7 @@ export default function CoursePage() {
                     src="/images/blue-cards/task-reminder.jpg"
                     alt=""
                     fill
-                    sizes="240px"
+                    sizes="(max-width: 480px) 140px, 160px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillActive}>Active</div>
@@ -613,15 +613,26 @@ export default function CoursePage() {
                     src="/images/blue-cards/soundscape.jpg"
                     alt=""
                     fill
-                    sizes="240px"
+                    sizes="(max-width: 480px) 140px, 160px"
                     className={styles.courseCardVectorImg}
                   />
-                  <div className={styles.courseCardPillCredits}>500 Credits</div>
+                  <div className={styles.courseCardPillCredits}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2L2 9l10 13 10-13-10-7z" />
+                    </svg>
+                    500 Credits
+                  </div>
                 </div>
                 <div className={styles.courseCardBody}>
                   <h3 className={styles.courseCardName}>Inner Alchemy</h3>
                   <span className={styles.courseCardTrack}>Somatic Integration</span>
-                  <div className={styles.courseBtnLocked}>Locked</div>
+                  <div className={styles.courseBtnLocked}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    500 Credits
+                  </div>
                 </div>
               </div>
 
@@ -632,7 +643,7 @@ export default function CoursePage() {
                     src="/images/blue-cards/therapy-chat.jpg"
                     alt=""
                     fill
-                    sizes="240px"
+                    sizes="(max-width: 480px) 140px, 160px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillVip}>VIP Pass</div>
@@ -640,7 +651,13 @@ export default function CoursePage() {
                 <div className={styles.courseCardBody}>
                   <h3 className={styles.courseCardName}>Sovereign Mind</h3>
                   <span className={styles.courseCardTrack}>Daemon Protocol</span>
-                  <div className={styles.courseBtnVip}>VIP Card</div>
+                  <div className={styles.courseBtnVip}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    VIP Pass
+                  </div>
                 </div>
               </div>
             </div>

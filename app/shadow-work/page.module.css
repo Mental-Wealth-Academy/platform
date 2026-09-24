@@ -1415,9 +1415,11 @@
 /* Left-right horizontal carousel showing 3 vertical cards, 3rd card halfway on mobile */
 .courseCarousel {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   overflow-x: auto;
-  padding: 20px 20px 24px;
+  padding: 18px 24px 24px 24px;
+  scroll-padding-left: 24px;
+  scroll-padding-right: 24px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -1427,9 +1429,15 @@
   display: none;
 }
 
+.courseCarousel::after {
+  content: '';
+  flex: 0 0 12px;
+  pointer-events: none;
+}
+
 .courseVerticalCard {
-  flex: 0 0 220px;
-  width: 220px;
+  flex: 0 0 156px;
+  width: 156px;
   scroll-snap-align: start;
   border-radius: 14px;
   background: var(--color-surface-1);
@@ -1483,30 +1491,34 @@
 
 .courseCardPillActive {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 3px 8px;
+  top: 8px;
+  left: 8px;
+  padding: 2.5px 7.5px;
   border-radius: 999px;
   background: var(--color-primary);
   color: var(--color-on-action);
   font-family: var(--type-font-code);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
+.courseCardPillDiamonds,
 .courseCardPillCredits {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 3px 8px;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  padding: 2.5px 7.5px;
   border-radius: 999px;
-  background: #2563eb;
+  background: #1d4ed8;
   color: #ffffff;
   font-family: var(--type-font-code);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.03em;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
@@ -1514,14 +1526,14 @@
 
 .courseCardPillVip {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 3px 8px;
+  top: 8px;
+  left: 8px;
+  padding: 2.5px 7.5px;
   border-radius: 999px;
   background: #eab308;
   color: #1e1b09;
   font-family: var(--type-font-code);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1529,16 +1541,16 @@
 }
 
 .courseCardBody {
-  padding: 12px 14px 14px;
+  padding: 10px 11px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .courseCardName {
   margin: 0;
   font-family: var(--type-font-heading);
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 800;
   color: var(--color-text-dark);
   letter-spacing: -0.015em;
@@ -1547,7 +1559,7 @@
 
 .courseCardTrack {
   font-family: var(--type-font-code);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--color-text-faint);
   letter-spacing: 0.02em;
@@ -1555,12 +1567,12 @@
 
 .courseBtnActive {
   margin-top: 4px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border-radius: 8px;
   background: var(--color-primary);
   color: var(--color-on-action);
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 700;
   border: none;
   cursor: pointer;
@@ -1576,32 +1588,40 @@
 
 .courseBtnLocked {
   margin-top: 4px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border-radius: 8px;
   background: color-mix(in srgb, var(--palette-ink) 6%, var(--color-surface-base));
   color: var(--color-text-faint);
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 700;
   border: 1.5px dashed var(--color-border-subtle);
   width: 100%;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   cursor: not-allowed;
   box-sizing: border-box;
 }
 
 .courseBtnVip {
   margin-top: 4px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border-radius: 8px;
   background: color-mix(in srgb, #eab308 14%, var(--color-surface-base));
   color: #a16207;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 700;
   border: 1.5px dashed color-mix(in srgb, #eab308 45%, transparent);
   width: 100%;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   cursor: not-allowed;
   box-sizing: border-box;
 }
@@ -2123,5 +2143,30 @@
 
   .readingAuthorTag {
     font-size: 11px;
+  }
+
+  .courseModalOverlay {
+    padding: 12px;
+  }
+
+  .courseCarousel {
+    gap: 10px;
+    padding: 16px 20px 20px 20px;
+    scroll-padding-left: 20px;
+    scroll-padding-right: 20px;
+  }
+
+  .courseCarousel::after {
+    flex: 0 0 10px;
+  }
+
+  .courseVerticalCard {
+    flex: 0 0 140px;
+    width: 140px;
+    border-radius: 12px;
+  }
+
+  .courseCardName {
+    font-size: 0.86rem;
   }
 }
