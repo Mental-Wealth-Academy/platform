@@ -301,3 +301,18 @@
   from { opacity: 0; transform: translateY(8px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+:global([data-theme="dark"]) .card {
+  background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border-subtle));
+  box-shadow:
+    0 6px 0 color-mix(in srgb, var(--color-primary) 38%, #000),
+    0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme="dark"]) .card:hover {
+  box-shadow:
+    0 8px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 10px 24px rgba(0, 0, 0, 0.4);
+}
+

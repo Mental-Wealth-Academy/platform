@@ -218,68 +218,68 @@
 }
 
 [data-theme="dark"] {
-  --color-canvas: oklch(14% 0.024 268);
+  --color-canvas: oklch(13% 0.005 260);
   --color-background: var(--color-canvas);
   --color-surface-base: var(--color-canvas);
-  --color-surface-1: oklch(18.5% 0.030 268);
-  --color-surface-2: oklch(23% 0.036 268);
-  --color-surface-3: oklch(28% 0.042 268);
-  --color-border-subtle: rgba(235, 232, 247, 0.1);
-  --color-border-strong: rgba(235, 232, 247, 0.18);
-  --color-shell-background: rgba(10, 10, 17, 0.9);
-  --color-text-dark: oklch(93.5% 0.016 285);
-  --color-text-light: oklch(97% 0.012 285);
-  --color-text-muted: rgba(235, 232, 247, 0.64);
-  --color-text-soft: rgba(235, 232, 247, 0.78);
-  --color-text-faint: rgba(235, 232, 247, 0.46);
+  --color-surface-1: oklch(21% 0.009 260);
+  --color-surface-2: oklch(27% 0.012 260);
+  --color-surface-3: oklch(33% 0.014 260);
+  --color-border-subtle: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-shell-background: rgba(14, 15, 19, 0.95);
+  --color-text-dark: oklch(94% 0.005 260);
+  --color-text-light: oklch(98% 0.005 260);
+  --color-text-muted: rgba(235, 232, 247, 0.65);
+  --color-text-soft: rgba(235, 232, 247, 0.80);
+  --color-text-faint: rgba(235, 232, 247, 0.45);
 
   /* Chat bubble tokens (Dark) */
-  --color-chat-bubble-self-bg: linear-gradient(148deg, #252b4e 0%, #1a1e38 100%);
-  --color-chat-bubble-self-border: color-mix(in oklch, var(--color-primary) 36%, transparent);
-  --color-chat-bubble-self-text: #e6ecff;
-  --color-chat-bubble-self-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-self-bg: linear-gradient(148deg, #252d48 0%, #1c2237 100%);
+  --color-chat-bubble-self-border: color-mix(in srgb, var(--color-primary) 70%, rgba(255, 255, 255, 0.2));
+  --color-chat-bubble-self-text: #f1f5f9;
+  --color-chat-bubble-self-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-self-shadow-inner: rgba(0, 0, 0, 0.25);
-  --color-chat-bubble-self-shadow-highlight: rgba(255, 255, 255, 0.12);
+  --color-chat-bubble-self-shadow-highlight: rgba(255, 255, 255, 0.14);
 
-  --color-chat-bubble-0-bg: linear-gradient(148deg, #133325 0%, #0d241a 100%);
-  --color-chat-bubble-0-border: color-mix(in oklch, #10B981 35%, transparent);
-  --color-chat-bubble-0-text: #dcfce7;
-  --color-chat-bubble-0-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-0-bg: linear-gradient(148deg, #1b2e25 0%, #14231c 100%);
+  --color-chat-bubble-0-border: #10b981;
+  --color-chat-bubble-0-text: #ecfdf5;
+  --color-chat-bubble-0-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-0-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-0-shadow-highlight: rgba(255, 255, 255, 0.12);
 
-  --color-chat-bubble-1-bg: linear-gradient(148deg, #2e1a47 0%, #1f1131 100%);
-  --color-chat-bubble-1-border: color-mix(in oklch, #7844D0 40%, transparent);
-  --color-chat-bubble-1-text: #f1e6ff;
-  --color-chat-bubble-1-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-1-bg: linear-gradient(148deg, #291e3d 0%, #1f172e 100%);
+  --color-chat-bubble-1-border: #a855f7;
+  --color-chat-bubble-1-text: #faf5ff;
+  --color-chat-bubble-1-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-1-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-1-shadow-highlight: rgba(255, 255, 255, 0.12);
 
-  --color-chat-bubble-2-bg: linear-gradient(148deg, #382508 0%, #261904 100%);
-  --color-chat-bubble-2-border: color-mix(in oklch, #BF8400 40%, transparent);
-  --color-chat-bubble-2-text: #fff0cc;
-  --color-chat-bubble-2-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-2-bg: linear-gradient(148deg, #302816 0%, #241d0f 100%);
+  --color-chat-bubble-2-border: #eab308;
+  --color-chat-bubble-2-text: #fefce8;
+  --color-chat-bubble-2-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-2-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-2-shadow-highlight: rgba(255, 255, 255, 0.12);
 
-  --color-chat-bubble-3-bg: linear-gradient(148deg, #3a1523 0%, #270c16 100%);
-  --color-chat-bubble-3-border: color-mix(in oklch, #EC4899 40%, transparent);
-  --color-chat-bubble-3-text: #ffe4ec;
-  --color-chat-bubble-3-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-3-bg: linear-gradient(148deg, #321b27 0%, #26131d 100%);
+  --color-chat-bubble-3-border: #f43f5e;
+  --color-chat-bubble-3-text: #fff1f2;
+  --color-chat-bubble-3-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-3-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-3-shadow-highlight: rgba(255, 255, 255, 0.12);
 
-  --color-chat-bubble-4-bg: linear-gradient(148deg, #10293d 0%, #0a1b28 100%);
-  --color-chat-bubble-4-border: color-mix(in oklch, #38bdf8 35%, transparent);
-  --color-chat-bubble-4-text: #e0f2fe;
-  --color-chat-bubble-4-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-4-bg: linear-gradient(148deg, #182a39 0%, #11202b 100%);
+  --color-chat-bubble-4-border: #0ea5e9;
+  --color-chat-bubble-4-text: #f0f9ff;
+  --color-chat-bubble-4-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-4-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-4-shadow-highlight: rgba(255, 255, 255, 0.12);
 
-  --color-chat-bubble-5-bg: linear-gradient(148deg, #1b2046 0%, #121630 100%);
-  --color-chat-bubble-5-border: color-mix(in oklch, #4451B8 40%, transparent);
-  --color-chat-bubble-5-text: #e5e9ff;
-  --color-chat-bubble-5-shadow-drop: rgba(0, 0, 0, 0.35);
+  --color-chat-bubble-5-bg: linear-gradient(148deg, #212644 0%, #181c32 100%);
+  --color-chat-bubble-5-border: #818cf8;
+  --color-chat-bubble-5-text: #eef2ff;
+  --color-chat-bubble-5-shadow-drop: rgba(0, 0, 0, 0.45);
   --color-chat-bubble-5-shadow-inner: rgba(0, 0, 0, 0.25);
   --color-chat-bubble-5-shadow-highlight: rgba(255, 255, 255, 0.12);
 
@@ -353,10 +353,10 @@
 }
 
 [data-theme="dark"][data-color="academy"] {
-  --color-canvas: oklch(14% 0.024 268);
+  --color-canvas: oklch(13% 0.005 260);
   --color-background: var(--color-canvas);
   --color-surface-base: var(--color-canvas);
-  --color-surface-1: oklch(18.5% 0.030 268);
-  --color-surface-2: oklch(23% 0.036 268);
-  --color-surface-3: oklch(28% 0.042 268);
+  --color-surface-1: oklch(21% 0.009 260);
+  --color-surface-2: oklch(27% 0.012 260);
+  --color-surface-3: oklch(33% 0.014 260);
 }

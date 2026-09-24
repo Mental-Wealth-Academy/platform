@@ -205,3 +205,42 @@
     margin-left: -52px;
   }
 }
+
+:global([data-theme="dark"]) .shell {
+  --folder-wrapper-surface: oklch(16% 0.005 260);
+  --folder-wrapper-border: color-mix(in srgb, var(--color-primary) 50%, rgba(255, 255, 255, 0.15));
+  --folder-courses-surface: oklch(21% 0.009 260);
+  --folder-lecture-surface: oklch(18% 0.007 260);
+  --folder-workshop-surface: oklch(18% 0.007 260);
+}
+
+:global([data-theme="dark"]) .wrapper {
+  background: var(--folder-active-surface);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 50%, rgba(255, 255, 255, 0.15));
+  border-top: 0;
+  box-shadow:
+    0 6px 0 color-mix(in srgb, var(--color-primary) 40%, #000),
+    0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="dark"]) .trayTopBorder {
+  border-top: 2px solid color-mix(in srgb, var(--color-primary) 50%, rgba(255, 255, 255, 0.15));
+  border-right: 2px solid color-mix(in srgb, var(--color-primary) 50%, rgba(255, 255, 255, 0.15));
+}
+
+:global([data-theme="dark"]) .tabStroke {
+  stroke: color-mix(in srgb, var(--color-primary) 40%, rgba(255, 255, 255, 0.12));
+}
+
+:global([data-theme="dark"]) .tab:not(.tabActive) {
+  color: rgba(220, 224, 240, 0.55);
+}
+
+:global([data-theme="dark"]) .tab.tabActive {
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .tab.tabActive .tabStroke {
+  stroke: var(--color-primary);
+}
+

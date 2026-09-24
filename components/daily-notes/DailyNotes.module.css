@@ -1681,26 +1681,26 @@
 /* ============================================ */
 
 :global([data-theme="dark"]) .card {
-  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  background: var(--color-surface-1);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15));
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+    0 6px 0 color-mix(in srgb, var(--color-primary) 40%, #000),
+    0 10px 24px rgba(0, 0, 0, 0.40);
 }
 
 :global([data-theme="dark"]) .cardSurface {
-  opacity: 0.68;
+  background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+  opacity: 0.9;
 }
 
 :global([data-theme="dark"]) .cardButton {
-  background: linear-gradient(180deg, rgba(12, 15, 24, 0.54) 0%, rgba(12, 15, 24, 0.34) 100%);
+  background: transparent;
 }
 
 :global([data-theme="dark"]) .cardCompact:hover {
   box-shadow:
-    0 8px 0 var(--color-primary),
-    0 0px 12px rgba(0, 0, 0, 0.14),
-    0 12px 8px rgba(0, 0, 0, 0.30);
+    0 8px 0 color-mix(in srgb, var(--color-primary) 48%, #000),
+    0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
 :global([data-theme="dark"]) .sublabelCompact {

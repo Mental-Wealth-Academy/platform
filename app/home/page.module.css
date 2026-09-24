@@ -28,9 +28,9 @@
 
 :global([data-theme="dark"]) .scene {
   background:
-    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    linear-gradient(color-mix(in oklch, var(--color-primary) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(14, 16, 20, 0.96) 0%, rgba(14, 16, 20, 0.92) 55%, rgba(14, 16, 20, 0.98) 100%),
     var(--page-scene, none) center / cover no-repeat,
     var(--color-surface-base);
   background-size: 28px 28px, 28px 28px, auto, cover, auto;
@@ -67,7 +67,7 @@
 }
 
 :global([data-theme="dark"]) .layout {
-  background-color: #0d0e16;
+  background-color: var(--color-background);
 }
 
 .pageColumns {
@@ -99,13 +99,12 @@
 }
 
 :global([data-theme="dark"]) .globalPanel {
-  background-color: var(--color-surface-3);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  background-color: var(--color-surface-1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+  border: 2px solid color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15));
   box-shadow:
-    0 4px 0 var(--color-primary),
-    0 0 6px rgba(0, 0, 0, 0.10),
-    0 6px 3px rgba(0, 0, 0, 0.22);
+    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 .learnLayout .globalPanel {
@@ -164,8 +163,12 @@
 }
 
 :global([data-theme="dark"]) .panelHeader {
-  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+  background: var(--color-surface-2);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+:global([data-theme="dark"]) .panelTitle {
+  color: #f0f2ff;
 }
 
 .panelTitleJa {

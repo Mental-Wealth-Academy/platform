@@ -188,3 +188,18 @@
     padding: 12px 14px;
   }
 }
+
+:global([data-theme="dark"]) .panel {
+  background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border-subtle));
+  box-shadow:
+    0 6px 0 color-mix(in srgb, var(--color-primary) 38%, #000),
+    0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+:global([data-theme="dark"]) .panel:hover {
+  box-shadow:
+    0 8px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 10px 24px rgba(0, 0, 0, 0.4);
+}
+

@@ -18,7 +18,7 @@
 }
 
 :global([data-theme="dark"]) .chatRoom {
-  background-color: #15172a;
+  background-color: var(--color-surface-1);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
 }
 
@@ -534,30 +534,33 @@
 }
 
 :global([data-theme="dark"]) .chatRoom {
-  background-color: #15172a;
+  background-color: var(--color-surface-1);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(0,0,0,0.04)'/%3E%3C/svg%3E");
-  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15));
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
 :global([data-theme="dark"]) .chatHeader {
-  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+  background: var(--color-surface-2);
+  border-bottom: 2px solid var(--color-primary);
 }
 
 :global([data-theme="dark"]) .chatTitle {
-  color: #d6d9ee;
+  color: #f0f2ff;
 }
 
 :global([data-theme="dark"]) .msgUsername {
   color: #d6d9ee;
 }
 
+:global([data-theme="dark"]) .msgBubble {
+  border-width: 1.5px;
+}
+
 :global([data-theme="dark"]) .msgText {
-  color: #b0b6d0;
+  color: inherit;
 }
 
 :global([data-theme="dark"]) .chatInput {
