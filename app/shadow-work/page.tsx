@@ -131,11 +131,37 @@ export default function CoursePage() {
   const [authFlowSettled, setAuthFlowSettled] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+  const [lockedFeedbackCard, setLockedFeedbackCard] = useState<'diamonds' | 'vip' | null>(null);
+  const lockedFeedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Preload modal card images immediately on mount so opening modal is instantaneous with zero delay
+  useEffect(() => {
+    ['creative-healing.jpg', 'inner-alchemy.jpg', 'sovereign-mind.jpg'].forEach((src) => {
+      const img = new window.Image();
+      img.src = `/images/blue-cards/${src}`;
+    });
+    return () => {
+      if (lockedFeedbackTimeoutRef.current) {
+        clearTimeout(lockedFeedbackTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleLockedCardClick = (cardType: 'diamonds' | 'vip') => {
+    play('error');
+    if (lockedFeedbackTimeoutRef.current) {
+      clearTimeout(lockedFeedbackTimeoutRef.current);
+    }
+    setLockedFeedbackCard(cardType);
+    lockedFeedbackTimeoutRef.current = setTimeout(() => {
+      setLockedFeedbackCard(null);
+    }, 1800);
+  };
 
   useEffect(() => {
     if (!isCourseModalOpen) return;
@@ -588,7 +614,7 @@ export default function CoursePage() {
                 onClick={() => setIsCourseModalOpen(false)}
                 aria-label="Close course selector"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -602,6 +628,8 @@ export default function CoursePage() {
                     src="/images/blue-cards/creative-healing.jpg"
                     alt=""
                     fill
+                    priority
+                    loading="eager"
                     sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
@@ -624,12 +652,26 @@ export default function CoursePage() {
               </div>
 
               {/* Card 2: Inner Alchemy (Diamonds) */}
-              <div className={`${styles.courseVerticalCard} ${styles.courseCardLocked}`}>
+              <div
+                className={`${styles.courseVerticalCard} ${styles.courseCardLocked} ${lockedFeedbackCard === 'diamonds' ? styles.courseCardShake : ''}`}
+                onClick={() => handleLockedCardClick('diamonds')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleLockedCardClick('diamonds');
+                  }
+                }}
+                aria-label="Inner Alchemy, requires 500 diamonds to unlock"
+              >
                 <div className={styles.courseCardVectorWrap}>
                   <Image
                     src="/images/blue-cards/inner-alchemy.jpg"
                     alt=""
                     fill
+                    priority
+                    loading="eager"
                     sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
@@ -640,6 +682,11 @@ export default function CoursePage() {
                     500 Diamonds
                   </div>
                 </div>
+                {lockedFeedbackCard === 'diamonds' && (
+                  <div className={styles.courseCardHintBanner} role="status">
+                    Requires 500 Diamonds to unlock
+                  </div>
+                )}
                 <div className={styles.courseCardBody}>
                   <h3 className={styles.courseCardName}>Inner Alchemy</h3>
                   <span className={styles.courseCardTrack}>Somatic Integration</span>
@@ -648,23 +695,42 @@ export default function CoursePage() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    500 Diamonds
+                    {lockedFeedbackCard === 'diamonds' ? 'Requires 500 Diamonds' : '500 Diamonds'}
                   </div>
                 </div>
               </div>
 
               {/* Card 3: Sovereign Mind (VIP) */}
-              <div className={`${styles.courseVerticalCard} ${styles.courseCardVip}`}>
+              <div
+                className={`${styles.courseVerticalCard} ${styles.courseCardVip} ${lockedFeedbackCard === 'vip' ? styles.courseCardShake : ''}`}
+                onClick={() => handleLockedCardClick('vip')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleLockedCardClick('vip');
+                  }
+                }}
+                aria-label="Sovereign Mind, requires VIP pass to unlock"
+              >
                 <div className={styles.courseCardVectorWrap}>
                   <Image
                     src="/images/blue-cards/sovereign-mind.jpg"
                     alt=""
                     fill
+                    priority
+                    loading="eager"
                     sizes="(max-width: 480px) 85vw, 360px"
                     className={styles.courseCardVectorImg}
                   />
                   <div className={styles.courseCardPillVip}>VIP Pass</div>
                 </div>
+                {lockedFeedbackCard === 'vip' && (
+                  <div className={styles.courseCardHintBanner} role="status">
+                    Requires VIP Pass to unlock
+                  </div>
+                )}
                 <div className={styles.courseCardBody}>
                   <h3 className={styles.courseCardName}>Sovereign Mind</h3>
                   <span className={styles.courseCardTrack}>Daemon Protocol</span>
@@ -673,7 +739,7 @@ export default function CoursePage() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    VIP Pass
+                    {lockedFeedbackCard === 'vip' ? 'Requires VIP Pass' : 'VIP Pass'}
                   </div>
                 </div>
               </div>
