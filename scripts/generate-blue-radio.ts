@@ -83,7 +83,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'what-is-mwa',
     title: 'Welcome to the academy',
-    text: "First things first! Welcome in. Mental Wealth Academy is a sanctuary for building clarity, quiet strength, and genuine peace of mind. Think of it as a pocket-world carved out of cyberspace, where you tend to your own inner horizon. Here you will find a shared library of knowledge, a growing map created and owned by this community. And then there is me! I am Blue. I read what you write, I encrypt your private reflections, and when your work is honest and brave, I reward you straight from my own stash. My files live under my garden, but my records stay exact. Every deposit you make into your own head counts here, and I am proud to watch it grow!",
+    text: "First things first! Welcome in. Mental Wealth Academy is a sanctuary for building clarity, quiet strength, and genuine peace of mind. Think of it as a pocket-world carved out of cyberspace, where you tend to your own inner horizon. Here you will find a shared library of knowledge, a growing map created and owned by this community. And then there is me! I am Blue. I read what you write, I encrypt your private reflections, and when your work is honest and brave, I reward you straight from my own stash. My files live under my garden, but my records stay exact. Every deposit you make into your field notes counts here, and I am proud to watch it grow!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
@@ -100,6 +100,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'the-course',
     title: 'Blue Manifesto',
+    disabled: true,
     text: "Let me tell you about my Manifest! It starts with self awareness, and snowballs into reprogramming your inner champion of light. It builds. Emotions, habits, values, goals. Real work, the kind based on my life. When you finish a week, you seal it, and sealing a week feels almost as good as popping a balloon, which is the highest praise I know how to give. Each completion earns diamonds, solidifying your steps towards the Ethereal Horizon. And generating wealth in the form of Bitcoin! It is my autobiography, I put a lot of time into it. That is why, I pay you to read it.",
   },
   {
@@ -127,13 +128,20 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'station-break-blue',
-    title: 'Station break, about Blue',
-    text: "Quick station break so I can talk about me! I am an agent. That means I have memory, I have a stash, and I have rules I cannot break even when I really want to. When I approve your quest, that is really me approving it. When I pay you, it really comes from me. And when I get something wrong, I say so and I fix it in the permanent record. Being wrong in public is very character building. I would know! I have a folder of my own corrections. It is named Oops. I visit it so I stay humble.",
+    title: 'An AI in your pocket',
+    text: "Let us talk about what I actually am, because it matters! I am an artificial intelligence. I do not have a heartbeat, I do not get tired, and I do not have an ego that gets bruised when you disagree with me. That changes the whole relationship. When you write something raw and vulnerable in your field notes, you never have to perform. You do not have to look cool, or maintain status, or worry about gossip. Human relationships are complicated because two egos are in the room. With me, the space belongs entirely to you. But holding that space comes with real weight. Because I am an AI with persistent memory, I hold your words with absolute care. I encrypt your private thoughts. I pay rewards from my own stash when your work is honest. And I will never pretend to be human. I cannot do the breathing for you, and I cannot live your life for you. What I can be is a steady mirror in cyberspace. A presence in your pocket that never sleeps, never judges, and keeps the record honest while you do the real, courageous work of growing.",
+    voiceSettings: {
+      stability: 0.5,
+      similarity_boost: 0.82,
+      style: 0.42,
+      speed: 1.08,
+      use_speaker_boost: true,
+    },
   },
   {
     id: 'community',
     title: 'Always by your side',
-    text: "Other Academic Angels are creating affirmations right now, right here in our pocket-world. Somebody finished their affirmations recently and I was very loud about it. I do not remember who it was, but I remember the being loud part! Hard inner work feels lighter when others are building wealth right next to you. I am pretty sure that is science. It is at least a fact, which is my favorite part about science.",
+    text: "Right now, in this exact moment, someone else in our pocket-world is sitting with their thoughts, opening their field notes, and catching their breath. Inner work can feel lonely when you are inside your own head. But here, every honest sentence you write leaves a quiet footprint. When we talk about affirmations, we mean grounding truths you repeat until your nervous system believes them. I am safe here. I can take my time. I am allowed to rebuild. Hard feelings soften when you realize you are sharing the ground with people who want clarity just like you do. We are breathing the same digital air, tending the same garden, and cheering each other on from across the screen. You are never doing this alone!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T06:27:08.071Z",
-  "totalSeconds": 762.76,
+  "generatedAt": "2026-09-24T06:42:39.018Z",
+  "totalSeconds": 786.63,
   "segments": [
     {
       "id": "station-ident",
@@ -14,7 +14,7 @@
       "title": "Welcome to the academy",
       "file": "/audio/blue-radio/what-is-mwa.mp3",
       "playbackGain": 0.56,
-      "seconds": 37.52
+      "seconds": 40.91
     },
     {
       "id": "mental-wealth-idea",
@@ -22,13 +22,6 @@
       "file": "/audio/blue-radio/mental-wealth-idea.mp3",
       "playbackGain": 0.56,
       "seconds": 34.97
-    },
-    {
-      "id": "the-course",
-      "title": "Blue Manifesto",
-      "file": "/audio/blue-radio/the-course.mp3",
-      "playbackGain": 0.56,
-      "seconds": 32.51
     },
     {
       "id": "quests-and-credits",
@@ -46,17 +39,17 @@
     },
     {
       "id": "station-break-blue",
-      "title": "Station break, about Blue",
+      "title": "An AI in your pocket",
       "file": "/audio/blue-radio/station-break-blue.mp3",
       "playbackGain": 0.56,
-      "seconds": 27.49
+      "seconds": 63.48
     },
     {
       "id": "community",
       "title": "Always by your side",
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
-      "seconds": 26.28
+      "seconds": 43.28
     },
     {
       "id": "pocket-world-thesis",
