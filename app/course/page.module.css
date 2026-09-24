@@ -1248,60 +1248,63 @@
 }
 
 .courseModalHeader {
+  position: relative;
   flex: 0 0 auto;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: max(22px, calc(env(safe-area-inset-top, 20px) + 12px)) max(28px, calc((100vw - 1100px) / 2)) 8px;
+  padding: max(24px, calc(env(safe-area-inset-top, 20px) + 14px)) max(28px, calc((100vw - 1100px) / 2)) 14px;
   box-sizing: border-box;
+  text-align: center;
 }
 
-.courseModalHeaderLeft {
+.courseModalHeaderCenter {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.courseHeaderKicker {
-  font-family: var(--type-font-code);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .courseHeaderTitle {
   margin: 0;
   font-family: var(--type-font-heading);
-  font-size: 1.55rem;
+  font-size: 2.1rem;
   font-weight: 800;
   color: var(--color-text-dark);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-align: center;
 }
 
 .courseHeaderDesc {
-  margin: 3px 0 0 0;
+  margin: 0;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--color-text-muted);
-  line-height: 1.45;
-  max-width: 520px;
+  line-height: 1.5;
+  max-width: 540px;
+  text-align: center;
 }
 
 .courseModalClose {
-  flex: 0 0 42px;
+  position: absolute;
+  top: max(20px, calc(env(safe-area-inset-top, 20px) + 10px));
+  right: max(20px, calc(env(safe-area-inset-right, 20px) + 10px));
+  z-index: 100010;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1.5px solid var(--color-border-subtle);
   background: var(--color-surface-1);
@@ -1333,7 +1336,7 @@
   overflow-x: auto;
   width: 100%;
   box-sizing: border-box;
-  padding: 10px max(28px, calc((100vw - 1100px) / 2)) max(28px, calc(env(safe-area-inset-bottom, 20px) + 12px));
+  padding: 8px max(28px, calc((100vw - 1100px) / 2)) max(28px, calc(env(safe-area-inset-bottom, 20px) + 12px));
   scroll-padding-left: max(28px, calc((100vw - 1100px) / 2));
   scroll-padding-right: max(28px, calc((100vw - 1100px) / 2));
   scroll-snap-type: x mandatory;
@@ -1353,11 +1356,11 @@
 
 .courseVerticalCard {
   position: relative;
-  flex: 0 0 340px;
-  width: 340px;
-  height: 100%;
-  max-height: min(720px, calc(100dvh - 140px));
-  min-height: 480px;
+  flex: 0 0 320px;
+  width: 320px;
+  height: min(68vh, 560px);
+  max-height: min(68vh, 560px);
+  min-height: 440px;
   scroll-snap-align: start;
   border-radius: 24px;
   overflow: hidden;
@@ -1409,7 +1412,7 @@
 
 .courseCardVectorImg {
   object-fit: cover;
-  object-position: 82% 10%;
+  object-position: center 15%;
 }
 
 .courseCardPillActive {
@@ -2061,27 +2064,29 @@
   }
 
   .courseModalHeader {
-    padding: max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) 20px 8px;
-    gap: 12px;
+    padding: max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) 52px 10px 20px;
+    text-align: center;
   }
 
-  .courseHeaderKicker {
-    font-size: 10.5px;
+  .courseModalHeaderCenter {
+    gap: 6px;
+    max-width: 100%;
   }
 
   .courseHeaderTitle {
-    font-size: 1.35rem;
+    font-size: 1.65rem;
   }
 
   .courseHeaderDesc {
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 13.5px;
+    line-height: 1.45;
   }
 
   .courseModalClose {
+    top: max(14px, calc(env(safe-area-inset-top, 16px) + 6px));
+    right: max(14px, calc(env(safe-area-inset-right, 16px) + 6px));
     width: 38px;
     height: 38px;
-    flex: 0 0 38px;
   }
 
   .courseCarousel {
@@ -2096,11 +2101,11 @@
   }
 
   .courseVerticalCard {
-    flex: 0 0 clamp(285px, 84vw, 345px);
-    width: clamp(285px, 84vw, 345px);
+    flex: 0 0 clamp(275px, 82vw, 325px);
+    width: clamp(275px, 82vw, 325px);
     height: 100%;
-    max-height: calc(100dvh - max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) - 95px - max(24px, calc(env(safe-area-inset-bottom, 16px) + 10px)));
-    min-height: 420px;
+    max-height: calc(100dvh - max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) - 120px - max(24px, calc(env(safe-area-inset-bottom, 16px) + 10px)));
+    min-height: 380px;
     border-radius: 20px;
   }
 

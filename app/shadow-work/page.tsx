@@ -576,8 +576,7 @@ export default function CoursePage() {
         >
           <div className={styles.courseModal}>
             <div className={styles.courseModalHeader}>
-              <div className={styles.courseModalHeaderLeft}>
-                <span className={styles.courseHeaderKicker}>Curriculum Tracks</span>
+              <div className={styles.courseModalHeaderCenter}>
                 <h2 className={styles.courseHeaderTitle}>Select Course</h2>
                 <p className={styles.courseHeaderDesc}>
                   Switch between available learning paths. Weekly progression and diamonds sync automatically across tracks.
@@ -600,7 +599,7 @@ export default function CoursePage() {
               <div className={`${styles.courseVerticalCard} ${styles.courseCardActive}`}>
                 <div className={styles.courseCardVectorWrap}>
                   <Image
-                    src="/images/blue-cards/task-reminder.jpg"
+                    src="/images/blue-cards/creative-healing.jpg"
                     alt=""
                     fill
                     sizes="(max-width: 480px) 85vw, 360px"
@@ -628,7 +627,7 @@ export default function CoursePage() {
               <div className={`${styles.courseVerticalCard} ${styles.courseCardLocked}`}>
                 <div className={styles.courseCardVectorWrap}>
                   <Image
-                    src="/images/blue-cards/soundscape.jpg"
+                    src="/images/blue-cards/inner-alchemy.jpg"
                     alt=""
                     fill
                     sizes="(max-width: 480px) 85vw, 360px"
@@ -658,7 +657,7 @@ export default function CoursePage() {
               <div className={`${styles.courseVerticalCard} ${styles.courseCardVip}`}>
                 <div className={styles.courseCardVectorWrap}>
                   <Image
-                    src="/images/blue-cards/therapy-chat.jpg"
+                    src="/images/blue-cards/sovereign-mind.jpg"
                     alt=""
                     fill
                     sizes="(max-width: 480px) 85vw, 360px"
