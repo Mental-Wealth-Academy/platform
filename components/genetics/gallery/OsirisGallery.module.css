@@ -163,13 +163,71 @@
 
 @media (max-width: 768px) {
   .plaque {
-    top: 14px;
-    left: 14px;
-    max-width: 62%;
-    padding: 10px 12px;
+    top: 10px;
+    left: 10px;
+    bottom: auto;
+    max-width: min(260px, calc(100% - 20px));
+    padding: 7px 11px;
+    border-radius: 6px;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .plaqueEyebrow {
+    display: none;
   }
 
   .plaqueTitle {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .plaqueCaption {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 10.5px;
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+
+  .plaqueMeta {
+    font-size: 9.5px;
+    margin-top: 2px;
+  }
+
+  .plaqueIndex {
+    font-size: 9.5px;
+    margin-top: 2px;
+  }
+
+  .walk {
+    bottom: 10px;
+    padding: 4px 8px;
+    gap: 8px;
+  }
+
+  .walkButton {
+    width: 28px;
+    height: 28px;
     font-size: 15px;
+  }
+
+  .walkHint {
+    font-size: 9.5px;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 380px) {
+  .walkHint {
+    display: none;
   }
 }

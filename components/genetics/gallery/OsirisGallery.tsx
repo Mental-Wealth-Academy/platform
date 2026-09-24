@@ -797,6 +797,21 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           setFocusIndex(Math.round(targetRef.current / SLOT));
           return false;
         };
+
+        s.touchStarted = () => {
+          s.mousePressed();
+          return false;
+        };
+
+        s.touchMoved = () => {
+          s.mouseDragged();
+          return false;
+        };
+
+        s.touchEnded = () => {
+          s.mouseReleased();
+          return false;
+        };
       };
 
       instance = new P5(sketch);
@@ -836,7 +851,13 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
 
       <div className={styles.vignette} aria-hidden="true" />
 
-      <div className={styles.plaque}>
+      <div
+        className={styles.plaque}
+        onClick={() => focused && onSelectRef.current(focused)}
+        role="button"
+        tabIndex={0}
+        aria-label={focused ? `View ${focused.label} details` : undefined}
+      >
         <p className={styles.plaqueEyebrow}>Osiris Art Gallery of Genetic Research</p>
         {focused ? (
           <>

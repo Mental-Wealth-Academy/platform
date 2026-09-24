@@ -2110,18 +2110,75 @@
     padding: 12px 12px 48px;
   }
 
+  .learnOverviewTitle {
+    font-size: clamp(20px, 5.2vw, 24px);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .learnOverviewMetrics,
+  .learnOverviewRating {
+    gap: 6px;
+    font-size: 0.6875rem;
+  }
+
+  .learnOverviewCopy {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .learnAccountCard {
+    padding: 16px 18px;
+    min-height: auto;
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  .learnAccountTitle {
+    font-size: 16px;
+  }
+
+  .learnAccountCopy {
+    font-size: 12.5px;
+  }
+
+  .learnAccountMark {
+    width: 56px;
+    height: 56px;
+    opacity: 0.16;
+    right: -4px;
+    bottom: -4px;
+  }
+
+  .knowledgeTreeCard {
+    padding: 11px 14px;
+    font-size: 0.875rem;
+    border-radius: 12px;
+    min-height: 44px;
+  }
+
   .learnOverviewBody {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .learnLayout .globalPanel {
     grid-row: 2;
+    padding: 12px 10px;
+    border-radius: 14px;
+  }
+
+  .learnLayout .panelHeader {
+    margin: -12px -10px 14px;
+    padding: 10px 12px;
   }
 
   .learnFiltersPanel {
     grid-row: auto;
     order: 2;
     margin-right: 0;
+    padding: 14px;
+    border-radius: 14px;
   }
 
   .guideSection {
