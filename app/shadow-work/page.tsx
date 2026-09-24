@@ -129,6 +129,7 @@ export default function CoursePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authFlowSettled, setAuthFlowSettled] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
+  const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -347,6 +348,28 @@ export default function CoursePage() {
       <main className={`${styles.content} ${styles.contentSimple}`} onFocus={handleFocus}>
         <section className={`${styles.weeklyShell} ${styles.weeklyShellSimple}`} aria-label="Course materials">
           <div className={`${styles.leftCol} ${styles.leftColSimple}`}>
+            <button
+              type="button"
+              className={styles.courseSwitcherBtn}
+              onClick={() => {
+                play('click');
+                setIsCourseModalOpen(true);
+              }}
+              onMouseEnter={() => play('hover')}
+              aria-label="Select course. Current: Creative Healing"
+            >
+              <span className={styles.courseSwitcherLeft}>
+                <span className={styles.courseSwitcherDot} aria-hidden="true" />
+                <span className={styles.courseSwitcherLabel}>Creative Healing</span>
+              </span>
+              <span className={styles.courseSwitcherRight}>
+                <span className={styles.courseSwitcherBadge}>12-Week Track</span>
+                <svg className={styles.courseSwitcherChevron} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </span>
+            </button>
+
             <nav className={styles.weekNav} aria-label="Week navigation">
               <button
                 type="button"
@@ -362,7 +385,6 @@ export default function CoursePage() {
               </button>
 
               <div className={styles.weekNavCenter}>
-                <span className={styles.weekNavKicker}>Creative Healing</span>
                 <span className={styles.weekNavLabel}>Week {resolvedViewWeek} of 12</span>
               </div>
 
@@ -526,6 +548,123 @@ export default function CoursePage() {
         emotion="happy"
         onClose={handleIntroClose}
       />
+
+      {isCourseModalOpen && (
+        <div
+          className={styles.courseModalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="course-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsCourseModalOpen(false);
+          }}
+        >
+          <div className={styles.courseModal}>
+            <div className={styles.courseModalHeader}>
+              <div>
+                <h2 id="course-modal-title" className={styles.courseModalTitle}>Select Course</h2>
+                <p className={styles.courseModalSubtitle}>Choose your active learning track</p>
+              </div>
+              <button
+                type="button"
+                className={styles.courseModalClose}
+                onClick={() => setIsCourseModalOpen(false)}
+                aria-label="Close modal"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className={styles.courseModalList}>
+              {/* Course 1: Creative Healing (Active) */}
+              <button
+                type="button"
+                className={`${styles.courseOptionCard} ${styles.courseOptionActive}`}
+                onClick={() => {
+                  play('click');
+                  setIsCourseModalOpen(false);
+                }}
+              >
+                <div className={styles.courseOptionHeader}>
+                  <div className={styles.courseOptionInfo}>
+                    <span className={styles.courseOptionKicker}>Core curriculum</span>
+                    <h3 className={styles.courseOptionTitle}>Creative Healing</h3>
+                    <p className={styles.courseOptionDesc}>12-week comprehensive journey through shadow integration and self-mastery.</p>
+                  </div>
+                  <span className={styles.courseOptionStatusActive}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Active
+                  </span>
+                </div>
+                <div className={styles.courseOptionFooter}>
+                  <span className={styles.courseOptionMeta}>Week {resolvedViewWeek} of 12 in progress</span>
+                  <span className={styles.courseOptionAction}>Continue</span>
+                </div>
+              </button>
+
+              {/* Course 2: Locked with Diamonds */}
+              <div className={`${styles.courseOptionCard} ${styles.courseOptionLocked}`}>
+                <div className={styles.courseOptionHeader}>
+                  <div className={styles.courseOptionInfo}>
+                    <span className={styles.courseOptionKicker}>Specialized track</span>
+                    <h3 className={styles.courseOptionTitle}>Inner Alchemy</h3>
+                    <p className={styles.courseOptionDesc}>Advanced somatic practices and subconscious emotional transmutation.</p>
+                  </div>
+                  <span className={styles.courseOptionStatusLocked}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Locked
+                  </span>
+                </div>
+                <div className={styles.courseOptionFooter}>
+                  <span className={styles.courseOptionRequirement}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polygon points="12 2 2 8.5 12 15 22 8.5 12 2" />
+                      <polyline points="2 15.5 12 22 22 15.5" />
+                    </svg>
+                    Requires 500 credits
+                  </span>
+                  <span className={styles.courseOptionLockedHint}>Earn credits in quests</span>
+                </div>
+              </div>
+
+              {/* Course 3: Locked with VIP Card */}
+              <div className={`${styles.courseOptionCard} ${styles.courseOptionLocked} ${styles.courseOptionVip}`}>
+                <div className={styles.courseOptionHeader}>
+                  <div className={styles.courseOptionInfo}>
+                    <span className={styles.courseOptionKicker}>Executive study</span>
+                    <h3 className={styles.courseOptionTitle}>Sovereign Mind</h3>
+                    <p className={styles.courseOptionDesc}>Deep archetype integration with direct daemon synthesis.</p>
+                  </div>
+                  <span className={`${styles.courseOptionStatusLocked} ${styles.courseOptionStatusVip}`}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    VIP Access
+                  </span>
+                </div>
+                <div className={styles.courseOptionFooter}>
+                  <span className={styles.courseOptionRequirement}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                    Requires VIP card
+                  </span>
+                  <span className={styles.courseOptionLockedHint}>Membership pass</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
     </HomeWelcomeFlow>

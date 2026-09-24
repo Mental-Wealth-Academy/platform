@@ -1118,6 +1118,319 @@
   flex-shrink: 0;
 }
 
+/* ── Course switcher thin button ── */
+
+.courseSwitcherBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  margin: 0 0 10px 0;
+  background: var(--color-surface-base);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 22%, var(--color-border-subtle));
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary) 6%, transparent);
+  transition: all 0.15s ease;
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.courseSwitcherBtn:hover {
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-base));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.courseSwitcherLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.courseSwitcherDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  flex-shrink: 0;
+}
+
+.courseSwitcherLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.courseSwitcherRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.courseSwitcherBadge {
+  font-family: var(--type-font-code);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.courseSwitcherChevron {
+  color: var(--color-text-faint);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.courseSwitcherBtn:hover .courseSwitcherChevron {
+  color: var(--color-primary);
+  transform: translateY(1px);
+}
+
+/* ── Course selector modal ── */
+
+.courseModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 17, 34, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: courseOverlayIn 0.16s ease;
+}
+
+@keyframes courseOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.courseModal {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-base);
+  box-shadow: 0 24px 64px rgba(15, 17, 34, 0.35);
+  animation: courseModalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes courseModalIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.courseModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-base) 100%);
+}
+
+.courseModalTitle {
+  margin: 0;
+  font-family: var(--type-font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  letter-spacing: -0.015em;
+}
+
+.courseModalSubtitle {
+  margin: 3px 0 0;
+  font-size: 0.82rem;
+  color: var(--color-text-faint);
+}
+
+.courseModalClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  background: #f1f5f9;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.courseModalClose:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: scale(1.08);
+}
+
+.courseModalList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px 22px;
+  max-height: 72vh;
+  overflow-y: auto;
+}
+
+.courseOptionCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-1);
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.courseOptionActive {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-base));
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 12%, transparent);
+  cursor: pointer;
+}
+
+.courseOptionActive:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
+  transform: translateY(-1px);
+}
+
+.courseOptionLocked {
+  opacity: 0.88;
+  background: color-mix(in srgb, var(--color-surface-2) 60%, var(--color-surface-1));
+  border-style: dashed;
+}
+
+.courseOptionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.courseOptionInfo {
+  min-width: 0;
+}
+
+.courseOptionKicker {
+  display: block;
+  font-family: var(--type-font-code);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  margin-bottom: 2px;
+}
+
+.courseOptionTitle {
+  margin: 0;
+  font-family: var(--type-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  letter-spacing: -0.01em;
+}
+
+.courseOptionDesc {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--color-text-faint);
+}
+
+.courseOptionStatusActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-action);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.courseOptionStatusLocked {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-faint) 18%, transparent);
+  color: var(--color-text-faint);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.courseOptionStatusVip {
+  background: color-mix(in srgb, #eab308 20%, transparent);
+  color: #ca8a04;
+  border: 1px solid color-mix(in srgb, #eab308 35%, transparent);
+}
+
+.courseOptionFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-subtle) 60%, transparent);
+  font-size: 0.78rem;
+}
+
+.courseOptionMeta {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.courseOptionAction {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.courseOptionRequirement {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.courseOptionLockedHint {
+  color: var(--color-text-faint);
+  font-size: 0.74rem;
+}
+
 .weekNav {
   display: flex;
   align-items: center;
@@ -1331,6 +1644,28 @@
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingCtaPill {
   background: #38bdf8;
   color: #0c213c;
+}
+
+:global([data-theme="dark"]) .courseSwitcherBtn {
+  background: var(--color-surface-base);
+  border-color: color-mix(in srgb, var(--color-primary) 32%, var(--color-border-subtle));
+}
+
+:global([data-theme="dark"]) .courseModalClose {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f8fafc;
+}
+
+:global([data-theme="dark"]) .courseModalClose:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+}
+
+:global([data-theme="dark"]) .courseOptionStatusVip {
+  color: #facc15;
+  border-color: color-mix(in srgb, #eab308 45%, transparent);
 }
 
 :global([data-theme="dark"]) .readingCard:not([data-card-theme]):hover {

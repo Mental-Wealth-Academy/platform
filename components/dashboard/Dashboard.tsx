@@ -8,14 +8,14 @@ export default function Dashboard() {
   return (
     <div className={styles.dashboard}>
 
-      {/* ── Mood Selector: Mobile-first above Blue ── */}
-      <div className={styles.moodSelectorWrap}>
-        <MoodSelector />
-      </div>
-
-      {/* ── BlueScene ── */}
+      {/* ── BlueScene (Blue Radio) ── */}
       <div className={styles.blueSceneWrap}>
         <BlueScene />
+      </div>
+
+      {/* ── Mood Selector: Underneath Blue Radio ── */}
+      <div className={styles.moodSelectorWrap}>
+        <MoodSelector />
       </div>
 
       {/* ── Sidebar: Field Notes + Global Chat ── */}

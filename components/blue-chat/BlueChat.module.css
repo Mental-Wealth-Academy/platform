@@ -55,6 +55,17 @@
   }
 }
 
+@keyframes mobileChatSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.85;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Compact top bar — Blue identity on the left, control buttons on the right */
 
 .compactTopBar {
@@ -111,24 +122,25 @@
 /* Close button */
 
 .closeButton {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(var(--bc-ink), 0.06);
-  border: 1.5px solid rgba(var(--bc-ink), 0.1);
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
   border-radius: 50%;
-  color: rgba(var(--bc-ink), 0.55);
+  color: #1e293b;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   transition: all 0.15s ease;
 }
 
 .closeButton:hover {
-  background: rgba(var(--bc-ink), 0.1);
-  color: rgba(var(--bc-ink), 0.85);
-  border-color: rgba(var(--bc-ink), 0.18);
-  transform: scale(1.1);
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: scale(1.08);
 }
 
 /* Expand button */
@@ -1157,6 +1169,7 @@
     /* This panel is always dark on mobile regardless of theme, so the ink
        must always be light here. */
     --bc-ink: 235, 232, 247;
+    animation: mobileChatSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
 .messageBubble {
@@ -2638,10 +2651,8 @@
 
 :global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleButton,
 :global(:root:not([data-theme="dark"])) .compactTopBar .expandButton,
-:global(:root:not([data-theme="dark"])) .compactTopBar .closeButton,
 :global(:root[data-theme="dark"]) .compactTopBar .voiceToggleButton,
-:global(:root[data-theme="dark"]) .compactTopBar .expandButton,
-:global(:root[data-theme="dark"]) .compactTopBar .closeButton {
+:global(:root[data-theme="dark"]) .compactTopBar .expandButton {
   background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.34);
   color: #ffffff;
@@ -2650,10 +2661,8 @@
 
 :global(:root:not([data-theme="dark"])) .compactTopBar .voiceToggleButton:hover,
 :global(:root:not([data-theme="dark"])) .compactTopBar .expandButton:hover,
-:global(:root:not([data-theme="dark"])) .compactTopBar .closeButton:hover,
 :global(:root[data-theme="dark"]) .compactTopBar .voiceToggleButton:hover,
-:global(:root[data-theme="dark"]) .compactTopBar .expandButton:hover,
-:global(:root[data-theme="dark"]) .compactTopBar .closeButton:hover {
+:global(:root[data-theme="dark"]) .compactTopBar .expandButton:hover {
   background: rgba(255, 255, 255, 0.28);
   border-color: rgba(255, 255, 255, 0.55);
   color: #ffffff;

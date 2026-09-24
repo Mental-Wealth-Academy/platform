@@ -147,13 +147,13 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .bentoScroll {
-    padding: 0 12px 32px;
+    padding: 16px 20px 32px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .bentoScroll {
-    padding: 0 12px 24px;
+    padding: 16px 16px 24px;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }

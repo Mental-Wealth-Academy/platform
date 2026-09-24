@@ -1,14 +1,14 @@
 .container {
   position: relative;
   width: 100%;
-  border-radius: 12px;
-  background: #ffffff;
-  border: 2px solid var(--color-primary-hover);
+  border-radius: 14px;
+  background: #0f1322;
+  border: 2px solid color-mix(in srgb, var(--color-primary-hover) 45%, #252b48);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
-  padding: 8px 10px 8px;
+    0 4px 14px rgba(0, 0, 0, 0.35),
+    0 10px 24px rgba(0, 0, 0, 0.45);
+  padding: 10px 12px 10px;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -48,7 +48,7 @@
   font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.15;
-  color: #1a1d33;
+  color: #f1f5f9;
   letter-spacing: -0.01em;
 }
 
@@ -68,23 +68,23 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .moodCard {
   appearance: none;
-  border: 1.5px solid color-mix(in oklch, var(--color-primary-hover) 35%, #ffffff);
-  background: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: #1a1e34;
   border-radius: 9px;
-  padding: 4px 4px 5px;
+  padding: 5px 4px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
   outline: none;
   box-shadow:
-    0 3px 0 color-mix(in oklch, var(--color-primary) 36%, transparent),
-    0 3px 6px rgba(26, 29, 51, 0.08);
+    0 3px 0 color-mix(in srgb, var(--color-primary) 32%, #111424),
+    0 3px 6px rgba(0, 0, 0, 0.3);
   transition:
     transform 0.12s ease,
     border-color 0.12s ease,
@@ -95,11 +95,11 @@
 
 .moodCard:hover {
   transform: translateY(-1px);
-  background: color-mix(in oklch, var(--color-primary) 4%, #ffffff);
+  background: #232948;
   border-color: var(--color-primary);
   box-shadow:
-    0 4px 0 color-mix(in oklch, var(--color-primary) 48%, transparent),
-    0 5px 10px rgba(26, 29, 51, 0.12);
+    0 4px 0 var(--color-primary),
+    0 5px 12px rgba(0, 0, 0, 0.4);
 }
 
 .moodCard:active {
@@ -122,8 +122,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 7px;
   overflow: hidden;
-  background: color-mix(in oklch, var(--color-primary) 6%, #ffffff);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  background: #111422;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .artwork {
@@ -134,11 +134,11 @@
 }
 
 .label {
-  margin-top: 3px;
+  margin-top: 4px;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
   font-size: clamp(0.64rem, 2.4vw, 0.74rem);
   font-weight: 700;
-  color: #2a2f52;
+  color: #e2e8f0;
   line-height: 1.1;
   text-align: center;
   white-space: nowrap;

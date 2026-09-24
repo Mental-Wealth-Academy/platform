@@ -9,6 +9,23 @@
   overflow: hidden;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
+.scene {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
+    var(--color-scene-bg);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
 .content {
   flex: 1;
   display: flex;
@@ -16,10 +33,15 @@
   min-height: 0;
   overflow: hidden;
   position: relative;
+  z-index: 1;
 }
 
 /* Collapse sidebar offset on mobile */
 @media (max-width: 900px) {
+  .scene {
+    left: 0;
+  }
+
   .pageLayout {
     margin-left: 0;
     height: calc(100dvh - var(--banner-height, 0px));
