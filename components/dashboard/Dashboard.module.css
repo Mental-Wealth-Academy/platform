@@ -110,7 +110,7 @@
   }
 }
 
-/* Phones: balanced hero height for Blue and natural flow for Field Notes and Leaderboard */
+/* Phones: extended hero height for Blue card with Field Notes underneath */
 @media (max-width: 768px) {
   .dashboard {
     gap: 16px;
@@ -118,9 +118,9 @@
   }
 
   .blueSceneWrap {
-    height: clamp(260px, 40dvh, 340px);
-    min-height: 260px;
-    max-height: 340px;
+    height: clamp(380px, 56dvh, 520px);
+    min-height: 360px;
+    max-height: 560px;
     flex: none;
   }
 
@@ -128,7 +128,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding-bottom: calc(var(--mobile-nav-clearance, 90px) + 32px);
+    padding-bottom: 24px;
   }
 
   .fieldNotesWrapper {
@@ -139,7 +139,6 @@
     background: none;
     z-index: auto;
     pointer-events: auto;
-    order: -1;
   }
 
   .fieldNotesWrapper > * {
