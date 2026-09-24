@@ -90,15 +90,34 @@ function formatTime(iso: string): string {
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function highlightMentions(text: string): React.ReactNode {
-  const parts = text.split(/(@\w+)/g);
-  return parts.map((part, i) =>
-    part.startsWith('@') ? (
-      <span key={i} className={styles.mention}>{part}</span>
-    ) : (
-      part
-    )
-  );
+const CHAT_TOKEN_REGEX = /(@\w+|https?:\/\/[^\s<>'"]+)/g;
+
+function formatChatMessage(text: string): React.ReactNode {
+  const parts = text.split(CHAT_TOKEN_REGEX);
+  return parts.map((part, i) => {
+    if (part.startsWith('@')) {
+      return (
+        <span key={i} className={styles.mention}>
+          {part}
+        </span>
+      );
+    }
+    if (/^https?:\/\//i.test(part)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.chatLink}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
 }
 
 interface ChatRoomProps {
@@ -117,12 +136,25 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [blueReviewingUrl, setBlueReviewingUrl] = useState<string | null>(null);
+  const blueReviewTimerRef = useRef<NodeJS.Timeout | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const oldestIdRef = useRef<number | null>(null);
   const newestIdRef = useRef<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const subRef = useRef<RealtimeChannel>();
+
+  useEffect(() => {
+    if (!blueReviewingUrl) return;
+    if (blueReviewTimerRef.current) clearTimeout(blueReviewTimerRef.current);
+    blueReviewTimerRef.current = setTimeout(() => {
+      setBlueReviewingUrl(null);
+    }, 15000);
+    return () => {
+      if (blueReviewTimerRef.current) clearTimeout(blueReviewTimerRef.current);
+    };
+  }, [blueReviewingUrl]);
   // Stick-to-bottom state: pinned means the user is at (or near) the newest
   // message and the list should follow new arrivals. Scrolling up to read
   // history unpins; returning to the bottom re-pins.
@@ -138,6 +170,9 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
       const data = await res.json();
       if (Array.isArray(data.messages) && data.messages.length > 0) {
         const mapped = data.messages.map(mapMessage);
+        if (mapped.some((m: ChatMessage) => m.username?.toLowerCase() === 'blue' || m.userId === 'blue-agent')) {
+          setBlueReviewingUrl(null);
+        }
         setMessages((prev) => {
           const existing = new Set(prev.map((m) => m.id));
           const newOnes = mapped.filter((m: ChatMessage) => !existing.has(m.id));
@@ -275,6 +310,9 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           (payload) => {
             const msg = payload.new as Record<string, unknown>;
             const mapped = mapMessage(msg);
+            if (mapped.username?.toLowerCase() === 'blue' || mapped.userId === 'blue-agent') {
+              setBlueReviewingUrl(null);
+            }
             setMessages((prev) => {
               if (prev.some((m) => m.id === mapped.id)) return prev;
               return [...prev, mapped];
@@ -399,6 +437,17 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     const text = input.trim();
     if (!text || sending) return;
     setSending(true);
+
+    const urlMatch = text.match(/https?:\/\/[^\s<>'"]+/i);
+    if (urlMatch) {
+      try {
+        const parsed = new URL(urlMatch[0]);
+        setBlueReviewingUrl(parsed.hostname);
+      } catch {
+        setBlueReviewingUrl('link');
+      }
+    }
+
     const token = await getAccessToken().catch(() => null);
     const headers: HeadersInit = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -432,6 +481,18 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         if (prev.some((m) => m.id === optimistic.id)) return prev;
         return [...prev, optimistic];
       });
+
+      if (urlMatch) {
+        fetch('/api/chat/analyze-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            userId: data.message.user_id,
+            username: data.message.username,
+          }),
+        }).catch(() => {});
+      }
     }
     setSending(false);
     inputRef.current?.focus();
@@ -564,12 +625,32 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
                     <span className={styles.msgTime}>{formatTime(msg.createdAt)}</span>
                   </div>
                   <div className={`${styles.msgBubble} ${bubbleThemeClass}`}>
-                    <p className={styles.msgText}>{highlightMentions(msg.message)}</p>
+                    <p className={styles.msgText}>{formatChatMessage(msg.message)}</p>
                   </div>
                 </div>
               </div>
             );
           })
+        )}
+        {blueReviewingUrl && (
+          <div className={`${styles.chatMessage} ${styles.blueReviewingMessage}`}>
+            <span
+              className={styles.msgAvatar}
+              style={{ backgroundImage: 'url(/prompts/CharacterBlue.png)', backgroundSize: 'cover' }}
+              aria-hidden="true"
+            />
+            <div className={styles.msgBody}>
+              <div className={styles.msgMeta}>
+                <span className={styles.msgUsername}>Blue</span>
+                <span className={styles.blueTypingTag}>reading link</span>
+              </div>
+              <div className={`${styles.msgBubble} ${styles.bubbleOther}`}>
+                <p className={styles.msgText}>
+                  <span className={styles.typingDots}>Reading {blueReviewingUrl}...</span>
+                </p>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
@@ -625,3 +706,6 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     </div>
   );
 }
+
+export { ChatRoom as GlobalChat };
+

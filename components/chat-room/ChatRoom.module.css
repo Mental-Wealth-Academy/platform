@@ -724,3 +724,54 @@
     border-radius: 20px;
   }
 }
+
+.chatLink {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
+  transition: color 0.15s ease;
+}
+
+.chatLink:hover {
+  color: var(--color-primary-hover);
+}
+
+:global([data-theme="dark"]) .chatLink {
+  color: #8da4ff;
+}
+
+:global([data-theme="dark"]) .chatLink:hover {
+  color: #b0c0ff;
+}
+
+.blueReviewingMessage {
+  opacity: 0.85;
+  animation: fadeIn 0.25s ease;
+}
+
+.blueTypingTag {
+  font-size: 0.65rem;
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.typingDots {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: #7a82a6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+
