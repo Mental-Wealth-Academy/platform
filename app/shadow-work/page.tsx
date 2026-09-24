@@ -27,20 +27,28 @@ interface WeekStatus {
 }
 
 const WEEKLY_READINGS = [
-  { title: 'Art as Creative Practice', author: 'Blue', description: 'This week introduces the habits behind creative recovery.', category: 'Introduction', imageUrl: 'https://i.imgur.com/KkpN9as.png', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
-  { title: 'A Sense of Safety', author: 'Blue', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/stories/week-01/creative-recovery-butterflies.png', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md' },
-  { title: 'A Sense of Identity', author: 'Blue', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: '/stories/week-01/blue-research-log.png', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
-  { title: 'A Sense of Power', author: 'Blue', description: 'Anger, shame, and useful signals surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: '/stories/week-01/shadow-breaking-free.png', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
-  { title: 'A Sense of Integrity', author: 'Blue', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: '/stories/week-01/shadow-breaking-free.png', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
-  { title: 'A Sense of Possibility', author: 'Blue', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/stories/week-01/trapped-shade-chamber.png', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md' },
-  { title: 'A Sense of Abundance', author: 'Blue', description: 'Study the money stories shaping your creative choices, then test better ones.', category: 'Week 6', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md' },
-  { title: 'A Sense of Connection', author: 'Blue', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/stories/week-01/healer-creative-reflection.png', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md' },
-  { title: 'A Sense of Strength', author: 'Blue', description: 'Surviving discouragement. The creative life demands resilience, and this week you build it.', category: 'Week 8', imageUrl: 'https://i.imgur.com/6x026dv.jpeg', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md' },
-  { title: 'A Sense of Compassion', author: 'Blue', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: 'https://i.imgur.com/Wiv0PnM.png', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md' },
-  { title: 'A Sense of Self-Protection', author: 'Blue', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md' },
-  { title: 'A Sense of Autonomy', author: 'Blue', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: 'https://i.imgur.com/RAs9HJk.png', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md' },
-  { title: 'A Sense of Trust', author: 'Blue', description: 'Choose the next concrete action before the full outcome is visible.', category: 'Week 12', imageUrl: 'https://i.imgur.com/Gd2fbry.png', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md' },
+  { title: 'Art as Creative Practice', author: 'Blue', description: 'This week introduces the habits behind creative recovery.', category: 'Introduction', imageUrl: '/images/blue-cards/task-reminder.jpg', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md' },
+  { title: 'A Sense of Safety', author: 'Blue', description: 'Establish a foundation of safety to explore your creativity without fear.', category: 'Week 1', imageUrl: '/images/blue-cards/task-reminder.jpg', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md' },
+  { title: 'A Sense of Identity', author: 'Blue', description: 'The gap between human perception and machine processing. What lives in that space, and how to close it.', category: 'Week 2', imageUrl: '/images/blue-cards/therapy-chat.jpg', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md' },
+  { title: 'A Sense of Power', author: 'Blue', description: 'Anger, shame, and useful signals surface here. This week asks you to reclaim your power and act on it.', category: 'Week 3', imageUrl: '/images/blue-cards/soundscape.jpg', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md' },
+  { title: 'A Sense of Integrity', author: 'Blue', description: 'Align your actions with your deepest values. Integrity is the bridge between vision and reality.', category: 'Week 4', imageUrl: '/images/blue-cards/task-reminder.jpg', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md' },
+  { title: 'A Sense of Possibility', author: 'Blue', description: 'Dismantle the limits you inherited. Possibility is not given — it is reclaimed.', category: 'Week 5', imageUrl: '/images/blue-cards/soundscape.jpg', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md' },
+  { title: 'A Sense of Abundance', author: 'Blue', description: 'Study the money stories shaping your creative choices, then test better ones.', category: 'Week 6', imageUrl: '/images/blue-cards/task-reminder.jpg', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md' },
+  { title: 'A Sense of Connection', author: 'Blue', description: 'Creativity is not solitary. Learn to receive support and give it without losing yourself.', category: 'Week 7', imageUrl: '/images/blue-cards/therapy-chat.jpg', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md' },
+  { title: 'A Sense of Strength', author: 'Blue', description: 'Surviving discouragement. The creative life demands resilience, and this week you build it.', category: 'Week 8', imageUrl: '/images/blue-cards/soundscape.jpg', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md' },
+  { title: 'A Sense of Compassion', author: 'Blue', description: 'Fear disguises itself as laziness. Compassion for yourself is the antidote to creative block.', category: 'Week 9', imageUrl: '/images/blue-cards/therapy-chat.jpg', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md' },
+  { title: 'A Sense of Self-Protection', author: 'Blue', description: 'Guard your creative energy. Not every critique deserves a response, not every door needs opening.', category: 'Week 10', imageUrl: '/images/blue-cards/task-reminder.jpg', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md' },
+  { title: 'A Sense of Autonomy', author: 'Blue', description: 'Own your process. Autonomy is the quiet power that lets your art speak without permission.', category: 'Week 11', imageUrl: '/images/blue-cards/soundscape.jpg', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md' },
+  { title: 'A Sense of Trust', author: 'Blue', description: 'Choose the next concrete action before the full outcome is visible.', category: 'Week 12', imageUrl: '/images/blue-cards/therapy-chat.jpg', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md' },
 ];
+
+function getReadingCardTheme(url?: string): 'sunrise' | 'purple' | 'midnight' | 'default' {
+  if (!url) return 'default';
+  if (url.includes('task-reminder') || url.includes('sunrise')) return 'sunrise';
+  if (url.includes('soundscape') || url.includes('purple')) return 'purple';
+  if (url.includes('therapy-chat') || url.includes('midnight') || url.includes('blue-bot-icon')) return 'midnight';
+  return 'default';
+}
 
 function parseMarkdownSimple(md: string): string {
   let html = md
@@ -380,6 +388,7 @@ export default function CoursePage() {
               <button
                 type="button"
                 data-tour="course-reading"
+                data-card-theme={getReadingCardTheme(weekReading.imageUrl)}
                 className={`${styles.readingCard} ${rightContent === 'reading' ? styles.readingCardActive : ''}`}
                 aria-expanded={!isDesktop ? rightContent === 'reading' : undefined}
                 onClick={() => {
@@ -401,7 +410,22 @@ export default function CoursePage() {
                   aria-hidden="true"
                 />
                 <div className={styles.readingInfo}>
-                  <span className={styles.readingTitle}>{weekReading.title}</span>
+                  <div className={styles.readingHeaderRow}>
+                    <span className={styles.readingCategory}>{weekReading.category}</span>
+                    <span className={styles.readingAuthorTag}>by {weekReading.author}</span>
+                  </div>
+                  <h3 className={styles.readingTitle}>{weekReading.title}</h3>
+                  {weekReading.description && (
+                    <p className={styles.readingDescription}>{weekReading.description}</p>
+                  )}
+                  <div className={styles.readingCtaRow}>
+                    <span className={styles.readingCtaText}>
+                      {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                    </span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
                 <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 18l6-6-6-6"/>

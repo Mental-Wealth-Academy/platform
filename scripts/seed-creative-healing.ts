@@ -90,19 +90,19 @@ function withLegacyType(comp: SeedComponent): SeedComponent {
 const WEEKLY_READINGS: Array<{
   title: string; description: string; slug: string; markdownPath: string; imageUrl: string;
 }> = [
-  { title: 'Art as Creative Practice', description: 'This week introduces the habits behind creative recovery.', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md', imageUrl: 'https://i.imgur.com/KkpN9as.png' },
-  { title: 'A Sense of Safety', description: 'Establish a foundation of safety to explore your creativity without fear.', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md', imageUrl: '/stories/week-01/creative-recovery-butterflies.png' },
-  { title: 'A Sense of Identity', description: 'The gap between human perception and machine processing.', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md', imageUrl: '/stories/week-01/blue-research-log.png' },
-  { title: 'A Sense of Power', description: 'Anger, shame, and useful signals surface here.', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md', imageUrl: '/stories/week-01/shadow-breaking-free.png' },
-  { title: 'A Sense of Integrity', description: 'Align your actions with your deepest values.', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md', imageUrl: '/stories/week-01/shadow-breaking-free.png' },
-  { title: 'A Sense of Possibility', description: 'Dismantle the limits you inherited.', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md', imageUrl: '/stories/week-01/trapped-shade-chamber.png' },
-  { title: 'A Sense of Abundance', description: 'Study the money stories shaping your creative choices.', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md', imageUrl: 'https://i.imgur.com/DqnZ4P5.jpeg' },
-  { title: 'A Sense of Connection', description: 'Creativity is not solitary.', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md', imageUrl: '/stories/week-01/healer-creative-reflection.png' },
-  { title: 'A Sense of Strength', description: 'Surviving discouragement.', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md', imageUrl: 'https://i.imgur.com/6x026dv.jpeg' },
-  { title: 'A Sense of Compassion', description: 'Fear disguises itself as laziness.', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md', imageUrl: 'https://i.imgur.com/Wiv0PnM.png' },
-  { title: 'A Sense of Self-Protection', description: 'Guard your creative energy.', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md', imageUrl: 'https://i.imgur.com/86MQLAz.jpeg' },
-  { title: 'A Sense of Autonomy', description: 'Own your process.', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md', imageUrl: 'https://i.imgur.com/RAs9HJk.png' },
-  { title: 'A Sense of Trust', description: 'Choose the next concrete action.', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md', imageUrl: 'https://i.imgur.com/Gd2fbry.png' },
+  { title: 'Art as Creative Practice', description: 'This week introduces the habits behind creative recovery.', slug: 'art-is-spiritual-warfare', markdownPath: '/readings/art-is-spiritual-warfare.md', imageUrl: '/images/blue-cards/task-reminder.jpg' },
+  { title: 'A Sense of Safety', description: 'Establish a foundation of safety to explore your creativity without fear.', slug: 'sense-of-safety', markdownPath: '/readings/sense-of-safety.md', imageUrl: '/images/blue-cards/task-reminder.jpg' },
+  { title: 'A Sense of Identity', description: 'The gap between human perception and machine processing.', slug: 'sense-of-identity', markdownPath: '/readings/sense-of-identity.md', imageUrl: '/images/blue-cards/therapy-chat.jpg' },
+  { title: 'A Sense of Power', description: 'Anger, shame, and useful signals surface here.', slug: 'sense-of-power', markdownPath: '/readings/sense-of-power.md', imageUrl: '/images/blue-cards/soundscape.jpg' },
+  { title: 'A Sense of Integrity', description: 'Align your actions with your deepest values.', slug: 'sense-of-integrity', markdownPath: '/readings/sense-of-integrity.md', imageUrl: '/images/blue-cards/task-reminder.jpg' },
+  { title: 'A Sense of Possibility', description: 'Dismantle the limits you inherited.', slug: 'sense-of-possibility', markdownPath: '/readings/sense-of-possibility.md', imageUrl: '/images/blue-cards/soundscape.jpg' },
+  { title: 'A Sense of Abundance', description: 'Study the money stories shaping your creative choices.', slug: 'sense-of-abundance', markdownPath: '/readings/sense-of-abundance.md', imageUrl: '/images/blue-cards/task-reminder.jpg' },
+  { title: 'A Sense of Connection', description: 'Creativity is not solitary.', slug: 'sense-of-connection', markdownPath: '/readings/sense-of-connection.md', imageUrl: '/images/blue-cards/therapy-chat.jpg' },
+  { title: 'A Sense of Strength', description: 'Surviving discouragement.', slug: 'sense-of-strength', markdownPath: '/readings/sense-of-strength.md', imageUrl: '/images/blue-cards/soundscape.jpg' },
+  { title: 'A Sense of Compassion', description: 'Fear disguises itself as laziness.', slug: 'sense-of-compassion', markdownPath: '/readings/sense-of-compassion.md', imageUrl: '/images/blue-cards/therapy-chat.jpg' },
+  { title: 'A Sense of Self-Protection', description: 'Guard your creative energy.', slug: 'sense-of-self-protection', markdownPath: '/readings/sense-of-self-protection.md', imageUrl: '/images/blue-cards/task-reminder.jpg' },
+  { title: 'A Sense of Autonomy', description: 'Own your process.', slug: 'sense-of-autonomy', markdownPath: '/readings/sense-of-autonomy.md', imageUrl: '/images/blue-cards/soundscape.jpg' },
+  { title: 'A Sense of Trust', description: 'Choose the next concrete action.', slug: 'sense-of-faith', markdownPath: '/readings/sense-of-faith.md', imageUrl: '/images/blue-cards/therapy-chat.jpg' },
 ];
 
 // ── Helper: component factory functions ──

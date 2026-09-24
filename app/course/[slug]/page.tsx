@@ -55,6 +55,14 @@ function getAllBlockIds(week: VipCourseFull['weeks'][number]): string[] {
   return ids;
 }
 
+function getReadingCardTheme(url?: string): 'sunrise' | 'purple' | 'midnight' | 'default' {
+  if (!url) return 'default';
+  if (url.includes('task-reminder') || url.includes('sunrise')) return 'sunrise';
+  if (url.includes('soundscape') || url.includes('purple')) return 'purple';
+  if (url.includes('therapy-chat') || url.includes('midnight') || url.includes('blue-bot-icon')) return 'midnight';
+  return 'default';
+}
+
 export default function CourseSlugPage({ params }: PageProps) {
   const { ready, authenticated, user, getAccessToken, login } = usePrivy();
   const [loading, setLoading] = useState(true);
@@ -400,17 +408,35 @@ export default function CourseSlugPage({ params }: PageProps) {
             {readingComponent && (
               <button
                 type="button"
+                data-card-theme={getReadingCardTheme(readingImageUrl)}
                 className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
                 onClick={() => setRightContent('reading')}
               >
                 <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
                 <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
                   {readingImageUrl && (
-                    <Image src={readingImageUrl} alt="" fill sizes="64px" unoptimized className={courseStyles.readingThumbImg} />
+                    <Image src={readingImageUrl} alt="" fill sizes="140px" unoptimized className={courseStyles.readingThumbImg} />
                   )}
                 </span>
                 <div className={courseStyles.readingInfo}>
-                  <span className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</span>
+                  <div className={courseStyles.readingHeaderRow}>
+                    <span className={courseStyles.readingCategory}>
+                      {currentWeek ? `Week ${currentWeek.weekNumber}` : 'Reading'}
+                    </span>
+                    <span className={courseStyles.readingAuthorTag}>by Blue</span>
+                  </div>
+                  <h3 className={courseStyles.readingTitle}>{weekTitle || 'Weekly Read'}</h3>
+                  <p className={courseStyles.readingDescription}>
+                    {weekTheme || (readingComponent.config as Record<string, string>)?.description || 'Study this week’s core reflection before proceeding with coursework.'}
+                  </p>
+                  <div className={courseStyles.readingCtaRow}>
+                    <span className={courseStyles.readingCtaText}>
+                      {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                    </span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
                 <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 18l6-6-6-6"/>

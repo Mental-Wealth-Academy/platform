@@ -82,8 +82,10 @@ export default function MoodSelector() {
             <circle cx="17.2" cy="8.8" r="0.9" fill="var(--color-primary-hover, #6475ff)" />
           </svg>
         </div>
-        <h2 className={styles.title}>Mood Selector</h2>
-        <span className={styles.subtitle}>Identify Problems</span>
+        <div className={styles.headerTitles}>
+          <h2 className={styles.title}>Mood Selector</h2>
+          <span className={styles.subtitle}>Identify Problems</span>
+        </div>
       </div>
 
       <div className={styles.grid} role="group" aria-label="Select your current mood">
