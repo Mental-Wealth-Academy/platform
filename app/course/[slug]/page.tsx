@@ -412,12 +412,21 @@ export default function CourseSlugPage({ params }: PageProps) {
                 className={`${courseStyles.readingCard} ${rightContent === 'reading' ? courseStyles.readingCardActive : ''}`}
                 onClick={() => setRightContent('reading')}
               >
-                <span className={courseStyles.readingAccent} style={{ background: READING_ACCENT }} aria-hidden="true" />
-                <span className={courseStyles.readingThumb} style={{ background: READING_THUMB_BG }} aria-hidden="true">
-                  {readingImageUrl && (
-                    <Image src={readingImageUrl} alt="" fill sizes="140px" unoptimized className={courseStyles.readingThumbImg} />
+                <div className={courseStyles.readingBannerWrap} aria-hidden="true">
+                  {readingImageUrl ? (
+                    <Image
+                      src={readingImageUrl}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 100vw, 880px"
+                      priority
+                      className={courseStyles.readingBannerImg}
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', background: READING_THUMB_BG }} />
                   )}
-                </span>
+                  <div className={courseStyles.readingBannerScrim} />
+                </div>
                 <div className={courseStyles.readingInfo}>
                   <div className={courseStyles.readingHeaderRow}>
                     <span className={courseStyles.readingCategory}>
@@ -430,17 +439,16 @@ export default function CourseSlugPage({ params }: PageProps) {
                     {weekTheme || (readingComponent.config as Record<string, string>)?.description || 'Study this week’s core reflection before proceeding with coursework.'}
                   </p>
                   <div className={courseStyles.readingCtaRow}>
-                    <span className={courseStyles.readingCtaText}>
-                      {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                    <span className={courseStyles.readingCtaPill}>
+                      <span className={courseStyles.readingCtaText}>
+                        {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                      </span>
+                      <svg className={courseStyles.readingArrow} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     </span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
                   </div>
                 </div>
-                <svg className={courseStyles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
               </button>
             )}
 

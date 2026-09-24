@@ -615,56 +615,77 @@
 .readingCardSkeleton {
   position: relative;
   width: 100%;
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 20px;
-  min-height: 164px;
+  min-height: 172px;
   margin: 0;
-  padding: 16px 20px 16px 16px;
+  padding: 0;
   border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 10px 30px -6px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .readingCard {
   cursor: pointer;
   text-align: left;
-  border: 1.5px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border-subtle));
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-1)) 0%, var(--color-surface-1) 100%);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  background: var(--color-surface-1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .readingCard:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-primary);
-  box-shadow: 0 18px 40px -8px color-mix(in srgb, var(--color-primary) 26%, transparent), 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .readingCardActive,
 .readingCardActive:hover {
   transform: translateY(-1px);
-  border-color: var(--color-primary);
-  box-shadow: 0 14px 34px -6px color-mix(in srgb, var(--color-primary) 30%, transparent), 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Full-bleed landscape vector banner ── */
+
+.readingBannerWrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.readingBannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  display: block;
+}
+
+.readingBannerScrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 /* ── Card themes (Frame 126: Sunrise, Purple, Midnight) ── */
 
 .readingCard[data-card-theme="sunrise"] {
-  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 45%, #fed7aa 100%);
-  border: 1.5px solid rgba(249, 115, 22, 0.35);
-  box-shadow: 0 12px 32px -6px rgba(249, 115, 22, 0.2), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: #f97316;
+  background-color: #ffedd5;
 }
 
-.readingCard[data-card-theme="sunrise"]:hover {
-  border-color: rgba(234, 88, 12, 0.65);
-  box-shadow: 0 18px 40px -6px rgba(249, 115, 22, 0.32), 0 4px 12px rgba(0, 0, 0, 0.06);
+.readingCard[data-card-theme="sunrise"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(255, 237, 213, 0.96) 0%, rgba(255, 237, 213, 0.88) 42%, rgba(255, 237, 213, 0) 75%);
 }
 
 .readingCard[data-card-theme="sunrise"] .readingCategory {
-  background: rgba(234, 88, 12, 0.12);
-  color: #c2410c;
-  border-color: rgba(234, 88, 12, 0.25);
+  background: #ea580c;
+  color: #ffffff;
 }
 
 .readingCard[data-card-theme="sunrise"] .readingAuthorTag {
@@ -679,142 +700,81 @@
   color: #7c2d12;
 }
 
-.readingCard[data-card-theme="sunrise"] .readingCtaRow {
-  color: #c2410c;
-}
-
-.readingCard[data-card-theme="sunrise"] .readingArrow {
-  color: #c2410c;
-  background: rgba(234, 88, 12, 0.12);
-}
-
-.readingCard[data-card-theme="sunrise"] .readingThumb {
-  border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.25);
+.readingCard[data-card-theme="sunrise"] .readingCtaPill {
+  background: #c2410c;
+  color: #ffffff;
 }
 
 .readingCard[data-card-theme="purple"] {
-  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 45%, #e9d5ff 100%);
-  border: 1.5px solid rgba(168, 85, 247, 0.35);
-  box-shadow: 0 12px 32px -6px rgba(168, 85, 247, 0.2), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: #8b5cf6;
+  background-color: #7c5cb7;
 }
 
-.readingCard[data-card-theme="purple"]:hover {
-  border-color: rgba(147, 51, 234, 0.65);
-  box-shadow: 0 18px 40px -6px rgba(168, 85, 247, 0.32), 0 4px 12px rgba(0, 0, 0, 0.06);
+.readingCard[data-card-theme="purple"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(124, 92, 183, 0.96) 0%, rgba(124, 92, 183, 0.86) 42%, rgba(124, 92, 183, 0) 75%);
 }
 
 .readingCard[data-card-theme="purple"] .readingCategory {
-  background: rgba(147, 51, 234, 0.12);
-  color: #7e22ce;
-  border-color: rgba(147, 51, 234, 0.25);
-}
-
-.readingCard[data-card-theme="purple"] .readingAuthorTag {
+  background: #ffffff;
   color: #6b21a8;
 }
 
+.readingCard[data-card-theme="purple"] .readingAuthorTag {
+  color: #f3e8ff;
+}
+
 .readingCard[data-card-theme="purple"] .readingTitle {
-  color: #3b0764;
+  color: #ffffff;
 }
 
 .readingCard[data-card-theme="purple"] .readingDescription {
-  color: #581c87;
+  color: #f3e8ff;
 }
 
-.readingCard[data-card-theme="purple"] .readingCtaRow {
-  color: #7e22ce;
-}
-
-.readingCard[data-card-theme="purple"] .readingArrow {
-  color: #7e22ce;
-  background: rgba(147, 51, 234, 0.12);
-}
-
-.readingCard[data-card-theme="purple"] .readingThumb {
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.25);
+.readingCard[data-card-theme="purple"] .readingCtaPill {
+  background: #ffffff;
+  color: #6b21a8;
 }
 
 .readingCard[data-card-theme="midnight"] {
-  background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 45%, #bae6fd 100%);
-  border: 1.5px solid rgba(14, 165, 233, 0.35);
-  box-shadow: 0 12px 32px -6px rgba(14, 165, 233, 0.2), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: #38bdf8;
+  background-color: #15224d;
 }
 
-.readingCard[data-card-theme="midnight"]:hover {
-  border-color: rgba(2, 132, 199, 0.65);
-  box-shadow: 0 18px 40px -6px rgba(14, 165, 233, 0.32), 0 4px 12px rgba(0, 0, 0, 0.06);
+.readingCard[data-card-theme="midnight"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(21, 34, 77, 0.96) 0%, rgba(21, 34, 77, 0.86) 42%, rgba(21, 34, 77, 0) 75%);
 }
 
 .readingCard[data-card-theme="midnight"] .readingCategory {
-  background: rgba(2, 132, 199, 0.12);
-  color: #0369a1;
-  border-color: rgba(2, 132, 199, 0.25);
+  background: #38bdf8;
+  color: #0c213c;
 }
 
 .readingCard[data-card-theme="midnight"] .readingAuthorTag {
-  color: #075985;
+  color: #bae6fd;
 }
 
 .readingCard[data-card-theme="midnight"] .readingTitle {
-  color: #082f49;
+  color: #ffffff;
 }
 
 .readingCard[data-card-theme="midnight"] .readingDescription {
-  color: #0c4a6e;
+  color: #e0f2fe;
 }
 
-.readingCard[data-card-theme="midnight"] .readingCtaRow {
-  color: #0369a1;
+.readingCard[data-card-theme="midnight"] .readingCtaPill {
+  background: #38bdf8;
+  color: #0c213c;
 }
 
-.readingCard[data-card-theme="midnight"] .readingArrow {
-  color: #0369a1;
-  background: rgba(2, 132, 199, 0.12);
-}
-
-.readingCard[data-card-theme="midnight"] .readingThumb {
-  border-color: rgba(14, 165, 233, 0.4);
-  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25);
-}
-
-.readingAccent {
-  display: none;
-}
-
-.readingThumb {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  flex-shrink: 0;
-  border: 2px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border-subtle));
-  border-radius: 18px;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-primary) 18%, transparent);
-  transition: transform 0.2s ease;
-}
-
-.readingCard:hover .readingThumb {
-  transform: scale(1.02);
-}
-
-.readingThumbImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
+/* ── Content on top of banner ── */
 
 .readingInfo {
   position: relative;
-  z-index: 1;
-  min-width: 0;
+  z-index: 2;
+  width: 100%;
+  max-width: 58%;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -831,33 +791,30 @@
 .readingCategory {
   display: inline-flex;
   align-items: center;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 9999px;
   font-family: var(--type-font-label, sans-serif);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-  color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  background: var(--color-primary);
+  color: #ffffff;
 }
 
-.readingAuthorTag,
-.readingAuthor {
+.readingAuthorTag {
   font-family: var(--type-font-label, sans-serif);
   font-size: 12px;
-  font-weight: 500;
-  color: var(--color-text-faint);
+  font-weight: 600;
+  opacity: 0.9;
   letter-spacing: 0.01em;
 }
 
 .readingTitle {
   font-family: var(--type-font-heading, var(--font-space-grotesk), sans-serif);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: -0.015em;
-  color: var(--color-text-dark);
   line-height: 1.25;
   margin: 0 0 6px 0;
   overflow: hidden;
@@ -871,10 +828,9 @@
 .readingDescription {
   font-family: var(--type-font-body, sans-serif);
   font-size: 0.85rem;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.45;
-  color: var(--color-text-muted);
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -885,13 +841,26 @@
 .readingCtaRow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  margin-top: 2px;
+}
+
+.readingCtaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 9999px;
   font-family: var(--type-font-label, sans-serif);
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.01em;
-  color: var(--color-primary);
-  margin-top: 2px;
+  background: var(--color-primary);
+  color: #ffffff;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.readingCard:hover .readingCtaPill {
+  transform: translateY(-1px);
 }
 
 .readingCtaText {
@@ -899,37 +868,38 @@
 }
 
 .readingArrow {
-  position: relative;
-  z-index: 1;
-  width: 32px;
-  height: 32px;
-  padding: 6px;
-  border-radius: 50%;
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-  opacity: 0.9;
-  flex-shrink: 0;
-  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+  display: inline-block;
+  color: inherit;
+  transition: transform 0.15s ease;
 }
 
 .readingCard:hover .readingArrow {
   transform: translateX(3px);
-  opacity: 1;
 }
 
-/* Expanded inline (phones): the chevron turns down to read as a disclosure. */
+/* Expanded inline (phones): disclosure arrow turns 90deg */
 .readingCardActive .readingArrow,
 .readingCardActive:hover .readingArrow {
   transform: rotate(90deg);
-  opacity: 1;
+}
+
+/* Fallback for thumbnail if used in personal page */
+.readingAccent {
+  display: none;
+}
+.readingThumb {
+  display: none;
+}
+.readingThumbImg {
+  display: none;
 }
 
 /* ── Reading skeleton lines ── */
 
 .readingMediaSkeleton {
-  width: 140px;
-  height: 140px;
-  border-radius: 18px;
+  width: 100%;
+  height: 172px;
+  border-radius: 22px;
   flex-shrink: 0;
 }
 
@@ -1381,24 +1351,21 @@
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] {
-  background: linear-gradient(135deg, #2b1709 0%, #3e2210 50%, #1f0f05 100%);
-  border-color: rgba(249, 115, 22, 0.4);
-  box-shadow: 0 12px 36px -4px rgba(249, 115, 22, 0.22), 0 2px 10px rgba(0, 0, 0, 0.5);
+  border-color: #ea580c;
+  background-color: #2b1709;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"]:hover {
-  border-color: rgba(249, 115, 22, 0.75);
-  box-shadow: 0 18px 42px -4px rgba(249, 115, 22, 0.32), 0 4px 16px rgba(0, 0, 0, 0.6);
+:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(43, 23, 9, 0.97) 0%, rgba(43, 23, 9, 0.88) 42%, rgba(43, 23, 9, 0) 75%);
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingCategory {
-  background: rgba(249, 115, 22, 0.2);
-  color: #fdba74;
-  border-color: rgba(249, 115, 22, 0.35);
+  background: #ea580c;
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingAuthorTag {
-  color: #fed7aa;
+  color: #fdba74;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingTitle {
@@ -1406,42 +1373,30 @@
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingDescription {
-  color: #ffedd5;
+  color: #fed7aa;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingCtaRow {
-  color: #fb923c;
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingArrow {
-  color: #fb923c;
-  background: rgba(249, 115, 22, 0.2);
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingThumb {
-  border-color: rgba(249, 115, 22, 0.5);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+:global([data-theme="dark"]) .readingCard[data-card-theme="sunrise"] .readingCtaPill {
+  background: #ea580c;
+  color: #ffffff;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="purple"] {
-  background: linear-gradient(135deg, #200f33 0%, #30174c 50%, #150923 100%);
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 12px 36px -4px rgba(168, 85, 247, 0.22), 0 2px 10px rgba(0, 0, 0, 0.5);
+  border-color: #a855f7;
+  background-color: #25103a;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="purple"]:hover {
-  border-color: rgba(168, 85, 247, 0.75);
-  box-shadow: 0 18px 42px -4px rgba(168, 85, 247, 0.32), 0 4px 16px rgba(0, 0, 0, 0.6);
+:global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(37, 16, 58, 0.97) 0%, rgba(37, 16, 58, 0.88) 42%, rgba(37, 16, 58, 0) 75%);
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingCategory {
-  background: rgba(168, 85, 247, 0.2);
-  color: #d8b4fe;
-  border-color: rgba(168, 85, 247, 0.35);
+  background: #ffffff;
+  color: #6b21a8;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingAuthorTag {
-  color: #e9d5ff;
+  color: #d8b4fe;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingTitle {
@@ -1449,42 +1404,30 @@
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingDescription {
-  color: #f3e8ff;
+  color: #e9d5ff;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingCtaRow {
-  color: #c084fc;
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingArrow {
-  color: #c084fc;
-  background: rgba(168, 85, 247, 0.2);
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingThumb {
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+:global([data-theme="dark"]) .readingCard[data-card-theme="purple"] .readingCtaPill {
+  background: #ffffff;
+  color: #6b21a8;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] {
-  background: linear-gradient(135deg, #0b1a34 0%, #122850 50%, #071020 100%);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 12px 36px -4px rgba(56, 189, 248, 0.22), 0 2px 10px rgba(0, 0, 0, 0.5);
+  border-color: #38bdf8;
+  background-color: #0b142d;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"]:hover {
-  border-color: rgba(56, 189, 248, 0.75);
-  box-shadow: 0 18px 42px -4px rgba(56, 189, 248, 0.32), 0 4px 16px rgba(0, 0, 0, 0.6);
+:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingBannerScrim {
+  background: linear-gradient(90deg, rgba(11, 20, 45, 0.97) 0%, rgba(11, 20, 45, 0.88) 42%, rgba(11, 20, 45, 0) 75%);
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingCategory {
-  background: rgba(56, 189, 248, 0.2);
-  color: #7dd3fc;
-  border-color: rgba(56, 189, 248, 0.35);
+  background: #38bdf8;
+  color: #0c213c;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingAuthorTag {
-  color: #bae6fd;
+  color: #7dd3fc;
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingTitle {
@@ -1492,32 +1435,12 @@
 }
 
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingDescription {
-  color: #e0f2fe;
+  color: #bae6fd;
 }
 
-:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingCtaRow {
-  color: #38bdf8;
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingArrow {
-  color: #38bdf8;
-  background: rgba(56, 189, 248, 0.2);
-}
-
-:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingThumb {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-:global([data-theme="dark"]) .readingCard:not([data-card-theme]):hover {
-  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface-1));
-  border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border-subtle));
-}
-
-:global([data-theme="dark"]) .readingCardActive:not([data-card-theme]),
-:global([data-theme="dark"]) .readingCardActive:not([data-card-theme]):hover {
-  background: color-mix(in srgb, var(--color-primary) 15%, var(--color-surface-1));
-  border-color: var(--color-primary);
+:global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingCtaPill {
+  background: #38bdf8;
+  color: #0c213c;
 }
 
 :global([data-theme="dark"]) .weekNavArrow:hover:not(:disabled) {
@@ -1740,18 +1663,17 @@
 
   .readingCard,
   .readingCardSkeleton {
-    grid-template-columns: 96px minmax(0, 1fr) auto;
-    gap: 14px;
-    min-height: 124px;
-    padding: 13px 14px;
+    min-height: 154px;
     border-radius: 18px;
   }
 
-  .readingThumb,
-  .readingMediaSkeleton {
-    width: 96px;
-    height: 96px;
-    border-radius: 14px;
+  .readingBannerImg {
+    object-position: 85% center;
+  }
+
+  .readingInfo {
+    max-width: 65%;
+    padding: 16px 16px;
   }
 
   .readingTitle {
@@ -1759,39 +1681,33 @@
   }
 
   .readingDescription {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     -webkit-line-clamp: 2;
     margin-bottom: 8px;
   }
 
-  .readingArrow {
-    width: 28px;
-    height: 28px;
-    padding: 5px;
+  .readingCtaPill {
+    padding: 5px 12px;
+    font-size: 11.5px;
   }
 }
 
 @media (max-width: 480px) {
   .readingCard,
   .readingCardSkeleton {
-    grid-template-columns: 84px minmax(0, 1fr) auto;
-    gap: 12px;
-    padding: 12px;
+    min-height: 146px;
     border-radius: 16px;
   }
 
-  .readingThumb,
-  .readingMediaSkeleton {
-    width: 84px;
-    height: 84px;
-    border-radius: 12px;
+  .readingInfo {
+    max-width: 70%;
+    padding: 14px 14px;
   }
 
   .readingTitle {
     font-size: 1.05rem;
   }
 
-  .readingAuthor,
   .readingAuthorTag {
     font-size: 11px;
   }

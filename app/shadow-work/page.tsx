@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePrivy } from '@privy-io/react-auth';
 import WeekTasksView from '@/components/week-tasks/WeekTasksView';
@@ -403,12 +404,17 @@ export default function CoursePage() {
                 }}
                 onMouseEnter={() => play('hover')}
               >
-                <span className={styles.readingAccent} aria-hidden="true" />
-                <span
-                  className={styles.readingThumb}
-                  style={{ backgroundImage: `url(${JSON.stringify(weekReading.imageUrl)})` }}
-                  aria-hidden="true"
-                />
+                <div className={styles.readingBannerWrap} aria-hidden="true">
+                  <Image
+                    src={weekReading.imageUrl}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 100vw, 880px"
+                    priority
+                    className={styles.readingBannerImg}
+                  />
+                  <div className={styles.readingBannerScrim} />
+                </div>
                 <div className={styles.readingInfo}>
                   <div className={styles.readingHeaderRow}>
                     <span className={styles.readingCategory}>{weekReading.category}</span>
@@ -419,17 +425,16 @@ export default function CoursePage() {
                     <p className={styles.readingDescription}>{weekReading.description}</p>
                   )}
                   <div className={styles.readingCtaRow}>
-                    <span className={styles.readingCtaText}>
-                      {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                    <span className={styles.readingCtaPill}>
+                      <span className={styles.readingCtaText}>
+                        {rightContent === 'reading' ? 'Close reading' : 'Read chapter'}
+                      </span>
+                      <svg className={styles.readingArrow} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     </span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
                   </div>
                 </div>
-                <svg className={styles.readingArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
               </button>
 
               {!isDesktop && rightContent === 'reading' && (
