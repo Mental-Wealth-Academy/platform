@@ -121,7 +121,7 @@
 /* Phones: extended hero height for Blue card with Field Notes underneath */
 @media (max-width: 768px) {
   .dashboard {
-    gap: 16px;
+    gap: 20px;
     padding-top: 8px;
   }
 
@@ -130,6 +130,12 @@
     min-height: 360px;
     max-height: 560px;
     flex: none;
+  }
+
+  .moodSelectorWrap {
+    width: 100%;
+    position: relative;
+    z-index: 1;
   }
 
   .sidebarWrap {

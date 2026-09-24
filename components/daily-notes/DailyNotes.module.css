@@ -9,9 +9,8 @@
   border-radius: var(--card-radius);
   overflow: visible;
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
   transition: all 0.2s ease;
   position: relative;
 }
@@ -199,9 +198,8 @@
 
 :global(:root:not([data-theme="dark"])) .card {
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
 }
 
 :global(:root:not([data-theme="dark"])) .cardSurface {

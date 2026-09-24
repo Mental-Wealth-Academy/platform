@@ -1224,11 +1224,13 @@
 
 .courseModal {
   width: 100%;
-  max-width: 500px;
-  border-radius: 20px;
-  border: 1.5px solid var(--color-border-subtle);
+  max-width: 580px;
+  border-radius: 18px;
+  border: 2px solid var(--color-primary-hover);
   background: var(--color-surface-base);
-  box-shadow: 0 24px 64px rgba(15, 17, 34, 0.35);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 18px 48px rgba(15, 17, 34, 0.35);
   animation: courseModalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   display: flex;
@@ -1236,33 +1238,45 @@
 }
 
 @keyframes courseModalIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.courseModalHeader {
+/* Headscene strip matching BlueScene headscene */
+.courseModalHeadscene {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px 20px 14px;
-  border-bottom: 1px solid var(--color-border-subtle);
-  background: linear-gradient(180deg, var(--color-surface-1) 0%, var(--color-surface-base) 100%);
+  padding: 10px 16px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.courseModalHeadLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.courseModalKickerJa {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .courseModalTitle {
   margin: 0;
-  font-family: var(--type-font-heading);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  letter-spacing: -0.015em;
-}
-
-.courseModalSubtitle {
-  margin: 3px 0 0;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: var(--color-text-faint);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dark);
 }
 
 .courseModalClose {
@@ -1288,147 +1302,211 @@
   transform: scale(1.08);
 }
 
-.courseModalList {
+/* Left-right horizontal carousel showing 3 vertical cards, 3rd card halfway on mobile */
+.courseCarousel {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px 20px 22px;
-  max-height: 72vh;
-  overflow-y: auto;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 20px 20px 24px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
-.courseOptionCard {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px 16px;
+.courseCarousel::-webkit-scrollbar {
+  display: none;
+}
+
+.courseVerticalCard {
+  flex: 0 0 220px;
+  width: 220px;
+  scroll-snap-align: start;
   border-radius: 14px;
-  border: 1.5px solid var(--color-border-subtle);
   background: var(--color-surface-1);
-  text-align: left;
-  transition: all 0.15s ease;
-}
-
-.courseOptionActive {
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-base));
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 12%, transparent);
-  cursor: pointer;
-}
-
-.courseOptionActive:hover {
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
-  transform: translateY(-1px);
-}
-
-.courseOptionLocked {
-  opacity: 0.88;
-  background: color-mix(in srgb, var(--color-surface-2) 60%, var(--color-surface-1));
-  border-style: dashed;
-}
-
-.courseOptionHeader {
+  border: 2px solid var(--color-border-subtle);
+  overflow: hidden;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  box-shadow:
+    0 4px 0 var(--color-border-subtle),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.courseOptionInfo {
-  min-width: 0;
+.courseVerticalCard:hover {
+  transform: translateY(-2px);
 }
 
-.courseOptionKicker {
-  display: block;
-  font-family: var(--type-font-code);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-primary);
-  margin-bottom: 2px;
+.courseCardActive {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 4px 14px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 
-.courseOptionTitle {
-  margin: 0;
-  font-family: var(--type-font-heading);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  letter-spacing: -0.01em;
+.courseCardLocked {
+  border-color: color-mix(in srgb, var(--color-primary-hover) 35%, var(--color-border-subtle));
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--color-primary) 35%, transparent),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
 }
 
-.courseOptionDesc {
-  margin: 4px 0 0;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: var(--color-text-faint);
+.courseCardVip {
+  border-color: #ca8a04;
+  box-shadow:
+    0 4px 0 #ca8a04,
+    0 2px 8px rgba(202, 138, 4, 0.2);
 }
 
-.courseOptionStatusActive {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+/* Vector banner at top of card */
+.courseCardVectorWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-surface-base);
+}
+
+.courseCardVectorImg {
+  object-fit: cover;
+}
+
+.courseCardPillActive {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   padding: 3px 8px;
   border-radius: 999px;
   background: var(--color-primary);
   color: var(--color-on-action);
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
+  font-family: var(--type-font-code);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.courseOptionStatusLocked {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.courseCardPillCredits {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   padding: 3px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-text-faint) 18%, transparent);
-  color: var(--color-text-faint);
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
+  background: #2563eb;
+  color: #ffffff;
+  font-family: var(--type-font-code);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.courseOptionStatusVip {
-  background: color-mix(in srgb, #eab308 20%, transparent);
-  color: #ca8a04;
-  border: 1px solid color-mix(in srgb, #eab308 35%, transparent);
+.courseCardPillVip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eab308;
+  color: #1e1b09;
+  font-family: var(--type-font-code);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.courseOptionFooter {
+.courseCardBody {
+  padding: 12px 14px 14px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in srgb, var(--color-border-subtle) 60%, transparent);
-  font-size: 0.78rem;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.courseOptionMeta {
-  color: var(--color-text-muted);
-  font-weight: 500;
+.courseCardName {
+  margin: 0;
+  font-family: var(--type-font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
 }
 
-.courseOptionAction {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.courseOptionRequirement {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--color-primary);
+.courseCardTrack {
+  font-family: var(--type-font-code);
+  font-size: 11px;
   font-weight: 600;
+  color: var(--color-text-faint);
+  letter-spacing: 0.02em;
 }
 
-.courseOptionLockedHint {
+.courseBtnActive {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-on-action);
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.1s ease, background 0.1s ease;
+}
+
+.courseBtnActive:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.courseBtnLocked {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--palette-ink) 6%, var(--color-surface-base));
   color: var(--color-text-faint);
-  font-size: 0.74rem;
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1.5px dashed var(--color-border-subtle);
+  width: 100%;
+  text-align: center;
+  cursor: not-allowed;
+  box-sizing: border-box;
+}
+
+.courseBtnVip {
+  margin-top: 4px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, #eab308 14%, var(--color-surface-base));
+  color: #a16207;
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1.5px dashed color-mix(in srgb, #eab308 45%, transparent);
+  width: 100%;
+  text-align: center;
+  cursor: not-allowed;
+  box-sizing: border-box;
+}
+
+:global([data-theme="dark"]) .courseCardVip {
+  border-color: #eab308;
+  box-shadow:
+    0 4px 0 #ca8a04,
+    0 2px 8px rgba(234, 179, 8, 0.25);
+}
+
+:global([data-theme="dark"]) .courseBtnVip {
+  background: color-mix(in srgb, #eab308 18%, var(--color-surface-base));
+  color: #facc15;
+  border-color: color-mix(in srgb, #eab308 55%, transparent);
 }
 
 .weekNav {

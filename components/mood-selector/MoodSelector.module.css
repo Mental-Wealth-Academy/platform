@@ -1,26 +1,31 @@
 .container {
   position: relative;
   width: 100%;
-  border-radius: 14px;
-  background: #0f1322;
-  border: 2px solid color-mix(in srgb, var(--color-primary-hover) 45%, #252b48);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  border: 2px solid var(--color-primary-hover);
   box-shadow:
-    0 6px 0 var(--color-primary),
-    0 4px 14px rgba(0, 0, 0, 0.35),
-    0 10px 24px rgba(0, 0, 0, 0.45);
-  padding: 10px 12px 10px;
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
   overflow: hidden;
   box-sizing: border-box;
 }
 
-.header {
-  position: relative;
-  z-index: 1;
+.headscene {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 8px;
-  text-align: left;
+  padding: 8px 12px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.headingLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .eyeIconWrap {
@@ -31,25 +36,29 @@
 }
 
 .eyeSvg {
-  width: 22px;
-  height: 14px;
-  filter: drop-shadow(0 1px 3px color-mix(in oklch, var(--color-primary) 20%, transparent));
+  width: 20px;
+  height: 13px;
+  filter: drop-shadow(0 1px 2px color-mix(in oklch, var(--color-primary) 25%, transparent));
 }
 
-.headerTitles {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
+.titleJa {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .title {
   margin: 0;
-  font-family: var(--font-secondary), var(--font-primary), sans-serif;
-  font-size: 0.92rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
   font-weight: 700;
-  line-height: 1.15;
-  color: #f1f5f9;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
+  white-space: nowrap;
 }
 
 .subtitle {
@@ -60,31 +69,33 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.body {
+  padding: 8px 10px 10px;
 }
 
 .grid {
-  position: relative;
-  z-index: 1;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  margin-top: 8px;
 }
 
 .moodCard {
   appearance: none;
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  background: #1a1e34;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary-hover) 35%, #ffffff);
+  background: #ffffff;
   border-radius: 9px;
-  padding: 5px 4px 6px;
+  padding: 4px 4px 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
   outline: none;
   box-shadow:
-    0 3px 0 color-mix(in srgb, var(--color-primary) 32%, #111424),
-    0 3px 6px rgba(0, 0, 0, 0.3);
+    0 2.5px 0 color-mix(in oklch, var(--color-primary) 32%, transparent),
+    0 2px 4px rgba(26, 29, 51, 0.06);
   transition:
     transform 0.12s ease,
     border-color 0.12s ease,
@@ -95,24 +106,24 @@
 
 .moodCard:hover {
   transform: translateY(-1px);
-  background: #232948;
+  background: #ffffff;
   border-color: var(--color-primary);
   box-shadow:
-    0 4px 0 var(--color-primary),
-    0 5px 12px rgba(0, 0, 0, 0.4);
+    0 3.5px 0 color-mix(in oklch, var(--color-primary) 45%, transparent),
+    0 4px 8px rgba(26, 29, 51, 0.10);
 }
 
 .moodCard:active {
   transform: translateY(2px);
   box-shadow:
-    0 1px 0 color-mix(in oklch, var(--color-primary) 36%, transparent),
-    0 2px 4px rgba(26, 29, 51, 0.06);
+    0 1px 0 color-mix(in oklch, var(--color-primary) 32%, transparent),
+    0 1px 2px rgba(26, 29, 51, 0.05);
 }
 
 .moodCard:focus-visible {
   border-color: var(--color-primary);
   box-shadow:
-    0 3px 0 color-mix(in oklch, var(--color-primary) 36%, transparent),
+    0 2.5px 0 color-mix(in oklch, var(--color-primary) 32%, transparent),
     0 0 0 2px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
@@ -122,8 +133,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 7px;
   overflow: hidden;
-  background: #111422;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in oklch, var(--color-primary) 6%, #ffffff);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 .artwork {
@@ -134,11 +145,11 @@
 }
 
 .label {
-  margin-top: 4px;
+  margin-top: 3px;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
   font-size: clamp(0.64rem, 2.4vw, 0.74rem);
   font-weight: 700;
-  color: #e2e8f0;
+  color: #2a2f52;
   line-height: 1.1;
   text-align: center;
   white-space: nowrap;
@@ -146,13 +157,16 @@
 }
 
 @media (max-width: 360px) {
-  .container {
-    padding: 6px 8px 6px;
+  .headscene {
+    padding: 6px 10px;
+  }
+
+  .body {
+    padding: 6px 8px 8px;
   }
 
   .grid {
     gap: 4px;
-    margin-top: 5px;
   }
 
   .moodCard {
@@ -160,12 +174,16 @@
     border-radius: 8px;
   }
 
+  .titleJa {
+    display: none;
+  }
+
   .title {
-    font-size: 0.85rem;
+    font-size: 0.72rem;
   }
 
   .subtitle {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 
   .label {

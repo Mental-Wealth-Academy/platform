@@ -63,52 +63,55 @@ export default function MoodSelector() {
 
   return (
     <section className={styles.container} aria-label="Mood selector">
-      <div className={styles.header}>
-        <div className={styles.eyeIconWrap} aria-hidden="true">
-          <svg
-            className={styles.eyeSvg}
-            viewBox="0 0 32 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 10C5.5 3 11 0.5 16 0.5C21 0.5 26.5 3 31 10C26.5 17 21 19.5 16 19.5C11 19.5 5.5 17 1 10Z"
-              stroke="var(--color-primary, #4150c8)"
-              strokeWidth="1.8"
-              strokeLinejoin="round"
-            />
-            <circle cx="16" cy="10" r="5.5" fill="var(--color-primary, #4150c8)" />
-            <circle cx="16" cy="10" r="2.5" fill="#ffffff" />
-            <circle cx="17.2" cy="8.8" r="0.9" fill="var(--color-primary-hover, #6475ff)" />
-          </svg>
-        </div>
-        <div className={styles.headerTitles}>
+      <div className={styles.headscene}>
+        <div className={styles.headingLeft}>
+          <div className={styles.eyeIconWrap} aria-hidden="true">
+            <svg
+              className={styles.eyeSvg}
+              viewBox="0 0 32 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 10C5.5 3 11 0.5 16 0.5C21 0.5 26.5 3 31 10C26.5 17 21 19.5 16 19.5C11 19.5 5.5 17 1 10Z"
+                stroke="var(--color-primary, #4150c8)"
+                strokeWidth="1.8"
+                strokeLinejoin="round"
+              />
+              <circle cx="16" cy="10" r="5.5" fill="var(--color-primary, #4150c8)" />
+              <circle cx="16" cy="10" r="2.5" fill="#ffffff" />
+              <circle cx="17.2" cy="8.8" r="0.9" fill="var(--color-primary-hover, #6475ff)" />
+            </svg>
+          </div>
+          <span className={styles.titleJa} lang="ja">気分</span>
           <h2 className={styles.title}>Mood Selector</h2>
-          <span className={styles.subtitle}>Identify Problems</span>
         </div>
+        <span className={styles.subtitle}>Identify Problems</span>
       </div>
 
-      <div className={styles.grid} role="group" aria-label="Select your current mood">
-        {MOOD_OPTIONS.map((mood) => (
-          <button
-            key={mood.id}
-            type="button"
-            className={styles.moodCard}
-            onClick={() => handleSelectMood(mood)}
-            aria-label={`Select mood: ${mood.label}`}
-          >
-            <div className={styles.imageWrap}>
-              <Image
-                src={mood.imageSrc}
-                alt=""
-                width={123}
-                height={123}
-                className={styles.artwork}
-              />
-            </div>
-            <span className={styles.label}>{mood.label}</span>
-          </button>
-        ))}
+      <div className={styles.body}>
+        <div className={styles.grid} role="group" aria-label="Select your current mood">
+          {MOOD_OPTIONS.map((mood) => (
+            <button
+              key={mood.id}
+              type="button"
+              className={styles.moodCard}
+              onClick={() => handleSelectMood(mood)}
+              aria-label={`Select mood: ${mood.label}`}
+            >
+              <div className={styles.imageWrap}>
+                <Image
+                  src={mood.imageSrc}
+                  alt=""
+                  width={129}
+                  height={129}
+                  className={styles.artwork}
+                />
+              </div>
+              <span className={styles.label}>{mood.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );
