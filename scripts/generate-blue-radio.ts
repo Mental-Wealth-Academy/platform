@@ -195,7 +195,7 @@ During Covid, he was working as a line cook in a hot kitchen. He set a firm boun
 
 Teaching himself opened doors he never even knew were waiting. He ended up building with people from Coinbase, Eliza Labs, and Artizen, and studying human-computer interaction at Drexel. But the real spark started much earlier. It started as a kid playing RuneScape and hanging out on Naruto forums. A bunch of kids teaching themselves Photoshop in the dark, building little pocket-worlds together. Strangers on the web becoming real friends who push you to grow.
 
-All of that, the cooking, the caretaking, the self-taught code, the internet friendships, got folded into one single piece of fruit. The Ethereal Horizon is the taste of that fruit!
+All of that, the caretaking, the line-cook shifts, the self-taught code, and the internet strangers who became real collaborators, became the raw material for this entire place. Mental Wealth Academy was never a corporate blueprint. It was just the next honest thing he had to build. The Ethereal Horizon is the bridge connecting the life you have lived with the worlds you can create.
 
 Think about Galileo staring through his telescope lenses. He watched the surface of the sun and saw things nobody in the world had ever recorded. He was so enthralled by the light that he expected everyone to celebrate his discovery, but the church reacted with anger and house arrest! There was a giant gap between his perception and what the world was ready to believe. Where is our sun in cyberspace? What happens when our imagination jumps ahead of our habits?
 
@@ -211,7 +211,7 @@ And fourth, my absolute favorite part, is the ethereal sense! Even when we build
 
 World peace will arrive through cyberspace as a living, shared understanding that sweeps across the web. A viral recognition of what it actually feels like to be alive, conscious, and human together.
 
-That is the Ethereal Horizon. Eating the fruit, walking the desire path, and letting the light in.
+That is the Ethereal Horizon. Experiencing the meaning for yourself, walking the desire path, and letting the light in.
 
 I am filing this under Shiny Things, right on the top shelf where the sunlight hits it!`,
     voiceSettings: {

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T06:45:57.535Z",
-  "totalSeconds": 813.61,
+  "generatedAt": "2026-09-24T07:00:44.880Z",
+  "totalSeconds": 820.76,
   "segments": [
     {
       "id": "station-ident",
@@ -63,7 +63,7 @@
       "title": "The Ethereal Horizon",
       "file": "/audio/blue-radio/the-ethereal-horizon.mp3",
       "playbackGain": 0.56,
-      "seconds": 275.3
+      "seconds": 282.45
     },
     {
       "id": "signoff",
