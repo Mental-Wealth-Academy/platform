@@ -1771,32 +1771,35 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
   background: var(--color-surface-base);
   border: 1.5px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border-subtle));
-  border-radius: 10px;
   color: var(--color-primary);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-primary) 12%, transparent);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--color-primary) 12%, transparent);
   transition: all 0.15s ease;
+  letter-spacing: 0.02em;
 }
 
 .weekNavArrow:hover:not(:disabled) {
   background: var(--color-primary);
   color: var(--color-on-action);
   border-color: var(--color-primary);
-  transform: scale(1.05);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 28%, transparent);
 }
 
 .weekNavArrow:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: translateY(0);
 }
 
 .weekNavArrow:disabled {
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: not-allowed;
   border-color: var(--color-border-subtle);
   color: var(--color-text-faint);

@@ -267,9 +267,6 @@ export default function QuestsPage() {
             quests={allQuests}
             selectedQuestId={selectedQuest?.id ?? null}
             onSelectQuest={setSelectedQuest}
-            onForge={handleForge}
-            onClaims={handleClaims}
-            usdcAvailable={usdcAvailable}
           />
           <aside className={styles.sideColumn}>
             <QuestSidePanel

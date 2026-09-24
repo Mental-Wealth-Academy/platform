@@ -32,6 +32,8 @@
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
   flex-shrink: 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .listHeaderTitle {
@@ -145,7 +147,7 @@
 @media (max-width: 900px) {
   .panel {
     flex: 0 0 auto;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .hint {

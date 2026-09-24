@@ -23,7 +23,15 @@
   opacity: 0.62;
 }
 
-/* Surface — full card is the button */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.actionRow {
+  padding: 0 16px 14px;
+}
 .cardSurface {
   width: 100%;
   display: flex;

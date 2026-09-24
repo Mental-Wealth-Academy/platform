@@ -101,6 +101,66 @@
   --color-fieldnotes-scrim-mid: rgba(255, 255, 255, 0.85);
   --color-fieldnotes-scrim-top: rgba(255, 255, 255, 0);
 
+  /* Quest Wellness Themes */
+  --color-wellness-sun-start: #d97706;
+  --color-wellness-sun-mid: #f59e0b;
+  --color-wellness-sun-end: #fde68a;
+  --color-wellness-sun-shadow: rgba(245, 158, 11, 0.35);
+
+  --color-wellness-heart-start: #e11d48;
+  --color-wellness-heart-mid: #f43f5e;
+  --color-wellness-heart-end: #fecdd3;
+  --color-wellness-heart-shadow: rgba(244, 63, 94, 0.35);
+
+  --color-wellness-brain-start: #4f46e5;
+  --color-wellness-brain-mid: #6366f1;
+  --color-wellness-brain-end: #c7d2fe;
+  --color-wellness-brain-shadow: rgba(99, 102, 241, 0.35);
+
+  --color-wellness-plant-start: #059669;
+  --color-wellness-plant-mid: #10b981;
+  --color-wellness-plant-end: #a7f3d0;
+  --color-wellness-plant-shadow: rgba(16, 185, 129, 0.35);
+
+  --color-wellness-sparkle-start: #2563eb;
+  --color-wellness-sparkle-mid: #3b82f6;
+  --color-wellness-sparkle-end: #bfdbfe;
+  --color-wellness-sparkle-shadow: rgba(59, 130, 246, 0.35);
+
+  --color-wellness-compass-start: #c2410c;
+  --color-wellness-compass-mid: #f97316;
+  --color-wellness-compass-end: #ffedd5;
+  --color-wellness-compass-shadow: rgba(249, 115, 22, 0.35);
+
+  --color-wellness-feather-start: #0891b2;
+  --color-wellness-feather-mid: #06b6d4;
+  --color-wellness-feather-end: #cffafe;
+  --color-wellness-feather-shadow: rgba(6, 182, 212, 0.35);
+
+  --color-wellness-shield-start: #7c3aed;
+  --color-wellness-shield-mid: #8b5cf6;
+  --color-wellness-shield-end: #ede9fe;
+  --color-wellness-shield-shadow: rgba(139, 92, 246, 0.35);
+
+  --color-wellness-tile-border: rgba(255, 255, 255, 0.40);
+  --color-wellness-tile-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%);
+  --color-wellness-icon-color: var(--palette-on-dark);
+  --color-wellness-icon-shadow: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+
+  /* Quest Card & Board tokens */
+  --color-quest-nav-bg: color-mix(in oklch, var(--color-primary) 3%, #ffffff);
+  --color-quest-nav-btn-bg: #ffffff;
+  --color-quest-nav-btn-border: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  --color-quest-tab-bg: rgba(255, 255, 255, 0.45);
+  --color-quest-card-bg-light: #ffffff;
+  --color-quest-card-bg-dark: #1a2138;
+  --color-quest-cleared-bg: rgba(34, 197, 94, 0.12);
+  --color-quest-cleared-border: rgba(34, 197, 94, 0.30);
+  --color-quest-cleared-text: #166534;
+  --color-quest-cleared-bg-dark: rgba(34, 197, 94, 0.20);
+  --color-quest-cleared-border-dark: rgba(34, 197, 94, 0.40);
+  --color-quest-cleared-text-dark: #86efac;
+
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);
   --color-brand: var(--palette-academy-blue);
