@@ -152,10 +152,12 @@
 }
 
 @media (max-width: 768px) {
-  /* The page shell already subtracts the fixed nav's clearance from its own
-     height, so the old 120px + safe-area cushion here was counted twice and
-     read as a blank slab under the last card. 24px of breathing room is all
-     this needs. */
+  .bentoScroll {
+    padding: 0 12px 24px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
   .bentoScrollWithMorningNote {
     padding-bottom: 24px;
   }

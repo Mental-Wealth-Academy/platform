@@ -526,6 +526,10 @@
   top: calc(100% + 8px);
   right: 0;
   width: 336px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   background: var(--color-surface-base, var(--palette-canvas));
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   border-radius: 16px;
@@ -535,6 +539,7 @@
   padding: 16px;
   z-index: 300;
   animation: dropdownFadeIn 0.15s ease;
+  scrollbar-width: thin;
 }
 
 @keyframes dropdownFadeIn {
@@ -715,9 +720,9 @@
 .dropdownGridItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 8px 16px;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
   background: color-mix(in oklch, var(--color-primary) 4%, transparent);
@@ -1329,20 +1334,36 @@ button.dropdownTokenCard:active,
   .centerNav { display: none; }
   .nav { display: none; }
   .compactMenuWrap { display: flex; margin-left: auto; }
-  .header { padding: 0 16px; }
+  .header { padding: 0 16px; z-index: 1100; }
   .searchWrapper { padding: 0 8px; flex: 1; }
   .searchInput { min-width: 80px; max-width: 100%; }
 
   .dropdownPanel {
     position: fixed;
-    top: calc(var(--banner-height, 0px) + 72px + 8px);
-    right: 8px;
+    top: calc(var(--banner-height, 0px) + 72px + 6px);
+    right: 12px;
     left: auto;
-    width: min(336px, calc(100vw - 16px));
-    max-height: calc(100dvh - var(--banner-height, 0px) - 88px);
+    width: min(348px, calc(100vw - 24px));
+    max-height: calc(
+      100dvh - var(--banner-height, 0px) - 72px - 14px - calc(74px + max(env(safe-area-inset-bottom, 0px), 16px))
+    );
     overflow-y: auto;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    padding: 16px;
+    touch-action: pan-y;
+    padding: 14px 12px 24px;
+    z-index: 1200;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 420px) {
+  .dropdownPanel {
+    right: 8px;
+    left: 8px;
+    width: auto;
+    max-width: 100%;
+    padding: 14px 10px 24px;
   }
 }
 

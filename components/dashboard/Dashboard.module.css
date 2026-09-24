@@ -110,53 +110,41 @@
   }
 }
 
-/* Phones: the hard-offset card shadows need real air between cards or the
-   stack reads as one clump. */
+/* Phones: balanced hero height for Blue and natural flow for Field Notes and Leaderboard */
 @media (max-width: 768px) {
   .dashboard {
-    gap: 28px;
+    gap: 16px;
     padding-top: 8px;
   }
 
-  /* The scene is the hero: it fills the slot the page actually has (viewport
-     minus banner, top nav and bottom nav) rather than a bare 100dvh, which
-     ran a full nav stack past the bottom of the scroll area. */
   .blueSceneWrap {
-    height: calc(var(--mobile-content-height, 100dvh) - 24px);
-    min-height: 320px;
+    height: clamp(260px, 40dvh, 340px);
+    min-height: 260px;
+    max-height: 340px;
     flex: none;
   }
 
   .sidebarWrap {
-    gap: 18px;
-    padding-bottom: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: calc(var(--mobile-nav-clearance, 90px) + 32px);
   }
 
   .fieldNotesWrapper {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: static;
     width: 100%;
     margin: 0;
-    z-index: 150;
-    pointer-events: none;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    padding: 0 12px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 16px);
-    background: linear-gradient(
-      to top,
-      var(--color-fieldnotes-scrim-bottom) 0%,
-      var(--color-fieldnotes-scrim-mid) 45%,
-      var(--color-fieldnotes-scrim-top) 100%
-    );
+    padding: 0;
+    background: none;
+    z-index: auto;
+    pointer-events: auto;
+    order: -1;
   }
 
   .fieldNotesWrapper > * {
     width: 100%;
-    max-width: 460px;
-    pointer-events: auto;
+    max-width: 100%;
   }
 }
 
