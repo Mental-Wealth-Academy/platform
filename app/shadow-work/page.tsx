@@ -575,16 +575,25 @@ export default function CoursePage() {
           }}
         >
           <div className={styles.courseModal}>
-            <button
-              type="button"
-              className={styles.courseModalClose}
-              onClick={() => setIsCourseModalOpen(false)}
-              aria-label="Close course selector"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+            <div className={styles.courseModalHeader}>
+              <div className={styles.courseModalHeaderLeft}>
+                <span className={styles.courseHeaderKicker}>Curriculum Tracks</span>
+                <h2 className={styles.courseHeaderTitle}>Select Course</h2>
+                <p className={styles.courseHeaderDesc}>
+                  Switch between available learning paths. Weekly progression and diamonds sync automatically across tracks.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.courseModalClose}
+                onClick={() => setIsCourseModalOpen(false)}
+                aria-label="Close course selector"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
             <div className={styles.courseCarousel} role="region" aria-label="Available courses">
               {/* Card 1: Creative Healing (Active) */}

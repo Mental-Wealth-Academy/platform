@@ -1231,8 +1231,8 @@
   background-image: var(--bg-grid-dots);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
   overflow: hidden;
   box-shadow: none;
   animation: coursePageUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1247,24 +1247,69 @@
   }
 }
 
+.courseModalHeader {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: max(22px, calc(env(safe-area-inset-top, 20px) + 12px)) max(28px, calc((100vw - 1100px) / 2)) 8px;
+  box-sizing: border-box;
+}
+
+.courseModalHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.courseHeaderKicker {
+  font-family: var(--type-font-code);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.courseHeaderTitle {
+  margin: 0;
+  font-family: var(--type-font-heading);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.courseHeaderDesc {
+  margin: 3px 0 0 0;
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  max-width: 520px;
+}
+
 .courseModalClose {
-  position: absolute;
-  top: max(20px, calc(env(safe-area-inset-top, 20px) + 8px));
-  right: max(20px, calc(env(safe-area-inset-right, 20px) + 8px));
-  z-index: 100010;
+  flex: 0 0 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   border: 1.5px solid var(--color-border-subtle);
   background: var(--color-surface-1);
-  color: var(--color-text-dark);
+  color: #1e293b;
   cursor: pointer;
   box-shadow:
     0 3px 0 var(--color-border-subtle),
-    0 4px 14px rgba(0, 0, 0, 0.14);
+    0 4px 12px rgba(0, 0, 0, 0.12);
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
@@ -1272,7 +1317,7 @@
   background: var(--color-surface-2);
   border-color: var(--color-primary);
   color: var(--color-primary);
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .courseModalClose:active {
@@ -1281,15 +1326,14 @@
 
 /* Left-right horizontal carousel showing 3 large vertical cards */
 .courseCarousel {
+  flex: 1 1 auto;
   display: flex;
   gap: 24px;
   align-items: center;
   overflow-x: auto;
   width: 100%;
-  height: 100%;
-  max-height: 100dvh;
   box-sizing: border-box;
-  padding: max(76px, calc(env(safe-area-inset-top, 20px) + 56px)) max(28px, calc((100vw - 1100px) / 2)) max(36px, calc(env(safe-area-inset-bottom, 20px) + 16px));
+  padding: 10px max(28px, calc((100vw - 1100px) / 2)) max(28px, calc(env(safe-area-inset-bottom, 20px) + 12px));
   scroll-padding-left: max(28px, calc((100vw - 1100px) / 2));
   scroll-padding-right: max(28px, calc((100vw - 1100px) / 2));
   scroll-snap-type: x mandatory;
@@ -1308,20 +1352,23 @@
 }
 
 .courseVerticalCard {
+  position: relative;
   flex: 0 0 340px;
   width: 340px;
-  height: min(80vh, 640px);
-  max-height: min(80vh, 640px);
+  height: 100%;
+  max-height: min(720px, calc(100dvh - 140px));
+  min-height: 480px;
   scroll-snap-align: start;
   border-radius: 24px;
-  background: var(--color-surface-1);
-  border: 2.5px solid var(--color-border-subtle);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  background: #0b0f19;
+  border: 2.5px solid var(--color-border-subtle);
   box-shadow:
     0 6px 0 var(--color-border-subtle),
-    0 8px 24px color-mix(in srgb, var(--palette-ink) 10%, transparent);
+    0 8px 24px color-mix(in srgb, var(--palette-ink) 12%, transparent);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
@@ -1333,42 +1380,43 @@
   border-color: var(--color-primary);
   box-shadow:
     0 6px 0 var(--color-primary),
-    0 8px 28px color-mix(in srgb, var(--color-primary) 22%, transparent);
+    0 10px 30px color-mix(in srgb, var(--color-primary) 32%, transparent);
 }
 
 .courseCardLocked {
   border-color: color-mix(in srgb, var(--color-primary-hover) 35%, var(--color-border-subtle));
   box-shadow:
     0 6px 0 color-mix(in srgb, var(--color-primary) 35%, transparent),
-    0 6px 20px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+    0 6px 20px color-mix(in srgb, var(--palette-ink) 10%, transparent);
 }
 
 .courseCardVip {
   border-color: #ca8a04;
   box-shadow:
     0 6px 0 #ca8a04,
-    0 8px 24px rgba(202, 138, 4, 0.22);
+    0 10px 30px rgba(202, 138, 4, 0.28);
 }
 
-/* Vector banner at top of card */
+/* Vector banner: full bleed across the card */
 .courseCardVectorWrap {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  flex: 1 1 58%;
-  min-height: 220px;
+  height: 100%;
   overflow: hidden;
-  background: var(--color-surface-base);
+  background: #0b0f19;
 }
 
 .courseCardVectorImg {
   object-fit: cover;
-  object-position: center;
+  object-position: 82% 10%;
 }
 
 .courseCardPillActive {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
   padding: 4px 10px;
   border-radius: 999px;
   background: var(--color-primary);
@@ -1378,14 +1426,15 @@
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 .courseCardPillDiamonds,
 .courseCardPillCredits {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -1397,13 +1446,14 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.04em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 .courseCardPillVip {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
   padding: 4px 10px;
   border-radius: 999px;
   background: #eab308;
@@ -1413,39 +1463,49 @@
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 .courseCardBody {
-  padding: 18px 22px 22px;
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 32px 20px 22px;
+  background: linear-gradient(
+    to top,
+    rgba(10, 14, 26, 0.96) 0%,
+    rgba(10, 14, 26, 0.86) 48%,
+    rgba(10, 14, 26, 0.42) 78%,
+    transparent 100%
+  );
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 0 0 auto;
+  gap: 8px;
 }
 
 .courseCardName {
   margin: 0;
   font-family: var(--type-font-heading);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  color: var(--color-text-dark);
+  color: #ffffff;
   letter-spacing: -0.015em;
   line-height: 1.25;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .courseCardTrack {
   font-family: var(--type-font-code);
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--color-text-faint);
-  letter-spacing: 0.03em;
+  color: #cbd5e1;
+  letter-spacing: 0.04em;
 }
 
 .courseBtnActive {
   margin-top: 6px;
   padding: 12px 18px;
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--color-primary);
   color: var(--color-on-action);
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
@@ -1456,6 +1516,7 @@
   width: 100%;
   text-align: center;
   transition: transform 0.12s ease, background 0.12s ease;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.35);
 }
 
 .courseBtnActive:hover {
@@ -1466,13 +1527,15 @@
 .courseBtnLocked {
   margin-top: 6px;
   padding: 12px 18px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--palette-ink) 6%, var(--color-surface-base));
-  color: var(--color-text-faint);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #f1f5f9;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
   font-size: 13.5px;
   font-weight: 700;
-  border: 1.5px dashed var(--color-border-subtle);
+  border: 1.5px dashed rgba(255, 255, 255, 0.28);
   width: 100%;
   text-align: center;
   display: inline-flex;
@@ -1486,13 +1549,15 @@
 .courseBtnVip {
   margin-top: 6px;
   padding: 12px 18px;
-  border-radius: 10px;
-  background: color-mix(in srgb, #eab308 14%, var(--color-surface-base));
-  color: #a16207;
+  border-radius: 12px;
+  background: rgba(234, 179, 8, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fef08a;
   font-family: var(--font-secondary), var(--font-primary), sans-serif;
   font-size: 13.5px;
   font-weight: 700;
-  border: 1.5px dashed color-mix(in srgb, #eab308 45%, transparent);
+  border: 1.5px dashed rgba(234, 179, 8, 0.48);
   width: 100%;
   text-align: center;
   display: inline-flex;
@@ -1995,20 +2060,33 @@
     font-size: 11px;
   }
 
-  .courseModalOverlay {
-    padding: 12px;
+  .courseModalHeader {
+    padding: max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) 20px 8px;
+    gap: 12px;
+  }
+
+  .courseHeaderKicker {
+    font-size: 10.5px;
+  }
+
+  .courseHeaderTitle {
+    font-size: 1.35rem;
+  }
+
+  .courseHeaderDesc {
+    font-size: 12px;
+    line-height: 1.4;
   }
 
   .courseModalClose {
-    top: max(16px, calc(env(safe-area-inset-top, 16px) + 8px));
-    right: max(16px, calc(env(safe-area-inset-right, 16px) + 8px));
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
   }
 
   .courseCarousel {
     gap: 16px;
-    padding: max(72px, calc(env(safe-area-inset-top, 16px) + 52px)) 20px max(28px, calc(env(safe-area-inset-bottom, 16px) + 12px)) 20px;
+    padding: 6px 20px max(24px, calc(env(safe-area-inset-bottom, 16px) + 10px)) 20px;
     scroll-padding-left: 20px;
     scroll-padding-right: 20px;
   }
@@ -2020,19 +2098,15 @@
   .courseVerticalCard {
     flex: 0 0 clamp(285px, 84vw, 345px);
     width: clamp(285px, 84vw, 345px);
-    height: calc(100dvh - max(72px, calc(env(safe-area-inset-top, 16px) + 52px)) - max(28px, calc(env(safe-area-inset-bottom, 16px) + 12px)));
-    max-height: 680px;
-    min-height: 460px;
+    height: 100%;
+    max-height: calc(100dvh - max(16px, calc(env(safe-area-inset-top, 16px) + 8px)) - 95px - max(24px, calc(env(safe-area-inset-bottom, 16px) + 10px)));
+    min-height: 420px;
     border-radius: 20px;
   }
 
-  .courseCardVectorWrap {
-    min-height: 200px;
-  }
-
   .courseCardBody {
-    padding: 16px 18px 20px;
-    gap: 10px;
+    padding: 24px 18px 18px;
+    gap: 8px;
   }
 
   .courseCardName {
@@ -2040,13 +2114,13 @@
   }
 
   .courseCardTrack {
-    font-size: 11.5px;
+    font-size: 11px;
   }
 
   .courseBtnActive,
   .courseBtnLocked,
   .courseBtnVip {
     padding: 12px 16px;
-    font-size: 14px;
+    font-size: 13.5px;
   }
 }
