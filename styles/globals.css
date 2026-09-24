@@ -171,6 +171,12 @@
   --sidebar-width: 265px;
 }
 
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 0px !important;
+  }
+}
+
 /* ============================================
    Dark Mode Token Overrides
    Dark mode uses accented neutrals instead of pure greys:

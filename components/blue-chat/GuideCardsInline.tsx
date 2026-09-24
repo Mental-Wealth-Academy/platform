@@ -21,8 +21,14 @@ interface GuideCardsInlineProps {
 const GuideCardsInline: React.FC<GuideCardsInlineProps> = ({ cards, onNavigate }) => {
   const router = useRouter();
 
-  const handleNavigate = (slug: string) => {
-    router.push(`/learn/guides/${slug}`);
+  const handleNavigate = (card: GuideRecommendCard) => {
+    // Never navigate to a locked / non-completed node. If the card has pending
+    // prerequisites, navigate to its first groundwork prerequisite instead.
+    const targetSlug = !card.ready && card.prereqs.length > 0
+      ? card.prereqs[0].slug
+      : card.slug;
+
+    router.push(`/learn/guides/${targetSlug}`);
     setTimeout(() => {
       onNavigate?.();
     }, 60);
@@ -45,13 +51,13 @@ const GuideCardsInline: React.FC<GuideCardsInlineProps> = ({ cards, onNavigate }
           <div
             key={card.id}
             className={styles.guideCard}
-            onClick={() => handleNavigate(card.slug)}
+            onClick={() => handleNavigate(card)}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                handleNavigate(card.slug);
+                handleNavigate(card);
               }
             }}
           >
@@ -81,7 +87,10 @@ const GuideCardsInline: React.FC<GuideCardsInlineProps> = ({ cards, onNavigate }
                       className={styles.guideCardPrereqChip}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleNavigate(p.slug);
+                        router.push(`/learn/guides/${p.slug}`);
+                        setTimeout(() => {
+                          onNavigate?.();
+                        }, 60);
                       }}
                     >
                       {p.topicTitle}
@@ -93,7 +102,7 @@ const GuideCardsInline: React.FC<GuideCardsInlineProps> = ({ cards, onNavigate }
                 </span>
               )}
               <span className={styles.guideCardGo}>
-                open node →
+                {!card.ready && card.prereqs.length > 0 ? 'open groundwork →' : 'open node →'}
               </span>
             </div>
           </div>

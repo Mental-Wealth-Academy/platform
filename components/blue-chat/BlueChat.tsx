@@ -250,21 +250,11 @@ const MOOD_DIAGNOSTICS: Record<string, { diagnostic: string; guideCards: GuideRe
       "worry usually lives in tomorrow. when your mind gets caught running worst-case simulations, the move isn't to fight the thoughts—it's to anchor back into the present moment and test whether the catastrophe is actually happening right now.",
     guideCards: [
       {
-        id: 'guide-mindful-breathing',
-        slug: 'mindful-breathing',
-        topicTitle: 'Mindful Breathing',
-        summary: 'Using the breath as a portable anchor to settle runaway anxiety and ground attention.',
+        id: 'guide-attention-basics',
+        slug: 'attention-basics',
+        topicTitle: 'Attention Basics',
+        summary: 'Noticing where your mental spotlight is pointing so you can ground attention in the present.',
         estimatedMinutes: 3,
-        completed: false,
-        ready: true,
-        prereqs: [],
-      },
-      {
-        id: 'guide-cognitive-reframing',
-        slug: 'cognitive-reframing',
-        topicTitle: 'Cognitive Reframing',
-        summary: 'Catching and re-testing automatic thoughts to restore accuracy over dread.',
-        estimatedMinutes: 5,
         completed: false,
         ready: true,
         prereqs: [],
@@ -276,21 +266,11 @@ const MOOD_DIAGNOSTICS: Record<string, { diagnostic: string; guideCards: GuideRe
       "stress is your nervous system's signal that demands are outpacing your bandwidth right now. let's narrow the aperture. what is one single thing we can set down or clarify?",
     guideCards: [
       {
-        id: 'guide-mindful-breathing',
-        slug: 'mindful-breathing',
-        topicTitle: 'Mindful Breathing',
-        summary: 'Box breathing drill to down-regulate the nervous system on demand.',
+        id: 'guide-attention-basics',
+        slug: 'attention-basics',
+        topicTitle: 'Attention Basics',
+        summary: 'Grounding your mental spotlight to steady your bandwidth and reduce overload.',
         estimatedMinutes: 3,
-        completed: false,
-        ready: true,
-        prereqs: [],
-      },
-      {
-        id: 'guide-building-a-daily-practice',
-        slug: 'building-a-daily-practice',
-        topicTitle: 'Building a Daily Practice',
-        summary: 'Setting a two-minute floor so you can keep momentum without overwhelming your capacity.',
-        estimatedMinutes: 4,
         completed: false,
         ready: true,
         prereqs: [],
@@ -301,16 +281,6 @@ const MOOD_DIAGNOSTICS: Record<string, { diagnostic: string; guideCards: GuideRe
     diagnostic:
       "heartbreak is heavy, disorienting work. grief doesn't follow a neat timeline, and your nervous system is literally recalibrating to an absence. be gentle with your pacing today.",
     guideCards: [
-      {
-        id: 'guide-journaling-practice',
-        slug: 'journaling-practice',
-        topicTitle: 'Journaling Practice',
-        summary: 'Getting the loop out of your head and onto the page with simple, low-stakes reflection.',
-        estimatedMinutes: 5,
-        completed: false,
-        ready: true,
-        prereqs: [],
-      },
       {
         id: 'guide-emotional-vocabulary',
         slug: 'emotional-vocabulary',
@@ -477,6 +447,12 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, ac
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { address, connector, isConnected } = useAccount();
   const currentPathname = usePathname();
+  const authHeaders = useCallback(async (): Promise<HeadersInit> => {
+    if (!ready || !authenticated) return {};
+    const token = await getAccessToken().catch(() => null);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [authenticated, getAccessToken, ready]);
+
   // Picked once per mount. Re-rolling this on every render would change the
   // greeting effect's dependency and speak a fresh line each time.
   const [initialGreeting] = useState(() => {
@@ -488,13 +464,13 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, ac
       const config = MOOD_DIAGNOSTICS[activeMood.id] ?? MOOD_DIAGNOSTICS.notsure;
       return [
         {
-          id: `mood-user-${Date.now()}`,
+          id: 'mood-user-init',
           text: activeMood.prompt,
           sender: 'user',
           timestamp: new Date(),
         },
         {
-          id: `mood-blue-${Date.now() + 1}`,
+          id: 'mood-blue-init',
           text: config.diagnostic,
           sender: 'blue',
           timestamp: new Date(),
@@ -512,32 +488,62 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, ac
     ];
   });
 
-  const moodProcessedRef = useRef<string | null>(activeMood?.id ?? null);
+  const moodProcessedRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
       moodProcessedRef.current = null;
       return;
     }
-    if (!activeMood || moodProcessedRef.current === activeMood.id) return;
+    if (!activeMood) return;
+
+    const isInitial = moodProcessedRef.current === null && messages.some((m) => m.id === 'mood-blue-init');
+    if (moodProcessedRef.current === activeMood.id && !isInitial) return;
     moodProcessedRef.current = activeMood.id;
 
-    const config = MOOD_DIAGNOSTICS[activeMood.id] ?? MOOD_DIAGNOSTICS.notsure;
-    const userMsg: Message = {
-      id: `mood-user-${Date.now()}`,
-      text: activeMood.prompt,
-      sender: 'user',
-      timestamp: new Date(),
-    };
-    const blueDiagMsg: Message = {
-      id: `mood-blue-${Date.now() + 1}`,
-      text: config.diagnostic,
-      sender: 'blue',
-      timestamp: new Date(),
-      guideCards: config.guideCards,
-    };
-    setMessages((prev) => [...prev, userMsg, blueDiagMsg]);
-  }, [isOpen, activeMood]);
+    let targetDiagId = 'mood-blue-init';
+    if (!isInitial) {
+      const config = MOOD_DIAGNOSTICS[activeMood.id] ?? MOOD_DIAGNOSTICS.notsure;
+      const userMsg: Message = {
+        id: `mood-user-${Date.now()}`,
+        text: activeMood.prompt,
+        sender: 'user',
+        timestamp: new Date(),
+      };
+      targetDiagId = `mood-blue-${Date.now() + 1}`;
+      const blueDiagMsg: Message = {
+        id: targetDiagId,
+        text: config.diagnostic,
+        sender: 'blue',
+        timestamp: new Date(),
+        guideCards: config.guideCards,
+      };
+      setMessages((prev) => [...prev, userMsg, blueDiagMsg]);
+    }
+
+    // Verify unlocked status dynamically and update cards with real user progress
+    (async () => {
+      try {
+        const headers = await authHeaders();
+        const res = await fetch(`/api/guides/recommend?mood=${encodeURIComponent(activeMood.id)}`, {
+          credentials: 'include',
+          headers,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.cards && data.cards.length > 0) {
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === targetDiagId
+                  ? { ...msg, guideCards: data.cards }
+                  : msg
+              )
+            );
+          }
+        }
+      } catch {}
+    })();
+  }, [isOpen, activeMood, authHeaders]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -569,12 +575,6 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, ac
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const authHeaders = useCallback(async (): Promise<HeadersInit> => {
-    if (!ready || !authenticated) return {};
-    const token = await getAccessToken().catch(() => null);
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }, [authenticated, getAccessToken, ready]);
 
   // Fetch the credit balance from the existing endpoint.
   const fetchShardCount = useCallback(async () => {

@@ -267,7 +267,7 @@ export type GuideRecommendCard = z.infer<typeof guideRecommendCardSchema>;
 
 export const guideRecommendResponseSchema = z.object({
   cards: z.array(guideRecommendCardSchema),
-  mode: z.enum(['search', 'frontier']),
+  mode: z.enum(['search', 'frontier', 'mood']),
 });
 export type GuideRecommendResponse = z.infer<typeof guideRecommendResponseSchema>;
 

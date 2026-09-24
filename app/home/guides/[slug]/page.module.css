@@ -837,13 +837,22 @@
   .layout {
     margin-left: 0;
   }
+
+  .scene {
+    left: 0;
+  }
 }
 
 /* Below the sidebar breakpoint the top navigation is fixed over the page, so
    the layout owes it 72px of clearance the way /dao does. */
 @media (max-width: 900px) {
   .layout {
+    margin-left: 0;
     padding-top: 72px;
+  }
+
+  .scene {
+    left: 0;
   }
 }
 
