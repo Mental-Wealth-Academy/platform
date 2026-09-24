@@ -29,11 +29,12 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 const PAGE_LINKS: NavLink[] = [
-  { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
-  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
-  { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
+  { label: 'Profile', href: '/home', icon: '/icons/nav-profile.svg' },
   { label: 'Library', href: '/learn', icon: '/icons/daemon.svg?v=4' },
+  { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
   { label: 'Lessons', href: '/shadow-work', icon: '/icons/nav-course-v2.svg' },
+  { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
+  { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
   { label: 'Surveys', href: '/surveys', icon: '/icons/nav-surveys-v5.svg?v=4' },
   { label: 'Simulations', href: '/simulation', icon: '/icons/nav-simulations-v2.svg?v=4' },
   { label: 'Shop', href: '/shop', icon: '/icons/ui-diamond.svg' },
@@ -41,6 +42,7 @@ const PAGE_LINKS: NavLink[] = [
   { label: 'Lists', href: '/list', icon: '/icons/nav-journal-v3.svg' },
   { label: 'Chat', href: '/chat', icon: '/icons/nav-prompts-v3.svg' },
   { label: 'Community', href: '/community', icon: '/icons/nav-community-v2.svg' },
+  { label: 'Guidebook', href: '/guidebook', icon: '/icons/ui-book-v2.svg' },
 ];
 
 const TopNavigation: React.FC = () => {
@@ -583,6 +585,21 @@ const TopNavigation: React.FC = () => {
 
                   {/* Account Actions Section */}
                   <div className={styles.dropdownSection}>
+                    <Link
+                      href="/home"
+                      className={styles.dropdownActionItem}
+                      onClick={() => {
+                        play('navigation');
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                      <span>Profile</span>
+                    </Link>
+
                     <button
                       type="button"
                       className={styles.dropdownActionItem}
@@ -593,10 +610,11 @@ const TopNavigation: React.FC = () => {
                       }}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
                       </svg>
-                      <span>Change profile</span>
+                      <span>Change avatar</span>
                     </button>
 
                     <button
@@ -614,22 +632,6 @@ const TopNavigation: React.FC = () => {
                       </svg>
                       <span>Change username</span>
                     </button>
-
-                    <Link
-                      href="/profile"
-                      className={styles.dropdownActionItem}
-                      onClick={() => {
-                        play('navigation');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <rect x="3" y="4" width="18" height="16" rx="3" />
-                        <line x1="7" y1="8" x2="13" y2="8" />
-                        <line x1="7" y1="12" x2="17" y2="12" />
-                      </svg>
-                      <span>Profile</span>
-                    </Link>
 
                     <button
                       type="button"

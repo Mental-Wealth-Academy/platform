@@ -1,31 +1,5 @@
-'use client';
-
-import type { CSSProperties } from 'react';
-import VerifierBadges from '@/components/guides/VerifierBadges';
-import VerifierCredentials from '@/components/guides/VerifierCredentials';
-import VerifierPanelQueue from '@/components/guides/VerifierPanelQueue';
-import { dailySceneBackgroundUrl } from '@/lib/scene-background';
-import styles from './page.module.css';
-
-// Same daily scene the quest board and Blue's stage show.
-const sceneUrl = dailySceneBackgroundUrl();
+import { redirect } from 'next/navigation';
 
 export default function ProfilePage() {
-  return (
-    <div
-      className={styles.pageLayout}
-      style={{ '--page-scene': `url(${sceneUrl})` } as CSSProperties}
-    >
-      <div className={styles.scene} aria-hidden="true" />
-      <main className={styles.page}>
-        <section className={styles.shell}>
-          <VerifierBadges />
-          <VerifierCredentials />
-        </section>
-        <section className={styles.shell}>
-          <VerifierPanelQueue />
-        </section>
-      </main>
-    </div>
-  );
+  redirect('/home');
 }
