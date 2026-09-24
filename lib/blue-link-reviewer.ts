@@ -85,6 +85,17 @@ export function isSafePublicUrl(urlStr: string): boolean {
   }
 }
 
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 export interface LinkMetadata {
   url: string;
   title: string | null;
@@ -105,7 +116,7 @@ export async function fetchLinkMetadata(urlStr: string): Promise<LinkMetadata | 
     const res = await fetch(urlStr, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'MentalWealthAcademy-BlueBot/1.0 (+https://mentalwealthacademy.world)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,text/plain;q=0.9',
       },
       redirect: 'follow',
@@ -135,7 +146,8 @@ export async function fetchLinkMetadata(urlStr: string): Promise<LinkMetadata | 
 
     // Extract title
     const titleMatch = htmlSlice.match(/<title[^>]*>([^<]+)<\/title>/i);
-    const title = titleMatch ? titleMatch[1].trim().replace(/\s+/g, ' ') : null;
+    const rawTitle = titleMatch ? titleMatch[1].trim().replace(/\s+/g, ' ') : null;
+    const title = rawTitle ? decodeHtmlEntities(rawTitle) : null;
 
     // Extract meta description or og:description
     const ogDescMatch =
@@ -145,7 +157,8 @@ export async function fetchLinkMetadata(urlStr: string): Promise<LinkMetadata | 
       htmlSlice.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) ||
       htmlSlice.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
 
-    const description = (ogDescMatch?.[1] || metaDescMatch?.[1] || '').trim().replace(/\s+/g, ' ') || null;
+    const rawDesc = (ogDescMatch?.[1] || metaDescMatch?.[1] || '').trim().replace(/\s+/g, ' ') || null;
+    const description = rawDesc ? decodeHtmlEntities(rawDesc) : null;
 
     // Strip tags for a clean text preview
     const bodyText = htmlSlice
@@ -155,7 +168,7 @@ export async function fetchLinkMetadata(urlStr: string): Promise<LinkMetadata | 
       .replace(/\s+/g, ' ')
       .trim();
 
-    const snippet = bodyText.slice(0, 800);
+    const snippet = bodyText.length > 0 ? decodeHtmlEntities(bodyText.slice(0, 800)) : null;
 
     return {
       url: urlStr,
@@ -173,8 +186,8 @@ export async function fetchLinkMetadata(urlStr: string): Promise<LinkMetadata | 
  */
 let lastReviewTimestamp = 0;
 const reviewedUrls = new Map<string, number>();
-const COOLDOWN_MS = 20_000; // 20s cooldown between any reviews
-const DEDUP_MS = 1000 * 60 * 30; // 30m deduplication per URL
+const COOLDOWN_MS = 4_000; // 4s cooldown between any reviews
+const DEDUP_MS = 60_000; // 1m deduplication per URL
 
 export function canReviewUrl(urlStr: string): boolean {
   const now = Date.now();
@@ -233,6 +246,7 @@ Rules:
     const aiResult = await runAiText({
       task: 'blue_chat_short',
       messages: [{ role: 'user', content: prompt }],
+      safety: { decision: 'allow', policyVersion: 'preflight-v1' },
     });
 
     const cleaned = aiResult.text
@@ -300,15 +314,24 @@ export async function processMessageForLinkReview(options: {
     return { reviewed: false };
   }
 
-  const metadata = await fetchLinkMetadata(url);
+  let metadata = await fetchLinkMetadata(url);
   if (!metadata) {
-    return { reviewed: false };
+    try {
+      const parsed = new URL(url);
+      metadata = {
+        url,
+        title: parsed.hostname.replace(/^www\./, ''),
+        description: null,
+        snippet: null,
+      };
+    } catch {
+      return { reviewed: false };
+    }
   }
-
-  recordReviewedUrl(url);
 
   const reviewText = await generateBlueReview(metadata, options.message);
   await postBlueMessage(reviewText);
+  recordReviewedUrl(url);
 
   return { reviewed: true, review: reviewText };
 }

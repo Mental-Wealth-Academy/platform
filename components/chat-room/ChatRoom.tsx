@@ -491,7 +491,22 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
             userId: data.message.user_id,
             username: data.message.username,
           }),
-        }).catch(() => {});
+        })
+          .then((r) => r.json())
+          .then((res) => {
+            if (res.ok && res.reviewed) {
+              if (newestIdRef.current != null) {
+                fetchAfter(newestIdRef.current);
+              }
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('globalChatUpdate'));
+              }
+            }
+          })
+          .catch(() => {})
+          .finally(() => {
+            setBlueReviewingUrl(null);
+          });
       }
     }
     setSending(false);

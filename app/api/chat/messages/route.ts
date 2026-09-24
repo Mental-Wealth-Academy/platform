@@ -4,7 +4,6 @@ import { isDbConfigured, sqlQuery } from '@/lib/db';
 import { ensureChatSchema } from '@/lib/ensureChatSchema';
 import { ensureNotificationsSchema } from '@/lib/ensureNotificationsSchema';
 import { getUserLatestSurveyBadge } from '@/lib/survey-badge';
-import { processMessageForLinkReview } from '@/lib/blue-link-reviewer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -177,7 +176,6 @@ export async function POST(request: Request) {
   );
 
   parseMentions(message, user.id, user.username, result[0].id).catch(() => {});
-  processMessageForLinkReview({ message, userId: user.id, username: user.username }).catch(() => {});
 
   return NextResponse.json({ ok: true, message: result[0] });
 }
