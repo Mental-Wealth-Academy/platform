@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-24T06:42:39.018Z",
-  "totalSeconds": 786.63,
+  "generatedAt": "2026-09-24T06:45:57.535Z",
+  "totalSeconds": 813.61,
   "segments": [
     {
       "id": "station-ident",
@@ -56,7 +56,7 @@
       "title": "The pocket-world thesis",
       "file": "/audio/blue-radio/pocket-world-thesis.mp3",
       "playbackGain": 0.56,
-      "seconds": 218.55
+      "seconds": 245.53
     },
     {
       "id": "the-ethereal-horizon",
