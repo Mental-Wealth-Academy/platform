@@ -660,3 +660,101 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
+@media (max-width: 768px) {
+  .panel {
+    padding: 16px 12px;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .macWindow {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .tabBar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 4px;
+    height: 36px;
+  }
+  .tabBar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabGroup {
+    max-width: none;
+    width: max-content;
+  }
+
+  .windowTab {
+    max-width: none;
+    padding: 0 12px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .titleBar {
+    padding: 0 10px;
+    height: 42px;
+  }
+
+  .trafficLights {
+    width: auto;
+  }
+
+  .windowTitle {
+    display: none;
+  }
+
+  .toolbarSearch {
+    width: 130px;
+  }
+
+  .toolbarSearch:focus {
+    width: 155px;
+  }
+
+  .windowContent {
+    padding: 14px 10px;
+    height: auto;
+    overflow: visible;
+  }
+
+  .columns {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: visible;
+    height: auto;
+  }
+
+  .column {
+    min-height: auto;
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  .columnTitle {
+    font-size: 1.75rem;
+  }
+
+  .columnSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .columnBlurb {
+    font-size: 0.8125rem;
+    margin-top: 8px;
+  }
+
+  .items {
+    max-height: 380px;
+    overflow-y: auto;
+  }
+}
+
+

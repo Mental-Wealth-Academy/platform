@@ -80,3 +80,26 @@
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .page {
+    height: auto;
+    min-height: calc(100vh - 72px - var(--banner-height, 0px));
+    min-height: calc(100dvh - 72px - var(--banner-height, 0px));
+    overflow-y: auto;
+  }
+
+  .layout {
+    height: auto;
+    min-height: calc(100vh - 72px);
+    min-height: calc(100dvh - 72px);
+    padding: 16px 12px calc(90px + env(safe-area-inset-bottom, 0px));
+    overflow: visible;
+  }
+
+  .listsWrapper {
+    height: auto;
+    width: 100%;
+  }
+}
+

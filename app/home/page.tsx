@@ -482,7 +482,7 @@ export default function HomePage() {
       <main className={styles.pageColumns}>
       {learnOnly && (
         <section className={styles.learnOverview}>
-          <h1 className={styles.learnOverviewTitle}>Digital Courses, Guides, &amp; Test Curricula</h1>
+          <h1 className={styles.learnOverviewTitle}>Guides &amp; Curricula</h1>
           <div className={styles.learnOverviewMetrics}>
             <span className={styles.learnOverviewStars} aria-label="5 out of 5 stars">
               {Array.from({ length: 5 }, (_, index) => <Star key={index} size={15} weight="fill" />)}
@@ -508,14 +508,16 @@ export default function HomePage() {
               <br />
               Browse or filter through the guides below to find one you want to use. See for yourself why academics choose Mental Wealth Academy.
             </p>
-            <aside className={styles.learnAccountCard}>
-              <TreeStructure size={88} weight="thin" className={styles.learnAccountMark} aria-hidden="true" />
-              <p className={styles.learnAccountTitle}>Easily Become a Master</p>
-              <p className={styles.learnAccountCopy}>Read short, fun guides by amazing humans.</p>
-              <CtaButton variant="secondary" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
-                Create an Account
-              </CtaButton>
-            </aside>
+            {!authenticated && (
+              <aside className={styles.learnAccountCard}>
+                <TreeStructure size={88} weight="thin" className={styles.learnAccountMark} aria-hidden="true" />
+                <p className={styles.learnAccountTitle}>Easily Become a Master</p>
+                <p className={styles.learnAccountCopy}>Read short, fun guides by amazing humans.</p>
+                <CtaButton variant="secondary" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
+                  Create an Account
+                </CtaButton>
+              </aside>
+            )}
           </div>
         </section>
       )}

@@ -749,7 +749,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         };
 
         s.mousePressed = () => {
-          if (s.mouseY < 0 || s.mouseY > s.height) return;
+          if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) return;
           dragging = true;
           moved = 0;
           dragStartX = s.mouseX;
@@ -799,22 +799,33 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         };
 
         s.touchStarted = () => {
+          if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) {
+            return true;
+          }
           s.mousePressed();
           return false;
         };
 
         s.touchMoved = () => {
+          if (!dragging) {
+            return true;
+          }
           s.mouseDragged();
           return false;
         };
 
         s.touchEnded = () => {
+          if (!dragging) {
+            return true;
+          }
           s.mouseReleased();
-          return false;
+          return true;
         };
       };
 
-      instance = new P5(sketch);
+      if (!cancelled && hostRef.current) {
+        instance = new P5(sketch, hostRef.current);
+      }
     })();
 
     return () => {

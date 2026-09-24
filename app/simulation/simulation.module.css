@@ -320,6 +320,44 @@
     .galleryRight {
       display: none;
     }
+    .projectGrid {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .galleryTitle {
+      font-size: 28px;
+    }
+    .projectGrid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 0;
+    }
+    .projectCard {
+      width: 100%;
+    }
+    .projectCardMain {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .projectCardVisual {
+      order: -1;
+      width: 100%;
+      padding: 10px 10px 0;
+    }
+    .projectCardVisualInner {
+      aspect-ratio: 16 / 9;
+      max-height: 180px;
+      width: 100%;
+    }
+    .projectCardBody {
+      padding: 12px 14px;
+    }
+    .projectCardFooter {
+      padding: 10px 14px 12px;
+    }
   }
   .galleryTitle {
     font-family: var(--font-primary);
