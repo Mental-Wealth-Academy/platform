@@ -85,9 +85,7 @@
   }
 
   .sideColumn {
-    width: 100%;
-    flex: 0 0 auto;
-    padding-top: 0;
+    display: none;
   }
 }
 

@@ -160,6 +160,11 @@
   --color-quest-cleared-bg-dark: rgba(34, 197, 94, 0.20);
   --color-quest-cleared-border-dark: rgba(34, 197, 94, 0.40);
   --color-quest-cleared-text-dark: #86efac;
+  --color-quest-cta-progress-start: #059669;
+  --color-quest-cta-progress-end: #10b981;
+  --color-quest-cta-progress-border: #047857;
+  --color-quest-cta-progress-shadow: rgba(16, 185, 129, 0.35);
+  --color-quest-cta-progress-shadow-hover: rgba(16, 185, 129, 0.45);
 
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);

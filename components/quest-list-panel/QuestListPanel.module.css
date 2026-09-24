@@ -412,22 +412,113 @@
   letter-spacing: 0.06em;
 }
 
-/* ── Card Action Row (LARGE CTA at bottom) ── */
+/* ── Card Action Row (LARGE, high-contrast CTA at bottom) ── */
 .cardActionRow {
   width: 100%;
-  padding-top: 4px;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .cardCta {
   width: 100%;
-  min-height: 48px;
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.02em;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 10px !important;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-radius: 12px;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  text-transform: none;
+  cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.16s ease, background 0.16s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.cardCtaLabel {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ctaIcon {
+  flex-shrink: 0;
+  transition: transform 0.16s ease;
+}
+
+.cardCta:hover .ctaIcon {
+  transform: translateX(3px);
+}
+
+/* ── Available CTA: Bold, punchy, high-contrast brand action ── */
+.cardCtaAvailable {
+  background: linear-gradient(135deg, var(--palette-academy-blue) 0%, var(--palette-action-blue) 100%);
+  color: var(--palette-on-dark);
+  border: 1.5px solid var(--palette-action-blue-hover);
+  box-shadow:
+    0 4px 0 var(--palette-action-blue-hover),
+    0 8px 18px color-mix(in oklch, var(--palette-action-blue) 35%, transparent);
+}
+
+.cardCtaAvailable:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--palette-action-blue) 0%, var(--palette-action-blue-hover) 100%);
+  box-shadow:
+    0 6px 0 var(--palette-action-blue-hover),
+    0 12px 24px color-mix(in oklch, var(--palette-action-blue) 45%, transparent);
+}
+
+.cardCtaAvailable:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 0 var(--palette-action-blue-hover),
+    0 4px 10px color-mix(in oklch, var(--palette-action-blue) 25%, transparent);
+}
+
+/* ── In-Progress CTA: Energetic emerald pulse ── */
+.cardCtaProgress {
+  background: linear-gradient(135deg, var(--color-quest-cta-progress-start) 0%, var(--color-quest-cta-progress-end) 100%);
+  color: var(--palette-on-dark);
+  border: 1.5px solid var(--color-quest-cta-progress-border);
+  box-shadow:
+    0 4px 0 var(--color-quest-cta-progress-border),
+    0 8px 18px var(--color-quest-cta-progress-shadow);
+}
+
+.cardCtaProgress:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 var(--color-quest-cta-progress-border),
+    0 12px 24px var(--color-quest-cta-progress-shadow-hover);
+}
+
+.cardCtaProgress:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 0 var(--color-quest-cta-progress-border),
+    0 4px 10px var(--color-quest-cta-progress-shadow);
+}
+
+/* ── Completed CTA: Distinct high-contrast green success pill ── */
+.cardCtaCompleted {
+  background: var(--color-quest-cleared-bg);
+  border: 1.5px solid var(--color-quest-cleared-border);
+  color: var(--color-quest-cleared-text);
+  box-shadow: 0 3px 0 var(--color-quest-cleared-border);
+}
+
+.cardCtaCompleted:hover {
+  background: color-mix(in srgb, var(--color-quest-cleared-bg) 80%, var(--color-surface-base));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--color-quest-cleared-border);
+}
+
+.cardCtaCompleted:active {
+  transform: translateY(0);
 }
 
 .empty {
@@ -567,6 +658,28 @@
   background: var(--color-quest-cleared-bg-dark);
   border-color: var(--color-quest-cleared-border-dark);
   color: var(--color-quest-cleared-text-dark);
+}
+
+:global([data-theme='dark']) .cardCtaCompleted {
+  background: var(--color-quest-cleared-bg-dark);
+  border-color: var(--color-quest-cleared-border-dark);
+  color: var(--color-quest-cleared-text-dark);
+  box-shadow: 0 3px 0 var(--color-quest-cleared-border-dark);
+}
+
+:global([data-theme='dark']) .cardCtaAvailable {
+  background: linear-gradient(135deg, var(--palette-indigo) 0%, var(--palette-indigo-hover) 100%);
+  border-color: var(--palette-action-blue);
+  box-shadow:
+    0 4px 0 var(--palette-indigo-hover),
+    0 8px 20px color-mix(in srgb, var(--palette-night) 45%, transparent);
+}
+
+:global([data-theme='dark']) .cardCtaAvailable:hover {
+  background: linear-gradient(135deg, var(--palette-action-blue) 0%, var(--palette-action-blue-hover) 100%);
+  box-shadow:
+    0 6px 0 var(--palette-indigo-hover),
+    0 12px 24px color-mix(in srgb, var(--palette-night) 55%, transparent);
 }
 
 :global([data-theme='dark']) .empty {

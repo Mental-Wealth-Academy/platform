@@ -211,25 +211,30 @@ export default function QuestListPanel({
                   </div>
 
                   <div className={styles.cardActionRow}>
-                    <CtaButton
-                      variant={completed ? 'secondary' : isSelected ? 'primary' : 'primary'}
-                      size="lg"
-                      block
-                      className={styles.cardCta}
+                    <button
+                      type="button"
+                      className={`${styles.cardCta} ${completed ? styles.cardCtaCompleted : inProgress ? styles.cardCtaProgress : styles.cardCtaAvailable}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         play('click');
                         onSelectQuest(quest);
                       }}
                     >
-                      {completed
-                        ? 'Quest Cleared • View Details'
-                        : inProgress
-                          ? 'Continue Quest • View Goal'
-                          : isSelected
-                            ? 'Goal Selected • View Details'
-                            : 'View Goal & Details'}
-                    </CtaButton>
+                      <span className={styles.cardCtaLabel}>
+                        {completed
+                          ? 'Quest Cleared • View Details'
+                          : inProgress
+                            ? 'Continue Quest • View Goal'
+                            : isSelected
+                              ? 'Goal Selected • View Details'
+                              : 'View Goal & Details'}
+                      </span>
+                      {completed ? (
+                        <Check size={17} weight="bold" className={styles.ctaIcon} />
+                      ) : (
+                        <CaretRight size={17} weight="bold" className={styles.ctaIcon} />
+                      )}
+                    </button>
                   </div>
                 </div>
               );

@@ -7,6 +7,7 @@ import QuestSidePanel from '@/components/quest-side-panel/QuestSidePanel';
 import QuestModal from '@/components/quest-modal/QuestModal';
 import QuestAuthorPanel from '@/components/quest-author-panel/QuestAuthorPanel';
 import UsdcReviewPanel from '@/components/usdc-review-panel/UsdcReviewPanel';
+import QuestDetailPanel from '@/components/quest-detail-panel/QuestDetailPanel';
 import dynamic from 'next/dynamic';
 import { useSound } from '@/hooks/useSound';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
@@ -276,6 +277,19 @@ export default function QuestsPage() {
           </aside>
         </main>
       </div>
+
+      {isMobile && selectedQuest && (
+        <QuestModal
+          isOpen={Boolean(selectedQuest)}
+          onClose={() => setSelectedQuest(null)}
+          title={selectedQuest.title}
+        >
+          <QuestDetailPanel
+            quest={selectedQuest}
+            onDeselect={() => setSelectedQuest(null)}
+          />
+        </QuestModal>
+      )}
 
       <QuestModal isOpen={forgeOpen} onClose={() => setForgeOpen(false)} title="Quest forge">
         <QuestAuthorPanel
