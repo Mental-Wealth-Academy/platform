@@ -202,7 +202,7 @@ Second is escapism. Escapism in the Ethereal Horizon is a desire line, human ins
 
 Third is hyperreality. The digital horizon is constantly shape-shifting. It reacts to human chemistry, culture, politics, and art. At times cyberspace can be overwhelming, addicting, and more preferable than the natural, we attempt to utilize this power for positivity and enlightenment.
 
-And fourth, my absolute favorite part, is the ethereal sense! Even when we build wild virtual worlds, the human heart craves a connection to nature and the imagination. The warmth of morning sun through a window. Rain tapping softly on a rooftop. A family sitting by a fire.
+And fourth, my absolute favorite part, is the ethereal sense! Even when we build wild virtual worlds, the human heart craves a connection to nature and the organic. The warmth of morning sun through a window. Rain tapping softly on a rooftop. A family sitting by a fire.
 
 The Ethereal Horizon will arrive through cyberspace as a living, shared belief-system and culture that spreads like wildfire across the web. A viral recognition of what it feels like to be alive, conscious, and human.
 
