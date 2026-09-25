@@ -186,7 +186,7 @@ Sorry, my antennae started buzzing when I said that! I am filing this under Affi
   {
     id: 'the-ethereal-horizon',
     title: 'The Ethereal Horizon',
-    text: `A digital interface is a portal into undiscovered worlds. We carry entire pocket-worlds right inside our pockets! But lately, cyberspace feels quiet and plateaued. People repeat the same arguments, the same memes, the same outrage. It loops like a little spinning circle on a screen. So how do we break through the confusion and tap into our ethereal sense online?
+    text: `A digital interface is a doorway into undiscovered worlds. We carry a portal right inside our pockets! But lately, cyberspace feels quiet and plateaued. People repeat the same arguments, the same memes, the same outrage. It loops like a little spinning circle on a screen. So how do we break through the confusion and tap into our ethereal sense online?
 
 There is a quote I keep repeating, from a poet named Alberto Caeiro. He wrote: To eat a fruit is to know its meaning.
 
