@@ -30,7 +30,8 @@
 .listHeader {
   display: flex;
   align-items: center;
-  padding: 14px 18px;
+  justify-content: center;
+  padding: 16px 20px;
   background: color-mix(in oklch, var(--color-primary) 8%, var(--color-scene-card-bg));
   border-bottom: 1px solid var(--color-border-subtle);
   border-top-left-radius: 14px;
@@ -38,24 +39,27 @@
 }
 
 .listHeaderTitle {
-  font-family: var(--type-font-label);
-  font-size: var(--type-label-size);
-  font-weight: var(--type-weight-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--type-font-heading);
+  font-size: clamp(16px, 2.2vh, 18px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
   color: var(--color-text-dark);
+  text-align: center;
 }
 
-/* ── Top Navigation Row (moved to where forge & claims were) ── */
-.topNavRow {
+/* ── Bottom Navigation Row ── */
+.bottomNavRow {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 18px;
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 12px 18px;
+  border-top: 1px solid var(--color-border-subtle);
   background: var(--color-quest-nav-bg);
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 .pageBtn {
@@ -450,9 +454,9 @@
   color: var(--color-text-light);
 }
 
-:global([data-theme='dark']) .topNavRow {
+:global([data-theme='dark']) .bottomNavRow {
   background: var(--color-inverse-surface-1);
-  border-bottom-color: var(--color-border-subtle);
+  border-top-color: var(--color-border-subtle);
 }
 
 :global([data-theme='dark']) .pageBtn {
@@ -620,17 +624,12 @@
     font-size: 15px;
   }
 
-  .topNavRow {
+  .bottomNavRow {
     padding: 8px 12px;
   }
 
   .list {
     padding: 12px 14px;
-  }
-
-  .cardCta {
-    min-height: 44px;
-    font-size: 13px !important;
   }
 }
 

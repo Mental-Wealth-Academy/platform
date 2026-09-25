@@ -963,21 +963,15 @@
   background-image: var(--bg-grid-dots);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 2px solid color-mix(in srgb, var(--color-primary-hover) 35%, transparent);
+  border: 2px solid var(--color-primary-hover);
   border-radius: 16px;
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 4px 14px color-mix(in srgb, var(--palette-ink) 8%, transparent),
-    0 12px 28px color-mix(in srgb, var(--palette-ink) 12%, transparent);
+  box-shadow: var(--shadow-scene-card);
   overflow: hidden;
 }
 
 :global([data-theme="dark"]) .popupCard {
-  border-color: color-mix(in srgb, var(--color-primary-hover) 40%, transparent);
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 4px 14px color-mix(in srgb, var(--palette-night) 30%, transparent),
-    0 12px 28px color-mix(in srgb, var(--palette-night) 40%, transparent);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-scene-card);
 }
 
 .popupCard .inlineReaderInner {

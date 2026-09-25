@@ -74,33 +74,6 @@ export default function QuestListPanel({
           <span className={styles.listHeaderTitle}>Quest Board</span>
         </div>
 
-        {/* Universal left-right navigation at the top where forge and claims were */}
-        <div className={styles.topNavRow}>
-          <button
-            type="button"
-            className={styles.pageBtn}
-            disabled={safePage === 0}
-            onClick={() => { play('click'); setCurrentPage((p) => Math.max(0, p - 1)); }}
-            aria-label="Previous page"
-          >
-            <CaretLeft size={13} weight="bold" />
-            Prev
-          </button>
-          <span className={styles.pageInfo}>
-            Page {safePage + 1} of {totalPages}
-          </span>
-          <button
-            type="button"
-            className={styles.pageBtn}
-            disabled={safePage >= totalPages - 1}
-            onClick={() => { play('click'); setCurrentPage((p) => Math.min(totalPages - 1, p + 1)); }}
-            aria-label="Next page"
-          >
-            Next
-            <CaretRight size={13} weight="bold" />
-          </button>
-        </div>
-
         {/* Full-width tabs filling the entire space */}
         <div className={styles.tabBar} role="tablist" aria-label="Quest filter">
           <button
@@ -212,6 +185,33 @@ export default function QuestListPanel({
               );
             })
           )}
+        </div>
+
+        {/* Navigation at the bottom of the card */}
+        <div className={styles.bottomNavRow}>
+          <button
+            type="button"
+            className={styles.pageBtn}
+            disabled={safePage === 0}
+            onClick={() => { play('click'); setCurrentPage((p) => Math.max(0, p - 1)); }}
+            aria-label="Previous page"
+          >
+            <CaretLeft size={13} weight="bold" />
+            Prev
+          </button>
+          <span className={styles.pageInfo}>
+            Page {safePage + 1} of {totalPages}
+          </span>
+          <button
+            type="button"
+            className={styles.pageBtn}
+            disabled={safePage >= totalPages - 1}
+            onClick={() => { play('click'); setCurrentPage((p) => Math.min(totalPages - 1, p + 1)); }}
+            aria-label="Next page"
+          >
+            Next
+            <CaretRight size={13} weight="bold" />
+          </button>
         </div>
       </div>
     </div>
