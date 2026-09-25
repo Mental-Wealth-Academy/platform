@@ -282,7 +282,7 @@ export default function QuestsPage() {
         <QuestModal
           isOpen={Boolean(selectedQuest)}
           onClose={() => setSelectedQuest(null)}
-          title={selectedQuest.title}
+          title="Quest Details"
         >
           <QuestDetailPanel
             quest={selectedQuest}

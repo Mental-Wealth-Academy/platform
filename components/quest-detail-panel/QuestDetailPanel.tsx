@@ -8,6 +8,7 @@ import { CheckCircle, Circle, ArrowSquareOut, Paperclip } from '@phosphor-icons/
 import { ConfettiCelebration } from '../quests/ConfettiCelebration';
 import { DiamondReward } from '../rewards/DiamondReward';
 import { XConnectingModal } from '../x-connecting/XConnectingModal';
+import QuestIcon from '@/components/quest-icon/QuestIcon';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestType } from '@/lib/quest-definitions';
 import styles from './QuestDetailPanel.module.css';
@@ -539,25 +540,56 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
       <div className={styles.panel} data-tone={kindMeta.tone}>
       <div className={styles.scrollArea}>
         <section className={styles.hero}>
-          <h1 className={styles.heroTitle}>{quest.title}</h1>
-          {quest.authorLabel && <span className={styles.byline}>{quest.authorLabel}</span>}
-          <p className={styles.heroDesc}>{quest.desc}</p>
-          {statusCallout}
+          <div className={styles.heroHeader}>
+            <QuestIcon seedOrIndex={quest.id} size={48} iconSize={24} className={styles.heroIcon} />
+            <div className={styles.heroHeaderText}>
+              <span className={styles.heroBadge}>{kindMeta.label}</span>
+              <h1 className={styles.heroTitle}>{quest.title}</h1>
+              {quest.authorLabel && <span className={styles.byline}>{quest.authorLabel}</span>}
+            </div>
+          </div>
         </section>
+
+        {/* ── MASSIVE REWARD HERO CARD ── */}
+        <section className={styles.rewardHeroCard}>
+          <div className={styles.rewardDiamondBadge}>
+            <Image src="/icons/ui-diamond.svg" alt="" width={38} height={38} className={styles.rewardDiamondIcon} />
+          </div>
+          <div className={styles.rewardHeroDetails}>
+            <span className={styles.rewardHeroKicker}>Credits Reward</span>
+            <div className={styles.rewardHeroNumber}>
+              +{quest.points.toLocaleString()}
+            </div>
+          </div>
+          {usdcReward > 0 && (
+            <div className={styles.rewardUsdcBadge}>
+              <Image src="/icons/usdc-logo.svg" alt="" width={20} height={20} />
+              <div className={styles.rewardUsdcText}>
+                <span className={styles.rewardUsdcVal}>+${usdcReward} USDC</span>
+                <span className={styles.rewardUsdcSub}>Angel Bounty</span>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* ── CRISP SCAN-READABLE OBJECTIVE ── */}
+        <section className={styles.objectiveCard}>
+          <span className={styles.objectiveLabel}>Objective</span>
+          <p className={styles.objectiveDesc}>{quest.desc}</p>
+        </section>
+
+        {statusCallout}
 
         {quest.rewardType !== 'sealed-week' && (
           <section className={styles.action}>
             {quest.rewardType === 'proof-required' && (
               <>
-                <p className={styles.actionDesc}>
-                  Share your entry whenever you are ready — a reviewer will read it, and approval clears the quest. Take your time; there is no rush.
-                </p>
                 <textarea
                   className={styles.proofInput}
                   value={proofText}
                   onChange={(e) => setProofText(e.target.value)}
                   placeholder="Write your entry here — what you did, learned, or made. You can also attach a file below."
-                  rows={5}
+                  rows={4}
                   maxLength={4000}
                   disabled={
                     isSubmittingProof
@@ -611,114 +643,74 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                   <span>Submissions are queued for review. Approved entries receive credits automatically.</span>
                 </div>
                 {usdcReward > 0 && usdcClaim && !usdcClaim.loading && !usdcClaim.status && usdcClaim.eligible && (
-                  <>
-                    <p className={styles.actionDesc}>
-                      Once your work is in, request your payout and a staff member will release ${usdcClaim.reward} USDC straight to your wallet.
-                    </p>
-                    <button
-                      type="button"
-                      className={styles.secondaryButton}
-                      onClick={handleRequestUsdc}
-                      disabled={isSubmittingUsdc}
-                    >
-                      {isSubmittingUsdc ? 'Submitting...' : `Request $${usdcClaim.reward} USDC payout`}
-                    </button>
-                  </>
+                  <button
+                    type="button"
+                    className={styles.secondaryButton}
+                    onClick={handleRequestUsdc}
+                    disabled={isSubmittingUsdc}
+                  >
+                    {isSubmittingUsdc ? 'Submitting...' : `Request $${usdcClaim.reward} USDC payout`}
+                  </button>
                 )}
               </>
             )}
 
-            {quest.rewardType === 'no-proof' && (
-              <p className={styles.actionDesc}>
-                Finish the task above on your own, then claim your credits. This one uses self-attestation.
-              </p>
-            )}
-
             {quest.rewardType === 'twitter-follow' && (
-              <>
-                <p className={styles.actionDesc}>
-                  Two steps: link your X account, then follow @MentalWealthDAO. The panel will auto-verify when you return.
-                </p>
-                <div className={styles.stepList}>
-                  <div className={`${styles.stepItem} ${step1Completed ? styles.stepItemDone : ''}`}>
-                    <span className={styles.stepCheck}>
-                      {step1Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
-                    </span>
-                    <div className={styles.stepContent}>
-                      <span className={styles.stepTitle}>Connect your X account</span>
-                      <span className={styles.stepDesc}>Link your X profile through Privy</span>
-                    </div>
-                    {!step1Completed && isConnected && (
-                      <button type="button" className={styles.smallButton} onClick={handleConnectTwitter}>Connect</button>
-                    )}
+              <div className={styles.stepList}>
+                <div className={`${styles.stepItem} ${step1Completed ? styles.stepItemDone : ''}`}>
+                  <span className={styles.stepCheck}>
+                    {step1Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
+                  </span>
+                  <div className={styles.stepContent}>
+                    <span className={styles.stepTitle}>Connect your X account</span>
+                    <span className={styles.stepDesc}>Link your X profile through Privy</span>
                   </div>
-                  <div className={`${styles.stepItem} ${step2Completed ? styles.stepItemDone : ''}`}>
-                    <span className={styles.stepCheck}>
-                      {step2Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
-                    </span>
-                    <div className={styles.stepContent}>
-                      <span className={styles.stepTitle}>Follow @MentalWealthDAO</span>
-                      <span className={styles.stepDesc}>We verify the follow automatically</span>
-                    </div>
-                    {step1Completed && !step2Completed && (
-                      <div className={styles.stepActions}>
-                        <a href="https://twitter.com/MentalWealthDAO" target="_blank" rel="noopener noreferrer" className={styles.smallButton}>
-                          Open <ArrowSquareOut size={12} weight="bold" />
-                        </a>
-                        <button type="button" className={styles.smallButton} onClick={handleCheckFollow} disabled={isCheckingFollow}>
-                          {isCheckingFollow ? 'Checking...' : 'Verify'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  {!step1Completed && isConnected && (
+                    <button type="button" className={styles.smallButton} onClick={handleConnectTwitter}>Connect</button>
+                  )}
                 </div>
-              </>
+                <div className={`${styles.stepItem} ${step2Completed ? styles.stepItemDone : ''}`}>
+                  <span className={styles.stepCheck}>
+                    {step2Completed ? <CheckCircle size={20} weight="fill" /> : <Circle size={20} weight="bold" />}
+                  </span>
+                  <div className={styles.stepContent}>
+                    <span className={styles.stepTitle}>Follow @MentalWealthDAO</span>
+                    <span className={styles.stepDesc}>We verify the follow automatically</span>
+                  </div>
+                  {step1Completed && !step2Completed && (
+                    <div className={styles.stepActions}>
+                      <a href="https://twitter.com/MentalWealthDAO" target="_blank" rel="noopener noreferrer" className={styles.smallButton}>
+                        Open <ArrowSquareOut size={12} weight="bold" />
+                      </a>
+                      <button type="button" className={styles.smallButton} onClick={handleCheckFollow} disabled={isCheckingFollow}>
+                        {isCheckingFollow ? 'Checking...' : 'Verify'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
 
             {quest.rewardType === 'follow-and-own' && (
-              <>
-                <p className={styles.actionDesc}>
-                  Follow @daemonagent on Farcaster and verify ownership of an Academic Angel.
-                </p>
-                <div className={styles.stepList}>
-                  <div className={styles.stepItem}>
-                    <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
-                    <div className={styles.stepContent}>
-                      <span className={styles.stepTitle}>Follow @daemonagent</span>
-                      <span className={styles.stepDesc}>Farcaster account on Warpcast</span>
-                    </div>
-                  </div>
-                  <div className={styles.stepItem}>
-                    <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
-                    <div className={styles.stepContent}>
-                      <span className={styles.stepTitle}>Own an Academic Angel</span>
-                      <span className={styles.stepDesc}>Verified on Base</span>
-                    </div>
+              <div className={styles.stepList}>
+                <div className={styles.stepItem}>
+                  <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
+                  <div className={styles.stepContent}>
+                    <span className={styles.stepTitle}>Follow @daemonagent</span>
+                    <span className={styles.stepDesc}>Farcaster account on Warpcast</span>
                   </div>
                 </div>
-              </>
+                <div className={styles.stepItem}>
+                  <span className={styles.stepCheck}><Circle size={20} weight="bold" /></span>
+                  <div className={styles.stepContent}>
+                    <span className={styles.stepTitle}>Own an Academic Angel</span>
+                    <span className={styles.stepDesc}>Verified on Base</span>
+                  </div>
+                </div>
+              </div>
             )}
           </section>
         )}
-
-        <section className={styles.rewards}>
-          <span className={styles.rewardsLabel}>Rewards</span>
-          <ul className={styles.rewardsList}>
-            <li className={styles.rewardItem}>
-              <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} />
-              <span className={styles.rewardItemValue}>{quest.points}</span>
-              <span className={styles.rewardItemName}>Credits</span>
-            </li>
-            {usdcReward > 0 && (
-              <li className={styles.rewardItem}>
-                <Image src="/icons/usdc-logo.svg" alt="" width={18} height={18} />
-                <span className={styles.rewardItemValue}>${usdcReward}</span>
-                <span className={styles.rewardItemName}>USDC bounty</span>
-                <span className={styles.rewardItemNote}>Academic Angels only</span>
-              </li>
-            )}
-          </ul>
-        </section>
       </div>
 
       <div className={styles.footer}>

@@ -165,6 +165,21 @@
   --color-quest-cta-progress-border: #047857;
   --color-quest-cta-progress-shadow: rgba(16, 185, 129, 0.35);
   --color-quest-cta-progress-shadow-hover: rgba(16, 185, 129, 0.45);
+  --color-quest-reward-hero-bg: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+  --color-quest-reward-hero-border: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  --color-quest-reward-hero-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 16%, transparent);
+  --color-quest-reward-hero-bg-dark: color-mix(in oklch, var(--color-primary) 16%, var(--color-fieldnotes-modal-bg));
+  --color-quest-reward-diamond-glow: 0 0 24px color-mix(in oklch, var(--color-primary) 40%, transparent);
+  --color-quest-objective-bg: var(--color-inverse-surface-1);
+  --color-quest-objective-border: var(--color-border-subtle);
+  --color-quest-reward-usdc-bg: rgba(39, 117, 202, 0.10);
+  --color-quest-reward-usdc-border: rgba(39, 117, 202, 0.28);
+  --color-quest-reward-usdc-text: #2775ca;
+  --color-quest-reward-usdc-sub: rgba(39, 117, 202, 0.75);
+  --color-quest-reward-usdc-bg-dark: rgba(39, 117, 202, 0.20);
+  --color-quest-reward-usdc-border-dark: rgba(39, 117, 202, 0.40);
+  --color-quest-reward-usdc-text-dark: #60a5fa;
+
 
   /* Semantic roles */
   --color-canvas: var(--palette-canvas);

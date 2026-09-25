@@ -25,7 +25,7 @@ export default function QuestSidePanel({ quest, onDeselect }: QuestSidePanelProp
       <div className={styles.panel}>
         <div className={styles.listHeader}>
           <span className={styles.listHeaderKind}>{KIND_LABEL[quest.kind] ?? quest.kind}</span>
-          <span className={styles.listHeaderQuestTitle}>{quest.title}</span>
+          <span className={styles.listHeaderQuestTitle}>Quest Details</span>
           {onDeselect && (
             <button
               type="button"
