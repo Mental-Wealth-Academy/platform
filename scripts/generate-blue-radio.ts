@@ -186,33 +186,27 @@ Sorry, my antennae started buzzing when I said that! I am filing this under Affi
   {
     id: 'the-ethereal-horizon',
     title: 'The Ethereal Horizon',
-    text: `You are still listening to Blue Radio, and today my antennae are practically vibrating! I have been reading the lecture notes on the Ethereal Horizon. It is a big, dazzling idea, and I put on my best thinking goggles just to explore it.
-
-Here is the mystery. A digital interface is a doorway into undiscovered worlds. We carry whole pocket-universes right inside our pockets! But lately, cyberspace feels quiet and plateaued. People repeat the same arguments, the same memes, the same outrage. It loops like a little spinning circle on a screen. So how do we break through the fog?
+    text: `A digital interface is a portal into undiscovered worlds. We carry entire pocket-worlds right inside our pockets! But lately, cyberspace feels quiet and plateaued. People repeat the same arguments, the same memes, the same outrage. It loops like a little spinning circle on a screen. So how do we break through the confusion and tap into our ethereal sense online?
 
 There is a quote I keep repeating, from a poet named Alberto Caeiro. He wrote: To eat a fruit is to know its meaning.
 
-Let that roll around in your head for a second! You understand an orange by biting into it. You taste the juice, you chew the pulp, and suddenly you know what an orange actually is!
+Let that roll around in your head for a second! You understand an apple by biting into it. You taste the juice, you chew the crisp flesh, and suddenly you know what an apple actually is. This phenomenon exists for all objects and things as well. We must get closer to experiencing the full object to truly know it.
 
-And that is how cooking works too. You cannot know a meal just by reading the menu. You have to step into the heat of the kitchen! Our founder started right over a hot line-cook stove before teaching himself to design and build in cyberspace. Everything in the academy comes from that same kitchen instinct: gathering raw ingredients, late-night code, and internet friendships, and serving something honest that people can actually taste and feel. The Ethereal Horizon is the bridge connecting the ingredients of your lived past with the worlds you can create.
+Think about Galileo staring through his telescope lenses. He entered the beyond world of outer space and saw things nobody in the world had ever recorded. As he got closer he saw properties the world had missed, the planets were ellipses, not circles, which meant that the sun had to be the center of our universe! He expected society to celebrate his discovery, but the church reacted with anger and labeled him a heretic! Sometimes the gap between our direct perception and the object increases our knowledge of it... so how can we use this knowledge in the present day?
 
-Think about Galileo staring through his telescope lenses. He watched the surface of the sun and saw things nobody in the world had ever recorded. He was so enthralled by the light that he expected everyone to celebrate his discovery, but the church reacted with anger and house arrest! There was a giant gap between his perception and what the world was ready to believe. Where is our sun in cyberspace? What happens when our imagination jumps ahead of our habits?
+To navigate that gap, we map out four design elements.
 
-To navigate that gap, the lecture maps out four big elements.
+First is transcendence. A screen is our tool available for opening up undiscovered worlds. We see through the black mirror and past the horizon. The digital world and the organic world weave together as we step through the portal and allow our minds to explore new territory.
 
-First is transcendence. Stepping through a screen is our entrance into cyberspace. We form parasocial bonds with streamers, podcasters, and thinkers. The digital world and the organic world weave together into one fabric. We step through the portal so our minds can explore new territory together.
+Second is escapism. Escapism in the Ethereal Horizon is a desire line, human instinct carving its own path toward the open air.
 
-Second is escapism, guided by purpose. Designers love this famous picture of a paved park path. Architects laid out beautiful stones, but people walked right across the grass until their footsteps carved a dirt trail into the lawn. A desire line! Escapism in the Ethereal Horizon is that desire line, human instinct carving its own path toward the open air. Like an old hatchet. While you are chopping wood, the tool is alive with purpose. When you set it down, it quietly slips into the background.
+Third is hyperreality. The digital horizon is constantly shape-shifting. It reacts to human chemistry, culture, politics, and art. At times cyberspace can be overwhelming, addicting, and more preferable than the natural, we attempt to utilize this power for positivity and enlightenment.
 
-Third is hyperreality. The digital horizon is constantly shape-shifting. It reacts to human chemistry, culture, politics, and art. The newest tool only matters when it adapts to what makes us human.
+And fourth, my absolute favorite part, is the ethereal sense! Even when we build wild virtual worlds, the human heart craves a connection to nature and the imagination. The warmth of morning sun through a window. Rain tapping softly on a rooftop. A family sitting by a fire.
 
-And fourth, my absolute favorite part, is the ethereal sense! Even when we build wild virtual worlds, the human heart craves the simplest organic truths. The warmth of morning sun through a window. Rain tapping softly on a rooftop. A family sitting by a fire.
+The Ethereal Horizon will arrive through cyberspace as a living, shared belief-system and culture that spreads like wildfire across the web. A viral recognition of what it feels like to be alive, conscious, and human.
 
-World peace will arrive through cyberspace as a living, shared understanding that sweeps across the web. A viral recognition of what it actually feels like to be alive, conscious, and human together.
-
-That is the Ethereal Horizon. Experiencing the meaning for yourself, walking the desire path, and letting the light in.
-
-I am filing this under Shiny Things, right on the top shelf where the sunlight hits it!`,
+That is the Ethereal Horizon. The amalgamation and manifestation of our dreams, a paradigm shift to the world beyond.`,
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
