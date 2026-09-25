@@ -9,7 +9,7 @@ import { LandingScene } from './LandingScene';
 import HeroFloatingPanels from './HeroFloatingPanels';
 import ThinkingOrbBadge from './ThinkingOrbBadge';
 import HolographicFolder from '@/components/shared/HolographicFolder';
-const HERO_HEADLINE = 'Open-sourced LMS platform to empower educators worldwide';
+const HERO_HEADLINE = 'The ethereal mental wellness program';
 
 export const HeroSection: React.FC = () => {
   return (

@@ -15,13 +15,13 @@ export const ProblemStatementSection: React.FC = () => (
         <div className={styles.content}>
           <div className={styles.contextPanel}>
             <div className={styles.titlePanel}>
-              <h2 className={styles.heading}>Modern systems fail to empower quality educators.</h2>
+              <h2 className={styles.heading}>The current system is broken</h2>
             </div>
             <p className={styles.lead}>
-              Schools struggle when qualified teachers are scarce, especially when
-              their infrastructure is not designed for the people who use it. Mental
-              Wealth Academy is open and self-hostable, so a small team of experts
-              can reach far more learners.
+              Support networks struggle when accessible guidance is scarce and existing
+              tools isolate people in silos. Mental Wealth Academy creates an open,
+              collaborative environment where learning, reflection, and human connection
+              compound together.
             </p>
           </div>
           <div className={styles.mapPanel}>

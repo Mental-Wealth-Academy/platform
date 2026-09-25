@@ -40,10 +40,7 @@ const Footer = dynamic(() =>
   import('@/components/footer/Footer').then((mod) => mod.Footer),
   { ssr: false }
 );
-const DonationPopup = dynamic(() =>
-  import('./DonationPopup').then((mod) => mod.DonationPopup),
-  { ssr: false }
-);
+
 const ElevenLabsAgentWidget = dynamic(() =>
   import('./ElevenLabsAgentWidget').then((mod) => mod.ElevenLabsAgentWidget),
   { ssr: false }
@@ -90,7 +87,6 @@ export function LandingDeferredSections() {
       <LazySection minHeight="clamp(220px, 32vw, 400px)"><RotatingTextSection /></LazySection>
       <GettingStartedSection />
       <LazySection minHeight="40vh"><Footer /></LazySection>
-      {overlaysReady && <DonationPopup />}
       {overlaysReady && <ElevenLabsAgentWidget />}
     </>
   );

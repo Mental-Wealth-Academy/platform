@@ -24,42 +24,13 @@
 }
 
 .mapStage {
-  min-height: 580px;
-  overflow: hidden;
-}
-
-.map {
-  position: absolute;
-  inset: 0;
-  background: var(--color-surface-2);
-  font-family: var(--font-primary);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.mapReady {
-  opacity: 1;
-}
-
-/* Light scrim so the dark story text stays readable over the light basemap. */
-.mapShade {
-  position: absolute;
-  inset: 0;
-  z-index: 450;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-1) 94%, transparent) 0%, color-mix(in srgb, var(--color-surface-1) 34%, transparent) 24%, transparent 44%),
-    linear-gradient(0deg, color-mix(in srgb, var(--color-surface-1) 55%, transparent) 0%, transparent 18%);
-}
-
-.mapStory {
-  position: absolute;
-  inset: 0;
-  z-index: 500;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 40px;
+  padding: 40px 36px 24px;
+  background: var(--color-surface-1);
+  min-height: 580px;
+  overflow: hidden;
 }
 
 .mapStoryTop {
@@ -109,7 +80,7 @@
   color: var(--color-text-dark);
 }
 
-.mapStory .stageCopy {
+.mapStage .stageCopy {
   max-width: 390px;
   color: var(--color-text-soft);
 }

@@ -25,22 +25,6 @@ const PANELS: PanelSpec[] = [
     posClass: 'posResearcher',
   },
   {
-    id: 'notebook',
-    title: 'open.notebook',
-    media: {
-      kind: 'image',
-      src: '/images/hero-desk/study-desk.jpg',
-      alt: 'Illustrated study desk covered in handwritten notes and headphones',
-    },
-    posClass: 'posNotebook',
-  },
-  {
-    id: 'nightclass',
-    title: 'night.class',
-    media: { kind: 'video', src: '/images/hero-desk/keyboard-typing.mp4' },
-    posClass: 'posNightclass',
-  },
-  {
     id: 'helix',
     title: 'helix.drift',
     media: { kind: 'video', src: '/images/hero-desk/helix-drift.mp4' },
@@ -52,12 +36,6 @@ const PANELS: PanelSpec[] = [
     media: { kind: 'video', src: '/images/hero-desk/green-room.mp4' },
     posClass: 'posGreenroom',
     hasAudio: true,
-  },
-  {
-    id: 'signal',
-    title: 'signal.map',
-    media: { kind: 'video', src: '/images/hero-desk/signal-map.mp4' },
-    posClass: 'posSignal',
   },
 ];
 

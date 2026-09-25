@@ -4,7 +4,7 @@
   padding: 88px 28px;
   overflow: hidden;
   background: var(--color-landing-black);
-  z-index: 1;
+  z-index: 12;
 }
 
 /* Same turbulence-noise weave as FeaturesSection so the dark run reads as one field. */
