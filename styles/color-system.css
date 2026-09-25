@@ -81,6 +81,13 @@
   --color-survey-tab-moral: #06b6d4;
   --color-survey-tab-attachment: #10b981;
 
+  /* Quest kind accent tokens */
+  --color-quest-kind-course: #5168ff;
+  --color-quest-kind-mission: #4ea968;
+  --color-quest-kind-submit: #ff9c51;
+  --color-quest-kind-social: #a871f4;
+  --color-quest-kind-custom: #ff648e;
+
   /* Assessment engine dark indigo hero tokens */
   --color-hero-indigo-bg: linear-gradient(135deg, #3730a3 0%, #2e2680 60%, #1e1b4b 100%);
   --color-hero-indigo-border: #4f46e5;
