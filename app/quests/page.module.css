@@ -37,8 +37,8 @@
   display: flex;
   align-items: stretch;
   justify-content: flex-start;
-  gap: 14px;
-  padding: 14px;
+  gap: 16px;
+  padding: 16px;
   overflow: hidden;
 }
 
@@ -68,7 +68,8 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    padding: 14px 16px;
+    padding: 14px;
+    gap: 14px;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -86,7 +87,7 @@
 
   .content {
     padding: 12px;
-    gap: 16px;
+    gap: 12px;
   }
 }
 

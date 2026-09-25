@@ -74,9 +74,9 @@
 
 .contentSimple {
   display: block;
-  max-width: 1180px;
+  max-width: 880px;
   margin: 0 auto;
-  padding: 32px 24px 72px;
+  padding: 16px 16px 72px;
 }
 
 /* ============================================ */
@@ -2112,11 +2112,11 @@
   }
 
   .contentSimple {
-    padding: 24px 20px 72px;
+    padding: 14px 14px 72px;
   }
 
   .leftColSimple {
-    padding: 20px;
+    padding: 16px;
   }
 
   .rightPanelSimple {
@@ -2145,11 +2145,15 @@
   .content {
     padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
   }
+
+  .contentSimple {
+    padding: 14px 14px calc(40px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 @media (max-width: 640px) {
   .contentSimple {
-    padding: 16px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 12px calc(40px + env(safe-area-inset-bottom, 0px));
   }
 
   .panelBody {
@@ -2201,7 +2205,7 @@
   }
 
   .leftColSimple {
-    padding: 16px 14px;
+    padding: 14px 12px;
     border-radius: 14px;
     border: 2px solid var(--color-primary-hover);
     box-shadow: var(--shadow-scene-card);
