@@ -71,9 +71,7 @@ export default function QuestListPanel({
     <div className={styles.wrapper}>
       <div className={styles.panel}>
         <div className={styles.listHeader}>
-          <span className={styles.listHeaderTitle}>
-            <span className={styles.listHeaderJa}>任務</span> Quest Board
-          </span>
+          <span className={styles.listHeaderTitle}>Quest Board</span>
         </div>
 
         {/* Universal left-right navigation at the top where forge and claims were */}
@@ -207,34 +205,8 @@ export default function QuestListPanel({
                           )}
                         </>
                       )}
+                      <CaretRight size={16} weight="bold" className={styles.cardCaret} aria-hidden="true" />
                     </div>
-                  </div>
-
-                  <div className={styles.cardActionRow}>
-                    <button
-                      type="button"
-                      className={`${styles.cardCta} ${completed ? styles.cardCtaCompleted : inProgress ? styles.cardCtaProgress : styles.cardCtaAvailable}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        play('click');
-                        onSelectQuest(quest);
-                      }}
-                    >
-                      <span className={styles.cardCtaLabel}>
-                        {completed
-                          ? 'Quest Cleared • View Details'
-                          : inProgress
-                            ? 'Continue Quest • View Goal'
-                            : isSelected
-                              ? 'Goal Selected • View Details'
-                              : 'View Goal & Details'}
-                      </span>
-                      {completed ? (
-                        <Check size={17} weight="bold" className={styles.ctaIcon} />
-                      ) : (
-                        <CaretRight size={17} weight="bold" className={styles.ctaIcon} />
-                      )}
-                    </button>
                   </div>
                 </div>
               );

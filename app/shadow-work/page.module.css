@@ -953,11 +953,11 @@
   font-family: var(--type-font-label);
   font-size: var(--type-label-size);
   font-weight: var(--type-weight-semibold);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
   line-height: var(--type-lh-solid);
   white-space: nowrap;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 /* ── Week tasks skeleton ── */

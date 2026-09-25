@@ -43,9 +43,10 @@
 
 /* ----- shared kit primitives ----- */
 .eyebrow {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-family: var(--type-font-label, var(--f-headline));
+  font-size: var(--type-label-size, 11px);
+  font-weight: var(--type-weight-semibold, 600);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-fg-muted);
 }

@@ -9,18 +9,14 @@
   flex-direction: column;
   gap: 10px;
   padding: 0;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  /* Matches the board: the scene backdrop reads through the empty log. */
-  background-color: rgba(255, 255, 255, 0.72);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  background-color: var(--color-scene-card-bg);
+  background-image: var(--bg-grid-dots);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border: 2px solid var(--color-primary-hover);
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
+  box-shadow: var(--shadow-scene-card);
 }
 
 /* ── List header ── */
@@ -28,37 +24,35 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px 10px;
-  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
-  border-bottom: 2px solid var(--color-primary-hover);
+  padding: 14px 18px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-scene-card-bg));
+  border-bottom: 1px solid var(--color-border-subtle);
   flex-shrink: 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
 }
 
 .listHeaderTitle {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-family: var(--type-font-label);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #2a2f52;
+  color: var(--color-text-dark);
 }
 
 .listHeaderQuestTitle {
   flex: 1;
   min-width: 0;
-  font-family: var(--font-primary);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #2a2f52;
+  font-family: var(--type-font-heading);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-dark);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.listHeaderJa {
-  color: var(--color-primary);
 }
 
 .listHeaderKind {
@@ -109,24 +103,14 @@
 }
 
 /* ── Dark mode ── */
-:global([data-theme="dark"]) .panel {
-  background-color: rgba(21, 23, 42, 0.76);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
-}
-
 :global([data-theme="dark"]) .listHeader {
-  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-scene-card-bg));
+  border-bottom-color: var(--color-border-subtle);
 }
 
 :global([data-theme="dark"]) .listHeaderTitle,
 :global([data-theme="dark"]) .listHeaderQuestTitle {
-  color: #d6d9ee;
+  color: var(--color-text-light);
 }
 
 :global([data-theme="dark"]) .listHeaderKind {
