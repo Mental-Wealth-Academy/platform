@@ -18,25 +18,11 @@ export const ProblemMap: React.FC = () => {
       <div
         className={styles.flow}
         role="group"
-        aria-label="Lack of mental health resources leaves people navigating distress in silos. Up to 70 percent of educators report feeling inadequately supported with modern engagement tools. Legacy platforms offer stagnant curricula and few social features, leaving students isolated."
+        aria-label="Up to 70 percent of educators report feeling inadequately supported with modern engagement tools. Lack of mental health resources leaves people navigating distress in silos. Legacy platforms offer stagnant curricula and few social features, leaving students isolated."
       >
-        <article className={`${styles.stage} ${styles.mapStage}`}>
-          <div className={styles.mapStoryTop}>
-            <div className={styles.stageHeading}>
-              <span className={styles.stageNumber}>1</span>
-              <h3 className={styles.stageTitle}>Lack of Mental Health Resources</h3>
-            </div>
-            <p className={styles.stageCopy}>
-              When mental wellness support is scarce, individuals are forced to navigate distress alone.
-              Disconnected care leaves people isolated right when compounding support matters most.
-            </p>
-          </div>
-          <CylindricalOrbitAnimation />
-        </article>
-
         <article className={`${styles.stage} ${styles.outcomeStage}`}>
           <div className={styles.stageHeading}>
-            <span className={styles.stageNumber}>2</span>
+            <span className={styles.stageNumber}>1</span>
             <h3 className={styles.stageTitle}>Gaps in Educator Support</h3>
           </div>
           <div className={styles.outcome}>
@@ -53,11 +39,25 @@ export const ProblemMap: React.FC = () => {
           </div>
         </article>
 
+        <article className={`${styles.stage} ${styles.mapStage}`}>
+          <div className={styles.mapStoryTop}>
+            <div className={styles.stageHeading}>
+              <span className={styles.stageNumber}>2</span>
+              <h3 className={styles.stageTitle}>Lack of Mental Health Resources</h3>
+            </div>
+            <p className={styles.stageCopy}>
+              When mental wellness support is scarce, individuals are forced to navigate distress alone.
+              Disconnected care leaves people isolated right when compounding support matters most.
+            </p>
+          </div>
+          <CylindricalOrbitAnimation />
+        </article>
+
         <article className={`${styles.stage} ${styles.platformStage}`}>
           <div className={styles.stageHeaderBlock}>
             <div className={styles.stageHeading}>
               <span className={styles.stageNumber}>3</span>
-              <h3 className={styles.stageTitle}>Poorly Designed Infrastructure</h3>
+              <h3 className={styles.stageTitle}>Inadequate infrastructure</h3>
             </div>
             <div className={styles.platformChips} aria-hidden="true">
               {PLATFORMS.map((name) => (

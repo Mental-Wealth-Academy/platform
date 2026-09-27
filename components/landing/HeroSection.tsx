@@ -6,7 +6,6 @@ import styles from './LandingPage.module.css';
 import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingInstallPwaButton from './LandingInstallPwaButton';
 import { LandingScene } from './LandingScene';
-import HeroFloatingPanels from './HeroFloatingPanels';
 import HolographicFolder from '@/components/shared/HolographicFolder';
 const HERO_HEADLINE = 'The ethereal mental wellness program';
 
@@ -43,14 +42,6 @@ export const HeroSection: React.FC = () => {
           aria-hidden="true"
         />
         <HolographicFolder
-          className={styles.heroFolderText}
-          label="Academy magazine"
-          fileSrc="/images/interactive-folders/academy-magazine-2082.jpg"
-          fileAlt="Mental Wealth Academy Artist Guide magazine cover"
-          fileWidth={927}
-          fileHeight={1200}
-        />
-        <HolographicFolder
           className={styles.heroFolderVideo}
           label="Culturally responsive AI research paper"
           fileSrc="/images/interactive-folders/research-white-paper.png"
@@ -67,8 +58,6 @@ export const HeroSection: React.FC = () => {
             <LandingInstallPwaButton />
           </div>
         </div>
-
-        <HeroFloatingPanels />
       </div>
     </>
   );

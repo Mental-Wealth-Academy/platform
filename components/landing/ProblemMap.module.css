@@ -28,7 +28,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 40px 36px 24px;
-  background: var(--color-surface-1);
+  background: var(--color-surface-2);
   min-height: 580px;
   overflow: hidden;
 }
@@ -85,26 +85,38 @@
   color: var(--color-text-soft);
 }
 
-/* Stages 2 and 3 are light cards on the design surface scale — dark text reads
-   cleanly instead of sinking into a dark-blue panel. */
-.platformStage,
+.stage + .stage {
+  border-left: 1px solid var(--color-border-strong);
+}
+
+.stage + .stage::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
+  background: transparent;
+  transform: translateY(-50%) rotate(45deg);
+}
+
 .outcomeStage {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 30px;
-  padding: 40px 36px 46px;
-  border-left: 1px solid var(--color-border-strong);
+  padding: 40px 36px 150px;
+  background: var(--color-surface-1);
 }
 
 .platformStage {
   display: flex;
   flex-direction: column;
+  padding: 40px 36px 46px;
   background: var(--color-surface-1);
   gap: 0;
-}
-
-.outcomeStage {
-  background: var(--color-surface-2);
 }
 
 .platformStage .stageTitle,
@@ -124,25 +136,6 @@
 
 .platformStage .nodeField {
   margin-top: auto;
-}
-
-.platformStage::before,
-.outcomeStage::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  z-index: 2;
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid var(--color-primary);
-  border-right: 2px solid var(--color-primary);
-  background: transparent;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.outcomeStage {
-  padding-bottom: 150px;
 }
 
 .stageHeaderBlock {
@@ -312,8 +305,7 @@
 .map :global(.rl-private .rl-pin) { background: var(--rl-private); }
 
 @media (max-width: 1160px) {
-  .platformStage,
-  .outcomeStage {
+  .stage {
     padding-right: 26px;
     padding-left: 26px;
   }
@@ -325,20 +317,13 @@
     min-height: 0;
   }
 
-  .mapStage {
-    min-height: 480px;
-  }
-
-  .platformStage,
-  .outcomeStage {
+  .stage + .stage {
     min-height: 420px;
-    padding: 40px 32px 46px;
     border-top: 1px solid color-mix(in srgb, var(--color-primary) 26%, transparent);
     border-left: 0;
   }
 
-  .platformStage::before,
-  .outcomeStage::before {
+  .stage + .stage::before {
     left: 50%;
     top: -6px;
     transform: translateX(-50%) rotate(135deg);
@@ -346,7 +331,17 @@
 
   .outcomeStage {
     min-height: 500px;
-    padding-bottom: 150px;
+    padding: 40px 32px 150px;
+  }
+
+  .mapStage {
+    min-height: 480px;
+    padding: 40px 32px 24px;
+  }
+
+  .platformStage {
+    min-height: 420px;
+    padding: 40px 32px 46px;
   }
 
   .outcomeValue {
