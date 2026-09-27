@@ -179,10 +179,10 @@
   height: 100%;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .wrapper {
     padding: 14px;
-    min-height: 260px;
+    min-height: auto;
   }
 
   .tab {
@@ -219,8 +219,8 @@
   border: 2px solid color-mix(in srgb, var(--color-primary) 50%, rgba(255, 255, 255, 0.15));
   border-top: 0;
   box-shadow:
-    0 6px 0 color-mix(in srgb, var(--color-primary) 40%, #000),
-    0 12px 28px rgba(0, 0, 0, 0.45);
+    0 6px 0 color-mix(in srgb, var(--color-primary) 40%, var(--palette-night)),
+    0 12px 28px color-mix(in srgb, var(--palette-night) 45%, transparent);
 }
 
 :global([data-theme="dark"]) .trayTopBorder {
@@ -237,7 +237,7 @@
 }
 
 :global([data-theme="dark"]) .tab.tabActive {
-  color: #ffffff;
+  color: var(--color-surface-base);
 }
 
 :global([data-theme="dark"]) .tab.tabActive .tabStroke {

@@ -126,6 +126,41 @@ const TopNavigation: React.FC = () => {
     };
   }, [authenticated, getAccessToken]);
 
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const fetchStreak = () => {
+      fetch(`/api/daily-notes/streak?tz=${encodeURIComponent(timeZone)}`, { credentials: 'include' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (typeof d?.streak === 'number') {
+            setStreak(d.streak);
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchStreak();
+    window.addEventListener('dailyNoteCompleted', fetchStreak);
+    window.addEventListener('userLoggedIn', fetchStreak);
+    window.addEventListener('profileUpdated', fetchStreak);
+    return () => {
+      window.removeEventListener('dailyNoteCompleted', fetchStreak);
+      window.removeEventListener('userLoggedIn', fetchStreak);
+      window.removeEventListener('profileUpdated', fetchStreak);
+    };
+  }, []);
+
+  const handleMobileStreakClick = () => {
+    play('click');
+    if (pathname === '/home' || pathname === '/shadow-work') {
+      window.dispatchEvent(new Event('openFieldNotes'));
+    } else {
+      router.push('/home?fieldNotes=1');
+    }
+  };
+
   const displayName = userData.username && !userData.username.startsWith('user_') ? userData.username : null;
   const initials = displayName
     ? displayName.slice(0, 2).toUpperCase()
@@ -321,6 +356,22 @@ const TopNavigation: React.FC = () => {
               priority
             />
           </a>
+          <button
+            type="button"
+            className={styles.mobileStreakBtn}
+            onClick={handleMobileStreakClick}
+            aria-label={`Field notes streak: ${streak} days. Tap to continue streak.`}
+          >
+            <Image
+              src="/icons/field-notes-streak.svg"
+              alt=""
+              width={26}
+              height={26}
+              className={styles.mobileStreakIcon}
+              priority
+            />
+            <span className={styles.mobileStreakCount}>{streak}</span>
+          </button>
         </div>
 
         <Link

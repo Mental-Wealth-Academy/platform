@@ -594,7 +594,7 @@ export default function HomePage() {
         <div data-tour="home-profile" className={styles.topCardWrapper}>
           <HomeTopCard />
           <CtaButton
-            variant="primary"
+            variant="ghost"
             block
             size="md"
             className={styles.askBlueBtn}
@@ -620,7 +620,7 @@ export default function HomePage() {
             title={notebookEntriesUnlocked ? undefined : 'Unlocks at 3,000 credits'}
           >
             <Image src="/icons/ui-book-v2.svg" alt="" width={36} height={36} />
-            <span>Notebook Entries</span>
+            <span>Notebook</span>
           </button>
         </div>
       </section>

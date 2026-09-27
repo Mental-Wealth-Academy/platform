@@ -239,6 +239,34 @@
 .askBlueBtn {
   margin-top: 12px;
   width: 100%;
+  background: var(--color-surface-base) !important;
+  color: var(--color-primary) !important;
+  border: 2px solid var(--color-primary) !important;
+  box-shadow: 0 4px 0 var(--color-primary) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.askBlueBtn:not(:disabled):hover {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-base)) !important;
+  border-color: var(--color-primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 var(--color-primary) !important;
+}
+
+.askBlueBtn:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--color-primary) !important;
+}
+
+:global([data-theme="dark"]) .askBlueBtn {
+  background: var(--color-surface-1) !important;
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 4px 0 var(--color-primary) !important;
+}
+
+:global([data-theme="dark"]) .askBlueBtn:not(:disabled):hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-1)) !important;
 }
 
 .desktopLeaderboard {
@@ -403,11 +431,11 @@
   gap: 16px;
   min-height: 72px;
   padding: 16px 20px;
-  border: 2px dashed color-mix(in oklch, var(--color-primary) 45%, var(--color-border-subtle, #c7c7c7));
+  border: 2px dotted color-mix(in oklch, var(--color-primary) 65%, var(--color-border-subtle));
   /* Matches the compact Field Notes card above it (DailyNotes .cardCompact) */
   border-radius: 12px;
-  background: transparent;
-  color: var(--color-text-muted, #666);
+  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
+  color: var(--color-text-muted);
   cursor: pointer;
   font-family: var(--font-secondary);
   font-size: 1rem;
@@ -418,17 +446,22 @@
 }
 
 .fieldNotesGhost img {
-  opacity: 0.55;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.8;
 }
 
 .fieldNotesGhost:not(:disabled):hover {
   border-color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
-  color: var(--color-text-dark, #141414);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  color: var(--color-text-dark);
 }
 
 /* Unlocked it is a real card button, matching the Field Notes card above it;
-   the dashed placeholder treatment stays for the locked state. */
+   the dotted placeholder treatment stays for the locked state. */
 .fieldNotesUnlocked {
   border: 2px solid var(--color-primary-hover);
   background: linear-gradient(
@@ -436,10 +469,10 @@
     color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base)) 0%,
     color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base)) 100%
   );
-  color: var(--color-text-dark, #141414);
+  color: var(--color-text-dark);
   box-shadow:
     0 5px 0 var(--color-primary),
-    0 8px 10px rgba(0, 0, 0, 0.14);
+    0 8px 10px color-mix(in srgb, var(--palette-night) 14%, transparent);
 }
 
 .fieldNotesUnlocked img {
@@ -456,14 +489,14 @@
   transform: translateY(-2px);
   box-shadow:
     0 7px 0 var(--color-primary),
-    0 12px 14px rgba(0, 0, 0, 0.16);
+    0 12px 14px color-mix(in srgb, var(--palette-night) 16%, transparent);
 }
 
 .fieldNotesGhost.fieldNotesUnlocked:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 0 var(--color-primary),
-    0 4px 6px rgba(0, 0, 0, 0.14);
+    0 4px 6px color-mix(in srgb, var(--palette-night) 14%, transparent);
 }
 
 .fieldNotesGhost:focus-visible {
@@ -472,8 +505,14 @@
 }
 
 .fieldNotesGhost:disabled {
-  opacity: 0.42;
+  opacity: 1;
   cursor: not-allowed;
+  border: 2px dotted color-mix(in oklch, var(--color-primary) 65%, var(--color-border-subtle));
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+}
+
+.fieldNotesGhost:disabled img {
+  opacity: 0.75;
 }
 
 @media (max-width: 1050px) {

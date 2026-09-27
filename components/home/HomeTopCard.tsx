@@ -33,11 +33,11 @@ function formatCredits(n: number): string {
 }
 
 const PROFILE_BADGES = [
-  { id: 'badge-1', src: '/icons/badges/badge-1.svg', alt: 'Badge 1' },
-  { id: 'badge-2', src: '/icons/badges/badge-2.svg', alt: 'Badge 2' },
-  { id: 'badge-3', src: '/icons/badges/badge-3.svg', alt: 'Badge 3' },
-  { id: 'badge-4', src: '/icons/badges/badge-4.svg', alt: 'Badge 4' },
-  { id: 'badge-5', src: '/icons/badges/badge-5.svg', alt: 'Badge 5' },
+  { id: 'heart-gem', src: '/icons/badges/badge-heart-gem.svg', alt: 'Heart gem badge' },
+  { id: 'student', src: '/icons/badges/badge-student.svg', alt: 'Student badge' },
+  { id: 'scholar', src: '/icons/badges/badge-scholar.svg', alt: 'Scholar badge' },
+  { id: 'books', src: '/icons/badges/badge-books.svg', alt: 'Books badge' },
+  { id: 'terminal', src: '/icons/badges/badge-terminal.svg', alt: 'Terminal badge' },
 ];
 
 /** Illustrated badge strip matching the indie collectible visual strip */
@@ -131,7 +131,6 @@ export default function HomeTopCard({}: HomeTopCardProps) {
     })();
   }, [ready, authenticated, authHeaders]);
 
-  const filledStreakDays = Math.min(Math.max(streak, 0), 7);
 
   const memoryNote = (() => {
     if (guidesDone === null || guidesDone <= 0) return null;
@@ -141,15 +140,8 @@ export default function HomeTopCard({}: HomeTopCardProps) {
       : `Blue remembers: ${guidesPart}.`;
   })();
 
-  const topKicker = streak > 0
-    ? `Active streak · ${streak} day${streak === 1 ? '' : 's'}`
-    : 'Daily practice · Resets at midnight';
-
   return (
     <div className={styles.wrapper} data-tour="home-profile">
-      {/* Subtle status kicker above the card */}
-      <div className={styles.kickerTop}>{topKicker}</div>
-
       {/* Main card */}
       <div className={styles.card}>
         <div className={styles.profileSlide}>
@@ -187,7 +179,7 @@ export default function HomeTopCard({}: HomeTopCardProps) {
                     }
                   }}
                 >
-                  {username ?? (authenticated ? 'Your profile' : 'Sign in')}
+                  {username ?? 'Your profile'}
                 </button>
                 {verifierLevel !== null ? (
                   <span className={styles.pillBadge}>
@@ -195,20 +187,11 @@ export default function HomeTopCard({}: HomeTopCardProps) {
                     {tierName(verifierLevel)}
                   </span>
                 ) : (
-                  <span className={styles.pillBadge}>Learner</span>
+                  <span className={styles.pillBadge}>
+                    <SealCheck size={12} weight="fill" aria-hidden="true" />
+                    Level-3
+                  </span>
                 )}
-              </div>
-
-              <div className={styles.streakTracker} aria-label={`Current streak: ${streak} days`}>
-                <span className={styles.metadataKicker}>Current Streak</span>
-                <span className={styles.streakDays} aria-hidden="true">
-                  {Array.from({ length: 7 }, (_, index) => (
-                    <span
-                      key={index}
-                      className={`${styles.streakDay} ${index < filledStreakDays ? styles.streakDayFilled : ''}`}
-                    />
-                  ))}
-                </span>
               </div>
             </div>
           </div>
@@ -233,29 +216,24 @@ export default function HomeTopCard({}: HomeTopCardProps) {
           <div className={styles.cardFooter}>
             <div className={styles.footerLeft}>
               <span className={styles.metadataKicker}>
-                {authenticated ? 'Tap name or avatar to edit' : 'Sign in to save progress'}
+                Tap name or avatar to edit
               </span>
             </div>
 
-            {authenticated ? (
-              <CtaButton
-                variant="ghost"
-                size="sm"
-                className={styles.ctaBtn}
-                onClick={() => setEditingAvatar(true)}
-              >
-                Edit profile
-              </CtaButton>
-            ) : (
-              <CtaButton
-                variant="ghost"
-                size="sm"
-                className={styles.ctaBtn}
-                onClick={() => login()}
-              >
-                Sign in
-              </CtaButton>
-            )}
+            <CtaButton
+              variant="ghost"
+              size="sm"
+              className={styles.ctaBtn}
+              onClick={() => {
+                if (authenticated) {
+                  setEditingAvatar(true);
+                } else {
+                  login();
+                }
+              }}
+            >
+              Edit profile
+            </CtaButton>
           </div>
         </div>
       </div>

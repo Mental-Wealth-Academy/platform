@@ -476,7 +476,7 @@ export default function DailyNotes({
     timerActive,
   ]);
 
-  const handleCompactClick = () => {
+  const handleCompactClick = useCallback(() => {
     if (!compact) return;
 
     if (onCompactClick) {
@@ -506,7 +506,38 @@ export default function DailyNotes({
     if (canStart) {
       handleAttemptStart(availableDayIndex);
     }
-  };
+  }, [
+    availableDayIndex,
+    canStart,
+    compact,
+    dataReady,
+    gateOpen,
+    handleAttemptStart,
+    onCompactClick,
+    play,
+  ]);
+
+  useEffect(() => {
+    const handleOpenFieldNotes = () => {
+      handleCompactClick();
+    };
+    window.addEventListener('openFieldNotes', handleOpenFieldNotes);
+    return () => window.removeEventListener('openFieldNotes', handleOpenFieldNotes);
+  }, [handleCompactClick]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('fieldNotes') === '1') {
+        const nextUrl = window.location.pathname;
+        window.history.replaceState({}, '', nextUrl);
+        handleCompactClick();
+      }
+    } catch {
+      // ignore
+    }
+  }, [handleCompactClick]);
 
   const renderTimerSession = (embedded: boolean) => {
     const sessionContent = (

@@ -86,6 +86,10 @@
   text-decoration: none;
 }
 
+.mobileStreakBtn {
+  display: none;
+}
+
 .logo {
   width: 110px;
   height: auto;
@@ -1394,6 +1398,45 @@ button.dropdownTokenCard:active,
 }
 
 @media (max-width: 768px) {
+  .logoLink {
+    display: none;
+  }
+
+  .mobileStreakBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: none;
+    padding: 4px 6px;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobileStreakBtn:active {
+    transform: scale(0.92);
+  }
+
+  .mobileStreakIcon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .mobileStreakCount {
+    font-family: var(--font-mono, monospace);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
   .searchWrapper {
     display: none;
   }
