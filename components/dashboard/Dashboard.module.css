@@ -108,9 +108,7 @@
   }
 
   .sidebarWrap {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    display: none;
   }
 
   .chatRoomDesktopOnly {
@@ -118,7 +116,7 @@
   }
 }
 
-/* Phones: extended hero height for Blue card with Field Notes underneath */
+/* Phones: extended hero height for Blue card */
 @media (max-width: 768px) {
   .dashboard {
     gap: 20px;
@@ -139,25 +137,11 @@
   }
 
   .sidebarWrap {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-bottom: 24px;
+    display: none;
   }
 
   .fieldNotesWrapper {
-    position: static;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    background: none;
-    z-index: auto;
-    pointer-events: auto;
-  }
-
-  .fieldNotesWrapper > * {
-    width: 100%;
-    max-width: 100%;
+    display: none;
   }
 }
 

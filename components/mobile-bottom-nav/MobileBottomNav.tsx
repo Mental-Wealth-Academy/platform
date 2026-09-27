@@ -5,24 +5,21 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   ChatCircleDots,
-  Compass,
   House,
   IconProps,
   ClipboardText,
   MoonStars,
+  User,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
 type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 
-/* On phones the home tab lands on the DAO dashboard and the personal tab lands
-   on Shadow Work. /home and /profile (the verifier queue) stay desktop
-   surfaces — neither earns a slot in a five-tab bar. */
 const NAV_ITEMS = [
-  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
+  { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/dao', icon: House },
-  { id: 'quests', label: 'Quests', href: '/quests', icon: Compass },
+  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -43,7 +40,17 @@ export const MobileBottomNav: React.FC = () => {
 
   if (pathname === '/') return null;
 
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
+  const isActive = (href: string) => {
+    if (href === '/home') {
+      return (
+        pathname === '/home' ||
+        pathname === '/profile' ||
+        pathname?.startsWith('/home/') ||
+        pathname?.startsWith('/profile/')
+      );
+    }
+    return pathname === href || pathname?.startsWith(`${href}/`);
+  };
 
   return (
     <nav className={styles.nav}>

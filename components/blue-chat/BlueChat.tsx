@@ -326,6 +326,7 @@ interface BlueChatProps {
   onClose: () => void;
   startWithVoice?: boolean;
   activeMood?: BlueChatMood | null;
+  fullPage?: boolean;
 }
 
 interface ShardUpsellState {
@@ -442,7 +443,13 @@ function fileTypeLabel(mime: string): string {
   return 'FILE';
 }
 
-const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, activeMood }) => {
+const BlueChat: React.FC<BlueChatProps> = ({
+  isOpen,
+  onClose,
+  startWithVoice,
+  activeMood,
+  fullPage = false,
+}) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
   const { address, connector, isConnected } = useAccount();
@@ -2061,9 +2068,9 @@ const BlueChat: React.FC<BlueChatProps> = ({ isOpen, onClose, startWithVoice, ac
   /* ── Compact (default) layout ── */
   return (
     <>
-      <div className={styles.backdrop} onClick={onClose} />
+      {!fullPage && <div className={styles.backdrop} onClick={onClose} />}
 
-      <div className={styles.chatContainer}>
+      <div className={`${styles.chatContainer} ${fullPage ? styles.chatContainerFullPage : ''}`}>
         <div className={styles.compactTopBar}>
           <div className={styles.compactTopBarBrand}>
             <Image src="/blue/blue-home.png" alt="" width={40} height={40} className={styles.compactTopBarFace} unoptimized />

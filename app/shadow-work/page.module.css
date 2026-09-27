@@ -920,6 +920,12 @@
   margin-top: 4px;
 }
 
+/* ── Field notes daily practice button ── */
+
+.fieldNotesWrapper {
+  width: 100%;
+}
+
 /* ── Coursework section header — label + trailing hairline ── */
 
 .missionsHeadingRow {

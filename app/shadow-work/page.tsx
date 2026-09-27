@@ -11,6 +11,7 @@ import HomeWelcomeFlow from '@/components/home-welcome/HomeWelcomeFlow';
 import { useSound } from '@/hooks/useSound';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
+import DailyNotes from '@/components/daily-notes/DailyNotes';
 import styles from './page.module.css';
 
 const BlueDialogue = dynamic(() => import('@/components/blue-dialogue/BlueDialogue'), {
@@ -517,6 +518,10 @@ export default function CoursePage() {
                   />
                 </div>
               )}
+
+              <div className={styles.fieldNotesWrapper}>
+                <DailyNotes enablePersistence={authenticated && ready} compact />
+              </div>
 
               <div className={styles.missionsHeadingRow}>
                 <span className={styles.missionsDivider} />
