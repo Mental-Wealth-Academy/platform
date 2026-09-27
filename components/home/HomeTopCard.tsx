@@ -4,8 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { usePrivy } from '@privy-io/react-auth';
-import { NotePencil, SealCheck } from '@phosphor-icons/react';
-import CtaButton from '@/components/shared/CtaButton';
+import { SealCheck } from '@phosphor-icons/react';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import { useSound } from '@/hooks/useSound';
@@ -132,23 +131,12 @@ export default function HomeTopCard({}: HomeTopCardProps) {
   }, [ready, authenticated, authHeaders]);
 
 
-  const memoryNote = (() => {
-    if (guidesDone === null || guidesDone <= 0) return null;
-    const guidesPart = `${guidesDone} guide${guidesDone === 1 ? '' : 's'} finished`;
-    return streak > 0
-      ? `Blue remembers: ${guidesPart}, ${streak}-day streak.`
-      : `Blue remembers: ${guidesPart}.`;
-  })();
-
   return (
     <div className={styles.wrapper} data-tour="home-profile">
       {/* Main card */}
       <div className={styles.card}>
         <div className={styles.profileSlide}>
-          {/* Retro badges strip */}
-          <StampBanner />
-
-          {/* Profile details underneath the badges */}
+          {/* Profile details */}
           <div className={styles.profileHeader}>
             <button
               type="button"
@@ -206,35 +194,8 @@ export default function HomeTopCard({}: HomeTopCardProps) {
             </div>
           </div>
 
-          {memoryNote && (
-            <div className={styles.desc} style={{ margin: 0 }}>
-              <NotePencil size={13} weight="fill" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-              {memoryNote}
-            </div>
-          )}
-
-          <div className={styles.cardFooter}>
-            <div className={styles.footerLeft}>
-              <span className={styles.metadataKicker}>
-                Tap name or avatar to edit
-              </span>
-            </div>
-
-            <CtaButton
-              variant="ghost"
-              size="sm"
-              className={styles.ctaBtn}
-              onClick={() => {
-                if (authenticated) {
-                  setEditingAvatar(true);
-                } else {
-                  login();
-                }
-              }}
-            >
-              Edit profile
-            </CtaButton>
-          </div>
+          {/* Retro badges strip at bottom */}
+          <StampBanner />
         </div>
       </div>
 

@@ -157,7 +157,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
   };
 
   return (
-    <ModalShell isOpen={true} onClose={onClose} title="Select Your Grok-Bot" maxWidth="md">
+    <ModalShell isOpen={true} onClose={onClose} title="Select Your Avatar" maxWidth="md">
           {loading ? (
             <div className={styles.loading}>Loading avatars...</div>
           ) : error && avatars.length === 0 ? (
@@ -165,7 +165,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
           ) : (
             <>
               <p className={styles.description}>
-                Choose one of your unique Grok-Bot avatars
+                Choose one of your unique avatars
               </p>
               <div className={styles.avatarGrid}>
                 {avatars.map((avatar) => (
@@ -228,7 +228,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
               disabled={saving || uploading || loading || !selectedAvatar}
               type="button"
             >
-              {saving ? 'Selecting...' : 'Select Grok-Bot'}
+              {saving ? 'Selecting...' : 'Select Avatar'}
             </button>
           </div>
         </div>
