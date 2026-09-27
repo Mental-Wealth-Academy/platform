@@ -504,6 +504,9 @@
     flex: 0 0 auto;
     overflow: visible;
   }
+  .cta {
+    margin-top: 16px;
+  }
   .videoWrapper { max-height: min(42vw, 220px); }
   .surveyList {
     padding: 6px;

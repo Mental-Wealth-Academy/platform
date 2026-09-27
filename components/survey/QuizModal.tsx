@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import Button from '@/components/button/Button'
+import CtaButton from '@/components/shared/CtaButton'
 import type { Survey, SurveyAnswers, SurveyQuestion } from './types'
 import styles from './QuizModal.module.css'
 
@@ -259,30 +259,39 @@ export default function QuizModal({ isOpen, onClose, survey, variant = 'modal', 
 
       {/* Footer Navigation */}
       <div className={styles.quizModalFooter} ref={footerRef}>
+        <div className={styles.quizModalFooterMeta}>
+          <span className={styles.quizModalProgressText}>
+            {isLikertSurvey
+              ? `Questions ${pageStart + 1}–${pageEnd} of ${survey.questions.length}`
+              : `Question ${pageStart + 1} of ${survey.questions.length}`}
+          </span>
+          <span className={styles.quizModalProgressPct}>
+            {Math.round(progress)}% complete
+          </span>
+        </div>
         <div className={styles.quizModalFooterButtons}>
-          <button
+          <CtaButton
+            variant="secondary"
+            size="md"
+            block
             onClick={handlePrevious}
             disabled={currentPageIndex === 0}
-            className={`${styles.quizModalButton} ${styles.quizModalButtonSecondary}`}
+            className={styles.quizModalNavButton}
           >
             Previous
-          </button>
-          <Button
-            size="compact"
+          </CtaButton>
+          <CtaButton
+            variant="primary"
+            size="md"
+            block
             onClick={handleNext}
             disabled={!hasPageAnswers || isSubmitting}
-            className={styles.quizModalPrimary}
+            className={styles.quizModalNavButton}
           >
             {isSubmitting ? 'Submitting...' : isLastPage ? 'Submit' : 'Next'}
-          </Button>
+          </CtaButton>
         </div>
       </div>
-
-      <p className={styles.quizModalProgressText}>
-        {isLikertSurvey
-          ? `Questions ${pageStart + 1}-${pageEnd} of ${survey.questions.length}`
-          : `Question ${pageStart + 1} of ${survey.questions.length}`}
-      </p>
     </div>
   )
 

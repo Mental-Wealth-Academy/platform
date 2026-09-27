@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import CtaButton from '@/components/shared/CtaButton'
 import type { SurveyResults } from './types'
 import styles from './SurveyResultsModal.module.css'
 
@@ -190,12 +191,15 @@ export default function SurveyResultsModal({ isOpen, onClose, results, variant =
 
       {/* Footer */}
       <div className={`${styles.resultsModalFooter} ${showContent ? styles.resultsModalFooterVisible : ''}`}>
-        <button
+        <CtaButton
+          variant="primary"
+          size="md"
+          block
           onClick={handleClose}
           className={styles.resultsModalCloseButton}
         >
           Close
-        </button>
+        </CtaButton>
       </div>
     </div>
   )

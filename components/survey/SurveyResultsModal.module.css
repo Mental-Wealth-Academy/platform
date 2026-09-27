@@ -375,6 +375,7 @@
 .resultsModalFooter {
   flex-shrink: 0;
   padding: var(--space-4);
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
   background: var(--color-background);
   opacity: 0;
@@ -390,41 +391,31 @@
 
 .resultsModalCloseButton {
   width: 100%;
-  padding: var(--space-3) var(--space-4);
-  font-family: var(--font-button);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider, 0.05em);
-  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  border-radius: var(--radius-md);
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-default);
-}
-
-.resultsModalCloseButton:hover {
-  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
-  border-color: var(--color-primary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-primary);
 }
 
 /* Mobile adjustments */
-@media (max-width: 479px) {
+@media (max-width: 768px) {
   .resultsModalOverlay {
-    padding: var(--space-2);
+    padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(14px, env(safe-area-inset-bottom, 0px));
+    align-items: center;
+    justify-content: center;
   }
 
   .resultsModalContainer {
-    max-height: calc(100vh - var(--space-4));
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: calc(100dvh - max(20px, env(safe-area-inset-top, 0px)) - max(16px, env(safe-area-inset-bottom, 0px)));
+    border-radius: 18px;
   }
 
   .resultsModalHeader,
-  .resultsModalContent,
+  .resultsModalContent {
+    padding: 16px 14px;
+  }
+
   .resultsModalFooter {
-    padding: var(--space-3);
+    padding: 14px 16px max(14px, env(safe-area-inset-bottom, 14px));
   }
 
   .resultsModalTitle {

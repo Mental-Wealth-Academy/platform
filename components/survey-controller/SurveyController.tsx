@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import Button from '@/components/button/Button';
+import CtaButton from '@/components/shared/CtaButton';
 import { getTestShardReward, TEST_DIFFICULTY_MAX, TEST_DIFFICULTY_MIN } from '@/lib/test-rewards';
 import styles from './SurveyController.module.css';
 
@@ -187,9 +187,15 @@ export default function SurveyController({
         </section>
       )}
 
-      <Button fullWidth onClick={onStartSurvey ?? onSignForm} className={styles.cta}>
+      <CtaButton
+        variant="primary"
+        size="md"
+        block
+        onClick={onStartSurvey ?? onSignForm}
+        className={styles.cta}
+      >
         {ctaLabel}
-      </Button>
+      </CtaButton>
     </div>
   );
 }

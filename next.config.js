@@ -104,6 +104,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/survey',
+        destination: '/surveys',
+        permanent: true,
+      },
+      {
         source: '/courses',
         destination: '/home',
         permanent: true,
