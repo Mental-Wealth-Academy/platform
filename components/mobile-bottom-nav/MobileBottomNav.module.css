@@ -17,7 +17,7 @@
   padding: 0;
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
   box-shadow: 0 -4px 24px color-mix(in oklch, var(--color-primary) 6%, transparent);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .nav::before {
@@ -146,6 +146,120 @@
   }
 }
 
+/* ── Big Center Diamond Tab ── */
+
+.centerTab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 58px;
+  height: 74px;
+  background: none;
+  border: none;
+  appearance: none;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 10;
+}
+
+.centerJewel {
+  position: relative;
+  margin-top: -16px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 4px 18px color-mix(in srgb, var(--color-primary) 40%, transparent),
+    0 0 16px color-mix(in srgb, #6fd3ff 35%, transparent),
+    0 0 24px color-mix(in srgb, #e8556d 25%, transparent);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
+}
+
+.centerJewel::before {
+  content: "";
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.15) 35%,
+      transparent 65%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.38 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    conic-gradient(
+      from 0deg at 50% 50%,
+      var(--color-primary) 0deg,
+      #6fd3ff 48deg,
+      #74c465 98deg,
+      #f3cf5a 152deg,
+      #e8556d 204deg,
+      #a78bfa 258deg,
+      #ec4899 310deg,
+      var(--color-primary) 360deg
+    );
+  animation: rainbowSpin 8s linear infinite;
+  will-change: transform;
+  z-index: 0;
+}
+
+.centerJewel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.15) 40%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.centerTab:active .centerJewel {
+  transform: scale(0.92);
+}
+
+.centerTabActive .centerJewel {
+  border-color: #ffffff;
+  box-shadow:
+    0 6px 24px color-mix(in srgb, var(--color-primary) 65%, transparent),
+    0 0 24px color-mix(in srgb, #6fd3ff 50%, transparent),
+    0 0 32px color-mix(in srgb, #e8556d 35%, transparent);
+}
+
+.centerJewelIcon {
+  width: 26px;
+  height: 26px;
+  display: block;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+@keyframes rainbowSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* ============================================ */
 /* DARK MODE OVERRIDES                          */
 /* ============================================ */
@@ -175,6 +289,22 @@
     drop-shadow(0 0 22px rgba(138, 148, 255, 0.24));
 }
 
+:global([data-theme="dark"]) .centerJewel {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 4px 20px color-mix(in srgb, var(--color-primary) 50%, transparent),
+    0 0 20px color-mix(in srgb, #6fd3ff 40%, transparent),
+    0 0 30px color-mix(in srgb, #e8556d 30%, transparent);
+}
+
+:global([data-theme="dark"]) .centerTabActive .centerJewel {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 6px 28px color-mix(in srgb, var(--color-primary) 70%, transparent),
+    0 0 28px color-mix(in srgb, #6fd3ff 55%, transparent),
+    0 0 38px color-mix(in srgb, #e8556d 40%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tab,
   .iconWrap,
@@ -188,6 +318,10 @@
   }
 
   .iconWrapActive {
+    animation: none;
+  }
+
+  .centerJewel::before {
     animation: none;
   }
 }

@@ -372,23 +372,23 @@ const TopNavigation: React.FC = () => {
             />
             <span className={styles.mobileStreakCount}>{streak}</span>
           </button>
+          <Link
+            href="/course"
+            className={styles.mobileStudyBtn}
+            aria-label="Courses and guide"
+            onClick={() => play('navigation')}
+            onMouseEnter={() => play('hover')}
+          >
+            <Image
+              src="/icons/nav-study-icon.svg"
+              alt=""
+              width={28}
+              height={28}
+              className={styles.mobileStudyIcon}
+              priority
+            />
+          </Link>
         </div>
-
-        <Link
-          href="/shop"
-          className={styles.mobileJewel}
-          aria-label="Shop credits"
-          onClick={() => play('navigation')}
-        >
-          <Image
-            src="/icons/ui-diamond.svg"
-            alt=""
-            width={24}
-            height={24}
-            className={styles.mobileJewelIcon}
-            priority
-          />
-        </Link>
 
         <div className={styles.searchWrapper}>
           <div className={styles.searchBar}>
