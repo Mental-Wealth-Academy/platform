@@ -1,7 +1,8 @@
 /**
- * Avatar System — deterministic three-axis patterns
+ * Avatar System — deterministic Grok-Bot avatars
  *
- * Generates unique, first-party avatars from the sum of three rotating axes.
+ * Generates unique, first-party Grok-Bot avatars with 50 distinct traits across
+ * 6 categories (background, chassis, visor, headgear, outfit, accessory).
  * Each avatar is a deterministic same-origin URL based on a seed string.
  *
  * Each user gets 6 deterministic options derived from their user id; the same

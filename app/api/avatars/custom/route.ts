@@ -31,16 +31,33 @@ export async function POST(request: Request) {
   }
 
   const url = body.url;
-  if (!isOwnStorageUrl(url, uploadBucket()) || !/\.(png|jpe?g|gif|webp)$/i.test(url)) {
+  if (typeof url !== 'string' || !url.trim()) {
+    return NextResponse.json({ error: 'Missing image URL.' }, { status: 400 });
+  }
+
+  // Validate allowed storage destinations (Supabase, Pinata/IPFS, local uploads, or safe image data)
+  const isStorage = Boolean(isOwnStorageUrl(url, uploadBucket()));
+  const isAllowed =
+    isStorage ||
+    url.startsWith('/uploads/') ||
+    url.startsWith('https://gateway.pinata.cloud/ipfs/') ||
+    url.startsWith('https://peach-impossible-chicken-451.mypinata.cloud/ipfs/') ||
+    url.startsWith('ipfs://') ||
+    url.startsWith('https://ipfs.io/ipfs/') ||
+    url.startsWith('https://cloudflare-ipfs.com/ipfs/') ||
+    /^data:image\/(png|jpe?g|gif|webp);base64,/i.test(url) ||
+    /\.(png|jpe?g|gif|webp)(\?.*)?$/i.test(url);
+
+  if (!isAllowed) {
     return NextResponse.json(
-      { error: 'Invalid image. Upload a PNG, JPEG, GIF, or WebP first.' },
+      { error: 'Invalid image URL. Upload a PNG, JPEG, GIF, or WebP image.' },
       { status: 400 },
     );
   }
 
   try {
     await sqlQuery(
-      `UPDATE users SET avatar_url = :avatarUrl WHERE id = :userId`,
+      `UPDATE users SET avatar_url = :avatarUrl, selected_avatar_id = 'custom' WHERE id = :userId`,
       { avatarUrl: url, userId: user.id },
     );
     return NextResponse.json({ ok: true, avatar_url: url });

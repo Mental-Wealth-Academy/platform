@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
+import fs from 'fs/promises';
+import { v4 as uuidv4 } from 'uuid';
 import { getCurrentUserFromRequestCookie } from '@/lib/auth';
 import { checkRateLimit, getClientIdentifier, getRateLimitHeaders } from '@/lib/rate-limit';
 import {
@@ -7,6 +9,7 @@ import {
   uploadBucket,
   uploadPublicObject,
 } from '@/lib/supabase-storage';
+import { uploadImageBuffer } from '@/lib/ipfs-upload';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,7 +26,7 @@ const IMAGE_EXT: Record<string, string> = {
 
 export async function POST(request: Request) {
   const rlResult = checkRateLimit({
-    max: 5,
+    max: 20,
     windowMs: 60 * 1000,
     identifier: `upload:${getClientIdentifier(request)}`,
   });
@@ -40,10 +43,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
 
-  if (!isStorageConfigured()) {
+  const hasStorage =
+    isStorageConfigured() ||
+    (process.env.NODE_ENV !== 'test' && Boolean(process.env.PINATA_JWT));
+  if (!hasStorage) {
     return NextResponse.json(
       { error: 'File uploads are temporarily unavailable.' },
-      { status: 503 },
+      { status: 503 }
     );
   }
 
@@ -69,23 +75,63 @@ export async function POST(request: Request) {
     );
   }
 
+  const arrayBuf = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuf);
+  const filename = `${uuidv4()}.${ext}`;
+
+  // 1. Try Supabase Storage if configured
+  if (isStorageConfigured()) {
+    try {
+      const { url } = await uploadPublicObject({
+        bucket: uploadBucket(),
+        data: arrayBuf,
+        contentType: file.type,
+        ext,
+      });
+      return NextResponse.json({
+        url,
+        name: path.basename(file.name || filename),
+        mime: file.type,
+        size: file.size,
+      });
+    } catch (err) {
+      console.warn('[Upload] Supabase storage upload failed, attempting fallback:', err);
+    }
+  }
+
+  // 2. Try Pinata IPFS if configured
+  if (process.env.PINATA_JWT) {
+    try {
+      const ipfsUri = await uploadImageBuffer(buffer, filename);
+      const hash = ipfsUri.replace('ipfs://', '');
+      const url = `https://gateway.pinata.cloud/ipfs/${hash}`;
+      return NextResponse.json({
+        url,
+        name: path.basename(file.name || filename),
+        mime: file.type,
+        size: file.size,
+      });
+    } catch (err) {
+      console.warn('[Upload] Pinata IPFS upload failed, attempting local fallback:', err);
+    }
+  }
+
+  // 3. Fallback: Save to local filesystem (public/uploads/avatars)
   try {
-    const data = await file.arrayBuffer();
-    const { url } = await uploadPublicObject({
-      bucket: uploadBucket(),
-      data,
-      contentType: file.type,
-      ext,
-    });
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'avatars');
+    await fs.mkdir(uploadDir, { recursive: true });
+    const filePath = path.join(uploadDir, filename);
+    await fs.writeFile(filePath, buffer);
+    const url = `/uploads/avatars/${filename}`;
 
     return NextResponse.json({
       url,
-      name: path.basename(file.name || `upload.${ext}`),
+      name: path.basename(file.name || filename),
       mime: file.type,
       size: file.size,
     });
   } catch (error) {
-    console.error('Image upload failed:', error);
+    console.error('[Upload] All storage options failed:', error);
     return NextResponse.json({ error: 'Upload failed. Please try again.' }, { status: 502 });
   }
 }
