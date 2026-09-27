@@ -739,33 +739,33 @@
 
 .readingCard[data-card-theme="midnight"] {
   border-color: #38bdf8;
-  background-color: #15224d;
+  background-color: #f6f4fa;
 }
 
 .readingCard[data-card-theme="midnight"] .readingBannerScrim {
-  background: linear-gradient(90deg, rgba(21, 34, 77, 0.96) 0%, rgba(21, 34, 77, 0.86) 42%, rgba(21, 34, 77, 0) 75%);
+  background: linear-gradient(90deg, rgba(246, 244, 250, 0.96) 0%, rgba(246, 244, 250, 0.88) 42%, rgba(246, 244, 250, 0) 75%);
 }
 
 .readingCard[data-card-theme="midnight"] .readingCategory {
-  background: #38bdf8;
-  color: #0c213c;
-}
-
-.readingCard[data-card-theme="midnight"] .readingAuthorTag {
-  color: #bae6fd;
-}
-
-.readingCard[data-card-theme="midnight"] .readingTitle {
+  background: #0284c7;
   color: #ffffff;
 }
 
+.readingCard[data-card-theme="midnight"] .readingAuthorTag {
+  color: #0369a1;
+}
+
+.readingCard[data-card-theme="midnight"] .readingTitle {
+  color: #0c213c;
+}
+
 .readingCard[data-card-theme="midnight"] .readingDescription {
-  color: #e0f2fe;
+  color: #1e3a5f;
 }
 
 .readingCard[data-card-theme="midnight"] .readingCtaPill {
-  background: #38bdf8;
-  color: #0c213c;
+  background: #0284c7;
+  color: #ffffff;
 }
 
 /* ── Content on top of banner ── */
