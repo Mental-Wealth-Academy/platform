@@ -535,6 +535,34 @@
   padding: 28px 32px 48px;
 }
 
+.leftColSimple {
+  flex: 1;
+  min-width: 0;
+  max-width: 880px;
+  width: 100%;
+  padding: 0 18px 18px;
+  background-color: var(--color-surface-3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 0 6px rgba(0, 0, 0, 0.10),
+    0 6px 3px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+:global([data-theme="dark"]) .leftColSimple {
+  background-color: var(--color-surface-1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+  border: 2px solid color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15));
+  box-shadow:
+    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
 .weekContent {
   display: flex;
   flex-direction: column;
@@ -965,19 +993,24 @@
 
 .popupCard {
   position: relative;
-  background-color: var(--color-scene-card-bg);
-  background-image: var(--bg-grid-dots);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: var(--color-surface-3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
   border: 2px solid var(--color-primary-hover);
-  border-radius: 16px;
-  box-shadow: var(--shadow-scene-card);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 0 6px rgba(0, 0, 0, 0.10),
+    0 6px 3px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
 
 :global([data-theme="dark"]) .popupCard {
-  border-color: var(--color-primary-hover);
-  box-shadow: var(--shadow-scene-card);
+  background-color: var(--color-surface-1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+  border-color: color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15));
+  box-shadow:
+    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
+    0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 .popupCard .inlineReaderInner {
@@ -1124,21 +1157,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% + 48px);
-  margin: -24px -24px 20px -24px;
+  width: calc(100% + 36px);
+  margin: 0 -18px 14px -18px;
   padding: 12px 20px 10px;
-  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border: 0;
   border-bottom: 2px solid var(--color-primary-hover);
-  border-radius: 14px 14px 0 0;
+  border-radius: 16px 16px 0 0;
   cursor: pointer;
   box-sizing: border-box;
   text-align: left;
   transition: background 0.15s ease;
+  flex-shrink: 0;
 }
 
 .courseHeadpiece:hover {
-  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-base));
+  background: color-mix(in oklch, var(--color-primary) 12%, #ffffff);
 }
 
 .courseHeadpieceLeft {
@@ -1164,22 +1198,22 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-dark);
+  color: #2a2f52;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .courseHeadpieceBadge {
-  font-family: var(--type-font-code);
-  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
   color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
   flex-shrink: 0;
 }
 
@@ -1944,11 +1978,16 @@
 }
 
 :global([data-theme="dark"]) .courseHeadpiece:hover {
-  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-2));
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-2));
 }
 
 :global([data-theme="dark"]) .courseHeadpieceTitle {
-  color: var(--color-text-light);
+  color: #d6d9ee;
+}
+
+:global([data-theme="dark"]) .courseHeadpieceBadge {
+  background: color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-2));
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
 }
 
 :global([data-theme="dark"]) .courseSwitcherBtn {
@@ -2111,6 +2150,10 @@
     overflow: visible;
     padding: 0 32px 40px;
     margin: 0;
+  }
+
+  .courseHeadpiece {
+    margin-bottom: 10px;
   }
 }
 
