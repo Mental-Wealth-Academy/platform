@@ -44,6 +44,12 @@ class BlueVrmBoundary extends Component<BlueVrmBoundaryProps, { failed: boolean 
 
 function canUseWebGl(): boolean {
   try {
+    if (
+      typeof window !== 'undefined' &&
+      (window.innerWidth <= 768 || window.matchMedia('(max-width: 768px)').matches)
+    ) {
+      return false;
+    }
     const canvas = document.createElement('canvas');
     return Boolean(
       window.WebGLRenderingContext &&

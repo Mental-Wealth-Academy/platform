@@ -1,10 +1,25 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import BlueScene from '@/components/blue-scene/BlueScene';
-import ChatRoom from '@/components/chat-room/ChatRoom';
-import SidebarFieldNotes from '@/components/dashboard/SidebarFieldNotes';
 import MoodSelector from '@/components/mood-selector/MoodSelector';
 import styles from './Dashboard.module.css';
 
+const ChatRoom = dynamic(() => import('@/components/chat-room/ChatRoom'), { ssr: false });
+const SidebarFieldNotes = dynamic(() => import('@/components/dashboard/SidebarFieldNotes'), { ssr: false });
+
 export default function Dashboard() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1025px)');
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
     <div className={styles.dashboard}>
 
@@ -19,12 +34,14 @@ export default function Dashboard() {
       </div>
 
       {/* ── Sidebar: Field Notes + Global Chat ── */}
-      <aside className={styles.sidebarWrap}>
-        <div className={styles.fieldNotesWrapper}>
-          <SidebarFieldNotes />
-        </div>
-        <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
-      </aside>
+      {isDesktop && (
+        <aside className={styles.sidebarWrap}>
+          <div className={styles.fieldNotesWrapper}>
+            <SidebarFieldNotes />
+          </div>
+          <div className={styles.chatRoomDesktopOnly}><ChatRoom fullPage /></div>
+        </aside>
+      )}
     </div>
   );
 }

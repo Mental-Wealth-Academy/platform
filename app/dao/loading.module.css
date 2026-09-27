@@ -1,29 +1,202 @@
-.pageLayout {
-  min-height: 100vh;
-  display: flex;
-  background:
-    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 14%, transparent), transparent 34%),
-    radial-gradient(circle at top right, rgba(232, 85, 109, 0.12), transparent 30%),
-    linear-gradient(180deg, #090b11 0%, #05070b 100%);
-}
-
-.page {
-  flex: 1;
+.dashboardSkeleton {
   display: grid;
-  place-items: center;
-  min-height: 100vh;
-  padding: 32px 20px 32px 104px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+  align-items: start;
 }
 
-@media (max-width: 768px) {
-  .page {
-    padding: 20px 16px 108px;
+@media (min-width: 1025px) {
+  .dashboardSkeleton {
+    grid-template-columns: 1fr 475px;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 16px;
+    min-height: 100%;
+    height: 100%;
+    align-items: stretch;
+  }
+
+  .moodSkeleton {
+    display: none;
+  }
+
+  .heroSkeleton {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 16px 0;
+  }
+
+  .sidebarSkeleton {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+    padding: 16px 8px;
+    min-height: 0;
+    height: 100%;
   }
 }
 
-:global(:root:not([data-theme="dark"])) .pageLayout {
-  background:
-    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 34%),
-    radial-gradient(circle at top right, rgba(232, 85, 109, 0.1), transparent 30%),
-    linear-gradient(180deg, #f8faff 0%, #eef3ff 100%);
+@media (max-width: 1024px) {
+  .dashboardSkeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+    flex: 0 0 auto;
+    padding-top: 12px;
+  }
+
+  .sidebarSkeleton {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardSkeleton {
+    gap: 12px;
+    padding-top: 4px;
+  }
+
+  .heroSkeleton {
+    flex: 1 1 auto;
+    height: clamp(260px, calc(var(--mobile-content-height, 100dvh) - 124px), 480px);
+    min-height: 260px;
+  }
+}
+
+/* ── Mood skeleton (mobile) ── */
+.moodSkeleton {
+  width: 100%;
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  border: 2px solid var(--color-primary-hover);
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.moodHeadSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border-bottom: 2px solid var(--color-primary-hover);
+}
+
+.skeletonPill {
+  width: 110px;
+  height: 16px;
+  border-radius: 6px;
+}
+
+.skeletonTag {
+  width: 80px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.moodGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 8px 10px 10px;
+}
+
+.moodCardSkeleton {
+  height: 82px;
+  border-radius: 9px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary-hover) 35%, #ffffff);
+}
+
+/* ── Hero card skeleton ── */
+.heroSkeleton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 2px solid var(--color-primary-hover);
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  box-sizing: border-box;
+  background: var(--color-surface-1);
+}
+
+.heroHeadSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-primary-hover);
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+}
+
+.heroTitleSkeleton {
+  width: 120px;
+  height: 18px;
+  border-radius: 6px;
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.heroTabsSkeleton {
+  width: 100px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+}
+
+/* ── Sidebar card skeletons (desktop) ── */
+.sidebarCardSkeleton {
+  height: 80px;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary-hover);
+  background: #ffffff;
+  box-shadow: 0 4px 0 var(--color-primary);
+}
+
+.sidebarCardSkeletonLarge {
+  flex: 1;
+  min-height: 200px;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary-hover);
+  background: #ffffff;
+  box-shadow: 0 4px 0 var(--color-primary);
+}
+
+/* ── Shimmer effect ── */
+.skeletonShimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--color-primary) 6%, transparent) 25%,
+    color-mix(in oklch, var(--color-primary) 14%, transparent) 50%,
+    color-mix(in oklch, var(--color-primary) 6%, transparent) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonWave 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonWave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonShimmer {
+    animation: none;
+  }
 }

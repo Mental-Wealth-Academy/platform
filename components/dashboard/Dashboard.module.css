@@ -125,9 +125,8 @@
 
   .blueSceneWrap {
     flex: 1 1 auto;
-    height: clamp(260px, calc(100dvh - 72px - 94px - 85px), 480px);
+    height: clamp(260px, calc(var(--mobile-content-height, 100dvh) - 124px), 480px);
     min-height: 260px;
-    max-height: calc(100dvh - 72px - 94px - 75px);
   }
 
   .moodSelectorWrap {
