@@ -297,7 +297,7 @@
   }
 
   .posResearcher {
-    top: 12%;
+    top: clamp(125px, 16%, 160px);
     width: clamp(170px, 20vw, 230px);
   }
 
@@ -338,7 +338,7 @@
   }
 
   .posResearcher {
-    top: 11%;
+    top: clamp(135px, 20%, 170px);
     left: 3%;
     width: clamp(118px, 36vw, 168px);
   }

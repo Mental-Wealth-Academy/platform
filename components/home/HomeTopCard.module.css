@@ -1,8 +1,6 @@
 /* ──────────────────────────────────────────────────────────────────────────
-   HomeTopCard: Hero CTA card inspired by the indie mobile aesthetic.
-   Features a status kicker above the card, a visual retro stamp strip,
-   clean metadata and title, an honest description, a prominent pill CTA,
-   and touch-friendly pagination dots below.
+   HomeTopCard: Hero Profile card with retro illustrated stamp strip,
+   circular avatar, user credentials, streak tracking, and stats.
    ────────────────────────────────────────────────────────────────────────── */
 
 .wrapper {
@@ -10,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 /* Subtle status kicker above the card */
@@ -23,6 +21,7 @@
   color: var(--color-topcard-kicker);
   margin-bottom: 10px;
   text-align: center;
+  word-break: break-word;
 }
 
 /* The primary card container */
@@ -37,27 +36,12 @@
   box-sizing: border-box;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  user-select: none;
 }
 
 :global([data-theme="dark"]) .card {
   background: var(--color-surface-1);
   border-color: var(--color-border-subtle);
   box-shadow: var(--shadow-md);
-}
-
-/* Slides wrapper */
-.sliderTrack {
-  display: flex;
-  width: 100%;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.slide {
-  flex: 0 0 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ── Stamp Banner ── */
@@ -70,8 +54,9 @@
   border-radius: 16px;
   background: var(--color-topcard-banner-bg);
   border: 1px dashed var(--color-topcard-banner-border);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -98,7 +83,7 @@
 
 .stampSvg {
   width: auto;
-  height: 52px;
+  height: 50px;
   display: block;
 }
 
@@ -165,14 +150,7 @@
   fill: var(--color-topcard-stamp-book-ink);
 }
 
-/* ── Slide Metadata & Typography ── */
-.metaRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
+/* ── Typography & Metadata ── */
 .metadataKicker {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -181,80 +159,37 @@
   color: var(--color-topcard-kicker);
 }
 
-.title {
-  font-family: var(--font-secondary);
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--color-topcard-title);
-  margin: 0 0 6px 0;
-}
-
 .desc {
   font-family: var(--font-body);
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--color-topcard-desc);
-  margin: 0 0 16px 0;
-  max-width: 90%;
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
-/* ── Card Footer & CTA ── */
-.cardFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 4px;
-}
-
-.footerLeft {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pillBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
-  color: var(--color-primary);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
-}
-
-.ctaBtn {
-  min-height: 38px !important;
-  padding: 0 24px !important;
-  font-size: 0.875rem !important;
-  font-weight: 700 !important;
-  border-radius: 999px !important;
-  margin-left: auto;
-}
-
-/* ── Slide 2: Profile & Stats ── */
+/* ── Profile & Stats ── */
 .profileSlide {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  width: 100%;
 }
 
 .profileHeader {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  min-width: 0;
+  width: 100%;
 }
 
 .avatarBtn {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   border: 2px solid var(--color-primary);
   background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
@@ -277,12 +212,15 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  flex: 1;
 }
 
 .nameRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-width: 0;
 }
 
 .userName {
@@ -295,13 +233,18 @@
   color: var(--color-topcard-title);
   text-align: left;
   cursor: pointer;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .streakTracker {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 4px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  min-width: 0;
 }
 
 .streakDays {
@@ -311,8 +254,8 @@
 }
 
 .streakDay {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
   background: transparent;
@@ -327,11 +270,13 @@
 .statsRow {
   display: flex;
   align-items: center;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
   padding: 10px 14px;
   border-radius: 12px;
   background: var(--color-topcard-banner-bg);
   border: 1px solid var(--color-topcard-border);
+  min-width: 0;
 }
 
 :global([data-theme="dark"]) .statsRow {
@@ -347,95 +292,51 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-topcard-title);
+  overflow-wrap: break-word;
 }
 
-/* ── Slide 3: Leaderboard ── */
-.leaderboardSlide {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.leaderboardRow {
+/* ── Card Footer & CTA ── */
+.cardFooter {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
-  border: 1px solid var(--color-border-subtle);
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--color-topcard-border) 45%, transparent);
 }
 
-:global([data-theme="dark"]) .leaderboardRow {
-  background: var(--color-surface-2);
+.footerLeft {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }
 
-.leaderRank {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  width: 18px;
-  color: var(--color-text-muted);
-}
-
-.leaderAvatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--color-surface-2);
-  flex-shrink: 0;
-}
-
-.leaderName {
-  flex: 1;
-  font-family: var(--font-secondary);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-topcard-title);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.leaderShards {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-primary);
+.pillBadge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-}
-
-/* ── Pagination Dots ── */
-.dots {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
+  padding: 3px 8px;
   border-radius: 999px;
-  border: none;
-  padding: 0;
-  background: color-mix(in oklch, var(--color-text-muted) 35%, transparent);
-  cursor: pointer;
-  transition: width 0.25s ease, background-color 0.25s ease;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
-.dotActive {
-  width: 22px;
-  background: var(--color-action);
-}
-
-:global([data-theme="dark"]) .dotActive {
-  background: var(--color-text-light);
+.ctaBtn {
+  min-height: 36px !important;
+  padding: 0 20px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  margin-left: auto;
 }
 
 @media (max-width: 768px) {
@@ -444,21 +345,21 @@
     border-radius: 20px;
   }
 
-  .title {
-    font-size: 1.1875rem;
+  .avatarBtn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.1rem;
   }
 
-  .desc {
-    font-size: 0.8125rem;
-    max-width: 100%;
-    margin-bottom: 12px;
+  .userName {
+    font-size: 1.05rem;
   }
 
   .stampSvg {
-    height: 44px;
+    height: 42px;
   }
 
   .ctaBtn {
-    padding: 0 20px !important;
+    padding: 0 16px !important;
   }
 }

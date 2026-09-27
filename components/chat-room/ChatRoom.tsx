@@ -640,6 +640,13 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
               (currentUsername && msg.username && msg.username.toLowerCase() === currentUsername.toLowerCase())
             );
 
+            const isBlue =
+              (msg.username && msg.username.toLowerCase() === 'blue') ||
+              msg.userId === 'blue-agent' ||
+              msg.userId === 'blue-system';
+
+            const avatarUrl = isBlue ? '/blue/blue-avatar.png' : msg.avatarUrl;
+
             const bubbleThemeClass = isSelf
               ? styles.bubbleSelf
               : `${styles.bubbleOther} ${styles[`bubbleTheme${getOtherThemeIndex(msg.username)}` as keyof typeof styles] ?? ''}`;
@@ -652,13 +659,13 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
                 <span
                   className={styles.msgAvatar}
                   style={
-                    msg.avatarUrl
-                      ? { backgroundImage: `url(${msg.avatarUrl})`, backgroundSize: 'cover' }
+                    avatarUrl
+                      ? { backgroundImage: `url(${avatarUrl})`, backgroundSize: 'cover' }
                       : { background: avatarColor(msg.username) }
                   }
                   aria-hidden="true"
                 >
-                  {!msg.avatarUrl && msg.username.charAt(0).toUpperCase()}
+                  {!avatarUrl && msg.username.charAt(0).toUpperCase()}
                 </span>
                 <div className={styles.msgBody}>
                   <div className={styles.msgMeta}>
@@ -687,7 +694,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           <div className={`${styles.chatMessage} ${styles.blueReviewingMessage}`}>
             <span
               className={styles.msgAvatar}
-              style={{ backgroundImage: 'url(/prompts/CharacterBlue.png)', backgroundSize: 'cover' }}
+              style={{ backgroundImage: 'url(/blue/blue-avatar.png)', backgroundSize: 'cover' }}
               aria-hidden="true"
             />
             <div className={styles.msgBody}>

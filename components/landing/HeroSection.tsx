@@ -7,7 +7,6 @@ import LandingEnterAcademyButton from './LandingEnterAcademyButton';
 import LandingInstallPwaButton from './LandingInstallPwaButton';
 import { LandingScene } from './LandingScene';
 import HeroFloatingPanels from './HeroFloatingPanels';
-import ThinkingOrbBadge from './ThinkingOrbBadge';
 import HolographicFolder from '@/components/shared/HolographicFolder';
 const HERO_HEADLINE = 'The ethereal mental wellness program';
 
@@ -60,14 +59,6 @@ export const HeroSection: React.FC = () => {
           fileHeight={1552}
         />
         <div className={styles.heroContent}>
-          <ThinkingOrbBadge
-            label="Blue Thinking…"
-            state="composing"
-            size={64}
-            displaySize={20}
-            className={styles.heroOrbBadge}
-          />
-
           <h1 className={styles.heroHeadline}>
             {HERO_HEADLINE}
           </h1>

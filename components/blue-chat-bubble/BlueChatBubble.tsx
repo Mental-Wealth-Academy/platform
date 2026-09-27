@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './BlueChatBubble.module.css';
 
-const BLUE_AVATAR_SRC = '/splashlogo.png';
+const BLUE_AVATAR_SRC = '/blue/blue-avatar.png';
 
 interface BlueChatBubbleProps {
   message: string;

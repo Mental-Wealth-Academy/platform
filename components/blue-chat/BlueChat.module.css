@@ -266,6 +266,25 @@
   animation: messageSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.messageAvatarCircle {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-primary);
+  border: 1.5px solid color-mix(in oklch, var(--color-on-action) 55%, transparent);
+  box-shadow: var(--shadow-sm);
+  margin-top: 2px;
+}
+
+.messageAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* Column holding the bubble, attachments, timestamp and debug panel */
 
 .messageBody {
@@ -1056,6 +1075,129 @@
   cursor: not-allowed;
 }
 
+/* Attachment button */
+
+.attachButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(var(--bc-ink), 0.04);
+  border: 1.5px solid rgba(var(--bc-ink), 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  color: rgba(var(--bc-ink), 0.45);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.attachButton:hover:not(:disabled) {
+  background: rgba(var(--bc-ink), 0.08);
+  color: rgba(var(--bc-ink), 0.85);
+  border-color: rgba(var(--bc-ink), 0.2);
+}
+
+.attachButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.attachButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Staged attachments */
+
+.attachmentError {
+  width: 100%;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-danger);
+  padding: 2px 4px 6px;
+  line-height: 1.3;
+}
+
+.stagedAttachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 4px;
+}
+
+.stagedAttachmentChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 4px 8px 4px 6px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  font-size: 11px;
+  color: rgba(var(--bc-ink), 0.85);
+}
+
+.stagedAttachmentThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.stagedAttachmentIcon {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: color-mix(in oklch, var(--color-primary) 80%, transparent);
+}
+
+.stagedAttachmentName {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(var(--bc-ink), 0.8);
+}
+
+.stagedAttachmentRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(var(--bc-ink), 0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  margin-left: 2px;
+}
+
+.stagedAttachmentRemove:hover {
+  background: rgba(var(--bc-ink), 0.1);
+  color: rgba(var(--bc-ink), 0.9);
+}
+
+.messageAttachmentThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 /* Input area */
 
 .inputArea {
@@ -1240,6 +1382,16 @@
     min-width: 0;
     padding: 10px 12px;
     font-size: 14px;
+  }
+
+.attachButton {
+    width: 38px;
+    height: 38px;
+  }
+
+.attachButton svg {
+    width: 16px;
+    height: 16px;
   }
 
 .voiceButton {
@@ -2082,6 +2234,7 @@
 :global(:root:not([data-theme="dark"])) .quickAction,
 :global(:root:not([data-theme="dark"])) .targetButton,
 :global(:root:not([data-theme="dark"])) .liquidityCancel,
+:global(:root:not([data-theme="dark"])) .attachButton,
 :global(:root:not([data-theme="dark"])) .voiceButton {
   background: rgba(255, 255, 255, 0.86);
   border-color: color-mix(in oklch, var(--color-primary) 14%, transparent);
@@ -2092,6 +2245,7 @@
 :global(:root:not([data-theme="dark"])) .quickAction:hover:not(:disabled),
 :global(:root:not([data-theme="dark"])) .targetButton:hover:not(:disabled),
 :global(:root:not([data-theme="dark"])) .liquidityCancel:hover:not(:disabled),
+:global(:root:not([data-theme="dark"])) .attachButton:hover:not(:disabled),
 :global(:root:not([data-theme="dark"])) .voiceButton:hover {
   background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   border-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
@@ -2393,6 +2547,7 @@
 :global(:root[data-theme="dark"]) .quickAction,
 :global(:root[data-theme="dark"]) .targetButton,
 :global(:root[data-theme="dark"]) .liquidityCancel,
+:global(:root[data-theme="dark"]) .attachButton,
 :global(:root[data-theme="dark"]) .voiceButton {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
@@ -2403,6 +2558,7 @@
 :global(:root[data-theme="dark"]) .quickAction:hover:not(:disabled),
 :global(:root[data-theme="dark"]) .targetButton:hover:not(:disabled),
 :global(:root[data-theme="dark"]) .liquidityCancel:hover:not(:disabled),
+:global(:root[data-theme="dark"]) .attachButton:hover:not(:disabled),
 :global(:root[data-theme="dark"]) .voiceButton:hover {
   background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);

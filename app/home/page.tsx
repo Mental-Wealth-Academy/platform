@@ -9,14 +9,11 @@ import { useDevOnboarding } from '@/components/useDevMode';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
-import CourseFolderCard from '@/components/home/CourseFolderCard';
-import type { FolderMotif } from '@/components/home/folderMotifs';
-import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
+import HomeActionCards from '@/components/home/HomeActionCards';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import HomeTopCard from '@/components/home/HomeTopCard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
-import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import HomeLeaderboard from '@/components/home/HomeLeaderboard';
 import KnowledgeCoverageCard from '@/components/home/KnowledgeCoverageCard';
 import GuideGallery, { GuideFilterSidebar, type GuideFilterState } from '@/components/home/GuideGallery';
@@ -119,31 +116,6 @@ function dialogueIndexForDate(dateKey: string): number {
   }
   return hash % DAILY_COURSES_DIALOGUES.length;
 }
-
-/**
- * Placeholder folders for the tabs that have no content behind them yet. They
- * carry no link, so they render as inert folders — each with its own dotted
- * motif so the row still reads as a shelf rather than a repeat.
- */
-interface PlaceholderFolder {
-  title: string;
-  centerLabel: string;
-  motif: FolderMotif;
-  dark?: boolean;
-  ctaDark?: boolean;
-}
-
-const PLACEHOLDER_LECTURES: PlaceholderFolder[] = [
-  { title: 'Recorded lectures', centerLabel: 'Recorded Lectures', motif: 'waveform', dark: true },
-  { title: 'Lecture theatre', centerLabel: 'Lecture Theatre', motif: 'beam', ctaDark: true },
-  { title: 'Guest seminars', centerLabel: 'Guest Seminars', motif: 'spiral', dark: true },
-];
-
-const PLACEHOLDER_WORKSHOPS: PlaceholderFolder[] = [
-  { title: 'Practice bench', centerLabel: 'Practice Bench', motif: 'lattice', dark: true },
-  { title: 'Peer circles', centerLabel: 'Peer Circles', motif: 'bloom', ctaDark: true },
-  { title: 'Build week', centerLabel: 'Build Week', motif: 'bars', dark: true },
-];
 
 export default function HomePage() {
   const learnOnly = usePathname() === '/learn';
@@ -552,12 +524,7 @@ export default function HomePage() {
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
         <div data-tour="home-profile" className={styles.topCardWrapper}>
-          <HomeTopCard
-            activeCourseTitle={activeCourse.title}
-            activeCourseHref={activeCourse.href}
-            activeCourseKicker={activeCourse.kicker}
-            activeCourseDesc={activeCourse.desc}
-          />
+          <HomeTopCard />
         </div>
         <div className={styles.desktopLeaderboard}>
           <HomeLeaderboard />
@@ -578,105 +545,18 @@ export default function HomePage() {
       </section>
       )}
       {!learnOnly && (
-        <div className={styles.folderSection} data-tour="home-courses">
-        <FolderCardWrapper
-          tabs={[
-            {
-              label: 'My Courses',
-              content: (
-                <section className={styles.folderRow} aria-label="Course folders">
-                  <CourseFolderCard
-                    title="Blue's Quest"
-                    href="/shadow-work"
-                    avatarSrc="/blue/blue-home.png"
-                    centerLabel="Blue's Story"
-                    ctaLabel="Continue Course"
-                    dark
-                  />
-                  <CourseFolderCard
-                    title="Your Course"
-                    href="/course/personal"
-                    avatarSrc="/academic-angels.webp"
-                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
-                    ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
-                    ctaDark
-                  />
-                  <EmptyCourseStudioFolder hasAngel={hasAngel} />
-                </section>
-              ),
-            },
-            {
-              label: 'Lectures',
-              content: (
-                <section className={styles.folderRow} aria-label="Lecture folders">
-                  {PLACEHOLDER_LECTURES.map((folder) => (
-                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
-                  ))}
-                </section>
-              ),
-            },
-            {
-              label: 'Workshops',
-              content: (
-                <section className={styles.folderRow} aria-label="Workshop folders">
-                  {PLACEHOLDER_WORKSHOPS.map((folder) => (
-                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
-                  ))}
-                </section>
-              ),
-            },
-          ]}
-        />
+        <div data-tour="home-courses">
+          <HomeActionCards
+            personalCourse={personalCourse}
+            bookmarkedCount={bookmarkedCount}
+            hasAngel={hasAngel}
+          />
         </div>
       )}
-      <div className={styles.main}>
+      {!learnOnly && academyCourses.length > 0 && (
+        <div className={styles.main}>
 
-        {!learnOnly && personalCourse && (
-          <div className={styles.cardWrapper}>
-          <Link href="/course/personal" className={styles.courseCard}>
-            <span
-              className={`${styles.thumb} ${styles.personalThumb}`}
-              style={{ backgroundImage: `url('/uploads/course-personal.jpg')` }}
-            >
-              <div className={styles.badgeWrapper}>
-                <div className={styles.cardBadgeGroup}>
-                  <div className={styles.badgeSection}>
-                    <span className={styles.badgeValue}>4 sessions</span>
-                    <span className={styles.badgeEyebrow}>length</span>
-                  </div>
-                  <span className={styles.badgeDivider} />
-                  <div className={styles.badgeSection}>
-                    <span className={styles.badgeValue}>
-                      <span className={styles.rewardStack}>
-                        <Image src="/icons/usdc-logo.svg" alt="" width={18} height={18} className={styles.usdcIcon} />
-                        <Image src="/icons/ui-diamond.svg" alt="" width={18} height={18} className={styles.diamondIcon} />
-                      </span>
-                    </span>
-                    <span className={styles.badgeEyebrow}>rewards</span>
-                  </div>
-                </div>
-              </div>
-            </span>
-            <div className={styles.body}>
-              <span className={styles.category}>Your course</span>
-              <div className={styles.contentCenter}>
-                <span className={styles.title}>{personalCourse.title}</span>
-                <span className={styles.desc}>
-                  A personal 4-week track built around {personalCourse.focus.toLowerCase()} — a weekly read and tasks tuned to your goal.
-                </span>
-              </div>
-              <div className={styles.cardFooter}>
-                <span className={styles.cardMembership}>Free</span>
-              </div>
-              <div className={styles.progressDivider}>
-                <div className={styles.progressFill} style={{ width: '0%' }} />
-              </div>
-            </div>
-          </Link>
-          </div>
-        )}
-
-        {!learnOnly && academyCourses.length > 0 && (
+        {academyCourses.length > 0 && (
           <section className={styles.authoredSection}>
             <h2 className={styles.authoredHeading}>Academy courses</h2>
             <div className={styles.authoredList}>
@@ -696,9 +576,11 @@ export default function HomePage() {
             </div>
           </section>
         )}
+        </div>
+      )}
 
         {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
-          <>
+          <div className={styles.main}>
             <div className={styles.guideSectionContent}>
               <GuideGallery guides={guides} filters={guideFilters} />
 
@@ -813,10 +695,9 @@ export default function HomePage() {
               )}
             </div>
             <div className={styles.guideSectionFooter}>guides & references</div>
-          </>
+          </div>
         )}
 
-      </div>
       {!learnOnly && (
         <section className={styles.dashboardInsights} aria-label="Learning insights">
           <article className={`${styles.insightCard} ${styles.recommendInsightCard}`}>

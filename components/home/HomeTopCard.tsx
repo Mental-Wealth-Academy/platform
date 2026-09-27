@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { usePrivy } from '@privy-io/react-auth';
@@ -10,13 +10,6 @@ import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModa
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import { useSound } from '@/hooks/useSound';
 import styles from './HomeTopCard.module.css';
-
-interface LeaderboardUser {
-  rank: number;
-  username: string;
-  avatarUrl: string | null;
-  shards: number;
-}
 
 export interface HomeTopCardProps {
   activeCourseTitle?: string;
@@ -106,29 +99,18 @@ function StampBanner() {
   );
 }
 
-export default function HomeTopCard({
-  activeCourseTitle = "Blue's Quest",
-  activeCourseHref = '/shadow-work',
-  activeCourseKicker = '12 sessions · Shadow Work',
-  activeCourseDesc = 'Explore the 12-week path through self-knowledge, shadows, and reflection with Blue.',
-  onOpenLeaderboard,
-}: HomeTopCardProps) {
+export default function HomeTopCard({}: HomeTopCardProps) {
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const { play } = useSound();
 
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
   const [verifierLevel, setVerifierLevel] = useState<number | null>(null);
   const [guidesDone, setGuidesDone] = useState<number | null>(null);
   const [creditsEarned, setCreditsEarned] = useState<number>(0);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editingUsername, setEditingUsername] = useState(false);
-
-  const touchStartX = useRef<number | null>(null);
-  const TOTAL_SLIDES = 3;
 
   const authHeaders = useCallback(async (): Promise<HeadersInit> => {
     const token = await getAccessToken();
@@ -189,43 +171,7 @@ export default function HomeTopCard({
     })();
   }, [ready, authenticated, authHeaders]);
 
-  // Load preview leaderboard
-  useEffect(() => {
-    fetch('/api/leaderboard')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        const raw: LeaderboardUser[] = Array.isArray(data?.users) ? data.users : [];
-        const filtered = raw
-          .filter((u) => u.username?.toLowerCase() !== 'blue')
-          .slice(0, 3)
-          .map((u, i) => ({ ...u, rank: i + 1 }));
-        setLeaderboard(filtered);
-      })
-      .catch(() => {});
-  }, []);
-
   const filledStreakDays = Math.min(Math.max(streak, 0), 7);
-
-  // Touch swipe support
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) {
-        // Swipe left -> next
-        setCurrentSlide((s) => Math.min(s + 1, TOTAL_SLIDES - 1));
-      } else {
-        // Swipe right -> prev
-        setCurrentSlide((s) => Math.max(s - 1, 0));
-      }
-      play('soft-hover');
-    }
-    touchStartX.current = null;
-  };
 
   const memoryNote = (() => {
     if (guidesDone === null || guidesDone <= 0) return null;
@@ -244,216 +190,114 @@ export default function HomeTopCard({
       {/* Subtle status kicker above the card */}
       <div className={styles.kickerTop}>{topKicker}</div>
 
-      {/* Main interactive card */}
-      <div
-        className={styles.card}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div
-          className={styles.sliderTrack}
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {/* ── Slide 0: Primary CTA / Featured Quest (Exact counterpart to reference) ── */}
-          <div className={styles.slide}>
-            <StampBanner />
+      {/* Main card */}
+      <div className={styles.card}>
+        <div className={styles.profileSlide}>
+          {/* Retro badges strip */}
+          <StampBanner />
 
-            <div className={styles.metaRow}>
-              <span className={styles.metadataKicker}>{activeCourseKicker}</span>
-            </div>
+          {/* Profile details underneath the badges */}
+          <div className={styles.profileHeader}>
+            <button
+              type="button"
+              className={styles.avatarBtn}
+              style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
+              onClick={() => {
+                if (authenticated) {
+                  setEditingAvatar(true);
+                } else {
+                  login();
+                }
+              }}
+              aria-label="Change avatar"
+            >
+              {!avatarUrl && (username?.slice(0, 1).toUpperCase() ?? '?')}
+            </button>
 
-            <h2 className={styles.title}>{activeCourseTitle}</h2>
-            <p className={styles.desc}>{activeCourseDesc}</p>
-
-            <div className={styles.cardFooter}>
-              <div className={styles.footerLeft}>
-                <span className={styles.pillBadge}>
-                  <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} />
-                  Earn credits
-                </span>
-              </div>
-
-              <CtaButton
-                href={activeCourseHref}
-                variant="ghost"
-                size="sm"
-                className={styles.ctaBtn}
-                onClick={() => play('click')}
-              >
-                Start
-              </CtaButton>
-            </div>
-          </div>
-
-          {/* ── Slide 1: Learner Standing & Profile ── */}
-          <div className={styles.slide}>
-            <div className={styles.profileSlide}>
-              <div className={styles.profileHeader}>
+            <div className={styles.profileInfo}>
+              <div className={styles.nameRow}>
                 <button
                   type="button"
-                  className={styles.avatarBtn}
-                  style={avatarUrl ? { backgroundImage: `url(${JSON.stringify(avatarUrl)})` } : undefined}
+                  className={styles.userName}
                   onClick={() => {
                     if (authenticated) {
-                      setEditingAvatar(true);
+                      setEditingUsername(true);
                     } else {
                       login();
                     }
                   }}
-                  aria-label="Change avatar"
                 >
-                  {!avatarUrl && (username?.slice(0, 1).toUpperCase() ?? '?')}
+                  {username ?? (authenticated ? 'Your profile' : 'Sign in')}
                 </button>
-
-                <div className={styles.profileInfo}>
-                  <div className={styles.nameRow}>
-                    <button
-                      type="button"
-                      className={styles.userName}
-                      onClick={() => {
-                        if (authenticated) {
-                          setEditingUsername(true);
-                        } else {
-                          login();
-                        }
-                      }}
-                    >
-                      {username ?? (authenticated ? 'Your profile' : 'Sign in')}
-                    </button>
-                    {verifierLevel !== null ? (
-                      <span className={styles.pillBadge}>
-                        <SealCheck size={12} weight="fill" aria-hidden="true" />
-                        {tierName(verifierLevel)}
-                      </span>
-                    ) : (
-                      <span className={styles.pillBadge}>Learner</span>
-                    )}
-                  </div>
-
-                  <div className={styles.streakTracker} aria-label={`Current streak: ${streak} days`}>
-                    <span className={styles.metadataKicker}>Current Streak</span>
-                    <span className={styles.streakDays} aria-hidden="true">
-                      {Array.from({ length: 7 }, (_, index) => (
-                        <span
-                          key={index}
-                          className={`${styles.streakDay} ${index < filledStreakDays ? styles.streakDayFilled : ''}`}
-                        />
-                      ))}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.statsRow}>
-                <div className={styles.statItem}>
-                  <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
-                  <span>{formatCredits(creditsEarned)} credits</span>
-                </div>
-                <div className={styles.statItem}>
-                  <span>{guidesDone ?? 0} guides completed</span>
-                </div>
-              </div>
-
-              {memoryNote && (
-                <div className={styles.desc} style={{ margin: 0 }}>
-                  <NotePencil size={13} weight="fill" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                  {memoryNote}
-                </div>
-              )}
-
-              <div className={styles.cardFooter}>
-                <div className={styles.footerLeft}>
-                  <span className={styles.metadataKicker}>
-                    {authenticated ? 'Tap name or avatar to edit' : 'Sign in to save progress'}
+                {verifierLevel !== null ? (
+                  <span className={styles.pillBadge}>
+                    <SealCheck size={12} weight="fill" aria-hidden="true" />
+                    {tierName(verifierLevel)}
                   </span>
-                </div>
-
-                {authenticated ? (
-                  <CtaButton
-                    variant="ghost"
-                    size="sm"
-                    className={styles.ctaBtn}
-                    onClick={() => setEditingAvatar(true)}
-                  >
-                    Edit profile
-                  </CtaButton>
                 ) : (
-                  <CtaButton
-                    variant="ghost"
-                    size="sm"
-                    className={styles.ctaBtn}
-                    onClick={() => login()}
-                  >
-                    Sign in
-                  </CtaButton>
+                  <span className={styles.pillBadge}>Learner</span>
                 )}
+              </div>
+
+              <div className={styles.streakTracker} aria-label={`Current streak: ${streak} days`}>
+                <span className={styles.metadataKicker}>Current Streak</span>
+                <span className={styles.streakDays} aria-hidden="true">
+                  {Array.from({ length: 7 }, (_, index) => (
+                    <span
+                      key={index}
+                      className={`${styles.streakDay} ${index < filledStreakDays ? styles.streakDayFilled : ''}`}
+                    />
+                  ))}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* ── Slide 2: Leaderboard Standing ── */}
-          <div className={styles.slide}>
-            <div className={styles.leaderboardSlide}>
-              <div className={styles.metaRow}>
-                <span className={styles.metadataKicker}>Academy Standings</span>
-              </div>
-              <h2 className={styles.title}>Top Learners</h2>
-
-              {leaderboard.length === 0 ? (
-                <p className={styles.desc}>No rankings yet. Complete guides to climb the board.</p>
-              ) : (
-                leaderboard.map((u) => (
-                  <div key={u.rank} className={styles.leaderboardRow}>
-                    <span className={styles.leaderRank}>{u.rank}</span>
-                    <span
-                      className={styles.leaderAvatar}
-                      style={u.avatarUrl ? { backgroundImage: `url(${JSON.stringify(u.avatarUrl)})` } : undefined}
-                    />
-                    <span className={styles.leaderName}>{u.username}</span>
-                    <span className={styles.leaderShards}>
-                      <Image src="/icons/ui-diamond.svg" alt="" width={11} height={11} />
-                      {formatCredits(u.shards)}
-                    </span>
-                  </div>
-                ))
-              )}
-
-              <div className={styles.cardFooter}>
-                <div className={styles.footerLeft}>
-                  <span className={styles.metadataKicker}>Updated daily</span>
-                </div>
-                {onOpenLeaderboard && (
-                  <CtaButton
-                    variant="ghost"
-                    size="sm"
-                    className={styles.ctaBtn}
-                    onClick={onOpenLeaderboard}
-                  >
-                    Leaderboard
-                  </CtaButton>
-                )}
-              </div>
+          <div className={styles.statsRow}>
+            <div className={styles.statItem}>
+              <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+              <span>{formatCredits(creditsEarned)} credits</span>
             </div>
+            <div className={styles.statItem}>
+              <span>{guidesDone ?? 0} guides completed</span>
+            </div>
+          </div>
+
+          {memoryNote && (
+            <div className={styles.desc} style={{ margin: 0 }}>
+              <NotePencil size={13} weight="fill" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+              {memoryNote}
+            </div>
+          )}
+
+          <div className={styles.cardFooter}>
+            <div className={styles.footerLeft}>
+              <span className={styles.metadataKicker}>
+                {authenticated ? 'Tap name or avatar to edit' : 'Sign in to save progress'}
+              </span>
+            </div>
+
+            {authenticated ? (
+              <CtaButton
+                variant="ghost"
+                size="sm"
+                className={styles.ctaBtn}
+                onClick={() => setEditingAvatar(true)}
+              >
+                Edit profile
+              </CtaButton>
+            ) : (
+              <CtaButton
+                variant="ghost"
+                size="sm"
+                className={styles.ctaBtn}
+                onClick={() => login()}
+              >
+                Sign in
+              </CtaButton>
+            )}
           </div>
         </div>
-      </div>
-
-      {/* Pagination dots below the card */}
-      <div className={styles.dots} role="tablist" aria-label="Card pagination">
-        {Array.from({ length: TOTAL_SLIDES }, (_, idx) => (
-          <button
-            key={idx}
-            type="button"
-            role="tab"
-            aria-selected={currentSlide === idx}
-            className={`${styles.dot} ${currentSlide === idx ? styles.dotActive : ''}`}
-            onClick={() => {
-              play('soft-hover');
-              setCurrentSlide(idx);
-            }}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
       </div>
 
       {/* Modals for avatar & username editing */}

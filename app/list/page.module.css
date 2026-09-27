@@ -1,105 +1,68 @@
-.page {
+/* Lists page — styled like /dao with normal daily scene backdrop */
+
+.pageLayout {
   position: relative;
-  height: calc(100vh - 72px - var(--banner-height, 0px));
-  height: calc(100svh - 72px - var(--banner-height, 0px));
-  box-sizing: border-box;
-  overflow: hidden;
+  margin-left: var(--sidebar-width, 265px);
+  min-height: calc(100vh - 72px - var(--banner-height, 0px));
+  min-height: calc(100dvh - 72px - var(--banner-height, 0px));
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  background-color: var(--color-scene-bg);
+  color: var(--color-text-dark);
 }
 
-/* ── Background — the landing hero, fixed behind everything ──────────────── */
-.background {
+.scene {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
   z-index: 0;
-  background-color: #000000;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 0.5px, transparent 0.5px);
-  background-size: 40px 40px;
   pointer-events: none;
-  user-select: none;
-  overflow: hidden;
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    var(--quests-scene, none) center / cover no-repeat,
+    var(--color-scene-bg);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
-/* ── Content layout — Blue behind, Lists in front ────────────────────────── */
-.layout {
+.content {
   position: relative;
   z-index: 1;
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   width: 100%;
-  height: calc(100vh - 72px);
-  height: calc(100svh - 72px);
-  padding: 0 128px;
-  box-sizing: border-box;
-  overflow: hidden;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Blue character behind the lists — same image as landing hero */
-.blueCharacter {
-  position: absolute;
-  z-index: 0;
-  bottom: 0;
-  left: 5%;
-  width: clamp(200px, 28vw, 400px);
-  height: auto;
-  object-fit: contain;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Lists in front of Blue */
-.listsWrapper {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  min-width: 0;
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 24px 72px;
   display: flex;
-  height: min(700px, calc(100vh - 160px));
-}
-
-.listsWrapper > :global(*) {
+  flex-direction: column;
   flex: 1;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .blueCharacter {
-    animation: none;
+/* Mobile responsive layout */
+@media (max-width: 900px) {
+  .scene {
+    left: 0;
+  }
+
+  .pageLayout {
+    margin-left: 0;
+  }
+
+  .container {
+    padding: 16px 14px calc(90px + env(safe-area-inset-bottom, 0px));
   }
 }
-
-/* ── Responsive — stack on mobile ───────────────────────────────────────── */
-@media (max-width: 960px) {
-  .layout {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  .blueCharacter {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .page {
-    height: auto;
-    min-height: calc(100vh - 72px - var(--banner-height, 0px));
-    min-height: calc(100dvh - 72px - var(--banner-height, 0px));
-    overflow-y: auto;
-  }
-
-  .layout {
-    height: auto;
-    min-height: calc(100vh - 72px);
-    min-height: calc(100dvh - 72px);
-    padding: 16px 12px calc(90px + env(safe-area-inset-bottom, 0px));
-    overflow: visible;
-  }
-
-  .listsWrapper {
-    height: auto;
-    width: 100%;
-  }
-}
-

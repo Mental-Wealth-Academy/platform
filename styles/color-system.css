@@ -59,6 +59,16 @@
   --shadow-scene-card: 0 6px 0 var(--color-primary), 0 0px 10px rgba(0, 0, 0, 0.14), 0 10px 5px rgba(0, 0, 0, 0.30);
   --shadow-hero-indigo: 0 4px 14px rgba(30, 27, 75, 0.45);
 
+  /* Hero Journey CTA tokens */
+  --color-hero-cta-bg: var(--color-primary);
+  --color-hero-cta-border: rgba(255, 255, 255, 0.4);
+  --color-hero-cta-shadow: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  --color-hero-cta-shadow-hover: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  --color-hero-cta-inner-border: rgba(255, 255, 255, 0.4);
+  --color-hero-cta-inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --color-hero-cta-text: #ffffff;
+  --shadow-hero-cta-hover: 0 0 44px var(--color-hero-cta-shadow-hover), 0 4px 16px rgba(81, 104, 255, 0.25);
+
   /* PWA installation tokens */
   --color-pwa-btn-bg: #E7E1F7;
   --color-pwa-btn-border: rgba(61, 43, 168, 0.3);

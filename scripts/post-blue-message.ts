@@ -3,7 +3,7 @@ import { ensureChatSchema } from '@/lib/ensureChatSchema';
 
 const BLUE_USER_ID = 'blue-system';
 const BLUE_USERNAME = 'Blue';
-const BLUE_AVATAR = '/blue/blue-home.png';
+const BLUE_AVATAR = '/blue/blue-avatar.png';
 
 async function getOrCreateBlueUser() {
   await ensureChatSchema();

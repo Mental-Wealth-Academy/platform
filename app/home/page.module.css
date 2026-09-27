@@ -200,6 +200,13 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
   align-content: start;
+  margin-bottom: 24px;
+}
+
+.main:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .folderRow {
@@ -218,7 +225,7 @@
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 24px;
   margin-top: 14px;
   margin-bottom: 24px;
 }
@@ -233,6 +240,7 @@
   display: flex;
   flex: 1 1 320px;
   max-width: 440px;
+  width: 100%;
 }
 
 /* Left-to-right reveal on load, matching app/home/loading.module.css so the
@@ -471,17 +479,34 @@
 
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px;
+    padding: 12px 10px calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
   .folderRow {
     grid-template-columns: 1fr;
   }
 
+  .folderSection {
+    margin-bottom: 16px;
+  }
+
+  .main {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .dashboardInsights {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 0;
+  }
+
   .dashboardHeader {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
+    margin-top: 10px;
+    margin-bottom: 16px;
   }
 
   .topCardWrapper {
@@ -490,7 +515,10 @@
   }
 
   .desktopLeaderboard {
-    display: none;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .indicators {
@@ -848,8 +876,8 @@
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 8px;
+  gap: 24px;
+  margin-top: 0;
 }
 
 .insightCard {
@@ -2104,10 +2132,6 @@
   .aside {
     display: none;
   }
-
-  .main {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-  }
 }
 
 @media (max-width: 640px) {
@@ -2121,8 +2145,8 @@
 
   .dashboardInsights {
     grid-template-columns: 1fr;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 16px;
+    margin-top: 0;
   }
 
   .insightCard {
@@ -2140,7 +2164,7 @@
 /* ── Mobile: Knowledge Base ── */
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px 48px;
+    padding: 12px 10px calc(96px + env(safe-area-inset-bottom, 0px));
   }
 
   .learnLayout .globalPanel,
@@ -2342,10 +2366,6 @@
 }
 
 @media (max-width: 480px) {
-  .main {
-    padding: 16px 14px calc(96px + env(safe-area-inset-bottom, 0px));
-  }
-
   .thumb {
     height: 160px;
   }

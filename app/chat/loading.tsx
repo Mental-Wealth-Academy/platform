@@ -11,7 +11,7 @@ export default function ChatLoading() {
           <div className={blueStyles.compactTopBar}>
             <div className={blueStyles.compactTopBarBrand}>
               <Image
-                src="/blue/blue-home.png"
+                src="/blue/blue-avatar.png"
                 alt=""
                 width={40}
                 height={40}

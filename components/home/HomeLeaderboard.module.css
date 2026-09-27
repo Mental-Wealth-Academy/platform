@@ -316,3 +316,10 @@
     0 10px 24px rgba(0, 0, 0, 0.4);
 }
 
+@media (max-width: 600px) {
+  .card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+

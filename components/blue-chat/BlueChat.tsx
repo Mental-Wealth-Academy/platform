@@ -84,6 +84,9 @@ function readPendingPaidTurn(
       burnTxHash: parsed.burnTxHash,
       payloadHash: parsed.payloadHash.toLowerCase(),
       text: parsed.text,
+      attachments: Array.isArray(parsed.attachments)
+        ? parsed.attachments as Array<{ name: string; mime: string; extractedText: string }>
+        : undefined,
       pathname: typeof parsed.pathname === 'string' ? parsed.pathname : null,
       createdAt: parsed.createdAt,
     };
@@ -118,12 +121,17 @@ function normalizeBluePathname(value: string | null): string | null {
 async function buildBluePayloadHash(
   message: string,
   pathname: string | null,
+  attachments: Array<{ name?: string; mime?: string; extractedText?: string | null }> = [],
 ): Promise<string> {
   const canonicalPayload = JSON.stringify({
     message,
     mode: 'chat',
     pathname: normalizeBluePathname(pathname),
-    attachments: [],
+    attachments: attachments.map((attachment) => ({
+      name: attachment.name ?? 'upload',
+      mime: attachment.mime ?? 'text/plain',
+      extractedText: attachment.extractedText ?? '',
+    })),
   });
   const digest = await crypto.subtle.digest(
     'SHA-256',
@@ -224,17 +232,28 @@ interface PendingPaidTurn {
   burnTxHash: string;
   payloadHash: string;
   text: string;
+  attachments?: Array<{ name: string; mime: string; extractedText: string }>;
   pathname: string | null;
   createdAt: number;
 }
 
-/** Blue's replies can still carry attachments; the chat no longer sends them. */
 interface UploadedAttachment {
   id: string;
   mime: string;
   size: number;
   name: string;
+  url?: string;
   extractedText?: string | null;
+}
+
+interface StagedAttachment {
+  id: string;
+  file: File;
+  name: string;
+  size: number;
+  mime: string;
+  previewUrl?: string;
+  extractedText?: string;
 }
 
 export interface BlueChatMood {
@@ -582,6 +601,136 @@ const BlueChat: React.FC<BlueChatProps> = ({
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [stagedAttachments, setStagedAttachments] = useState<StagedAttachment[]>([]);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      stagedAttachments.forEach((att) => {
+        if (att.previewUrl && att.previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(att.previewUrl);
+        }
+      });
+    };
+  }, [stagedAttachments]);
+
+  const handleAttachClick = () => {
+    if (isTyping) return;
+    setAttachmentError(null);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    if (files.length === 0) return;
+
+    setAttachmentError(null);
+    const availableSlots = 2 - stagedAttachments.length;
+    if (availableSlots <= 0) {
+      setAttachmentError('Maximum of 2 attachments allowed.');
+      return;
+    }
+
+    if (files.length > availableSlots) {
+      setAttachmentError(`Only ${availableSlots} more attachment${availableSlots > 1 ? 's' : ''} can be added.`);
+    }
+
+    const filesToProcess = files.slice(0, availableSlots);
+    const newAttachments: StagedAttachment[] = [];
+
+    for (const file of filesToProcess) {
+      if (file.size > 10 * 1024 * 1024) {
+        setAttachmentError(`"${file.name}" exceeds the 10MB limit.`);
+        continue;
+      }
+
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      let previewUrl: string | undefined;
+      let extractedText: string = '';
+
+      if (file.type.startsWith('image/')) {
+        previewUrl = URL.createObjectURL(file);
+        extractedText = `[Image attachment: ${file.name} (${(file.size / 1024).toFixed(1)} KB)]`;
+
+        if (ready && authenticated) {
+          try {
+            const token = await getAccessToken();
+            const form = new FormData();
+            form.append('file', file);
+            void fetch('/api/upload', {
+              method: 'POST',
+              credentials: 'include',
+              headers: token ? { Authorization: `Bearer ${token}` } : {},
+              body: form,
+            })
+              .then((res) => (res.ok ? res.json() : null))
+              .then((data) => {
+                if (data?.url) {
+                  setStagedAttachments((prev) =>
+                    prev.map((att) =>
+                      att.id === id
+                        ? {
+                            ...att,
+                            previewUrl: data.url,
+                            extractedText: `[Image attachment: ${file.name} (${data.url})]`,
+                          }
+                        : att,
+                    ),
+                  );
+                }
+              })
+              .catch(() => undefined);
+          } catch {
+            // Non-fatal
+          }
+        }
+      } else if (
+        file.type.startsWith('text/') ||
+        file.name.endsWith('.txt') ||
+        file.name.endsWith('.md') ||
+        file.name.endsWith('.json') ||
+        file.name.endsWith('.csv')
+      ) {
+        try {
+          const rawText = await file.text();
+          extractedText = rawText.slice(0, 6000);
+        } catch {
+          extractedText = `[Text document: ${file.name} (${(file.size / 1024).toFixed(1)} KB)]`;
+        }
+      } else {
+        extractedText = `[File attachment: ${file.name} (${(file.size / 1024).toFixed(1)} KB, ${file.type || 'document'})]`;
+      }
+
+      newAttachments.push({
+        id,
+        file,
+        name: file.name,
+        size: file.size,
+        mime: file.type || 'application/octet-stream',
+        previewUrl,
+        extractedText,
+      });
+    }
+
+    if (newAttachments.length > 0) {
+      play('click');
+      setStagedAttachments((prev) => [...prev, ...newAttachments]);
+    }
+  };
+
+  const removeStagedAttachment = (id: string) => {
+    play('click');
+    setStagedAttachments((prev) => {
+      const removed = prev.find((a) => a.id === id);
+      if (removed?.previewUrl && removed.previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(removed.previewUrl);
+      }
+      return prev.filter((a) => a.id !== id);
+    });
+    setAttachmentError(null);
+  };
 
   // Fetch the credit balance from the existing endpoint.
   const fetchShardCount = useCallback(async () => {
@@ -925,7 +1074,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
     window.dispatchEvent(new Event('openPurchaseModal'));
   }, [play]);
 
-  const sendToEliza = async (text: string) => {
+  const sendToEliza = async (text: string, attachments?: UploadedAttachment[]) => {
     if (!ready || !authenticated) {
       addBlueMessage('Sign in first so I can access your account and respond here.');
       return;
@@ -938,6 +1087,12 @@ const BlueChat: React.FC<BlueChatProps> = ({
     setShardUpsell(null);
     const accountId = viewerProfile.id;
     const walletAddress = address?.toLowerCase();
+
+    const sanitizedAttachments = (attachments || []).slice(0, 2).map((a) => ({
+      name: (a.name || 'upload').replace(/[\r\n<>"]/g, '').slice(0, 120),
+      mime: (a.mime || 'text/plain').slice(0, 80),
+      extractedText: (a.extractedText || '').trim().slice(0, 6000),
+    })).filter((a) => a.extractedText.length > 0);
 
     const postBlue = async (payload: {
       clientRequestId: string;
@@ -956,6 +1111,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
         payloadHash: payload.payloadHash,
         burnTxHash: payload.burnTxHash,
         isCall: payload.isCall ?? true,
+        attachments: sanitizedAttachments.length > 0 ? sanitizedAttachments : undefined,
       }),
     });
 
@@ -1087,7 +1243,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
     const clientRequestId = pending?.clientRequestId ?? crypto.randomUUID();
     const pathname = pending?.pathname ?? normalizeBluePathname(currentPathname);
     const payloadHash = pending?.payloadHash
-      ?? await buildBluePayloadHash(text, pathname);
+      ?? await buildBluePayloadHash(text, pathname, sanitizedAttachments);
     setIsTyping(true);
 
     try {
@@ -1141,6 +1297,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
           burnTxHash,
           payloadHash,
           text,
+          attachments: sanitizedAttachments.length > 0 ? sanitizedAttachments : undefined,
           pathname,
           createdAt: Date.now(),
         };
@@ -1252,12 +1409,34 @@ const BlueChat: React.FC<BlueChatProps> = ({
     addBlueMessage('Cleared. That reply is gone, and those credits stay spent. Ask me anything.');
   };
 
-  const submitUserMessage = (text: string) => {
+  const submitUserMessage = (
+    text: string,
+    attachmentsToSend?: Array<{
+      id?: string;
+      name: string;
+      mime: string;
+      size?: number;
+      url?: string;
+      extractedText?: string | null;
+    }>,
+  ) => {
+    const formattedAttachments: UploadedAttachment[] | undefined = attachmentsToSend && attachmentsToSend.length > 0
+      ? attachmentsToSend.map((a, idx) => ({
+          id: a.id || `att-${Date.now()}-${idx}`,
+          name: a.name,
+          mime: a.mime,
+          size: a.size || 0,
+          url: a.url,
+          extractedText: a.extractedText,
+        }))
+      : undefined;
+
     setMessages((prev) => [...prev, {
       id: Date.now().toString(),
       text,
       sender: 'user' as const,
       timestamp: new Date(),
+      attachments: formattedAttachments,
     }]);
 
     // Awaiting confirmation on a course delete — "yes" commits, anything else keeps it.
@@ -1295,17 +1474,20 @@ const BlueChat: React.FC<BlueChatProps> = ({
       return;
     }
 
-    sendToEliza(text);
+    sendToEliza(text, formattedAttachments);
   };
 
   const handleSend = async () => {
     if (isTyping) return;
-    if (!inputText.trim()) return;
+    if (!inputText.trim() && stagedAttachments.length === 0) return;
     setShardUpsell(null);
 
-    const text = inputText.trim();
+    const attachmentsToSend = [...stagedAttachments];
+    const text = inputText.trim() || `Attached: ${attachmentsToSend.map((a) => a.name).join(', ')}`;
     setInputText('');
-    submitUserMessage(text);
+    setStagedAttachments([]);
+    setAttachmentError(null);
+    submitUserMessage(text, attachmentsToSend);
   };
 
   // ── Custom course deletion ─────────────────────────────────
@@ -1580,6 +1762,18 @@ const BlueChat: React.FC<BlueChatProps> = ({
               isBlue ? styles.blueMessage : styles.userMessage
             }`}
           >
+            {isBlue && (
+              <div className={styles.messageAvatarCircle} aria-hidden="true">
+                <Image
+                  src="/blue/blue-avatar.png"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className={styles.messageAvatarImg}
+                  unoptimized
+                />
+              </div>
+            )}
             <div className={styles.messageBody}>
               <div
                 className={`${styles.messageContentWrap} ${
@@ -1603,9 +1797,17 @@ const BlueChat: React.FC<BlueChatProps> = ({
                 <div className={styles.messageAttachments}>
                   {message.attachments.map((attachment) => (
                     <div key={attachment.id} className={styles.messageAttachmentChip}>
-                      <span className={styles.messageAttachmentIcon} aria-hidden="true">
-                        {fileTypeLabel(attachment.mime)}
-                      </span>
+                      {attachment.url && attachment.mime.startsWith('image/') ? (
+                        <img
+                          src={attachment.url}
+                          alt={attachment.name}
+                          className={styles.messageAttachmentThumb}
+                        />
+                      ) : (
+                        <span className={styles.messageAttachmentIcon} aria-hidden="true">
+                          {fileTypeLabel(attachment.mime)}
+                        </span>
+                      )}
                       <span className={styles.messageAttachmentName}>{attachment.name}</span>
                     </div>
                   ))}
@@ -1631,6 +1833,16 @@ const BlueChat: React.FC<BlueChatProps> = ({
 
         {isTyping && (
           <div className={`${styles.messageBubble} ${styles.blueMessage} ${styles.typingIndicator}`}>
+            <div className={styles.messageAvatarCircle} aria-hidden="true">
+              <Image
+                src="/blue/blue-avatar.png"
+                alt=""
+                width={28}
+                height={28}
+                className={styles.messageAvatarImg}
+                unoptimized
+              />
+            </div>
             <div className={styles.messageBody}>
               <div className={styles.messageContent}>
                 <div className={styles.typingDots}>
@@ -1762,6 +1974,59 @@ const BlueChat: React.FC<BlueChatProps> = ({
 
       {/* Chat Input */}
       <div className={styles.inputArea}>
+        {attachmentError && (
+          <div className={styles.attachmentError} role="alert">
+            {attachmentError}
+          </div>
+        )}
+        {stagedAttachments.length > 0 && (
+          <div className={styles.stagedAttachments}>
+            {stagedAttachments.map((att) => (
+              <div key={att.id} className={styles.stagedAttachmentChip}>
+                {att.previewUrl && att.mime.startsWith('image/') ? (
+                  <img src={att.previewUrl} alt={att.name} className={styles.stagedAttachmentThumb} />
+                ) : (
+                  <span className={styles.stagedAttachmentIcon}>{fileTypeLabel(att.mime)}</span>
+                )}
+                <span className={styles.stagedAttachmentName} title={att.name}>{att.name}</span>
+                <button
+                  type="button"
+                  className={styles.stagedAttachmentRemove}
+                  onClick={() => removeStagedAttachment(att.id)}
+                  aria-label={`Remove ${att.name}`}
+                  title="Remove attachment"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept="image/*,.pdf,.txt,.md,.csv,.json"
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+          tabIndex={-1}
+        />
+        <button
+          type="button"
+          className={styles.attachButton}
+          onClick={handleAttachClick}
+          disabled={isTyping || stagedAttachments.length >= 2}
+          aria-label="Add images and attachments"
+          title={stagedAttachments.length >= 2 ? 'Maximum 2 attachments' : 'Add image or attachment'}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
         <input
           ref={inputRef}
           type="text"
@@ -1788,7 +2053,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
         <button
           className={styles.sendButton}
           onClick={handleSend}
-          disabled={!inputText.trim() || isTyping}
+          disabled={(!inputText.trim() && stagedAttachments.length === 0) || isTyping}
           type="button"
           aria-label="Send message"
         >
@@ -2073,7 +2338,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
       <div className={`${styles.chatContainer} ${fullPage ? styles.chatContainerFullPage : ''}`}>
         <div className={styles.compactTopBar}>
           <div className={styles.compactTopBarBrand}>
-            <Image src="/blue/blue-home.png" alt="" width={40} height={40} className={styles.compactTopBarFace} unoptimized />
+            <Image src="/blue/blue-avatar.png" alt="" width={40} height={40} className={styles.compactTopBarFace} unoptimized />
             <span className={styles.compactTopBarName}>Blue</span>
           </div>
           <div className={styles.compactControls}>

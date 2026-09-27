@@ -4,7 +4,7 @@ import { runAiText } from '@/lib/ai';
 
 export const BLUE_USER_ID = 'blue-agent';
 export const BLUE_USERNAME = 'Blue';
-export const BLUE_AVATAR_URL = '/prompts/CharacterBlue.png';
+export const BLUE_AVATAR_URL = '/blue/blue-avatar.png';
 export const BLUE_SURVEY_BADGE = JSON.stringify({
   surveyId: 'agent',
   surveyTitle: 'Resident AI',

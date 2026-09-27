@@ -59,7 +59,7 @@ describe('Blue link reviewer profile invariants', () => {
   it('uses Blue profile details as a regular user', () => {
     expect(BLUE_USER_ID).toBe('blue-agent');
     expect(BLUE_USERNAME).toBe('Blue');
-    expect(BLUE_AVATAR_URL).toBe('/prompts/CharacterBlue.png');
+    expect(BLUE_AVATAR_URL).toBe('/blue/blue-avatar.png');
   });
 
   it('generates fallback review when AI is not invoked, respecting house rules', async () => {

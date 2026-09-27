@@ -25,12 +25,6 @@ const PANELS: PanelSpec[] = [
     posClass: 'posResearcher',
   },
   {
-    id: 'helix',
-    title: 'helix.drift',
-    media: { kind: 'video', src: '/images/hero-desk/helix-drift.mp4' },
-    posClass: 'posHelix',
-  },
-  {
     id: 'greenroom',
     title: 'green.room',
     media: { kind: 'video', src: '/images/hero-desk/green-room.mp4' },
