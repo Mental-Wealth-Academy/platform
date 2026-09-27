@@ -236,6 +236,11 @@
   width: 100%;
 }
 
+.askBlueBtn {
+  margin-top: 12px;
+  width: 100%;
+}
+
 .desktopLeaderboard {
   display: flex;
   flex: 1 1 320px;
@@ -515,10 +520,7 @@
   }
 
   .desktopLeaderboard {
-    display: flex;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
+    display: none;
   }
 
   .indicators {

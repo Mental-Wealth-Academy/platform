@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './SurveyAnalysisProgress.module.css';
 
 interface SurveyAnalysisProgressProps {
   onComplete?: () => void;
   minDurationMs?: number;
+  variant?: 'modal' | 'inline';
 }
 
 const ANALYSIS_STAGES = [
@@ -18,9 +20,16 @@ const ANALYSIS_STAGES = [
 export default function SurveyAnalysisProgress({
   onComplete,
   minDurationMs = 2800,
+  variant = 'modal',
 }: SurveyAnalysisProgressProps) {
   const [stageIndex, setStageIndex] = useState(0);
   const [progress, setProgress] = useState(12);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -45,7 +54,7 @@ export default function SurveyAnalysisProgress({
     return () => clearInterval(interval);
   }, [minDurationMs, onComplete]);
 
-  return (
+  const content = (
     <div className={styles.container} role="status" aria-live="polite">
       {/* Title */}
       <h2 className={styles.heading}>Your archetype analysis is in progress</h2>
@@ -158,5 +167,16 @@ export default function SurveyAnalysisProgress({
         Blue is decoding your psychological baseline and synthesizing your archetype report.
       </p>
     </div>
+  );
+
+  if (variant === 'inline' || !mounted) {
+    return content;
+  }
+
+  return createPortal(
+    <div className={styles.modalOverlay}>
+      {content}
+    </div>,
+    document.body,
   );
 }

@@ -88,25 +88,6 @@ export interface BlueDialogueProps {
   clearBackdrop?: boolean;
 }
 
-/**
- * Session-scoped history of every line spoken. Module-level so it survives
- * remounts within a single browser session (spec requirement). Chatback
- * replies land here as "You" entries.
- */
-interface HistoryEntry {
-  speaker: 'Blue' | 'You';
-  text: string;
-}
-const dialogueHistory: HistoryEntry[] = [];
-
-function pushHistory(text: string, speaker: HistoryEntry['speaker'] = 'Blue') {
-  const trimmed = text.trim();
-  if (!trimmed) return;
-  const last = dialogueHistory[dialogueHistory.length - 1];
-  if (last && last.text === trimmed && last.speaker === speaker) return; // de-dupe consecutive repeats
-  dialogueHistory.push({ speaker, text: trimmed });
-}
-
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined' || !window.matchMedia) return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -159,7 +140,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const arrowRef = useRef<HTMLButtonElement | null>(null);
   const chatbackInputRef = useRef<HTMLInputElement | null>(null);
-  const historyCloseRef = useRef<HTMLButtonElement | null>(null);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -171,7 +151,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [lineIndex, setLineIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
   const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
   const [reply, setReply] = useState('');
@@ -276,7 +255,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   useEffect(() => {
     if (!open) return;
     setLineIndex(0);
-    setHistoryOpen(false);
     setReply('');
   }, [open, safeLines]);
 
@@ -295,7 +273,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     if (prefersReducedMotion() || speed <= 0) {
       setDisplayed(activeLine);
       setIsTyping(false);
-      pushHistory(activeLine);
       return;
     }
 
@@ -309,7 +286,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         typeTimer.current = setTimeout(step, speed);
       } else {
         setIsTyping(false);
-        pushHistory(activeLine);
       }
     };
     typeTimer.current = setTimeout(step, 90);
@@ -321,7 +297,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     clearTyping();
     setDisplayed(activeLine);
     setIsTyping(false);
-    pushHistory(activeLine);
   }, [activeLine, clearTyping]);
 
   const close = useCallback(() => {
@@ -344,14 +319,13 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, [play, isTyping, finishTyping, safeIndex, safeLines.length, close]);
 
-  // Chatback: log the member's reply to history, hand it to the parent, and
+  // Chatback: log the member's reply, hand it to the parent, and
   // advance the script (the last line closes, matching the arrow).
   const sendReply = useCallback(() => {
     const trimmed = reply.trim();
     if (!trimmed) return;
     play('click');
     if (isTyping) finishTyping();
-    pushHistory(trimmed, 'You');
     chatback?.onSubmit?.(trimmed, safeIndex);
     setReply('');
     if (safeIndex < safeLines.length - 1) {
@@ -390,45 +364,18 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, [play, isTyping, finishTyping, close]);
 
-  const handleHistory = useCallback(() => {
-    play('click');
-    setHistoryOpen((v) => !v);
-  }, [play]);
-
-  const closeHistory = useCallback(() => {
-    play('click');
-    setHistoryOpen(false);
-    window.setTimeout(() => arrowRef.current?.focus(), 0);
-  }, [play]);
-
-  useEffect(() => {
-    if (!historyOpen) return;
-    historyCloseRef.current?.focus();
-  }, [historyOpen]);
-
-  const handleStubClose = useCallback(() => {
-    // Load is a stub for now.
-    play('click');
-    onClose();
-  }, [play, onClose]);
-
-  // ESC closes. The dialogue is no longer a modal (the page behind stays
-  // interactive), so Tab is left free to move focus in and out of the panel.
+  // ESC closes.
   useEffect(() => {
     if (!open || !portraitReady) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        if (historyOpen) {
-          closeHistory();
-          return;
-        }
         close();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, portraitReady, close, historyOpen, closeHistory]);
+  }, [open, portraitReady, close]);
 
   // Focus management: capture, focus the reply field (or the arrow) on open,
   // restore on close.
@@ -466,9 +413,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const expressionPosition = EXPRESSION_POSITION[activeEmotion];
 
   const menuItems: { label: string; onClick: () => void }[] = [
-    { label: 'History', onClick: handleHistory },
     { label: 'Skip', onClick: handleSkip },
-    { label: 'Load', onClick: handleStubClose }, // TODO: real load-state
   ];
 
   return (
@@ -570,33 +515,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
             </p>
           </div>
 
-          {historyOpen && (
-            <div className={styles.historyPanel}>
-              <div className={styles.historyHeadRow}>
-                <div className={styles.historyHead}>History</div>
-                <button
-                  ref={historyCloseRef}
-                  type="button"
-                  className={styles.historyClose}
-                  onClick={closeHistory}
-                  onMouseEnter={hover}
-                >
-                  Close
-                </button>
-              </div>
-              <ul className={styles.historyList}>
-                {dialogueHistory.length === 0 && (
-                  <li className={styles.historyEmpty}>No lines yet this session.</li>
-                )}
-                {dialogueHistory.map((entry, idx) => (
-                  <li key={idx} className={styles.historyItem}>
-                    <span className={styles.historySpeaker}>{entry.speaker}</span>
-                    <span className={styles.historyLine}>{entry.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
           {chatback && (
             <form className={styles.chatback} onSubmit={handleChatbackSubmit}>

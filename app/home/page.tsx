@@ -9,7 +9,10 @@ import { useDevOnboarding } from '@/components/useDevMode';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
-import HomeActionCards from '@/components/home/HomeActionCards';
+import CourseFolderCard from '@/components/home/CourseFolderCard';
+import type { FolderMotif } from '@/components/home/folderMotifs';
+import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
+import FolderCardWrapper from '@/components/home/FolderCardWrapper';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import HomeTopCard from '@/components/home/HomeTopCard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -117,6 +120,69 @@ function dialogueIndexForDate(dateKey: string): number {
   return hash % DAILY_COURSES_DIALOGUES.length;
 }
 
+/**
+ * Placeholder folders for the tabs that have no content behind them yet. They
+ * carry no link, so they render as inert folders — each with its own dotted
+ * motif so the row still reads as a shelf rather than a repeat.
+ */
+interface PlaceholderFolder {
+  title: string;
+  centerLabel: string;
+  motif: FolderMotif;
+  dark?: boolean;
+  ctaDark?: boolean;
+}
+
+const PLACEHOLDER_LECTURES: PlaceholderFolder[] = [
+  { title: 'Recorded lectures', centerLabel: 'Recorded Lectures', motif: 'waveform', dark: true },
+  { title: 'Lecture theatre', centerLabel: 'Lecture Theatre', motif: 'beam', ctaDark: true },
+  { title: 'Guest seminars', centerLabel: 'Guest Seminars', motif: 'spiral', dark: true },
+];
+
+const PLACEHOLDER_WORKSHOPS: PlaceholderFolder[] = [
+  { title: 'Practice bench', centerLabel: 'Practice Bench', motif: 'lattice', dark: true },
+  { title: 'Peer circles', centerLabel: 'Peer Circles', motif: 'bloom', ctaDark: true },
+  { title: 'Build week', centerLabel: 'Build Week', motif: 'bars', dark: true },
+];
+
+const ASK_BLUE_DIALOGUES: CourseDialogue[] = [
+  {
+    emotion: 'happy',
+    lines: [
+      'Hey! What would you like to investigate today?',
+      'Ask me anything about your courses, guides, field notes, or credits.',
+    ],
+  },
+  {
+    emotion: 'neutral',
+    lines: [
+      'I keep the Academy learning records and guide paths.',
+      'Tell me what topic you want to master next, or ask me for advice on your studies.',
+    ],
+  },
+  {
+    emotion: 'calm',
+    lines: [
+      'Taking a pause to reflect is where real insights happen.',
+      'What question has been on your mind today?',
+    ],
+  },
+  {
+    emotion: 'confused',
+    lines: [
+      'Curiosity is how we build new paths through the guide map.',
+      'Have you run into a concept that feels contradictory or unclear? Let’s examine it.',
+    ],
+  },
+  {
+    emotion: 'surprised',
+    lines: [
+      'Every honest question leaves a quiet footprint in your field notes.',
+      'What are you looking to uncover?',
+    ],
+  },
+];
+
 export default function HomePage() {
   const learnOnly = usePathname() === '/learn';
   const { ready, authenticated, getAccessToken, login } = usePrivy();
@@ -163,6 +229,8 @@ export default function HomePage() {
     });
   }, []);
   const [introOpen, setIntroOpen] = useState(false);
+  const [askBlueOpen, setAskBlueOpen] = useState(false);
+  const [askBlueIndex, setAskBlueIndex] = useState(0);
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
   );
@@ -525,6 +593,19 @@ export default function HomePage() {
       <section className={styles.dashboardHeader}>
         <div data-tour="home-profile" className={styles.topCardWrapper}>
           <HomeTopCard />
+          <CtaButton
+            variant="primary"
+            block
+            size="md"
+            className={styles.askBlueBtn}
+            onClick={() => {
+              play('click');
+              setAskBlueIndex((i) => (i + 1) % ASK_BLUE_DIALOGUES.length);
+              setAskBlueOpen(true);
+            }}
+          >
+            Ask Blue
+          </CtaButton>
         </div>
         <div className={styles.desktopLeaderboard}>
           <HomeLeaderboard />
@@ -545,12 +626,55 @@ export default function HomePage() {
       </section>
       )}
       {!learnOnly && (
-        <div data-tour="home-courses">
-          <HomeActionCards
-            personalCourse={personalCourse}
-            bookmarkedCount={bookmarkedCount}
-            hasAngel={hasAngel}
-          />
+        <div className={styles.folderSection} data-tour="home-courses">
+        <FolderCardWrapper
+          tabs={[
+            {
+              label: 'My Courses',
+              content: (
+                <section className={styles.folderRow} aria-label="Course folders">
+                  <CourseFolderCard
+                    title="Blue's Quest"
+                    href="/shadow-work"
+                    avatarSrc="/blue/blue-home.png"
+                    centerLabel="Blue's Story"
+                    ctaLabel="Continue Course"
+                    dark
+                  />
+                  <CourseFolderCard
+                    title="Your Course"
+                    href="/course/personal"
+                    avatarSrc="/academic-angels.webp"
+                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
+                    ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
+                    ctaDark
+                  />
+                  <EmptyCourseStudioFolder hasAngel={hasAngel} />
+                </section>
+              ),
+            },
+            {
+              label: 'Lectures',
+              content: (
+                <section className={styles.folderRow} aria-label="Lecture folders">
+                  {PLACEHOLDER_LECTURES.map((folder) => (
+                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
+                  ))}
+                </section>
+              ),
+            },
+            {
+              label: 'Workshops',
+              content: (
+                <section className={styles.folderRow} aria-label="Workshop folders">
+                  {PLACEHOLDER_WORKSHOPS.map((folder) => (
+                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
+                  ))}
+                </section>
+              ),
+            },
+          ]}
+        />
         </div>
       )}
       {!learnOnly && academyCourses.length > 0 && (
@@ -772,6 +896,19 @@ export default function HomePage() {
       {!learnOnly && fieldNotesOpen && <FieldNotesSheet onClose={() => setFieldNotesOpen(false)} />}
 
       {!learnOnly && postSignupReady && <FeatureTour suppressed={weeklyOpen || introOpen} />}
+
+      {!learnOnly && askBlueOpen && (
+        <BlueDialogue
+          open={askBlueOpen}
+          placement="center"
+          title="Ask Blue"
+          subtitle="Academy records and guidance"
+          lines={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].lines}
+          emotion={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].emotion}
+          chatback={{ placeholder: 'Ask Blue anything...' }}
+          onClose={() => setAskBlueOpen(false)}
+        />
+      )}
 
       {!learnOnly && (weeklyScript ? (
         <BlueDialogue

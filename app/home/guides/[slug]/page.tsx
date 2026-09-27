@@ -9,11 +9,15 @@ import {
   BookmarkSimple,
   BookOpenText,
   CheckCircle,
+  ClipboardText,
   Clock,
   GitBranch,
+  IdentificationCard,
   LockKey,
+  LockOpen,
   PencilSimple,
   RocketLaunch,
+  Sparkle,
   Target,
   TreeStructure,
 } from '@phosphor-icons/react';
@@ -21,6 +25,7 @@ import { ThinkingOrb } from 'thinking-orbs';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { isBookmarked, toggleBookmark, onBookmarksUpdated } from '@/lib/bookmarks';
+import { simplifyWellnessCriterion } from '@/lib/guide-criteria';
 import CtaButton from '@/components/shared/CtaButton';
 import DiamondReward from '@/components/rewards/DiamondReward';
 import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';

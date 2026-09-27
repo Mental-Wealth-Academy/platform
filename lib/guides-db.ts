@@ -1,5 +1,6 @@
 import { sqlQuery, sqlQueryWithClient, withTransaction } from './db';
 import { ensureGuidesSchema } from './ensureGuidesSchema';
+import { simplifyWellnessCriterion } from './guide-criteria';
 import {
   cleanDiscoveryTags,
   isEducationLevel,
@@ -197,7 +198,8 @@ function parseBody(raw: unknown): GuideBodyComponent[] {
 
 /**
  * Coerce the nullable guides.evidence_criteria JSONB into a clean string[]: keep
- * only non-empty trimmed strings. Tolerates a JSON string or a parsed array.
+ * only non-empty trimmed strings, formatted as direct wellness instructions.
+ * Tolerates a JSON string or a parsed array.
  */
 function parseEvidenceCriteria(raw: unknown): string[] {
   if (!raw) return [];
@@ -211,19 +213,19 @@ function parseEvidenceCriteria(raw: unknown): string[] {
   }
   if (!Array.isArray(value)) return [];
   return value
-    .map((v) => (typeof v === 'string' ? v.trim() : ''))
+    .map((v) => (typeof v === 'string' ? simplifyWellnessCriterion(v) : ''))
     .filter((v) => v.length > 0);
 }
 
 /**
- * Clean an author-supplied criteria list for storage: trim, drop empties and
- * dedupe (case-insensitive), then clamp to at most 5 (the studio offers 2–5).
+ * Clean an author-supplied criteria list for storage: simplify to direct wellness
+ * instructions, trim, drop empties and dedupe (case-insensitive), then clamp to at most 5.
  */
 function cleanEvidenceCriteria(criteria: string[]): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const raw of criteria) {
-    const s = (typeof raw === 'string' ? raw : '').trim();
+    const s = simplifyWellnessCriterion(typeof raw === 'string' ? raw : '');
     if (!s) continue;
     const key = s.toLowerCase();
     if (seen.has(key)) continue;

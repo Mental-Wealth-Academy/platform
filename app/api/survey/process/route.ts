@@ -14,7 +14,7 @@ import { formatSurveyBadge, syncUserChatSurveyBadges, type SurveyBadge } from '@
 import { randomUUID } from 'crypto'
 
 async function recordSurveyCompletion(
-  userId: string,
+  userId: string | undefined | null,
   surveyId: string,
   profileType?: string | null
 ): Promise<SurveyBadge | null> {
@@ -49,13 +49,6 @@ interface ProcessSurveyRequest {
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUserFromRequestCookie()
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Authentication required.' },
-        { status: 401 }
-      )
-    }
-
     const body = await request.json()
     const { surveyId, surveyTitle, answers } = body as ProcessSurveyRequest
 
@@ -77,12 +70,13 @@ export async function POST(request: NextRequest) {
       }
 
       const profileType = viaScore.results.topStrengths?.[0]?.label ?? viaScore.results.personalizedTitle
-      const badge = await recordSurveyCompletion(user.id, surveyId, profileType)
+      const badge = await recordSurveyCompletion(user?.id, surveyId, profileType)
 
       return NextResponse.json({
         success: true,
         results: viaScore.results,
         badge,
+        authenticated: Boolean(user),
       })
     }
 
@@ -101,8 +95,13 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
-      return NextResponse.json({ success: true, results: scored.results, badge })
+      const badge = await recordSurveyCompletion(user?.id, surveyId, scored.results.profileType)
+      return NextResponse.json({
+        success: true,
+        results: scored.results,
+        badge,
+        authenticated: Boolean(user),
+      })
     }
 
     if (surveyId === 'moral-foundations') {
@@ -118,8 +117,13 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
-      return NextResponse.json({ success: true, results: scored.results, badge })
+      const badge = await recordSurveyCompletion(user?.id, surveyId, scored.results.profileType)
+      return NextResponse.json({
+        success: true,
+        results: scored.results,
+        badge,
+        authenticated: Boolean(user),
+      })
     }
 
     if (surveyId === 'attachment-style') {
@@ -135,22 +139,23 @@ export async function POST(request: NextRequest) {
         scored.results.profileType,
       )
       scored.results.insights = []
-      const badge = await recordSurveyCompletion(user.id, surveyId, scored.results.profileType)
+      const badge = await recordSurveyCompletion(user?.id, surveyId, scored.results.profileType)
       return NextResponse.json({
         success: true,
         results: scored.results,
-        mintInfo: {
+        mintInfo: user && user.walletAddress ? {
           username: user.username,
           walletAddress: user.walletAddress,
           profileType: scored.results.profileType,
-        },
+        } : null,
         badge,
+        authenticated: Boolean(user),
       })
     }
 
     // Generic fallback for any unrecognised survey id
     const analysis = await generateSurveyAnalysis(surveyId, resolvedSurveyTitle, answers)
-    const badge = await recordSurveyCompletion(user.id, surveyId, resolvedSurveyTitle)
+    const badge = await recordSurveyCompletion(user?.id, surveyId, resolvedSurveyTitle)
 
     return NextResponse.json({
       success: true,
@@ -164,6 +169,7 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString(),
       },
       badge,
+      authenticated: Boolean(user),
     })
 
   } catch (error) {

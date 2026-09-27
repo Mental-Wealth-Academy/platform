@@ -5,12 +5,15 @@ import SurveyController from '@/components/survey-controller/SurveyController';
 import SurveySpace from '@/components/survey-space/SurveySpace';
 import BlueTerminal from '@/components/blue-terminal/BlueTerminal';
 import QuizModal from '@/components/survey/QuizModal';
+import SurveyAnalysisProgress from '@/components/survey/SurveyAnalysisProgress';
+import SurveyEmailGateModal from '@/components/survey/SurveyEmailGateModal';
 import SurveyResultsModal from '@/components/survey/SurveyResultsModal';
 import AttachmentCertificateMint from '@/components/survey/AttachmentCertificateMint';
 import { STANDARD_SURVEYS } from '@/components/survey/Surveys';
 import type { Survey, SurveyAnswers, SurveyResults } from '@/components/survey/types';
 import { VIA_SURVEY } from '@/components/survey/viaQuestions';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
+import { usePrivy } from '@privy-io/react-auth';
 import styles from './page.module.css';
 
 const sceneUrl = dailySceneBackgroundUrl();
@@ -58,12 +61,16 @@ function getSurveyIntroCopy(survey: Survey): { meta: string; text: string; note:
 }
 
 export default function SurveysPage() {
+  const { authenticated, login } = usePrivy();
   const [selectedSurveyId, setSelectedSurveyId] = useState(AVAILABLE_SURVEYS[0].id);
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
   const [showQuizModal, setShowQuizModal] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showEmailGate, setShowEmailGate] = useState(false);
   const [showMintInterstitial, setShowMintInterstitial] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [surveyResults, setSurveyResults] = useState<SurveyResults | null>(null);
+  const [completedAnswers, setCompletedAnswers] = useState<SurveyAnswers | null>(null);
   const [mintInfo, setMintInfo] = useState<{ username: string; walletAddress: string; profileType: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -83,19 +90,25 @@ export default function SurveysPage() {
     setSelectedSurveyId(surveyId);
     setErrorMessage(null);
     setShowQuizModal(false);
+    setIsAnalyzing(false);
+    setShowEmailGate(false);
     setShowMintInterstitial(false);
     setShowResultsModal(false);
     setActiveSurvey(null);
     setSurveyResults(null);
+    setCompletedAnswers(null);
     setMintInfo(null);
   }, []);
 
   const handleStartSurvey = useCallback(() => {
     setActiveSurvey(selectedSurvey);
     setShowQuizModal(true);
+    setIsAnalyzing(false);
+    setShowEmailGate(false);
     setShowMintInterstitial(false);
     setShowResultsModal(false);
     setSurveyResults(null);
+    setCompletedAnswers(null);
     setMintInfo(null);
     setErrorMessage(null);
   }, [selectedSurvey]);
@@ -103,8 +116,14 @@ export default function SurveysPage() {
   const handleSurveyComplete = useCallback(async (answers: SurveyAnswers) => {
     if (!activeSurvey) return;
 
+    setShowQuizModal(false);
+    setIsAnalyzing(true);
+    setErrorMessage(null);
+
+    const minDelayPromise = new Promise((resolve) => setTimeout(resolve, 2800));
+
     try {
-      const processResponse = await fetch('/api/survey/process', {
+      const processPromise = fetch('/api/survey/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,36 +134,72 @@ export default function SurveysPage() {
           surveyTitle: activeSurvey.title,
           answers,
         }),
+      }).then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success || !data.results) {
+          throw new Error(data.error || 'Failed to process survey results.');
+        }
+        return data;
       });
 
-      const processData: {
-        success?: boolean;
-        results?: SurveyResults;
-        error?: string;
-        mintInfo?: { username: string; walletAddress: string; profileType: string };
-      } = await processResponse.json().catch(() => ({}));
+      const [processData] = await Promise.all([processPromise, minDelayPromise]);
 
-      if (!processResponse.ok || !processData.success || !processData.results) {
-        throw new Error(processData.error || 'Failed to process survey results.');
-      }
-
+      setCompletedAnswers(answers);
       setSurveyResults(processData.results);
-      setShowQuizModal(false);
-      setErrorMessage(null);
-
-      if (processData.mintInfo && activeSurvey?.id === 'attachment-style') {
+      if (processData.mintInfo) {
         setMintInfo(processData.mintInfo);
-        setShowMintInterstitial(true);
+      }
+      setIsAnalyzing(false);
+
+      if (!authenticated && !processData.authenticated) {
+        setShowEmailGate(true);
       } else {
         setShowResultsModal(true);
       }
     } catch (error) {
+      setIsAnalyzing(false);
       const message = error instanceof Error ? error.message : 'Failed to complete survey. Please try again.';
       setErrorMessage(message);
       alert(message);
       throw error;
     }
-  }, [activeSurvey]);
+  }, [activeSurvey, authenticated]);
+
+  const handleEmailGateUnlock = useCallback(() => {
+    setShowEmailGate(false);
+    setShowResultsModal(true);
+  }, []);
+
+  const handleSignIn = useCallback(() => {
+    login();
+  }, [login]);
+
+  useEffect(() => {
+    if (authenticated && showEmailGate) {
+      setShowEmailGate(false);
+      setShowResultsModal(true);
+    }
+  }, [authenticated, showEmailGate]);
+
+  useEffect(() => {
+    if (authenticated && activeSurvey && completedAnswers) {
+      fetch('/api/survey/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          surveyId: activeSurvey.id,
+          surveyTitle: activeSurvey.title,
+          answers: completedAnswers,
+        }),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}));
+          if (data?.mintInfo) setMintInfo(data.mintInfo);
+        })
+        .catch(() => {});
+    }
+  }, [authenticated, activeSurvey, completedAnswers]);
 
   const handleMintDone = useCallback(() => {
     setShowMintInterstitial(false);
@@ -169,7 +224,7 @@ export default function SurveysPage() {
         <SurveySpace
           label=""
           badges={[]}
-          className={(!showQuizModal && !showResultsModal && !showMintInterstitial) || (isMobile && (showQuizModal || showResultsModal)) ? styles.idleSurveySpace : ''}
+          className={(!showQuizModal && !isAnalyzing && !showEmailGate && !showResultsModal && !showMintInterstitial) || (isMobile && (showQuizModal || isAnalyzing || showEmailGate || showResultsModal)) ? styles.idleSurveySpace : ''}
         >
           {showQuizModal ? (
             <QuizModal
@@ -181,6 +236,22 @@ export default function SurveysPage() {
               survey={activeSurvey}
               variant={isMobile ? 'modal' : 'inline'}
               onComplete={handleSurveyComplete}
+            />
+          ) : isAnalyzing ? (
+            <SurveyAnalysisProgress
+              variant={isMobile ? 'modal' : 'inline'}
+            />
+          ) : showEmailGate ? (
+            <SurveyEmailGateModal
+              isOpen={showEmailGate}
+              variant={isMobile ? 'modal' : 'inline'}
+              onUnlock={handleEmailGateUnlock}
+              onSignIn={handleSignIn}
+              onClose={() => {
+                setShowEmailGate(false);
+                setShowResultsModal(true);
+              }}
+              archetypePreviewTitle={surveyResults?.profileType || surveyResults?.personalizedTitle}
             />
           ) : showMintInterstitial && mintInfo ? (
             <AttachmentCertificateMint
@@ -199,6 +270,8 @@ export default function SurveysPage() {
               }}
               results={surveyResults}
               variant={isMobile ? 'modal' : 'inline'}
+              onOpenMint={mintInfo && activeSurvey?.id === 'attachment-style' ? () => setShowMintInterstitial(true) : undefined}
+              mintInfo={mintInfo}
             />
           ) : (
             <BlueTerminal
