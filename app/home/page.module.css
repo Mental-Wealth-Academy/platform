@@ -658,6 +658,37 @@
   outline-offset: 4px;
 }
 
+@media (max-width: 768px) {
+  .listsCardButton {
+    gap: 12px;
+    padding: 13px 15px;
+  }
+
+  .listsCardIcon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+
+  .listsCardLabel {
+    font-size: 14px;
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (max-width: 480px) {
+  .listsCardButton {
+    padding: 11px 12px;
+    gap: 10px;
+  }
+
+  .listsCardIcon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+}
+
 @media (max-width: 1050px) {
   .folderRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));

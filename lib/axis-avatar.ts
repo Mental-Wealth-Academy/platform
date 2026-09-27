@@ -344,45 +344,57 @@ function renderBackHair(styleIdx: number, colorIdx: number): string {
 
 function renderOutfit(index: number): string {
   switch (index) {
-    case 0: // Scientist Lab Coat & Sweater (Prompt reference)
+    case 0: // Scientist Lab Coat & Sweater
       return [
-        // Inner blue V-neck knit sweater
-        '<polygon points="128,218 96,182 160,182" fill="#1D4ED8"/>',
+        // Solid inner base sweater filling torso from collar to bottom
+        '<path d="M96 182 L160 182 L160 256 L96 256 Z" fill="#1D4ED8"/>',
         '<path d="M102 182 L128 214 L154 182" stroke="#172554" stroke-width="3.5" fill="none"/>',
         '<path d="M108 182 L128 208 L148 182" stroke="#2563EB" stroke-width="2" fill="none"/>',
-        // White shirt collar
-        '<polygon points="128,188 120,182 136,182" fill="#FFFFFF"/>',
-        // Crisp white open lab coat shoulders & body
-        '<path d="M30 256 L64 186 C78 180 88 182 98 184 L108 256 Z" fill="#FFFFFF"/>',
-        '<path d="M226 256 L192 186 C178 180 168 182 158 184 L148 256 Z" fill="#F8FAFC"/>',
+        // White shirt collar inside V-neck
+        '<polygon points="128,194 116,182 140,182" fill="#FFFFFF"/>',
+        '<line x1="128" y1="194" x2="128" y2="204" stroke="#CBD5E1" stroke-width="1"/>',
+        // Left lab coat shoulder & body extending to frame edge
+        '<path d="M0 256 L0 220 C16 200 42 184 66 182 C78 180 88 182 98 184 L108 256 Z" fill="#FFFFFF"/>',
+        // Right lab coat shoulder & body extending to frame edge
+        '<path d="M256 256 L256 220 C240 200 214 184 190 182 C178 180 168 182 158 184 L148 256 Z" fill="#F8FAFC"/>',
         // Wide lapels
-        '<polygon points="98,184 76,212 112,228 108,184" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>',
-        '<polygon points="158,184 180,212 144,228 148,184" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5"/>',
+        '<polygon points="98,184 72,216 112,236 108,184" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>',
+        '<polygon points="158,184 184,216 144,236 148,184" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5"/>',
       ].join('');
     case 1: // High-Collar Cyber Trench
       return [
-        '<path d="M32 256 L64 184 L100 176 L112 256 Z" fill="#18181B"/>',
-        '<path d="M224 256 L192 184 L156 176 L144 256 Z" fill="#27272A"/>',
-        // High stand collar
-        '<path d="M96 178 L104 154 L128 164 L128 256" stroke="#38BDF8" stroke-width="2" fill="#18181B"/>',
-        '<path d="M160 178 L152 154 L128 164 L128 256" stroke="#38BDF8" stroke-width="2" fill="#27272A"/>',
-        '<polygon points="128,168 120,186 136,186" fill="#0284C7"/>',
+        // Base dark trench body across entire torso
+        '<path d="M0 256 L0 220 C16 198 42 182 66 180 L100 176 L112 256 Z" fill="#18181B"/>',
+        '<path d="M256 256 L256 220 C240 198 214 182 190 180 L156 176 L144 256 Z" fill="#27272A"/>',
+        // Center closed chest panel
+        '<path d="M100 176 L156 176 L144 256 L112 256 Z" fill="#202024"/>',
+        // Stand collar left
+        '<path d="M96 178 L104 152 L128 164 L128 256 L110 256 Z" fill="#18181B" stroke="#38BDF8" stroke-width="1.5"/>',
+        // Stand collar right
+        '<path d="M160 178 L152 152 L128 164 L128 256 L146 256 Z" fill="#27272A" stroke="#38BDF8" stroke-width="1.5"/>',
+        // Cyber throat emblem
+        '<polygon points="128,166 118,184 138,184" fill="#0284C7"/>',
       ].join('');
     case 2: // Academy Uniform Blazer
       return [
-        '<polygon points="128,220 106,182 150,182" fill="#FFFFFF"/>',
-        // Red tie
-        '<polygon points="125,185 131,185 133,224 128,230 123,224" fill="#DC2626"/>',
-        // Navy blazer
-        '<path d="M32 256 L64 186 L104 184 L110 256 Z" fill="#1E3A8A"/>',
-        '<path d="M224 256 L192 186 L152 184 L146 256 Z" fill="#172554"/>',
-        '<polygon points="104,184 84,215 116,230 110,184" fill="#1E3A8A" stroke="#172554" stroke-width="1.5"/>',
-        '<polygon points="152,184 172,215 140,230 146,184" fill="#172554" stroke="#1E3A8A" stroke-width="1.5"/>',
+        // Full crisp white dress shirt underlayer
+        '<path d="M96 182 L160 182 L160 256 L96 256 Z" fill="#FFFFFF"/>',
+        // Red tie extending down
+        '<polygon points="124,185 132,185 135,236 128,244 121,236" fill="#DC2626"/>',
+        '<polygon points="125,183 131,183 132,192 124,192" fill="#B91C1C"/>',
+        // Navy blazer body extending to edges
+        '<path d="M0 256 L0 220 C16 198 42 184 66 182 L104 184 L112 256 Z" fill="#1E3A8A"/>',
+        '<path d="M256 256 L256 220 C240 198 214 184 190 182 L152 184 L144 256 Z" fill="#172554"/>',
+        // Lapels
+        '<polygon points="104,184 78,218 116,234 110,184" fill="#1E3A8A" stroke="#172554" stroke-width="1.5"/>',
+        '<polygon points="152,184 178,218 140,234 146,184" fill="#172554" stroke="#1E3A8A" stroke-width="1.5"/>',
+        // Gold button
+        '<circle cx="128" cy="248" r="3" fill="#F59E0B"/>',
       ].join('');
     case 3: // Streetwear Cyber Hoodie
       return [
-        '<path d="M32 256 L66 186 C82 178 174 178 190 186 L224 256 Z" fill="#27272A"/>',
-        // Thick bunched cowl collar
+        '<path d="M0 256 L0 220 C18 198 42 184 68 182 C84 176 172 176 188 182 C214 184 238 198 256 220 L256 256 Z" fill="#27272A"/>',
+        // Cowl collar
         '<path d="M88 178 C104 196 152 196 168 178 C174 194 158 208 128 208 C98 208 82 194 88 178 Z" fill="#3F3F46"/>',
         // Drawstrings
         '<line x1="114" y1="204" x2="114" y2="236" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>',
@@ -390,35 +402,38 @@ function renderOutfit(index: number): string {
       ].join('');
     case 4: // Scholar Academic Robe
       return [
-        '<path d="M32 256 L66 185 C84 176 172 176 190 185 L224 256 Z" fill="#0F172A"/>',
-        // Golden velvet stole
-        '<path d="M96 178 L90 256 L114 256 L118 188 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>',
-        '<path d="M160 178 L166 256 L142 256 L138 188 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>',
-        '<polygon points="128,186 122,198 134,198" fill="#F8FAFC"/>',
+        '<path d="M0 256 L0 218 C18 198 42 184 66 182 C84 175 172 175 190 182 C214 184 238 198 256 218 L256 256 Z" fill="#0F172A"/>',
+        // Golden velvet stoles
+        '<path d="M96 178 L86 256 L114 256 L118 188 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>',
+        '<path d="M160 178 L170 256 L142 256 L138 188 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>',
+        '<polygon points="128,186 120,200 136,200" fill="#F8FAFC"/>',
       ].join('');
     case 5: // Ribbed Knit Turtleneck
       return [
-        '<path d="M34 256 L68 188 C84 180 172 180 188 188 L222 256 Z" fill="#18181B"/>',
+        '<path d="M0 256 L0 220 C18 198 42 184 68 182 C84 176 172 176 188 182 C214 184 238 198 256 220 L256 256 Z" fill="#18181B"/>',
         // Turtleneck collar folds
-        '<rect x="108" y="166" width="40" height="24" rx="6" fill="#27272A" stroke="#18181B" stroke-width="1.5"/>',
-        '<line x1="112" y1="174" x2="144" y2="174" stroke="#3F3F46" stroke-width="1.5"/>',
-        '<line x1="112" y1="182" x2="144" y2="182" stroke="#3F3F46" stroke-width="1.5"/>',
+        '<rect x="104" y="164" width="48" height="26" rx="6" fill="#27272A" stroke="#18181B" stroke-width="1.5"/>',
+        '<line x1="108" y1="172" x2="148" y2="172" stroke="#3F3F46" stroke-width="1.5"/>',
+        '<line x1="108" y1="180" x2="148" y2="180" stroke="#3F3F46" stroke-width="1.5"/>',
       ].join('');
     case 6: // Astronaut Flight Suit
       return [
-        '<path d="M32 256 L66 185 C84 174 172 174 190 185 L224 256 Z" fill="#E2E8F0" stroke="#94A3B8" stroke-width="2"/>',
-        '<line x1="128" y1="184" x2="128" y2="256" stroke="#64748B" stroke-width="3"/>',
-        '<rect x="78" y="208" width="22" height="20" rx="3" fill="#1E293B"/>',
-        '<circle cx="89" cy="218" r="4" fill="#38BDF8"/>',
+        '<path d="M0 256 L0 218 C18 198 42 184 66 182 C84 174 172 174 190 182 C214 184 238 198 256 218 L256 256 Z" fill="#E2E8F0" stroke="#94A3B8" stroke-width="2"/>',
+        '<line x1="128" y1="182" x2="128" y2="256" stroke="#64748B" stroke-width="3"/>',
+        '<rect x="78" y="206" width="24" height="22" rx="3" fill="#1E293B"/>',
+        '<circle cx="90" cy="217" r="4" fill="#38BDF8"/>',
+        '<rect x="154" y="208" width="22" height="12" rx="2" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1"/>',
       ].join('');
     case 7: // Varsity Letterman Jacket
     default:
       return [
-        '<path d="M34 256 L68 186 L78 196 L70 256 Z" fill="#F1F5F9"/>',
-        '<path d="M222 256 L188 186 L178 196 L186 256 Z" fill="#F1F5F9"/>',
-        '<path d="M70 256 L78 196 C92 180 164 180 178 196 L186 256 Z" fill="#1E3A8A"/>',
+        // White sleeves spanning to outer edges
+        '<path d="M0 256 L0 220 C16 200 42 186 68 184 L78 194 L70 256 Z" fill="#F1F5F9"/>',
+        '<path d="M256 256 L256 220 C240 200 214 186 188 184 L178 194 L186 256 Z" fill="#F1F5F9"/>',
+        // Navy body
+        '<path d="M70 256 L78 194 C92 180 164 180 178 194 L186 256 Z" fill="#1E3A8A"/>',
         '<path d="M86 182 C104 194 152 194 170 182" stroke="#F59E0B" stroke-width="5" stroke-linecap="round" fill="none"/>',
-        '<text x="96" y="222" font-family="sans-serif" font-weight="900" font-size="16" fill="#F59E0B">M</text>',
+        '<text x="96" y="224" font-family="sans-serif" font-weight="900" font-size="18" fill="#F59E0B">M</text>',
       ].join('');
   }
 }
