@@ -1,77 +1,148 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
+import { ArrowsClockwise, Sparkle, UploadSimple } from '@phosphor-icons/react';
 import ModalShell from '@/components/shared/ModalShell';
+import { safeStorage } from '@/lib/safe-storage';
+import {
+  BACKGROUND_TRAITS,
+  BACKGROUND_COLORS,
+  SKIN_TONE_TRAITS,
+  SKIN_PALETTES,
+  HAIRSTYLE_TRAITS,
+  HAIR_COLOR_TRAITS,
+  HAIR_PALETTES,
+  HEADSET_TRAITS,
+  OUTFIT_TRAITS,
+  ACCESSORY_TRAITS,
+  getAxisAvatarParams,
+  buildCustomAvatarSeed,
+  buildAxisAvatarUrl,
+  renderAxisAvatarSvg,
+  type AxisAvatarParams,
+} from '@/lib/axis-avatar';
 import styles from './AvatarSelectorModal.module.css';
-
-interface Avatar {
-  id: string;
-  image_url: string;
-  metadata_url: string;
-}
 
 interface AvatarSelectorModalProps {
   onClose: () => void;
   onAvatarSelected: (avatarUrl: string) => void;
+  currentAvatarUrl?: string | null;
 }
 
-const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAvatarSelected }) => {
+type CategoryKey = 'skin' | 'background' | 'hairstyle' | 'hairColor' | 'headset' | 'outfit' | 'accessory';
+
+const CATEGORIES: Array<{ key: CategoryKey; label: string }> = [
+  { key: 'skin', label: 'Skin' },
+  { key: 'background', label: 'Backdrop' },
+  { key: 'hairstyle', label: 'Hair' },
+  { key: 'hairColor', label: 'Color' },
+  { key: 'headset', label: 'Gear' },
+  { key: 'outfit', label: 'Outfit' },
+  { key: 'accessory', label: 'Accessory' },
+];
+
+export default function AvatarSelectorModal({
+  onClose,
+  onAvatarSelected,
+  currentAvatarUrl,
+}: AvatarSelectorModalProps) {
   const { getAccessToken } = usePrivy();
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  // Initialize trait indices from current avatar if it has a seed, or default
+  const initialParams = useMemo(() => {
+    if (currentAvatarUrl && currentAvatarUrl.includes('seed=')) {
+      try {
+        const url = new URL(currentAvatarUrl, 'https://mentalwealthacademy.world');
+        const seed = url.searchParams.get('seed');
+        if (seed) {
+          return getAxisAvatarParams(seed);
+        }
+      } catch { /* ignore */ }
+    }
+    return {
+      backgroundIndex: 0,
+      skinToneIndex: 1,
+      hairstyleIndex: 0,
+      hairColorIndex: 0,
+      headsetIndex: 0,
+      outfitIndex: 0,
+      accessoryIndex: 0,
+    };
+  }, [currentAvatarUrl]);
+
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>('skin');
+  const [backgroundIndex, setBackgroundIndex] = useState(initialParams.backgroundIndex);
+  const [skinToneIndex, setSkinToneIndex] = useState(initialParams.skinToneIndex);
+  const [hairstyleIndex, setHairstyleIndex] = useState(initialParams.hairstyleIndex);
+  const [hairColorIndex, setHairColorIndex] = useState(initialParams.hairColorIndex);
+  const [headsetIndex, setHeadsetIndex] = useState(initialParams.headsetIndex);
+  const [outfitIndex, setOutfitIndex] = useState(initialParams.outfitIndex);
+  const [accessoryIndex, setAccessoryIndex] = useState(initialParams.accessoryIndex);
+
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const MAX_UPLOAD = 10 * 1024 * 1024; // matches /api/upload
+  const MAX_UPLOAD = 10 * 1024 * 1024;
 
-  useEffect(() => {
-    const fetchAvatars = async () => {
-      try {
-        const token = await getAccessToken();
-        const response = await fetch('/api/avatars/choices', {
-          cache: 'no-store',
-          credentials: 'include',
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        const data = await response.json();
+  // Build the current avatar parameters
+  const currentParams: AxisAvatarParams = useMemo(() => ({
+    backgroundIndex,
+    skinToneIndex,
+    hairstyleIndex,
+    hairColorIndex,
+    headsetIndex,
+    outfitIndex,
+    accessoryIndex,
+    chassisIndex: hairstyleIndex,
+    visorIndex: hairColorIndex,
+    headgearIndex: headsetIndex,
+    traits: {
+      background: BACKGROUND_TRAITS[backgroundIndex],
+      skinTone: SKIN_TONE_TRAITS[skinToneIndex],
+      hairstyle: HAIRSTYLE_TRAITS[hairstyleIndex],
+      hairColor: HAIR_COLOR_TRAITS[hairColorIndex],
+      headset: HEADSET_TRAITS[headsetIndex],
+      outfit: OUTFIT_TRAITS[outfitIndex],
+      accessory: ACCESSORY_TRAITS[accessoryIndex],
+      chassis: HAIRSTYLE_TRAITS[hairstyleIndex],
+      visor: HAIR_COLOR_TRAITS[hairColorIndex],
+      headgear: HEADSET_TRAITS[headsetIndex],
+    },
+  }), [backgroundIndex, skinToneIndex, hairstyleIndex, hairColorIndex, headsetIndex, outfitIndex, accessoryIndex]);
 
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to load avatars');
-        }
+  // Generate the live preview SVG string (instant in-memory, 0 network calls)
+  const previewSvg = useMemo(() => {
+    return renderAxisAvatarSvg(currentParams);
+  }, [currentParams]);
 
-        setAvatars(data.choices || []);
-        setSelectedAvatar(null);
-      } catch (err: any) {
-        console.error('Failed to fetch avatars:', err);
-        setError(err?.message || 'Failed to load avatars');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleRandomize = () => {
+    setBackgroundIndex(Math.floor(Math.random() * BACKGROUND_TRAITS.length));
+    setSkinToneIndex(Math.floor(Math.random() * SKIN_TONE_TRAITS.length));
+    setHairstyleIndex(Math.floor(Math.random() * HAIRSTYLE_TRAITS.length));
+    setHairColorIndex(Math.floor(Math.random() * HAIR_COLOR_TRAITS.length));
+    setHeadsetIndex(Math.floor(Math.random() * HEADSET_TRAITS.length));
+    setOutfitIndex(Math.floor(Math.random() * OUTFIT_TRAITS.length));
+    setAccessoryIndex(Math.floor(Math.random() * ACCESSORY_TRAITS.length));
+    setError(null);
+  };
 
-    fetchAvatars();
-  }, [getAccessToken]);
-
-  const handleSelectAvatar = async () => {
-    if (!selectedAvatar) {
-      setError('Please select an avatar');
-      return;
-    }
-
-    // Find the avatar ID from the image URL
-    const avatar = avatars.find(a => a.image_url === selectedAvatar);
-    if (!avatar) {
-      setError('Invalid avatar selection');
-      return;
-    }
-
+  const handleSaveAvatar = async () => {
     setSaving(true);
     setError(null);
+
+    const customSeed = buildCustomAvatarSeed({
+      backgroundIndex,
+      skinToneIndex,
+      hairstyleIndex,
+      hairColorIndex,
+      headsetIndex,
+      outfitIndex,
+      accessoryIndex,
+    });
+    const avatarUrl = buildAxisAvatarUrl(customSeed);
 
     try {
       const token = await getAccessToken();
@@ -82,17 +153,19 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ avatar_id: avatar.id }),
+        body: JSON.stringify({ avatar_id: customSeed }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || 'Failed to select avatar');
       }
 
+      // Immediately cache in safeStorage for 0ms initial load on next refresh
+      safeStorage.setItem('mwa:cached_avatar', avatarUrl);
+
       // Notify parent component and trigger profile update
-      onAvatarSelected(selectedAvatar);
+      onAvatarSelected(avatarUrl);
       window.dispatchEvent(new Event('profileUpdated'));
       onClose();
     } catch (err: any) {
@@ -107,7 +180,7 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    e.target.value = ''; // allow re-selecting the same file later
+    e.target.value = '';
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
@@ -145,12 +218,13 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
       const saved = await saveRes.json().catch(() => ({}));
       if (!saveRes.ok) throw new Error(saved.error || 'Could not save your photo.');
 
+      safeStorage.setItem('mwa:cached_avatar', uploaded.url);
       onAvatarSelected(uploaded.url);
       window.dispatchEvent(new Event('profileUpdated'));
       onClose();
     } catch (err: any) {
-      console.error('Custom avatar upload failed:', err);
-      setError(err?.message || 'Upload failed. Try again.');
+      console.error('Upload error:', err);
+      setError(err?.message || 'Failed to upload photo');
     } finally {
       setUploading(false);
     }
@@ -158,45 +232,189 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
 
   return (
     <ModalShell isOpen={true} onClose={onClose} title="Select Your Avatar" maxWidth="md">
-          {loading ? (
-            <div className={styles.loading}>Loading avatars...</div>
-          ) : error && avatars.length === 0 ? (
-            <div className={styles.error}>{error}</div>
-          ) : (
-            <>
-              <p className={styles.description}>
-                Choose one of your unique avatars
-              </p>
-              <div className={styles.avatarGrid}>
-                {avatars.map((avatar) => (
+      <div className={styles.builderContainer}>
+        {/* Live Preview & Randomize */}
+        <div className={styles.previewSection}>
+          <div className={styles.previewAvatarRing}>
+            <div
+              className={styles.previewAvatarInner}
+              dangerouslySetInnerHTML={{ __html: previewSvg }}
+            />
+          </div>
+          <button
+            type="button"
+            className={styles.randomizeButton}
+            onClick={handleRandomize}
+            title="Randomize traits"
+          >
+            <Sparkle size={15} weight="fill" />
+            <span>Randomize</span>
+          </button>
+        </div>
+
+        {/* Category Tabs */}
+        <div className={styles.categoryTabs} role="tablist">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.key}
+              type="button"
+              role="tab"
+              aria-selected={activeCategory === cat.key}
+              className={`${styles.categoryTab} ${activeCategory === cat.key ? styles.categoryTabActive : ''}`}
+              onClick={() => { setActiveCategory(cat.key); setError(null); }}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Options Grid based on Active Category */}
+        <div className={styles.optionsWrap}>
+          {activeCategory === 'skin' && (
+            <div className={styles.colorGrid}>
+              {SKIN_TONE_TRAITS.map((label, idx) => {
+                const isSelected = skinToneIndex === idx;
+                const palette = SKIN_PALETTES[idx];
+                return (
                   <button
-                    key={avatar.id}
-                    className={`${styles.avatarOption} ${
-                      selectedAvatar === avatar.image_url ? styles.selected : ''
-                    }`}
-                    onClick={() => {
-                      setSelectedAvatar(avatar.image_url);
-                      setError(null);
-                    }}
+                    key={label}
                     type="button"
+                    className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setSkinToneIndex(idx)}
                   >
-                    <div className={styles.avatarImageWrapper}>
-                      <Image
-                        src={avatar.image_url}
-                        alt={avatar.id}
-                        width={120}
-                        height={120}
-                        className={styles.avatarImage}
-                        unoptimized
-                      />
-                    </div>
+                    <span
+                      className={styles.swatch}
+                      style={{ background: palette.base, border: `2px solid ${palette.shadow}` }}
+                    />
+                    <span className={styles.optionLabel}>{label}</span>
                   </button>
-                ))}
-              </div>
-              {error && <div className={styles.errorMessage}>{error}</div>}
-            </>
+                );
+              })}
+            </div>
           )}
 
+          {activeCategory === 'background' && (
+            <div className={styles.colorGrid}>
+              {BACKGROUND_TRAITS.map((label, idx) => {
+                const isSelected = backgroundIndex === idx;
+                const color = BACKGROUND_COLORS[idx];
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setBackgroundIndex(idx)}
+                  >
+                    <span
+                      className={styles.swatch}
+                      style={{ background: color }}
+                    />
+                    <span className={styles.optionLabel}>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {activeCategory === 'hairstyle' && (
+            <div className={styles.textOptionsGrid}>
+              {HAIRSTYLE_TRAITS.map((label, idx) => {
+                const isSelected = hairstyleIndex === idx;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setHairstyleIndex(idx)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {activeCategory === 'hairColor' && (
+            <div className={styles.colorGrid}>
+              {HAIR_COLOR_TRAITS.map((label, idx) => {
+                const isSelected = hairColorIndex === idx;
+                const palette = HAIR_PALETTES[idx];
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setHairColorIndex(idx)}
+                  >
+                    <span
+                      className={styles.swatch}
+                      style={{ background: palette.main, border: `2px solid ${palette.shadow}` }}
+                    />
+                    <span className={styles.optionLabel}>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {activeCategory === 'headset' && (
+            <div className={styles.textOptionsGrid}>
+              {HEADSET_TRAITS.map((label, idx) => {
+                const isSelected = headsetIndex === idx;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setHeadsetIndex(idx)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {activeCategory === 'outfit' && (
+            <div className={styles.textOptionsGrid}>
+              {OUTFIT_TRAITS.map((label, idx) => {
+                const isSelected = outfitIndex === idx;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setOutfitIndex(idx)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {activeCategory === 'accessory' && (
+            <div className={styles.textOptionsGrid}>
+              {ACCESSORY_TRAITS.map((label, idx) => {
+                const isSelected = accessoryIndex === idx;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => setAccessoryIndex(idx)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {error && <div className={styles.errorMessage}>{error}</div>}
+
+        {/* Modal Footer */}
         <div className={styles.modalFooter}>
           <input
             ref={fileInputRef}
@@ -206,34 +424,35 @@ const AvatarSelectorModal: React.FC<AvatarSelectorModalProps> = ({ onClose, onAv
             style={{ display: 'none' }}
           />
           <button
+            type="button"
             className={styles.uploadButton}
             onClick={handleUploadClick}
             disabled={uploading || saving}
-            type="button"
           >
-            {uploading ? 'Uploading...' : 'Upload your own'}
+            <UploadSimple size={15} />
+            <span>{uploading ? 'Uploading...' : 'Upload photo'}</span>
           </button>
+
           <div className={styles.footerActions}>
             <button
+              type="button"
               className={styles.cancelButton}
               onClick={onClose}
               disabled={saving || uploading}
-              type="button"
             >
               Cancel
             </button>
             <button
-              className={styles.selectButton}
-              onClick={handleSelectAvatar}
-              disabled={saving || uploading || loading || !selectedAvatar}
               type="button"
+              className={styles.selectButton}
+              onClick={handleSaveAvatar}
+              disabled={saving || uploading}
             >
-              {saving ? 'Selecting...' : 'Select Avatar'}
+              {saving ? 'Saving...' : 'Select Avatar'}
             </button>
           </div>
         </div>
+      </div>
     </ModalShell>
   );
-};
-
-export default AvatarSelectorModal;
+}

@@ -269,6 +269,44 @@
   background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-1)) !important;
 }
 
+/* Blue Sprite & Dotted Line Divider */
+.blueSpriteTrack {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.spritePuck {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 10%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 28%, transparent);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 18%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.spriteImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+}
+
+.trackSvg {
+  flex: 1;
+  height: 20px;
+  width: 100%;
+  overflow: visible;
+}
+
 .desktopLeaderboard {
   display: flex;
   flex: 1 1 320px;
@@ -523,7 +561,7 @@
 
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px calc(96px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 10px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
   }
 
   .folderRow {
@@ -915,10 +953,55 @@
 /* ── Home dashboard insights ────────────────────────────────────────────── */
 .dashboardInsights {
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 0;
+  margin-bottom: 0;
+}
+
+.insightsSlideHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 2px;
+}
+
+.insightsTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.insightTabBtn {
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.insightTabBtn:hover {
+  color: var(--color-text-dark);
+}
+
+.insightTabActive {
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+.insightsSlideContainer {
+  width: 100%;
 }
 
 .insightCard {
@@ -992,6 +1075,31 @@
   color: var(--insight-color);
   background: color-mix(in oklch, var(--insight-color) 8%, transparent);
   transition: background var(--duration-fast) var(--ease-default);
+}
+
+.recommendCtaPill {
+  font-family: var(--font-button);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #ffffff !important;
+  box-shadow:
+    0 3px 0 var(--palette-action-blue-hover, #3246BE),
+    0 4px 14px color-mix(in oklch, var(--color-primary) 35%, transparent);
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.recommendMain:hover .recommendCtaPill {
+  background: var(--color-primary-hover, #465BE0);
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 0 var(--palette-action-blue-hover, #3246BE),
+    0 6px 18px color-mix(in oklch, var(--color-primary) 45%, transparent);
 }
 
 .recommendMain:hover .recommendCta {
@@ -2205,7 +2313,7 @@
 /* ── Mobile: Knowledge Base ── */
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px calc(96px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 10px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
   }
 
   .learnLayout .globalPanel,

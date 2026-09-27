@@ -1,426 +1,307 @@
-/* Overlay */
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  padding: 24px;
-  animation: fadeIn 0.3s ease;
-}
+/* ── Avatar Builder Modal Shell ── */
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Modal */
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
-  background-color: #ffffff;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
-  border: 2px solid var(--color-primary-hover);
-  border-radius: 24px;
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
-  max-height: 90vh;
+.builderContainer {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Header */
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
-  border-bottom: 2px solid var(--color-primary-hover);
-}
-
-.modalTitle {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #2a2f52;
-  margin: 0;
-}
-
-.closeButton {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
-  border: 1px solid color-mix(in oklch, var(--color-primary-hover) 14%, transparent);
-  border-radius: 8px;
-  cursor: pointer;
-  color: #4a4f6e;
-  transition: all 0.15s ease;
-  font-size: 20px;
-  line-height: 1;
-  padding: 0;
-}
-
-.closeButton:hover {
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* Body */
-.modalBody {
-  padding: 28px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.loading {
-  text-align: center;
-  padding: 40px 20px;
-  font-family: var(--font-primary);
-  font-size: 15px;
-  color: rgba(26, 29, 51, 0.6);
-}
-
-.error {
-  text-align: center;
-  padding: 40px 20px;
-  font-family: var(--font-primary);
-  font-size: 15px;
-  color: #FF5252;
-}
-
-.description {
-  text-align: center;
-  font-family: var(--font-primary);
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(26, 29, 51, 0.7);
-  margin: 0 0 24px 0;
-}
-
-/* Avatar grid */
-.avatarGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 16px;
-  margin-bottom: 16px;
-  justify-items: center;
+  width: 100%;
 }
 
-.avatarOption {
-  position: relative;
-  background: #ffffff;
-  border: 3px solid color-mix(in oklch, var(--color-primary) 15%, transparent);
-  border-radius: 16px;
-  padding: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  aspect-ratio: 1;
+/* ── Preview & Randomize ── */
+.previewSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  padding: 8px 0 4px;
 }
 
-.avatarOption:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px color-mix(in oklch, var(--color-primary) 15%, transparent);
-}
-
-.avatarOption.selected {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-primary) 15%, transparent);
-  transform: scale(1.03);
-}
-
-.avatarImageWrapper {
-  width: 100%;
-  height: 100%;
+.previewAvatarRing {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 8px 24px color-mix(in oklch, var(--color-primary) 20%, transparent);
+  padding: 3px;
+  background: var(--color-surface-base);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 12px;
 }
 
-.avatarImage {
+.previewAvatarInner {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.previewAvatarInner svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.randomizeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.randomizeButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 15%, var(--color-surface-base));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* ── Category Tabs ── */
+.categoryTabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 2px 2px 6px;
+}
+
+.categoryTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryTab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  background: color-mix(in oklch, var(--color-surface-base) 80%, transparent);
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.categoryTab:hover {
+  color: var(--color-text-dark);
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+}
+
+.categoryTabActive {
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 30%, transparent);
+}
+
+/* ── Options Area ── */
+.optionsWrap {
+  min-height: 140px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+}
+
+/* Color & Tone Swatch Options */
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.colorOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  background: var(--color-surface-base);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.colorOption:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.optionLabel {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  line-height: 1.2;
+}
+
+/* Text Option Buttons (Hair, Gear, Outfit, Accessory) */
+.textOptionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.textOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  background: var(--color-surface-base);
+  font-family: var(--font-primary);
+  font-size: 0.78125rem;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.25;
+  transition: all 0.15s ease;
+}
+
+.textOption:hover {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+}
+
+/* Selected state for both types of options */
+.optionSelected {
+  border-color: var(--color-primary) !important;
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base)) !important;
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary) 35%, transparent);
+  font-weight: 600 !important;
+}
+
+/* Error banner */
 .errorMessage {
   text-align: center;
   font-family: var(--font-primary);
-  font-size: 14px;
-  color: #FF5252;
-  padding: 12px 16px;
-  background: rgba(255, 82, 82, 0.08);
+  font-size: 0.8125rem;
+  color: var(--palette-danger, #BA1A1A);
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--palette-danger, #BA1A1A) 8%, transparent);
   border-radius: 8px;
-  border: 1px solid rgba(255, 82, 82, 0.2);
+  border: 1px solid color-mix(in srgb, var(--palette-danger, #BA1A1A) 24%, transparent);
+}
+
+/* ── Modal Footer ── */
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  margin-top: 4px;
 }
 
 .uploadButton {
-  display: block;
-  margin: 12px auto 0;
-  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  height: 38px;
   border-radius: 10px;
   font-family: var(--font-button);
-  font-size: 14px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: var(--color-primary);
-  color: #fff;
-  border: 2px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 24%, transparent);
+  transition: all 0.15s ease;
 }
 
 .uploadButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 25%, transparent);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
 }
 
 .uploadButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Footer */
-.modalFooter {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 28px;
-  border-top: 1px solid color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .footerActions {
   display: flex;
-  gap: 12px;
-  flex: 1;
-}
-
-.uploadButton {
-  flex-shrink: 0;
-  padding: 12px 18px;
-  height: 44px;
-  border-radius: 10px;
-  font-family: var(--font-button);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: transparent;
-  color: var(--color-primary);
-  border: 2px dashed color-mix(in oklch, var(--color-primary) 30%, transparent);
-  display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.uploadButton:hover:not(:disabled) {
-  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-}
-
-.uploadButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (max-width: 640px) {
-  .modalFooter {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-.cancelButton,
-.selectButton {
-  flex: 1;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-family: var(--font-button);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 8px;
 }
 
 .cancelButton {
+  padding: 8px 16px;
+  height: 38px;
+  border-radius: 10px;
+  font-family: var(--font-button);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
   background: transparent;
-  color: var(--color-text-dark);
-  border: 2px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  color: var(--color-text-muted);
+  border: 1px solid color-mix(in oklch, var(--color-text-dark) 14%, transparent);
+  transition: all 0.15s ease;
 }
 
 .cancelButton:hover:not(:disabled) {
-  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 15%, transparent);
+  color: var(--color-text-dark);
+  border-color: var(--color-text-dark);
 }
 
 .selectButton {
+  padding: 8px 20px;
+  height: 38px;
+  border-radius: 10px;
+  font-family: var(--font-button);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
   background: var(--color-primary);
-  color: var(--color-text-light);
-  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  color: #ffffff;
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  transition: all 0.15s ease;
 }
 
 .selectButton:hover:not(:disabled) {
-  background: var(--color-primary-hover, #3d52e6);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background: var(--color-primary-hover, #465BE0);
+  border-color: var(--color-primary-hover, #465BE0);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 40%, transparent);
 }
 
-.selectButton:disabled,
-.cancelButton:disabled {
+.selectButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 640px) {
-  .modalBackdrop {
-    padding: 16px;
-  }
-
-  .modal {
-    max-width: 100%;
-    max-height: 95vh;
-  }
-
-  .avatarGrid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 12px;
-  }
-
-  .modalHeader {
-    padding: 14px 16px;
-  }
-
-  .modalBody {
-    padding: 20px;
-  }
-
-  .modalFooter {
-    padding: 20px;
-    flex-direction: column;
-  }
-
-  .cancelButton,
-  .selectButton {
-    width: 100%;
-  }
-}
-
-/* ===== Dark Mode Overrides ===== */
-
-:global([data-theme="dark"]) .modal {
-  background-color: #15172a;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
-  border-color: color-mix(in oklch, var(--color-primary-hover) 40%, transparent);
-  box-shadow:
-    0 6px 0 var(--color-primary),
-    0 0px 10px rgba(0, 0, 0, 0.14),
-    0 10px 5px rgba(0, 0, 0, 0.30);
-}
-
-:global([data-theme="dark"]) .modalHeader {
-  background: color-mix(in oklch, var(--color-primary) 14%, #15172a);
-  border-bottom-color: color-mix(in oklch, var(--color-primary-hover) 30%, transparent);
-}
-
-:global([data-theme="dark"]) .modalTitle {
-  color: #d6d9ee;
-}
-
-:global([data-theme="dark"]) .closeButton {
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary-hover) 22%, transparent);
-  color: #b0b6d0;
-}
-
-:global([data-theme="dark"]) .closeButton:hover {
-  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
-  border-color: #6B80FF;
-  color: #6B80FF;
-}
-
-:global([data-theme="dark"]) .loading {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .description {
-  color: rgba(227, 225, 238, 0.55);
-}
-
-:global([data-theme="dark"]) .avatarOption {
-  background: #1A1B24;
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-:global([data-theme="dark"]) .avatarOption:hover {
-  border-color: rgba(107, 128, 255, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
-:global([data-theme="dark"]) .avatarOption.selected {
-  border-color: #6B80FF;
-  box-shadow: 0 0 0 4px rgba(107, 128, 255, 0.15);
-}
-
-:global([data-theme="dark"]) .errorMessage {
-  background: rgba(255, 82, 82, 0.12);
-  border-color: rgba(255, 82, 82, 0.25);
-  color: #FF6B6B;
-}
-
-:global([data-theme="dark"]) .modalFooter {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-:global([data-theme="dark"]) .cancelButton {
-  border-color: rgba(255, 255, 255, 0.1);
-  color: rgba(227, 225, 238, 0.95);
-}
-
-:global([data-theme="dark"]) .cancelButton:hover:not(:disabled) {
-  background: rgba(107, 128, 255, 0.12);
-  border-color: rgba(107, 128, 255, 0.4);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transform: none;
 }

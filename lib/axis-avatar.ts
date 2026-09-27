@@ -22,16 +22,27 @@ const AVATAR_ROUTE = '/api/avatars/render';
 const DICEBEAR_HOST = 'api.dicebear.com';
 
 export const BACKGROUND_TRAITS = [
-  'Charcoal Studio',
-  'Electric Blue',
-  'Midnight Navy',
-  'Soft Lavender',
-  'Deep Plum',
-  'Dark Emerald',
-  'Warm Mocha',
-  'Cyber Teal',
-  'Crimson Rose',
-  'Slate Studio',
+  'Attachment Emerald',
+  'Big Five Purple',
+  'Strengths Blue',
+  'Moral Cyan',
+  'Academy Blue',
+  'Rainbow Rose',
+  'Rainbow Orange',
+  'Rainbow Gold',
+  'Studio Violet',
+  'Charcoal Night',
+] as const;
+
+export const SKIN_TONE_TRAITS = [
+  'Fair Porcelain',
+  'Peach Cream',
+  'Warm Honey',
+  'Amber Bronze',
+  'Rich Caramel',
+  'Deep Espresso',
+  'Cyber Lilac',
+  'Cyber Mint',
 ] as const;
 
 export const HAIRSTYLE_TRAITS = [
@@ -96,6 +107,7 @@ export const HEADGEAR_TRAITS = HEADSET_TRAITS;
 
 export interface AxisAvatarParams {
   backgroundIndex: number;
+  skinToneIndex: number;
   hairstyleIndex: number;
   hairColorIndex: number;
   headsetIndex: number;
@@ -107,6 +119,7 @@ export interface AxisAvatarParams {
   headgearIndex: number;
   traits: {
     background: (typeof BACKGROUND_TRAITS)[number];
+    skinTone: (typeof SKIN_TONE_TRAITS)[number];
     hairstyle: (typeof HAIRSTYLE_TRAITS)[number];
     hairColor: (typeof HAIR_COLOR_TRAITS)[number];
     headset: (typeof HEADSET_TRAITS)[number];
@@ -117,6 +130,18 @@ export interface AxisAvatarParams {
     visor: string;
     headgear: string;
   };
+}
+
+export function buildCustomAvatarSeed(params: {
+  backgroundIndex: number;
+  skinToneIndex: number;
+  hairstyleIndex: number;
+  hairColorIndex: number;
+  headsetIndex: number;
+  outfitIndex: number;
+  accessoryIndex: number;
+}): string {
+  return `c_${params.backgroundIndex}_${params.skinToneIndex}_${params.hairstyleIndex}_${params.hairColorIndex}_${params.headsetIndex}_${params.outfitIndex}_${params.accessoryIndex}`;
 }
 
 function hashSeed(seed: string): number {
@@ -140,9 +165,48 @@ function seededRandom(seed: string): () => number {
 }
 
 export function getAxisAvatarParams(seed: string): AxisAvatarParams {
+  if (seed.startsWith('c_')) {
+    const parts = seed.split('_').slice(1).map((v) => parseInt(v, 10));
+    if (parts.length >= 7 && parts.every((n) => !Number.isNaN(n))) {
+      const backgroundIndex = Math.abs(parts[0]) % BACKGROUND_TRAITS.length;
+      const skinToneIndex = Math.abs(parts[1]) % SKIN_TONE_TRAITS.length;
+      const hairstyleIndex = Math.abs(parts[2]) % HAIRSTYLE_TRAITS.length;
+      const hairColorIndex = Math.abs(parts[3]) % HAIR_COLOR_TRAITS.length;
+      const headsetIndex = Math.abs(parts[4]) % HEADSET_TRAITS.length;
+      const outfitIndex = Math.abs(parts[5]) % OUTFIT_TRAITS.length;
+      const accessoryIndex = Math.abs(parts[6]) % ACCESSORY_TRAITS.length;
+
+      return {
+        backgroundIndex,
+        skinToneIndex,
+        hairstyleIndex,
+        hairColorIndex,
+        headsetIndex,
+        outfitIndex,
+        accessoryIndex,
+        chassisIndex: hairstyleIndex,
+        visorIndex: hairColorIndex,
+        headgearIndex: headsetIndex,
+        traits: {
+          background: BACKGROUND_TRAITS[backgroundIndex],
+          skinTone: SKIN_TONE_TRAITS[skinToneIndex],
+          hairstyle: HAIRSTYLE_TRAITS[hairstyleIndex],
+          hairColor: HAIR_COLOR_TRAITS[hairColorIndex],
+          headset: HEADSET_TRAITS[headsetIndex],
+          outfit: OUTFIT_TRAITS[outfitIndex],
+          accessory: ACCESSORY_TRAITS[accessoryIndex],
+          chassis: HAIRSTYLE_TRAITS[hairstyleIndex],
+          visor: HAIR_COLOR_TRAITS[hairColorIndex],
+          headgear: HEADSET_TRAITS[headsetIndex],
+        },
+      };
+    }
+  }
+
   const random = seededRandom(seed);
 
   const backgroundIndex = Math.floor(random() * BACKGROUND_TRAITS.length);
+  const skinToneIndex = Math.floor(random() * SKIN_TONE_TRAITS.length);
   const hairstyleIndex = Math.floor(random() * HAIRSTYLE_TRAITS.length);
   const hairColorIndex = Math.floor(random() * HAIR_COLOR_TRAITS.length);
   const headsetIndex = Math.floor(random() * HEADSET_TRAITS.length);
@@ -151,6 +215,7 @@ export function getAxisAvatarParams(seed: string): AxisAvatarParams {
 
   return {
     backgroundIndex,
+    skinToneIndex,
     hairstyleIndex,
     hairColorIndex,
     headsetIndex,
@@ -161,6 +226,7 @@ export function getAxisAvatarParams(seed: string): AxisAvatarParams {
     headgearIndex: headsetIndex,
     traits: {
       background: BACKGROUND_TRAITS[backgroundIndex],
+      skinTone: SKIN_TONE_TRAITS[skinToneIndex],
       hairstyle: HAIRSTYLE_TRAITS[hairstyleIndex],
       hairColor: HAIR_COLOR_TRAITS[hairColorIndex],
       headset: HEADSET_TRAITS[headsetIndex],
@@ -177,20 +243,31 @@ export function getAxisAvatarParams(seed: string): AxisAvatarParams {
 /* PALETTES & COLOR PROFILES                                                  */
 /* -------------------------------------------------------------------------- */
 
-const BACKGROUND_COLORS = [
-  '#18181B', // 0: Charcoal Studio (prompt default)
-  '#1E3A8A', // 1: Electric Blue
-  '#0F172A', // 2: Midnight Navy
-  '#3B2D54', // 3: Soft Lavender
-  '#3B0764', // 4: Deep Plum
-  '#064E3B', // 5: Dark Emerald
-  '#2C1A14', // 6: Warm Mocha
-  '#115E59', // 7: Cyber Teal
-  '#4C0519', // 8: Crimson Rose
-  '#334155', // 9: Slate Studio
+export const BACKGROUND_COLORS = [
+  '#10B981', // 0: Attachment Emerald
+  '#9333EA', // 1: Big Five Purple
+  '#4361EE', // 2: Strengths Blue
+  '#06B6D4', // 3: Moral Cyan
+  '#5168FF', // 4: Academy Blue
+  '#FF3366', // 5: Rainbow Rose
+  '#FF8800', // 6: Rainbow Orange
+  '#FFD000', // 7: Rainbow Gold
+  '#7844D0', // 8: Studio Violet
+  '#18181B', // 9: Charcoal Night
 ];
 
-const HAIR_PALETTES = [
+export const SKIN_PALETTES = [
+  { base: '#FDE2D2', shadow: '#E8BCA4' }, // 0: Fair Porcelain
+  { base: '#F8B185', shadow: '#E89668' }, // 1: Peach Cream (prompt default)
+  { base: '#E5A672', shadow: '#C98652' }, // 2: Warm Honey
+  { base: '#C67A4B', shadow: '#A85B2E' }, // 3: Amber Bronze
+  { base: '#8D5534', shadow: '#6B3B1F' }, // 4: Rich Caramel
+  { base: '#523223', shadow: '#3A2014' }, // 5: Deep Espresso
+  { base: '#E4D4F4', shadow: '#C4B0DF' }, // 6: Cyber Lilac
+  { base: '#D0F0E4', shadow: '#ACDAC6' }, // 7: Cyber Mint
+];
+
+export const HAIR_PALETTES = [
   { main: '#2563EB', shadow: '#1D4ED8', highlight: '#60A5FA' }, // 0: Electric Cobalt
   { main: '#E2E8F0', shadow: '#CBD5E1', highlight: '#FFFFFF' }, // 1: Platinum Silver
   { main: '#A855F7', shadow: '#7E22CE', highlight: '#D8B4FE' }, // 2: Cyber Lilac
@@ -559,9 +636,12 @@ function renderFrontHair(styleIdx: number, colorIdx: number): string {
   }
 }
 
-export function renderAxisAvatarSvg(seed: string): string {
-  const params = getAxisAvatarParams(seed);
-  const bgColor = BACKGROUND_COLORS[params.backgroundIndex];
+export function renderAxisAvatarSvg(seedOrParams: string | AxisAvatarParams): string {
+  const params = typeof seedOrParams === 'string' ? getAxisAvatarParams(seedOrParams) : seedOrParams;
+  const bgColor = BACKGROUND_COLORS[params.backgroundIndex] ?? BACKGROUND_COLORS[0];
+  const skin = SKIN_PALETTES[params.skinToneIndex] ?? SKIN_PALETTES[1];
+  const skinBase = skin.base;
+  const skinShadow = skin.shadow;
 
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">',
@@ -576,9 +656,9 @@ export function renderAxisAvatarSvg(seed: string): string {
     renderBackHair(params.hairstyleIndex, params.hairColorIndex),
 
     // 3. Neck & Shadow
-    `<path d="M110 145 L106 205 L150 205 L146 145 Z" fill="${SKIN_SHADOW}"/>`,
-    `<path d="M113 160 L110 205 L146 205 L143 160 Z" fill="${SKIN_BASE}"/>`,
-    `<polygon points="128,178 122,164 134,164" fill="${SKIN_SHADOW}" opacity="0.6"/>`,
+    `<path d="M110 145 L106 205 L150 205 L146 145 Z" fill="${skinShadow}"/>`,
+    `<path d="M113 160 L110 205 L146 205 L143 160 Z" fill="${skinBase}"/>`,
+    `<polygon points="128,178 122,164 134,164" fill="${skinShadow}" opacity="0.6"/>`,
 
     // 4. Outfit (Torso)
     renderOutfit(params.outfitIndex),
@@ -587,13 +667,13 @@ export function renderAxisAvatarSvg(seed: string): string {
     renderAccessory(params.accessoryIndex),
 
     // 6. Head & Face Base
-    `<path d="M82 98 C80 128 94 150 128 164 C162 150 176 128 174 98 C174 68 82 68 82 98 Z" fill="${SKIN_BASE}"/>`,
-    `<path d="M82 98 C82 82 90 70 102 64 C90 74 84 88 84 98 C84 126 96 148 128 162 C114 152 82 128 82 98 Z" fill="${SKIN_SHADOW}" opacity="0.3"/>`,
+    `<path d="M82 98 C80 128 94 150 128 164 C162 150 176 128 174 98 C174 68 82 68 82 98 Z" fill="${skinBase}"/>`,
+    `<path d="M82 98 C82 82 90 70 102 64 C90 74 84 88 84 98 C84 126 96 148 128 162 C114 152 82 128 82 98 Z" fill="${skinShadow}" opacity="0.3"/>`,
 
     // 7. Ears
-    `<path d="M82 102 C75 106 74 116 83 124 Z" fill="${SKIN_BASE}"/>`,
-    `<polygon points="172,100 196,92 174,120" fill="${SKIN_BASE}"/>`,
-    `<polygon points="173,103 188,96 174,116" fill="${SKIN_SHADOW}"/>`,
+    `<path d="M82 102 C75 106 74 116 83 124 Z" fill="${skinBase}"/>`,
+    `<polygon points="172,100 196,92 174,120" fill="${skinBase}"/>`,
+    `<polygon points="173,103 188,96 174,116" fill="${skinShadow}"/>`,
 
     // 8. Cyber Headset (Right Temple/Ear)
     renderHeadset(params.headsetIndex),

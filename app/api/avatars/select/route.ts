@@ -116,12 +116,17 @@ export async function POST(request: Request) {
       await sqlQueryWithClient(
         client,
         `UPDATE user_avatars
-         SET is_selected = CASE
-           WHEN avatar_id = :avatarId THEN true
-           ELSE false
-         END
+         SET is_selected = false
          WHERE user_id = :userId`,
-        { avatarId: avatar_id, userId: user.id }
+        { userId: user.id }
+      );
+
+      await sqlQueryWithClient(
+        client,
+        `INSERT INTO user_avatars (id, user_id, avatar_id, avatar_url, is_selected)
+         VALUES (gen_random_uuid(), :userId, :avatarId, :avatarUrl, true)
+         ON CONFLICT (user_id, avatar_id) DO UPDATE SET is_selected = true, avatar_url = :avatarUrl`,
+        { avatarId: avatar_id, avatarUrl: avatar.image_url, userId: user.id }
       );
     });
 

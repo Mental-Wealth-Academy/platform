@@ -111,6 +111,8 @@ export function getAssignedAvatars(userSeed: string, generation = 0): Avatar[] {
  * generation (the user's current `avatar_reroll_count`).
  */
 export function isAvatarValidForUser(userSeed: string, avatarId: string, generation = 0): boolean {
+  // Allow custom builder avatar seeds
+  if (avatarId.startsWith('c_')) return true;
   for (let i = 0; i < AVATARS_PER_USER; i++) {
     if (optionSeed(userSeed, i, generation) === avatarId) return true;
   }

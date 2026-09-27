@@ -221,6 +221,7 @@ export default function HomePage() {
   // a finished profile when rehearsing the post-signup moments.
   const postSignupReady = profileComplete || devOnboarding;
   const [bookmarkedCount, setBookmarkedCount] = useState(0);
+  const [activeInsightSlide, setActiveInsightSlide] = useState<0 | 1>(0);
 
   useEffect(() => {
     setBookmarkedCount(getBookmarkedSlugs().length);
@@ -606,6 +607,42 @@ export default function HomePage() {
           >
             Blue Superintelligence
           </CtaButton>
+          <div className={styles.blueSpriteTrack} aria-hidden="true">
+            <div className={styles.spritePuck}>
+              <img
+                src="/images/blue-guide-sprites/breathing-idle.gif"
+                alt=""
+                width={42}
+                height={42}
+                className={styles.spriteImg}
+              />
+            </div>
+            <svg
+              className={styles.trackSvg}
+              viewBox="0 0 320 20"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                x1="0"
+                y1="10"
+                x2="320"
+                y2="10"
+                stroke="#5168FF"
+                strokeOpacity="0.45"
+                strokeWidth="2"
+                strokeDasharray="4 7"
+              >
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="0"
+                  to="-44"
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                />
+              </line>
+            </svg>
+          </div>
         </div>
         <div className={styles.desktopLeaderboard}>
           <HomeLeaderboard />
@@ -637,7 +674,7 @@ export default function HomePage() {
                     title="Blue's Quest"
                     href="/shadow-work"
                     avatarSrc="/blue/blue-home.png"
-                    centerLabel="Blue's Story"
+                    centerLabel="Creativity"
                     ctaLabel="Continue Course"
                     dark
                   />
@@ -645,7 +682,7 @@ export default function HomePage() {
                     title="Your Course"
                     href="/course/personal"
                     avatarSrc="/academic-angels.webp"
-                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum')}
+                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Guide')}
                     ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
                     ctaDark
                   />
@@ -824,65 +861,78 @@ export default function HomePage() {
 
       {!learnOnly && (
         <section className={styles.dashboardInsights} aria-label="Learning insights">
-          <article className={`${styles.insightCard} ${styles.recommendInsightCard}`}>
-            <h2 className={styles.insightTitle}>Blue recommends</h2>
-            {recommendedGuide ? (
-              <>
-                <Link
-                  href={`/learn/guides/${recommendedGuide.slug}`}
-                  className={styles.recommendMain}
-                  onMouseEnter={() => play('soft-hover')}
-                  onClick={() => play('click')}
-                >
-                  <span className={styles.recommendGuideTitle}>{recommendedGuide.topicTitle}</span>
-                  {recommendedGuide.summary && (
-                    <span className={styles.recommendSummary}>{recommendedGuide.summary}</span>
-                  )}
-                  <span className={styles.recommendCta}>
-                    {recommendedGuide.estimatedMinutes
-                      ? `Start this guide · ${recommendedGuide.estimatedMinutes} min`
-                      : 'Start this guide'}
-                  </span>
-                </Link>
-                <div className={styles.recommendReason}>
-                  <Image
-                    src="/blue/blue-home.png"
-                    alt="Blue"
-                    width={30}
-                    height={30}
-                    className={styles.recommendAvatar}
-                  />
-                  <p className={styles.recommendReasonText}>{recommendReason}</p>
-                </div>
-                {recommendRunnersUp.length > 0 && (
-                  <p className={styles.recommendAlso}>
-                    Also open:{' '}
-                    {recommendRunnersUp.map((g, i) => (
-                      <React.Fragment key={g.id}>
-                        {i > 0 && ' · '}
-                        <Link href={`/learn/guides/${g.slug}`} className={styles.recommendAlsoLink}>
-                          {g.topicTitle}
-                        </Link>
-                      </React.Fragment>
-                    ))}
+          <div className={styles.insightsSlideHeader}>
+            <div className={styles.insightsTabs} role="tablist" aria-label="Insights tabs">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeInsightSlide === 0}
+                className={`${styles.insightTabBtn} ${activeInsightSlide === 0 ? styles.insightTabActive : ''}`}
+                onClick={() => { play('click'); setActiveInsightSlide(0); }}
+              >
+                Recommended Guide
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeInsightSlide === 1}
+                className={`${styles.insightTabBtn} ${activeInsightSlide === 1 ? styles.insightTabActive : ''}`}
+                onClick={() => { play('click'); setActiveInsightSlide(1); }}
+              >
+                Your Progress
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.insightsSlideContainer}>
+            {activeInsightSlide === 0 ? (
+              <article className={`${styles.insightCard} ${styles.recommendInsightCard}`}>
+                {recommendedGuide ? (
+                  <>
+                    <Link
+                      href={`/learn/guides/${recommendedGuide.slug}`}
+                      className={styles.recommendMain}
+                      onMouseEnter={() => play('soft-hover')}
+                      onClick={() => play('click')}
+                    >
+                      <span className={styles.recommendGuideTitle}>{recommendedGuide.topicTitle}</span>
+                      {recommendedGuide.summary && (
+                        <span className={styles.recommendSummary}>{recommendedGuide.summary}</span>
+                      )}
+                      <span className={styles.recommendCtaPill}>
+                        {recommendedGuide.estimatedMinutes
+                          ? `Start this guide · ${recommendedGuide.estimatedMinutes} min`
+                          : 'Start this guide'}
+                      </span>
+                    </Link>
+                    <div className={styles.recommendReason}>
+                      <Image
+                        src="/blue/blue-home.png"
+                        alt="Blue"
+                        width={30}
+                        height={30}
+                        className={styles.recommendAvatar}
+                      />
+                      <p className={styles.recommendReasonText}>{recommendReason}</p>
+                    </div>
+                  </>
+                ) : (
+                  <p className={styles.recommendEmpty}>
+                    {authenticated
+                      ? 'Nothing to unlock right now. Blue will chart your next step when a new guide opens.'
+                      : 'Sign in and finish a guide. Blue will chart your next step here.'}
                   </p>
                 )}
-              </>
+              </article>
             ) : (
-              <p className={styles.recommendEmpty}>
-                {authenticated
-                  ? 'Nothing to unlock right now. Blue will chart your next step when a new guide opens.'
-                  : 'Sign in and finish a guide. Blue will chart your next step here.'}
-              </p>
+              <KnowledgeCoverageCard
+                className={`${styles.insightCard} ${styles.coverageInsightCard}`}
+                titleClassName={styles.insightTitle}
+                authenticated={authenticated}
+                stats={guideProgress}
+              />
             )}
-          </article>
-
-          <KnowledgeCoverageCard
-            className={`${styles.insightCard} ${styles.coverageInsightCard}`}
-            titleClassName={styles.insightTitle}
-            authenticated={authenticated}
-            stats={guideProgress}
-          />
+          </div>
         </section>
       )}
       </div>

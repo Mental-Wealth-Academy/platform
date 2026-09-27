@@ -51,3 +51,9 @@ export function removeStorageItem(key: string, kind: 'local' | 'session' = 'loca
     return false;
   }
 }
+
+export const safeStorage = {
+  getItem: getStorageItem,
+  setItem: setStorageItem,
+  removeItem: removeStorageItem,
+};

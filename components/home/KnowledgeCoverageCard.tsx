@@ -52,7 +52,7 @@ export default function KnowledgeCoverageCard({
   return (
     <article className={className} aria-labelledby="knowledge-coverage-title">
       <h2 id="knowledge-coverage-title" className={titleClassName}>
-        Knowledge coverage
+        Your Progress
       </h2>
 
       {hasData && stats ? (

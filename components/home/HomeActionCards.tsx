@@ -45,7 +45,7 @@ export default function HomeActionCards({
     router.push('/course-builder');
   };
 
-  const personalTitle = personalCourse?.title ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Curriculum');
+  const personalTitle = personalCourse?.title ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Guide');
   const personalBadge = personalCourse ? 'Active Track' : bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Track';
   const personalDesc = personalCourse
     ? `A personal 4-week track tuned to ${personalCourse.focus.toLowerCase()} — weekly readings and tasks tuned to your goal.`
@@ -128,7 +128,7 @@ export default function HomeActionCards({
           onClick={() => handleCardClick('/course/personal')}
           onMouseEnter={() => play('soft-hover')}
           role="region"
-          aria-label="Personal Curriculum action card"
+          aria-label="Personal Guide action card"
         >
           <div className={styles.cardTop}>
             <div className={styles.iconContainer}>

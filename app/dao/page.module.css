@@ -2,6 +2,7 @@
 
 .pageLayout {
   position: relative;
+  box-sizing: border-box;
   margin-left: var(--sidebar-width, 265px);
   height: calc(100dvh - 72px - var(--banner-height, 0px));
   min-height: 0;

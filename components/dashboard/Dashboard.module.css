@@ -119,15 +119,15 @@
 /* Phones: extended hero height for Blue card */
 @media (max-width: 768px) {
   .dashboard {
-    gap: 20px;
-    padding-top: 8px;
+    gap: 12px;
+    padding-top: 4px;
   }
 
   .blueSceneWrap {
-    height: clamp(380px, 56dvh, 520px);
-    min-height: 360px;
-    max-height: 560px;
-    flex: none;
+    flex: 1 1 auto;
+    height: clamp(260px, calc(100dvh - 72px - 94px - 85px), 480px);
+    min-height: 260px;
+    max-height: calc(100dvh - 72px - 94px - 75px);
   }
 
   .moodSelectorWrap {

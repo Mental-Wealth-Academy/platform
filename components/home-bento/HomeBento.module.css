@@ -153,13 +153,13 @@
 
 @media (max-width: 640px) {
   .bentoScroll {
-    padding: 16px 16px 24px;
+    padding: 12px 14px 16px;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
 
   .bentoScrollWithMorningNote {
-    padding-bottom: 24px;
+    padding-bottom: 16px;
   }
 }
 

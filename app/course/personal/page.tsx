@@ -13,6 +13,7 @@ import { GuideGalleryCard } from '@/components/home/GuideGallery';
 import { getBookmarkedSlugs, onBookmarksUpdated } from '@/lib/bookmarks';
 import shared from '../page.module.css';
 import wt from '@/components/week-tasks/WeekTasksView.module.css';
+import BlueGrokBotSticker from '@/components/shared/BlueGrokBotSticker';
 import styles from './personal.module.css';
 
 type ProgressMap = Record<string, number[]>;
@@ -239,8 +240,9 @@ export default function PersonalCoursePage() {
           ) : (
             <div className={styles.emptyBookmarksWrap}>
               <h2 className={styles.stateHeading}>No bookmarked guides yet</h2>
+              <BlueGrokBotSticker size={100} />
               <p className={styles.stateText}>
-                Explore the library and bookmark guides to customize your curriculum, or build a 4-week course with Blue.
+                Save guides that speak to you as you explore, or build a gentle weekly path with Blue when you are ready.
               </p>
               <div className={styles.emptyActions}>
                 <Link href="/learn" className={styles.stateBtn}>Explore Library</Link>

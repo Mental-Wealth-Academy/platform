@@ -8,6 +8,7 @@ import { SealCheck } from '@phosphor-icons/react';
 import AvatarSelectorModal from '@/components/avatar-selector/AvatarSelectorModal';
 import UsernameChangeModal from '@/components/username-change/UsernameChangeModal';
 import { useSound } from '@/hooks/useSound';
+import { safeStorage } from '@/lib/safe-storage';
 import styles from './HomeTopCard.module.css';
 
 export interface HomeTopCardProps {
@@ -62,8 +63,8 @@ export default function HomeTopCard({}: HomeTopCardProps) {
   const { ready, authenticated, login, getAccessToken } = usePrivy();
   const { play } = useSound();
 
-  const [username, setUsername] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(() => safeStorage.getItem('mwa:cached_username'));
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(() => safeStorage.getItem('mwa:cached_avatar'));
   const [streak, setStreak] = useState(0);
   const [verifierLevel, setVerifierLevel] = useState<number | null>(null);
   const [guidesDone, setGuidesDone] = useState<number | null>(null);
@@ -80,17 +81,33 @@ export default function HomeTopCard({}: HomeTopCardProps) {
     if (!ready || !authenticated) return;
 
     // Load profile
-    (async () => {
+    const loadProfile = async () => {
       try {
         const headers = await authHeaders();
         const res = await fetch('/api/me', { cache: 'no-store', credentials: 'include', headers });
         const data = await res.json().catch(() => ({}));
         if (data?.user) {
-          setUsername(data.user.username ?? null);
-          setAvatarUrl(data.user.avatarUrl ?? null);
+          if (data.user.username) {
+            setUsername(data.user.username);
+            safeStorage.setItem('mwa:cached_username', data.user.username);
+          }
+          if (data.user.avatarUrl) {
+            setAvatarUrl(data.user.avatarUrl);
+            safeStorage.setItem('mwa:cached_avatar', data.user.avatarUrl);
+          }
         }
       } catch { /* ignore */ }
-    })();
+    };
+    loadProfile();
+
+    const onProfileUpdated = () => {
+      const cached = safeStorage.getItem('mwa:cached_avatar');
+      if (cached) setAvatarUrl(cached);
+      const cachedUser = safeStorage.getItem('mwa:cached_username');
+      if (cachedUser) setUsername(cachedUser);
+      loadProfile();
+    };
+    window.addEventListener('profileUpdated', onProfileUpdated);
 
     // Load streak
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -128,6 +145,10 @@ export default function HomeTopCard({}: HomeTopCardProps) {
         if (typeof data?.totalDiamondsEarned === 'number') setCreditsEarned(data.totalDiamondsEarned);
       } catch { /* ignore */ }
     })();
+
+    return () => {
+      window.removeEventListener('profileUpdated', onProfileUpdated);
+    };
   }, [ready, authenticated, authHeaders]);
 
 
@@ -204,6 +225,7 @@ export default function HomeTopCard({}: HomeTopCardProps) {
         <>
           {editingAvatar && (
             <AvatarSelectorModal
+              currentAvatarUrl={avatarUrl}
               onClose={() => setEditingAvatar(false)}
               onAvatarSelected={(url) => {
                 setAvatarUrl(url);
