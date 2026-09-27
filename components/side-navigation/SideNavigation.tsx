@@ -53,7 +53,7 @@ const proFeaturesSection: NavSection = {
   badgeType: 'pro',
   items: [
     { id: 'simulations', label: 'Simulations', href: '/simulation', iconSrc: '/icons/nav-simulations-v2.svg?v=4' },
-    { id: 'lists', label: 'Lists', href: '/list', iconSrc: '/icons/nav-journal-v3.svg' },
+    { id: 'lists', label: 'Lists', href: '/lists', iconSrc: '/icons/icon-lists.svg' },
   ],
 };
 

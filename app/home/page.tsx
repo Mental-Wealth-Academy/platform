@@ -649,16 +649,26 @@ export default function HomePage() {
         </div>
         <div className={styles.dailyNotes} data-tour="daily-note">
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
-          <button
-            type="button"
-            className={`${styles.fieldNotesGhost} ${notebookEntriesUnlocked ? styles.fieldNotesUnlocked : ''}`}
-            onClick={() => setFieldNotesOpen(true)}
-            disabled={!notebookEntriesUnlocked}
-            title={notebookEntriesUnlocked ? undefined : 'Unlocks at 3,000 credits'}
+          <Link
+            href="/lists"
+            className={styles.listsCard}
+            aria-label="Lists"
           >
-            <Image src="/icons/ui-book-v2.svg" alt="" width={36} height={36} />
-            <span>Notebook</span>
-          </button>
+            <div className={styles.listsCardBorder} />
+            <div className={styles.listsCardSurface} />
+            <div className={styles.listsCardButton}>
+              <Image
+                className={styles.listsCardIcon}
+                src="/icons/icon-lists.svg"
+                alt=""
+                width={36}
+                height={36}
+              />
+              <div className={styles.listsCardText}>
+                <span className={styles.listsCardLabel}>Lists</span>
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
       )}

@@ -1,141 +1,10 @@
-/* ListsPanel — Card-based design matching shadow-work, DAO, and app design system */
+/* ListsPanel — Card-based design matching /dao */
 
 .panel {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-}
-
-/* ── Header row ── */
-.headerRow {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.pageTitle {
-  font-family: var(--font-secondary, sans-serif);
-  font-size: clamp(1.5rem, 2.5vw, 1.875rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-text-dark);
-  margin: 0;
-  line-height: 1.15;
-}
-
-.pageSubtitle {
-  font-family: var(--font-primary, monospace);
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  margin: 0;
-  line-height: 1.5;
-}
-
-/* ── Search ── */
-.searchWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: clamp(200px, 30vw, 280px);
-}
-
-.searchIcon {
-  position: absolute;
-  left: 12px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.searchInput {
-  width: 100%;
-  padding: 8px 14px 8px 34px;
-  border-radius: 9999px;
-  border: 1.5px solid var(--color-border-subtle);
-  background: var(--card-background);
-  color: var(--color-text-dark);
-  font-family: var(--font-secondary, sans-serif);
-  font-size: 0.8125rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.searchInput::placeholder {
-  color: var(--color-text-muted);
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
-}
-
-/* ── Tabs (Segmented Control) ── */
-.tabBar {
-  display: flex;
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-}
-
-.tabGroup {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--color-text-dark) 5%, transparent);
-  border: 1px solid var(--color-border-subtle);
-}
-
-.tabButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  border: none;
-  background: transparent;
-  color: var(--color-text-soft);
-  font-family: var(--font-secondary, sans-serif);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-}
-
-.tabButton:hover {
-  color: var(--color-text-dark);
-  background: color-mix(in srgb, var(--color-text-dark) 4%, transparent);
-}
-
-.tabButtonActive {
-  background: var(--color-primary);
-  color: var(--palette-on-dark);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 30%, transparent);
-}
-
-.tabBadge {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6875rem;
-  padding: 1px 6px;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--color-text-dark) 8%, transparent);
-  color: inherit;
-}
-
-.tabButtonActive .tabBadge {
-  background: color-mix(in srgb, var(--palette-on-dark) 22%, transparent);
-  color: var(--palette-on-dark);
 }
 
 /* ── Error Notice ── */
@@ -158,89 +27,69 @@
   align-items: start;
 }
 
-.singleColumnView {
-  grid-template-columns: minmax(0, 720px);
-  justify-content: center;
-}
-
-/* ── Card — matching shadow-work / dao card style ── */
+/* ── Card — matching /dao style ── */
 .card {
-  background: var(--card-background);
-  border: 1.5px solid var(--color-border-subtle);
-  border-radius: var(--radius-xl, 18px);
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--palette-night) 6%, transparent);
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 12px;
+  box-shadow:
+    0 6px 0 var(--color-primary),
+    0 0px 10px rgba(0, 0, 0, 0.14),
+    0 10px 5px rgba(0, 0, 0, 0.30);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card:hover {
-  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border-subtle));
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--palette-night) 9%, transparent);
+:global([data-theme="dark"]) .card {
+  background-color: var(--color-surface-1);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
 }
 
+/* ── /dao Headpiece with Japanese Kanji ── */
 .cardHeader {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 14px;
-}
-
-.cardHeaderTop {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  margin-bottom: 4px;
+  padding: 12px 16px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  border-bottom: 2px solid var(--color-primary-hover);
 }
 
-.categoryBadge {
-  font-family: var(--font-secondary, sans-serif);
-  font-size: 0.6875rem;
+:global([data-theme="dark"]) .cardHeader {
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+}
+
+.cardKanji {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 3px 8px;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  letter-spacing: 0.08em;
   color: var(--color-primary);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
-}
-
-.categoryBadge[data-list='watch'] {
-  background: color-mix(in srgb, var(--palette-gold) 12%, transparent);
-  color: var(--palette-gold-text, var(--palette-gold));
-  border-color: color-mix(in srgb, var(--palette-gold) 24%, transparent);
-}
-
-.categoryBadge[data-list='later'] {
-  background: color-mix(in srgb, var(--palette-violet) 12%, transparent);
-  color: var(--palette-violet);
-  border-color: color-mix(in srgb, var(--palette-violet) 24%, transparent);
-}
-
-.itemCountBadge {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6875rem;
-  color: var(--color-text-muted);
 }
 
 .cardTitle {
-  font-family: var(--font-secondary, "Space Grotesk", sans-serif);
-  font-size: 1.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-text-dark);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2f52;
   margin: 0;
-  letter-spacing: -0.01em;
 }
 
-.cardBlurb {
-  font-family: var(--font-primary, monospace);
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-  line-height: 1.45;
-  margin: 0;
+:global([data-theme="dark"]) .cardTitle {
+  color: var(--color-text-dark);
+}
+
+/* ── Card Body ── */
+.cardBody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* ── Add Item Row ── */
@@ -467,23 +316,8 @@
     gap: 16px;
   }
 
-  .card {
-    padding: 16px 14px;
-    border-radius: 16px;
-  }
-
-  .cardTitle {
-    font-size: 1.1rem;
-  }
-
-  .searchWrapper {
-    width: 100%;
-  }
-
-  .headerRow {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+  .cardBody {
+    padding: 14px 12px;
   }
 
   .gateCard {

@@ -463,94 +463,184 @@
   }
 }
 
-.fieldNotesGhost {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 72px;
-  padding: 16px 20px;
-  border: 2px dotted color-mix(in oklch, var(--color-primary) 65%, var(--color-border-subtle));
-  /* Matches the compact Field Notes card above it (DailyNotes .cardCompact) */
-  border-radius: 12px;
-  background: color-mix(in oklch, var(--color-primary) 3%, transparent);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  font-family: var(--font-secondary);
-  font-size: 1rem;
-  font-weight: 700;
-  text-align: left;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease,
-    transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.fieldNotesGhost img {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
-  object-fit: contain;
-  display: block;
-  opacity: 0.8;
-}
-
-.fieldNotesGhost:not(:disabled):hover {
-  border-color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  color: var(--color-text-dark);
-}
-
-/* Unlocked it is a real card button, matching the Field Notes card above it;
-   the dotted placeholder treatment stays for the locked state. */
-.fieldNotesUnlocked {
+.listsCard {
+  width: 100%;
+  background: transparent;
   border: 2px solid var(--color-primary-hover);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base)) 0%,
-    color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-base)) 100%
-  );
-  color: var(--color-text-dark);
+  --card-radius: 12px;
+  --card-border-width: 2px;
+  border-radius: var(--card-radius);
+  overflow: visible;
   box-shadow:
-    0 5px 0 var(--color-primary),
-    0 8px 10px color-mix(in srgb, var(--palette-night) 14%, transparent);
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+  transition: all 0.2s ease;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.fieldNotesUnlocked img {
-  opacity: 1;
-}
-
-.fieldNotesGhost.fieldNotesUnlocked:hover {
+.listsCard:hover {
+  box-shadow:
+    0 8px 0 var(--color-primary),
+    0 0px 12px rgba(0, 0, 0, 0.14),
+    0 12px 8px rgba(0, 0, 0, 0.30);
   border-color: var(--color-primary-hover);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-primary) 7%, var(--color-surface-base)) 0%,
-    color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-base)) 100%
-  );
   transform: translateY(-2px);
-  box-shadow:
-    0 7px 0 var(--color-primary),
-    0 12px 14px color-mix(in srgb, var(--palette-night) 16%, transparent);
 }
 
-.fieldNotesGhost.fieldNotesUnlocked:active {
+.listsCard:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 0 var(--color-primary),
     0 4px 6px color-mix(in srgb, var(--palette-night) 14%, transparent);
 }
 
-.fieldNotesGhost:focus-visible {
+.listsCardBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: none;
+  background: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.listsCardSurface {
+  position: absolute;
+  inset: var(--card-border-width);
+  border-radius: calc(var(--card-radius) - var(--card-border-width));
+  background:
+    linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%),
+    repeating-linear-gradient(
+      87deg,
+      transparent 0px,
+      color-mix(in oklch, var(--color-primary) 30%, transparent) 1px,
+      transparent 2px,
+      transparent 7px
+    ),
+    repeating-linear-gradient(
+      -3deg,
+      transparent 0px,
+      rgba(232, 85, 109, 0.25) 1px,
+      transparent 2px,
+      transparent 11px
+    ),
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(116, 196, 101, 0.15) 0deg 2deg,
+      transparent 2deg 8deg,
+      rgba(167, 139, 250, 0.12) 8deg 10deg,
+      transparent 10deg 20deg
+    ),
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232, 85, 109, 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 75% 25%, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 55% at 50% 75%, rgba(116, 196, 101, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 35% at 85% 70%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 45% at 10% 80%, rgba(242, 160, 181, 0.35) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  filter: contrast(1.3) saturate(1.2);
+  opacity: 0.85;
+}
+
+:global(:root:not([data-theme="dark"])) .listsCardSurface {
+  background:
+    linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
+    repeating-linear-gradient(
+      87deg,
+      transparent 0px,
+      color-mix(in oklch, var(--color-primary) 8%, transparent) 1px,
+      transparent 2px,
+      transparent 10px
+    ),
+    repeating-linear-gradient(
+      -3deg,
+      transparent 0px,
+      rgba(232, 85, 109, 0.05) 1px,
+      transparent 2px,
+      transparent 14px
+    ),
+    radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
+    radial-gradient(ellipse 48% 48% at 76% 24%, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
+  filter: saturate(1.02);
+  opacity: 1;
+}
+
+.listsCardButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  transition: background 0.15s ease;
+  position: relative;
+  z-index: 2;
+  border-radius: inherit;
+  box-sizing: border-box;
+}
+
+.listsCard:hover .listsCardButton {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:global(:root:not([data-theme="dark"])) .listsCardButton {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.32) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .listsCard:hover .listsCardButton {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 100%);
+}
+
+:global(:root:not([data-theme="dark"])) .listsCard:hover {
+  box-shadow:
+    0 8px 0 var(--color-primary),
+    0 0px 12px rgba(0, 0, 0, 0.14),
+    0 12px 8px rgba(0, 0, 0, 0.30);
+}
+
+.listsCardText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.listsCardIcon {
+  width: 36px;
+  height: 36px;
+  display: block;
+  flex-shrink: 0;
+  background: transparent;
+  object-fit: contain;
+}
+
+.listsCardLabel {
+  display: block;
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: rgba(227, 225, 238, 0.95);
+}
+
+:global(:root:not([data-theme="dark"])) .listsCardLabel {
+  color: #1a1d33;
+}
+
+.listsCard:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
-}
-
-.fieldNotesGhost:disabled {
-  opacity: 1;
-  cursor: not-allowed;
-  border: 2px dotted color-mix(in oklch, var(--color-primary) 65%, var(--color-border-subtle));
-  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
-}
-
-.fieldNotesGhost:disabled img {
-  opacity: 0.75;
 }
 
 @media (max-width: 1050px) {
