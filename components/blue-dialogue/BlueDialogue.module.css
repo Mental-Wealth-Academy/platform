@@ -270,20 +270,21 @@
   font-family: var(--font-commit-mono), monospace;
   font-size: 15px;
   line-height: 1.65;
-  color: var(--color-primary, #5168ff);
-  text-shadow: 0 0 10px color-mix(in oklch, var(--color-primary) 30%, transparent);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   white-space: pre-wrap;
   overflow-wrap: break-word;
   letter-spacing: -0.01em;
 }
 
 :global([data-theme='dark']) .speechText {
-  color: #7b8cff;
-  text-shadow: 0 0 12px rgba(123, 140, 255, 0.4);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .quoteMark {
-  color: color-mix(in oklch, var(--color-primary) 50%, white);
+  color: #ffffff;
+  opacity: 0.85;
   font-weight: 700;
   margin-right: 2px;
 }
@@ -294,8 +295,8 @@
   height: 1.15em;
   margin-left: 5px;
   vertical-align: text-bottom;
-  background: var(--color-primary, #5168ff);
-  box-shadow: 0 0 8px var(--color-primary, #5168ff);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
   animation: blink 850ms steps(1) infinite;
 }
 
@@ -328,38 +329,53 @@
 
 /* ── Mobile Responsive Stack ─────────────────────────────── */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .modalBackdrop {
     padding: 12px;
   }
 
   .modal {
     border-radius: 20px;
+    max-width: 440px;
   }
 
   .modalBody {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 16px;
-  }
-
-  .characterCol {
-    order: -1;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .characterImage {
-    max-height: 220px;
-    object-position: center bottom;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 16px 0 16px;
+    min-height: auto;
   }
 
   .dialogueCol {
+    order: 1;
     padding-bottom: 0;
+    width: 100%;
   }
 
   .dialogueWrapper {
     padding: 18px 20px;
+  }
+
+  .characterCol {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .characterImage {
+    max-height: 240px;
+    width: auto;
+    object-position: center bottom;
+    display: block;
+    vertical-align: bottom;
+    margin: 0 auto;
   }
 
   .speechText {
