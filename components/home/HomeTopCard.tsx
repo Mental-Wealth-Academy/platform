@@ -33,7 +33,7 @@ function formatCredits(n: number): string {
 }
 
 const PROFILE_BADGES = [
-  { id: 'heart-gem', src: '/icons/badges/badge-heart-gem.svg', alt: 'Heart gem badge' },
+  { id: 'blue-daemon', src: '/images/blue-guide-sprites/breathing-idle.gif', alt: 'Blue' },
   { id: 'student', src: '/icons/badges/badge-student.svg', alt: 'Student badge' },
   { id: 'scholar', src: '/icons/badges/badge-scholar.svg', alt: 'Scholar badge' },
   { id: 'books', src: '/icons/badges/badge-books.svg', alt: 'Books badge' },
@@ -52,6 +52,7 @@ function StampBanner() {
             width={48}
             height={48}
             className={styles.stampSvg}
+            unoptimized={b.src.endsWith('.gif')}
           />
         </div>
       ))}

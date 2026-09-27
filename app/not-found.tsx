@@ -12,30 +12,30 @@ export default function NotFound() {
       <div className={styles.bgViz}>
         <CyberpunkDataViz />
       </div>
-      <div className={styles.main}>
-        <div className={styles.rightCol}>
+      <section className={styles.heroSection}>
+        <div className={styles.contentCol}>
           <div className={styles.content}>
-            <h3 className={styles.heading}>We Couldn&apos;t Find The Page You&apos;re Looking For*</h3>
+            <h1 className={styles.heading}>404 Lost</h1>
             <p className={styles.paragraph}>
-              Sorry! The page you&apos;re looking for doesn&apos;t exist or has been moved.
+              Sorry! This page no longer exists here.
             </p>
           </div>
           <Link href="/home" className={styles.cta}>
             Return to Safety
           </Link>
         </div>
-      </div>
-      <div className={styles.imageWrapper}>
-        <Image
-          src="/BlueTriModel.png"
-          alt="404 Not Found"
-          width={400}
-          height={400}
-          className={styles.image}
-          priority
-          unoptimized
-        />
-      </div>
+        <div className={styles.imageWrapper}>
+          <Image
+            src="/BlueTriModel.png"
+            alt="404 Not Found"
+            width={1200}
+            height={600}
+            className={styles.image}
+            priority
+            unoptimized
+          />
+        </div>
+      </section>
       <Footer />
     </div>
   );

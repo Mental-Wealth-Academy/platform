@@ -605,44 +605,11 @@ export default function HomePage() {
               setAskBlueOpen(true);
             }}
           >
-            Blue Superintelligence
+            <span className={styles.askBlueContent}>
+              <span className={styles.askBlueLabel}>Blue Superintelligence</span>
+              <span className={styles.warningAiBadge}>Warning, AI</span>
+            </span>
           </CtaButton>
-          <div className={styles.blueSpriteTrack} aria-hidden="true">
-            <div className={styles.spritePuck}>
-              <img
-                src="/images/blue-guide-sprites/breathing-idle.gif"
-                alt=""
-                width={42}
-                height={42}
-                className={styles.spriteImg}
-              />
-            </div>
-            <svg
-              className={styles.trackSvg}
-              viewBox="0 0 320 20"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <line
-                x1="0"
-                y1="10"
-                x2="320"
-                y2="10"
-                stroke="#5168FF"
-                strokeOpacity="0.45"
-                strokeWidth="2"
-                strokeDasharray="4 7"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  from="0"
-                  to="-44"
-                  dur="2.8s"
-                  repeatCount="indefinite"
-                />
-              </line>
-            </svg>
-          </div>
         </div>
         <div className={styles.desktopLeaderboard}>
           <HomeLeaderboard />
