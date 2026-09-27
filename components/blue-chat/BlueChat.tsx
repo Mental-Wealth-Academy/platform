@@ -193,7 +193,7 @@ interface Message {
 }
 
 interface MessageDebugInfo {
-  source: 'eliza' | 'deepseek' | 'replay';
+  source: 'eliza' | 'deepseek' | 'elevenlabs' | 'replay';
   mode: 'chat' | 'auto-distribution';
   diamondsDeducted: number;
   shardBalance?: number | null;

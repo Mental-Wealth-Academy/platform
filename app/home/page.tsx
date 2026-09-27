@@ -905,7 +905,6 @@ export default function HomePage() {
           subtitle="Academy records and guidance"
           lines={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].lines}
           emotion={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].emotion}
-          chatback={{ placeholder: 'Ask Blue anything...' }}
           onClose={() => setAskBlueOpen(false)}
         />
       )}
@@ -918,7 +917,6 @@ export default function HomePage() {
           subtitle={weeklyScript.subtitle}
           lines={weeklyLines ?? weeklyScript.lines}
           emotion={weeklyScript.emotion}
-          chatback={weeklyScript.chatback ? { placeholder: 'Answer Blue' } : undefined}
           onClose={handleWeeklyClose}
         />
       ) : (

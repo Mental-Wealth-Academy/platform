@@ -32,6 +32,11 @@ const DEEPSEEK_PRO = {
   model: process.env.DEEPSEEK_MODEL || 'deepseek-v4-pro',
 } as const;
 
+const ELEVENLABS_AGENT = {
+  provider: 'elevenlabs',
+  model: process.env.ELEVENLABS_AGENT_ID || 'agent_9801kx535dzwefxar95qgenx5a7z',
+} as const;
+
 /**
  * Central task policy. Model IDs are deliberately fixed here rather than read
  * from route-specific environment variables. Provider responses still report
@@ -59,7 +64,7 @@ export const AI_TASK_PROFILES: Readonly<Record<AiTaskName, AiTaskProfile>> = {
   blue_chat_short: {
     task: 'blue_chat_short',
     promptVersion: 'blue-chat-runtime-v1',
-    providers: [DEEPSEEK_FLASH, ELIZA_HAIKU],
+    providers: [ELEVENLABS_AGENT, DEEPSEEK_FLASH, ELIZA_HAIKU],
     maxInputChars: 24_000,
     maxOutputChars: 4_000,
     maxOutputTokens: 240,

@@ -65,7 +65,9 @@ describe('Blue paid streaming invariants', () => {
 
   it('rejects a known provider outage before asking for a burn', () => {
     const route = readRepoFile('app/api/chat/blue/route.ts');
-    const readinessIndex = route.indexOf('if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY)');
+    const readinessIndex = route.indexOf(
+      'if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY && !(ELEVENLABS_API_KEY && ELEVENLABS_AGENT_ID))',
+    );
     const burnRequiredIndex = route.indexOf("error: 'burn_required'");
 
     expect(readinessIndex).toBeGreaterThan(-1);
@@ -361,5 +363,13 @@ describe('Calling Blue gasless messages', () => {
   it('passes isCall when calling Blue from the client', () => {
     const client = readRepoFile('components/blue-chat/BlueChat.tsx');
     expect(client).toContain('isCall: true');
+  });
+});
+
+describe('ElevenLabs agent speech tag cleaning', () => {
+  it('removes emotion and audio tags from agent output text', async () => {
+    const { cleanAgentSpeechTags } = await import('@/lib/ai/elevenlabs-agent');
+    const input = 'Hey there! [Excitedly] I am Blue, your guide. [Laughing] Sounds tasty!';
+    expect(cleanAgentSpeechTags(input)).toBe('Hey there! I am Blue, your guide. Sounds tasty!');
   });
 });

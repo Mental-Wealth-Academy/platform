@@ -43,12 +43,15 @@ import {
   type BlueMode,
 } from '@/lib/blue-chat-runtime';
 import { runBlueRagGraph, type BlueRagResult } from '@/lib/blue-rag-graph';
+import { callElevenLabsAgentStream } from '@/lib/ai/elevenlabs-agent';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 const DIAMOND_COST = 10;
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
+const ELEVENLABS_AGENT_ID = process.env.ELEVENLABS_AGENT_ID || 'agent_9801kx535dzwefxar95qgenx5a7z';
 const ELIZA_API_KEY = process.env.ELIZA_API_KEY || '';
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_BASE_URL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
@@ -76,7 +79,7 @@ Rules:
 - supersedesKey names an older concept only when the member clearly corrects or replaces it.
 - Include at most four facts. Use {"facts":[]} when nothing qualifies.`;
 
-type ProviderSource = 'eliza' | 'deepseek' | 'replay';
+type ProviderSource = 'eliza' | 'deepseek' | 'elevenlabs' | 'replay';
 
 interface ChatAttachment {
   mime?: string;
@@ -406,14 +409,33 @@ async function callDeepSeekStream(
 async function callBlueProviderStream(
   messages: ElizaChatMessage[],
   policy: AiExecutionPolicy,
+  options?: {
+    userMessage?: string;
+  },
 ): Promise<ProviderTextStream> {
   let lastError: unknown;
   for (const target of policy.profile.providers) {
+    if (target.provider === 'elevenlabs' && (!ELEVENLABS_API_KEY || !ELEVENLABS_AGENT_ID)) continue;
     if (target.provider === 'eliza' && !ELIZA_API_KEY) continue;
     if (target.provider === 'deepseek' && !DEEPSEEK_API_KEY) continue;
 
     const attempt = createAiAttemptSignal(policy);
     try {
+      if (target.provider === 'elevenlabs') {
+        const userPrompt = options?.userMessage
+          || messages.filter((m) => m.role === 'user').pop()?.content
+          || '';
+        const result = await callElevenLabsAgentStream(userPrompt, {
+          agentId: target.model || ELEVENLABS_AGENT_ID,
+          apiKey: ELEVENLABS_API_KEY,
+          signal: attempt.signal,
+          timeoutMs: attempt.timeoutMs,
+        });
+        return {
+          source: 'elevenlabs',
+          stream: withStreamCleanup(result.stream, attempt.cleanup),
+        };
+      }
       if (target.provider === 'eliza') {
         const result = await elizaAPI.chatStream({
           messages,
@@ -638,7 +660,10 @@ async function prepareBlueTurn(args: {
   });
   policy.startedAtMs = args.requestStartedAtMs;
   policy.deadlineAtMs = Math.min(policy.deadlineAtMs, args.deadlineAtMs);
-  const provider = await callBlueProviderStream(messages, policy);
+  const userPrompt = args.attachmentsText
+    ? `${args.attachmentsText}\n\n${args.userMessage}`
+    : args.userMessage;
+  const provider = await callBlueProviderStream(messages, policy, { userMessage: userPrompt });
 
   return { provider, policy, blueContext, rag };
 }
@@ -990,7 +1015,7 @@ export async function POST(request: Request) {
     ? body.burnTxHash.trim()
     : '';
 
-  if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
+  if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY && !(ELEVENLABS_API_KEY && ELEVENLABS_AGENT_ID)) {
     return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
   }
 
@@ -1089,7 +1114,7 @@ export async function POST(request: Request) {
 
     // Completed ledger and persisted-turn replays above need no provider.
     // A stale reservation needs readiness before it can start generation.
-    if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
+    if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY && !(ELEVENLABS_API_KEY && ELEVENLABS_AGENT_ID)) {
       return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
     }
 
@@ -1115,7 +1140,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'request_in_progress' }, { status: 409 });
     }
   } else {
-    if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY) {
+    if (!ELIZA_API_KEY && !DEEPSEEK_API_KEY && !(ELEVENLABS_API_KEY && ELEVENLABS_AGENT_ID)) {
       return NextResponse.json({ error: 'ai_unconfigured' }, { status: 503 });
     }
 

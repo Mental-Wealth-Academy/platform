@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './BlueDialogue.module.css';
 
 // ── Blue Voice TTS ──────────────────────────────────────────
@@ -50,41 +51,34 @@ export type BlueEmotion =
   | 'calm';
 
 export interface BlueChatback {
-  /** Placeholder shown in the empty reply field. */
+  /** Placeholder shown in the empty reply field (deprecated, chat input removed). */
   placeholder?: string;
   /** Receives each sent reply along with the index of the line it answered. */
   onSubmit?: (reply: string, lineIndex: number) => void;
 }
 
 export interface BlueDialogueProps {
-  /** Controls whether the full-screen overlay is mounted + visible. */
+  /** Controls whether the dialogue modal is mounted and visible. */
   open: boolean;
-  /** Ordered dialogue lines. The arrow advances through them; the last closes. */
+  /** Ordered dialogue lines. Advancing progresses through them; the last closes. */
   lines: string[];
   /** Sets the emotional family Blue varies through as the dialogue advances. */
   emotion?: BlueEmotion;
-  /** Fired on close (arrow-past-last, ESC, backdrop, or a stub button). */
+  /** Fired on close (last line advance, ESC, backdrop click, or close button). */
   onClose: () => void;
   /** Milliseconds per typewritten character. */
   speed?: number;
-  /** Diamond amount to present as a reward chip above the dialogue text. */
+  /** Diamond credit amount to present as a reward chip above the dialogue text. */
   reward?: number;
   /** Heading rendered above Blue's line, e.g. "Check-in [Week 7]". */
   title?: string;
   /** Supporting line rendered under the title. */
   subtitle?: string;
-  /**
-   * Retained for call-site compatibility. BlueDialogue is always centered in
-   * the viewport, regardless of the value passed here.
-   */
+  /** Retained for call-site compatibility. */
   placement?: 'bottom' | 'center';
-  /**
-   * When set, a reply field appears under Blue's line. Sending a reply logs
-   * it to the session history and advances the script; the arrow still works
-   * for members who would rather not answer.
-   */
+  /** Deprecated: chat input is removed per design specifications. */
   chatback?: BlueChatback;
-  /** Keep the centered popup behavior without tinting the page behind it. */
+  /** Keep centered popup without dimming background backdrop. */
   clearBackdrop?: boolean;
 }
 
@@ -93,18 +87,16 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-const EXPRESSION_POSITION: Record<
-  BlueEmotion,
-  { left: string; top: string }
-> = {
-  neutral: { left: '-25.5%', top: '0%' },
-  happy: { left: '-176.5%', top: '0%' },
-  sad: { left: '-327.5%', top: '0%' },
-  angry: { left: '-478.5%', top: '0%' },
-  surprised: { left: '-25.5%', top: '-100%' },
-  confused: { left: '-176.5%', top: '-100%' },
-  pain: { left: '-327.5%', top: '-100%' },
-  calm: { left: '-478.5%', top: '-100%' },
+/** 8 individual forward-facing Grok-bot styled emotion assets */
+const EMOTION_IMAGES: Record<BlueEmotion, string> = {
+  neutral: '/images/blue-emotes/neutral.png',
+  happy: '/images/blue-emotes/happy.png',
+  sad: '/images/blue-emotes/sad.png',
+  angry: '/images/blue-emotes/angry.png',
+  surprised: '/images/blue-emotes/surprised.png',
+  confused: '/images/blue-emotes/confused.png',
+  pain: '/images/blue-emotes/pain.png',
+  calm: '/images/blue-emotes/calm.png',
 };
 
 /**
@@ -132,16 +124,10 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   reward,
   title,
   subtitle,
-  placement: _placement = 'center',
-  chatback,
-  clearBackdrop = false,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
-  const arrowRef = useRef<HTMLButtonElement | null>(null);
-  const chatbackInputRef = useRef<HTMLInputElement | null>(null);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   const safeLines = useMemo(
     () => (lines.length > 0 ? lines : ['']),
@@ -151,27 +137,17 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [lineIndex, setLineIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [portraitReady, setPortraitReady] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
-  const [reply, setReply] = useState('');
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const voiceEnabledRef = useRef(true);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // The centered overlay freezes the page behind it.
+  // The centered modal overlay freezes the background page.
   useScrollLock(open);
-
-  // The expressions sprite can finish loading before hydration attaches
-  // onLoad (SSR + warm cache), which would leave portraitReady false forever.
-  // The ref callback double-checks completeness at attach time.
-  const preloadImgRef = useCallback((img: HTMLImageElement | null) => {
-    if (img && img.complete && img.naturalWidth > 0) setPortraitReady(true);
-  }, []);
 
   // Count the reward chip up from zero when the overlay opens.
   useEffect(() => {
-    if (!open || !portraitReady || !reward) return;
+    if (!open || !reward) return;
     if (prefersReducedMotion()) {
       setDisplayReward(reward);
       return;
@@ -187,10 +163,11 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     };
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [open, portraitReady, reward]);
+  }, [open, reward]);
 
   const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
   const activeLine = safeLines[safeIndex] ?? '';
+  const isLastLine = safeIndex >= safeLines.length - 1;
 
   // Stop any in-flight fetch and pause any playing audio.
   const stopVoice = useCallback(() => {
@@ -206,14 +183,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   useEffect(() => {
     const enabled = getStorageItem(VOICE_PREF_KEY) !== '0';
     setVoiceEnabled(enabled);
-    voiceEnabledRef.current = enabled;
   }, []);
 
   const toggleVoice = useCallback(() => {
     play('click');
     setVoiceEnabled((prev) => {
       const next = !prev;
-      voiceEnabledRef.current = next;
       setStorageItem(VOICE_PREF_KEY, next ? '1' : '0');
       if (!next) stopVoice();
       return next;
@@ -221,11 +196,9 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   }, [play, stopVoice]);
 
   // Read the active line aloud when voice is on. Fires as the line becomes
-  // active (in parallel with the typewriter) and cancels the previous line's
-  // audio if the user advances early. Failures are swallowed so the dialogue
-  // keeps working without audio.
+  // active (in parallel with the typewriter) and cancels previous line audio.
   useEffect(() => {
-    if (!open || !portraitReady || !voiceEnabled) return;
+    if (!open || !voiceEnabled) return;
     const line = sanitizeForSpeech(activeLine);
     if (!line) return;
 
@@ -244,7 +217,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       });
 
     return () => controller.abort();
-  }, [open, portraitReady, voiceEnabled, activeLine, safeIndex, stopVoice]);
+  }, [open, voiceEnabled, activeLine, safeIndex, stopVoice]);
 
   // Cut audio when the dialogue closes.
   useEffect(() => {
@@ -255,7 +228,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   useEffect(() => {
     if (!open) return;
     setLineIndex(0);
-    setReply('');
   }, [open, safeLines]);
 
   const clearTyping = useCallback(() => {
@@ -267,7 +239,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   // Typewriter reveal for the active line (instant under reduced-motion).
   useEffect(() => {
-    if (!open || !portraitReady) return;
+    if (!open) return;
     clearTyping();
 
     if (prefersReducedMotion() || speed <= 0) {
@@ -288,10 +260,10 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         setIsTyping(false);
       }
     };
-    typeTimer.current = setTimeout(step, 90);
+    typeTimer.current = setTimeout(step, 80);
 
     return clearTyping;
-  }, [open, portraitReady, activeLine, speed, clearTyping]);
+  }, [open, activeLine, speed, clearTyping]);
 
   const finishTyping = useCallback(() => {
     clearTyping();
@@ -305,7 +277,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     onClose();
   }, [onClose, play, stopVoice]);
 
-  // Right arrow: advance if more lines remain, otherwise close.
+  // Advance to next line if more lines remain, otherwise close.
   const handleAdvance = useCallback(() => {
     play('click');
     if (isTyping) {
@@ -319,42 +291,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, [play, isTyping, finishTyping, safeIndex, safeLines.length, close]);
 
-  // Chatback: log the member's reply, hand it to the parent, and
-  // advance the script (the last line closes, matching the arrow).
-  const sendReply = useCallback(() => {
-    const trimmed = reply.trim();
-    if (!trimmed) return;
-    play('click');
-    if (isTyping) finishTyping();
-    chatback?.onSubmit?.(trimmed, safeIndex);
-    setReply('');
-    if (safeIndex < safeLines.length - 1) {
-      setLineIndex((n) => n + 1);
-    } else {
-      close();
-    }
-  }, [reply, play, isTyping, finishTyping, chatback, safeIndex, safeLines.length, close]);
-
-  const handleChatbackSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      sendReply();
-    },
-    [sendReply],
-  );
-
-  // Explicit Enter-to-send so the reply never depends on implicit form
-  // submission (preventDefault stops the form from double-firing).
-  const handleChatbackKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      sendReply();
-    },
-    [sendReply],
-  );
-
-  // SKIP: jump the typewriter to full; if already full, close.
+  // Skip: finish line typing; if already typed, close.
   const handleSkip = useCallback(() => {
     play('click');
     if (isTyping) {
@@ -364,225 +301,174 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, [play, isTyping, finishTyping, close]);
 
-  // ESC closes.
+  // Keyboard navigation: Escape closes; Space/Enter advances.
   useEffect(() => {
-    if (!open || !portraitReady) return;
+    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
         close();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleAdvance();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, portraitReady, close]);
+  }, [open, close, handleAdvance]);
 
-  // Focus management: capture, focus the reply field (or the arrow) on open,
-  // restore on close.
-  useEffect(() => {
-    if (!open || !portraitReady) return;
-    previouslyFocused.current = document.activeElement as HTMLElement | null;
-    const t = setTimeout(() => {
-      (chatbackInputRef.current ?? arrowRef.current)?.focus();
-    }, 30);
-    return () => {
-      clearTimeout(t);
-      previouslyFocused.current?.focus?.();
-    };
-  }, [open, portraitReady]);
+  if (!open) return null;
 
-  if (!open || !portraitReady) {
-    return (
-      <Image
-        ref={preloadImgRef}
-        src="/images/blue-dialogue-expressions.png"
-        alt=""
-        width={2752}
-        height={1536}
-        sizes="(max-width: 560px) 1400px, 1800px"
-        priority
-        className={styles.preloadImage}
-        onLoad={() => setPortraitReady(true)}
-      />
-    );
-  }
-
-  const hover = () => play('soft-hover');
   const expressionSequence = EXPRESSION_SEQUENCE[emotion];
   const activeEmotion = expressionSequence[safeIndex % expressionSequence.length];
-  const expressionPosition = EXPRESSION_POSITION[activeEmotion];
-
-  const menuItems: { label: string; onClick: () => void }[] = [
-    { label: 'Skip', onClick: handleSkip },
-  ];
+  const emoteSrc = EMOTION_IMAGES[activeEmotion];
 
   return (
     <div
       ref={overlayRef}
-      className={`${styles.overlay} ${styles.overlayCenter} ${clearBackdrop ? styles.overlayClear : ''}`}
+      className={styles.modalBackdrop}
       role="dialog"
-      aria-label="Blue dialogue"
+      aria-modal="true"
+      aria-label={title || 'Blue dialogue'}
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
     >
-      <div
-        className={`${styles.stage} ${portraitReady ? styles.stageReady : ''}`}
-      >
-        <div className={styles.portrait}>
-          <Image
-            src="/images/blue-dialogue-expressions.png"
-            alt={`Blue, ${activeEmotion}`}
-            width={2752}
-            height={1536}
-            sizes="(max-width: 560px) 1400px, 1800px"
-            priority
-            className={styles.portraitImage}
-            style={
-              {
-                '--portrait-left': expressionPosition.left,
-                '--portrait-top': expressionPosition.top,
-              } as React.CSSProperties
-            }
-            onLoad={() => setPortraitReady(true)}
-          />
-          <div className={styles.nameCard}>
-            <span className={styles.nameText}>Blue</span>
-          </div>
-        </div>
-
-        <div className={styles.box}>
-          <button
-            type="button"
-            className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceButtonActive : ''}`}
-            onClick={toggleVoice}
-            onMouseEnter={hover}
-            aria-pressed={voiceEnabled}
-            aria-label={voiceEnabled ? 'Turn off Blue voice' : 'Turn on Blue voice'}
-            title={
-              voiceEnabled
-                ? 'Voice on — Blue reads each line aloud'
-                : 'Voice off — tap to let Blue read lines aloud'
-            }
-          >
-            {voiceEnabled ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                <line x1="22" y1="9" x2="16" y2="15" />
-                <line x1="16" y1="9" x2="22" y2="15" />
-              </svg>
-            )}
-          </button>
-          {(title || subtitle) && (
-            <div className={styles.header}>
-              {title && <h2 className={styles.title}>{title}</h2>}
-              {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      <div className={styles.modal}>
+        <header className={styles.modalHeader}>
+          <div className={styles.headerTitleGroup}>
+            <span className={styles.headerBadgeJa}>対話</span>
+            <div>
+              <h2 className={styles.headerTitle}>{title || 'Blue'}</h2>
+              {subtitle && <p className={styles.headerSubtitle}>{subtitle}</p>}
             </div>
-          )}
-          <div
-            className={`${styles.message} ${title || subtitle ? styles.messageBelowHeader : ''}`}
-          >
-            {typeof reward === 'number' && reward > 0 && (
-              <div className={styles.rewardChip} role="status">
-                <Image
-                  src="/icons/ui-diamond.svg"
-                  alt=""
-                  width={22}
-                  height={22}
-                  className={styles.rewardIcon}
-                />
-                <span className={styles.rewardAmount}>+{displayReward}</span>
-                <span className={styles.rewardLabel}>diamonds</span>
-              </div>
-            )}
-            <p className={styles.text} aria-live="polite">
-              <span className={styles.quote} aria-hidden="true">
-                &ldquo;
-              </span>
-              {displayed}
-              {isTyping && <span className={styles.cursor} aria-hidden="true" />}
-              {!isTyping && (
-                <span className={styles.quote} aria-hidden="true">
-                  &rdquo;
-                </span>
-              )}
-            </p>
           </div>
-
-
-          {chatback && (
-            <form className={styles.chatback} onSubmit={handleChatbackSubmit}>
-              <input
-                ref={chatbackInputRef}
-                type="text"
-                className={styles.chatbackInput}
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-                onKeyDown={handleChatbackKeyDown}
-                placeholder={chatback.placeholder ?? 'Answer Blue'}
-                aria-label="Reply to Blue"
-                autoComplete="off"
-                spellCheck={false}
-              />
-              <button
-                type="submit"
-                className={styles.chatbackSend}
-                onMouseEnter={hover}
-                aria-label="Send reply"
-              >
+          <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceButtonActive : ''}`}
+              onClick={toggleVoice}
+              aria-pressed={voiceEnabled}
+              aria-label={voiceEnabled ? 'Turn off voice readout' : 'Turn on voice readout'}
+              title={voiceEnabled ? 'Voice readout on' : 'Voice readout off'}
+            >
+              {voiceEnabled ? (
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  className={styles.voiceIcon}
                   aria-hidden="true"
                 >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
+                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
                 </svg>
-              </button>
-            </form>
-          )}
-
-          <div className={styles.controls}>
-            <div className={styles.menuItems}>
-              {menuItems.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  className={styles.menuButton}
-                  onClick={item.onClick}
-                  onMouseEnter={hover}
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.voiceIcon}
+                  aria-hidden="true"
                 >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            <button
-              ref={arrowRef}
-              type="button"
-              className={styles.arrow}
-              onClick={handleAdvance}
-              onMouseEnter={hover}
-              aria-label={
-                safeIndex < safeLines.length - 1 ? 'Next line' : 'Close dialogue'
-              }
-            >
-              <Image
-                src="/icons/ui-arrow.svg"
-                alt=""
-                width={77}
-                height={77}
-                className={styles.arrowIcon}
-              />
+                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
+                  <line x1="22" y1="9" x2="16" y2="15" />
+                  <line x1="16" y1="9" x2="22" y2="15" />
+                </svg>
+              )}
             </button>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={close}
+              aria-label="Close dialogue"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+
+        <div className={styles.modalBody}>
+          <div className={styles.dialogueCol}>
+            <div className={styles.dialogueContent} onClick={handleAdvance}>
+              {typeof reward === 'number' && reward > 0 && (
+                <div className={styles.rewardChip} role="status">
+                  <Image
+                    src="/icons/ui-diamond.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className={styles.rewardIcon}
+                  />
+                  <span>+{displayReward} credits</span>
+                </div>
+              )}
+              <p className={styles.speechText} aria-live="polite">
+                <span className={styles.quoteMark}>&ldquo;</span>
+                {displayed}
+                {isTyping && <span className={styles.cursor} aria-hidden="true" />}
+                {!isTyping && <span className={styles.quoteMark}>&rdquo;</span>}
+              </p>
+            </div>
+
+            <div className={styles.bottomRow}>
+              <div className={styles.progressGroup}>
+                <button
+                  type="button"
+                  className={styles.skipBtn}
+                  onClick={handleSkip}
+                >
+                  Skip
+                </button>
+                {safeLines.length > 1 && (
+                  <div
+                    className={styles.stepIndicators}
+                    aria-label={`Line ${safeIndex + 1} of ${safeLines.length}`}
+                  >
+                    {safeLines.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`${styles.stepDot} ${i === safeIndex ? styles.stepDotActive : ''}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <CtaButton
+                variant="primary"
+                size="sm"
+                onClick={handleAdvance}
+              >
+                {isTyping ? 'Continue' : isLastLine ? 'Done' : 'Next'}
+              </CtaButton>
+            </div>
+          </div>
+
+          <div className={styles.screenCol}>
+            <div className={styles.screenFrame}>
+              <div className={styles.screenStatusTag}>
+                <span className={styles.statusDot} />
+                <span>Online</span>
+              </div>
+              <Image
+                src={emoteSrc}
+                alt={`Blue, ${activeEmotion}`}
+                width={240}
+                height={240}
+                priority
+                className={styles.screenImage}
+              />
+              <div className={styles.screenBottomLabel}>
+                Blue
+              </div>
+            </div>
           </div>
         </div>
       </div>

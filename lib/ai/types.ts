@@ -8,7 +8,7 @@ export type AiTaskName =
   | 'structured_extract'
   | 'safety_review';
 
-export type AiProviderName = 'deepseek' | 'eliza';
+export type AiProviderName = 'deepseek' | 'eliza' | 'elevenlabs';
 
 export type AiMessageRole = 'system' | 'user' | 'assistant';
 
