@@ -85,6 +85,29 @@
   color: var(--color-text-soft);
 }
 
+.mapStage,
+.outcomeStage,
+.platformStage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 36px 24px;
+  min-height: 580px;
+  overflow: hidden;
+}
+
+.outcomeStage {
+  background: var(--color-surface-1);
+}
+
+.mapStage {
+  background: var(--color-surface-2);
+}
+
+.platformStage {
+  background: var(--color-surface-1);
+}
+
 .stage + .stage {
   border-left: 1px solid var(--color-border-strong);
 }
@@ -103,22 +126,6 @@
   transform: translateY(-50%) rotate(45deg);
 }
 
-.outcomeStage {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 30px;
-  padding: 40px 36px 150px;
-  background: var(--color-surface-1);
-}
-
-.platformStage {
-  display: flex;
-  flex-direction: column;
-  padding: 40px 36px 46px;
-  background: var(--color-surface-1);
-  gap: 0;
-}
-
 .platformStage .stageTitle,
 .outcomeStage .stageTitle {
   color: var(--color-text-dark);
@@ -129,123 +136,56 @@
   color: var(--color-text-soft);
 }
 
-.platformStage > .stageCopy {
-  margin-top: 20px;
-  margin-bottom: 30px;
-}
-
-.platformStage .nodeField {
-  margin-top: auto;
-}
-
 .stageHeaderBlock {
   display: grid;
   gap: 14px;
 }
 
-/* Named learning platforms — the "digital filing cabinet" callout */
+/* Named learning platforms — nav-styled pill with drop shadow */
 .platformChips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 2px;
 }
 
 .platformChips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid var(--chip-color, var(--color-primary));
-  background: var(--chip-color, var(--color-primary));
-  color: var(--color-on-action);
-  font-family: var(--font-mono);
+  background: var(--color-diagram-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-nav-pill);
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
   font-size: 0.72rem;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
+.platformChips span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chip-dot-color, var(--color-primary));
+}
+
 .platformChips span:nth-child(1) {
-  --chip-color: var(--color-primary);
+  --chip-dot-color: var(--color-platform-blackboard);
 }
 
 .platformChips span:nth-child(2) {
-  --chip-color: var(--color-accent);
+  --chip-dot-color: var(--color-platform-moodle);
 }
 
 .platformChips span:nth-child(3) {
-  --chip-color: var(--color-streak);
-}
-
-/* Isolated learner nodes — a literal picture of the missing social layer */
-.nodeField {
-  display: grid;
-  align-content: start;
-  gap: 18px;
-}
-
-
-.nodeGrid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 20px 16px;
-  place-items: center;
-  padding: 6px 0;
-}
-
-.nodeGrid i {
-  display: block;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-primary) 54%, var(--color-surface-1));
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
-}
-
-.nodeGrid i.nodeQuiet {
-  background: var(--color-danger);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-danger) 18%, transparent);
-}
-
-.nodeGrid i.nodeConnected {
-  background: var(--color-primary);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 24%, transparent);
-}
-
-.outcome {
-  display: grid;
-  align-content: center;
-  gap: 16px;
-}
-
-.outcomeValue {
-  color: var(--color-primary);
-  font-family: var(--font-mono);
-  font-size: clamp(2.5rem, 4.5vw, 4rem);
-  font-weight: var(--font-weight-semibold);
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-
-.outcomeCopy {
-  margin: 0;
-  color: var(--color-text-soft);
-  font-size: 0.9rem;
-  line-height: 1.58;
-}
-
-.people {
-  display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.people i {
-  display: block;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--palette-ink) 22%, transparent);
-}
-
-.people .personActive {
-  background: var(--color-primary);
+  --chip-dot-color: var(--color-platform-canvas);
 }
 
 /* Brighten the light basemap and give it a faint Academy tint so it reads as
@@ -318,7 +258,7 @@
   }
 
   .stage + .stage {
-    min-height: 420px;
+    min-height: 480px;
     border-top: 1px solid color-mix(in srgb, var(--color-primary) 26%, transparent);
     border-left: 0;
   }
@@ -329,47 +269,19 @@
     transform: translateX(-50%) rotate(135deg);
   }
 
-  .outcomeStage {
-    min-height: 500px;
-    padding: 40px 32px 150px;
-  }
-
-  .mapStage {
-    min-height: 480px;
-    padding: 40px 32px 24px;
-  }
-
+  .mapStage,
+  .outcomeStage,
   .platformStage {
-    min-height: 420px;
-    padding: 40px 32px 46px;
-  }
-
-  .outcomeValue {
-    font-size: 3rem;
+    min-height: 480px;
+    padding: 36px 28px 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .mapStage {
+  .mapStage,
+  .outcomeStage,
+  .platformStage {
     min-height: 440px;
-  }
-
-  .mapStory {
-    padding: 30px 24px;
-  }
-
-  .platformStage,
-  .outcomeStage {
-    min-height: 400px;
-    padding: 34px 24px 44px;
-  }
-
-  .outcomeStage {
-    min-height: 480px;
-    padding-bottom: 150px;
-  }
-
-  .nodeGrid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 30px 20px 20px;
   }
 }

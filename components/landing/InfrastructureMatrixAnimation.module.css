@@ -1,0 +1,135 @@
+.wrap {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px 16px;
+  background: transparent;
+  user-select: none;
+}
+
+.canvas {
+  width: 100%;
+  height: auto;
+  max-height: 310px;
+  display: block;
+  overflow: visible;
+}
+
+.siloShell {
+  fill: var(--color-diagram-surface-subtle);
+  stroke: var(--color-diagram-track-strong);
+  stroke-width: 1.2px;
+  stroke-dasharray: 4 4;
+  rx: 16px;
+  ry: 16px;
+}
+
+.siloLabelBg {
+  fill: var(--color-diagram-surface);
+  stroke: var(--color-border-subtle);
+  stroke-width: 1px;
+  filter: drop-shadow(var(--shadow-diagram-badge));
+}
+
+.siloLabelText {
+  fill: var(--color-text-dark);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.dotBlackboard {
+  fill: var(--color-platform-blackboard);
+}
+
+.dotMoodle {
+  fill: var(--color-platform-moodle);
+}
+
+.dotCanvas {
+  fill: var(--color-platform-canvas);
+}
+
+.intraLine {
+  stroke: var(--color-diagram-track);
+  stroke-width: 1px;
+  stroke-dasharray: 2 4;
+}
+
+.crossLine {
+  stroke: var(--color-diagram-track-strong);
+  stroke-width: 1.2px;
+  stroke-dasharray: 4 6;
+}
+
+.barrierBadge {
+  fill: var(--color-diagram-surface);
+  stroke: var(--color-diagram-danger-glow);
+  stroke-width: 1px;
+  filter: drop-shadow(var(--shadow-diagram-badge));
+}
+
+.barrierIcon {
+  stroke: var(--color-diagram-danger);
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+}
+
+.nodeNormal {
+  fill: var(--color-diagram-active);
+}
+
+.nodeNormalRing {
+  stroke: var(--color-diagram-active);
+  stroke-width: 1px;
+  fill: none;
+  opacity: 0.35;
+}
+
+.nodeIsolated {
+  fill: var(--color-diagram-danger);
+}
+
+.nodeIsolatedRing {
+  stroke: var(--color-diagram-danger);
+  stroke-width: 1px;
+  stroke-dasharray: 2 3;
+  fill: none;
+  opacity: 0.65;
+}
+
+.packetActive {
+  fill: var(--color-diagram-active);
+}
+
+.packetMoodle {
+  fill: var(--color-platform-moodle);
+}
+
+.caption {
+  text-align: center;
+  max-width: 44ch;
+  color: var(--color-text-soft);
+  margin-top: 10px;
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  display: grid;
+  min-height: 2.6em;
+}
+
+.caption > span {
+  grid-area: 1 / 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .siloShell,
+  .nodeNormal,
+  .nodeIsolated {
+    animation: none !important;
+  }
+}

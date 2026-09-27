@@ -32,69 +32,29 @@ function formatCredits(n: number): string {
   return n.toLocaleString();
 }
 
-/** Retro illustrated stamp banner matching the indie collectible visual strip */
+const PROFILE_BADGES = [
+  { id: 'badge-1', src: '/icons/badges/badge-1.svg', alt: 'Badge 1' },
+  { id: 'badge-2', src: '/icons/badges/badge-2.svg', alt: 'Badge 2' },
+  { id: 'badge-3', src: '/icons/badges/badge-3.svg', alt: 'Badge 3' },
+  { id: 'badge-4', src: '/icons/badges/badge-4.svg', alt: 'Badge 4' },
+  { id: 'badge-5', src: '/icons/badges/badge-5.svg', alt: 'Badge 5' },
+];
+
+/** Illustrated badge strip matching the indie collectible visual strip */
 function StampBanner() {
   return (
     <div className={styles.stampBanner} aria-hidden="true">
-      {/* 1. Dolores / Sun Stamp */}
-      <div className={styles.stamp}>
-        <svg viewBox="0 0 68 56" className={styles.stampSvg}>
-          <rect x="2" y="2" width="64" height="52" rx="6" className={styles.stampDoloresBg} strokeWidth="1.5" strokeDasharray="3 2" />
-          <path d="M14 44 C20 36, 28 38, 34 44" fill="none" className={styles.stampDoloresTree} strokeWidth="2" />
-          <path d="M24 44 L24 26 C24 26, 21 20, 16 22" fill="none" className={styles.stampDoloresTree} strokeWidth="2" strokeLinecap="round" />
-          <circle cx="24" cy="20" r="3.5" className={styles.stampDoloresSun} />
-          <circle cx="48" cy="18" r="6.5" className={styles.stampDoloresSun} />
-          <rect x="10" y="8" width="48" height="9" rx="3" className={styles.stampDoloresBg} opacity="0.5" />
-          <text x="34" y="14.5" textAnchor="middle" fontSize="6" fontWeight="800" className={styles.stampDoloresText} letterSpacing="0.06em">DOLORES</text>
-        </svg>
-      </div>
-
-      {/* 2. York Street Collective Seal */}
-      <div className={styles.stamp}>
-        <svg viewBox="0 0 58 58" className={styles.stampSvg}>
-          <circle cx="29" cy="29" r="27" className={styles.stampYorkBg} strokeWidth="2" />
-          <circle cx="29" cy="29" r="23" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" opacity="0.8" />
-          <text x="29" y="22" textAnchor="middle" fontSize="7.5" fontWeight="900" fill="currentColor" letterSpacing="0.04em">YORK</text>
-          <text x="29" y="30" textAnchor="middle" fontSize="7" fontWeight="900" fill="currentColor" letterSpacing="0.06em">STREET</text>
-          <text x="29" y="38" textAnchor="middle" fontSize="5" fontWeight="700" fill="currentColor" letterSpacing="0.08em">COLLECTIVE</text>
-        </svg>
-      </div>
-
-      {/* 3. Pink Mascot Stamp */}
-      <div className={styles.stamp}>
-        <svg viewBox="0 0 56 56" className={styles.stampSvg}>
-          <rect x="2" y="2" width="52" height="52" rx="8" className={styles.stampPinkBg} strokeWidth="1.5" />
-          <path d="M16 20 L12 9 L22 15" fill="none" className={styles.stampPinkLine} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M40 20 L44 9 L34 15" fill="none" className={styles.stampPinkLine} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="28" cy="30" r="14" className={styles.stampPinkFace} strokeWidth="2" />
-          <circle cx="23" cy="28" r="2.5" className={styles.stampPinkEye} />
-          <circle cx="33" cy="28" r="2.5" className={styles.stampPinkEye} />
-          <path d="M25 35 Q28 39 31 35" fill="none" className={styles.stampPinkEye} strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </div>
-
-      {/* 4. Tadaima Forest Green Stamp */}
-      <div className={styles.stamp}>
-        <svg viewBox="0 0 56 56" className={styles.stampSvg}>
-          <rect x="2" y="2" width="52" height="52" rx="8" className={styles.stampTadaimaBg} strokeWidth="1.5" />
-          <text x="14" y="20" fontSize="10" fontWeight="700" className={styles.stampTadaimaText} fontFamily="serif">ta</text>
-          <text x="14" y="32" fontSize="10" fontWeight="700" className={styles.stampTadaimaText} fontFamily="serif">da</text>
-          <text x="14" y="44" fontSize="10" fontWeight="700" className={styles.stampTadaimaText} fontFamily="serif">ima</text>
-          <rect x="36" y="12" width="8" height="32" rx="2" fill="none" stroke="currentColor" strokeDasharray="2 2" opacity="0.3" />
-        </svg>
-      </div>
-
-      {/* 5. Press Dog & Book Cyan Stamp */}
-      <div className={styles.stamp}>
-        <svg viewBox="0 0 68 56" className={styles.stampSvg}>
-          <rect x="2" y="2" width="64" height="52" rx="6" className={styles.stampBookBg} strokeWidth="1.5" />
-          <rect x="5" y="5" width="58" height="46" rx="4" fill="none" className={styles.stampBookBg} strokeWidth="1" strokeDasharray="3 2" />
-          <path d="M18 33 L22 25 L28 25 L32 21 L38 21 L42 27 L50 27 L48 33 L40 33 L36 37 L32 37 L30 33 Z" className={styles.stampBookDog} />
-          <circle cx="36" cy="23" r="1.5" fill="currentColor" opacity="0.8" />
-          <rect x="20" y="37" width="28" height="5" rx="1.5" className={styles.stampBookDog} />
-          <text x="34" y="48.5" textAnchor="middle" fontSize="5" fontWeight="700" className={styles.stampBookText} letterSpacing="0.08em">MWA PRESS</text>
-        </svg>
-      </div>
+      {PROFILE_BADGES.map((b) => (
+        <div key={b.id} className={styles.stamp}>
+          <Image
+            src={b.src}
+            alt={b.alt}
+            width={48}
+            height={48}
+            className={styles.stampSvg}
+          />
+        </div>
+      ))}
     </div>
   );
 }
