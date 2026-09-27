@@ -606,7 +606,17 @@ export default function HomePage() {
             }}
           >
             <span className={styles.askBlueContent}>
-              <span className={styles.askBlueLabel}>Blue Superintelligence</span>
+              <span className={styles.askBlueLeft}>
+                <Image
+                  src="/images/blue-guide-sprites/breathing-idle.gif"
+                  alt="Blue daemon"
+                  width={24}
+                  height={24}
+                  className={styles.askBlueGif}
+                  unoptimized
+                />
+                <span className={styles.askBlueLabel}>AI Life Prediction</span>
+              </span>
               <span className={styles.warningAiBadge}>Warning, AI</span>
             </span>
           </CtaButton>

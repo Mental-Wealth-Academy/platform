@@ -33,7 +33,7 @@ function formatCredits(n: number): string {
 }
 
 const PROFILE_BADGES = [
-  { id: 'blue-daemon', src: '/images/blue-guide-sprites/breathing-idle.gif', alt: 'Blue' },
+  { id: 'heart-gem', src: '/icons/badges/badge-heart-gem.svg', alt: 'Heart gem badge' },
   { id: 'student', src: '/icons/badges/badge-student.svg', alt: 'Student badge' },
   { id: 'scholar', src: '/icons/badges/badge-scholar.svg', alt: 'Scholar badge' },
   { id: 'books', src: '/icons/badges/badge-books.svg', alt: 'Books badge' },

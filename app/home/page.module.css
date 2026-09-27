@@ -278,6 +278,21 @@
   gap: 10px;
 }
 
+.askBlueLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.askBlueGif {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
 .askBlueLabel {
   font-family: var(--font-button, var(--font-primary));
   font-weight: 700;
