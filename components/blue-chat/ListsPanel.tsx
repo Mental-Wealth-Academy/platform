@@ -42,11 +42,18 @@ const LIST_META: Record<ListKey, { title: string; kanji: string; placeholder: st
 interface ListsPanelProps {
   authHeaders: () => Promise<HeadersInit>;
   isAuthenticated: boolean;
+  isReady?: boolean;
   onSound?: (name: 'click' | 'hover') => void;
   showHeader?: boolean;
 }
 
-const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, onSound, showHeader = true }) => {
+const ListsPanel: React.FC<ListsPanelProps> = ({
+  authHeaders,
+  isAuthenticated,
+  isReady = true,
+  onSound,
+  showHeader = true,
+}) => {
   const { login } = usePrivy();
   const [lists, setLists] = useState<Lists>(EMPTY_LISTS);
   const [drafts, setDrafts] = useState<Record<ListKey, string>>({ todo: '', watch: '', later: '' });
@@ -148,6 +155,28 @@ const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, o
       setError('Could not delete that. Try again.');
     }
   };
+
+  if (isReady === false) {
+    return (
+      <div className={styles.panel}>
+        <div className={styles.columns}>
+          {LIST_KEYS.map((key) => (
+            <section key={key} className={styles.card} aria-label={LIST_META[key].title}>
+              <div className={styles.cardHeader}>
+                <span className={styles.cardKanji} lang="ja">{LIST_META[key].kanji}</span>
+                <h2 className={styles.cardTitle}>{LIST_META[key].title}</h2>
+              </div>
+              <div className={styles.cardBody}>
+                <ul className={styles.items}>
+                  <li className={styles.placeholder}>Loading…</li>
+                </ul>
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

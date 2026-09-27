@@ -37,8 +37,6 @@
   flex-direction: column;
   width: 100%;
   min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .container {
@@ -60,6 +58,9 @@
 
   .pageLayout {
     margin-left: 0;
+    padding-top: 72px;
+    min-height: 100dvh;
+    box-sizing: border-box;
   }
 
   .container {

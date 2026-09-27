@@ -17,7 +17,25 @@ export function RouteShell({ children, initialCollapsed = true }: RouteShellProp
   const pathname = usePathname();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Disable browser's auto scroll restoration on route changes so pages always mount at top
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    const resetScroll = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    };
+
+    resetScroll();
+    const rafId = requestAnimationFrame(resetScroll);
+    const timeoutId = setTimeout(resetScroll, 50);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
+    };
   }, [pathname]);
 
   if (
