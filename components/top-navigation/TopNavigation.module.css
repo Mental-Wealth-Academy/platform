@@ -49,6 +49,10 @@
   height: 100%;
 }
 
+.mobileJewel {
+  display: none;
+}
+
 .mobileStudyBtn {
   display: none;
 }
@@ -1399,28 +1403,14 @@ button.dropdownTokenCard:active,
 
 @media (max-width: 768px) {
   .logoLink {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    display: none;
+  }
+
+  .leftSection {
+    width: calc(50% - 20px);
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 10;
-    text-decoration: none;
-    transition: transform 0.15s ease, opacity 0.15s ease;
-  }
-
-  .logoLink:active {
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-
-  .logo {
-    width: 95px;
-    height: auto;
-    max-height: 34px;
-    object-fit: contain;
-    display: block;
+    gap: 0;
   }
 
   .mobileStreakBtn {
@@ -1435,6 +1425,7 @@ button.dropdownTokenCard:active,
     transition: transform 0.15s ease, opacity 0.15s ease;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
   }
 
   .mobileStreakBtn:active {
@@ -1474,6 +1465,7 @@ button.dropdownTokenCard:active,
     -webkit-tap-highlight-color: transparent;
     text-decoration: none;
     flex-shrink: 0;
+    margin: 0 auto;
   }
 
   .mobileStudyBtn:active {
@@ -1481,8 +1473,8 @@ button.dropdownTokenCard:active,
   }
 
   .mobileStudyIcon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12));
@@ -1490,6 +1482,109 @@ button.dropdownTokenCard:active,
 
   .searchWrapper {
     display: none;
+  }
+
+  .mobileJewel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1.5px solid color-mix(in srgb, var(--palette-on-dark) 50%, transparent);
+    box-shadow:
+      0 2px 12px color-mix(in srgb, var(--color-primary) 35%, transparent),
+      0 0 16px color-mix(in srgb, var(--color-rainbow-cyan) 30%, transparent),
+      0 0 24px color-mix(in srgb, var(--color-rainbow-rose) 22%, transparent);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
+    text-decoration: none;
+    z-index: 10;
+  }
+
+  .mobileJewel::before {
+    content: "";
+    position: absolute;
+    inset: -70%;
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        circle at 50% 50%,
+        color-mix(in srgb, var(--palette-on-dark) 45%, transparent) 0%,
+        color-mix(in srgb, var(--palette-on-dark) 15%, transparent) 35%,
+        transparent 65%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.38 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      conic-gradient(
+        from 0deg at 50% 50%,
+        var(--color-primary) 0deg,
+        var(--color-rainbow-cyan) 48deg,
+        var(--color-rainbow-emerald) 98deg,
+        var(--color-rainbow-gold) 152deg,
+        var(--color-rainbow-orange) 204deg,
+        var(--color-rainbow-rose) 258deg,
+        var(--color-rainbow-violet) 310deg,
+        var(--color-primary) 360deg
+      );
+    animation: rainbowSpin 8s linear infinite;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  .mobileJewel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--palette-on-dark) 50%, transparent) 0%,
+      color-mix(in srgb, var(--palette-on-dark) 10%, transparent) 40%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mobileJewel:active {
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  .mobileJewelIcon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--palette-ink) 45%, transparent));
+  }
+}
+
+:global([data-theme="dark"]) .mobileJewel {
+  border-color: color-mix(in srgb, var(--palette-on-dark) 45%, transparent);
+  box-shadow:
+    0 2px 14px color-mix(in srgb, var(--color-primary) 45%, transparent),
+    0 0 20px color-mix(in srgb, var(--color-rainbow-cyan) 40%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-rainbow-rose) 28%, transparent);
+}
+
+@keyframes rainbowSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileJewel::before {
+    animation: none;
   }
 }
 
