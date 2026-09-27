@@ -652,25 +652,6 @@
   color: var(--palette-ink);
 }
 
-@media (max-width: 768px) {
-  .listsCardButton {
-    padding: 13px 15px;
-    gap: 12px;
-  }
-
-  .listsCardLabel {
-    font-size: 14px;
-    letter-spacing: 0.01em;
-  }
-}
-
-@media (max-width: 480px) {
-  .listsCardButton {
-    padding: 11px 12px;
-    gap: 10px;
-  }
-}
-
 .listsCard:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
