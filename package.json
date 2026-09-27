@@ -27,9 +27,12 @@
     "eval:ai-behavior": "tsx scripts/evaluate-ai-behavior.ts",
     "collect:kalshi": "tsx scripts/collect-kalshi-snapshot.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "cap:sync": "export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 && npx cap sync ios",
+    "cap:open": "npx cap open ios"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.2",
     "@coinbase/cdp-sdk": "^1.51.2",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
@@ -115,6 +118,8 @@
     "zod-to-json-schema": "^3.25.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.6.9",
+    "@capacitor/ios": "^8.5.2",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",

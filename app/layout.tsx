@@ -168,7 +168,7 @@ export default function RootLayout({
                 try {
                   var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
                   if (isStandalone && window.location.pathname === '/') {
-                    window.location.replace('/dao' + window.location.search);
+                    window.location.replace('/home' + window.location.search);
                   }
                 } catch (e) {}
               })();

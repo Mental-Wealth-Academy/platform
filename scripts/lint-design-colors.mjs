@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 
 const sourceExtensions = ['*.css', '*.ts', '*.tsx'];
 const tokenSource = 'styles/color-system.css';
-const scopedPalettePrefixes = ['components/blue-dialogue/', 'components/genetics/gallery/'];
+const scopedPalettePrefixes = ['components/blue-dialogue/', 'components/genetics/gallery/', 'capacitor.config.ts'];
 const rawColor = /#[\da-f]{3,8}\b|\b(?:rgb|rgba|hsl|hsla|oklch|lab|lch)\(\s*(?:\d|\.|-)/i;
 const base = process.env.DESIGN_LINT_BASE;
 

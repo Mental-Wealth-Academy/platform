@@ -10,7 +10,7 @@ export default function PwaRegistrar() {
         (navigator as unknown as { standalone?: boolean }).standalone === true;
 
       if (isStandalone && window.location.pathname === '/') {
-        window.location.replace('/dao' + window.location.search);
+        window.location.replace('/home' + window.location.search);
         return;
       }
     }
