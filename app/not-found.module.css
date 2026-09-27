@@ -20,11 +20,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
   position: relative;
   z-index: 2;
-  padding: 100px 20px 0;
+  padding: 40px 20px 0;
   box-sizing: border-box;
 }
 
@@ -44,7 +44,9 @@
   align-items: center;
   text-align: center;
   max-width: 640px;
-  margin-bottom: 24px;
+  margin: auto 0;
+  position: relative;
+  z-index: 2;
 }
 
 .content {
@@ -110,16 +112,19 @@
 }
 
 .imageWrapper {
-  flex: 0 0 auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   width: 100%;
   max-width: 100%;
-  margin-top: auto;
-  position: relative;
-  z-index: 2;
+  margin-top: 0;
   line-height: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .imageWrapper::after {
@@ -195,13 +200,14 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .heroSection {
-    padding: 80px 16px 0;
+    padding: 20px 16px 0;
     min-height: calc(100dvh - 56px);
+    justify-content: center;
   }
 
   .contentCol {
     gap: 16px;
-    margin-bottom: 12px;
+    margin: auto 0;
   }
 
   .paragraph {

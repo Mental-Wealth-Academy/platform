@@ -29,15 +29,9 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 const PAGE_LINKS: NavLink[] = [
-  { label: 'Profile', href: '/home', icon: '/icons/nav-profile.svg' },
-  { label: 'Library', href: '/learn', icon: '/icons/daemon.svg?v=4' },
   { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
   { label: 'Lessons', href: '/shadow-work', icon: '/icons/nav-course-v2.svg' },
-  { label: 'Live', href: '/dao', icon: '/icons/nav-world-v2.svg' },
   { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
-  { label: 'Surveys', href: '/surveys', icon: '/icons/nav-surveys-v5.svg?v=4' },
-  { label: 'Simulations', href: '/simulation', icon: '/icons/nav-simulations-v2.svg?v=4' },
-  { label: 'Shop', href: '/shop', icon: '/icons/ui-diamond.svg' },
   { label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg?v=4' },
   { label: 'Lists', href: '/list', icon: '/icons/nav-journal-v3.svg' },
   { label: 'Chat', href: '/chat', icon: '/icons/nav-prompts-v3.svg' },
