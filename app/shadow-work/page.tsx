@@ -393,7 +393,7 @@ export default function CoursePage() {
           <div className={`${styles.leftCol} ${styles.leftColSimple}`}>
             <button
               type="button"
-              className={styles.courseSwitcherBtn}
+              className={styles.courseHeadpiece}
               onClick={() => {
                 play('click');
                 setIsCourseModalOpen(true);
@@ -401,16 +401,14 @@ export default function CoursePage() {
               onMouseEnter={() => play('hover')}
               aria-label="Select course. Current: Creative Healing"
             >
-              <span className={styles.courseSwitcherLeft}>
-                <span className={styles.courseSwitcherDot} aria-hidden="true" />
-                <span className={styles.courseSwitcherLabel}>Creative Healing</span>
-              </span>
-              <span className={styles.courseSwitcherRight}>
-                <span className={styles.courseSwitcherBadge}>12-Week Track</span>
-                <svg className={styles.courseSwitcherChevron} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </span>
+              <div className={styles.courseHeadpieceLeft}>
+                <span className={styles.courseHeadpieceTitleJa}>知識</span>
+                <span className={styles.courseHeadpieceTitle}>Creative Healing</span>
+                <span className={styles.courseHeadpieceBadge}>12-Week Track</span>
+              </div>
+              <svg className={styles.courseHeadpieceChevron} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
             </button>
 
             <nav className={styles.weekNav} aria-label="Week navigation">

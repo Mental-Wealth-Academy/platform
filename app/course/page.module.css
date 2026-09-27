@@ -1118,6 +1118,82 @@
   flex-shrink: 0;
 }
 
+/* ── Course headpiece with Japanese kanji ── */
+
+.courseHeadpiece {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% + 48px);
+  margin: -24px -24px 20px -24px;
+  padding: 12px 20px 10px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
+  border: 0;
+  border-bottom: 2px solid var(--color-primary-hover);
+  border-radius: 14px 14px 0 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.courseHeadpiece:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-base));
+}
+
+.courseHeadpieceLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.courseHeadpieceTitleJa {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.courseHeadpieceTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.courseHeadpieceBadge {
+  font-family: var(--type-font-code);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-base));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  flex-shrink: 0;
+}
+
+.courseHeadpieceChevron {
+  color: var(--color-text-faint);
+  transition: transform 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.courseHeadpiece:hover .courseHeadpieceChevron {
+  color: var(--color-primary);
+  transform: translateY(1px);
+}
+
 /* ── Course switcher thin button ── */
 
 .courseSwitcherBtn {
@@ -1860,6 +1936,19 @@
 :global([data-theme="dark"]) .readingCard[data-card-theme="midnight"] .readingCtaPill {
   background: #38bdf8;
   color: #0c213c;
+}
+
+:global([data-theme="dark"]) .courseHeadpiece {
+  background: var(--color-surface-2);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+:global([data-theme="dark"]) .courseHeadpiece:hover {
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-2));
+}
+
+:global([data-theme="dark"]) .courseHeadpieceTitle {
+  color: var(--color-text-light);
 }
 
 :global([data-theme="dark"]) .courseSwitcherBtn {

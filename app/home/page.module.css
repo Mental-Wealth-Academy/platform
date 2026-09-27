@@ -482,7 +482,7 @@
   width: 100%;
   background: transparent;
   border: 2px solid var(--color-primary-hover);
-  --card-radius: 12px;
+  --card-radius: 22px;
   --card-border-width: 2px;
   border-radius: var(--card-radius);
   overflow: visible;
@@ -642,15 +642,33 @@
 .listsCardLabel {
   display: block;
   font-family: var(--font-secondary);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: rgba(227, 225, 238, 0.95);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-primary);
 }
 
 :global(:root:not([data-theme="dark"])) .listsCardLabel {
-  color: #1a1d33;
+  color: var(--palette-ink);
+}
+
+@media (max-width: 768px) {
+  .listsCardButton {
+    padding: 13px 15px;
+    gap: 12px;
+  }
+
+  .listsCardLabel {
+    font-size: 14px;
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (max-width: 480px) {
+  .listsCardButton {
+    padding: 11px 12px;
+    gap: 10px;
+  }
 }
 
 .listsCard:focus-visible {

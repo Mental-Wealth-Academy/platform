@@ -254,8 +254,8 @@ export default function BlueScene() {
     <section className={styles.scene} aria-label={view === 'garden' ? 'Balloon popping with Blue' : 'Live session feed'}>
       <div className={styles.sceneHeader}>
         <div className={styles.sceneHeading}>
-          <span className={styles.sceneTitleJa} lang="ja">{view === 'garden' ? '幻想庭園' : '生配信'}</span>
-          <span className={styles.sceneTitle}>{view === 'garden' ? 'Ethereal Gardens' : 'Live Sessions'}</span>
+          <span className={styles.sceneTitleJa} lang="ja">知識</span>
+          <span className={styles.sceneTitle}>Radio</span>
         </div>
         <div className={styles.sceneSwitch} role="tablist" aria-label="Scene view">
           <button

@@ -161,35 +161,52 @@ function BlueModel({
     loader.load(
       MODEL_URL,
       (gltf) => {
-        const nextVrm = gltf.userData.vrm as VRM | undefined;
-        if (!nextVrm) {
+        try {
+          const nextVrm = gltf.userData.vrm as VRM | undefined;
+          if (!nextVrm) {
+            onError();
+            return;
+          }
+
+          if (disposed) {
+            VRMUtils.deepDispose(nextVrm.scene);
+            return;
+          }
+
+          try {
+            VRMUtils.removeUnnecessaryVertices(nextVrm.scene);
+          } catch {
+            // Non-critical optimization; proceed if fails
+          }
+          try {
+            VRMUtils.combineSkeletons(nextVrm.scene);
+          } catch {
+            // Non-critical optimization; proceed if fails
+          }
+          try {
+            VRMUtils.combineMorphs(nextVrm);
+          } catch {
+            // Non-critical optimization; proceed if fails
+          }
+
+          nextVrm.scene.traverse((object) => {
+            object.frustumCulled = false;
+          });
+
+          setBroadcastPose(nextVrm);
+          headRef.current = nextVrm.humanoid.getNormalizedBoneNode('head');
+          chestRef.current = nextVrm.humanoid.getNormalizedBoneNode('chest');
+          headRef.current?.quaternion.normalize();
+          chestRef.current?.quaternion.normalize();
+          headBaseRef.current.copy(headRef.current?.quaternion ?? new Quaternion());
+          chestBaseRef.current.copy(chestRef.current?.quaternion ?? new Quaternion());
+
+          loadedVrm = nextVrm;
+          setVrm(nextVrm);
+          onReady();
+        } catch {
           onError();
-          return;
         }
-
-        if (disposed) {
-          VRMUtils.deepDispose(nextVrm.scene);
-          return;
-        }
-
-        VRMUtils.removeUnnecessaryVertices(nextVrm.scene);
-        VRMUtils.combineSkeletons(nextVrm.scene);
-        VRMUtils.combineMorphs(nextVrm);
-        nextVrm.scene.traverse((object) => {
-          object.frustumCulled = false;
-        });
-
-        setBroadcastPose(nextVrm);
-        headRef.current = nextVrm.humanoid.getNormalizedBoneNode('head');
-        chestRef.current = nextVrm.humanoid.getNormalizedBoneNode('chest');
-        headRef.current?.quaternion.normalize();
-        chestRef.current?.quaternion.normalize();
-        headBaseRef.current.copy(headRef.current?.quaternion ?? new Quaternion());
-        chestBaseRef.current.copy(chestRef.current?.quaternion ?? new Quaternion());
-
-        loadedVrm = nextVrm;
-        setVrm(nextVrm);
-        onReady();
       },
       undefined,
       () => onError(),

@@ -56,6 +56,11 @@ export interface BlueChatback {
   onSubmit?: (reply: string, lineIndex: number) => void;
 }
 
+export interface DialogueChoice {
+  label: string;
+  onSelect: () => void;
+}
+
 export interface BlueDialogueProps {
   /** Controls whether the dialogue modal is mounted and visible. */
   open: boolean;
@@ -79,6 +84,10 @@ export interface BlueDialogueProps {
   chatback?: BlueChatback;
   /** Keep centered popup without dimming background backdrop. */
   clearBackdrop?: boolean;
+  /** Optional interactive decision choices rendered as circular pill buttons at the bottom */
+  choices?: DialogueChoice[];
+  /** When true or when choices are present, prevents dialogue from closing automatically */
+  disableAutoClose?: boolean;
 }
 
 function prefersReducedMotion(): boolean {
@@ -118,6 +127,8 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   reward,
   title = 'Blue Superintelligence',
   subtitle,
+  choices,
+  disableAutoClose = false,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -287,12 +298,21 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       return;
     }
 
+    const hasChoices = Boolean(choices && choices.length > 0);
+    const isLastLine = safeIndex >= safeLines.length - 1;
+
+    // When choices exist or auto-close is disabled, stop at the last line so user can decide
+    if (isLastLine && (disableAutoClose || hasChoices)) {
+      clearAutoAdvance();
+      return;
+    }
+
     const readingDelay = Math.max(2200, activeLine.length * 36);
 
     const proceed = () => {
       if (safeIndex < safeLines.length - 1) {
         setLineIndex((n) => n + 1);
-      } else {
+      } else if (!disableAutoClose && !hasChoices) {
         // Complete the dialogue automatically
         close();
       }
@@ -312,7 +332,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
     autoAdvanceTimer.current = setTimeout(proceed, readingDelay);
     return clearAutoAdvance;
-  }, [open, isTyping, safeIndex, safeLines.length, activeLine, close, clearAutoAdvance]);
+  }, [open, isTyping, safeIndex, safeLines.length, activeLine, close, clearAutoAdvance, disableAutoClose, choices]);
 
   // Click on dialogue allows user to fast-forward typing or advance early.
   const handleDialogueTap = useCallback(() => {
@@ -322,12 +342,13 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       finishTyping();
       return;
     }
+    const hasChoices = Boolean(choices && choices.length > 0);
     if (safeIndex < safeLines.length - 1) {
       setLineIndex((n) => n + 1);
-    } else {
+    } else if (!disableAutoClose && !hasChoices) {
       close();
     }
-  }, [play, clearAutoAdvance, isTyping, finishTyping, safeIndex, safeLines.length, close]);
+  }, [play, clearAutoAdvance, isTyping, finishTyping, safeIndex, safeLines.length, disableAutoClose, choices, close]);
 
   // Keyboard navigation: Escape closes; Space/Enter advances early.
   useEffect(() => {
@@ -450,6 +471,24 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                 {!isTyping && <span className={styles.quoteMark}>&rdquo;</span>}
               </p>
             </div>
+
+            {choices && choices.length > 0 && safeIndex === safeLines.length - 1 && (
+              <div className={styles.choicesRow} role="group" aria-label="Dialogue decisions">
+                {choices.slice(0, 2).map((choice, idx) => (
+                  <button
+                    key={`${choice.label}-${idx}`}
+                    type="button"
+                    className={`${styles.choicePill} ${idx === 0 ? styles.choicePillLeft : styles.choicePillRight}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      choice.onSelect();
+                    }}
+                  >
+                    {choice.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className={styles.characterCol}>

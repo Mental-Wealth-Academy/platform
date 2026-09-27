@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useDevOnboarding } from '@/components/useDevMode';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
-import BlueDialogue from '@/components/blue-dialogue/BlueDialogue';
+import BlueDialogue, { type BlueEmotion } from '@/components/blue-dialogue/BlueDialogue';
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
 import type { FolderMotif } from '@/components/home/folderMotifs';
@@ -183,6 +183,97 @@ const ASK_BLUE_DIALOGUES: CourseDialogue[] = [
   },
 ];
 
+interface LifePredictionChoice {
+  label: string;
+  nextNodeKey: string;
+}
+
+interface LifePredictionNode {
+  emotion: BlueEmotion;
+  lines: string[];
+  choices: [LifePredictionChoice, LifePredictionChoice];
+}
+
+const LIFE_PREDICTION_NODES: Record<string, LifePredictionNode> = {
+  root: {
+    emotion: 'happy',
+    lines: [
+      'Hello! I calibrate your trajectory across biological markers, natal aspects, and learning habits.',
+      'To forecast your optimal growth pathway today, which dimension shall we examine?',
+    ],
+    choices: [
+      { label: 'Biological Blueprint', nextNodeKey: 'biology' },
+      { label: 'Natal Transits', nextNodeKey: 'astrology' },
+    ],
+  },
+  biology: {
+    emotion: 'calm',
+    lines: [
+      'Calibrating circadian rhythm and cognitive recovery data.',
+      'Your dopamine baseline peaks early, but late-day screen fatigue compresses reflective depth.',
+    ],
+    choices: [
+      { label: 'Prioritize 90m Sprints', nextNodeKey: 'deepWork' },
+      { label: 'Schedule Active Rest', nextNodeKey: 'activeRest' },
+    ],
+  },
+  astrology: {
+    emotion: 'surprised',
+    lines: [
+      'Aligning celestial coordinates with your active quest log.',
+      'Saturn urges disciplined boundaries, while Mercury prompts deep synthesis of your field notes.',
+    ],
+    choices: [
+      { label: 'Fortify Daily Cadence', nextNodeKey: 'dailyRoutine' },
+      { label: 'Creative Synthesis', nextNodeKey: 'creativeSynthesis' },
+    ],
+  },
+  deepWork: {
+    emotion: 'happy',
+    lines: [
+      'Trajectory locked: Structure two unbroken 90-minute study blocks before noon, followed by cold hydration and natural daylight.',
+      'Consistency here compounds your mastery speed by 3x. Protocol logged.',
+    ],
+    choices: [
+      { label: 'Check Natal Transits', nextNodeKey: 'astrology' },
+      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+    ],
+  },
+  activeRest: {
+    emotion: 'calm',
+    lines: [
+      'High performers often mistake nervous exhaustion for drive. Take a 20-minute decompressed walk.',
+      'When you return, your neuroplasticity will be primed for the next Academy module.',
+    ],
+    choices: [
+      { label: 'Recheck Biology', nextNodeKey: 'biology' },
+      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+    ],
+  },
+  dailyRoutine: {
+    emotion: 'neutral',
+    lines: [
+      'Discipline is the container for genius. Remove low-leverage distractions and commit to your verification quest.',
+      'Your Level-3 status will remain rock solid as you maintain this cadence.',
+    ],
+    choices: [
+      { label: 'Explore Creative Paths', nextNodeKey: 'creativeSynthesis' },
+      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+    ],
+  },
+  creativeSynthesis: {
+    emotion: 'happy',
+    lines: [
+      'The stars favor non-linear connections today. Cross-pollinate ideas from your field notes into your custom list.',
+      'Breakthroughs happen when disparate branches of knowledge intersect.',
+    ],
+    choices: [
+      { label: 'Prioritize 90m Sprints', nextNodeKey: 'deepWork' },
+      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+    ],
+  },
+};
+
 export default function HomePage() {
   const learnOnly = usePathname() === '/learn';
   const { ready, authenticated, getAccessToken, login } = usePrivy();
@@ -231,7 +322,7 @@ export default function HomePage() {
   }, []);
   const [introOpen, setIntroOpen] = useState(false);
   const [askBlueOpen, setAskBlueOpen] = useState(false);
-  const [askBlueIndex, setAskBlueIndex] = useState(0);
+  const [predictionNodeKey, setPredictionNodeKey] = useState('root');
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
   );
@@ -239,6 +330,18 @@ export default function HomePage() {
   const [weeklyOpen, setWeeklyOpen] = useState(false);
   const [weeklyLines, setWeeklyLines] = useState<string[] | null>(null);
   const { play } = useSound();
+
+  const currentPredictionNode = LIFE_PREDICTION_NODES[predictionNodeKey] ?? LIFE_PREDICTION_NODES.root;
+
+  const predictionChoices = useMemo(() => {
+    return currentPredictionNode.choices.map((c) => ({
+      label: c.label,
+      onSelect: () => {
+        play('click');
+        setPredictionNodeKey(c.nextNodeKey);
+      },
+    }));
+  }, [currentPredictionNode, play]);
 
   // One Blue moment per day, by priority: first-run intro, then the season
   // week's intro/check-in (once per week, centered pop-up), then the daily
@@ -601,7 +704,7 @@ export default function HomePage() {
             className={styles.askBlueBtn}
             onClick={() => {
               play('click');
-              setAskBlueIndex((i) => (i + 1) % ASK_BLUE_DIALOGUES.length);
+              setPredictionNodeKey('root');
               setAskBlueOpen(true);
             }}
           >
@@ -938,10 +1041,12 @@ export default function HomePage() {
         <BlueDialogue
           open={askBlueOpen}
           placement="center"
-          title="Blue Superintelligence"
-          subtitle="Academy records and guidance"
-          lines={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].lines}
-          emotion={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].emotion}
+          title="AI Life Prediction"
+          subtitle="Biometric and archetypal forecasting"
+          lines={currentPredictionNode.lines}
+          emotion={currentPredictionNode.emotion}
+          choices={predictionChoices}
+          disableAutoClose
           onClose={() => setAskBlueOpen(false)}
         />
       )}

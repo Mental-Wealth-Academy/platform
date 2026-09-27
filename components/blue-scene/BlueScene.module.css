@@ -18,9 +18,9 @@
   right: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 12px 16px 10px;
-  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-base));
   border-bottom: 2px solid var(--color-primary-hover);
   z-index: 4;
 }
@@ -28,7 +28,7 @@
 .sceneHeading {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -37,6 +37,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-primary);
 }
 
@@ -45,7 +46,8 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #2a2f52;
+  text-transform: uppercase;
+  color: var(--color-text-dark);
 }
 
 .sceneSwitch {
@@ -716,7 +718,7 @@
 }
 
 :global([data-theme="dark"]) .sceneTitle {
-  color: #f0f2ff;
+  color: var(--color-text-light);
 }
 
 :global([data-theme="dark"]) .sceneTitleJa {
@@ -775,11 +777,12 @@
   }
 
   .sceneHeader {
-    display: none;
+    display: flex;
+    padding: 10px 14px;
   }
 
   .liveFeed {
-    inset: 0;
+    inset: 44px 0 0;
   }
 
   .sceneFooter {
@@ -791,13 +794,13 @@
   .blueWrap {
     width: 40px;
     height: 40px;
-    top: 44px;
+    top: 54px;
     left: 8px;
   }
 
   .footerCounters {
     position: absolute;
-    top: 46px;
+    top: 56px;
     left: 56px;
     right: auto;
     z-index: 7;
@@ -810,10 +813,6 @@
 }
 
 @media (max-width: 480px) {
-  .sceneTitleJa {
-    display: none;
-  }
-
   .sceneSwitchButton {
     padding-inline: 8px;
   }

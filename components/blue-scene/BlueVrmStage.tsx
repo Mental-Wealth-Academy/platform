@@ -44,12 +44,7 @@ class BlueVrmBoundary extends Component<BlueVrmBoundaryProps, { failed: boolean 
 
 function canUseWebGl(): boolean {
   try {
-    if (
-      typeof window !== 'undefined' &&
-      (window.innerWidth <= 768 || window.matchMedia('(max-width: 768px)').matches)
-    ) {
-      return false;
-    }
+    if (typeof window === 'undefined') return false;
     const canvas = document.createElement('canvas');
     return Boolean(
       window.WebGLRenderingContext &&
@@ -90,9 +85,9 @@ export default function BlueVrmStage({
     };
     let idleId: number;
     if (typeof win.requestIdleCallback === 'function') {
-      idleId = win.requestIdleCallback(() => setMountCanvas(true), { timeout: 900 });
+      idleId = win.requestIdleCallback(() => setMountCanvas(true), { timeout: 200 });
     } else {
-      idleId = window.setTimeout(() => setMountCanvas(true), 300);
+      idleId = window.setTimeout(() => setMountCanvas(true), 100);
     }
 
     return () => {
