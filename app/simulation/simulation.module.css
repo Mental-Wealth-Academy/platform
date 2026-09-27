@@ -243,6 +243,18 @@
     font-weight: 700;
     margin: 0;
   }
+  .lockedAvatarWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .lockedAvatar {
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px color-mix(in oklch, var(--palette-night) 25%, transparent));
+  }
   .lockedText {
     font-size: 14px;
     opacity: 0.65;

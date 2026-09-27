@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
+import CtaButton from '@/components/shared/CtaButton';
 import styles from './ListsPanel.module.css';
 
 export const LIST_KEYS = ['todo', 'watch', 'later'] as const;
@@ -48,6 +50,7 @@ interface ListsPanelProps {
 }
 
 const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, onSound, showHeader = true }) => {
+  const { login } = usePrivy();
   const [lists, setLists] = useState<Lists>(EMPTY_LISTS);
   const [drafts, setDrafts] = useState<Record<ListKey, string>>({ todo: '', watch: '', later: '' });
   const [loading, setLoading] = useState(true);
@@ -160,6 +163,17 @@ const ListsPanel: React.FC<ListsPanelProps> = ({ authHeaders, isAuthenticated, o
           <p className={styles.gateBody}>
             Sign in and Blue keeps your to-do, watch, and later lists between visits.
           </p>
+          <CtaButton
+            variant="primary"
+            size="md"
+            onClick={() => {
+              onSound?.('click');
+              login();
+            }}
+            className={styles.gateCta}
+          >
+            Sign in to start
+          </CtaButton>
         </div>
       </div>
     );

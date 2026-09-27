@@ -41,7 +41,6 @@ const PAGE_LINKS: NavLink[] = [
   { label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg?v=4' },
   { label: 'Lists', href: '/list', icon: '/icons/nav-journal-v3.svg' },
   { label: 'Chat', href: '/chat', icon: '/icons/nav-prompts-v3.svg' },
-  { label: 'Community', href: '/community', icon: '/icons/nav-community-v2.svg' },
   { label: 'Guidebook', href: '/guidebook', icon: '/icons/ui-book-v2.svg' },
 ];
 

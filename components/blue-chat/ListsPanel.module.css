@@ -264,26 +264,35 @@
 /* Signed-out gate */
 .gate {
   margin: auto;
-  max-width: 380px;
+  max-width: 440px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 20px;
 }
 
 .gateTitle {
   margin: 0;
   font-family: var(--font-editorial), 'PP Editorial New', Georgia, serif;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.005em;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--color-text-light, var(--palette-on-dark));
 }
 
 .gateBody {
-  margin: 10px 0 0;
+  margin: 0;
   font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
+  color: color-mix(in oklch, var(--palette-on-dark) 78%, transparent);
+}
+
+.gateCta {
+  margin-top: 8px;
 }
 
 /* Narrow expanded view — stack the three lists */
@@ -381,14 +390,6 @@
 :global(:root:not([data-theme="dark"])) .remove:hover {
   background: rgba(232, 85, 109, 0.12);
   color: rgba(180, 40, 70, 0.95);
-}
-
-:global(:root:not([data-theme="dark"])) .gateTitle {
-  color: rgba(26, 29, 51, 0.9);
-}
-
-:global(:root:not([data-theme="dark"])) .gateBody {
-  color: rgba(26, 29, 51, 0.52);
 }
 
 /* Mac Window Frame */

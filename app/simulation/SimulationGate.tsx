@@ -5,8 +5,9 @@ import { usePrivy } from '@privy-io/react-auth';
 import { DotmSquare3 } from '@/components/dot-matrix/DotmSquare3';
 import dynamic from 'next/dynamic';
 import { useSound } from '@/hooks/useSound';
+import Image from 'next/image';
 import { setSimulationAccessTokenProvider } from '@/lib/simulation-api';
-import Button from '@/components/button/Button';
+import CtaButton from '@/components/shared/CtaButton';
 import SimulationWorkspace from './SimulationWorkspace';
 import styles from './simulation.module.css';
 
@@ -112,12 +113,23 @@ export default function SimulationGate() {
   if (!authenticated) {
     return (
       <div className={styles.lockedCard}>
-        <h1 className={styles.lockedTitle}>Sign in to explore Simulated Pocket Worlds</h1>
+        <div className={styles.lockedAvatarWrap}>
+          <Image
+            src="/exxie.png"
+            alt="Daemon"
+            width={120}
+            height={140}
+            className={styles.lockedAvatar}
+            priority
+          />
+        </div>
+        <h1 className={styles.lockedTitle}>Simulated Pocket Worlds</h1>
         <p className={styles.lockedText}>
-          Browse living worlds of autonomous agents built from real documents, and read the
-          futures they produce. Sign in to start looking around.
+          Explore autonomous agent worlds and watch the futures they produce.
         </p>
-        <Button
+        <CtaButton
+          variant="primary"
+          size="md"
           onClick={() => {
             play('click');
             login();
@@ -125,7 +137,7 @@ export default function SimulationGate() {
           onMouseEnter={() => play('hover')}
         >
           Sign in to continue
-        </Button>
+        </CtaButton>
       </div>
     );
   }

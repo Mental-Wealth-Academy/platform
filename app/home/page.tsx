@@ -508,7 +508,7 @@ export default function HomePage() {
       <main className={styles.pageColumns}>
       {learnOnly && (
         <section className={styles.learnOverview}>
-          <h1 className={styles.learnOverviewTitle}>Guides &amp; Curricula</h1>
+          <h1 className={styles.learnOverviewTitle}>Library</h1>
           <div className={styles.learnOverviewMetrics}>
             <span className={styles.learnOverviewStars} aria-label="5 out of 5 stars">
               {Array.from({ length: 5 }, (_, index) => <Star key={index} size={15} weight="fill" />)}
@@ -529,9 +529,6 @@ export default function HomePage() {
           </div>
           <div className={styles.learnOverviewBody}>
             <p className={styles.learnOverviewCopy}>
-              Mental Wealth Academy&apos;s self-paced courses, guides, and practice curricula give autodidacts clearer learning paths through current knowledge.
-              <br />
-              <br />
               Browse or filter through the guides below to find one you want to use. See for yourself why academics choose Mental Wealth Academy.
             </p>
             {!authenticated && (
@@ -540,7 +537,7 @@ export default function HomePage() {
                 <p className={styles.learnAccountTitle}>Easily Become a Master</p>
                 <p className={styles.learnAccountCopy}>Read short, fun guides by amazing humans.</p>
                 <CtaButton variant="secondary" size="sm" block className={styles.learnAccountCta} onClick={() => login()}>
-                  Create an Account
+                  Get Started
                 </CtaButton>
               </aside>
             )}
@@ -703,17 +700,6 @@ export default function HomePage() {
         {learnOnly && (guides.length > 0 || (authenticated && (isVip || myGuides.length > 0))) && (
           <>
             <div className={styles.guideSectionContent}>
-              {guides.length > 0 && (
-                <Link
-                  href="/learn/guides/map"
-                  className={styles.knowledgeTreeCard}
-                  onMouseEnter={() => play('soft-hover')}
-                >
-                  <TreeStructure size={18} weight="bold" />
-                  <span>See the knowledge tree</span>
-                </Link>
-              )}
-
               <GuideGallery guides={guides} filters={guideFilters} />
 
               {authenticated && frontierGuides && frontierGuides.length > 0 && (

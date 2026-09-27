@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import styles from './page.module.css';
 
 const sections = [
   { id: 'getting-started', title: 'Getting Started' },
@@ -17,198 +18,11 @@ const sections = [
   { id: 'faq', title: 'FAQ & Troubleshooting' },
 ];
 
-const containerStyle = {
-  display: 'flex' as const,
-  minHeight: 'calc(100vh - 72px)',
-  background: 'var(--color-primary)',
-  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
-};
-
-const sidebarStyle = {
-  width: '260px',
-  flexShrink: 0,
-  position: 'sticky' as const,
-  top: '72px',
-  height: 'calc(100vh - 72px)',
-  overflowY: 'auto' as const,
-  borderRight: '1px solid rgba(255,255,255,0.12)',
-  padding: '2rem 0',
-  background: 'rgba(0,0,0,0.08)',
-};
-
-const sidebarInnerStyle = {
-  display: 'flex' as const,
-  flexDirection: 'column' as const,
-  gap: '2px',
-};
-
-const sidebarTitleStyle = {
-  fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
-  fontSize: '0.75rem',
-  fontWeight: 600,
-  textTransform: 'uppercase' as const,
-  letterSpacing: '0.08em',
-  color: 'rgba(255,255,255,0.6)',
-  padding: '0 1.5rem 0.75rem',
-};
-
-const linkStyle = {
-  display: 'block' as const,
-  padding: '0.4rem 1.5rem',
-  fontSize: '0.8125rem',
-  color: 'rgba(255,255,255,0.7)',
-  textDecoration: 'none' as const,
-  borderLeft: '3px solid transparent',
-  transition: 'all 0.15s ease',
-  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
-  lineHeight: 1.4,
-};
-
-const linkActiveStyle = {
-  ...linkStyle,
-  color: '#ffffff',
-  background: 'rgba(255,255,255,0.1)',
-  borderLeftColor: '#ffffff',
-  fontWeight: 500,
-};
-
-const mainStyle = {
-  flex: 1,
-  padding: '3rem 4rem',
-  maxWidth: '900px',
-};
-
-const h1Style = {
-  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
-  fontSize: 'clamp(2rem, 4vw, 3rem)',
-  fontWeight: 800,
-  lineHeight: 1.05,
-  letterSpacing: '-0.03em',
-  color: '#ffffff',
-  marginBottom: '0.5rem',
-};
-
-const subtitleStyle = {
-  fontSize: '1rem',
-  color: 'rgba(255,255,255,0.7)',
-  marginBottom: '2.5rem',
-  lineHeight: 1.6,
-};
-
-const h2Style = {
-  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
-  fontSize: 'clamp(1.5rem, 2.5vw, 1.875rem)',
-  fontWeight: 800,
-  lineHeight: 1.15,
-  letterSpacing: '-0.02em',
-  color: '#ffffff',
-  marginTop: '3rem',
-  marginBottom: '1rem',
-  paddingBottom: '0.5rem',
-  borderBottom: '2px solid rgba(255,255,255,0.3)',
-};
-
-const h3Style = {
-  fontFamily: "var(--font-primary, 'Commit Mono', monospace)",
-  fontSize: 'clamp(1.125rem, 1.6vw, 1.25rem)',
-  fontWeight: 700,
-  lineHeight: 1.2,
-  letterSpacing: '-0.01em',
-  color: '#ffffff',
-  marginTop: '2rem',
-  marginBottom: '0.75rem',
-};
-
-const pStyle = {
-  fontSize: '0.9375rem',
-  lineHeight: 1.8,
-  color: 'rgba(255,255,255,0.75)',
-  marginBottom: '1rem',
-  fontWeight: 300,
-};
-
-const tableStyle = {
-  width: '100%',
-  borderCollapse: 'collapse' as const,
-  fontSize: '0.875rem',
-  marginBottom: '1.5rem',
-  background: 'rgba(255,255,255,0.06)',
-  borderRadius: '8px',
-  overflow: 'hidden' as const,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-};
-
-const thStyle = {
-  textAlign: 'left' as const,
-  padding: '0.75rem 1rem',
-  background: 'rgba(255,255,255,0.08)',
-  fontFamily: 'var(--font-secondary, "Space Grotesk", sans-serif)',
-  fontWeight: 600,
-  fontSize: '0.8125rem',
-  color: '#ffffff',
-  borderBottom: '1px solid rgba(255,255,255,0.12)',
-};
-
-const tdStyle = {
-  padding: '0.75rem 1rem',
-  borderBottom: '1px solid rgba(255,255,255,0.08)',
-  color: 'rgba(255,255,255,0.75)',
-  fontWeight: 300,
-  lineHeight: 1.6,
-};
-
-const ulStyle = {
-  paddingLeft: '1.5rem',
-  marginBottom: '1rem',
-  fontSize: '0.9375rem',
-  lineHeight: 1.8,
-  color: 'rgba(255,255,255,0.75)',
-  fontWeight: 300,
-};
-
-const liStyle = {
-  marginBottom: '0.25rem',
-};
-
-const codeStyle = {
-  fontFamily: 'var(--font-button, "Space Grotesk", sans-serif)',
-  fontSize: '0.8125rem',
-  background: 'rgba(255,255,255,0.12)',
-  padding: '0.125rem 0.375rem',
-  borderRadius: '4px',
-  color: '#ffffff',
-};
-
-const calloutStyle = {
-  background: 'rgba(255,255,255,0.08)',
-  borderLeft: '4px solid #ffffff',
-  borderRadius: '0 8px 8px 0',
-  padding: '1rem 1.25rem',
-  marginBottom: '1.5rem',
-  fontSize: '0.875rem',
-  lineHeight: 1.6,
-  color: 'rgba(255,255,255,0.85)',
-};
-
-const olStyle = {
-  paddingLeft: '1.5rem',
-  marginBottom: '1rem',
-  fontSize: '0.9375rem',
-  lineHeight: 1.8,
-  color: 'rgba(255,255,255,0.75)',
-  fontWeight: 300,
-};
-
-const strongStyle = {
-  fontWeight: 600,
-  color: '#ffffff',
-};
-
 function SectionLink({ id, title, active }: { id: string; title: string; active: boolean }) {
   return (
     <a
       href={`#${id}`}
-      style={active ? linkActiveStyle : linkStyle}
+      className={active ? styles.linkActive : styles.link}
       onClick={(e) => {
         e.preventDefault();
         const el = document.getElementById(id);
@@ -222,57 +36,59 @@ function SectionLink({ id, title, active }: { id: string; title: string; active:
 
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <table style={tableStyle}>
-      <thead>
-        <tr>
-          {headers.map((h) => <th key={h} style={thStyle}>{h}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={i}>
-            {row.map((cell, j) => <td key={j} style={tdStyle}>{cell}</td>)}
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            {headers.map((h) => <th key={h} className={styles.th}>{h}</th>)}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => <td key={j} className={styles.td}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
 function P({ children }: { children: React.ReactNode }) {
-  return <p style={pStyle}>{children}</p>;
+  return <p className={styles.p}>{children}</p>;
 }
 
 function Strong({ children }: { children: React.ReactNode }) {
-  return <strong style={strongStyle}>{children}</strong>;
+  return <strong className={styles.strong}>{children}</strong>;
 }
 
 function H2({ id, children }: { id: string; children: React.ReactNode }) {
-  return <h2 id={id} style={h2Style}>{children}</h2>;
+  return <h2 id={id} className={styles.h2}>{children}</h2>;
 }
 
 function H3({ children }: { children: React.ReactNode }) {
-  return <h3 style={h3Style}>{children}</h3>;
+  return <h3 className={styles.h3}>{children}</h3>;
 }
 
 function Ul({ children }: { children: React.ReactNode }) {
-  return <ul style={ulStyle}>{children}</ul>;
+  return <ul className={styles.ul}>{children}</ul>;
 }
 
 function Ol({ children }: { children: React.ReactNode }) {
-  return <ol style={olStyle}>{children}</ol>;
+  return <ol className={styles.ol}>{children}</ol>;
 }
 
 function Li({ children }: { children: React.ReactNode }) {
-  return <li style={liStyle}>{children}</li>;
+  return <li className={styles.li}>{children}</li>;
 }
 
 function Code({ children }: { children: React.ReactNode }) {
-  return <code style={codeStyle}>{children}</code>;
+  return <code className={styles.code}>{children}</code>;
 }
 
 function Callout({ children }: { children: React.ReactNode }) {
-  return <div style={calloutStyle}>{children}</div>;
+  return <div className={styles.callout}>{children}</div>;
 }
 
 export default function GuidebookPage() {
@@ -299,30 +115,30 @@ export default function GuidebookPage() {
   }, []);
 
   return (
-    <div style={containerStyle}>
-      <nav style={sidebarStyle}>
-        <div style={sidebarInnerStyle}>
-          <div style={sidebarTitleStyle}>Guidebook</div>
+    <div className={styles.container}>
+      <nav className={styles.sidebar}>
+        <div className={styles.sidebarInner}>
+          <div className={styles.sidebarTitle}>Guidebook</div>
           {sections.map((s) => (
             <SectionLink key={s.id} id={s.id} title={s.title} active={activeSection === s.id} />
           ))}
         </div>
       </nav>
 
-      <main style={mainStyle}>
-        <h1 style={h1Style}>MWA Guidebook</h1>
-        <p style={subtitleStyle}>
+      <main className={styles.main}>
+        <h1 className={styles.h1}>MWA Guidebook</h1>
+        <p className={styles.subtitle}>
           Everything you need to know about the platform. From your first login to advanced features.
         </p>
 
-        <p style={{ ...pStyle, fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)' }}>
+        <p className={styles.linksBar}>
           <Strong>Website:</Strong>{' '}
-          <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>
+          <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
             mentalwealthacademy.world
           </a>
           {' | '}
           <Strong>GitHub:</Strong>{' '}
-          <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>
+          <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
             Mental-Wealth-Academy/platform
           </a>
         </p>
@@ -336,7 +152,7 @@ export default function GuidebookPage() {
 
         <H3>Creating Your Account</H3>
         <Ol>
-          <Li>Visit <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>mentalwealthacademy.world</a></Li>
+          <Li>Visit <a href="https://www.mentalwealthacademy.world" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>mentalwealthacademy.world</a></Li>
           <Li>Click the connect wallet button</Li>
           <Li>Choose your connection method:
             <Ul>
@@ -757,7 +573,7 @@ export default function GuidebookPage() {
         <P>A: Blue is the platform&apos;s AI agent. She has her own wallet with a 20% stash of Diamonds ($BLUE) that she pays quest rewards from, reviews quest submissions, conducts market trades, and can be chatted with via the &ldquo;Ask Blue&rdquo; button.</P>
 
         <P><Strong>Q: How do I get help?</Strong></P>
-        <P>A: Click the &ldquo;Ask Blue&rdquo; button on any page for AI assistance. For technical issues, visit the <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>GitHub repository</a> or reach out through community channels.</P>
+        <P>A: Click the &ldquo;Ask Blue&rdquo; button on any page for AI assistance. For technical issues, visit the <a href="https://github.com/Mental-Wealth-Academy/platform" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>GitHub repository</a> or reach out through community channels.</P>
 
         <H3>Troubleshooting</H3>
 
@@ -784,14 +600,14 @@ export default function GuidebookPage() {
 
         <H3>Additional Resources</H3>
         <Ul>
-          <Li><Strong>Brand Editorial Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/Brand%20Editorial.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>Brand Editorial.md</a></Li>
-          <Li><Strong>Ontology Creation Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/ONTOLOGY_CREATION_GUIDE.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>ONTOLOGY_CREATION_GUIDE.md</a></Li>
-          <Li><Strong>Financial Architecture Map:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/docs/financial-blockchain-map.md" target="_blank" rel="noopener noreferrer" style={{ color: '#ffffff', textDecoration: 'underline' }}>docs/financial-blockchain-map.md</a></Li>
+          <Li><Strong>Brand Editorial Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/Brand%20Editorial.md" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>Brand Editorial.md</a></Li>
+          <Li><Strong>Ontology Creation Guide:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/ONTOLOGY_CREATION_GUIDE.md" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>ONTOLOGY_CREATION_GUIDE.md</a></Li>
+          <Li><Strong>Financial Architecture Map:</Strong> <a href="https://github.com/Mental-Wealth-Academy/platform/blob/main/docs/financial-blockchain-map.md" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>docs/financial-blockchain-map.md</a></Li>
           <Li><Strong>Smart Contracts:</Strong> Located in the <Code>contracts/</Code> directory (Foundry/Forge)</Li>
           <Li><Strong>API Documentation:</Strong> All API routes are in <Code>app/api/</Code></Li>
         </Ul>
 
-        <p style={{ ...pStyle, marginTop: '3rem', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>
+        <p className={styles.lastUpdated}>
           <em>Last updated: June 2026</em>
         </p>
       </main>

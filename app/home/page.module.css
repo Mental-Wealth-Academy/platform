@@ -1279,12 +1279,14 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
+  text-align: center;
 }
 
 .learnOverviewMetrics,
 .learnOverviewRating {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
   color: var(--color-text-muted);
@@ -1339,6 +1341,7 @@
   font-family: var(--font-poppins) !important;
   font-size: 1rem;
   line-height: 1.55;
+  text-align: center;
 }
 
 .learnAccountCard {
@@ -2153,17 +2156,24 @@
     font-size: clamp(20px, 5.2vw, 24px);
     letter-spacing: -0.02em;
     line-height: 1.25;
+    text-align: center;
   }
 
   .learnOverviewMetrics,
   .learnOverviewRating {
     gap: 6px;
     font-size: 0.6875rem;
+    justify-content: center;
+  }
+
+  .learnReviewsButton {
+    display: none;
   }
 
   .learnOverviewCopy {
     font-size: 0.875rem;
     line-height: 1.5;
+    text-align: center;
   }
 
   .learnAccountCard {
