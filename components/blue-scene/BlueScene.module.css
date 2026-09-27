@@ -50,6 +50,12 @@
   color: var(--color-text-dark);
 }
 
+.sceneHeaderControls {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+}
+
 .sceneSwitch {
   display: inline-flex;
   flex-shrink: 0;
@@ -377,6 +383,16 @@
   background: color-mix(in oklch, var(--palette-ink) 12%, transparent);
 }
 
+:global([data-theme="dark"]) .radioMuteButton {
+  color: var(--color-text-light);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-2));
+}
+
+:global([data-theme="dark"]) .radioMuteButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 20%, var(--color-surface-2));
+}
+
 .radioMuteButtonLoud {
   border-color: var(--color-primary);
   background: var(--color-primary);
@@ -395,17 +411,9 @@
   }
 }
 
-/* Phones: the bento clips the card's bottom edge, so the status bar docks
-   under the scene header instead — it must never live in the clipped zone. */
 @media (max-width: 768px) {
-  .radioFooter {
-    inset: 0 0 auto;
-    border-top: 0;
-    border-bottom: 1px solid color-mix(in oklch, var(--color-text-light) 12%, transparent);
-  }
-
   .radioBlueWrap {
-    inset: 44px 0 0;
+    inset: 0;
     align-items: flex-end;
     justify-content: center;
   }

@@ -540,7 +540,7 @@
   min-width: 0;
   max-width: 880px;
   width: 100%;
-  padding: 0 18px 18px;
+  padding: 0 18px 18px !important;
   background-color: var(--color-surface-3);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M4.5 0h1v4.5H10v1H5.5V10h-1V5.5H0v-1h4.5z' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E");
   border: 2px solid var(--color-primary-hover);
@@ -2218,6 +2218,10 @@
 
   .leftCol {
     padding: 24px 20px 40px;
+  }
+
+  .leftColSimple {
+    padding: 0 18px 18px !important;
   }
 
   .rightPanel {

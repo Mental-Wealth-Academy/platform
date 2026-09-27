@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import CtaButton from '@/components/shared/CtaButton';
 import manifest from '@/lib/blue-radio-manifest.json';
@@ -37,7 +38,13 @@ function livePosition(): { index: number; offset: number } {
   return { index: 0, offset: 0 };
 }
 
-export default function BlueRadio({ gardenBackground }: { gardenBackground: string }) {
+export default function BlueRadio({
+  gardenBackground,
+  headerControlsTarget,
+}: {
+  gardenBackground: string;
+  headerControlsTarget?: HTMLDivElement | null;
+}) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -210,7 +217,6 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
     syncToLive(false).catch(() => setPlayback('blocked'));
   }, [syncToLive]);
 
-  const segment = SEGMENTS[segmentIndex];
   const onAir = playback === 'live';
   const handleAvatarReady = useCallback(() => setAvatarState('ready'), []);
   const handleAvatarError = useCallback(() => setAvatarState('fallback'), []);
@@ -247,27 +253,24 @@ export default function BlueRadio({ gardenBackground }: { gardenBackground: stri
         </div>
       )}
 
-      <div className={styles.radioFooter}>
-        <div className={styles.radioNowPlaying}>
-          <span className={styles.radioSegmentTitle}>{segment.title}</span>
-        </div>
-        {onAir && (
-          <span className={styles.radioControls}>
-            {!muted && (
-              <span className={styles.radioBars} aria-hidden="true">
-                <span /><span /><span />
-              </span>
-            )}
-            <button
-              type="button"
-              className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
-              onClick={toggleMute}
-            >
-              {muted ? 'Unmute' : 'Mute'}
-            </button>
-          </span>
-        )}
-      </div>
+      {headerControlsTarget && (onAir || playback === 'blocked') && createPortal(
+        <div className={styles.radioControls}>
+          {onAir && !muted && (
+            <span className={styles.radioBars} aria-hidden="true">
+              <span /><span /><span />
+            </span>
+          )}
+          <button
+            type="button"
+            className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
+            onClick={playback === 'blocked' ? tuneIn : toggleMute}
+            aria-label={playback === 'blocked' ? 'Tune in to audio' : muted ? 'Unmute audio' : 'Mute audio'}
+          >
+            {playback === 'blocked' ? 'Tune in' : muted ? 'Unmute' : 'Mute'}
+          </button>
+        </div>,
+        headerControlsTarget
+      )}
 
       <audio
         ref={audioRef}
