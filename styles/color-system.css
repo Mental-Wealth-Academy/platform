@@ -139,6 +139,35 @@
   --color-wellness-compass-end: #ffedd5;
   --color-wellness-compass-shadow: rgba(249, 115, 22, 0.35);
 
+  /* Home Top Hero Card & Collectible Stamp tokens */
+  --color-topcard-bg: var(--color-surface-base);
+  --color-topcard-border: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  --color-topcard-banner-bg: #f8f8f4;
+  --color-topcard-banner-bg-dark: rgba(255, 255, 255, 0.04);
+  --color-topcard-banner-border: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  --color-topcard-stamp-dolores-bg: #dde7d0;
+  --color-topcard-stamp-dolores-border: #8a9d76;
+  --color-topcard-stamp-dolores-tree: #556b2f;
+  --color-topcard-stamp-dolores-sun: #f4a261;
+  --color-topcard-stamp-dolores-ink: #384623;
+  --color-topcard-stamp-york-bg: #f4b942;
+  --color-topcard-stamp-york-border: #e59819;
+  --color-topcard-stamp-pink-bg: #fce4ec;
+  --color-topcard-stamp-pink-border: #f48fb1;
+  --color-topcard-stamp-pink-ink: #d81b60;
+  --color-topcard-stamp-pink-face: #f8bbd0;
+  --color-topcard-stamp-pink-eye: #880e4f;
+  --color-topcard-stamp-tadaima-bg: #2e5c2b;
+  --color-topcard-stamp-tadaima-border: #1f421d;
+  --color-topcard-stamp-tadaima-text: #e8f5e9;
+  --color-topcard-stamp-book-bg: #e0f7fa;
+  --color-topcard-stamp-book-border: #4dd0e1;
+  --color-topcard-stamp-book-dog: #00838f;
+  --color-topcard-stamp-book-ink: #006064;
+  --color-topcard-kicker: var(--color-text-muted);
+  --color-topcard-title: var(--color-text-dark);
+  --color-topcard-desc: var(--color-text-secondary);
+
   --color-wellness-feather-start: #0891b2;
   --color-wellness-feather-mid: #06b6d4;
   --color-wellness-feather-end: #cffafe;

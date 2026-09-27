@@ -1,0 +1,464 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   HomeTopCard: Hero CTA card inspired by the indie mobile aesthetic.
+   Features a status kicker above the card, a visual retro stamp strip,
+   clean metadata and title, an honest description, a prominent pill CTA,
+   and touch-friendly pagination dots below.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Subtle status kicker above the card */
+.kickerTop {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-topcard-kicker);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* The primary card container */
+.card {
+  position: relative;
+  width: 100%;
+  border-radius: 24px;
+  background: var(--color-topcard-bg);
+  border: 1.5px solid var(--color-topcard-border);
+  box-shadow: var(--shadow-sm);
+  padding: 18px 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+:global([data-theme="dark"]) .card {
+  background: var(--color-surface-1);
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-md);
+}
+
+/* Slides wrapper */
+.sliderTrack {
+  display: flex;
+  width: 100%;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slide {
+  flex: 0 0 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Stamp Banner ── */
+.stampBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--color-topcard-banner-bg);
+  border: 1px dashed var(--color-topcard-banner-border);
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.stampBanner::-webkit-scrollbar {
+  display: none;
+}
+
+:global([data-theme="dark"]) .stampBanner {
+  background: var(--color-topcard-banner-bg-dark);
+  border-color: var(--color-border-subtle);
+}
+
+.stamp {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.stamp:hover {
+  transform: translateY(-2px) rotate(-1deg);
+}
+
+.stampSvg {
+  width: auto;
+  height: 52px;
+  display: block;
+}
+
+/* SVG Stamp styling via classes */
+.stampDoloresBg {
+  fill: var(--color-topcard-stamp-dolores-bg);
+  stroke: var(--color-topcard-stamp-dolores-border);
+}
+
+.stampDoloresTree {
+  stroke: var(--color-topcard-stamp-dolores-tree);
+}
+
+.stampDoloresSun {
+  fill: var(--color-topcard-stamp-dolores-sun);
+}
+
+.stampDoloresText {
+  fill: var(--color-topcard-stamp-dolores-ink);
+}
+
+.stampYorkBg {
+  fill: var(--color-topcard-stamp-york-bg);
+  stroke: var(--color-topcard-stamp-york-border);
+}
+
+.stampPinkBg {
+  fill: var(--color-topcard-stamp-pink-bg);
+  stroke: var(--color-topcard-stamp-pink-border);
+}
+
+.stampPinkLine {
+  stroke: var(--color-topcard-stamp-pink-ink);
+}
+
+.stampPinkFace {
+  fill: var(--color-topcard-stamp-pink-face);
+  stroke: var(--color-topcard-stamp-pink-ink);
+}
+
+.stampPinkEye {
+  fill: var(--color-topcard-stamp-pink-eye);
+}
+
+.stampTadaimaBg {
+  fill: var(--color-topcard-stamp-tadaima-bg);
+  stroke: var(--color-topcard-stamp-tadaima-border);
+}
+
+.stampTadaimaText {
+  fill: var(--color-topcard-stamp-tadaima-text);
+}
+
+.stampBookBg {
+  fill: var(--color-topcard-stamp-book-bg);
+  stroke: var(--color-topcard-stamp-book-border);
+}
+
+.stampBookDog {
+  fill: var(--color-topcard-stamp-book-dog);
+}
+
+.stampBookText {
+  fill: var(--color-topcard-stamp-book-ink);
+}
+
+/* ── Slide Metadata & Typography ── */
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.metadataKicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-topcard-kicker);
+}
+
+.title {
+  font-family: var(--font-secondary);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-topcard-title);
+  margin: 0 0 6px 0;
+}
+
+.desc {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-topcard-desc);
+  margin: 0 0 16px 0;
+  max-width: 90%;
+}
+
+/* ── Card Footer & CTA ── */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-base));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+}
+
+.ctaBtn {
+  min-height: 38px !important;
+  padding: 0 24px !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  margin-left: auto;
+}
+
+/* ── Slide 2: Profile & Stats ── */
+.profileSlide {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatarBtn {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-base));
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-secondary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userName {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-topcard-title);
+  text-align: left;
+  cursor: pointer;
+}
+
+.streakTracker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.streakDays {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.streakDay {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: transparent;
+}
+
+.streakDayFilled {
+  border-color: var(--palette-streak-green);
+  background: var(--palette-streak-green);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--palette-streak-green) 24%, transparent);
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--color-topcard-banner-bg);
+  border: 1px solid var(--color-topcard-border);
+}
+
+:global([data-theme="dark"]) .statsRow {
+  background: var(--color-topcard-banner-bg-dark);
+  border-color: var(--color-border-subtle);
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-topcard-title);
+}
+
+/* ── Slide 3: Leaderboard ── */
+.leaderboardSlide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboardRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-base));
+  border: 1px solid var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .leaderboardRow {
+  background: var(--color-surface-2);
+}
+
+.leaderRank {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  width: 18px;
+  color: var(--color-text-muted);
+}
+
+.leaderAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-surface-2);
+  flex-shrink: 0;
+}
+
+.leaderName {
+  flex: 1;
+  font-family: var(--font-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-topcard-title);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaderShards {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Pagination Dots ── */
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: color-mix(in oklch, var(--color-text-muted) 35%, transparent);
+  cursor: pointer;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.dotActive {
+  width: 22px;
+  background: var(--color-action);
+}
+
+:global([data-theme="dark"]) .dotActive {
+  background: var(--color-text-light);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 14px 16px;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: 1.1875rem;
+  }
+
+  .desc {
+    font-size: 0.8125rem;
+    max-width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .stampSvg {
+    height: 44px;
+  }
+
+  .ctaBtn {
+    padding: 0 20px !important;
+  }
+}

@@ -13,6 +13,7 @@ import CourseFolderCard from '@/components/home/CourseFolderCard';
 import type { FolderMotif } from '@/components/home/folderMotifs';
 import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
+import HomeTopCard from '@/components/home/HomeTopCard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
 import FieldNotesSheet from '@/components/home/FieldNotesSheet';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
@@ -473,6 +474,31 @@ export default function HomePage() {
     return `You finished ${done[0]} and ${done.length - 1} others. Together they unlocked this.`;
   })();
 
+  const activeCourse = useMemo(() => {
+    if (personalCourse) {
+      return {
+        title: personalCourse.title,
+        href: '/course/personal',
+        kicker: `Personal track · ${personalCourse.focus}`,
+        desc: `A personal 4-week track built around ${personalCourse.focus.toLowerCase()} — weekly reading and reflection tuned to your goal.`,
+      };
+    }
+    if (recommendedGuide) {
+      return {
+        title: recommendedGuide.topicTitle,
+        href: `/learn/guides/${recommendedGuide.slug}`,
+        kicker: `${recommendedGuide.estimatedMinutes ?? 5} min · Recommended guide`,
+        desc: recommendedGuide.summary || 'Continue your knowledge path with the next unlocked guide curated by Blue.',
+      };
+    }
+    return {
+      title: "Blue's Quest",
+      href: '/shadow-work',
+      kicker: '12 sessions · Shadow Work',
+      desc: 'Explore the 12-week path through self-knowledge, shadows, and reflection with Blue.',
+    };
+  }, [personalCourse, recommendedGuide]);
+
   return (
     <div
       className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}
@@ -528,10 +554,17 @@ export default function HomePage() {
       </div>
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
-        <div data-tour="home-profile">
-          <ProfileDashboard />
+        <div data-tour="home-profile" className={styles.topCardWrapper}>
+          <HomeTopCard
+            activeCourseTitle={activeCourse.title}
+            activeCourseHref={activeCourse.href}
+            activeCourseKicker={activeCourse.kicker}
+            activeCourseDesc={activeCourse.desc}
+          />
         </div>
-        <HomeLeaderboard />
+        <div className={styles.desktopLeaderboard}>
+          <HomeLeaderboard />
+        </div>
         <div className={styles.dailyNotes} data-tour="daily-note">
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
           <button

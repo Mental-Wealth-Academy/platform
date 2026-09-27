@@ -216,11 +216,23 @@
 .dashboardHeader {
   grid-column: 1 / -1;
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 48px;
+  gap: 32px;
   margin-top: 14px;
   margin-bottom: 24px;
+}
+
+.topCardWrapper {
+  flex: 1 1 380px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.desktopLeaderboard {
+  display: flex;
+  flex: 1 1 320px;
+  max-width: 440px;
 }
 
 /* Left-to-right reveal on load, matching app/home/loading.module.css so the
@@ -469,6 +481,16 @@
   .dashboardHeader {
     flex-direction: column;
     gap: 16px;
+    align-items: stretch;
+  }
+
+  .topCardWrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .desktopLeaderboard {
+    display: none;
   }
 
   .indicators {
