@@ -67,10 +67,11 @@ describe('grok-bot avatars', () => {
     ).toBe('/api/avatars/render?seed=user%23r2%234');
   });
 
-  it('preserves custom uploads and missing avatars', () => {
+  it('preserves custom uploads and provides fallback avatars when missing', () => {
     const uploaded = 'https://project.supabase.co/storage/v1/object/public/uploads/avatar.webp';
 
     expect(normalizeAvatarUrl(uploaded, 'fallback#0')).toBe(uploaded);
-    expect(normalizeAvatarUrl(null, 'fallback#0')).toBeNull();
+    expect(normalizeAvatarUrl(null, 'fallback#0')).toBe('/api/avatars/render?seed=fallback%230');
+    expect(normalizeAvatarUrl(null)).toBeNull();
   });
 });

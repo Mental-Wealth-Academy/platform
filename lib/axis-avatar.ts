@@ -623,7 +623,7 @@ export function buildAxisAvatarUrl(seed: string): string {
  * Academic Angels, and already-migrated avatar URLs untouched.
  */
 export function normalizeAvatarUrl(avatarUrl: string | null, fallbackSeed?: string): string | null {
-  if (!avatarUrl) return null;
+  if (!avatarUrl) return fallbackSeed ? buildAxisAvatarUrl(fallbackSeed) : null;
 
   try {
     const url = new URL(avatarUrl, 'https://mentalwealthacademy.world');
