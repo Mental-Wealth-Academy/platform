@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
-import CtaButton from '@/components/shared/CtaButton';
 import styles from './BlueDialogue.module.css';
 
 // ── Blue Voice TTS ──────────────────────────────────────────
@@ -60,17 +59,17 @@ export interface BlueChatback {
 export interface BlueDialogueProps {
   /** Controls whether the dialogue modal is mounted and visible. */
   open: boolean;
-  /** Ordered dialogue lines. Advancing progresses through them; the last closes. */
+  /** Ordered dialogue lines. Automatically plays through them start to finish. */
   lines: string[];
   /** Sets the emotional family Blue varies through as the dialogue advances. */
   emotion?: BlueEmotion;
-  /** Fired on close (last line advance, ESC, backdrop click, or close button). */
+  /** Fired on close (all lines complete, ESC, backdrop click, or close button). */
   onClose: () => void;
   /** Milliseconds per typewritten character. */
   speed?: number;
   /** Diamond credit amount to present as a reward chip above the dialogue text. */
   reward?: number;
-  /** Heading rendered above Blue's line, e.g. "Check-in [Week 7]". */
+  /** Heading rendered above Blue's line, e.g. "Blue Superintelligence". */
   title?: string;
   /** Supporting line rendered under the title. */
   subtitle?: string;
@@ -99,11 +98,6 @@ const EMOTION_IMAGES: Record<BlueEmotion, string> = {
   calm: '/images/blue-emotes/calm.png',
 };
 
-/**
- * Each script keeps its intended emotional tone while Blue's face changes with
- * the conversation. The first expression always matches the caller's choice;
- * subsequent lines move through nearby reactions instead of choosing randomly.
- */
 const EXPRESSION_SEQUENCE: Record<BlueEmotion, BlueEmotion[]> = {
   neutral: ['neutral', 'calm', 'happy', 'surprised'],
   happy: ['happy', 'surprised', 'calm', 'happy'],
@@ -122,12 +116,13 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   onClose,
   speed = 22,
   reward,
-  title,
+  title = 'Blue Superintelligence',
   subtitle,
 }) => {
   const { play } = useSound();
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const safeLines = useMemo(
     () => (lines.length > 0 ? lines : ['']),
@@ -167,7 +162,6 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   const safeIndex = lineIndex >= safeLines.length ? safeLines.length - 1 : lineIndex;
   const activeLine = safeLines[safeIndex] ?? '';
-  const isLastLine = safeIndex >= safeLines.length - 1;
 
   // Stop any in-flight fetch and pause any playing audio.
   const stopVoice = useCallback(() => {
@@ -195,8 +189,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     });
   }, [play, stopVoice]);
 
-  // Read the active line aloud when voice is on. Fires as the line becomes
-  // active (in parallel with the typewriter) and cancels previous line audio.
+  // Read the active line aloud when voice is on.
   useEffect(() => {
     if (!open || !voiceEnabled) return;
     const line = sanitizeForSpeech(activeLine);
@@ -224,11 +217,19 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     if (!open) stopVoice();
   }, [open, stopVoice]);
 
-  // Reset to the first line whenever the overlay opens or the script changes.
+  const clearAutoAdvance = useCallback(() => {
+    if (autoAdvanceTimer.current) {
+      clearTimeout(autoAdvanceTimer.current);
+      autoAdvanceTimer.current = null;
+    }
+  }, []);
+
+  // Reset to first line when opening or script lines change.
   useEffect(() => {
     if (!open) return;
     setLineIndex(0);
-  }, [open, safeLines]);
+    clearAutoAdvance();
+  }, [open, safeLines, clearAutoAdvance]);
 
   const clearTyping = useCallback(() => {
     if (typeTimer.current) {
@@ -237,10 +238,11 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     }
   }, []);
 
-  // Typewriter reveal for the active line (instant under reduced-motion).
+  // Typewriter reveal for the active line.
   useEffect(() => {
     if (!open) return;
     clearTyping();
+    clearAutoAdvance();
 
     if (prefersReducedMotion() || speed <= 0) {
       setDisplayed(activeLine);
@@ -260,10 +262,10 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         setIsTyping(false);
       }
     };
-    typeTimer.current = setTimeout(step, 80);
+    typeTimer.current = setTimeout(step, 70);
 
     return clearTyping;
-  }, [open, activeLine, speed, clearTyping]);
+  }, [open, activeLine, speed, clearTyping, clearAutoAdvance]);
 
   const finishTyping = useCallback(() => {
     clearTyping();
@@ -274,12 +276,48 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const close = useCallback(() => {
     play('navigation');
     stopVoice();
+    clearAutoAdvance();
     onClose();
-  }, [onClose, play, stopVoice]);
+  }, [onClose, play, stopVoice, clearAutoAdvance]);
 
-  // Advance to next line if more lines remain, otherwise close.
-  const handleAdvance = useCallback(() => {
+  // Advance automatically start to finish through the chats.
+  useEffect(() => {
+    if (!open || isTyping) {
+      clearAutoAdvance();
+      return;
+    }
+
+    const readingDelay = Math.max(2200, activeLine.length * 36);
+
+    const proceed = () => {
+      if (safeIndex < safeLines.length - 1) {
+        setLineIndex((n) => n + 1);
+      } else {
+        // Complete the dialogue automatically
+        close();
+      }
+    };
+
+    if (currentAudioRef.current && !currentAudioRef.current.paused) {
+      const audio = currentAudioRef.current;
+      const onEnded = () => {
+        autoAdvanceTimer.current = setTimeout(proceed, 1000);
+      };
+      audio.addEventListener('ended', onEnded, { once: true });
+      return () => {
+        audio.removeEventListener('ended', onEnded);
+        clearAutoAdvance();
+      };
+    }
+
+    autoAdvanceTimer.current = setTimeout(proceed, readingDelay);
+    return clearAutoAdvance;
+  }, [open, isTyping, safeIndex, safeLines.length, activeLine, close, clearAutoAdvance]);
+
+  // Click on dialogue allows user to fast-forward typing or advance early.
+  const handleDialogueTap = useCallback(() => {
     play('click');
+    clearAutoAdvance();
     if (isTyping) {
       finishTyping();
       return;
@@ -289,19 +327,9 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     } else {
       close();
     }
-  }, [play, isTyping, finishTyping, safeIndex, safeLines.length, close]);
+  }, [play, clearAutoAdvance, isTyping, finishTyping, safeIndex, safeLines.length, close]);
 
-  // Skip: finish line typing; if already typed, close.
-  const handleSkip = useCallback(() => {
-    play('click');
-    if (isTyping) {
-      finishTyping();
-    } else {
-      close();
-    }
-  }, [play, isTyping, finishTyping, close]);
-
-  // Keyboard navigation: Escape closes; Space/Enter advances.
+  // Keyboard navigation: Escape closes; Space/Enter advances early.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -310,12 +338,12 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
         close();
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleAdvance();
+        handleDialogueTap();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, close, handleAdvance]);
+  }, [open, close, handleDialogueTap]);
 
   if (!open) return null;
 
@@ -329,7 +357,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       className={styles.modalBackdrop}
       role="dialog"
       aria-modal="true"
-      aria-label={title || 'Blue dialogue'}
+      aria-label={title || 'Blue Superintelligence'}
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -339,7 +367,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
           <div className={styles.headerTitleGroup}>
             <span className={styles.headerBadgeJa}>対話</span>
             <div>
-              <h2 className={styles.headerTitle}>{title || 'Blue'}</h2>
+              <h2 className={styles.headerTitle}>{title}</h2>
               {subtitle && <p className={styles.headerSubtitle}>{subtitle}</p>}
             </div>
           </div>
@@ -349,10 +377,11 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
               className={`${styles.voiceButton} ${voiceEnabled ? styles.voiceButtonActive : ''}`}
               onClick={toggleVoice}
               aria-pressed={voiceEnabled}
-              aria-label={voiceEnabled ? 'Turn off voice readout' : 'Turn on voice readout'}
-              title={voiceEnabled ? 'Voice readout on' : 'Voice readout off'}
+              aria-label={voiceEnabled ? 'Mute voice readout' : 'Enable voice readout'}
+              title={voiceEnabled ? 'Voice readout on' : 'Voice readout muted'}
             >
               {voiceEnabled ? (
+                /* Futuristic science beaker icon */
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -363,11 +392,14 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                   className={styles.voiceIcon}
                   aria-hidden="true"
                 >
-                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  <path d="M9 3h6" />
+                  <path d="M10 3v5.2L4.6 18.2A1.8 1.8 0 0 0 6.1 21h11.8a1.8 1.8 0 0 0 1.5-2.8L14 8.2V3" />
+                  <path d="M7 15.5h10" />
+                  <circle cx="10" cy="12.5" r="0.9" fill="currentColor" />
+                  <circle cx="13.5" cy="13.5" r="1.2" fill="currentColor" />
                 </svg>
               ) : (
+                /* Futuristic science beaker icon with mute slash */
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -378,9 +410,10 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                   className={styles.voiceIcon}
                   aria-hidden="true"
                 >
-                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                  <line x1="22" y1="9" x2="16" y2="15" />
-                  <line x1="16" y1="9" x2="22" y2="15" />
+                  <path d="M9 3h6" />
+                  <path d="M10 3v5.2L4.6 18.2A1.8 1.8 0 0 0 6.1 21h11.8a1.8 1.8 0 0 0 1.5-2.8L14 8.2V3" />
+                  <path d="M7 15.5h10" />
+                  <line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" strokeWidth="2.2" />
                 </svg>
               )}
             </button>
@@ -397,7 +430,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
         <div className={styles.modalBody}>
           <div className={styles.dialogueCol}>
-            <div className={styles.dialogueContent} onClick={handleAdvance}>
+            <div className={styles.dialogueWrapper} onClick={handleDialogueTap}>
               {typeof reward === 'number' && reward > 0 && (
                 <div className={styles.rewardChip} role="status">
                   <Image
@@ -417,58 +450,17 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                 {!isTyping && <span className={styles.quoteMark}>&rdquo;</span>}
               </p>
             </div>
-
-            <div className={styles.bottomRow}>
-              <div className={styles.progressGroup}>
-                <button
-                  type="button"
-                  className={styles.skipBtn}
-                  onClick={handleSkip}
-                >
-                  Skip
-                </button>
-                {safeLines.length > 1 && (
-                  <div
-                    className={styles.stepIndicators}
-                    aria-label={`Line ${safeIndex + 1} of ${safeLines.length}`}
-                  >
-                    {safeLines.map((_, i) => (
-                      <span
-                        key={i}
-                        className={`${styles.stepDot} ${i === safeIndex ? styles.stepDotActive : ''}`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-              <CtaButton
-                variant="primary"
-                size="sm"
-                onClick={handleAdvance}
-              >
-                {isTyping ? 'Continue' : isLastLine ? 'Done' : 'Next'}
-              </CtaButton>
-            </div>
           </div>
 
-          <div className={styles.screenCol}>
-            <div className={styles.screenFrame}>
-              <div className={styles.screenStatusTag}>
-                <span className={styles.statusDot} />
-                <span>Online</span>
-              </div>
-              <Image
-                src={emoteSrc}
-                alt={`Blue, ${activeEmotion}`}
-                width={240}
-                height={240}
-                priority
-                className={styles.screenImage}
-              />
-              <div className={styles.screenBottomLabel}>
-                Blue
-              </div>
-            </div>
+          <div className={styles.characterCol}>
+            <Image
+              src={emoteSrc}
+              alt={`Blue, ${activeEmotion}`}
+              width={844}
+              height={1004}
+              priority
+              className={styles.characterImage}
+            />
           </div>
         </div>
       </div>

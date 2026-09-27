@@ -1,7 +1,8 @@
 /* ── BlueDialogue Pop-up ──────────────────────────────────────
    Styled to match the Mental Wealth Academy pop-up design system
    (border-radius: 24px, 2px border, signature shadow, grid dots,
-   clean header, two-column layout with character screen on the right).
+   futuristic dark terminal dialogue wrapper with Commit Mono,
+   science beaker audio control, and uncropped right-aligned portrait).
    ──────────────────────────────────────────────────────────── */
 
 .modalBackdrop {
@@ -26,7 +27,7 @@
 .modal {
   position: relative;
   width: 100%;
-  max-width: 720px;
+  max-width: 740px;
   background-color: var(--color-surface-1, #ffffff);
   background-image: var(--bg-grid-dots, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.8' fill='rgba(81,104,255,0.06)'/%3E%3C/svg%3E"));
   border: 2px solid var(--color-primary-hover, #465be0);
@@ -120,7 +121,7 @@
 }
 
 :global([data-theme='dark']) .headerSubtitle {
-  color: rgba(244, 245, 254, 0.6);
+  color: rgba(244, 255, 254, 0.6);
 }
 
 .headerActions {
@@ -130,15 +131,15 @@
   flex-shrink: 0;
 }
 
-/* Voice TTS toggle button with light-primary styling */
+/* Futuristic science beaker voice toggle button with light-primary styling */
 .voiceButton {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
   border-radius: 50%;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -147,8 +148,8 @@
 }
 
 .voiceButton:hover {
-  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
   color: var(--color-primary);
 }
 
@@ -156,7 +157,7 @@
   background: #7b8cff;
   border-color: #9aa8ff;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(123, 140, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(123, 140, 255, 0.4);
 }
 
 .voiceButtonActive:hover {
@@ -166,8 +167,8 @@
 }
 
 .voiceIcon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
 .closeButton {
@@ -204,34 +205,43 @@
   color: #ffffff;
 }
 
-/* ── Body (Two Column: Left Dialogue, Right Screen) ──────── */
+/* ── Body: Two Column (Left: Dark Dialogue Box, Right: Uncropped Character) ─ */
 
 .modalBody {
   display: grid;
-  grid-template-columns: 1fr 240px;
-  gap: 20px;
-  padding: 24px;
+  grid-template-columns: 1fr 270px;
+  gap: 16px;
+  padding: 20px 0 0 20px;
   align-items: stretch;
-  min-height: 280px;
+  min-height: 290px;
 }
 
-/* ── Left: Dialogue Column ───────────────────────────────── */
+/* ── Left Column: Dialogue Wrapper ──────────────────────── */
 
 .dialogueCol {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: center;
+  padding-bottom: 20px;
   min-width: 0;
 }
 
-.dialogueContent {
+.dialogueWrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 22px 24px;
+  background: #0b0e1b;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 38%, transparent);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 24px rgba(81, 104, 255, 0.1),
+    0 4px 16px rgba(0, 0, 0, 0.35);
   cursor: pointer;
-  padding: 4px 0;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
 }
 
 .rewardChip {
@@ -239,13 +249,13 @@
   align-items: center;
   gap: 6px;
   align-self: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   padding: 5px 12px;
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 45%, transparent);
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
-  color: var(--color-primary);
-  font-family: var(--font-button, inherit);
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  color: #9aa8ff;
+  font-family: var(--font-commit-mono), monospace;
   font-size: 13px;
   font-weight: 600;
 }
@@ -257,32 +267,35 @@
 
 .speechText {
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--color-text-dark, #1a1b24);
+  font-family: var(--font-commit-mono), monospace;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-primary, #5168ff);
+  text-shadow: 0 0 10px color-mix(in oklch, var(--color-primary) 30%, transparent);
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  user-select: none;
+  letter-spacing: -0.01em;
 }
 
 :global([data-theme='dark']) .speechText {
-  color: #f4f5fe;
+  color: #7b8cff;
+  text-shadow: 0 0 12px rgba(123, 140, 255, 0.4);
 }
 
 .quoteMark {
-  color: var(--color-primary);
+  color: color-mix(in oklch, var(--color-primary) 50%, white);
   font-weight: 700;
   margin-right: 2px;
 }
 
 .cursor {
   display: inline-block;
-  width: 2px;
-  height: 1.1em;
-  margin-left: 3px;
+  width: 8px;
+  height: 1.15em;
+  margin-left: 5px;
   vertical-align: text-bottom;
-  background: var(--color-primary);
+  background: var(--color-primary, #5168ff);
+  box-shadow: 0 0 8px var(--color-primary, #5168ff);
   animation: blink 850ms steps(1) infinite;
 }
 
@@ -290,156 +303,27 @@
   50% { opacity: 0; }
 }
 
-/* ── Bottom Controls ─────────────────────────────────────── */
+/* ── Right Column: Uncropped Character Portrait ───────────── */
 
-.bottomRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--color-border-subtle, rgba(26, 27, 36, 0.08));
-}
-
-:global([data-theme='dark']) .bottomRow {
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
-.progressGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.skipBtn {
-  background: transparent;
-  border: 0;
-  padding: 6px 10px;
-  font-family: var(--font-primary);
-  font-size: 13px;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.15s ease;
-}
-
-.skipBtn:hover {
-  color: var(--color-text-dark);
-  background: var(--color-surface-2, rgba(26, 27, 36, 0.05));
-}
-
-:global([data-theme='dark']) .skipBtn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.stepIndicators {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.stepDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--color-border-strong, rgba(26, 27, 36, 0.18));
-  transition: all 0.2s ease;
-}
-
-:global([data-theme='dark']) .stepDot {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.stepDotActive {
-  background: var(--color-primary);
-  width: 16px;
-  border-radius: 999px;
-}
-
-/* ── Right: Character Screen Column ──────────────────────── */
-
-.screenCol {
+.characterCol {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.screenFrame {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 240px;
-  border-radius: 18px;
-  background: radial-gradient(circle at 50% 30%, color-mix(in oklch, var(--color-primary) 12%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 100%), var(--color-surface-2, #f5f6ff);
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 28%, var(--color-border-subtle));
-  box-shadow: inset 0 2px 8px color-mix(in oklch, var(--color-primary) 10%, transparent);
-  overflow: hidden;
-  display: flex;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
+  position: relative;
+  overflow: visible;
 }
 
-:global([data-theme='dark']) .screenFrame {
-  background: radial-gradient(circle at 50% 30%, rgba(81, 104, 255, 0.18) 0%, rgba(17, 19, 34, 0.95) 100%), #15182a;
-  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
-}
-
-.screenImage {
+.characterImage {
   width: 100%;
   height: auto;
-  max-height: 100%;
+  max-height: 330px;
   object-fit: contain;
-  object-position: bottom center;
-  transition: transform 0.25s ease;
+  object-position: right bottom;
+  display: block;
   pointer-events: none;
-}
-
-.screenStatusTag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  background: rgba(10, 12, 26, 0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  font-family: var(--font-primary);
-  font-size: 11px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-}
-
-.statusDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 6px #10b981;
-}
-
-.screenBottomLabel {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 2px 10px;
-  background: color-mix(in oklch, var(--color-primary) 20%, rgba(10, 12, 26, 0.7));
-  backdrop-filter: blur(4px);
-  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
-  border-radius: 999px;
-  font-family: var(--font-primary);
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.05em;
+  filter: drop-shadow(0 4px 16px rgba(81, 104, 255, 0.18));
+  transition: transform 0.25s ease;
 }
 
 /* ── Mobile Responsive Stack ─────────────────────────────── */
@@ -455,20 +339,30 @@
 
   .modalBody {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 14px;
     padding: 16px;
   }
 
-  .screenCol {
+  .characterCol {
     order: -1;
+    align-items: center;
+    justify-content: center;
   }
 
-  .screenFrame {
-    min-height: 180px;
-    max-height: 200px;
+  .characterImage {
+    max-height: 220px;
+    object-position: center bottom;
+  }
+
+  .dialogueCol {
+    padding-bottom: 0;
+  }
+
+  .dialogueWrapper {
+    padding: 18px 20px;
   }
 
   .speechText {
-    font-size: 15px;
+    font-size: 14px;
   }
 }

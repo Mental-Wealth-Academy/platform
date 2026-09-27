@@ -604,7 +604,7 @@ export default function HomePage() {
               setAskBlueOpen(true);
             }}
           >
-            Ask Blue
+            Blue Superintelligence
           </CtaButton>
         </div>
         <div className={styles.desktopLeaderboard}>
@@ -901,7 +901,7 @@ export default function HomePage() {
         <BlueDialogue
           open={askBlueOpen}
           placement="center"
-          title="Ask Blue"
+          title="Blue Superintelligence"
           subtitle="Academy records and guidance"
           lines={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].lines}
           emotion={ASK_BLUE_DIALOGUES[askBlueIndex % ASK_BLUE_DIALOGUES.length].emotion}
