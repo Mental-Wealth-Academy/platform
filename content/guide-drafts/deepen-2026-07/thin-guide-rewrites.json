@@ -1,335 +1,335 @@
 [
- {
-  "slug": "attention-basics",
-  "criteria": [
-   "The learner can explain what attention is and why noticing where it points comes before other skills.",
-   "The learner can complete a one-minute anchor drill and record what pulled attention away.",
-   "The learner can name one limit of attention training and one question worth investigating next."
-  ],
-  "blocks": [
-   {
-    "id": "ab-1",
-    "componentType": "rich_text",
-    "title": "What attention is",
-    "config": {
-     "format": "markdown",
-     "content": "Attention is the mental spotlight you point at one thing while letting the rest fade. Everything else in mental wealth is downstream of being able to notice where that spotlight is pointing.\n\n**Why it comes first**\n\n- You cannot regulate what you never notice.\n- You cannot reflect on a feeling you did not catch.\n- Every later skill assumes you can hold focus for a minute or two.\n\n**What attention is made of**\n\nPsychologists describe attention as a limited resource with a few working parts. Selective attention picks one stream of information, like a friend's voice in a loud room, and filters the rest. Sustained attention holds that selection over time, which is what studying, listening, and practicing all require. Attention also switches, and every switch has a cost: after an interruption it takes time to fully return to the original task.\n\nTwo forces steer the spotlight. Top-down control is deliberate, like choosing to read the next paragraph. Bottom-up capture is automatic, like turning toward a sudden noise or a notification. Both are useful. Bottom-up capture kept your ancestors alive; top-down control is what you train.\n\n**An everyday example**\n\nSuppose you sit down to homework and three minutes later find yourself scrolling. Nothing failed morally. A cue captured the spotlight, and no one was watching the spotlight to notice the shift. The trainable skill is the watching itself: catching the moment attention moves and choosing whether to follow. That catch-and-return loop is the smallest unit of every practice in this knowledge base, from mindful breathing to studying with fewer distractions."
-    }
-   },
-   {
-    "id": "attention-basics-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "Set aside two minutes with a timer and something to write on.\n\n1. Sit comfortably and pick one sensation as an anchor: your breath, or your feet on the floor.\n2. Start a 60-second timer and rest your attention on the anchor.\n3. When attention wanders, note where it went in one or two words, then return to the anchor. The return is the repetition that trains the skill.\n4. When the timer ends, count how many times you noticed a wander.\n5. Record: write one sentence naming the strongest pull, such as a sound, a plan, or a worry.\n\nRepeat on two more days. The number of wanders is information about the practice; a higher count often means you noticed more."
-    }
-   },
-   {
-    "id": "attention-basics-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "A one-minute drill trains noticing; it does not make distractions disappear, and focus still varies with sleep, stress, hunger, and the room you are in. Attention differences that are intense, ongoing, and present across settings can point to something like ADHD, which deserves support from a qualified professional rather than more drills. Self-counted wanders are also a rough measure, since noticing improves with practice.\n\nFollow-up questions worth investigating: how does the wander count change at different times of day, and what happens to it after a week of consistent practice?\n\nYou're ready to build on this guide when you can:\n\n- Explain what attention is and why noticing it comes before other skills.\n- Complete a one-minute anchor drill and record what pulled attention away.\n- Name one limit of attention training and one question to investigate next."
-    }
-   }
-  ]
- },
- {
-  "slug": "mindful-breathing",
-  "criteria": [
-   "The learner can explain why the breath works as a portable anchor for attention.",
-   "The learner can complete one minute of box breathing and record what happened.",
-   "The learner can name one situation where breath practice fits and one limit of the technique."
-  ],
-  "blocks": [
-   {
-    "id": "mb-1",
-    "componentType": "rich_text",
-    "title": "Using the breath as an anchor",
-    "config": {
-     "format": "markdown",
-     "content": "The breath is a portable anchor for attention. This guide turns the raw skill of focusing into something you can use to settle your nervous system on demand.\n\n**Why the breath**\n\nAn anchor is any steady object you can return attention to. The breath has three properties that make it a good one. It is always available, so the practice needs no equipment or app. It is rhythmic, which gives wandering attention an easy place to land. And it is one of the few automatic body processes you can also steer deliberately, which makes it a bridge between the automatic nervous system and conscious control.\n\nSlow, even breathing sends the body a signal associated with safety. A long exhale in particular engages the parasympathetic side of the nervous system, the branch involved in resting and settling. Research on slow-breathing practices suggests they can reduce short-term feelings of stress for many people, though responses vary from person to person.\n\n**Box breathing**\n\nBox breathing is one structured pattern: inhale for a count of 4, hold for 4, exhale for 4, hold for 4, and repeat. The counting matters as much as the breathing. It gives attention a task, which crowds out some of the mental chatter, and it keeps the pace slow and even.\n\n**An everyday example**\n\nBefore a presentation, a student notices a racing heartbeat and scattered thoughts. One minute of box breathing at the desk gives attention a job, slows the exhale, and creates a small gap between the nerves and the next action. The nerves may not vanish. The gap is the point: it returns the next move to you."
-    }
-   },
-   {
-    "id": "mindful-breathing-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "You need one quiet minute and something to write on.\n\n1. Sit upright and let your shoulders drop.\n2. Inhale through your nose for a slow count of 4.\n3. Hold for 4, exhale for 4, hold for 4. That square is one round.\n4. Repeat the square for one minute. When your mind drifts, that is expected; return to the count without a verdict.\n5. Record: write one sentence on what changed between the first round and the last, in your body or in the pace of your thoughts.\n\nTry it once in a calm moment first. A skill practiced when things are easy is far more available when things are hard."
-    }
-   },
-   {
-    "id": "mindful-breathing-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Breath practice fits short spikes of stress: before a test, after a hard conversation, between tasks. It is a settling tool, and it works best alongside sleep, movement, and support from people you trust. For some people, focusing on the breath can feel uncomfortable or increase anxiety; if that happens, an external anchor such as sounds or the feeling of your feet works fine, and persistent distress deserves attention from a qualified professional. Evidence on breathing techniques covers many different patterns and settings, so results from one study do not guarantee the same effect for every person.\n\nFollow-up questions: does a longer exhale than inhale change how quickly you settle, and does the practice work differently sitting versus walking?\n\nYou're ready to build on this guide when you can:\n\n- Explain why the breath works as a portable anchor.\n- Complete one minute of box breathing and record what happened.\n- Name one situation where the practice fits and one limit."
-    }
-   }
-  ]
- },
- {
-  "slug": "emotional-vocabulary",
-  "criteria": [
-   "The learner can replace a low-resolution feeling word with a more specific one.",
-   "The learner can catch one feeling a day and record its most specific name.",
-   "The learner can explain why precise naming helps regulation and name one limit of labeling."
-  ],
-  "blocks": [
-   {
-    "id": "ev-1",
-    "componentType": "rich_text",
-    "title": "Naming what you feel",
-    "config": {
-     "format": "markdown",
-     "content": "You can only work with feelings you can name. \"Bad\" and \"stressed\" are low-resolution. Precision gives you leverage.\n\n**Why names matter**\n\nPsychologists call the skill emotional granularity: the ability to tell similar feelings apart. \"Bad\" could be disappointment about a grade, resentment about an unfair request, shame about a mistake, or plain exhaustion. Each of those points to a different cause and calls for a different response. Disappointment might mean adjusting a plan. Resentment might mean a conversation about boundaries. Exhaustion might just mean sleep. As long as the label stays at \"bad,\" all four look identical and the response defaults to whatever habit is closest.\n\nNaming also changes the feeling itself. Research on affect labeling suggests that putting a feeling into specific words can lower the intensity of the body's reaction, which is one reason talking or journaling can settle a hard moment. The name creates a small distance: you have a feeling to look at, rather than being inside it.\n\n**Widen your palette**\n\n- Instead of \"bad\": disappointed, ashamed, resentful, drained, uneasy, discouraged.\n- Instead of \"stressed\": overloaded, rushed, worried, pressured, torn.\n- Instead of \"good\": relieved, proud, curious, calm, hopeful, connected.\n\nThe list is a starting palette. The skill is choosing the word that fits the actual situation, the way a painter reaches past \"blue\" for the exact shade.\n\n**An everyday example**\n\nAfter a group project meeting, a student notices they feel \"off.\" Slowing down, the closer word turns out to be \"overlooked\": their idea was skipped without discussion. That word suggests an action the vague version never could, like raising the idea again or asking one teammate for a read on it."
-    }
-   },
-   {
-    "id": "emotional-vocabulary-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "This practice takes under two minutes a day for one week. You need a notes app or a scrap of paper.\n\n1. Once a day, catch one feeling as it happens or shortly after.\n2. Write the first word that comes to mind, even if it is vague.\n3. Ask what the feeling is about, in one sentence.\n4. Now replace the first word with the most specific name you can find. Use the palette from this guide if you stall.\n5. Record: keep the pair, vague word and specific word, as one line per day.\n\nAt the end of the week, read the seven lines. Notice which specific words repeat; a word that keeps showing up is pointing at something worth attention. Accuracy matters more than intensity."
-    }
-   },
-   {
-    "id": "emotional-vocabulary-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Precise naming helps most with everyday feelings and works best as a habit rather than a one-time exercise. It has limits: a label can be wrong, feelings often arrive blended, and naming a feeling does not resolve the situation that produced it. Overanalyzing every passing state can also turn into rumination, which works against the goal. If difficult feelings are intense, lasting, and interfering with daily life, a qualified professional is the right next step, and the vocabulary you build here makes that conversation easier.\n\nFollow-up questions: do your specific names cluster around a few themes, and does naming a feeling change how long it lasts for you?\n\nYou're ready to build on this guide when you can:\n\n- Replace a low-resolution feeling word with a more specific one.\n- Catch one feeling a day and record its most specific name.\n- Explain why precise naming helps and name one limit of labeling."
-    }
-   }
-  ]
- },
- {
-  "slug": "journaling-practice",
-  "criteria": [
-   "The learner can use a three-part journal format separating facts, feelings, and meaning.",
-   "The learner can keep a short entry practice going across several days and record one pattern.",
-   "The learner can explain what externalizing thought does and name one limit of journaling."
-  ],
-  "blocks": [
-   {
-    "id": "jp-1",
-    "componentType": "rich_text",
-    "title": "Getting it on the page",
-    "config": {
-     "format": "markdown",
-     "content": "Journaling externalizes the loop running in your head so you can look at it instead of being inside it. It builds directly on being able to name feelings.\n\n**Why writing changes thinking**\n\nA worry replayed in your head stays fast, circular, and convincing. The same worry written down becomes slow, linear, and inspectable. Working memory can only hold a few things at once; the page holds as many as you need, which frees attention to examine instead of rehearse. Research on expressive writing suggests that putting difficult experiences into words can support well-being for many people, and the more practical benefit shows up immediately: sentences reveal gaps and exaggerations that looping thoughts hide.\n\n**A simple format**\n\nThree lines are enough:\n\n- What happened, facts only. \"I texted her at noon and she had not replied by night.\"\n- What I felt, using your emotional vocabulary. \"Anxious, then embarrassed.\"\n- What I made it mean. \"She is annoyed with me.\"\n\nThe third line is where the leverage is. Written down, \"she is annoyed with me\" is visibly a guess layered on top of the facts in line one. Seeing the layers separated is the whole trick: most distress lives in line three while pretending to live in line one.\n\n**An everyday example**\n\nA student journals after a rough practice session. Facts: missed two easy plays. Feeling: ashamed. Meaning: \"I am getting worse.\" On the page, the meaning looks bigger than the evidence, and a fairer reading appears almost on its own: two missed plays on a tired day. Nothing mystical happened; the loop just got small enough to see around."
-    }
-   },
-   {
-    "id": "journaling-practice-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "You need five minutes a day for five days, and anywhere private to write: a notebook, a notes app, a folder no one else opens.\n\n1. Pick a consistent moment, like right before bed.\n2. Write one entry in the three-line format: what happened, what I felt, what I made it mean.\n3. Keep it to three lines. Short and daily beats long and rare.\n4. Do this for five days without rereading old entries.\n5. Record: on day five, read all five entries and write one sentence naming a pattern you notice, in the situations, the feelings, or the meanings you tend to make.\n\nIf a day was uneventful, journal a small moment anyway. The format works on ordinary material, and ordinary material is where habits form."
-    }
-   },
-   {
-    "id": "journaling-practice-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Journaling helps most when it separates observation from interpretation; used without a format, it can slide into rehearsing grievances, which tends to deepen them. It is a reflection tool with real limits: writing about a serious problem is a complement to acting on it and to talking with people you trust, and heavy or traumatic material deserves support from a qualified professional alongside anything you write. Evidence on expressive writing also varies by person and situation, so treat your own five-day record as the most relevant data you have.\n\nFollow-up questions: does journaling in the morning versus at night change what you write, and what happens to line three when you are well rested?\n\nYou're ready to build on this guide when you can:\n\n- Use the facts, feelings, meaning format for an entry.\n- Keep the practice going for several days and record one pattern.\n- Explain what externalizing thought does and name one limit."
-    }
-   }
-  ]
- },
- {
-  "slug": "cognitive-reframing",
-  "criteria": [
-   "The learner can catch an automatic thought and name a common distortion in it.",
-   "The learner can rewrite a distorted thought into a fairer version that fits the evidence.",
-   "The learner can explain how reframing restores accuracy and name one situation where it needs care."
-  ],
-  "blocks": [
-   {
-    "id": "cr-1",
-    "componentType": "rich_text",
-    "title": "Catching and re-testing thoughts",
-    "config": {
-     "format": "markdown",
-     "content": "Reframing is noticing an automatic thought and asking whether it is actually true. It needs attention, to catch the thought, and emotional vocabulary, to see what it is doing to you.\n\n**Automatic thoughts**\n\nAn automatic thought is the instant interpretation your mind supplies before you have consciously reasoned about anything. \"I always mess this up\" after one mistake. \"They hate me\" after a short reply. These thoughts feel like observations, but they are drafts, written fast, under emotional pressure, from incomplete information. Cognitive behavioral approaches are built on this insight: the draft, and the feeling it produces, can be examined and revised.\n\n**Common distortions**\n\nDrafts fail in predictable ways. A few patterns worth knowing by name:\n\n- Over-generalization: turning one event into a permanent rule. \"I failed this quiz\" becomes \"I always fail.\"\n- Catastrophizing: jumping to the worst outcome. A late reply becomes a lost friendship.\n- Mind reading: treating a guess about someone's thoughts as fact.\n- All-or-nothing thinking: anything short of perfect counts as failure.\n- Discounting the positive: successes were luck; only errors were real.\n\n**The move**\n\n1. Catch the thought: \"I always mess this up.\"\n2. Name the distortion: over-generalization.\n3. Write a fairer version: \"I struggled this time; here is one thing I would change.\"\n\nThe fairer version is one that fits all the evidence, including the evidence the draft ignored. The aim is accuracy. Forced positivity fails for the same reason the distortion does: it ignores part of the evidence, and your mind knows it. A reframe you do not believe changes nothing, which is why step three works from facts rather than affirmations."
-    }
-   },
-   {
-    "id": "cognitive-reframing-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "You need five minutes and something to write on, ideally soon after a moment that stung.\n\n1. Write the automatic thought exactly as it occurred, in its own words.\n2. Name the distortion, using the list in this guide. If none fits perfectly, pick the closest.\n3. List the evidence: two facts that support the thought and two facts it ignored.\n4. Write the fairer version, one sentence that accounts for all four facts and, where possible, one concrete thing to do differently.\n5. Record: note how believable the fairer version feels from 1 to 5. Anything above a 3 is a working reframe; a 1 means the rewrite skipped some evidence, so revisit step 3.\n\nRepeat with a different thought on two more days."
-    }
-   },
-   {
-    "id": "cognitive-reframing-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Reframing works on interpretations, and some painful thoughts are accurate: reframing a real problem is denial wearing a technique's clothes, and the fitting response is problem-solving or asking for help. It also needs care around grief, trauma, and persistent low mood, where examining thoughts alone is rarely enough; structured support from a qualified professional, such as cognitive behavioral therapy, is the stronger tool there. One honest limit of the method: your own believability ratings are subjective, so patterns across many attempts mean more than any single one.\n\nFollow-up questions: which distortion shows up most in your records, and does catching a thought sooner change how easy the rewrite is?\n\nYou're ready to build on this guide when you can:\n\n- Catch an automatic thought and name its distortion.\n- Rewrite it into a fairer version that fits the evidence.\n- Explain how reframing restores accuracy and where it needs care."
-    }
-   }
-  ]
- },
- {
-  "slug": "building-a-daily-practice",
-  "criteria": [
-   "The learner can design a small daily practice anchored to an existing routine.",
-   "The learner can run the practice for a week and track completion honestly.",
-   "The learner can explain why a small kept practice compounds and name one limit of streak thinking."
-  ],
-  "blocks": [
-   {
-    "id": "bdp-1",
-    "componentType": "rich_text",
-    "title": "Stacking small habits",
-    "config": {
-     "format": "markdown",
-     "content": "A daily practice is how the earlier skills stop being exercises and become defaults. It assumes you already journal and can settle yourself with the breath.\n\n**Why anchoring works**\n\nHabits form when a behavior gets tied to a reliable cue and repeated until the cue triggers it with little effort. The strongest cues are things you already do every day without deciding to: making coffee, brushing your teeth, getting into bed. Attaching a new practice to an existing routine, sometimes called habit stacking, borrows the reliability of the old habit instead of depending on motivation, which varies day to day. \"After I pour my coffee, I write three journal lines\" needs no willpower on a good day and very little on a bad one.\n\n**Design your stack**\n\n- Anchor to something you already do: after coffee, before bed, right after you sit down at your desk.\n- Start absurdly small: one breath drill plus three journal lines. Small enough that skipping feels sillier than doing it.\n- Track completion honestly. A checkmark for done is enough; the record is information, and a missed day is information too.\n\nThe size matters more than it seems. A practice that takes two minutes survives exam weeks, travel, and low moods. A practice that takes thirty minutes gets skipped the first hard week, and the skip often takes the whole habit with it.\n\n**The point**\n\nMomentum compounds. Two minutes a day is over twelve hours a year of noticing thoughts and naming feelings, built on days you barely felt it happening. A tiny practice you keep beats a big one you abandon, and once the tiny version is automatic, growing it is easy: the anchor is already set."
-    }
-   },
-   {
-    "id": "building-a-daily-practice-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "Design and run one stack for seven days.\n\n1. Pick your anchor: a daily action you never skip. Write it down as \"After I ___\".\n2. Pick the practice: one minute of breathing plus three journal lines is a solid default.\n3. Write the full sentence: \"After I pour my morning coffee, I do one breath minute and three journal lines.\" Put it where you will see it at anchor time.\n4. Run it for seven days. Do the small version even on days you have energy for more.\n5. Track each day with a simple done or missed mark.\n6. Record: at the end of the week, write one sentence on which days were easy, which were hard, and what the hard days had in common.\n\nIf you miss two days in a row, shrink the practice rather than abandoning the stack."
-    }
-   },
-   {
-    "id": "building-a-daily-practice-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Anchoring works when the anchor itself is stable; a schedule that changes every day needs several anchors or a time-based cue instead. Streaks are useful fuel and a known trap: a broken streak says nothing about the practice's value, and quitting after one miss is the most common way daily practices die. Research on habit formation also shows wide variation in how long automaticity takes, from weeks to months, so seven days is a first data point rather than a verdict.\n\nFollow-up questions: does the practice hold when the anchor moves, such as on weekends, and what is the smallest version of your practice that still feels worth doing?\n\nYou're ready to build on this guide when you can:\n\n- Design a small practice anchored to an existing routine.\n- Run it for a week and track completion honestly.\n- Explain why small kept practices compound and name one limit of streak thinking."
-    }
-   }
-  ]
- },
- {
-  "slug": "values-clarification",
-  "criteria": [
-   "The learner can list and rank a small set of personal values.",
-   "The learner can compare a week of their time against their ranking and record one gap.",
-   "The learner can explain how values guide decisions and name one limit of a ranked list."
-  ],
-  "blocks": [
-   {
-    "id": "vc-1",
-    "componentType": "rich_text",
-    "title": "Deciding what matters",
-    "config": {
-     "format": "markdown",
-     "content": "Values turn reflection into direction. Once you can reframe thoughts and journal honestly, you can ask the bigger question: what am I actually optimizing for?\n\n**What a value is**\n\nA value is a chosen direction, a quality of living you want more of, such as honesty, craft, loyalty, curiosity, or health. Values differ from goals: a goal can be completed and checked off, while a value is a compass heading you keep steering by. \"Graduate\" is a goal. \"Keep learning\" is a value. Goals tell you when you have arrived; values tell you which way to walk when no one has assigned a destination.\n\nThis distinction does real work in hard moments. Acceptance and commitment approaches in psychology use values as the reference point for action when feelings are loud: you may not control anxiety before a hard conversation, but you can control whether you act like someone who values honesty.\n\n**Why clarify them on paper**\n\nMost people carry vague values they have never ranked, and unranked values cannot settle conflicts. Real decisions are usually collisions between two goods: loyalty to a friend against honesty about their behavior, ambition against rest. A ranking decided calmly, in advance, is a better guide than whichever value shouts loudest under pressure.\n\n**The calendar test**\n\nYour schedule is a record of what you actually optimized for, kept with perfect honesty. Someone may rank health first and discover the week contains no movement and five late nights. That gap is not proof of hypocrisy; time also tracks obligations and constraints. But a gap that persists month after month means the stated ranking and the lived ranking disagree, and one of them should change. Naming which one is the work this guide points at."
-    }
-   },
-   {
-    "id": "values-clarification-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "You need fifteen minutes, your journal, and a look at your last week of time: calendar, messages, screen-time summary, memory.\n\n1. List five things you would defend even when they cost you. Use single words or short phrases.\n2. Rank them, one to five. Forcing the order is the exercise; ties are avoidance.\n3. Review your last seven days and estimate where your discretionary hours actually went.\n4. Put the ranking and the week side by side and find the largest disagreement.\n5. Record: write one sentence naming the gap, such as \"I rank creativity second but gave it zero hours,\" and one sentence on whether the ranking or the schedule should move.\n\nThat gap is your work. Revisit the ranking in a month; values shift slowly, and the list should be allowed to."
-    }
-   },
-   {
-    "id": "values-clarification-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "A ranked list is a snapshot, and it has honest limits. Values genuinely shift with age and circumstance, so a ranking needs periodic revisiting rather than permanent loyalty. The calendar test also reads constraint as choice: a week consumed by a job or caregiving reflects obligation as much as preference, so judge gaps against the hours you could actually steer. And a list made to look good, even to yourself, guides nothing; the exercise only works with the answers you would defend when they cost you.\n\nFollow-up questions: which value on your list came from you rather than from people around you, and what would a week look like if your top value got one more hour?\n\nYou're ready to build on this guide when you can:\n\n- List and rank five personal values.\n- Compare a real week against the ranking and record one gap.\n- Explain how values guide decisions and name one limit of a ranked list."
-    }
-   }
-  ]
- },
- {
-  "slug": "mood-disorders-overview",
-  "criteria": [
-   "The learner can distinguish a passing mood from a lasting mood disorder.",
-   "The learner can describe how common mood disorders are and how they connect to wider health.",
-   "The learner can explain why seeking support matters and where that support starts."
-  ],
-  "blocks": [
-   {
-    "id": "mood-disorders-overview-1",
-    "componentType": "rich_text",
-    "title": "When a mood becomes a lasting pattern",
-    "config": {
-     "format": "markdown",
-     "content": "Most people feel sad or irritable from time to time and say they're in a bad mood. A mood disorder is different: it affects a person's everyday emotional state rather than passing quickly.\n\n**The difference that matters**\n\nOrdinary moods track events. A bad grade, an argument, a gray week, and the mood that follows usually fades as circumstances change or time passes. A mood disorder describes a pattern that is longer lasting, often less tied to any single event, and strong enough to interfere with daily life: school, work, relationships, sleep, appetite, and the ability to enjoy things. Duration and interference are the useful markers, more than intensity on any single day.\n\n**The main forms**\n\nDepressive disorders center on persistent low mood, emptiness, or loss of interest, along with changes in energy, sleep, and concentration. Bipolar disorders involve shifts between low periods and periods of unusually elevated energy or mood, called mania or the milder hypomania, which can look like racing thoughts, little need for sleep, and risky decisions. Seasonal patterns also exist, where symptoms track times of year. Each form has its own guide-level depth; this overview is the map.\n\n**How common, and why it matters beyond mood**\n\nNearly one in ten adults experience a mood disorder in a given year, so these patterns are common rather than rare or shameful. Beyond the emotional toll, mood disorders can raise the risk for other health problems, including heart disease and diabetes, which is one more reason they deserve real care rather than a wait-it-out approach.\n\n**What can help**\n\nSupport ranges from talk therapy to other approaches a provider can walk you through. Diagnosis belongs to qualified professionals, and getting help at the earliest signs tends to make symptoms easier to manage. With support, most people with a mood disorder can lead full, productive lives."
-    }
-   },
-   {
-    "id": "mood-disorders-overview-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "This exercise builds the distinction this guide teaches. It takes ten minutes and your journal.\n\n1. Think of a low mood you have had that passed on its own. Write two lines: what set it off, and about how long it lasted.\n2. Now write what would have been different if it had been a lasting pattern: how many weeks, and which parts of daily life it would have touched.\n3. List the three markers from this guide that separate a mood from a disorder: duration, connection to events, and interference with daily life.\n4. Record: write one sentence you could say to a friend who asked whether their weeks-long low mood is \"just a mood.\"\n\nThe goal is fluency with the distinction, for your own check-ins and for the people around you. It is a vocabulary exercise; it is never a diagnosis."
-    }
-   },
-   {
-    "id": "mood-disorders-overview-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "An overview compresses, and this one leaves out the full range of mood conditions and everything about their treatment specifics. The duration-and-interference rule is a useful lens with real limits: only a qualified professional can evaluate what a lasting pattern means for a particular person, and prevalence figures vary by study, age group, and country. If your own mood has been low for more than two weeks, or someone you know shows the signs described here, the right move is a conversation with a provider or trusted adult. If you or someone you know has thoughts of suicide, contact a local crisis line or emergency service right away.\n\nFollow-up questions: how do depressive and bipolar patterns differ in what daily interference looks like, and what does early support actually change about outcomes?\n\nYou're ready to build on this guide when you can:\n\n- Distinguish a passing mood from a lasting pattern.\n- Describe how common mood disorders are and their wider health connections.\n- Explain why support matters and where it starts."
-    }
-   }
-  ]
- },
- {
-  "slug": "coping-with-chronic-illness",
-  "criteria": [
-   "The learner can describe how a long-term illness can affect emotions, independence, and daily life.",
-   "The learner can name sources of support, including counselors, groups, and reliable information.",
-   "The learner can identify one concrete step toward regaining a sense of control."
-  ],
-  "blocks": [
-   {
-    "id": "coping-with-chronic-illness-1",
-    "componentType": "rich_text",
-    "title": "Regaining a sense of control",
-    "config": {
-     "format": "markdown",
-     "content": "A long-term, or chronic, illness can disrupt your life in many ways. You may be tired and in pain, and it might affect your appearance, physical abilities, and independence. Not being able to work can create financial strain too.\n\n**How it can affect you**\n\nThese changes can bring on stress, anxiety, and anger, and none of those reactions mean someone is coping badly. A chronic condition often means grieving parts of a previous routine while building a new one, and that adjustment is real work. It can also strain relationships: friends may not know what to say, and family roles can shift when someone needs more help. Naming these effects matters because each one has its own supports, and a problem with a name is easier to bring to a counselor, a provider, or a friend.\n\n**Where support comes from**\n\nIf stress, anxiety, or anger settle in, it's worth seeking support. A trained counselor can help you build strategies to regain a sense of control. Support groups, in person or online, connect you with people managing the same condition; they help you see you're not alone, and they are often the best source of practical, lived-in tips a textbook never includes. Trusted friends and family carry a different kind of weight: they can come to appointments, notice changes, and share the ordinary parts of life the illness does not touch.\n\n**Learning about your illness**\n\nYou may be able to manage your illness better by learning more about it. Knowledge converts vague dread into specific questions, and specific questions are answerable. Check that the information you find is reliable, favoring established medical organizations over forums and personal stories, and look for a health care provider you can trust enough to ask the questions your reading raises. Feeling informed is itself a form of control: it turns appointments from things that happen to you into conversations you help steer."
-    }
-   },
-   {
-    "id": "coping-with-chronic-illness-practice",
-    "componentType": "rich_text",
-    "title": "Try it",
-    "config": {
-     "format": "markdown",
-     "content": "This exercise works whether you manage a condition yourself or support someone who does. It takes ten minutes and your journal.\n\n1. Divide a page into three columns: what the illness affects, who or what could support that area, and one question to ask.\n2. Fill the first column honestly: energy, school or work, mood, friendships, money, whatever applies.\n3. For each entry, add one support in the second column: a counselor, a support group, a specific person, a reliable information source.\n4. In the third column, write one concrete question, such as \"What does this treatment change about my week?\"\n5. Record: circle the single row you will act on first, and write one sentence on what acting on it would look like this week.\n\nIf you are supporting someone else, build the table for how their illness affects you; caregivers need their own version."
-    }
-   },
-   {
-    "id": "coping-with-chronic-illness-check",
-    "componentType": "rich_text",
-    "title": "Limits and context",
-    "config": {
-     "format": "markdown",
-     "content": "Coping strategies support living with a condition; they never replace medical care, and this guide says nothing about any specific illness or treatment, which belongs with your provider. Conditions also differ enormously: a stable, managed condition and a progressive one make different demands, so advice that fits one person can miss another entirely. What people report helping varies too, which is why building your own support table beats adopting anyone else's. If low mood or anxiety around an illness lasts for weeks or makes daily life hard, that deserves its own care from a qualified professional.\n\nFollow-up questions: what does research say about how support groups affect quality of life, and how do caregivers best protect their own mental health?\n\nYou're ready to build on this guide when you can:\n\n- Describe how a long-term illness can affect emotions, independence, and daily life.\n- Name sources of support, including counselors, groups, and reliable information.\n- Identify one concrete step toward regaining a sense of control."
-    }
-   }
-  ]
- }
+  {
+    "slug": "attention-basics",
+    "criteria": [
+      "Explain what attention is and why noticing where it points comes before other skills.",
+      "Complete a one-minute anchor drill and record what pulled attention away.",
+      "Name one limit of attention training and one question worth investigating next."
+    ],
+    "blocks": [
+      {
+        "id": "ab-1",
+        "componentType": "rich_text",
+        "title": "What attention is",
+        "config": {
+          "format": "markdown",
+          "content": "Attention is the mental spotlight you point at one thing while letting the rest fade. Everything else in mental wealth is downstream of being able to notice where that spotlight is pointing.\n\n**Why it comes first**\n\n- You cannot regulate what you never notice.\n- You cannot reflect on a feeling you did not catch.\n- Every later skill assumes you can hold focus for a minute or two.\n\n**What attention is made of**\n\nPsychologists describe attention as a limited resource with a few working parts. Selective attention picks one stream of information, like a friend's voice in a loud room, and filters the rest. Sustained attention holds that selection over time, which is what studying, listening, and practicing all require. Attention also switches, and every switch has a cost: after an interruption it takes time to fully return to the original task.\n\nTwo forces steer the spotlight. Top-down control is deliberate, like choosing to read the next paragraph. Bottom-up capture is automatic, like turning toward a sudden noise or a notification. Both are useful. Bottom-up capture kept your ancestors alive; top-down control is what you train.\n\n**An everyday example**\n\nSuppose you sit down to homework and three minutes later find yourself scrolling. Nothing failed morally. A cue captured the spotlight, and no one was watching the spotlight to notice the shift. The trainable skill is the watching itself: catching the moment attention moves and choosing whether to follow. That catch-and-return loop is the smallest unit of every practice in this knowledge base, from mindful breathing to studying with fewer distractions."
+        }
+      },
+      {
+        "id": "attention-basics-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "Set aside two minutes with a timer and something to write on.\n\n1. Sit comfortably and pick one sensation as an anchor: your breath, or your feet on the floor.\n2. Start a 60-second timer and rest your attention on the anchor.\n3. When attention wanders, note where it went in one or two words, then return to the anchor. The return is the repetition that trains the skill.\n4. When the timer ends, count how many times you noticed a wander.\n5. Record: write one sentence naming the strongest pull, such as a sound, a plan, or a worry.\n\nRepeat on two more days. The number of wanders is information about the practice; a higher count often means you noticed more."
+        }
+      },
+      {
+        "id": "attention-basics-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "A one-minute drill trains noticing; it does not make distractions disappear, and focus still varies with sleep, stress, hunger, and the room you are in. Attention differences that are intense, ongoing, and present across settings can point to something like ADHD, which deserves support from a qualified professional rather than more drills. Self-counted wanders are also a rough measure, since noticing improves with practice.\n\nFollow-up questions worth investigating: how does the wander count change at different times of day, and what happens to it after a week of consistent practice?\n\nYou're ready to build on this guide when you can:\n\n- Explain what attention is and why noticing it comes before other skills.\n- Complete a one-minute anchor drill and record what pulled attention away.\n- Name one limit of attention training and one question to investigate next."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "mindful-breathing",
+    "criteria": [
+      "Explain why the breath works as a portable anchor for attention.",
+      "Complete one minute of box breathing and record what happened.",
+      "Name one situation where breath practice fits and one limit of the technique."
+    ],
+    "blocks": [
+      {
+        "id": "mb-1",
+        "componentType": "rich_text",
+        "title": "Using the breath as an anchor",
+        "config": {
+          "format": "markdown",
+          "content": "The breath is a portable anchor for attention. This guide turns the raw skill of focusing into something you can use to settle your nervous system on demand.\n\n**Why the breath**\n\nAn anchor is any steady object you can return attention to. The breath has three properties that make it a good one. It is always available, so the practice needs no equipment or app. It is rhythmic, which gives wandering attention an easy place to land. And it is one of the few automatic body processes you can also steer deliberately, which makes it a bridge between the automatic nervous system and conscious control.\n\nSlow, even breathing sends the body a signal associated with safety. A long exhale in particular engages the parasympathetic side of the nervous system, the branch involved in resting and settling. Research on slow-breathing practices suggests they can reduce short-term feelings of stress for many people, though responses vary from person to person.\n\n**Box breathing**\n\nBox breathing is one structured pattern: inhale for a count of 4, hold for 4, exhale for 4, hold for 4, and repeat. The counting matters as much as the breathing. It gives attention a task, which crowds out some of the mental chatter, and it keeps the pace slow and even.\n\n**An everyday example**\n\nBefore a presentation, a student notices a racing heartbeat and scattered thoughts. One minute of box breathing at the desk gives attention a job, slows the exhale, and creates a small gap between the nerves and the next action. The nerves may not vanish. The gap is the point: it returns the next move to you."
+        }
+      },
+      {
+        "id": "mindful-breathing-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "You need one quiet minute and something to write on.\n\n1. Sit upright and let your shoulders drop.\n2. Inhale through your nose for a slow count of 4.\n3. Hold for 4, exhale for 4, hold for 4. That square is one round.\n4. Repeat the square for one minute. When your mind drifts, that is expected; return to the count without a verdict.\n5. Record: write one sentence on what changed between the first round and the last, in your body or in the pace of your thoughts.\n\nTry it once in a calm moment first. A skill practiced when things are easy is far more available when things are hard."
+        }
+      },
+      {
+        "id": "mindful-breathing-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Breath practice fits short spikes of stress: before a test, after a hard conversation, between tasks. It is a settling tool, and it works best alongside sleep, movement, and support from people you trust. For some people, focusing on the breath can feel uncomfortable or increase anxiety; if that happens, an external anchor such as sounds or the feeling of your feet works fine, and persistent distress deserves attention from a qualified professional. Evidence on breathing techniques covers many different patterns and settings, so results from one study do not guarantee the same effect for every person.\n\nFollow-up questions: does a longer exhale than inhale change how quickly you settle, and does the practice work differently sitting versus walking?\n\nYou're ready to build on this guide when you can:\n\n- Explain why the breath works as a portable anchor.\n- Complete one minute of box breathing and record what happened.\n- Name one situation where the practice fits and one limit."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "emotional-vocabulary",
+    "criteria": [
+      "Replace a low-resolution feeling word with a more specific one.",
+      "Catch one feeling a day and record its most specific name.",
+      "Explain why precise naming helps regulation and name one limit of labeling."
+    ],
+    "blocks": [
+      {
+        "id": "ev-1",
+        "componentType": "rich_text",
+        "title": "Naming what you feel",
+        "config": {
+          "format": "markdown",
+          "content": "You can only work with feelings you can name. \"Bad\" and \"stressed\" are low-resolution. Precision gives you leverage.\n\n**Why names matter**\n\nPsychologists call the skill emotional granularity: the ability to tell similar feelings apart. \"Bad\" could be disappointment about a grade, resentment about an unfair request, shame about a mistake, or plain exhaustion. Each of those points to a different cause and calls for a different response. Disappointment might mean adjusting a plan. Resentment might mean a conversation about boundaries. Exhaustion might just mean sleep. As long as the label stays at \"bad,\" all four look identical and the response defaults to whatever habit is closest.\n\nNaming also changes the feeling itself. Research on affect labeling suggests that putting a feeling into specific words can lower the intensity of the body's reaction, which is one reason talking or journaling can settle a hard moment. The name creates a small distance: you have a feeling to look at, rather than being inside it.\n\n**Widen your palette**\n\n- Instead of \"bad\": disappointed, ashamed, resentful, drained, uneasy, discouraged.\n- Instead of \"stressed\": overloaded, rushed, worried, pressured, torn.\n- Instead of \"good\": relieved, proud, curious, calm, hopeful, connected.\n\nThe list is a starting palette. The skill is choosing the word that fits the actual situation, the way a painter reaches past \"blue\" for the exact shade.\n\n**An everyday example**\n\nAfter a group project meeting, a student notices they feel \"off.\" Slowing down, the closer word turns out to be \"overlooked\": their idea was skipped without discussion. That word suggests an action the vague version never could, like raising the idea again or asking one teammate for a read on it."
+        }
+      },
+      {
+        "id": "emotional-vocabulary-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "This practice takes under two minutes a day for one week. You need a notes app or a scrap of paper.\n\n1. Once a day, catch one feeling as it happens or shortly after.\n2. Write the first word that comes to mind, even if it is vague.\n3. Ask what the feeling is about, in one sentence.\n4. Now replace the first word with the most specific name you can find. Use the palette from this guide if you stall.\n5. Record: keep the pair, vague word and specific word, as one line per day.\n\nAt the end of the week, read the seven lines. Notice which specific words repeat; a word that keeps showing up is pointing at something worth attention. Accuracy matters more than intensity."
+        }
+      },
+      {
+        "id": "emotional-vocabulary-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Precise naming helps most with everyday feelings and works best as a habit rather than a one-time exercise. It has limits: a label can be wrong, feelings often arrive blended, and naming a feeling does not resolve the situation that produced it. Overanalyzing every passing state can also turn into rumination, which works against the goal. If difficult feelings are intense, lasting, and interfering with daily life, a qualified professional is the right next step, and the vocabulary you build here makes that conversation easier.\n\nFollow-up questions: do your specific names cluster around a few themes, and does naming a feeling change how long it lasts for you?\n\nYou're ready to build on this guide when you can:\n\n- Replace a low-resolution feeling word with a more specific one.\n- Catch one feeling a day and record its most specific name.\n- Explain why precise naming helps and name one limit of labeling."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "journaling-practice",
+    "criteria": [
+      "Use a three-part journal format separating facts, feelings, and meaning.",
+      "Keep a short entry practice going across several days and record one pattern.",
+      "Explain what externalizing thought does and name one limit of journaling."
+    ],
+    "blocks": [
+      {
+        "id": "jp-1",
+        "componentType": "rich_text",
+        "title": "Getting it on the page",
+        "config": {
+          "format": "markdown",
+          "content": "Journaling externalizes the loop running in your head so you can look at it instead of being inside it. It builds directly on being able to name feelings.\n\n**Why writing changes thinking**\n\nA worry replayed in your head stays fast, circular, and convincing. The same worry written down becomes slow, linear, and inspectable. Working memory can only hold a few things at once; the page holds as many as you need, which frees attention to examine instead of rehearse. Research on expressive writing suggests that putting difficult experiences into words can support well-being for many people, and the more practical benefit shows up immediately: sentences reveal gaps and exaggerations that looping thoughts hide.\n\n**A simple format**\n\nThree lines are enough:\n\n- What happened, facts only. \"I texted her at noon and she had not replied by night.\"\n- What I felt, using your emotional vocabulary. \"Anxious, then embarrassed.\"\n- What I made it mean. \"She is annoyed with me.\"\n\nThe third line is where the leverage is. Written down, \"she is annoyed with me\" is visibly a guess layered on top of the facts in line one. Seeing the layers separated is the whole trick: most distress lives in line three while pretending to live in line one.\n\n**An everyday example**\n\nA student journals after a rough practice session. Facts: missed two easy plays. Feeling: ashamed. Meaning: \"I am getting worse.\" On the page, the meaning looks bigger than the evidence, and a fairer reading appears almost on its own: two missed plays on a tired day. Nothing mystical happened; the loop just got small enough to see around."
+        }
+      },
+      {
+        "id": "journaling-practice-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "You need five minutes a day for five days, and anywhere private to write: a notebook, a notes app, a folder no one else opens.\n\n1. Pick a consistent moment, like right before bed.\n2. Write one entry in the three-line format: what happened, what I felt, what I made it mean.\n3. Keep it to three lines. Short and daily beats long and rare.\n4. Do this for five days without rereading old entries.\n5. Record: on day five, read all five entries and write one sentence naming a pattern you notice, in the situations, the feelings, or the meanings you tend to make.\n\nIf a day was uneventful, journal a small moment anyway. The format works on ordinary material, and ordinary material is where habits form."
+        }
+      },
+      {
+        "id": "journaling-practice-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Journaling helps most when it separates observation from interpretation; used without a format, it can slide into rehearsing grievances, which tends to deepen them. It is a reflection tool with real limits: writing about a serious problem is a complement to acting on it and to talking with people you trust, and heavy or traumatic material deserves support from a qualified professional alongside anything you write. Evidence on expressive writing also varies by person and situation, so treat your own five-day record as the most relevant data you have.\n\nFollow-up questions: does journaling in the morning versus at night change what you write, and what happens to line three when you are well rested?\n\nYou're ready to build on this guide when you can:\n\n- Use the facts, feelings, meaning format for an entry.\n- Keep the practice going for several days and record one pattern.\n- Explain what externalizing thought does and name one limit."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "cognitive-reframing",
+    "criteria": [
+      "Catch an automatic thought and name a common distortion in it.",
+      "Rewrite a distorted thought into a fairer version that fits the evidence.",
+      "Explain how reframing restores accuracy and name one situation where it needs care."
+    ],
+    "blocks": [
+      {
+        "id": "cr-1",
+        "componentType": "rich_text",
+        "title": "Catching and re-testing thoughts",
+        "config": {
+          "format": "markdown",
+          "content": "Reframing is noticing an automatic thought and asking whether it is actually true. It needs attention, to catch the thought, and emotional vocabulary, to see what it is doing to you.\n\n**Automatic thoughts**\n\nAn automatic thought is the instant interpretation your mind supplies before you have consciously reasoned about anything. \"I always mess this up\" after one mistake. \"They hate me\" after a short reply. These thoughts feel like observations, but they are drafts, written fast, under emotional pressure, from incomplete information. Cognitive behavioral approaches are built on this insight: the draft, and the feeling it produces, can be examined and revised.\n\n**Common distortions**\n\nDrafts fail in predictable ways. A few patterns worth knowing by name:\n\n- Over-generalization: turning one event into a permanent rule. \"I failed this quiz\" becomes \"I always fail.\"\n- Catastrophizing: jumping to the worst outcome. A late reply becomes a lost friendship.\n- Mind reading: treating a guess about someone's thoughts as fact.\n- All-or-nothing thinking: anything short of perfect counts as failure.\n- Discounting the positive: successes were luck; only errors were real.\n\n**The move**\n\n1. Catch the thought: \"I always mess this up.\"\n2. Name the distortion: over-generalization.\n3. Write a fairer version: \"I struggled this time; here is one thing I would change.\"\n\nThe fairer version is one that fits all the evidence, including the evidence the draft ignored. The aim is accuracy. Forced positivity fails for the same reason the distortion does: it ignores part of the evidence, and your mind knows it. A reframe you do not believe changes nothing, which is why step three works from facts rather than affirmations."
+        }
+      },
+      {
+        "id": "cognitive-reframing-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "You need five minutes and something to write on, ideally soon after a moment that stung.\n\n1. Write the automatic thought exactly as it occurred, in its own words.\n2. Name the distortion, using the list in this guide. If none fits perfectly, pick the closest.\n3. List the evidence: two facts that support the thought and two facts it ignored.\n4. Write the fairer version, one sentence that accounts for all four facts and, where possible, one concrete thing to do differently.\n5. Record: note how believable the fairer version feels from 1 to 5. Anything above a 3 is a working reframe; a 1 means the rewrite skipped some evidence, so revisit step 3.\n\nRepeat with a different thought on two more days."
+        }
+      },
+      {
+        "id": "cognitive-reframing-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Reframing works on interpretations, and some painful thoughts are accurate: reframing a real problem is denial wearing a technique's clothes, and the fitting response is problem-solving or asking for help. It also needs care around grief, trauma, and persistent low mood, where examining thoughts alone is rarely enough; structured support from a qualified professional, such as cognitive behavioral therapy, is the stronger tool there. One honest limit of the method: your own believability ratings are subjective, so patterns across many attempts mean more than any single one.\n\nFollow-up questions: which distortion shows up most in your records, and does catching a thought sooner change how easy the rewrite is?\n\nYou're ready to build on this guide when you can:\n\n- Catch an automatic thought and name its distortion.\n- Rewrite it into a fairer version that fits the evidence.\n- Explain how reframing restores accuracy and where it needs care."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "building-a-daily-practice",
+    "criteria": [
+      "Design a small daily practice anchored to an existing routine.",
+      "Run the practice for a week and track completion honestly.",
+      "Explain why a small kept practice compounds and name one limit of streak thinking."
+    ],
+    "blocks": [
+      {
+        "id": "bdp-1",
+        "componentType": "rich_text",
+        "title": "Stacking small habits",
+        "config": {
+          "format": "markdown",
+          "content": "A daily practice is how the earlier skills stop being exercises and become defaults. It assumes you already journal and can settle yourself with the breath.\n\n**Why anchoring works**\n\nHabits form when a behavior gets tied to a reliable cue and repeated until the cue triggers it with little effort. The strongest cues are things you already do every day without deciding to: making coffee, brushing your teeth, getting into bed. Attaching a new practice to an existing routine, sometimes called habit stacking, borrows the reliability of the old habit instead of depending on motivation, which varies day to day. \"After I pour my coffee, I write three journal lines\" needs no willpower on a good day and very little on a bad one.\n\n**Design your stack**\n\n- Anchor to something you already do: after coffee, before bed, right after you sit down at your desk.\n- Start absurdly small: one breath drill plus three journal lines. Small enough that skipping feels sillier than doing it.\n- Track completion honestly. A checkmark for done is enough; the record is information, and a missed day is information too.\n\nThe size matters more than it seems. A practice that takes two minutes survives exam weeks, travel, and low moods. A practice that takes thirty minutes gets skipped the first hard week, and the skip often takes the whole habit with it.\n\n**The point**\n\nMomentum compounds. Two minutes a day is over twelve hours a year of noticing thoughts and naming feelings, built on days you barely felt it happening. A tiny practice you keep beats a big one you abandon, and once the tiny version is automatic, growing it is easy: the anchor is already set."
+        }
+      },
+      {
+        "id": "building-a-daily-practice-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "Design and run one stack for seven days.\n\n1. Pick your anchor: a daily action you never skip. Write it down as \"After I ___\".\n2. Pick the practice: one minute of breathing plus three journal lines is a solid default.\n3. Write the full sentence: \"After I pour my morning coffee, I do one breath minute and three journal lines.\" Put it where you will see it at anchor time.\n4. Run it for seven days. Do the small version even on days you have energy for more.\n5. Track each day with a simple done or missed mark.\n6. Record: at the end of the week, write one sentence on which days were easy, which were hard, and what the hard days had in common.\n\nIf you miss two days in a row, shrink the practice rather than abandoning the stack."
+        }
+      },
+      {
+        "id": "building-a-daily-practice-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Anchoring works when the anchor itself is stable; a schedule that changes every day needs several anchors or a time-based cue instead. Streaks are useful fuel and a known trap: a broken streak says nothing about the practice's value, and quitting after one miss is the most common way daily practices die. Research on habit formation also shows wide variation in how long automaticity takes, from weeks to months, so seven days is a first data point rather than a verdict.\n\nFollow-up questions: does the practice hold when the anchor moves, such as on weekends, and what is the smallest version of your practice that still feels worth doing?\n\nYou're ready to build on this guide when you can:\n\n- Design a small practice anchored to an existing routine.\n- Run it for a week and track completion honestly.\n- Explain why small kept practices compound and name one limit of streak thinking."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "values-clarification",
+    "criteria": [
+      "List and rank a small set of personal values.",
+      "Compare a week of their time against their ranking and record one gap.",
+      "Explain how values guide decisions and name one limit of a ranked list."
+    ],
+    "blocks": [
+      {
+        "id": "vc-1",
+        "componentType": "rich_text",
+        "title": "Deciding what matters",
+        "config": {
+          "format": "markdown",
+          "content": "Values turn reflection into direction. Once you can reframe thoughts and journal honestly, you can ask the bigger question: what am I actually optimizing for?\n\n**What a value is**\n\nA value is a chosen direction, a quality of living you want more of, such as honesty, craft, loyalty, curiosity, or health. Values differ from goals: a goal can be completed and checked off, while a value is a compass heading you keep steering by. \"Graduate\" is a goal. \"Keep learning\" is a value. Goals tell you when you have arrived; values tell you which way to walk when no one has assigned a destination.\n\nThis distinction does real work in hard moments. Acceptance and commitment approaches in psychology use values as the reference point for action when feelings are loud: you may not control anxiety before a hard conversation, but you can control whether you act like someone who values honesty.\n\n**Why clarify them on paper**\n\nMost people carry vague values they have never ranked, and unranked values cannot settle conflicts. Real decisions are usually collisions between two goods: loyalty to a friend against honesty about their behavior, ambition against rest. A ranking decided calmly, in advance, is a better guide than whichever value shouts loudest under pressure.\n\n**The calendar test**\n\nYour schedule is a record of what you actually optimized for, kept with perfect honesty. Someone may rank health first and discover the week contains no movement and five late nights. That gap is not proof of hypocrisy; time also tracks obligations and constraints. But a gap that persists month after month means the stated ranking and the lived ranking disagree, and one of them should change. Naming which one is the work this guide points at."
+        }
+      },
+      {
+        "id": "values-clarification-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "You need fifteen minutes, your journal, and a look at your last week of time: calendar, messages, screen-time summary, memory.\n\n1. List five things you would defend even when they cost you. Use single words or short phrases.\n2. Rank them, one to five. Forcing the order is the exercise; ties are avoidance.\n3. Review your last seven days and estimate where your discretionary hours actually went.\n4. Put the ranking and the week side by side and find the largest disagreement.\n5. Record: write one sentence naming the gap, such as \"I rank creativity second but gave it zero hours,\" and one sentence on whether the ranking or the schedule should move.\n\nThat gap is your work. Revisit the ranking in a month; values shift slowly, and the list should be allowed to."
+        }
+      },
+      {
+        "id": "values-clarification-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "A ranked list is a snapshot, and it has honest limits. Values genuinely shift with age and circumstance, so a ranking needs periodic revisiting rather than permanent loyalty. The calendar test also reads constraint as choice: a week consumed by a job or caregiving reflects obligation as much as preference, so judge gaps against the hours you could actually steer. And a list made to look good, even to yourself, guides nothing; the exercise only works with the answers you would defend when they cost you.\n\nFollow-up questions: which value on your list came from you rather than from people around you, and what would a week look like if your top value got one more hour?\n\nYou're ready to build on this guide when you can:\n\n- List and rank five personal values.\n- Compare a real week against the ranking and record one gap.\n- Explain how values guide decisions and name one limit of a ranked list."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "mood-disorders-overview",
+    "criteria": [
+      "Distinguish a passing mood from a lasting mood disorder.",
+      "Describe how common mood disorders are and how they connect to wider health.",
+      "Explain why seeking support matters and where that support starts."
+    ],
+    "blocks": [
+      {
+        "id": "mood-disorders-overview-1",
+        "componentType": "rich_text",
+        "title": "When a mood becomes a lasting pattern",
+        "config": {
+          "format": "markdown",
+          "content": "Most people feel sad or irritable from time to time and say they're in a bad mood. A mood disorder is different: it affects a person's everyday emotional state rather than passing quickly.\n\n**The difference that matters**\n\nOrdinary moods track events. A bad grade, an argument, a gray week, and the mood that follows usually fades as circumstances change or time passes. A mood disorder describes a pattern that is longer lasting, often less tied to any single event, and strong enough to interfere with daily life: school, work, relationships, sleep, appetite, and the ability to enjoy things. Duration and interference are the useful markers, more than intensity on any single day.\n\n**The main forms**\n\nDepressive disorders center on persistent low mood, emptiness, or loss of interest, along with changes in energy, sleep, and concentration. Bipolar disorders involve shifts between low periods and periods of unusually elevated energy or mood, called mania or the milder hypomania, which can look like racing thoughts, little need for sleep, and risky decisions. Seasonal patterns also exist, where symptoms track times of year. Each form has its own guide-level depth; this overview is the map.\n\n**How common, and why it matters beyond mood**\n\nNearly one in ten adults experience a mood disorder in a given year, so these patterns are common rather than rare or shameful. Beyond the emotional toll, mood disorders can raise the risk for other health problems, including heart disease and diabetes, which is one more reason they deserve real care rather than a wait-it-out approach.\n\n**What can help**\n\nSupport ranges from talk therapy to other approaches a provider can walk you through. Diagnosis belongs to qualified professionals, and getting help at the earliest signs tends to make symptoms easier to manage. With support, most people with a mood disorder can lead full, productive lives."
+        }
+      },
+      {
+        "id": "mood-disorders-overview-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "This exercise builds the distinction this guide teaches. It takes ten minutes and your journal.\n\n1. Think of a low mood you have had that passed on its own. Write two lines: what set it off, and about how long it lasted.\n2. Now write what would have been different if it had been a lasting pattern: how many weeks, and which parts of daily life it would have touched.\n3. List the three markers from this guide that separate a mood from a disorder: duration, connection to events, and interference with daily life.\n4. Record: write one sentence you could say to a friend who asked whether their weeks-long low mood is \"just a mood.\"\n\nThe goal is fluency with the distinction, for your own check-ins and for the people around you. It is a vocabulary exercise; it is never a diagnosis."
+        }
+      },
+      {
+        "id": "mood-disorders-overview-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "An overview compresses, and this one leaves out the full range of mood conditions and everything about their treatment specifics. The duration-and-interference rule is a useful lens with real limits: only a qualified professional can evaluate what a lasting pattern means for a particular person, and prevalence figures vary by study, age group, and country. If your own mood has been low for more than two weeks, or someone you know shows the signs described here, the right move is a conversation with a provider or trusted adult. If you or someone you know has thoughts of suicide, contact a local crisis line or emergency service right away.\n\nFollow-up questions: how do depressive and bipolar patterns differ in what daily interference looks like, and what does early support actually change about outcomes?\n\nYou're ready to build on this guide when you can:\n\n- Distinguish a passing mood from a lasting pattern.\n- Describe how common mood disorders are and their wider health connections.\n- Explain why support matters and where it starts."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "coping-with-chronic-illness",
+    "criteria": [
+      "Describe how a long-term illness can affect emotions, independence, and daily life.",
+      "Name sources of support, including counselors, groups, and reliable information.",
+      "Identify one concrete step toward regaining a sense of control."
+    ],
+    "blocks": [
+      {
+        "id": "coping-with-chronic-illness-1",
+        "componentType": "rich_text",
+        "title": "Regaining a sense of control",
+        "config": {
+          "format": "markdown",
+          "content": "A long-term, or chronic, illness can disrupt your life in many ways. You may be tired and in pain, and it might affect your appearance, physical abilities, and independence. Not being able to work can create financial strain too.\n\n**How it can affect you**\n\nThese changes can bring on stress, anxiety, and anger, and none of those reactions mean someone is coping badly. A chronic condition often means grieving parts of a previous routine while building a new one, and that adjustment is real work. It can also strain relationships: friends may not know what to say, and family roles can shift when someone needs more help. Naming these effects matters because each one has its own supports, and a problem with a name is easier to bring to a counselor, a provider, or a friend.\n\n**Where support comes from**\n\nIf stress, anxiety, or anger settle in, it's worth seeking support. A trained counselor can help you build strategies to regain a sense of control. Support groups, in person or online, connect you with people managing the same condition; they help you see you're not alone, and they are often the best source of practical, lived-in tips a textbook never includes. Trusted friends and family carry a different kind of weight: they can come to appointments, notice changes, and share the ordinary parts of life the illness does not touch.\n\n**Learning about your illness**\n\nYou may be able to manage your illness better by learning more about it. Knowledge converts vague dread into specific questions, and specific questions are answerable. Check that the information you find is reliable, favoring established medical organizations over forums and personal stories, and look for a health care provider you can trust enough to ask the questions your reading raises. Feeling informed is itself a form of control: it turns appointments from things that happen to you into conversations you help steer."
+        }
+      },
+      {
+        "id": "coping-with-chronic-illness-practice",
+        "componentType": "rich_text",
+        "title": "Try it",
+        "config": {
+          "format": "markdown",
+          "content": "This exercise works whether you manage a condition yourself or support someone who does. It takes ten minutes and your journal.\n\n1. Divide a page into three columns: what the illness affects, who or what could support that area, and one question to ask.\n2. Fill the first column honestly: energy, school or work, mood, friendships, money, whatever applies.\n3. For each entry, add one support in the second column: a counselor, a support group, a specific person, a reliable information source.\n4. In the third column, write one concrete question, such as \"What does this treatment change about my week?\"\n5. Record: circle the single row you will act on first, and write one sentence on what acting on it would look like this week.\n\nIf you are supporting someone else, build the table for how their illness affects you; caregivers need their own version."
+        }
+      },
+      {
+        "id": "coping-with-chronic-illness-check",
+        "componentType": "rich_text",
+        "title": "Limits and context",
+        "config": {
+          "format": "markdown",
+          "content": "Coping strategies support living with a condition; they never replace medical care, and this guide says nothing about any specific illness or treatment, which belongs with your provider. Conditions also differ enormously: a stable, managed condition and a progressive one make different demands, so advice that fits one person can miss another entirely. What people report helping varies too, which is why building your own support table beats adopting anyone else's. If low mood or anxiety around an illness lasts for weeks or makes daily life hard, that deserves its own care from a qualified professional.\n\nFollow-up questions: what does research say about how support groups affect quality of life, and how do caregivers best protect their own mental health?\n\nYou're ready to build on this guide when you can:\n\n- Describe how a long-term illness can affect emotions, independence, and daily life.\n- Name sources of support, including counselors, groups, and reliable information.\n- Identify one concrete step toward regaining a sense of control."
+        }
+      }
+    ]
+  }
 ]

@@ -840,7 +840,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Evidence criteria</label>
                   <span className={styles.fieldHint}>
-                    {'How a learner knows they have got it. Write two to five short, observable statements, like "The learner can name three cognitive distortions in their own thinking". Verifiers read these when they review your guide.'}
+                    {'Write two to five simple, actionable wellness instructions or takeaways, like "Name three cognitive distortions in everyday thoughts". Verifiers read these when they review your guide.'}
                   </span>
                   {evidenceCriteria.length > 0 && (
                     <div className={styles.criterionList}>
@@ -851,7 +851,7 @@ export default function GuideStudio({ slug, authHeaders, onExit, onCreated }: Gu
                             className={styles.textInput}
                             value={c}
                             onChange={(e) => updateCriterion(i, e.target.value)}
-                            placeholder="The learner can…"
+                            placeholder="e.g. Complete a 60-second anchor drill…"
                             disabled={!isDraft}
                           />
                           {isDraft && (

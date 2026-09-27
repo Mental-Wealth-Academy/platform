@@ -13,13 +13,14 @@
 export function simplifyWellnessCriterion(criterion: string): string {
   if (!criterion) return '';
   let text = criterion.trim();
+  if (!text) return '';
 
   // Strip third-person pedagogical prefixes
   text = text.replace(/^(?:the\s+)?learners?\s+(?:can|will|should|is\s+able\s+to)\s+/i, '');
   text = text.replace(/^(?:the\s+)?users?\s+(?:can|will|should|is\s+able\s+to)\s+/i, '');
   text = text.replace(/^(?:you\s+can\s+)/i, '');
 
-  if (!text) return criterion;
+  if (!text) return '';
 
   // Capitalize first character
   return text.charAt(0).toUpperCase() + text.slice(1);

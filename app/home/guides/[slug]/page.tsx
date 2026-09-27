@@ -65,6 +65,15 @@ function formatReviewedDate(value: string): string {
   }).format(new Date(`${value.slice(0, 10)}T00:00:00Z`));
 }
 
+const CRITERIA_ICONS = [
+  ClipboardText,
+  IdentificationCard,
+  LockOpen,
+  CheckCircle,
+  Target,
+  Sparkle,
+];
+
 function buildGuideOrientationLines(guide: GuideRecord, materials: GuideMaterial[]): string[] {
   const sectionCount = guide.body.length;
   const duration = guide.estimatedMinutes
@@ -321,11 +330,21 @@ export default function GuidePage({ params }: PageProps) {
               {data.guide.evidenceCriteria.length > 0 && (
                 <section className={styles.criteria} aria-label="What you will be able to do">
                   <span className={styles.criteriaLabel}>{"What you'll be able to do"}</span>
-                  <ul className={styles.criteriaList}>
-                    {data.guide.evidenceCriteria.map((c, i) => (
-                      <li key={i} className={styles.criteriaItem}>{c}</li>
-                    ))}
-                  </ul>
+                  <div className={styles.criteriaTabs} role="list">
+                    {data.guide.evidenceCriteria.map((c, i) => {
+                      const Icon = CRITERIA_ICONS[i % CRITERIA_ICONS.length];
+                      return (
+                        <div key={i} className={styles.criteriaTab} role="listitem">
+                          <span className={styles.criteriaTabIcon} aria-hidden="true">
+                            <Icon size={24} weight="regular" />
+                          </span>
+                          <span className={styles.criteriaTabText}>
+                            {simplifyWellnessCriterion(c)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </section>
               )}
             </header>

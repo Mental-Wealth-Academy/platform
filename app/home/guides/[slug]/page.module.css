@@ -433,16 +433,13 @@
   font-size: var(--type-code-size);
 }
 
-/* "What you'll be able to do" — compact evidence-criteria list near the top,
-   above the article divider so the lede still leads the article cleanly. */
+/* "What you'll be able to do" — tab design matching attachment 2,
+   styled with primary brand color, white text, and outline icons. */
 .criteria {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 18px 20px;
-  border-radius: 12px;
-  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-background, #ffffff));
-  border: 1px solid color-mix(in oklch, var(--color-primary) 16%, transparent);
+  margin-top: 4px;
 }
 
 .criteriaLabel {
@@ -454,6 +451,66 @@
   color: var(--color-text-muted);
 }
 
+.criteriaTabs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.criteriaTab {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary-hover) 28%, transparent);
+  color: #ffffff;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.criteriaTab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.criteriaTabIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.criteriaTabText {
+  font-family: var(--type-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+:global([data-theme="dark"]) .criteriaTab {
+  border: 1px solid color-mix(in srgb, #ffffff 16%, transparent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 640px) {
+  .criteriaTab {
+    padding: 13px 16px;
+    gap: 12px;
+    border-radius: 10px;
+  }
+
+  .criteriaTabText {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+}
+
+/* Fallback list support */
 .criteriaList {
   margin: 0;
   padding-left: 1.25rem;
@@ -467,10 +524,6 @@
   font-size: 0.9375rem;
   line-height: 1.55;
   color: var(--color-text-dark);
-}
-
-:global([data-theme="dark"]) .criteria {
-  background: color-mix(in oklch, var(--color-primary) 10%, #0d0e16);
 }
 
 /* Section heading echoing .guideSectionHeading — small caps + trailing rule */

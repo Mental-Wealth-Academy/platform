@@ -96,10 +96,11 @@ async function preflightDatabase() {
 }
 
 function evidenceCriteria(outcome: string): string[] {
+  const cap = outcome.trim().charAt(0).toUpperCase() + outcome.trim().slice(1);
   return [
-    `The learner can ${outcome}.`,
-    'The learner can apply the idea in the guide practice and record one observation.',
-    'The learner can name one context, limit, or follow-up question for further investigation.',
+    cap.endsWith('.') ? cap : `${cap}.`,
+    'Apply the idea in the guide practice and record one observation.',
+    'Name one context, limit, or follow-up question for further investigation.',
   ];
 }
 

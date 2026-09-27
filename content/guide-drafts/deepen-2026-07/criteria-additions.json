@@ -1,146 +1,146 @@
 [
- {
-  "slug": "adhd-and-focus",
-  "criteria": [
-   "The learner can name the three core features of ADHD and explain how they differ from ordinary distraction.",
-   "The learner can describe attention-related and hyperactive or impulsive signs across settings like home, school, and work.",
-   "The learner can identify supports that can help, from behavior strategies to school accommodations."
-  ]
- },
- {
-  "slug": "anxiety-basics",
-  "criteria": [
-   "The learner can distinguish useful short-term anxiety from anxiety that overwhelms daily life.",
-   "The learner can describe generalized anxiety, panic, and phobias in plain language.",
-   "The learner can name common symptoms, risk factors, and the kinds of support that can help."
-  ]
- },
- {
-  "slug": "building-daily-habits-with-movement",
-  "criteria": [
-   "The learner can describe immediate and long-term benefits of regular physical activity for brain and body.",
-   "The learner can state the general weekly activity guideline and adapt it to their own schedule.",
-   "The learner can explain how movement relates to mood, sleep, and long-term health risks."
-  ]
- },
- {
-  "slug": "coping-with-traumatic-events",
-  "criteria": [
-   "The learner can describe common reactions after a traumatic event and how most ease over time.",
-   "The learner can recognize signs that someone may need more support, including how children and teens can differ from adults.",
-   "The learner can list healthy coping steps and know when to contact crisis support."
-  ]
- },
- {
-  "slug": "depression-basics",
-  "criteria": [
-   "The learner can explain how depression differs from ordinary sadness.",
-   "The learner can recognize common symptoms and describe how they can vary by age.",
-   "The learner can describe what can help and when to reach out for support."
-  ]
- },
- {
-  "slug": "memory-and-recall",
-  "criteria": [
-   "The learner can describe rehearsal, chunking, elaborative rehearsal, and mnemonic devices.",
-   "The learner can apply at least two evidence-based study strategies to real material.",
-   "The learner can explain why distributed practice works better than cramming."
-  ]
- },
- {
-  "slug": "mental-health-check-in",
-  "criteria": [
-   "The learner can list signs that mental energy is running low.",
-   "The learner can choose practical steps that may help them feel better.",
-   "The learner can identify when to reach out to a provider or crisis support."
-  ]
- },
- {
-  "slug": "mental-health-foundations",
-  "criteria": [
-   "The learner can define mental health as emotional, psychological, and social well-being.",
-   "The learner can name several everyday practices that support mental health.",
-   "The learner can describe one calming practice and recognize when to seek help."
-  ]
- },
- {
-  "slug": "motivation-and-emotion",
-  "criteria": [
-   "The learner can define emotion and distinguish it from mood.",
-   "The learner can compare the major theories of emotion, from James-Lange to cognitive-mediational.",
-   "The learner can name key limbic system structures involved in emotional processing."
-  ]
- },
- {
-  "slug": "operant-conditioning-and-habits",
-  "criteria": [
-   "The learner can define operant conditioning and the law of effect.",
-   "The learner can distinguish the four combinations of reinforcement and punishment.",
-   "The learner can explain shaping and why variable ratio schedules are the most resistant to extinction."
-  ]
- },
- {
-  "slug": "personality-basics",
-  "criteria": [
-   "The learner can define personality as long-standing patterns of thinking, feeling, and behaving.",
-   "The learner can trace how personality theories developed from the four temperaments to modern approaches.",
-   "The learner can explain why phrenology was discredited as pseudoscience."
-  ]
- },
- {
-  "slug": "self-care-techniques",
-  "criteria": [
-   "The learner can name several small, repeatable self-care practices.",
-   "The learner can match self-care areas such as sleep, movement, and connection to their own routine.",
-   "The learner can recognize symptoms that call for more support from a provider."
-  ]
- },
- {
-  "slug": "sleep-basics",
-  "criteria": [
-   "The learner can describe what sleep does for the brain and body.",
-   "The learner can state how much sleep their age group needs and what short sleep costs.",
-   "The learner can apply several habits that improve sleep quality."
-  ]
- },
- {
-  "slug": "social-connectedness",
-  "criteria": [
-   "The learner can define social connection in terms of the number, quality, and variety of relationships.",
-   "The learner can explain how supportive relationships relate to health outcomes.",
-   "The learner can distinguish emotional support from physical support and name a community source of each."
-  ]
- },
- {
-  "slug": "states-of-consciousness",
-  "criteria": [
-   "The learner can describe consciousness as a continuum from full alertness to deep sleep.",
-   "The learner can explain how the suprachiasmatic nucleus and melatonin regulate circadian rhythm.",
-   "The learner can identify causes and costs of circadian disruption and sleep debt."
-  ]
- },
- {
-  "slug": "stress-basics",
-  "criteria": [
-   "The learner can define stress and recognize how it shows up in feelings, body, and behavior.",
-   "The learner can name several practices that care for the mind under stress.",
-   "The learner can name several practices that care for the body under stress."
-  ]
- },
- {
-  "slug": "stress-lifestyle-and-health",
-  "criteria": [
-   "The learner can distinguish problem-focused from emotion-focused coping and describe when each fits.",
-   "The learner can explain how perceived control and learned helplessness shape responses to stress.",
-   "The learner can describe how social support buffers stress and name one stress-reduction technique."
-  ]
- },
- {
-  "slug": "thinking-and-cognition",
-  "criteria": [
-   "The learner can define cognition and describe what cognitive psychology studies.",
-   "The learner can distinguish natural from artificial concepts and give an example of a prototype.",
-   "The learner can explain how schemata speed up thinking and where they can mislead."
-  ]
- }
+  {
+    "slug": "adhd-and-focus",
+    "criteria": [
+      "Name the three core features of ADHD and explain how they differ from ordinary distraction.",
+      "Describe attention-related and hyperactive or impulsive signs across settings like home, school, and work.",
+      "Identify supports that can help, from behavior strategies to school accommodations."
+    ]
+  },
+  {
+    "slug": "anxiety-basics",
+    "criteria": [
+      "Distinguish useful short-term anxiety from anxiety that overwhelms daily life.",
+      "Describe generalized anxiety, panic, and phobias in plain language.",
+      "Name common symptoms, risk factors, and the kinds of support that can help."
+    ]
+  },
+  {
+    "slug": "building-daily-habits-with-movement",
+    "criteria": [
+      "Describe immediate and long-term benefits of regular physical activity for brain and body.",
+      "State the general weekly activity guideline and adapt it to their own schedule.",
+      "Explain how movement relates to mood, sleep, and long-term health risks."
+    ]
+  },
+  {
+    "slug": "coping-with-traumatic-events",
+    "criteria": [
+      "Describe common reactions after a traumatic event and how most ease over time.",
+      "Recognize signs that someone may need more support, including how children and teens can differ from adults.",
+      "List healthy coping steps and know when to contact crisis support."
+    ]
+  },
+  {
+    "slug": "depression-basics",
+    "criteria": [
+      "Explain how depression differs from ordinary sadness.",
+      "Recognize common symptoms and describe how they can vary by age.",
+      "Describe what can help and when to reach out for support."
+    ]
+  },
+  {
+    "slug": "memory-and-recall",
+    "criteria": [
+      "Describe rehearsal, chunking, elaborative rehearsal, and mnemonic devices.",
+      "Apply at least two evidence-based study strategies to real material.",
+      "Explain why distributed practice works better than cramming."
+    ]
+  },
+  {
+    "slug": "mental-health-check-in",
+    "criteria": [
+      "List signs that mental energy is running low.",
+      "Choose practical steps that may help them feel better.",
+      "Identify when to reach out to a provider or crisis support."
+    ]
+  },
+  {
+    "slug": "mental-health-foundations",
+    "criteria": [
+      "Define mental health as emotional, psychological, and social well-being.",
+      "Name several everyday practices that support mental health.",
+      "Describe one calming practice and recognize when to seek help."
+    ]
+  },
+  {
+    "slug": "motivation-and-emotion",
+    "criteria": [
+      "Define emotion and distinguish it from mood.",
+      "Compare the major theories of emotion, from James-Lange to cognitive-mediational.",
+      "Name key limbic system structures involved in emotional processing."
+    ]
+  },
+  {
+    "slug": "operant-conditioning-and-habits",
+    "criteria": [
+      "Define operant conditioning and the law of effect.",
+      "Distinguish the four combinations of reinforcement and punishment.",
+      "Explain shaping and why variable ratio schedules are the most resistant to extinction."
+    ]
+  },
+  {
+    "slug": "personality-basics",
+    "criteria": [
+      "Define personality as long-standing patterns of thinking, feeling, and behaving.",
+      "Trace how personality theories developed from the four temperaments to modern approaches.",
+      "Explain why phrenology was discredited as pseudoscience."
+    ]
+  },
+  {
+    "slug": "self-care-techniques",
+    "criteria": [
+      "Name several small, repeatable self-care practices.",
+      "Match self-care areas such as sleep, movement, and connection to their own routine.",
+      "Recognize symptoms that call for more support from a provider."
+    ]
+  },
+  {
+    "slug": "sleep-basics",
+    "criteria": [
+      "Describe what sleep does for the brain and body.",
+      "State how much sleep their age group needs and what short sleep costs.",
+      "Apply several habits that improve sleep quality."
+    ]
+  },
+  {
+    "slug": "social-connectedness",
+    "criteria": [
+      "Define social connection in terms of the number, quality, and variety of relationships.",
+      "Explain how supportive relationships relate to health outcomes.",
+      "Distinguish emotional support from physical support and name a community source of each."
+    ]
+  },
+  {
+    "slug": "states-of-consciousness",
+    "criteria": [
+      "Describe consciousness as a continuum from full alertness to deep sleep.",
+      "Explain how the suprachiasmatic nucleus and melatonin regulate circadian rhythm.",
+      "Identify causes and costs of circadian disruption and sleep debt."
+    ]
+  },
+  {
+    "slug": "stress-basics",
+    "criteria": [
+      "Define stress and recognize how it shows up in feelings, body, and behavior.",
+      "Name several practices that care for the mind under stress.",
+      "Name several practices that care for the body under stress."
+    ]
+  },
+  {
+    "slug": "stress-lifestyle-and-health",
+    "criteria": [
+      "Distinguish problem-focused from emotion-focused coping and describe when each fits.",
+      "Explain how perceived control and learned helplessness shape responses to stress.",
+      "Describe how social support buffers stress and name one stress-reduction technique."
+    ]
+  },
+  {
+    "slug": "thinking-and-cognition",
+    "criteria": [
+      "Define cognition and describe what cognitive psychology studies.",
+      "Distinguish natural from artificial concepts and give an example of a prototype.",
+      "Explain how schemata speed up thinking and where they can mislead."
+    ]
+  }
 ]
