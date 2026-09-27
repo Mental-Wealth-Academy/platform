@@ -205,17 +205,85 @@ export default function BlueRadio({
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [playback, syncToLive]);
 
-  const toggleMute = useCallback(() => {
+  const toggleMute = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.muted = !audio.muted;
-    setMuted(audio.muted);
-    void ensureAudioAnalyser();
-  }, [ensureAudioAnalyser]);
 
-  const tuneIn = useCallback(() => {
-    syncToLive(false).catch(() => setPlayback('blocked'));
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      try {
+        await audioContextRef.current.resume();
+      } catch {}
+    }
+
+    const nextMuted = !audio.muted;
+    audio.muted = nextMuted;
+    setMuted(nextMuted);
+
+    if (!nextMuted) {
+      if (audio.paused) {
+        try {
+          await audio.play();
+          setPlayback('live');
+        } catch {
+          await syncToLive(false).catch(() => {});
+        }
+      }
+      void ensureAudioAnalyser();
+    }
+  }, [ensureAudioAnalyser, syncToLive]);
+
+  const tuneIn = useCallback(async () => {
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      try {
+        await audioContextRef.current.resume();
+      } catch {}
+    }
+    try {
+      await syncToLive(false);
+    } catch {
+      try {
+        await syncToLive(true);
+      } catch {
+        setPlayback('blocked');
+      }
+    }
   }, [syncToLive]);
+
+  // Unlock audio on first user gesture across the document if initially blocked/muted by autoplay policy
+  useEffect(() => {
+    const unlock = async () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        try {
+          await audioContextRef.current.resume();
+        } catch {}
+      }
+      if (audio.muted) {
+        audio.muted = false;
+        setMuted(false);
+      }
+      if (audio.paused) {
+        try {
+          await audio.play();
+          setPlayback('live');
+        } catch {
+          syncToLive(false).catch(() => {});
+        }
+      }
+      void ensureAudioAnalyser();
+    };
+
+    window.addEventListener('click', unlock, { once: true });
+    window.addEventListener('touchstart', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+
+    return () => {
+      window.removeEventListener('click', unlock);
+      window.removeEventListener('touchstart', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, [ensureAudioAnalyser, syncToLive]);
 
   const onAir = playback === 'live';
   const handleAvatarReady = useCallback(() => setAvatarState('ready'), []);
@@ -253,6 +321,33 @@ export default function BlueRadio({
         </div>
       )}
 
+      <div className={styles.radioFooter}>
+        <span className={styles.radioLiveChip}>
+          <span className={`${styles.radioLiveDot} ${onAir ? styles.radioLiveDotOn : ''}`} aria-hidden="true" />
+          Live
+        </span>
+        <div className={styles.radioNowPlaying}>
+          <span className={styles.radioShowName}>Blue Radio</span>
+        </div>
+        {onAir && (
+          <span className={styles.radioControls}>
+            {!muted && (
+              <span className={styles.radioBars} aria-hidden="true">
+                <span /><span /><span />
+              </span>
+            )}
+            <button
+              type="button"
+              className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
+              onClick={toggleMute}
+              aria-label={muted ? 'Unmute radio' : 'Mute radio'}
+            >
+              {muted ? 'Unmute' : 'Mute'}
+            </button>
+          </span>
+        )}
+      </div>
+
       {headerControlsTarget && (onAir || playback === 'blocked') && createPortal(
         <div className={styles.radioControls}>
           {onAir && !muted && (
@@ -264,7 +359,7 @@ export default function BlueRadio({
             type="button"
             className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
             onClick={playback === 'blocked' ? tuneIn : toggleMute}
-            aria-label={playback === 'blocked' ? 'Tune in to audio' : muted ? 'Unmute audio' : 'Mute audio'}
+            aria-label={playback === 'blocked' ? 'Tune in to radio' : muted ? 'Unmute radio' : 'Mute radio'}
           >
             {playback === 'blocked' ? 'Tune in' : muted ? 'Unmute' : 'Mute'}
           </button>
@@ -278,6 +373,7 @@ export default function BlueRadio({
         onEnded={handleEnded}
         onError={handleError}
         preload="auto"
+        playsInline
         hidden
       />
     </div>
