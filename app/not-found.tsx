@@ -17,7 +17,7 @@ export default function NotFound() {
           <div className={styles.content}>
             <h1 className={styles.heading}>404 Lost</h1>
             <p className={styles.paragraph}>
-              Sorry! This page no longer exists here.
+              &ldquo;The hardest thing of all is to find a black cat in a dark room, especially if there is no cat.&rdquo;
             </p>
           </div>
           <Link href="/home" className={styles.cta}>
