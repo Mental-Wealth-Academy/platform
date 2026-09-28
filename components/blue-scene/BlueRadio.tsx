@@ -2,9 +2,9 @@
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import CtaButton from '@/components/shared/CtaButton';
 import manifest from '@/lib/blue-radio-manifest.json';
+import BlueCompanion from './BlueCompanion';
 import styles from './BlueScene.module.css';
 
 const BlueVrmStage = dynamic(() => import('./BlueVrmStage'), { ssr: false });
@@ -38,16 +38,18 @@ function livePosition(): { index: number; offset: number } {
 
 export default function BlueRadio({
   gardenBackground,
-  headerControlsTarget,
+  mode = 'radio',
 }: {
   gardenBackground: string;
-  headerControlsTarget?: HTMLDivElement | null;
+  mode?: 'radio' | 'companion';
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const companionVolumeRef = useRef<number>(0);
+  const [companionMode, setCompanionMode] = useState<'idle' | 'listening' | 'speaking'>('idle');
   const [playback, setPlayback] = useState<Playback>('connecting');
   const [muted, setMuted] = useState(false);
   const [segmentIndex, setSegmentIndex] = useState(() => livePosition().index);
@@ -134,6 +136,10 @@ export default function BlueRadio({
   // that refuse sound without a gesture get a muted broadcast plus a loud
   // unmute button; ones that refuse even that get the tune-in overlay.
   useEffect(() => {
+    if (mode === 'companion') {
+      audioRef.current?.pause();
+      return;
+    }
     const audio = audioRef.current;
     let cancelled = false;
     (async () => {
@@ -152,7 +158,7 @@ export default function BlueRadio({
       if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
       audio?.pause();
     };
-  }, [syncToLive]);
+  }, [mode, syncToLive]);
 
   useEffect(() => {
     return () => {
@@ -176,22 +182,25 @@ export default function BlueRadio({
   }, []);
 
   const handleEnded = useCallback(() => {
+    if (mode === 'companion') return;
     const audio = audioRef.current;
     if (!audio) return;
     syncToLive(audio.muted).catch(() => setPlayback('blocked'));
-  }, [syncToLive]);
+  }, [mode, syncToLive]);
 
   const handleError = useCallback(() => {
+    if (mode === 'companion') return;
     if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
     retryTimerRef.current = setTimeout(() => {
       const audio = audioRef.current;
       if (audio) syncToLive(audio.muted).catch(() => setPlayback('blocked'));
     }, 4000);
-  }, [syncToLive]);
+  }, [mode, syncToLive]);
 
   // Coming back to the tab rejoins the broadcast at its current moment.
   useEffect(() => {
     const onVisible = () => {
+      if (mode === 'companion') return;
       const audio = audioRef.current;
       if (document.hidden || !audio || audio.paused === false) return;
       if (playback === 'live') {
@@ -200,7 +209,7 @@ export default function BlueRadio({
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [playback, syncToLive]);
+  }, [mode, playback, syncToLive]);
 
   const toggleMute = useCallback(async () => {
     const audio = audioRef.current;
@@ -249,6 +258,7 @@ export default function BlueRadio({
   // Unlock audio on first user gesture across the document if initially blocked/muted by autoplay policy
   useEffect(() => {
     const unlock = async () => {
+      if (mode === 'companion') return;
       const audio = audioRef.current;
       if (!audio) return;
       if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
@@ -280,7 +290,7 @@ export default function BlueRadio({
       window.removeEventListener('touchstart', unlock);
       window.removeEventListener('keydown', unlock);
     };
-  }, [ensureAudioAnalyser, syncToLive]);
+  }, [ensureAudioAnalyser, mode, syncToLive]);
 
   const onAir = playback === 'live';
 
@@ -288,66 +298,59 @@ export default function BlueRadio({
     <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
       <div className={styles.radioBlueWrap}>
         <BlueVrmStage
-          active={onAir}
+          active={mode === 'companion' ? companionMode === 'speaking' : onAir}
           analyserRef={analyserRef}
           audioRef={audioRef}
+          companionVolumeRef={mode === 'companion' ? companionVolumeRef : undefined}
+          companionMode={mode === 'companion' ? companionMode : undefined}
         />
       </div>
 
-      {playback === 'blocked' && (
-        <div className={styles.radioTuneIn}>
-          <span className={styles.radioTuneInKicker}>Blue Radio</span>
-          <p className={styles.radioTuneInText}>
-            Live from the Academy, day and night.
-          </p>
-          <CtaButton onClick={tuneIn}>Tune in</CtaButton>
-        </div>
-      )}
+      {mode === 'companion' ? (
+        <BlueCompanion
+          companionVolumeRef={companionVolumeRef}
+          companionMode={companionMode}
+          onModeChange={setCompanionMode}
+        />
+      ) : (
+        <>
+          {playback === 'blocked' && (
+            <div className={styles.radioTuneIn}>
+              <span className={styles.radioTuneInKicker}>Blue Radio</span>
+              <p className={styles.radioTuneInText}>
+                Live from the Academy, day and night.
+              </p>
+              <CtaButton onClick={tuneIn}>Tune in</CtaButton>
+            </div>
+          )}
 
-      <div className={styles.radioFooter}>
-        <span className={styles.radioLiveChip}>
-          <span className={`${styles.radioLiveDot} ${onAir ? styles.radioLiveDotOn : ''}`} aria-hidden="true" />
-          Live
-        </span>
-        <div className={styles.radioNowPlaying}>
-          <span className={styles.radioShowName}>Blue Radio</span>
-        </div>
-        {onAir && (
-          <span className={styles.radioControls}>
-            {!muted && (
-              <span className={styles.radioBars} aria-hidden="true">
-                <span /><span /><span />
+          <div className={styles.radioFooter}>
+            <span className={styles.radioLiveChip}>
+              <span className={`${styles.radioLiveDot} ${onAir ? styles.radioLiveDotOn : ''}`} aria-hidden="true" />
+              Live
+            </span>
+            <div className={styles.radioNowPlaying}>
+              <span className={styles.radioShowName}>Blue Radio</span>
+            </div>
+            {onAir && (
+              <span className={styles.radioControls}>
+                {!muted && (
+                  <span className={styles.radioBars} aria-hidden="true">
+                    <span /><span /><span />
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
+                  onClick={toggleMute}
+                  aria-label={muted ? 'Unmute radio' : 'Mute radio'}
+                >
+                  {muted ? 'Unmute' : 'Mute'}
+                </button>
               </span>
             )}
-            <button
-              type="button"
-              className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
-              onClick={toggleMute}
-              aria-label={muted ? 'Unmute radio' : 'Mute radio'}
-            >
-              {muted ? 'Unmute' : 'Mute'}
-            </button>
-          </span>
-        )}
-      </div>
-
-      {headerControlsTarget && (onAir || playback === 'blocked') && createPortal(
-        <div className={styles.radioControls}>
-          {onAir && !muted && (
-            <span className={styles.radioBars} aria-hidden="true">
-              <span /><span /><span />
-            </span>
-          )}
-          <button
-            type="button"
-            className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
-            onClick={playback === 'blocked' ? tuneIn : toggleMute}
-            aria-label={playback === 'blocked' ? 'Tune in to radio' : muted ? 'Unmute radio' : 'Mute radio'}
-          >
-            {playback === 'blocked' ? 'Tune in' : muted ? 'Unmute' : 'Mute'}
-          </button>
-        </div>,
-        headerControlsTarget
+          </div>
+        </>
       )}
 
       <audio

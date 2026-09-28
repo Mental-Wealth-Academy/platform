@@ -4,10 +4,10 @@ import styles from './BlueScene.module.css';
 
 export default function LivestreamFeed({
   gardenBackground,
-  headerControlsTarget,
+  mode = 'radio',
 }: {
   gardenBackground: string;
-  headerControlsTarget?: HTMLDivElement | null;
+  mode?: 'radio' | 'companion';
 }) {
   const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
   const hasBroadcast = Array.isArray(manifest.segments) && manifest.segments.length > 0;
@@ -23,7 +23,7 @@ export default function LivestreamFeed({
           allowFullScreen
         />
       ) : hasBroadcast ? (
-        <BlueRadio gardenBackground={gardenBackground} headerControlsTarget={headerControlsTarget} />
+        <BlueRadio gardenBackground={gardenBackground} mode={mode} />
       ) : (
         <div className={styles.offlineState}>
           <span className={styles.offlineIcon} aria-hidden="true">

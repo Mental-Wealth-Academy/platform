@@ -38,8 +38,10 @@ const MOUTH_EXPRESSIONS: VRMExpressionPresetName[] = ['aa', 'ih', 'ou', 'ee', 'o
 
 interface BlueVrmCanvasProps {
   active: boolean;
-  analyserRef: MutableRefObject<AnalyserNode | null>;
-  audioRef: MutableRefObject<HTMLAudioElement | null>;
+  analyserRef?: MutableRefObject<AnalyserNode | null>;
+  audioRef?: MutableRefObject<HTMLAudioElement | null>;
+  companionVolumeRef?: MutableRefObject<number>;
+  companionMode?: 'idle' | 'listening' | 'speaking';
   reducedMotion: boolean;
   onError: () => void;
   onReady: () => void;
@@ -137,6 +139,8 @@ function BlueModel({
   active,
   analyserRef,
   audioRef,
+  companionVolumeRef,
+  companionMode = 'idle',
   reducedMotion,
   onError,
   onReady,
@@ -224,8 +228,19 @@ function BlueModel({
     if (!vrm) return;
 
     const time = state.clock.elapsedTime;
-    const analyser = active ? analyserRef.current : null;
-    const measuredLevel = readVoiceLevel(analyser, waveformRef);
+    let measuredLevel = 0;
+
+    if (companionVolumeRef) {
+      if (companionMode === 'speaking') {
+        measuredLevel = MathUtils.clamp(companionVolumeRef.current * 1.6, 0, 1);
+      } else {
+        measuredLevel = 0;
+      }
+    } else {
+      const analyser = active ? analyserRef?.current ?? null : null;
+      measuredLevel = readVoiceLevel(analyser, waveformRef);
+    }
+
     const voiceLevel = MathUtils.damp(
       voiceLevelRef.current,
       measuredLevel,
@@ -234,7 +249,7 @@ function BlueModel({
     );
     voiceLevelRef.current = voiceLevel;
 
-    const audioTime = audioRef.current?.currentTime ?? time;
+    const audioTime = audioRef?.current?.currentTime ?? time;
     const visemeCursor = audioTime * 7.5;
     const visemeIndex = Math.floor(visemeCursor) % VISEME_SEQUENCE.length;
     const nextVisemeIndex = (visemeIndex + 1) % VISEME_SEQUENCE.length;
@@ -266,9 +281,10 @@ function BlueModel({
       vrm.scene.rotation.y = Math.sin(time * 0.42) * 0.024;
 
       if (headRef.current) {
+        const listeningTilt = companionMode === 'listening' ? 0.035 : 0;
         motionEuler.set(
-          Math.sin(time * 0.66) * 0.018 + voiceLevel * Math.sin(time * 5.2) * 0.012,
-          Math.sin(time * 0.38) * 0.026,
+          Math.sin(time * 0.66) * 0.018 + voiceLevel * Math.sin(time * 5.2) * 0.012 + (companionMode === 'listening' ? 0.02 : 0),
+          Math.sin(time * 0.38) * 0.026 + listeningTilt,
           Math.sin(time * 0.51) * 0.01,
         );
         motionQuaternion.setFromEuler(motionEuler);

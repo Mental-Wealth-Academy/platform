@@ -400,8 +400,206 @@
   animation: radioPulse 1.6s ease-in-out infinite;
 }
 
+/* ── Blue Companion: Real-time ElevenLabs voice conversation ── */
+
+.companionOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  text-align: center;
+  background: color-mix(in oklch, #1d2130 62%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.companionErrorKicker {
+  color: var(--color-danger);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.companionConnectingDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: companionConnectingPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes companionConnectingPulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+.companionSubtitleBubble {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 60px;
+  z-index: 3;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--palette-canvas) 88%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  animation: subtitleFadeIn 0.25s ease-out;
+}
+
+@keyframes subtitleFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.companionSubtitleSpeaker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 2px;
+}
+
+.companionSubtitleText {
+  margin: 0;
+  color: var(--palette-ink);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+
+.companionFooter {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--palette-canvas));
+  backdrop-filter: blur(6px);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 26%, transparent);
+}
+
+.companionStatusChip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.companionStatusChipSpeaking {
+  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.companionStatusChipListening {
+  border: 1px solid color-mix(in oklch, var(--color-success, #10b981) 40%, transparent);
+  color: var(--color-success, #10b981);
+  background: color-mix(in oklch, var(--color-success, #10b981) 12%, transparent);
+}
+
+.companionStatusChipMuted {
+  border: 1px solid color-mix(in oklch, var(--color-danger) 36%, transparent);
+  color: var(--color-danger);
+  background: color-mix(in oklch, var(--color-danger) 10%, transparent);
+}
+
+.companionDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.companionDotActive {
+  background: var(--color-success, #10b981);
+  animation: radioPulse 1.6s ease-in-out infinite;
+}
+
+.companionDotMuted {
+  background: var(--color-danger);
+}
+
+.companionControls {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.companionButton {
+  padding: 5px 12px;
+  border: 1px solid color-mix(in oklch, var(--palette-ink) 24%, transparent);
+  border-radius: 999px;
+  color: var(--palette-ink);
+  background: color-mix(in oklch, var(--palette-ink) 6%, transparent);
+  font-family: var(--font-button);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.companionButton:hover {
+  background: color-mix(in oklch, var(--palette-ink) 12%, transparent);
+}
+
+.companionButtonMuted {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.companionEndButton {
+  padding: 5px 12px;
+  border: 1px solid color-mix(in oklch, var(--color-danger) 36%, transparent);
+  border-radius: 999px;
+  color: var(--color-danger);
+  background: color-mix(in oklch, var(--color-danger) 8%, transparent);
+  font-family: var(--font-button);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.companionEndButton:hover {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-on-action, #ffffff);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .radioLiveDotOn,
+  .companionDotActive,
+  .companionConnectingDot,
+  .companionSubtitleBubble,
   .radioBars span,
   .radioMuteButtonLoud,
   .radioBlue,

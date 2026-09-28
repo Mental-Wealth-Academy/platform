@@ -15,8 +15,10 @@ const BlueVrmCanvas = dynamic(() => import('./BlueVrmCanvas'), { ssr: false });
 
 interface BlueVrmStageProps {
   active: boolean;
-  analyserRef: MutableRefObject<AnalyserNode | null>;
-  audioRef: MutableRefObject<HTMLAudioElement | null>;
+  analyserRef?: MutableRefObject<AnalyserNode | null>;
+  audioRef?: MutableRefObject<HTMLAudioElement | null>;
+  companionVolumeRef?: MutableRefObject<number>;
+  companionMode?: 'idle' | 'listening' | 'speaking';
   onError?: () => void;
   onReady?: () => void;
 }
@@ -63,6 +65,8 @@ export default function BlueVrmStage({
   active,
   analyserRef,
   audioRef,
+  companionVolumeRef,
+  companionMode,
   onError = noop,
   onReady = noop,
 }: BlueVrmStageProps) {
@@ -119,6 +123,8 @@ export default function BlueVrmStage({
           active={active}
           analyserRef={analyserRef}
           audioRef={audioRef}
+          companionVolumeRef={companionVolumeRef}
+          companionMode={companionMode}
           reducedMotion={reducedMotion}
           onError={onError}
           onReady={handleReady}

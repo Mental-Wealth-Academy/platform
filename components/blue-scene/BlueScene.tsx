@@ -8,19 +8,48 @@ import styles from './BlueScene.module.css';
 const bgUrl = dailySceneBackgroundUrl();
 
 export default function BlueScene() {
-  const [headerControlsTarget, setHeaderControlsTarget] = useState<HTMLDivElement | null>(null);
+  const [mode, setMode] = useState<'radio' | 'companion'>('radio');
 
   return (
     <section className={styles.scene} aria-label="Live session feed">
       <div className={styles.sceneHeader}>
         <div className={styles.sceneHeading}>
-          <span className={styles.sceneTitleJa} lang="ja">知識</span>
-          <span className={styles.sceneTitle}>Radio</span>
+          <span className={styles.sceneTitleJa} lang="ja">
+            {mode === 'radio' ? '知識' : '対話'}
+          </span>
+          <span className={styles.sceneTitle}>
+            {mode === 'radio' ? 'Radio' : 'Companion'}
+          </span>
         </div>
-        <div ref={setHeaderControlsTarget} className={styles.sceneHeaderControls} />
+        <div className={styles.sceneHeaderControls}>
+          <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'radio'}
+              className={`${styles.sceneSwitchButton} ${
+                mode === 'radio' ? styles.sceneSwitchButtonActive : ''
+              }`}
+              onClick={() => setMode('radio')}
+            >
+              Radio
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'companion'}
+              className={`${styles.sceneSwitchButton} ${
+                mode === 'companion' ? styles.sceneSwitchButtonActive : ''
+              }`}
+              onClick={() => setMode('companion')}
+            >
+              Companion
+            </button>
+          </div>
+        </div>
       </div>
 
-      <LivestreamFeed gardenBackground={bgUrl} headerControlsTarget={headerControlsTarget} />
+      <LivestreamFeed gardenBackground={bgUrl} mode={mode} />
     </section>
   );
 }
