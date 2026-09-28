@@ -199,8 +199,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   root: {
     emotion: 'happy',
     lines: [
-      'I know everyone in the Academy! Tell me what you are navigating right now so I can introduce you to the right person.',
-      'Where does your focus or energy feel drawn today?',
+      'I know everyone in the Academy! Tell me what you are navigating right now so I can introduce you to the right person. Where does your focus or energy feel drawn today?',
     ],
     choices: [
       { label: 'Navigating Stress', nextNodeKey: 'navigatingStress' },
@@ -212,8 +211,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   navigatingStress: {
     emotion: 'calm',
     lines: [
-      'I hear you. When things get loud or heavy inside, having the right presence makes all the difference.',
-      'What kind of support feels safest right now?',
+      'I hear you. When things get loud or heavy inside, having the right presence makes all the difference. What kind of support feels safest right now?',
     ],
     choices: [
       { label: 'A Quiet Listener', nextNodeKey: 'quietListener' },
@@ -245,8 +243,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   buildingMomentum: {
     emotion: 'happy',
     lines: [
-      'Ooh, momentum is wonderful! Connecting with someone on the same frequency accelerates your growth so fast.',
-      'What is your main focus today?',
+      'Ooh, momentum is wonderful! Connecting with someone on the same frequency accelerates your growth so fast. What is your main focus today?',
     ],
     choices: [
       { label: 'Daily Discipline', nextNodeKey: 'dailyDiscipline' },
@@ -278,8 +275,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   peerBurnoutMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Nervous System Recovery Peer Circle.',
-      'I will connect you with peers who practice gentle pacing and understand sensory overload without unsolicited advice.',
+      'Match found: Nervous System Recovery Peer Circle. I will connect you with peers who practice gentle pacing and understand sensory overload without unsolicited advice.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -289,8 +285,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   peerCompassionMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Empathetic Peer Companion.',
-      'An understanding fellow in the Academy who values authentic presence, mutual care, and zero judgment.',
+      'Match found: Empathetic Peer Companion. An understanding fellow in the Academy who values authentic presence, mutual care, and zero judgment.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -300,8 +295,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   shadowMentorMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Senior Shadow Work Guide.',
-      'A fellow student who completed the 12-week integration curriculum and can hold space for your blind spots.',
+      'Match found: Senior Shadow Work Guide. A fellow student who completed the 12-week integration curriculum and can hold space for your blind spots.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -311,8 +305,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   transitionMentorMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Pathway and Transition Mentor.',
-      'An experienced builder who navigated career pivots, boundary setting, and identity restructuring.',
+      'Match found: Pathway and Transition Mentor. An experienced builder who navigated career pivots, boundary setting, and identity restructuring.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -322,8 +315,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   streakPartnerMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Daily Cadence Partner.',
-      'Someone active every single day who shares quick field notes and keeps the streak flame burning bright.',
+      'Match found: Daily Cadence Partner. Someone active every single day who shares quick field notes and keeps the streak flame burning bright.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -333,8 +325,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   accountabilityPartnerMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: High-Integrity Accountability Partner.',
-      'A dedicated member committed to weekly check-ins, habit contracts, and honest retrospectives.',
+      'Match found: High-Integrity Accountability Partner. A dedicated member committed to weekly check-ins, habit contracts, and honest retrospectives.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -344,8 +335,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   intellectualPeerMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Philosophy and Systems Thinker.',
-      'A curious researcher who loves exploring mental wealth frameworks, archetypes, and deep questions.',
+      'Match found: Philosophy and Systems Thinker. A curious researcher who loves exploring mental wealth frameworks, archetypes, and deep questions.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -355,8 +345,7 @@ const CONNECT_NODES: Record<string, ConnectNode> = {
   focusSprintMatch: {
     emotion: 'happy',
     lines: [
-      'Match found: Deep Work Sprint Partner.',
-      'A focused builder who pairs for 90-minute quiet study blocks with zero distraction.',
+      'Match found: Deep Work Sprint Partner. A focused builder who pairs for 90-minute quiet study blocks with zero distraction.',
     ],
     choices: [
       { label: 'Say Hello in Chat', action: 'chat' },
@@ -806,7 +795,7 @@ export default function HomePage() {
               setConnectNodeKey('root');
               setAskBlueOpen(true);
             }}
-            aria-label="Connect With Someone…"
+            aria-label="Blue Intelligence"
           >
             <span className={styles.askBlueContent}>
               <span className={styles.askBlueLeft}>
@@ -818,9 +807,8 @@ export default function HomePage() {
                   className={styles.askBlueGif}
                   unoptimized
                 />
-                <span className={styles.askBlueLabel}>Connect With Someone…</span>
+                <span className={styles.askBlueLabel}>Blue Intelligence</span>
               </span>
-              <span className={styles.warningAiBadge}>Peer Match</span>
             </span>
           </CtaButton>
         </div>
@@ -1141,8 +1129,7 @@ export default function HomePage() {
         <BlueDialogue
           open={askBlueOpen}
           placement="center"
-          title="Connect With Someone…"
-          subtitle="Peer matching and mentor introductions"
+          title="Blue Intelligence"
           lines={currentConnectNode.lines}
           emotion={currentConnectNode.emotion}
           choices={connectChoices}

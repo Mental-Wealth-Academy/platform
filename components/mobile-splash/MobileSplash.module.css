@@ -48,11 +48,6 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-@media (min-width: 769px) {
-  .splash {
-    display: none;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .glow { animation: none; }

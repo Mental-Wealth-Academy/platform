@@ -145,6 +145,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [displayReward, setDisplayReward] = useState(0);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -178,6 +179,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
   const stopVoice = useCallback(() => {
     voiceAbortRef.current?.abort();
     voiceAbortRef.current = null;
+    setIsPlayingAudio(false);
     if (currentAudioRef.current) {
       currentAudioRef.current.pause();
       currentAudioRef.current = null;
@@ -209,18 +211,28 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
     stopVoice();
     const controller = new AbortController();
     voiceAbortRef.current = controller;
+    setIsPlayingAudio(true);
     fetchBlueAudio(line, controller.signal)
       .then((el) => {
         if (controller.signal.aborted) return;
         currentAudioRef.current = el;
-        el.play().catch(() => {});
+        const handleEnded = () => setIsPlayingAudio(false);
+        el.addEventListener('ended', handleEnded, { once: true });
+        el.addEventListener('pause', handleEnded, { once: true });
+        el.play().catch(() => {
+          setIsPlayingAudio(false);
+        });
       })
       .catch((err) => {
         if (err?.name === 'AbortError') return;
+        setIsPlayingAudio(false);
         console.warn('[BlueDialogue] TTS failed:', err);
       });
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      setIsPlayingAudio(false);
+    };
   }, [open, voiceEnabled, activeLine, safeIndex, stopVoice]);
 
   // Cut audio when the dialogue closes.
@@ -293,7 +305,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
 
   // Advance automatically start to finish through the chats.
   useEffect(() => {
-    if (!open || isTyping) {
+    if (!open || isTyping || isPlayingAudio) {
       clearAutoAdvance();
       return;
     }
@@ -307,7 +319,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       return;
     }
 
-    const readingDelay = Math.max(2200, activeLine.length * 36);
+    const readingDelay = Math.max(1600, activeLine.length * 32);
 
     const proceed = () => {
       if (safeIndex < safeLines.length - 1) {
@@ -318,21 +330,9 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
       }
     };
 
-    if (currentAudioRef.current && !currentAudioRef.current.paused) {
-      const audio = currentAudioRef.current;
-      const onEnded = () => {
-        autoAdvanceTimer.current = setTimeout(proceed, 1000);
-      };
-      audio.addEventListener('ended', onEnded, { once: true });
-      return () => {
-        audio.removeEventListener('ended', onEnded);
-        clearAutoAdvance();
-      };
-    }
-
     autoAdvanceTimer.current = setTimeout(proceed, readingDelay);
     return clearAutoAdvance;
-  }, [open, isTyping, safeIndex, safeLines.length, activeLine, close, clearAutoAdvance, disableAutoClose, choices]);
+  }, [open, isTyping, isPlayingAudio, safeIndex, safeLines.length, activeLine, close, clearAutoAdvance, disableAutoClose, choices]);
 
   // Click on dialogue allows user to fast-forward typing or advance early.
   const handleDialogueTap = useCallback(() => {

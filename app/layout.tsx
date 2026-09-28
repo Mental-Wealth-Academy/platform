@@ -4,6 +4,7 @@ import { Space_Grotesk, Patrick_Hand, Instrument_Serif, Poppins } from 'next/fon
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
+import MobileSplash from '@/components/mobile-splash/MobileSplash';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -235,6 +236,7 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <MobileSplash />
         <SoundProvider>
           <RouteShell>{children}</RouteShell>
         </SoundProvider>

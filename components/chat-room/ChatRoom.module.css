@@ -38,6 +38,34 @@
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
+.backButton {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-button, var(--font-primary));
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.backButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.backButton:active {
+  opacity: 0.8;
+}
+
 .topBannerContent {
   display: flex;
   align-items: center;

@@ -7,7 +7,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useSound } from '@/hooks/useSound';
 import { normalizeAvatarUrl } from '@/lib/axis-avatar';
 import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
-import { X } from '@phosphor-icons/react';
+import { X, CaretLeft } from '@phosphor-icons/react';
 import styles from './ChatRoom.module.css';
 
 export interface SurveyBadge {
@@ -136,9 +136,11 @@ function formatChatMessage(text: string): React.ReactNode {
 
 interface ChatRoomProps {
   fullPage?: boolean;
+  onBack?: () => void;
+  title?: string;
 }
 
-export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
+export default function ChatRoom({ fullPage = false, onBack, title = 'Global Community' }: ChatRoomProps) {
   const { login, authenticated, getAccessToken } = usePrivy();
   const devOnboarding = useDevOnboarding();
   const isAuth = Boolean(authenticated || devOnboarding);
@@ -702,8 +704,19 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   return (
     <div className={`${styles.chatRoom}${fullPage ? ' ' + styles.chatRoomFullPage : ''}`}>
       <div className={styles.topBanner}>
+        {onBack && (
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={onBack}
+            aria-label="Back to Squads"
+          >
+            <CaretLeft size={18} weight="bold" />
+            <span>Squads</span>
+          </button>
+        )}
         <div className={styles.topBannerContent}>
-          <span className={styles.topBannerTitle}>Community Chat</span>
+          <span className={styles.topBannerTitle}>{title}</span>
           {unreadCount > 0 && (
             <span className={styles.unreadBadge}>{unreadCount}</span>
           )}

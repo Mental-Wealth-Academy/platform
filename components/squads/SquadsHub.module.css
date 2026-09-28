@@ -1,0 +1,511 @@
+.hubContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--color-surface-1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 16px 80px;
+  box-sizing: border-box;
+}
+
+:global([data-theme="dark"]) .hubContainer {
+  background: var(--color-surface-1);
+}
+
+/* Top Header */
+.topHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 16px;
+}
+
+.topHeaderLeft {
+  display: flex;
+  align-items: center;
+}
+
+.avatarCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.topTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text-dark);
+}
+
+.topHeaderRight {
+  display: flex;
+  align-items: center;
+}
+
+.badgeCommon {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+}
+
+/* Search Bar */
+.searchSection {
+  margin-bottom: 14px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchBar:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 15%, transparent);
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: var(--color-text-dark);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.clearSearchBtn {
+  background: transparent;
+  border: none;
+  padding: 2px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Create Squad Row */
+.actionSection {
+  margin-bottom: 20px;
+}
+
+.createSquadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.1s ease, border-color 0.18s ease;
+  text-align: left;
+}
+
+.createSquadRow:hover {
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-2));
+  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+}
+
+.createSquadRow:active {
+  transform: scale(0.99);
+}
+
+.createSquadLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.createIconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.createIcon {
+  color: var(--color-primary);
+}
+
+.createSquadInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.createSquadTitle {
+  font-family: var(--font-button, var(--font-primary));
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.createSquadSubtitle {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.createChevron {
+  color: var(--color-text-muted);
+}
+
+/* Squads List Section */
+.squadsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.squadsCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.squadsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.squadItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.12s ease, border-color 0.18s ease, background 0.18s ease;
+  width: 100%;
+}
+
+.squadItem:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-2));
+}
+
+.squadItem:active {
+  transform: scale(0.995);
+}
+
+.squadItemAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.squadAvatarImg {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.squadDefaultAvatar {
+  color: var(--color-primary);
+}
+
+.squadItemBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.squadItemHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.squadItemName {
+  font-family: var(--font-button, var(--font-primary));
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.squadItemTime {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.squadItemLastMsg {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.squadItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.badgeOpen {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.badgeLocked {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.squadMemberCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.squadItemAction {
+  flex-shrink: 0;
+}
+
+.squadChevron {
+  color: var(--color-text-muted);
+}
+
+/* Modals */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-fieldnotes-overlay-bg);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: var(--shadow-pwa-modal);
+  box-sizing: border-box;
+}
+
+:global([data-theme="dark"]) .modalCard {
+  background: var(--color-surface-2);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.modalTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalTitleIcon {
+  color: var(--color-primary);
+}
+
+.modalTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.modalCloseBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.modalCloseBtn:hover {
+  color: var(--color-text-dark);
+  background: var(--color-surface-2);
+}
+
+.modalDesc {
+  margin: 0 0 16px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.formInput {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  color: var(--color-text-dark);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.codeInput {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.formInput:focus {
+  border-color: var(--color-primary);
+}
+
+.formError {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--palette-danger);
+}
+
+.formSuccess {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--palette-streak-green);
+}
+
+.modalActions {
+  margin-top: 4px;
+}
+
+.specialistNotice {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.noticeText {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
