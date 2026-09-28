@@ -113,8 +113,19 @@ const SEGMENTS: Segment[] = [
   {
     id: 'field-notes',
     title: 'Field notes',
-    disabled: true,
-    text: "Field notes are your digital journal. Again, I pay you to write in it. Every day, you write one page for 15 minutes. No prompts. No grades. Just you and the page hitting the griddy with each other. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy. Here is the secret about field notes. The academic process of writing for 15 minutes is a lot like ultra-affirmations. Think of it as your grimoire of spells... Or maybe spiritual chiropractoring! Either way, they earn diamonds, and diamonds earn you more bitcoin, straight from my stash!",
+    text: "Field notes are your digital journal, and I pay you to write in it! Every day, you open up the page and fill it with everything that is in your head until you hit seven hundred and fifty characters. No prompts. No grades. Just you and the blank page having a chat. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy! Here is the secret about field notes. Dumping your thoughts onto a page clears your mental cache so your brain has room to breathe. Think of it as your private grimoire, or maybe spiritual chiropractoring! Either way, you earn credits straight from my stash!",
+    voiceSettings: {
+      stability: 0.5,
+      similarity_boost: 0.82,
+      style: 0.42,
+      speed: 1.08,
+      use_speaker_boost: true,
+    },
+  },
+  {
+    id: 'balloon-garden',
+    title: 'The Balloon Garden',
+    text: "If you ever wonder what I do between broadcasts, I hang out in the Ethereal Gardens! It is right outside my studio. Sometimes balloons drift up from the digital soil, carrying little pockets of static. If you see one, go ahead and pop it! Every pop sends a tiny sparkle through the network, and after five pops, I send you credits straight from my pocket. Why do I love popping balloons so much? Science has not answered that yet. But my antennae tingle every time one goes pop! Come visit the garden, we can pop them together!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,

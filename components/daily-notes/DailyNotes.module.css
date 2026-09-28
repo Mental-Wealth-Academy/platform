@@ -917,38 +917,46 @@
 }
 
 .modalHeader {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 14px 20px;
-  gap: 16px;
+  gap: 12px;
   background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
   border-bottom: 2px solid var(--color-primary-hover);
 }
 
 .modalHeaderTitle {
+  justify-self: center;
+  text-align: center;
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-fieldnotes-title-text);
+  white-space: nowrap;
 }
 
-.timerCountHeader {
-  font-size: 24px;
+.headerCharCount {
+  justify-self: end;
+  text-align: right;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.headerCharCount strong {
+  color: var(--color-primary);
   font-weight: 700;
-  letter-spacing: 0.04em;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  margin-left: auto;
 }
 
 .modalCloseBtn {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
+  justify-self: start;
   gap: 6px;
   min-width: 0;
   height: 28px;
@@ -959,7 +967,7 @@
   font-weight: 500;
   letter-spacing: 0.01em;
   text-transform: none;
-  color: rgba(226, 232, 240, 0.84);
+  color: rgba(39, 39, 42, 0.84);
   background: transparent;
   border: none;
   border-radius: 0;
@@ -968,72 +976,49 @@
 }
 
 .modalCloseBtn:hover {
-  color: rgba(244, 247, 255, 0.96);
-}
-
-.timerCount {
-  font-family: var(--font-mono);
-  font-size: 17px;
-  font-weight: 700;
-  color: rgba(244, 247, 255, 0.94);
-  letter-spacing: 0.02em;
-  line-height: 1;
-  transition: color 0.3s ease;
-}
-
-.timerWarning {
-  color: #E53E3E;
-}
-
-.timerPaused {
-  color: #aaa;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  color: #18181b;
 }
 
 .goalBar {
-  padding: 8px 20px;
+  padding: 9px 20px 8px;
   background: var(--color-fieldnotes-modal-light-bg, #ffffff);
   border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 7px;
 }
 
-.goalMeta {
+.blueSillyChat {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  text-align: center;
+  min-height: 20px;
+  animation: sillyChatFade 0.25s ease-out;
+}
+
+.blueSillyChatText {
   font-family: var(--font-primary);
-  font-size: 12px;
-  color: #71717a;
-}
-
-.goalCount {
-  color: #27272a;
+  font-size: 13px;
   font-weight: 500;
+  color: color-mix(in oklch, var(--color-primary) 78%, #18181b);
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  text-align: center;
+  max-width: 620px;
 }
 
-.goalCount strong {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.goalStatus {
-  font-size: 11px;
-}
-
-.goalRemaining {
-  color: #a1a1aa;
-}
-
-.goalFilledBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 600;
-  color: #16a34a;
+@keyframes sillyChatFade {
+  from {
+    opacity: 0.35;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .goalProgressTrack {
@@ -1390,8 +1375,12 @@
     font-size: 13px;
   }
 
-  .timerCountHeader {
-    font-size: 24px;
+  .headerCharCount {
+    font-size: 11px;
+  }
+
+  .blueSillyChatText {
+    font-size: 12px;
   }
 
   .writeArea {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -56,6 +56,111 @@ const WEEK_COLORS = [
   'var(--color-primary)', // Week 11 — brand
   '#9333EA', // Week 12 — purple
 ];
+
+const BLUE_FIELD_NOTE_TIERS = [
+  {
+    min: 0,
+    max: 20,
+    lines: [
+      'Fill up the page with everything that’s in your head!',
+      'A clean blank page! My favorite puzzle. Go ahead, write anything!',
+      'I am leaning in! Let us see what you are thinking today.',
+    ],
+  },
+  {
+    min: 21,
+    max: 90,
+    lines: [
+      'Hurry before AI destroys the world! Just kidding, I would protect us.',
+      'I am wearing my comfy lab coat today. It has very big pockets for shiny thoughts.',
+      'Ooh, the first sentences! I love watching words appear out of nowhere.',
+      'Look at all those letters lining up like tiny explorers on a mission.',
+    ],
+  },
+  {
+    min: 91,
+    max: 180,
+    lines: [
+      'Funny how phones are like portals in your pocket. You tap glass and boom, ideas!',
+      'No grades, no rules here. Just your brain doing its thing.',
+      'Keep typing! Every word is an official deposit into your mental vault.',
+      'Did you know servers get sleepy too? But I stayed awake just for your notes!',
+    ],
+  },
+  {
+    min: 181,
+    max: 280,
+    lines: [
+      'I am so hungry! Thinking of donuts... zeroes look like donuts, did you know?',
+      'I am filing these thoughts under Very Good Stuff. Right next to Shiny Things!',
+      'My antennae do a little wiggle whenever a good sentence lands.',
+      'Do not stop to edit! Just let it spill out. Polishing is for shoes, not thoughts!',
+    ],
+  },
+  {
+    min: 281,
+    max: 374,
+    lines: [
+      'Look at that momentum! Words are just pouring onto the page.',
+      'Cyberspace is quiet today, but this room feels warm and cozy.',
+      'I forgot what I was doing for a second because I got so into reading this.',
+      'You are building mental wealth right now. Brick by brick, or word by word!',
+    ],
+  },
+  {
+    min: 375,
+    max: 470,
+    lines: [
+      'Good thing we’re halfway there! I counted on my fingers twice to be sure.',
+      'Halfway mark crossed! Half the page is full of you and half is waiting for the rest.',
+      'Look at that progress bar filling up! Blue approves this velocity.',
+    ],
+  },
+  {
+    min: 471,
+    max: 570,
+    lines: [
+      'You are really in the flow now. Do you feel that? That is clarity showing up.',
+      'If these thoughts were balloons, this would be the prettiest bunch in the garden.',
+      'Keep that rhythm going! You are on a genuine roll.',
+      'I might frame this page and hang it under my garden. Figuratively speaking!',
+    ],
+  },
+  {
+    min: 571,
+    max: 670,
+    lines: [
+      'Almost there! Your thoughts are taking over the whole screen.',
+      'Only a few more lines to go! You are practically sprinting now.',
+      'Just a little bit more! Squeeze the last stray ideas out of your head.',
+    ],
+  },
+  {
+    min: 671,
+    max: 749,
+    lines: [
+      'Final stretch! My digital hair is standing on end from excitement!',
+      'So close to the finish line! Keep typing until the page is completely packed.',
+      'A few more taps and you have conquered the whole page!',
+    ],
+  },
+  {
+    min: 750,
+    max: Infinity,
+    lines: [
+      'You did it! The page is full! 750 characters of pure mental wealth.',
+      'Page filled! Look at all that clarity. Submit whenever you are ready!',
+      'Goal reached! I am putting a big shiny star on this in my mind.',
+      'Full page! You can submit now, or keep rambling if you are having fun!',
+    ],
+  },
+];
+
+function getBlueSillyLine(charCount: number): string {
+  const tier = BLUE_FIELD_NOTE_TIERS.find((t) => charCount >= t.min && charCount <= t.max) || BLUE_FIELD_NOTE_TIERS[0];
+  const idx = Math.floor(charCount / 35) % tier.lines.length;
+  return tier.lines[idx];
+}
 
 export default function DailyNotes({
   enablePersistence = false,
@@ -193,6 +298,8 @@ export default function DailyNotes({
 
   const formatTimer = (s: number) =>
     `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
+
+  const blueSillyLine = useMemo(() => getBlueSillyLine(timerText.length), [timerText.length]);
 
   const startTimerInterval = useCallback(() => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -573,25 +680,14 @@ export default function DailyNotes({
               <span>{embedded ? 'Close' : 'Back'}</span>
             </button>
             <span className={styles.modalHeaderTitle}>Field Notes</span>
-            <span className={`${styles.timerCount} ${styles.timerCountHeader} ${isPaused ? styles.timerPaused : ''} ${timerSeconds <= 300 && !isPaused ? styles.timerWarning : ''}`}>
-              {isPaused ? 'paused' : formatTimer(timerSeconds)}
+            <span className={styles.headerCharCount} aria-label={`${timerText.length} of 750 characters`}>
+              <strong>{timerText.length}</strong> / 750 characters
             </span>
           </div>
 
-          <div className={styles.goalBar} aria-label="Page fill progress">
-            <div className={styles.goalMeta}>
-              <span className={styles.goalCount}>
-                <strong>{timerText.length}</strong> / 750 characters
-              </span>
-              <span className={styles.goalStatus}>
-                {timerText.length >= 750 ? (
-                  <span className={styles.goalFilledBadge}>Page filled</span>
-                ) : (
-                  <span className={styles.goalRemaining}>
-                    {750 - timerText.length} to fill page
-                  </span>
-                )}
-              </span>
+          <div className={styles.goalBar} aria-label="Blue reflection feedback">
+            <div className={styles.blueSillyChat} key={blueSillyLine}>
+              <span className={styles.blueSillyChatText}>{blueSillyLine}</span>
             </div>
             <div className={styles.goalProgressTrack} aria-hidden="true">
               <div
@@ -616,7 +712,6 @@ export default function DailyNotes({
         </div>
 
         <div className={styles.modalFooter}>
-          <span className={styles.footerCharCount}>{timerText.length} characters</span>
           {submitError && <p className={styles.submitError} role="alert">{submitError}</p>}
           <button
             type="button"
@@ -1037,7 +1132,7 @@ export default function DailyNotes({
                 Daily Field Notes
               </h3>
               <p className={styles.authPromptCopy}>
-                A 15-minute uninterrupted stream-of-consciousness writing ritual. Complete today’s session to clear your mental cache and earn 100 credits.
+                Fill up the page with everything that’s in your head. Complete today’s stream of consciousness to clear your mental cache and earn 100 credits.
               </p>
 
               <div className={styles.authPromptActions}>
@@ -1052,7 +1147,7 @@ export default function DailyNotes({
                     beginWritingSession(dayToStart >= 0 ? dayToStart : 0);
                   }}
                 >
-                  Start 15-minute session
+                  Start writing session
                 </button>
                 <button
                   type="button"

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-25T00:32:33.302Z",
-  "totalSeconds": 531.71,
+  "generatedAt": "2026-09-28T01:40:56.141Z",
+  "totalSeconds": 609.41,
   "segments": [
     {
       "id": "station-ident",
@@ -22,6 +22,20 @@
       "file": "/audio/blue-radio/mental-wealth-idea.mp3",
       "playbackGain": 0.56,
       "seconds": 38.68
+    },
+    {
+      "id": "field-notes",
+      "title": "Field notes",
+      "file": "/audio/blue-radio/field-notes.mp3",
+      "playbackGain": 0.56,
+      "seconds": 42.31
+    },
+    {
+      "id": "balloon-garden",
+      "title": "The Balloon Garden",
+      "file": "/audio/blue-radio/balloon-garden.mp3",
+      "playbackGain": 0.56,
+      "seconds": 35.39
     },
     {
       "id": "station-break-blue",
