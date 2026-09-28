@@ -523,11 +523,18 @@
   overflow-wrap: break-word;
 }
 
+.companionSubtitleActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
 .companionFieldNoteAction {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 8px;
   padding: 6px 14px;
   border: 0;
   border-radius: 999px;
@@ -544,6 +551,41 @@
 .companionFieldNoteAction:hover {
   transform: translateY(-1px);
   background: color-mix(in oklch, var(--color-primary) 85%, #ffffff);
+}
+
+.companionChatAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 40%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  font-family: var(--font-button);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.companionChatAction:hover {
+  transform: translateY(-1px);
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .companionChatAction {
+  border-color: rgba(140, 161, 255, 0.45);
+  background: rgba(107, 128, 255, 0.16);
+  color: #c7d2fe;
+}
+
+:global([data-theme="dark"]) .companionChatAction:hover {
+  background: rgba(107, 128, 255, 0.28);
+  border-color: #818cf8;
+  color: #ffffff;
 }
 
 .fieldNotesModalOverlay {

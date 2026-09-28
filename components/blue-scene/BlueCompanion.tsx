@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
 import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
@@ -44,6 +45,7 @@ export default function BlueCompanion({
   initialMood,
   onInitialMoodHandled,
 }: BlueCompanionProps) {
+  const router = useRouter();
   const [status, setStatus] = useState<SessionStatus>('idle');
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -251,6 +253,36 @@ export default function BlueCompanion({
     };
   }, [cleanupSession]);
 
+  const handleOpenInChat = useCallback(
+    async (agentText: string) => {
+      await cleanupSession();
+      const lower = agentText.toLowerCase();
+      let promptQuery = '';
+      if (/\b(breathe|breathing|nervous system|somatic|grounding)\b/i.test(lower)) {
+        promptQuery = 'show me guides on nervous system regulation';
+      } else if (/\b(stress|burnout|overwhelm)\b/i.test(lower)) {
+        promptQuery = 'show me guides on stress relief';
+      } else if (/\b(anxiety|worry|panic)\b/i.test(lower)) {
+        promptQuery = 'show me guides on anxiety';
+      } else if (/\b(heartbreak|grief|sadness)\b/i.test(lower)) {
+        promptQuery = 'show me guides on heartbreak and healing';
+      } else if (/\b(shadow work|inner child)\b/i.test(lower)) {
+        promptQuery = 'show me guides on shadow work';
+      } else if (/\b(sleep|rest|insomnia)\b/i.test(lower)) {
+        promptQuery = 'show me guides on sleep';
+      } else if (/\b(prayer|bible|scripture|gratitude)\b/i.test(lower)) {
+        promptQuery = 'give me a prayer and scripture on peace';
+      } else if (/\b(guide|lesson|exercise|practice|technique|step|tool)\b/i.test(lower)) {
+        promptQuery = 'show me guides and tools for this';
+      } else {
+        promptQuery = 'Can you show me the next steps for what we discussed?';
+      }
+
+      router.push(`/chat?prompt=${encodeURIComponent(promptQuery)}`);
+    },
+    [cleanupSession, router],
+  );
+
   return (
     <>
       {status === 'idle' && (
@@ -297,14 +329,25 @@ export default function BlueCompanion({
                 {lastMessage.role === 'agent' ? 'Blue' : 'You'}
               </span>
               <p className={styles.companionSubtitleText}>{lastMessage.text}</p>
-              {lastMessage.role === 'agent' && /\bfield\s*notes?\b/i.test(lastMessage.text) && (
-                <button
-                  type="button"
-                  className={styles.companionFieldNoteAction}
-                  onClick={() => setFieldNotesOpen(true)}
-                >
-                  Write Field Note
-                </button>
+              {lastMessage.role === 'agent' && (
+                <div className={styles.companionSubtitleActions}>
+                  {/\bfield\s*notes?\b/i.test(lastMessage.text) && (
+                    <button
+                      type="button"
+                      className={styles.companionFieldNoteAction}
+                      onClick={() => setFieldNotesOpen(true)}
+                    >
+                      Write Field Note
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.companionChatAction}
+                    onClick={() => void handleOpenInChat(lastMessage.text)}
+                  >
+                    View in Chat
+                  </button>
+                </div>
               )}
             </div>
           )}

@@ -347,6 +347,7 @@ interface BlueChatProps {
   startWithVoice?: boolean;
   activeMood?: BlueChatMood | null;
   fullPage?: boolean;
+  initialPrompt?: string | null;
 }
 
 interface ShardUpsellState {
@@ -469,6 +470,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
   startWithVoice,
   activeMood,
   fullPage = false,
+  initialPrompt,
 }) => {
   const { play } = useSound();
   const { ready, authenticated, getAccessToken } = usePrivy();
@@ -516,6 +518,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
   });
 
   const moodProcessedRef = useRef<string | null>(null);
+  const initialPromptProcessedRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -1491,6 +1494,18 @@ const BlueChat: React.FC<BlueChatProps> = ({
     setAttachmentError(null);
     submitUserMessage(text, attachmentsToSend);
   };
+
+  useEffect(() => {
+    if (!isOpen || !initialPrompt || !initialPrompt.trim()) return;
+    const cleanPrompt = initialPrompt.trim();
+    if (initialPromptProcessedRef.current === cleanPrompt) return;
+    initialPromptProcessedRef.current = cleanPrompt;
+
+    const timer = setTimeout(() => {
+      submitUserMessage(cleanPrompt);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [isOpen, initialPrompt]);
 
   // ── Custom course deletion ─────────────────────────────────
   // The model has no tools, so deletion runs client-side against the real
