@@ -24,6 +24,7 @@ const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMemb
 const DailyNotes = dynamic(() => import('@/components/daily-notes/DailyNotes'), { ssr: false });
 
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
+const VIEWER_PROFILE_CACHE_KEY = 'mwa_viewer_profile';
 const LEGACY_PENDING_PAID_TURN_KEY = 'blueChat.pendingPaidTurn';
 const PENDING_PAID_TURN_KEY_PREFIX = 'blueChat.pendingPaidTurn.v2';
 const PENDING_PAID_TURN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -574,6 +575,34 @@ const BlueChat: React.FC<BlueChatProps> = ({
       } catch {}
     })();
   }, [isOpen, activeMood, authHeaders]);
+
+  // Hydrate conversation messages if transferred from companion voice session
+  useEffect(() => {
+    if (!isOpen) return;
+    try {
+      const raw = getStorageItem('blue_companion_handoff', 'session');
+      if (raw) {
+        removeStorageItem('blue_companion_handoff', 'session');
+        const data = JSON.parse(raw);
+        if (Array.isArray(data?.history) && data.history.length > 0) {
+          const companionMsgs: Message[] = data.history.map((h: { role: string; text: string; timestamp?: number }, idx: number) => ({
+            id: `comp-${h.timestamp || Date.now()}-${idx}`,
+            text: h.text,
+            sender: h.role === 'agent' ? 'blue' : 'user',
+            timestamp: new Date(h.timestamp || Date.now()),
+          }));
+
+          setMessages((prev) => {
+            const filtered = prev.filter((m) => m.id !== '1');
+            return [...filtered, ...companionMsgs];
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to hydrate companion handoff in BlueChat:', e);
+    }
+  }, [isOpen]);
+
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -582,7 +611,16 @@ const BlueChat: React.FC<BlueChatProps> = ({
   const [expandedPane, setExpandedPane] = useState<'chat' | 'lists'>('chat');
   const [shardCount, setShardCount] = useState<number | null>(null);
   const [shardUpsell, setShardUpsell] = useState<ShardUpsellState | null>(null);
-  const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(null);
+  const [viewerProfile, setViewerProfile] = useState<ViewerProfile | null>(() => {
+    try {
+      const cached = getStorageItem(VIEWER_PROFILE_CACHE_KEY, 'local');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (typeof parsed?.id === 'string') return parsed as ViewerProfile;
+      }
+    } catch {}
+    return null;
+  });
   const [isVipMember, setIsVipMember] = useState(false);
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -753,11 +791,13 @@ const BlueChat: React.FC<BlueChatProps> = ({
         const data = await res.json();
         const nextShardCount = typeof data.user?.shardCount === 'number' ? data.user.shardCount : null;
         setShardCount(nextShardCount);
-        setViewerProfile(
-          typeof data.user?.id === 'string'
-            ? { id: data.user.id, username: data.user.username ?? null }
-            : null,
-        );
+        if (typeof data.user?.id === 'string') {
+          const profile = { id: data.user.id, username: data.user.username ?? null };
+          setViewerProfile(profile);
+          setStorageItem(VIEWER_PROFILE_CACHE_KEY, JSON.stringify(profile), 'local');
+        } else {
+          setViewerProfile(null);
+        }
       }
     } catch { /* silent */ }
   }, [authHeaders, authenticated, ready]);
@@ -1080,17 +1120,50 @@ const BlueChat: React.FC<BlueChatProps> = ({
   }, [play]);
 
   const sendToEliza = async (text: string, attachments?: UploadedAttachment[]) => {
-    if (!ready || !authenticated) {
-      addBlueMessage('Sign in first so I can access your account and respond here.');
-      return;
+    let accountId = viewerProfile?.id;
+    if (!accountId) {
+      if (!ready) {
+        let waitCount = 0;
+        while (!ready && waitCount < 15) {
+          await new Promise((r) => setTimeout(r, 100));
+          waitCount++;
+        }
+      }
+      if (authenticated) {
+        try {
+          const headers = await authHeaders();
+          const res = await fetch('/api/me', {
+            credentials: 'include',
+            headers,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (typeof data.user?.id === 'string') {
+              accountId = data.user.id;
+              const profile = { id: data.user.id, username: data.user.username ?? null };
+              setViewerProfile(profile);
+              setStorageItem(VIEWER_PROFILE_CACHE_KEY, JSON.stringify(profile), 'local');
+              if (typeof data.user?.shardCount === 'number') {
+                setShardCount(data.user.shardCount);
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load viewer account on demand in sendToEliza:', err);
+        }
+      }
     }
-    if (!viewerProfile?.id) {
-      addBlueMessage('I am still loading your account. Try again in a moment.');
+
+    if (!accountId) {
+      if (!ready || !authenticated) {
+        addBlueMessage('Sign in first so I can access your account and respond here.');
+      } else {
+        addBlueMessage('I had trouble connecting to your account. Please check your connection and try again.');
+      }
       return;
     }
 
     setShardUpsell(null);
-    const accountId = viewerProfile.id;
     const walletAddress = address?.toLowerCase();
 
     const sanitizedAttachments = (attachments || []).slice(0, 2).map((a) => ({

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
 import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
+import { setStorageItem } from '@/lib/safe-storage';
 import styles from './BlueScene.module.css';
 
 const DailyNotes = dynamic(() => import('@/components/daily-notes/DailyNotes'), { ssr: false });
@@ -55,6 +56,7 @@ export default function BlueCompanion({
   const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(null);
 
   const conversationRef = useRef<VoiceConversation | null>(null);
+  const conversationHistoryRef = useRef<Array<{ role: 'user' | 'agent'; text: string; timestamp: number }>>([]);
   const rafRef = useRef<number | null>(null);
 
   const cleanupSession = useCallback(async () => {
@@ -80,8 +82,35 @@ export default function BlueCompanion({
       const sample = () => {
         if (conversationRef.current) {
           try {
-            const vol = conversation.getOutputVolume();
-            companionVolumeRef.current = typeof vol === 'number' && !Number.isNaN(vol) ? vol : 0;
+            let level = 0;
+            // Check frequency data first for sharp vowel/phoneme tracking
+            if (typeof conversation.getOutputByteFrequencyData === 'function') {
+              const freqData = conversation.getOutputByteFrequencyData();
+              if (freqData && freqData.length > 0) {
+                // Focus on human speech formant range (bins 2..120, ~80Hz - 4000Hz)
+                const maxBin = Math.min(freqData.length, 120);
+                let peak = 0;
+                let sum = 0;
+                for (let i = 2; i < maxBin; i++) {
+                  const val = freqData[i];
+                  if (val > peak) peak = val;
+                  sum += val;
+                }
+                const avg = sum / (maxBin - 2);
+                // Dynamic scaling mapping speech energy to fluid 0..1 range
+                level = Math.max(avg / 75, peak / 160);
+              }
+            }
+
+            // Fallback to getOutputVolume if frequency data is zero or unavailable
+            if (level === 0 && typeof conversation.getOutputVolume === 'function') {
+              const rawVol = conversation.getOutputVolume();
+              if (typeof rawVol === 'number' && !Number.isNaN(rawVol)) {
+                level = Math.max(0, (rawVol - 0.008) * 9.5);
+              }
+            }
+
+            companionVolumeRef.current = Math.min(1, Math.max(0, level));
           } catch {
             companionVolumeRef.current = 0;
           }
@@ -107,6 +136,10 @@ export default function BlueCompanion({
       const openingLine = moodOverride
         ? MOOD_FIRST_MESSAGES[moodOverride.id] || moodOverride.prompt
         : null;
+
+      conversationHistoryRef.current = openingLine
+        ? [{ role: 'agent', text: openingLine, timestamp: Date.now() }]
+        : [];
 
       try {
         const res = await fetch('/api/voice/conversation-url');
@@ -179,8 +212,14 @@ export default function BlueCompanion({
           },
           onMessage: (payload) => {
             if (payload?.message) {
+              const role = payload.role === 'agent' ? 'agent' : 'user';
+              conversationHistoryRef.current.push({
+                role,
+                text: payload.message,
+                timestamp: Date.now(),
+              });
               setLastMessage({
-                role: payload.role === 'agent' ? 'agent' : 'user',
+                role,
                 text: payload.message,
               });
             }
@@ -256,6 +295,21 @@ export default function BlueCompanion({
   const handleOpenInChat = useCallback(
     async (agentText: string) => {
       await cleanupSession();
+      const history = [...conversationHistoryRef.current];
+
+      // Save complete voice conversation history so BlueChat can hydrate it immediately
+      if (history.length > 0) {
+        setStorageItem(
+          'blue_companion_handoff',
+          JSON.stringify({
+            history,
+            lastAgentText: agentText,
+            timestamp: Date.now(),
+          }),
+          'session',
+        );
+      }
+
       const lower = agentText.toLowerCase();
       let promptQuery = '';
       if (/\b(breathe|breathing|nervous system|somatic|grounding)\b/i.test(lower)) {
@@ -275,7 +329,7 @@ export default function BlueCompanion({
       } else if (/\b(guide|lesson|exercise|practice|technique|step|tool)\b/i.test(lower)) {
         promptQuery = 'show me guides and tools for this';
       } else {
-        promptQuery = 'Can you show me the next steps for what we discussed?';
+        promptQuery = `Let's keep chatting about this: "${agentText.slice(0, 140)}"`;
       }
 
       router.push(`/chat?prompt=${encodeURIComponent(promptQuery)}`);

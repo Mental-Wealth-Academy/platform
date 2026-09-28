@@ -232,7 +232,7 @@ function BlueModel({
 
     if (companionVolumeRef) {
       if (companionMode === 'speaking') {
-        measuredLevel = MathUtils.clamp(companionVolumeRef.current * 1.6, 0, 1);
+        measuredLevel = MathUtils.clamp(companionVolumeRef.current, 0, 1);
       } else {
         measuredLevel = 0;
       }
