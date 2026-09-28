@@ -808,9 +808,9 @@
 .modal.panelModal {
   max-width: none;
   min-height: 0;
-  height: calc(100vh - 72px - 48px);
-  max-height: calc(100vh - 72px - 48px);
-  animation: panelSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  height: auto;
+  max-height: calc(100dvh - 32px);
+  animation: modalSlideIn 0.25s ease;
 }
 
 .panelWrapper {

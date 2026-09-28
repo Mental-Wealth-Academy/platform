@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
@@ -2483,7 +2484,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
         {chatContent}
       </div>
 
-      {fieldNotesOpen && (
+      {fieldNotesOpen && typeof document !== 'undefined' && createPortal(
         <div className={styles.fieldNotesModalOverlay} onClick={() => setFieldNotesOpen(false)}>
           <div className={styles.fieldNotesModalStage} onClick={(e) => e.stopPropagation()}>
             <DailyNotes
@@ -2492,7 +2493,8 @@ const BlueChat: React.FC<BlueChatProps> = ({
               onPanelClose={() => setFieldNotesOpen(false)}
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

@@ -591,7 +591,7 @@
 .fieldNotesModalOverlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -601,11 +601,13 @@
 }
 
 .fieldNotesModalStage {
+  position: relative;
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 20px;
+  background: var(--color-surface-1, #ffffff);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
@@ -1137,6 +1139,16 @@
   .bubble {
     max-width: 190px;
     font-size: var(--font-size-xs, 0.75rem);
+  }
+
+  .fieldNotesModalOverlay {
+    padding: max(12px, env(safe-area-inset-top, 12px)) 12px max(12px, env(safe-area-inset-bottom, 12px));
+    z-index: 10000;
+  }
+
+  .fieldNotesModalStage {
+    max-height: calc(100dvh - 24px);
+    border-radius: 16px;
   }
 }
 

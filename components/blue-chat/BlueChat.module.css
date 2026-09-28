@@ -2984,10 +2984,12 @@
 }
 
 .fieldNotesModalStage {
+  position: relative;
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 20px;
+  background: var(--color-surface-1, #ffffff);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }

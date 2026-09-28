@@ -1345,6 +1345,7 @@ export async function buildBlueContext(args: {
       ? ['Private field-note excerpts requested by the current topic:', ...journalLines].join('\n')
       : null,
     'Use this context naturally. Do not dump it back to the user. Reference it only when it improves warmth, continuity, accountability, or personalization.',
+    'IMPORTANT: Do not recite stats, streak numbers, or field note totals unprompted in greetings or casual turns. Never pitch, shill, or suggest writing a field note unless the member explicitly asks to journal or write. Do not add calls to action about field notes at the end of messages.',
     'When you reference their field notes, quote at most a short fragment of their own words and name where it came from ("in week 3 you wrote..."). Never read a whole entry back. If what they wrote is tender, handle it gently and without judgment.',
   ].filter((line): line is string => Boolean(line)).join('\n');
 

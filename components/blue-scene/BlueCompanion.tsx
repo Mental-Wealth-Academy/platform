@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
+import { createPortal } from 'react-dom';
 import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
 import { setStorageItem } from '@/lib/safe-storage';
@@ -463,7 +464,7 @@ export default function BlueCompanion({
         </>
       )}
 
-      {fieldNotesOpen && (
+      {fieldNotesOpen && typeof document !== 'undefined' && createPortal(
         <div className={styles.fieldNotesModalOverlay} onClick={() => setFieldNotesOpen(false)}>
           <div className={styles.fieldNotesModalStage} onClick={(e) => e.stopPropagation()}>
             <DailyNotes
@@ -472,7 +473,8 @@ export default function BlueCompanion({
               onPanelClose={() => setFieldNotesOpen(false)}
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
