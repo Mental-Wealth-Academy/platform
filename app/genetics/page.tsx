@@ -481,18 +481,18 @@ function GeneticsLab({
             </button>
           </div>
 
-          <span className={styles.statusPill}>
-            <span className={`${styles.statusDot} ${mode !== 'collection' && isDbLoading ? styles.statusDotLoading : ''}`} />
-            {mode === 'collection'
-              ? `${ART_COLLECTION.length.toLocaleString()} works catalogued`
-              : !canAccessGenetics
+          {mode !== 'collection' && (
+            <span className={styles.statusPill}>
+              <span className={`${styles.statusDot} ${isDbLoading ? styles.statusDotLoading : ''}`} />
+              {!canAccessGenetics
                 ? (accessChecking ? 'Checking membership' : 'Membership required')
                 : isDbLoading
                   ? 'Uncrating the archive'
                   : dbStats
                     ? `${dbStats.totalSNPs.toLocaleString()} markers catalogued`
                     : 'Archive idle'}
-          </span>
+            </span>
+          )}
 
           {/* One search box for both wings: it queries the archive in the public
               wing and filters your own matches in yours. */}
