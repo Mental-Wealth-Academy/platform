@@ -7,6 +7,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useSound } from '@/hooks/useSound';
 import { normalizeAvatarUrl } from '@/lib/axis-avatar';
 import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
+import { PlusCircle, X } from '@phosphor-icons/react';
 import styles from './ChatRoom.module.css';
 
 export interface SurveyBadge {
@@ -104,6 +105,18 @@ function formatChatMessage(text: string): React.ReactNode {
       );
     }
     if (/^https?:\/\//i.test(part)) {
+      const isImg = /\.(png|jpe?g|gif|webp)(\?[^\s<>'"]*)?$/i.test(part) ||
+        part.includes('/storage/v1/object/public/') ||
+        part.includes('pinata.cloud');
+      if (isImg) {
+        return (
+          <span key={i} className={styles.chatImageCard}>
+            <a href={part} target="_blank" rel="noopener noreferrer">
+              <img src={part} alt="Uploaded attachment" className={styles.chatImage} loading="lazy" />
+            </a>
+          </span>
+        );
+      }
       return (
         <a
           key={i}
@@ -139,11 +152,14 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
+  const [stagedImage, setStagedImage] = useState<{ url: string; name: string } | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [blueReviewingUrl, setBlueReviewingUrl] = useState<string | null>(null);
   const blueReviewTimerRef = useRef<NodeJS.Timeout | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const oldestIdRef = useRef<number | null>(null);
   const newestIdRef = useRef<number | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -475,10 +491,53 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, [login]);
 
+  const handleImageUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      e.target.value = '';
+      if (!file) return;
+
+      if (!isAuth) {
+        triggerLogin();
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File exceeds 10MB limit.');
+        return;
+      }
+
+      setUploadingImage(true);
+      try {
+        const token = await getAccessToken().catch(() => null);
+        const form = new FormData();
+        form.append('file', file);
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          credentials: 'include',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          body: form,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.url) {
+            setStagedImage({ url: data.url, name: file.name });
+          }
+        }
+      } catch {
+        // silent
+      } finally {
+        setUploadingImage(false);
+      }
+    },
+    [isAuth, triggerLogin, getAccessToken],
+  );
+
   // ── Send message ──
   const sendMessage = useCallback(async () => {
-    const text = input.trim();
-    if (!text || sending) return;
+    const rawText = input.trim();
+    if (!rawText && !stagedImage) return;
+    if (sending || uploadingImage) return;
 
     if (!isAuth) {
       triggerLogin();
@@ -487,8 +546,15 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
 
     setSending(true);
 
+    const activeStagedImage = stagedImage;
+    const text = activeStagedImage
+      ? (rawText ? `${rawText}\n${activeStagedImage.url}` : activeStagedImage.url)
+      : rawText;
+
     const urlMatch = text.match(/https?:\/\/[^\s<>'"]+/i);
-    if (urlMatch) {
+    if (activeStagedImage) {
+      setBlueReviewingUrl('image upload');
+    } else if (urlMatch) {
       try {
         const parsed = new URL(urlMatch[0]);
         setBlueReviewingUrl(parsed.hostname);
@@ -522,6 +588,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
       setAuthNotice(false);
       const data = await res.json();
       setInput('');
+      setStagedImage(null);
       if (data.message) {
         if (data.message.user_id) setCurrentUserId(String(data.message.user_id));
         if (data.message.username) setCurrentUsername(String(data.message.username));
@@ -544,7 +611,33 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         return [...prev, optimistic];
       });
 
-      if (urlMatch) {
+      if (activeStagedImage) {
+        fetch('/api/chat/moderate-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: activeStagedImage.url,
+            caption: rawText,
+            userId: data.message.user_id,
+            username: data.message.username,
+          }),
+        })
+          .then((r) => r.json())
+          .then((res) => {
+            if (res.ok && res.reviewed) {
+              if (newestIdRef.current != null) {
+                void fetchAfter(newestIdRef.current);
+              }
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('globalChatUpdate'));
+              }
+            }
+          })
+          .catch(() => {})
+          .finally(() => {
+            setBlueReviewingUrl(null);
+          });
+      } else if (urlMatch) {
         fetch('/api/chat/analyze-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -558,7 +651,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           .then((res) => {
             if (res.ok && res.reviewed) {
               if (newestIdRef.current != null) {
-                fetchAfter(newestIdRef.current);
+                void fetchAfter(newestIdRef.current);
               }
               if (typeof window !== 'undefined') {
                 window.dispatchEvent(new Event('globalChatUpdate'));
@@ -573,7 +666,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
     setSending(false);
     inputRef.current?.focus();
-  }, [input, sending, isAuth, triggerLogin, getAccessToken, devOnboarding, fetchAfter]);
+  }, [input, stagedImage, sending, uploadingImage, isAuth, triggerLogin, getAccessToken, devOnboarding, fetchAfter]);
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -751,7 +844,40 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
         </div>
       )}
 
+      {stagedImage && (
+        <div className={styles.stagedImageWrap}>
+          <img src={stagedImage.url} alt={stagedImage.name} className={styles.stagedThumb} />
+          <span className={styles.stagedName}>{stagedImage.name}</span>
+          <button
+            type="button"
+            className={styles.stagedRemove}
+            onClick={() => setStagedImage(null)}
+            aria-label="Remove image"
+          >
+            <X size={14} weight="bold" />
+          </button>
+        </div>
+      )}
+
       <div className={styles.chatInputWrap}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/gif,image/webp"
+          onChange={handleImageUpload}
+          style={{ display: 'none' }}
+          tabIndex={-1}
+        />
+        <button
+          type="button"
+          className={styles.uploadButton}
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploadingImage || sending}
+          aria-label="Upload image"
+          title="Upload image"
+        >
+          <PlusCircle size={22} weight="regular" />
+        </button>
         <input
           ref={inputRef}
           className={styles.chatInput}
@@ -763,7 +889,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           onKeyDown={handleKeyDown}
           onFocus={markRead}
           maxLength={500}
-          disabled={sending}
+          disabled={sending || uploadingImage}
         />
         <div className={styles.emojiPickerWrap} ref={emojiPickerRef}>
           <button
@@ -772,7 +898,7 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             aria-label="Add emoji"
           >
-            🌍
+            🧠
           </button>
           {showEmojiPicker && (
             <div className={styles.emojiGrid}>
@@ -794,10 +920,12 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           type="button"
           className={styles.chatSend}
           onClick={sendMessage}
-          disabled={!input.trim() || sending}
+          disabled={(!input.trim() && !stagedImage) || sending || uploadingImage}
           aria-label="Send message"
         >
-          Send
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L12 22M12 2L5 9M12 2L19 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          </svg>
         </button>
       </div>
     </div>

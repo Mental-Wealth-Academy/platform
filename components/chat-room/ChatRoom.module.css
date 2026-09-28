@@ -437,27 +437,127 @@
 }
 
 .chatSend {
-  padding: 8px 18px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
   background: var(--color-primary);
-  border: none;
-  border-radius: 999px;
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  color: #ffffff;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
-.chatSend:hover {
-  background: #3d52e6;
+.chatSend:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 40%, transparent);
+}
+
+.chatSend:active:not(:disabled) {
+  transform: scale(0.95);
 }
 
 .chatSend:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.15s ease, transform 0.12s ease;
+  flex-shrink: 0;
+}
+
+.uploadButton:hover:not(:disabled) {
+  transform: scale(1.12);
+  color: var(--color-primary-hover);
+}
+
+.uploadButton:disabled {
   opacity: 0.4;
-  cursor: default;
+  cursor: not-allowed;
+}
+
+.stagedImageWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  border-radius: 8px;
+  margin: 0 14px 6px;
+  width: fit-content;
+  max-width: calc(100% - 28px);
+}
+
+.stagedThumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.stagedName {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-main, #1e2340);
+}
+
+.stagedRemove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: var(--color-text-soft, #6b7280);
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: color 0.15s ease;
+}
+
+.stagedRemove:hover {
+  color: #ef4444;
+}
+
+.chatImageCard {
+  display: block;
+  margin-top: 6px;
+  max-width: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.chatImage {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.15s ease;
+}
+
+.chatImage:hover {
+  transform: scale(1.02);
 }
 
 .emojiPickerWrap {
@@ -722,9 +822,11 @@
   }
 
   .chatSend {
-    padding: 8px 14px;
-    font-size: 0.68rem;
-    border-radius: 20px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    border-radius: 50%;
   }
 }
 
