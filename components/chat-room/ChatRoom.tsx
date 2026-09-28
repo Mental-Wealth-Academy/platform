@@ -7,7 +7,7 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useSound } from '@/hooks/useSound';
 import { normalizeAvatarUrl } from '@/lib/axis-avatar';
 import { useDevOnboarding, getDevWallet } from '@/components/useDevMode';
-import { PlusCircle, X } from '@phosphor-icons/react';
+import { X } from '@phosphor-icons/react';
 import styles from './ChatRoom.module.css';
 
 export interface SurveyBadge {
@@ -701,11 +701,13 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
 
   return (
     <div className={`${styles.chatRoom}${fullPage ? ' ' + styles.chatRoomFullPage : ''}`}>
-      <div className={styles.chatHeader}>
-          <span className={styles.chatTitle}><span className={styles.chatTitleJa}>連携</span> Global Chat</span>
-        {unreadCount > 0 && (
-          <span className={styles.unreadBadge}>{unreadCount}</span>
-        )}
+      <div className={styles.topBanner}>
+        <div className={styles.topBannerContent}>
+          <span className={styles.topBannerTitle}>Community Chat</span>
+          {unreadCount > 0 && (
+            <span className={styles.unreadBadge}>{unreadCount}</span>
+          )}
+        </div>
       </div>
 
       <div className={styles.chatList} ref={listRef} onScroll={handleScroll}>
@@ -876,7 +878,10 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
           aria-label="Upload image"
           title="Upload image"
         >
-          <PlusCircle size={22} weight="regular" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
         </button>
         <input
           ref={inputRef}
