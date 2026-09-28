@@ -193,16 +193,16 @@
 }
 
 .heroHeadline {
-  font-family: var(--font-poppins), sans-serif;
-  font-size: clamp(1.9rem, 3.6vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1.16;
-  margin: 0 0 40px 0;
-  padding: 0 48px;
-  max-width: 60rem;
-  letter-spacing: -0.03em;
+  font-family: var(--font-space-grotesk), var(--font-primary), sans-serif;
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 28px 0;
+  padding: 0 24px;
+  max-width: 52rem;
+  letter-spacing: -0.025em;
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5), 0 0 32px rgba(122, 135, 255, 0.2);
   text-wrap: balance;
   animation: heroFadeUp 0.7s var(--hero-ease-out) 0.15s both;
 }
@@ -280,11 +280,101 @@
 .heroActions {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 12px;
   max-width: 100%;
+  animation: heroFadeUp 0.7s var(--hero-ease-out) 0.28s both;
+}
+
+.heroJoinButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 0 22px;
+  height: 44px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-button);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 35%, transparent);
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heroJoinButton:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px color-mix(in oklch, var(--color-primary) 45%, transparent);
+}
+
+.heroJoinButton:active {
+  transform: translateY(0);
+}
+
+.heroPwaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  padding: 0 22px;
+  height: 44px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-button);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heroPwaButton:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.heroPwaButton:active {
+  transform: translateY(0);
+}
+
+.heroButtonIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.heroButtonText {
+  display: inline-block;
+  line-height: 1;
 }
 
 /* Fancy Button - matches Figma spec for primary landing CTA */
@@ -1529,9 +1619,11 @@
   }
 
   .heroHeadline {
-    font-size: clamp(1.3rem, 6.4vw, 1.7rem);
-    max-width: 27rem;
-    padding: 0 8px;
+    font-size: clamp(1.35rem, 5.8vw, 1.85rem);
+    max-width: 25rem;
+    padding: 0 10px;
+    margin-bottom: 22px;
+    line-height: 1.22;
   }
 
   .heroEarth {
@@ -1556,8 +1648,20 @@
   .heroActions {
     width: 100%;
     max-width: 100%;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 0 6px;
+  }
+
+  .heroJoinButton,
+  .heroPwaButton {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 0.8125rem;
+    gap: 6px;
+    flex: 0 1 auto;
   }
 
   .heroButton {

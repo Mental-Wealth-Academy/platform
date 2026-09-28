@@ -36,19 +36,15 @@ export default function LandingEnterAcademyButton({ showIcon = true, dark = fals
       type="button"
       onClick={() => { play('click'); router.push('/dao'); }}
       onMouseEnter={() => play('hover')}
-      className={`${styles.fancyButton} ${styles.fancyButtonHero}`}
+      className={styles.heroJoinButton}
+      aria-label="Start your Journey"
     >
-      <span className={styles.fancyButtonInner}>
-        {showIcon && (
-          <span className={styles.fancyButtonIcon} aria-hidden="true">
-            <BrainIcon size={18} />
-          </span>
-        )}
-        <span className={styles.heroSlideWrap}>
-          <span className={styles.heroSlideText}>Start your Journey</span>
-          <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>Start your Journey</span>
+      {showIcon && (
+        <span className={styles.heroButtonIcon} aria-hidden="true">
+          <BrainIcon size={18} />
         </span>
-      </span>
+      )}
+      <span className={styles.heroButtonText}>Start your Journey</span>
     </button>
   );
 }

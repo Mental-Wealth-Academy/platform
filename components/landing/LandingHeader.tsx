@@ -158,24 +158,41 @@ export const LandingHeader: React.FC = () => {
           </span>
         </a>
 
-        <nav className={styles.sectionNav} aria-label="Section shortcuts">
-          {sectionLinks.map(({ href, label, scrollTarget }) => (
-            <a
-              key={href}
-              href={href}
-              className={styles.sectionNavLink}
-              onClick={(event) => handleSectionLinkClick(event, scrollTarget)}
-              onMouseEnter={() => play('hover')}
-            >
-              <span className={styles.slideWrap}>
-                <span className={styles.slideText}>{label}</span>
-                <span className={`${styles.slideText} ${styles.slideClone}`}>{label}</span>
-              </span>
-            </a>
-          ))}
-        </nav>
+        <a
+          href="/"
+          className={styles.centerLogoLink}
+          onMouseEnter={() => play('logo-hover')}
+          onClick={() => play('click')}
+          aria-label="Mental Wealth Academy Home"
+        >
+          <Image
+            src="/icons/logo-mwa-decorative.svg"
+            alt="Mental Wealth Academy"
+            width={124}
+            height={56}
+            className={styles.centerLogo}
+            priority
+          />
+        </a>
 
         <nav className={styles.nav}>
+          <nav className={styles.sectionNav} aria-label="Section shortcuts">
+            {sectionLinks.map(({ href, label, scrollTarget }) => (
+              <a
+                key={href}
+                href={href}
+                className={styles.sectionNavLink}
+                onClick={(event) => handleSectionLinkClick(event, scrollTarget)}
+                onMouseEnter={() => play('hover')}
+              >
+                <span className={styles.slideWrap}>
+                  <span className={styles.slideText}>{label}</span>
+                  <span className={`${styles.slideText} ${styles.slideClone}`}>{label}</span>
+                </span>
+              </a>
+            ))}
+          </nav>
+
           <div className={styles.desktopActions}>
             <HeaderStatusCluster />
           </div>

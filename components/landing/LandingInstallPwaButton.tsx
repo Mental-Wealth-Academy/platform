@@ -102,21 +102,14 @@ export default function LandingInstallPwaButton() {
         type="button"
         onClick={handleClick}
         onMouseEnter={() => play('hover')}
-        className={`${styles.fancyButton} ${styles.fancyButtonPwa}`}
+        className={styles.heroPwaButton}
         aria-label={isInstalled ? 'Open Mental Wealth Academy' : 'Install Mental Wealth Academy app'}
       >
-        <span className={styles.fancyButtonInner}>
-          <span className={styles.fancyButtonIcon} aria-hidden="true">
-            <DeviceMobile size={20} weight="regular" />
-          </span>
-          <span className={styles.heroSlideWrap}>
-            <span className={styles.heroSlideText}>
-              {isInstalled ? 'Launch App' : 'Install App'}
-            </span>
-            <span className={`${styles.heroSlideText} ${styles.heroSlideClone}`}>
-              {isInstalled ? 'Launch App' : 'Install App'}
-            </span>
-          </span>
+        <span className={styles.heroButtonIcon} aria-hidden="true">
+          <DeviceMobile size={18} weight="regular" />
+        </span>
+        <span className={styles.heroButtonText}>
+          {isInstalled ? 'Launch App' : 'Install App'}
         </span>
       </button>
 
