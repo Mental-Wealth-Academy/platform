@@ -9,7 +9,7 @@ export async function GET() {
 
   if (!apiKey) {
     return NextResponse.json(
-      { error: 'Voice companion is temporarily unconfigured (missing API key).' },
+      { error: 'Blue is resting her voice right now. Please try again in a moment.' },
       { status: 503 },
     );
   }
@@ -30,7 +30,7 @@ export async function GET() {
       const errorText = await response.text().catch(() => '');
       console.error('Failed to get ElevenLabs signed conversation URL:', response.status, errorText);
       return NextResponse.json(
-        { error: 'Failed to initialize voice session with agent.' },
+        { error: 'Could not connect with Blue right now. Please try again in a moment.' },
         { status: response.status },
       );
     }
@@ -38,7 +38,7 @@ export async function GET() {
     const data = (await response.json()) as { signed_url?: string };
     if (!data.signed_url) {
       return NextResponse.json(
-        { error: 'ElevenLabs did not return a valid session URL.' },
+        { error: 'Could not connect with Blue right now. Please try again in a moment.' },
         { status: 502 },
       );
     }
@@ -48,7 +48,7 @@ export async function GET() {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('Error requesting conversation signed URL:', message);
     return NextResponse.json(
-      { error: 'Network error connecting to voice service.' },
+      { error: 'Could not connect with Blue right now. Please try again in a moment.' },
       { status: 500 },
     );
   }

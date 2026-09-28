@@ -145,8 +145,8 @@ export default function BlueCompanion({
             companionVolumeRef.current = 0;
           },
           onError: (err) => {
-            const detail = typeof err === 'string' ? err : 'Connection error occurred';
-            setErrorMessage(detail);
+            console.error('Conversation error:', err);
+            setErrorMessage("Blue couldn't connect right now. Tap below to try again.");
             setStatus('error');
             onModeChange('idle');
             companionVolumeRef.current = 0;
@@ -181,8 +181,28 @@ export default function BlueCompanion({
         conversationRef.current = conversation as VoiceConversation;
         startVolumeSampler(conversation as VoiceConversation);
       } catch (err: unknown) {
-        const message =
-          err instanceof Error ? err.message : 'Could not establish connection with Blue.';
+        console.error('Error starting conversation:', err);
+        let message = "Blue couldn't connect right now. Tap below to try again.";
+        if (err instanceof Error) {
+          const lower = err.message.toLowerCase();
+          if (
+            err.name === 'NotAllowedError' ||
+            lower.includes('permission') ||
+            lower.includes('microphone') ||
+            lower.includes('notallowed')
+          ) {
+            message = 'Microphone access is needed for Blue to hear you. Check your browser settings and try again.';
+          } else if (
+            err.message &&
+            !lower.includes('failed to') &&
+            !lower.includes('error') &&
+            !lower.includes('500') &&
+            !lower.includes('400') &&
+            !lower.includes('status')
+          ) {
+            message = err.message;
+          }
+        }
         setErrorMessage(message);
         setStatus('error');
         await cleanupSession();
@@ -247,9 +267,9 @@ export default function BlueCompanion({
 
       {status === 'error' && (
         <div className={styles.companionOverlay}>
-          <span className={styles.companionErrorKicker}>Connection issue</span>
+          <span className={styles.radioTuneInKicker}>Just a moment</span>
           <p className={styles.radioTuneInText}>
-            {errorMessage || 'Unable to start voice session. Check microphone access.'}
+            {errorMessage || "Blue couldn't connect right now. Tap below to try again."}
           </p>
           <CtaButton onClick={() => void startConversation()}>Try again</CtaButton>
         </div>
