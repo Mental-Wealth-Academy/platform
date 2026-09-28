@@ -460,6 +460,25 @@
   line-height: 1.45;
 }
 
+.alwaysAllowLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 6px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--palette-on-dark);
+  cursor: pointer;
+  user-select: none;
+}
+
+.alwaysAllowCheckbox {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 .companionConnectingDot {
   width: 12px;
   height: 12px;

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 
 import { createPortal } from 'react-dom';
 import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
-import { setStorageItem } from '@/lib/safe-storage';
+import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
 import styles from './BlueScene.module.css';
 
 const DailyNotes = dynamic(() => import('@/components/daily-notes/DailyNotes'), { ssr: false });
@@ -49,6 +49,11 @@ export default function BlueCompanion({
 }: BlueCompanionProps) {
   const router = useRouter();
   const [status, setStatus] = useState<SessionStatus>('idle');
+  const [alwaysAllowMic, setAlwaysAllowMic] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return getStorageItem('mwa_mic_always_allow') !== '0';
+  });
+  const autoStartedRef = useRef(false);
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isMicError, setIsMicError] = useState(false);
@@ -264,11 +269,13 @@ export default function BlueCompanion({
   );
 
   useEffect(() => {
+    if (autoStartedRef.current) return;
+    autoStartedRef.current = true;
+    void startConversation(initialMood ?? null);
     if (initialMood) {
-      void startConversation(initialMood);
       onInitialMoodHandled?.();
     }
-  }, [initialMood, startConversation, onInitialMoodHandled]);
+  }, [startConversation, initialMood, onInitialMoodHandled]);
 
   const endConversation = useCallback(async () => {
     await cleanupSession();
@@ -344,8 +351,8 @@ export default function BlueCompanion({
         <div className={styles.companionOverlay}>
           <div className={styles.companionCard}>
             <span className={styles.companionKicker}>Companion</span>
-            <p className={styles.companionText}>Voice chat with Blue.</p>
-            <CtaButton onClick={() => void startConversation()}>Talk with Blue</CtaButton>
+            <p className={styles.companionText}>Connecting to Blue...</p>
+            <div className={styles.companionConnectingDot} aria-hidden="true" />
           </div>
         </div>
       )}
@@ -371,7 +378,35 @@ export default function BlueCompanion({
             <p className={styles.companionText}>
               {errorMessage || 'Could not reach Blue right now.'}
             </p>
-            <CtaButton onClick={() => void startConversation()}>Try again</CtaButton>
+            {isMicError && (
+              <label className={styles.alwaysAllowLabel}>
+                <input
+                  type="checkbox"
+                  checked={alwaysAllowMic}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setAlwaysAllowMic(checked);
+                    setStorageItem('mwa_mic_always_allow', checked ? 'true' : '0');
+                  }}
+                  className={styles.alwaysAllowCheckbox}
+                />
+                <span>Always allow microphone access</span>
+              </label>
+            )}
+            <CtaButton
+              onClick={async () => {
+                if (isMicError && typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+                  try {
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                    setStorageItem('mwa_mic_always_allow', 'true');
+                    setAlwaysAllowMic(true);
+                  } catch {}
+                }
+                void startConversation();
+              }}
+            >
+              {isMicError ? 'Allow & Connect' : 'Try again'}
+            </CtaButton>
           </div>
         </div>
       )}

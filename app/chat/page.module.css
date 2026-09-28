@@ -5,7 +5,16 @@
   min-height: 0;
   display: flex;
   overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior: none;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.pageLayout::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .content {
@@ -16,6 +25,15 @@
   flex-direction: column;
   padding: 14px;
   overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior: none;
+}
+
+.content::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 @media (max-width: 900px) {

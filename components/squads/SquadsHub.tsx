@@ -8,11 +8,12 @@ import {
   CaretRight,
   LockKey,
   ShieldCheck,
-  Plus,
   X,
   ChatsCircle,
+  Tray,
 } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
+import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import CtaButton from '@/components/shared/CtaButton';
 import styles from './SquadsHub.module.css';
 
@@ -41,8 +42,8 @@ const DEFAULT_SQUADS: SquadItem[] = [
     lastMessage: 'Welcome to the Academy commons. What are you studying today?',
   },
   {
-    id: 'shadow-work',
-    name: 'Shadow Work Cohort',
+    id: 'health-longevity',
+    name: 'Health & Longevity',
     description: 'Guided 12-week integration circle with dedicated mentors.',
     memberCount: 28,
     activityTime: '2h ago',
@@ -60,16 +61,6 @@ const DEFAULT_SQUADS: SquadItem[] = [
     badge: 'Specialist Code',
     lastMessage: 'Sprint check-in complete. 14 members completed daily note.',
   },
-  {
-    id: 'genetics-lab',
-    name: 'Genetics & Longevity Circle',
-    description: 'Advanced biological blueprint inquiries and biomarker discussions.',
-    memberCount: 19,
-    activityTime: '1d ago',
-    isOpen: false,
-    badge: 'Specialist Code',
-    lastMessage: 'Variant interpretation walkthrough updated.',
-  },
 ];
 
 interface SquadsHubProps {
@@ -80,11 +71,14 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
   const { play } = useSound();
   const [searchQuery, setSearchQuery] = useState('');
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [inboxModalOpen, setInboxModalOpen] = useState(false);
   const [codeModalSquad, setCodeModalSquad] = useState<SquadItem | null>(null);
   const [authCode, setAuthCode] = useState('');
   const [codeError, setCodeError] = useState<string | null>(null);
   const [codeSuccess, setCodeSuccess] = useState<string | null>(null);
   const [squadNameInput, setSquadNameInput] = useState('');
+
+  const sceneUrl = useMemo(() => dailySceneBackgroundUrl(), []);
 
   const filteredSquads = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -128,7 +122,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
       return;
     }
 
-    // Specialist codes follow pattern or recognized tokens
     const validSpecialistCodes = ['SPECIALIST-2026', 'COHORT-BLUE', 'MWA-RESEARCH', 'MENTOR-PASS'];
     const matchesPattern = trimmed.startsWith('SPEC-') || trimmed.startsWith('MWA-') || validSpecialistCodes.includes(trimmed);
 
@@ -167,134 +160,178 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
   };
 
   return (
-    <div className={styles.hubContainer}>
-      {/* Top Bar */}
-      <header className={styles.topHeader}>
-        <div className={styles.topHeaderLeft}>
-          <div className={styles.avatarCircle}>
-            <Image
-              src="/images/blue-guide-sprites/breathing-idle.gif"
-              alt="Avatar"
-              width={26}
-              height={26}
-              className={styles.avatarImg}
-              unoptimized
+    <div
+      className={styles.hubContainer}
+      style={{ backgroundImage: `url(${sceneUrl})` }}
+    >
+      <div className={styles.scrimOverlay} />
+
+      <div className={styles.hubContent}>
+        {/* Top Bar */}
+        <header className={styles.topHeader}>
+          <h1 className={styles.topTitle}>Squads</h1>
+          <button
+            type="button"
+            className={styles.inboxBtn}
+            onClick={() => {
+              play('click');
+              setInboxModalOpen(true);
+            }}
+            aria-label="Inbox"
+            title="Inbox"
+          >
+            <Tray size={20} weight="bold" />
+          </button>
+        </header>
+
+        {/* Search Bar */}
+        <div className={styles.searchSection}>
+          <div className={styles.searchBar}>
+            <MagnifyingGlass size={18} weight="bold" className={styles.searchIcon} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search squads or members..."
+              className={styles.searchInput}
+              aria-label="Search squads"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                className={styles.clearSearchBtn}
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
+              >
+                <X size={14} weight="bold" />
+              </button>
+            )}
           </div>
         </div>
-        <h1 className={styles.topTitle}>Squads</h1>
-        <div className={styles.topHeaderRight}>
-          <span className={styles.badgeCommon}>Commons</span>
-        </div>
-      </header>
 
-      {/* Search Bar */}
-      <div className={styles.searchSection}>
-        <div className={styles.searchBar}>
-          <MagnifyingGlass size={18} weight="bold" className={styles.searchIcon} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search squads or members..."
-            className={styles.searchInput}
-            aria-label="Search squads"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              className={styles.clearSearchBtn}
-              onClick={() => setSearchQuery('')}
-              aria-label="Clear search"
-            >
-              <X size={14} weight="bold" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Create Squad Row */}
-      <div className={styles.actionSection}>
-        <button
-          type="button"
-          className={styles.createSquadRow}
-          onClick={handleOpenCreateModal}
-          aria-label="Create Squad"
-        >
-          <div className={styles.createSquadLeft}>
-            <div className={styles.createIconWrap}>
-              <Users size={20} weight="fill" className={styles.createIcon} />
-            </div>
-            <div className={styles.createSquadInfo}>
-              <span className={styles.createSquadTitle}>Create Squad</span>
-              <span className={styles.createSquadSubtitle}>Specialist authorization required</span>
-            </div>
-          </div>
-          <CaretRight size={18} weight="bold" className={styles.createChevron} />
-        </button>
-      </div>
-
-      {/* Squads List Section */}
-      <section className={styles.squadsSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Squads</h2>
-          <span className={styles.squadsCount}>{filteredSquads.length} available</span>
-        </div>
-
-        <div className={styles.squadsList} role="list">
-          {filteredSquads.map((squad) => (
-            <button
-              key={squad.id}
-              type="button"
-              className={`${styles.squadItem} ${squad.isOpen ? styles.squadItemOpen : styles.squadItemLocked}`}
-              onClick={() => handleSquadClick(squad)}
-              role="listitem"
-            >
-              <div className={styles.squadItemAvatar}>
-                {squad.avatarUrl ? (
-                  <Image
-                    src={squad.avatarUrl}
-                    alt={squad.name}
-                    width={38}
-                    height={38}
-                    className={styles.squadAvatarImg}
-                    unoptimized
-                  />
-                ) : (
-                  <div className={styles.squadDefaultAvatar}>
-                    <ChatsCircle size={22} weight="duotone" />
-                  </div>
-                )}
+        {/* Create Squad Row */}
+        <div className={styles.actionSection}>
+          <button
+            type="button"
+            className={styles.createSquadRow}
+            onClick={handleOpenCreateModal}
+            aria-label="Create Squad"
+          >
+            <div className={styles.createSquadLeft}>
+              <div className={styles.createIconWrap}>
+                <Users size={20} weight="fill" className={styles.createIcon} />
               </div>
+              <div className={styles.createSquadInfo}>
+                <span className={styles.createSquadTitle}>Create Squad</span>
+                <span className={styles.createSquadSubtitle}>Invite a buddy [+100 diamonds]</span>
+              </div>
+            </div>
+            <CaretRight size={18} weight="bold" className={styles.createChevron} />
+          </button>
+        </div>
 
-              <div className={styles.squadItemBody}>
-                <div className={styles.squadItemHeaderRow}>
-                  <span className={styles.squadItemName}>{squad.name}</span>
-                  <span className={styles.squadItemTime}>{squad.activityTime}</span>
-                </div>
-                <p className={styles.squadItemLastMsg}>
-                  {squad.lastMessage ?? squad.description}
-                </p>
-                <div className={styles.squadItemMeta}>
-                  {squad.isOpen ? (
-                    <span className={styles.badgeOpen}>{squad.badge}</span>
+        {/* Squads List Section */}
+        <section className={styles.squadsSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Squads</h2>
+            <span className={styles.squadsCount}>{filteredSquads.length} available</span>
+          </div>
+
+          <div className={styles.squadsList} role="list">
+            {filteredSquads.map((squad, index) => (
+              <button
+                key={squad.id}
+                type="button"
+                style={{ animationDelay: `${index * 60 + 60}ms` }}
+                className={`${styles.squadItem} ${squad.isOpen ? styles.squadItemOpen : styles.squadItemLocked}`}
+                onClick={() => handleSquadClick(squad)}
+                role="listitem"
+              >
+                <div className={styles.squadItemAvatar}>
+                  {squad.avatarUrl ? (
+                    <Image
+                      src={squad.avatarUrl}
+                      alt={squad.name}
+                      width={38}
+                      height={38}
+                      className={styles.squadAvatarImg}
+                      unoptimized
+                    />
                   ) : (
-                    <span className={styles.badgeLocked}>
-                      <LockKey size={11} weight="bold" />
-                      {squad.badge}
-                    </span>
+                    <div className={styles.squadDefaultAvatar}>
+                      <ChatsCircle size={22} weight="duotone" />
+                    </div>
                   )}
-                  <span className={styles.squadMemberCount}>{squad.memberCount} members</span>
                 </div>
-              </div>
 
-              <div className={styles.squadItemAction}>
-                <CaretRight size={16} weight="bold" className={styles.squadChevron} />
+                <div className={styles.squadItemBody}>
+                  <div className={styles.squadItemHeaderRow}>
+                    <span className={styles.squadItemName}>{squad.name}</span>
+                    <span className={styles.squadItemTime}>{squad.activityTime}</span>
+                  </div>
+                  <p className={styles.squadItemLastMsg}>
+                    {squad.lastMessage ?? squad.description}
+                  </p>
+                  <div className={styles.squadItemMeta}>
+                    {squad.isOpen ? (
+                      <span className={styles.badgeOpen}>{squad.badge}</span>
+                    ) : (
+                      <span className={styles.badgeLocked}>
+                        <LockKey size={11} weight="bold" />
+                        {squad.badge}
+                      </span>
+                    )}
+                    <span className={styles.squadMemberCount}>{squad.memberCount} members</span>
+                  </div>
+                </div>
+
+                <div className={styles.squadItemAction}>
+                  <CaretRight size={16} weight="bold" className={styles.squadChevron} />
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Modal: Inbox */}
+      {inboxModalOpen && (
+        <div
+          className={styles.modalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="inbox-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setInboxModalOpen(false);
+          }}
+        >
+          <div className={styles.modalCard}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitleGroup}>
+                <Tray size={22} weight="bold" className={styles.modalTitleIcon} />
+                <h3 id="inbox-title" className={styles.modalTitle}>
+                  Inbox
+                </h3>
               </div>
-            </button>
-          ))}
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setInboxModalOpen(false)}
+                aria-label="Close"
+              >
+                <X size={18} weight="bold" />
+              </button>
+            </div>
+
+            <div className={styles.inboxEmpty}>
+              <p className={styles.inboxEmptyTitle}>No unread notifications</p>
+              <p className={styles.inboxEmptyDesc}>
+                Squad invitations and cohort messages will appear here.
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+      )}
 
       {/* Modal: Create Squad (Requires Specialist Code) */}
       {createModalOpen && (

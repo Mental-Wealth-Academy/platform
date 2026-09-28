@@ -1,19 +1,57 @@
 .hubContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  max-width: 680px;
-  margin: 0 auto;
-  background: var(--color-surface-1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 16px 16px 80px;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   box-sizing: border-box;
 }
 
-:global([data-theme="dark"]) .hubContainer {
-  background: var(--color-surface-1);
+.hubContainer::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.scrimOverlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--color-scene-scrim-light-top) 0%,
+    var(--color-scene-scrim-light-mid) 40%,
+    var(--color-scene-scrim-light-bot) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global([data-theme="dark"]) .scrimOverlay {
+  background: linear-gradient(
+    180deg,
+    var(--color-scene-scrim-dark-top) 0%,
+    var(--color-scene-scrim-dark-mid) 40%,
+    var(--color-scene-scrim-dark-bot) 100%
+  );
+}
+
+.hubContent {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 16px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Top Header */
@@ -21,72 +59,70 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 4px 16px;
+  padding: 6px 4px 14px;
   border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 16px;
-}
-
-.topHeaderLeft {
-  display: flex;
-  align-items: center;
-}
-
-.avatarCircle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-.avatarImg {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
 }
 
 .topTitle {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-text-dark);
 }
 
-.topHeaderRight {
+.inboxBtn {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--color-scene-card-bg-light);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 6px var(--color-border-subtle);
 }
 
-.badgeCommon {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: var(--color-text-muted);
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
+:global([data-theme="dark"]) .inboxBtn {
+  background: var(--color-scene-card-bg-dark);
+}
+
+.inboxBtn:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.inboxBtn:active {
+  transform: scale(0.96);
 }
 
 /* Search Bar */
 .searchSection {
   margin-bottom: 14px;
+  animation: squadCardReveal 300ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .searchBar {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
+  background: var(--color-scene-card-bg-light);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 14px;
   padding: 10px 14px;
+  backdrop-filter: blur(8px);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .searchBar {
+  background: var(--color-scene-card-bg-dark);
 }
 
 .searchBar:focus-within {
@@ -126,7 +162,8 @@
 
 /* Create Squad Row */
 .actionSection {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+  animation: squadCardReveal 320ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) 40ms both;
 }
 
 .createSquadRow {
@@ -134,18 +171,25 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 12px 14px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 14px;
+  padding: 13px 15px;
+  background: var(--color-scene-card-bg-light);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: background 0.18s ease, transform 0.1s ease, border-color 0.18s ease;
+  transition: background 0.18s ease, transform 0.12s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   text-align: left;
+  box-shadow: 0 3px 10px var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .createSquadRow {
+  background: var(--color-scene-card-bg-dark);
 }
 
 .createSquadRow:hover {
-  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-2));
-  border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 16px color-mix(in oklch, var(--color-primary) 15%, transparent);
+  transform: translateY(-1px);
 }
 
 .createSquadRow:active {
@@ -155,14 +199,14 @@
 .createSquadLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
 }
 
 .createIconWrap {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
   color: var(--color-primary);
   display: grid;
   place-items: center;
@@ -189,7 +233,8 @@
 .createSquadSubtitle {
   font-family: var(--font-primary);
   font-size: 12px;
-  color: var(--color-text-muted);
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 .createChevron {
@@ -213,7 +258,7 @@
 .sectionTitle {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-text-dark);
 }
@@ -227,26 +272,34 @@
 .squadsList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .squadItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 14px;
+  gap: 13px;
+  padding: 13px 15px;
+  background: var(--color-scene-card-bg-light);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
   cursor: pointer;
   text-align: left;
-  transition: transform 0.12s ease, border-color 0.18s ease, background 0.18s ease;
+  transition: transform 0.15s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   width: 100%;
+  box-shadow: 0 3px 10px var(--color-border-subtle);
+  animation: squadCardReveal 340ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+
+:global([data-theme="dark"]) .squadItem {
+  background: var(--color-scene-card-bg-dark);
 }
 
 .squadItem:hover {
-  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-2));
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--color-primary) 15%, transparent);
+  transform: translateY(-1.5px);
 }
 
 .squadItem:active {
@@ -257,7 +310,8 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -291,7 +345,7 @@
 
 .squadItemName {
   font-family: var(--font-button, var(--font-primary));
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-text-dark);
   white-space: nowrap;
@@ -320,7 +374,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .badgeOpen {
@@ -342,7 +396,7 @@
   font-size: 10px;
   font-weight: 600;
   color: var(--color-text-muted);
-  background: var(--color-surface-1);
+  background: var(--color-surface-2);
   border: 1px solid var(--color-border-subtle);
   border-radius: 999px;
   padding: 1px 7px;
@@ -360,6 +414,27 @@
 
 .squadChevron {
   color: var(--color-text-muted);
+}
+
+@keyframes squadCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .searchSection,
+  .actionSection,
+  .squadItem {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Modals */
@@ -436,6 +511,30 @@
   font-family: var(--font-primary);
   font-size: 13px;
   line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.inboxEmpty {
+  padding: 24px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.inboxEmptyTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+}
+
+.inboxEmptyDesc {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 13px;
   color: var(--color-text-muted);
 }
 
