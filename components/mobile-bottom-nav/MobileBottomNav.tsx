@@ -4,12 +4,12 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  ChatCircleDots,
   ClipboardText,
   IconProps,
   MoonStars,
   Sparkle,
   User,
+  Users,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
@@ -19,8 +19,8 @@ const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'blue', label: 'Blue', href: '/chat', icon: Sparkle },
+  { id: 'group', label: 'Group', href: '/dao', icon: Users },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
-  { id: 'community', label: 'Community', href: '/community', icon: ChatCircleDots },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -57,8 +57,8 @@ export const MobileBottomNav: React.FC = () => {
     if (href === '/chat') {
       return pathname === '/chat' || pathname?.startsWith('/chat/');
     }
-    if (href === '/community') {
-      return pathname === '/community' || pathname?.startsWith('/community/');
+    if (href === '/dao') {
+      return pathname === '/dao' || pathname?.startsWith('/dao/');
     }
     return pathname === href || pathname?.startsWith(`${href}/`);
   };
