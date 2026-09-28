@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  ChatCircleDots,
+  House,
   IconProps,
   MoonStars,
   Sparkle,
@@ -18,9 +18,9 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
 const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
-  { id: 'blue', label: 'Blue', href: '/blue', icon: Sparkle },
-  { id: 'group', label: 'Group', href: '/dao', icon: Users },
-  { id: 'chat', label: 'Chat', href: '/chat', icon: ChatCircleDots },
+  { id: 'home', label: 'Home', href: '/dao', icon: House },
+  { id: 'squads', label: 'Squads', href: '/chat', icon: Users },
+  { id: 'chat', label: 'Chat', href: '/blue', icon: Sparkle },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -70,7 +70,7 @@ export const MobileBottomNav: React.FC = () => {
     <nav className={styles.nav}>
       {NAV_ITEMS.map((item) => {
         const active = isActive(item.href);
-        const isCenter = item.id === 'blue';
+        const isCenter = item.id === 'home';
 
         return (
           <Link

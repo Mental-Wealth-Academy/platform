@@ -5,7 +5,7 @@ import styles from './BlueScene.module.css';
 
 export default function LivestreamFeed({
   gardenBackground,
-  mode = 'radio',
+  mode = 'companion',
   initialMood,
   onInitialMoodHandled,
 }: {
