@@ -30,8 +30,8 @@ const ORB_EVERY = SLOT * 3;
 /* Blue walks the room with you. Her sprites are single frames (there is no walk
  * cycle in the set), so the gait is procedural: a bob and a small squash. */
 const BLUE_PARALLAX = 1.15;
-/** She stands off to one side of a piece rather than in front of it. */
-const BLUE_OFFSET = -SLOT * 0.24;
+/** She stands centered in front of the active piece. */
+const BLUE_OFFSET = 0;
 const BLUE_DIRS = ['north', 'east', 'west', 'south'] as const;
 type BlueDir = (typeof BLUE_DIRS)[number];
 
@@ -980,7 +980,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
             ‹
           </button>
           <span className={styles.walkHint}>
-            Drag to walk · click a piece to {focused?.externalUrl ? 'view details' : 'read it'}
+            Drag to walk · tap to view
           </span>
           <button
             type="button"

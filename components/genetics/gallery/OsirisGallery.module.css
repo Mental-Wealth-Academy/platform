@@ -116,49 +116,66 @@
 .walk {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  bottom: 22px;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 7px 10px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(244, 243, 240, 0.16);
-  background: rgba(28, 27, 31, 0.6);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 6px 20px rgba(18, 15, 20, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow:
+    0 8px 24px rgba(28, 24, 32, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
 .walkButton {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.1);
-  color: #f6f4ef;
+  border: 2px solid var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 8%, #ffffff);
+  color: var(--color-primary);
   font-family: var(--font-secondary);
-  font-size: 17px;
+  font-size: 20px;
+  font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 14%, transparent);
+  transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
 }
 
 .walkButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.24);
+  background: color-mix(in oklch, var(--color-primary) 16%, #ffffff);
+  box-shadow: 0 4px 10px color-mix(in oklch, var(--color-primary) 22%, transparent);
+  transform: translateY(-1px);
+}
+
+.walkButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .walkButton:disabled {
-  opacity: 0.3;
+  opacity: 0.35;
+  border-color: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.35);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .walkHint {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text-dark, #1c1c1f);
   white-space: nowrap;
 }
 
@@ -208,27 +225,41 @@
   }
 
   .walk {
-    bottom: 10px;
-    padding: 4px 8px;
-    gap: 8px;
+    bottom: 18px;
+    padding: 5px 12px;
+    gap: 10px;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
   }
 
   .walkButton {
-    width: 28px;
-    height: 28px;
-    font-size: 15px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
   }
 
   .walkHint {
-    font-size: 9.5px;
-    max-width: 170px;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
 
 @media (max-width: 380px) {
+  .walk {
+    padding: 4px 8px;
+    gap: 8px;
+  }
+
+  .walkButton {
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
+  }
+
   .walkHint {
-    display: none;
+    font-size: 10.5px;
   }
 }

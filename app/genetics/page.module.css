@@ -392,14 +392,20 @@
 
 @media (max-width: 768px) {
   .pageLayout {
+    position: fixed;
+    top: calc(72px + var(--banner-height, 0px));
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 12px);
+    left: 0;
+    right: 0;
+    height: auto;
     margin-left: 0;
-    padding-top: 72px;
-    height: 100dvh;
+    padding-top: 0;
     box-sizing: border-box;
+    z-index: 900;
   }
 
   .terminal {
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 8px 12px 10px;
     gap: 6px;
   }
 
