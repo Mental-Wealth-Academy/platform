@@ -364,6 +364,32 @@ export default function ChatRoom({ fullPage = false }: ChatRoomProps) {
     }
   }, [messages]);
 
+  // ── Periodic nigiyaka dummy activity simulation ──
+  useEffect(() => {
+    const triggerSim = async () => {
+      try {
+        const res = await fetch('/api/chat/simulate', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.posted && newestIdRef.current != null) {
+            void fetchAfter(newestIdRef.current);
+          }
+        }
+      } catch {
+        // silent
+      }
+    };
+
+    // Stagger first heartbeat after 8s, then every ~38s
+    const initialTimer = setTimeout(() => void triggerSim(), 8000);
+    const interval = setInterval(() => void triggerSim(), 38000);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+    };
+  }, [fetchAfter]);
+
   // ── Fetch current user for self-message bubble identification ──
   useEffect(() => {
     let active = true;

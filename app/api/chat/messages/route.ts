@@ -75,6 +75,15 @@ export async function GET(request: NextRequest) {
     { limit: PAGE_SIZE }
   );
 
+  if (!after && !before && rows.length > 0) {
+    const newestTime = new Date(rows[0].created_at).getTime();
+    if (Date.now() - newestTime > 5 * 60 * 1000) {
+      import('@/lib/chat-simulator')
+        .then((m) => m.simulateNextChatTurn())
+        .catch(() => {});
+    }
+  }
+
   return NextResponse.json({ messages: rows.reverse(), hasMore: rows.length >= PAGE_SIZE }, {
     headers: { 'Cache-Control': 'no-store, max-age=0' },
   });
