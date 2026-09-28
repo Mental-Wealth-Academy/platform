@@ -790,14 +790,14 @@
 /* Timer Modal */
 .modalOverlay {
   position: fixed;
-  top: 0;
+  top: calc(72px + var(--banner-height, 0px));
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 1050;
   padding: 20px;
 }
 
@@ -990,6 +990,72 @@
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.goalBar {
+  padding: 8px 20px;
+  background: var(--color-fieldnotes-modal-light-bg, #ffffff);
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.goalMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: #71717a;
+}
+
+.goalCount {
+  color: #27272a;
+  font-weight: 500;
+}
+
+.goalCount strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.goalStatus {
+  font-size: 11px;
+}
+
+.goalRemaining {
+  color: #a1a1aa;
+}
+
+.goalFilledBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.goalProgressTrack {
+  width: 100%;
+  height: 3px;
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.goalProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #6fd3ff);
+  border-radius: 999px;
+  transition: width 0.15s ease-out;
+}
+
+.footerCharCount {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  color: var(--color-text-muted, #71717a);
+  margin-right: auto;
 }
 
 .writeArea {
@@ -1279,8 +1345,11 @@
 @media (max-width: 768px) {
   .modalOverlay {
     position: fixed;
-    inset: 0;
-    z-index: 1200;
+    top: calc(72px + var(--banner-height, 0px));
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1050;
     padding: 0;
     align-items: stretch;
     justify-content: stretch;
@@ -1311,7 +1380,7 @@
 
   .modalHeader {
     z-index: 3;
-    padding: max(env(safe-area-inset-top, 0px), 14px) 18px 12px;
+    padding: 12px 18px;
     min-height: 0;
     background: var(--color-fieldnotes-modal-light-bg);
     border-bottom: 2px solid var(--color-primary-hover);

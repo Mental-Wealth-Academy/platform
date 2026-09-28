@@ -38,7 +38,7 @@ const NavIconMark: React.FC<{
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/chat') return null;
 
   const isActive = (href: string) => {
     if (href === '/home') {

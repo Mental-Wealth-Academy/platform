@@ -578,10 +578,33 @@ export default function DailyNotes({
             </span>
           </div>
 
+          <div className={styles.goalBar} aria-label="Page fill progress">
+            <div className={styles.goalMeta}>
+              <span className={styles.goalCount}>
+                <strong>{timerText.length}</strong> / 750 characters
+              </span>
+              <span className={styles.goalStatus}>
+                {timerText.length >= 750 ? (
+                  <span className={styles.goalFilledBadge}>Page filled</span>
+                ) : (
+                  <span className={styles.goalRemaining}>
+                    {750 - timerText.length} to fill page
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className={styles.goalProgressTrack} aria-hidden="true">
+              <div
+                className={styles.goalProgressFill}
+                style={{ width: `${Math.min(100, Math.round((timerText.length / 750) * 100))}%` }}
+              />
+            </div>
+          </div>
+
           <div className={styles.writeArea}>
             <textarea
               className={styles.textarea}
-              placeholder="Every word is a step closer to the new you."
+              placeholder="Fill up the page with everything that’s in your head…"
               value={timerText}
               onChange={(e) => setTimerText(e.target.value)}
               onClick={() => play('input-focus')}
@@ -593,6 +616,7 @@ export default function DailyNotes({
         </div>
 
         <div className={styles.modalFooter}>
+          <span className={styles.footerCharCount}>{timerText.length} characters</span>
           {submitError && <p className={styles.submitError} role="alert">{submitError}</p>}
           <button
             type="button"

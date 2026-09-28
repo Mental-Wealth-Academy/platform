@@ -34,11 +34,12 @@
   .pageLayout {
     position: fixed;
     top: calc(72px + var(--banner-height, 0px));
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    bottom: 0;
     left: 0;
     right: 0;
     height: auto;
     padding-top: 0;
     margin-left: 0;
+    z-index: 1050;
   }
 }

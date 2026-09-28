@@ -1,9 +1,16 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import type { CSSProperties, ReactNode } from 'react';
 import { Space_Grotesk, Patrick_Hand, Instrument_Serif, Poppins } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import { RouteShell } from '@/components/layout/RouteShell';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  interactiveWidget: 'resizes-content',
+};
 
 const commitMono = localFont({
   src: [
