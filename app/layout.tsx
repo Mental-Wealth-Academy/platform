@@ -62,7 +62,7 @@ import { Analytics } from '@vercel/analytics/next';
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
   description: 'Unlock your potential, reach your horizon.',
-  manifest: '/manifest.webmanifest?v=5',
+  manifest: '/manifest.webmanifest?v=6',
   icons: {
     icon: [
       { url: '/favicon.ico?v=4', sizes: 'any' },
@@ -70,11 +70,11 @@ export const metadata: Metadata = {
     ],
     apple: '/icons/apple-touch-icon.png?v=4',
   },
-  applicationName: 'Mental Wealth Academy',
+  applicationName: 'Mental Wealth',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black',
-    title: 'Mental Wealth Academy',
+    title: 'Mental Wealth',
   },
   formatDetection: {
     telephone: false,

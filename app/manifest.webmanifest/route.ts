@@ -8,7 +8,7 @@ export function GET() {
     {
       id: '/home',
       name: 'Mental Wealth Academy',
-      short_name: 'MWA',
+      short_name: 'Mental Wealth',
       description: 'Mental Wealth Academy installed on your home screen for faster access.',
       start_url: '/home',
       scope: '/',
