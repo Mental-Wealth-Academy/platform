@@ -23,6 +23,7 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
+  touch-action: pan-y;
 }
 
 /* Corners fall away, the way they do in a room with one light source. */

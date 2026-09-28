@@ -90,8 +90,13 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         let camX = 0;
         let dragging = false;
         let dragStartX = 0;
+        let dragStartY = 0;
         let dragStartCam = 0;
+        let dragStartPiece = 0;
         let moved = 0;
+        let lastTouchX = 0;
+        let lastTouchTime = 0;
+        let velocityX = 0;
 
         const artFor = (piece: Piece): PaintedPiece => {
           const hit = cache.get(piece.id);
@@ -692,7 +697,8 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
 
         s.draw = () => {
           const list = piecesRef.current;
-          camX += (targetRef.current - camX) * 0.09;
+          const ease = dragging ? 0.28 : 0.09;
+          camX += (targetRef.current - camX) * ease;
 
           // Track the container here rather than via windowResized or a
           // ResizeObserver. The band changes size for reasons a window-resize
@@ -734,50 +740,66 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           drawProps(ORB_EVERY, ORB_PARALLAX, SLOT * 0.5, drawOrb);
         };
 
+        const isCanvasTarget = (e?: any): boolean => {
+          if (!e || !e.target) return false;
+          const canvas = hostRef.current?.querySelector('canvas');
+          return canvas !== null && e.target === canvas;
+        };
+
         const clampTarget = () => {
           const max = Math.max(0, (piecesRef.current.length - 1) * SLOT);
           targetRef.current = Math.max(0, Math.min(max, targetRef.current));
         };
 
-        const snap = () => {
-          targetRef.current = Math.round(targetRef.current / SLOT) * SLOT;
-          clampTarget();
-          const i = Math.round(targetRef.current / SLOT);
-          setFocusIndex(i);
-          const piece = piecesRef.current[i];
-          if (piece) onFocusRef.current?.(piece);
-        };
-
-        s.mousePressed = () => {
-          if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) return;
+        const startDrag = (x: number, y: number) => {
           dragging = true;
           moved = 0;
-          dragStartX = s.mouseX;
+          dragStartX = x;
+          dragStartY = y;
+          lastTouchX = x;
+          lastTouchTime = performance.now();
+          velocityX = 0;
           dragStartCam = targetRef.current;
+          dragStartPiece = Math.round(dragStartCam / SLOT);
         };
 
-        s.mouseDragged = () => {
+        const moveDrag = (x: number, y: number) => {
           if (!dragging) return;
-          const dx = s.mouseX - dragStartX;
-          moved = Math.max(moved, Math.abs(dx));
-          targetRef.current = dragStartCam - dx;
+          const now = performance.now();
+          const dt = now - lastTouchTime;
+          const stepDx = x - lastTouchX;
+          if (dt > 8) {
+            const currentV = stepDx / dt;
+            velocityX = 0.6 * velocityX + 0.4 * currentV;
+            lastTouchTime = now;
+            lastTouchX = x;
+          }
+
+          const dx = x - dragStartX;
+          moved = Math.max(moved, Math.abs(dx), Math.abs(y - dragStartY));
+          const isMobile = s.width <= 768;
+          const dragScale = isMobile ? 1.35 : 1.0;
+          targetRef.current = dragStartCam - dx * dragScale;
           clampTarget();
         };
 
-        s.mouseReleased = () => {
+        const endDrag = (x: number, y: number) => {
           if (!dragging) return;
           dragging = false;
 
-          // A click, not a drag: hang whatever was under the cursor.
-          if (moved < 6) {
+          const totalDx = x - dragStartX;
+          const absDx = Math.abs(totalDx);
+
+          // A click/tap, not a drag: hang whatever was under the cursor.
+          if (moved < 8) {
             const list = piecesRef.current;
             const centre = Math.round(camX / SLOT);
             for (let i = Math.max(0, centre - 3); i <= Math.min(list.length - 1, centre + 3); i += 1) {
               const L = layout(i);
               if (!L) continue;
               // The frame is part of the work as far as a click is concerned.
-              const inX = s.mouseX >= L.ox && s.mouseX <= L.ox + L.outerW;
-              const inY = s.mouseY >= L.oy && s.mouseY <= L.oy + L.outerH;
+              const inX = x >= L.ox && x <= L.ox + L.outerW;
+              const inY = y >= L.oy && y <= L.oy + L.outerH;
               if (inX && inY) {
                 targetRef.current = i * SLOT;
                 setFocusIndex(i);
@@ -785,8 +807,63 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
                 return;
               }
             }
+            targetRef.current = Math.round(targetRef.current / SLOT) * SLOT;
+            clampTarget();
+            const idx = Math.round(targetRef.current / SLOT);
+            setFocusIndex(idx);
+            const piece = piecesRef.current[idx];
+            if (piece) onFocusRef.current?.(piece);
+            return;
           }
-          snap();
+
+          const isMobile = s.width <= 768;
+          const startIndex = dragStartPiece;
+          let targetIndex = startIndex;
+
+          // Responsive drag/swipe thresholds:
+          // Mobile: light swipe distance ~44px or flick velocity 0.2 px/ms advances
+          // Desktop: ~72px or flick velocity 0.25 px/ms
+          const distanceThreshold = isMobile ? Math.min(44, s.width * 0.12) : 72;
+          const flickThreshold = isMobile ? 0.2 : 0.25;
+
+          const swipedLeft = totalDx < -distanceThreshold || velocityX < -flickThreshold;
+          const swipedRight = totalDx > distanceThreshold || velocityX > flickThreshold;
+
+          if (swipedLeft) {
+            const stepSize = isMobile ? s.width * 0.5 : SLOT * 0.5;
+            const jumps = Math.max(1, Math.round(absDx / stepSize));
+            targetIndex = startIndex + jumps;
+          } else if (swipedRight) {
+            const stepSize = isMobile ? s.width * 0.5 : SLOT * 0.5;
+            const jumps = Math.max(1, Math.round(absDx / stepSize));
+            targetIndex = startIndex - jumps;
+          } else {
+            targetIndex = Math.round(targetRef.current / SLOT);
+          }
+
+          targetIndex = Math.max(0, Math.min(piecesRef.current.length - 1, targetIndex));
+          targetRef.current = targetIndex * SLOT;
+          clampTarget();
+          const i = Math.round(targetRef.current / SLOT);
+          setFocusIndex(i);
+          const piece = piecesRef.current[i];
+          if (piece) onFocusRef.current?.(piece);
+        };
+
+        s.mousePressed = (e?: any) => {
+          if (e && !isCanvasTarget(e)) return;
+          if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) return;
+          startDrag(s.mouseX, s.mouseY);
+        };
+
+        s.mouseDragged = () => {
+          if (!dragging) return;
+          moveDrag(s.mouseX, s.mouseY);
+        };
+
+        s.mouseReleased = () => {
+          if (!dragging) return;
+          endDrag(s.mouseX, s.mouseY);
         };
 
         s.mouseWheel = (e: object) => {
@@ -798,27 +875,30 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
           return false;
         };
 
-        s.touchStarted = () => {
+        s.touchStarted = (e?: any) => {
+          if (!isCanvasTarget(e)) {
+            return true;
+          }
           if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) {
             return true;
           }
-          s.mousePressed();
+          startDrag(s.mouseX, s.mouseY);
           return false;
         };
 
-        s.touchMoved = () => {
+        s.touchMoved = (e?: any) => {
           if (!dragging) {
             return true;
           }
-          s.mouseDragged();
+          moveDrag(s.mouseX, s.mouseY);
           return false;
         };
 
-        s.touchEnded = () => {
+        s.touchEnded = (e?: any) => {
           if (!dragging) {
             return true;
           }
-          s.mouseReleased();
+          endDrag(s.mouseX, s.mouseY);
           return true;
         };
       };

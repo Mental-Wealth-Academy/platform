@@ -332,7 +332,7 @@ export default function BlueCompanion({
         promptQuery = `Let's keep chatting about this: "${agentText.slice(0, 140)}"`;
       }
 
-      router.push(`/chat?prompt=${encodeURIComponent(promptQuery)}`);
+      router.push(`/blue?prompt=${encodeURIComponent(promptQuery)}`);
     },
     [cleanupSession, router],
   );

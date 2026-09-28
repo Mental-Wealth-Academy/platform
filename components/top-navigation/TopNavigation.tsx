@@ -30,12 +30,11 @@ const NAV_LINKS: NavLink[] = [
 
 const PAGE_LINKS: NavLink[] = [
   { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
-  { label: 'Lessons', href: '/shadow-work', icon: '/icons/nav-course-v2.svg' },
   { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
-  { label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg?v=4' },
+  { label: 'Genetics', href: '/genetics', icon: '/icons/genetics.svg' },
+  { label: 'Surveys', href: '/surveys', icon: '/icons/nav-surveys-v5.svg?v=4' },
   { label: 'Lists', href: '/list', icon: '/icons/nav-journal-v3.svg' },
   { label: 'Chat', href: '/chat', icon: '/icons/nav-prompts-v3.svg' },
-  { label: 'Guidebook', href: '/guidebook', icon: '/icons/ui-book-v2.svg' },
 ];
 
 const TopNavigation: React.FC = () => {
@@ -626,6 +625,7 @@ const TopNavigation: React.FC = () => {
                                 alt=""
                                 width={16}
                                 height={16}
+                                unoptimized
                                 className={styles.dropdownGridIcon}
                               />
                             </span>
@@ -795,6 +795,7 @@ const TopNavigation: React.FC = () => {
                                 alt=""
                                 width={16}
                                 height={16}
+                                unoptimized
                                 className={styles.dropdownGridIcon}
                               />
                             </span>

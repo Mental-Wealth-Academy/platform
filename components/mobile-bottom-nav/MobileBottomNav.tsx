@@ -4,7 +4,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  ClipboardText,
+  ChatCircleDots,
   IconProps,
   MoonStars,
   Sparkle,
@@ -18,9 +18,9 @@ type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<S
 const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
-  { id: 'blue', label: 'Blue', href: '/chat', icon: Sparkle },
+  { id: 'blue', label: 'Blue', href: '/blue', icon: Sparkle },
   { id: 'group', label: 'Group', href: '/dao', icon: Users },
-  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
+  { id: 'chat', label: 'Chat', href: '/chat', icon: ChatCircleDots },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -53,6 +53,9 @@ export const MobileBottomNav: React.FC = () => {
         pathname?.startsWith('/home/') ||
         pathname?.startsWith('/profile/')
       );
+    }
+    if (href === '/blue') {
+      return pathname === '/blue' || pathname?.startsWith('/blue/');
     }
     if (href === '/chat') {
       return pathname === '/chat' || pathname?.startsWith('/chat/');

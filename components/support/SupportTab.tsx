@@ -9,7 +9,7 @@ export default function SupportTab() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname === '/chat') return null;
+  if (pathname === '/chat' || pathname === '/blue') return null;
 
   return (
     <>

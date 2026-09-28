@@ -776,6 +776,7 @@
   width: 16px;
   height: 16px;
   object-fit: contain;
+  transition: filter 0.16s ease, opacity 0.16s ease;
 }
 
 .dropdownGridLabel {
@@ -1237,6 +1238,16 @@ button.dropdownTokenCard:active,
 
 :global([data-theme="dark"]) .dropdownGridIconWrap {
   background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownGridIcon {
+  filter: brightness(0) invert(0.85);
+  opacity: 1;
+}
+
+:global([data-theme="dark"]) .dropdownGridItem:hover .dropdownGridIcon,
+:global([data-theme="dark"]) .dropdownGridItemActive .dropdownGridIcon {
+  filter: brightness(0) invert(1);
 }
 
 :global([data-theme="dark"]) .dropdownBalanceHero {
