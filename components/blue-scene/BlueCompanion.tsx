@@ -1,9 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
 import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
 import styles from './BlueScene.module.css';
+
+const DailyNotes = dynamic(() => import('@/components/daily-notes/DailyNotes'), { ssr: false });
 
 export interface InitialMoodData {
   id: string;
@@ -45,6 +48,7 @@ export default function BlueCompanion({
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isMicError, setIsMicError] = useState(false);
+  const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [connectingLabel, setConnectingLabel] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(null);
 
@@ -293,6 +297,15 @@ export default function BlueCompanion({
                 {lastMessage.role === 'agent' ? 'Blue' : 'You'}
               </span>
               <p className={styles.companionSubtitleText}>{lastMessage.text}</p>
+              {lastMessage.role === 'agent' && /\bfield\s*notes?\b/i.test(lastMessage.text) && (
+                <button
+                  type="button"
+                  className={styles.companionFieldNoteAction}
+                  onClick={() => setFieldNotesOpen(true)}
+                >
+                  Write Field Note
+                </button>
+              )}
             </div>
           )}
 
@@ -351,6 +364,18 @@ export default function BlueCompanion({
             </div>
           </div>
         </>
+      )}
+
+      {fieldNotesOpen && (
+        <div className={styles.fieldNotesModalOverlay} onClick={() => setFieldNotesOpen(false)}>
+          <div className={styles.fieldNotesModalStage} onClick={(e) => e.stopPropagation()}>
+            <DailyNotes
+              enablePersistence={true}
+              panelMode={true}
+              onPanelClose={() => setFieldNotesOpen(false)}
+            />
+          </div>
+        </div>
       )}
     </>
   );

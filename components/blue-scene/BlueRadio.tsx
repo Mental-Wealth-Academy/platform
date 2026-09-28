@@ -52,6 +52,7 @@ export default function BlueRadio({
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
   const companionVolumeRef = useRef<number>(0);
   const [companionMode, setCompanionMode] = useState<'idle' | 'listening' | 'speaking'>('idle');
   const [playback, setPlayback] = useState<Playback>('connecting');
@@ -102,10 +103,16 @@ export default function BlueRadio({
       const analyser = context.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.45;
+      const gainNode = context.createGain();
+      gainNode.gain.setValueAtTime(1, context.currentTime);
+
       source.connect(analyser);
-      analyser.connect(context.destination);
+      analyser.connect(gainNode);
+      gainNode.connect(context.destination);
+
       audioSourceRef.current = source;
       analyserRef.current = analyser;
+      gainNodeRef.current = gainNode;
     } catch {
       // Playback remains usable if this browser cannot expose a media source.
     }
@@ -141,9 +148,35 @@ export default function BlueRadio({
   // unmute button; ones that refuse even that get the tune-in overlay.
   useEffect(() => {
     if (mode === 'companion') {
-      audioRef.current?.pause();
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.muted = true;
+      }
+      if (gainNodeRef.current && audioContextRef.current) {
+        try {
+          gainNodeRef.current.gain.setValueAtTime(0, audioContextRef.current.currentTime);
+        } catch {
+          // Ignore audio node error
+        }
+      }
+      if (audioContextRef.current && audioContextRef.current.state === 'running') {
+        void audioContextRef.current.suspend().catch(() => undefined);
+      }
       return;
     }
+
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      void audioContextRef.current.resume().catch(() => undefined);
+    }
+    if (gainNodeRef.current && audioContextRef.current) {
+      try {
+        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
+      } catch {
+        // Ignore audio node error
+      }
+    }
+
     const audio = audioRef.current;
     let cancelled = false;
     (async () => {
@@ -168,8 +201,9 @@ export default function BlueRadio({
     return () => {
       audioSourceRef.current?.disconnect();
       analyserRef.current?.disconnect();
+      gainNodeRef.current?.disconnect();
       if (audioContextRef.current) {
-        void audioContextRef.current.close();
+        void audioContextRef.current.close().catch(() => undefined);
       }
     };
   }, []);

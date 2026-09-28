@@ -21,6 +21,7 @@ import { getChainConfig } from '@/lib/chain-config';
 import { broadcastPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 
 const ProMembershipModal = dynamic(() => import('../pro-membership-modal/ProMembershipModal'), { ssr: false });
+const DailyNotes = dynamic(() => import('@/components/daily-notes/DailyNotes'), { ssr: false });
 
 const VOICE_PREF_KEY = 'blueChat.voiceEnabled';
 const LEGACY_PENDING_PAID_TURN_KEY = 'blueChat.pendingPaidTurn';
@@ -597,6 +598,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
   const [memoryResetOpen, setMemoryResetOpen] = useState(false);
   const [memoryResetBusy, setMemoryResetBusy] = useState(false);
   const [memoryResetNote, setMemoryResetNote] = useState<string | null>(null);
+  const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const voiceAbortRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -1816,6 +1818,21 @@ const BlueChat: React.FC<BlueChatProps> = ({
               {isBlue && message.guideCards && message.guideCards.length > 0 && (
                 <GuideCardsInline cards={message.guideCards} onNavigate={onClose} />
               )}
+              {isBlue && /\bfield\s*notes?\b/i.test(message.text) && (
+                <div className={styles.chatFieldNoteActionWrap}>
+                  <button
+                    type="button"
+                    className={styles.chatFieldNoteActionBtn}
+                    onClick={() => {
+                      play('click');
+                      setFieldNotesOpen(true);
+                    }}
+                  >
+                    <Image src="/icons/notebook-writing.svg" alt="" width={15} height={15} />
+                    <span>Write Field Note</span>
+                  </button>
+                </div>
+              )}
               <div className={styles.messageTime}>
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
@@ -1964,11 +1981,11 @@ const BlueChat: React.FC<BlueChatProps> = ({
         <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what do you remember about me?'); }} type="button">
           memories
         </button>
-        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('what missions are up?'); }} type="button">
-          missions
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('say a prayer with me'); }} type="button">
+          prayer
         </button>
-        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('find me a guide'); }} type="button">
-          guides
+        <button className={styles.quickAction} onClick={() => { play('click'); submitUserMessage('share a meaningful scripture or quote with me'); }} type="button">
+          scripture
         </button>
       </div>
 
@@ -2377,6 +2394,18 @@ const BlueChat: React.FC<BlueChatProps> = ({
 
         {chatContent}
       </div>
+
+      {fieldNotesOpen && (
+        <div className={styles.fieldNotesModalOverlay} onClick={() => setFieldNotesOpen(false)}>
+          <div className={styles.fieldNotesModalStage} onClick={(e) => e.stopPropagation()}>
+            <DailyNotes
+              enablePersistence={true}
+              panelMode={true}
+              onPanelClose={() => setFieldNotesOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };

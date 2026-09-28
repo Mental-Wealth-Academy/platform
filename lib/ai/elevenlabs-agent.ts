@@ -107,6 +107,8 @@ export async function callElevenLabsAgentStream(
         return;
       }
 
+      let hasReceivedResponse = false;
+
       ws.on('open', () => {
         // Connected
       });
@@ -139,6 +141,8 @@ export async function callElevenLabsAgentStream(
               return;
             }
 
+            hasReceivedResponse = true;
+
             // Stream chunks smoothly to emulate typing
             const words = cleanText.match(/\S+\s*/g) || [cleanText];
             for (const word of words) {
@@ -163,14 +167,14 @@ export async function callElevenLabsAgentStream(
       });
 
       ws.on('error', (err) => {
-        if (!isCancelled) {
+        if (!isCancelled && !hasReceivedResponse) {
           cleanup();
           controller.error(err);
         }
       });
 
       ws.on('close', (code, reason) => {
-        if (!isCancelled) {
+        if (!isCancelled && !hasReceivedResponse) {
           cleanup();
           // If closed without having received response, emit error
           controller.error(
