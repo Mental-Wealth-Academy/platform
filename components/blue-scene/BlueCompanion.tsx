@@ -5,10 +5,26 @@ import type { VoiceConversation } from '@elevenlabs/client';
 import CtaButton from '@/components/shared/CtaButton';
 import styles from './BlueScene.module.css';
 
+export interface InitialMoodData {
+  id: string;
+  label: string;
+  prompt: string;
+  topic: string;
+}
+
+export const MOOD_FIRST_MESSAGES: Record<string, string> = {
+  worry: "I hear you're dealing with worry and anxious thoughts right now. Take a steady breath. What's on your mind?",
+  stress: "I hear you're feeling really stressed out today. Let's work through it together. What's weighing on you most?",
+  heartbreak: "Heartbreak is really heavy, and I'm glad you came here. I'm listening. What's hurting right now?",
+  notsure: "It's completely okay to feel off without knowing exactly why. Let's unpack it together. How are you feeling in your body right now?",
+};
+
 interface BlueCompanionProps {
   companionVolumeRef: MutableRefObject<number>;
   companionMode: 'idle' | 'listening' | 'speaking';
   onModeChange: (mode: 'idle' | 'listening' | 'speaking') => void;
+  initialMood?: InitialMoodData | null;
+  onInitialMoodHandled?: () => void;
 }
 
 type SessionStatus = 'idle' | 'connecting' | 'connected' | 'error';
@@ -22,10 +38,13 @@ export default function BlueCompanion({
   companionVolumeRef,
   companionMode,
   onModeChange,
+  initialMood,
+  onInitialMoodHandled,
 }: BlueCompanionProps) {
   const [status, setStatus] = useState<SessionStatus>('idle');
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [connectingLabel, setConnectingLabel] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(null);
 
   const conversationRef = useRef<VoiceConversation | null>(null);
@@ -69,79 +88,115 @@ export default function BlueCompanion({
     [companionVolumeRef],
   );
 
-  const startConversation = useCallback(async () => {
-    setStatus('connecting');
-    setErrorMessage(null);
-    setLastMessage(null);
+  const startConversation = useCallback(
+    async (moodOverride?: InitialMoodData | null) => {
+      await cleanupSession();
 
-    try {
-      const res = await fetch('/api/voice/conversation-url');
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to initialize companion credentials');
-      }
-      const { signedUrl } = await res.json();
-      if (!signedUrl) {
-        throw new Error('No signed URL returned from server');
-      }
+      setStatus('connecting');
+      setErrorMessage(null);
+      setConnectingLabel(moodOverride ? moodOverride.label : null);
 
-      const { Conversation } = await import('@elevenlabs/client');
+      const openingLine = moodOverride
+        ? MOOD_FIRST_MESSAGES[moodOverride.id] || moodOverride.prompt
+        : null;
 
-      const conversation = await Conversation.startSession({
-        signedUrl,
-        onConnect: () => {
-          setStatus('connected');
-          setIsMicMuted(false);
-        },
-        onDisconnect: () => {
-          setStatus('idle');
-          onModeChange('idle');
-          companionVolumeRef.current = 0;
-        },
-        onError: (err) => {
-          const detail = typeof err === 'string' ? err : 'Connection error occurred';
-          setErrorMessage(detail);
-          setStatus('error');
-          onModeChange('idle');
-          companionVolumeRef.current = 0;
-        },
-        onModeChange: ({ mode }) => {
-          onModeChange(mode);
-          if (mode === 'listening') {
-            companionVolumeRef.current = 0;
-          }
-        },
-        onStatusChange: ({ status: convStatus }) => {
-          if (convStatus === 'connected') {
+      try {
+        const res = await fetch('/api/voice/conversation-url');
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Failed to initialize companion credentials');
+        }
+        const { signedUrl } = await res.json();
+        if (!signedUrl) {
+          throw new Error('No signed URL returned from server');
+        }
+
+        const { Conversation } = await import('@elevenlabs/client');
+
+        const conversation = await Conversation.startSession({
+          signedUrl,
+          overrides: openingLine
+            ? {
+                agent: {
+                  firstMessage: openingLine,
+                },
+              }
+            : undefined,
+          dynamicVariables: moodOverride
+            ? {
+                user_mood: moodOverride.label,
+                user_topic: moodOverride.topic,
+                user_issue: moodOverride.prompt,
+              }
+            : undefined,
+          onConnect: () => {
             setStatus('connected');
-          } else if (convStatus === 'disconnected') {
+            setIsMicMuted(false);
+            if (openingLine) {
+              setLastMessage({
+                role: 'agent',
+                text: openingLine,
+              });
+            }
+          },
+          onDisconnect: () => {
             setStatus('idle');
             onModeChange('idle');
             companionVolumeRef.current = 0;
-          } else if (convStatus === 'connecting') {
-            setStatus('connecting');
-          }
-        },
-        onMessage: (payload) => {
-          if (payload?.message) {
-            setLastMessage({
-              role: payload.role === 'agent' ? 'agent' : 'user',
-              text: payload.message,
-            });
-          }
-        },
-      });
+          },
+          onError: (err) => {
+            const detail = typeof err === 'string' ? err : 'Connection error occurred';
+            setErrorMessage(detail);
+            setStatus('error');
+            onModeChange('idle');
+            companionVolumeRef.current = 0;
+          },
+          onModeChange: ({ mode }) => {
+            onModeChange(mode);
+            if (mode === 'listening') {
+              companionVolumeRef.current = 0;
+            }
+          },
+          onStatusChange: ({ status: convStatus }) => {
+            if (convStatus === 'connected') {
+              setStatus('connected');
+            } else if (convStatus === 'disconnected') {
+              setStatus('idle');
+              onModeChange('idle');
+              companionVolumeRef.current = 0;
+            } else if (convStatus === 'connecting') {
+              setStatus('connecting');
+            }
+          },
+          onMessage: (payload) => {
+            if (payload?.message) {
+              setLastMessage({
+                role: payload.role === 'agent' ? 'agent' : 'user',
+                text: payload.message,
+              });
+            }
+          },
+        });
 
-      conversationRef.current = conversation as VoiceConversation;
-      startVolumeSampler(conversation as VoiceConversation);
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : 'Could not establish connection with Blue.';
-      setErrorMessage(message);
-      setStatus('error');
-      await cleanupSession();
+        conversationRef.current = conversation as VoiceConversation;
+        startVolumeSampler(conversation as VoiceConversation);
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : 'Could not establish connection with Blue.';
+        setErrorMessage(message);
+        setStatus('error');
+        await cleanupSession();
+      }
+    },
+    [cleanupSession, onModeChange, companionVolumeRef, startVolumeSampler],
+  );
+
+  useEffect(() => {
+    if (initialMood) {
+      void startConversation(initialMood);
+      onInitialMoodHandled?.();
     }
-  }, [cleanupSession, onModeChange, companionVolumeRef, startVolumeSampler]);
+  }, [initialMood, startConversation, onInitialMoodHandled]);
 
   const endConversation = useCallback(async () => {
     await cleanupSession();
@@ -174,7 +229,7 @@ export default function BlueCompanion({
           <p className={styles.radioTuneInText}>
             Talk directly with Blue in real time using your voice.
           </p>
-          <CtaButton onClick={startConversation}>Start conversation</CtaButton>
+          <CtaButton onClick={() => void startConversation()}>Start conversation</CtaButton>
         </div>
       )}
 
@@ -182,7 +237,9 @@ export default function BlueCompanion({
         <div className={styles.companionOverlay}>
           <span className={styles.radioTuneInKicker}>Connecting</span>
           <p className={styles.radioTuneInText}>
-            Establishing voice connection with Blue...
+            {connectingLabel
+              ? `Connecting with Blue to talk about ${connectingLabel.toLowerCase()}...`
+              : 'Establishing voice connection with Blue...'}
           </p>
           <div className={styles.companionConnectingDot} aria-hidden="true" />
         </div>
@@ -194,7 +251,7 @@ export default function BlueCompanion({
           <p className={styles.radioTuneInText}>
             {errorMessage || 'Unable to start voice session. Check microphone access.'}
           </p>
-          <CtaButton onClick={startConversation}>Try again</CtaButton>
+          <CtaButton onClick={() => void startConversation()}>Try again</CtaButton>
         </div>
       )}
 

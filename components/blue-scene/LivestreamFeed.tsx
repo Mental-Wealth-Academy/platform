@@ -1,13 +1,18 @@
 import BlueRadio from './BlueRadio';
+import { type InitialMoodData } from './BlueCompanion';
 import manifest from '@/lib/blue-radio-manifest.json';
 import styles from './BlueScene.module.css';
 
 export default function LivestreamFeed({
   gardenBackground,
   mode = 'radio',
+  initialMood,
+  onInitialMoodHandled,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
+  initialMood?: InitialMoodData | null;
+  onInitialMoodHandled?: () => void;
 }) {
   const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
   const hasBroadcast = Array.isArray(manifest.segments) && manifest.segments.length > 0;
@@ -23,7 +28,12 @@ export default function LivestreamFeed({
           allowFullScreen
         />
       ) : hasBroadcast ? (
-        <BlueRadio gardenBackground={gardenBackground} mode={mode} />
+        <BlueRadio
+          gardenBackground={gardenBackground}
+          mode={mode}
+          initialMood={initialMood}
+          onInitialMoodHandled={onInitialMoodHandled}
+        />
       ) : (
         <div className={styles.offlineState}>
           <span className={styles.offlineIcon} aria-hidden="true">

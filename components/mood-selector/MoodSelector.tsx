@@ -50,8 +50,9 @@ export default function MoodSelector() {
   const handleSelectMood = useCallback((mood: MoodOption) => {
     play('click');
     window.dispatchEvent(
-      new CustomEvent('openBlueChat', {
+      new CustomEvent('startBlueCompanion', {
         detail: {
+          id: mood.id,
           mood: mood.id,
           label: mood.label,
           prompt: mood.prompt,

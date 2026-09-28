@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import CtaButton from '@/components/shared/CtaButton';
 import manifest from '@/lib/blue-radio-manifest.json';
-import BlueCompanion from './BlueCompanion';
+import BlueCompanion, { type InitialMoodData } from './BlueCompanion';
 import styles from './BlueScene.module.css';
 
 const BlueVrmStage = dynamic(() => import('./BlueVrmStage'), { ssr: false });
@@ -39,9 +39,13 @@ function livePosition(): { index: number; offset: number } {
 export default function BlueRadio({
   gardenBackground,
   mode = 'radio',
+  initialMood,
+  onInitialMoodHandled,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
+  initialMood?: InitialMoodData | null;
+  onInitialMoodHandled?: () => void;
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -311,6 +315,8 @@ export default function BlueRadio({
           companionVolumeRef={companionVolumeRef}
           companionMode={companionMode}
           onModeChange={setCompanionMode}
+          initialMood={initialMood}
+          onInitialMoodHandled={onInitialMoodHandled}
         />
       ) : (
         <>
