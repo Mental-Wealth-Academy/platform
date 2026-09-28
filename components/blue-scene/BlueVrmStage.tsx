@@ -17,8 +17,8 @@ interface BlueVrmStageProps {
   active: boolean;
   analyserRef: MutableRefObject<AnalyserNode | null>;
   audioRef: MutableRefObject<HTMLAudioElement | null>;
-  onError: () => void;
-  onReady: () => void;
+  onError?: () => void;
+  onReady?: () => void;
 }
 
 interface BlueVrmBoundaryProps {
@@ -57,12 +57,14 @@ function canUseWebGl(): boolean {
   }
 }
 
+const noop = () => {};
+
 export default function BlueVrmStage({
   active,
   analyserRef,
   audioRef,
-  onError,
-  onReady,
+  onError = noop,
+  onReady = noop,
 }: BlueVrmStageProps) {
   const [mountCanvas, setMountCanvas] = useState(false);
   const [ready, setReady] = useState(false);

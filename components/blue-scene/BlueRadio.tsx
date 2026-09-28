@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Image from 'next/image';
 import CtaButton from '@/components/shared/CtaButton';
 import manifest from '@/lib/blue-radio-manifest.json';
 import styles from './BlueScene.module.css';
@@ -11,7 +10,6 @@ import styles from './BlueScene.module.css';
 const BlueVrmStage = dynamic(() => import('./BlueVrmStage'), { ssr: false });
 
 type Playback = 'connecting' | 'live' | 'blocked';
-type AvatarState = 'loading' | 'ready' | 'fallback';
 
 interface RadioSegment {
   id: string;
@@ -52,7 +50,6 @@ export default function BlueRadio({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [playback, setPlayback] = useState<Playback>('connecting');
   const [muted, setMuted] = useState(false);
-  const [avatarState, setAvatarState] = useState<AvatarState>('loading');
   const [segmentIndex, setSegmentIndex] = useState(() => livePosition().index);
   const isChatOpenRef = useRef(false);
 
@@ -286,29 +283,15 @@ export default function BlueRadio({
   }, [ensureAudioAnalyser, syncToLive]);
 
   const onAir = playback === 'live';
-  const handleAvatarReady = useCallback(() => setAvatarState('ready'), []);
-  const handleAvatarError = useCallback(() => setAvatarState('fallback'), []);
 
   return (
     <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
       <div className={styles.radioBlueWrap}>
-        <Image
-          src="/blue/blue-home.png"
-          alt="Blue, broadcasting live"
-          width={742}
-          height={705}
-          priority
-          className={`${styles.radioBlue} ${avatarState === 'ready' ? styles.radioBlueHidden : ''}`}
+        <BlueVrmStage
+          active={onAir}
+          analyserRef={analyserRef}
+          audioRef={audioRef}
         />
-        {avatarState !== 'fallback' && (
-          <BlueVrmStage
-            active={onAir}
-            analyserRef={analyserRef}
-            audioRef={audioRef}
-            onError={handleAvatarError}
-            onReady={handleAvatarReady}
-          />
-        )}
       </div>
 
       {playback === 'blocked' && (
