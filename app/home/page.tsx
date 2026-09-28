@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useDevOnboarding } from '@/components/useDevMode';
 import { Plus, TreeStructure, Star } from '@phosphor-icons/react';
@@ -183,98 +183,190 @@ const ASK_BLUE_DIALOGUES: CourseDialogue[] = [
   },
 ];
 
-interface LifePredictionChoice {
+interface ConnectChoice {
   label: string;
-  nextNodeKey: string;
+  nextNodeKey?: string;
+  action?: 'chat' | 'restart';
 }
 
-interface LifePredictionNode {
+interface ConnectNode {
   emotion: BlueEmotion;
   lines: string[];
-  choices: [LifePredictionChoice, LifePredictionChoice];
+  choices: [ConnectChoice, ConnectChoice];
 }
 
-const LIFE_PREDICTION_NODES: Record<string, LifePredictionNode> = {
+const CONNECT_NODES: Record<string, ConnectNode> = {
   root: {
     emotion: 'happy',
     lines: [
-      'Hello! I calibrate your trajectory across biological markers, natal aspects, and learning habits.',
-      'To forecast your optimal growth pathway today, which dimension shall we examine?',
+      'I know everyone in the Academy! Tell me what you are navigating right now so I can introduce you to the right person.',
+      'Where does your focus or energy feel drawn today?',
     ],
     choices: [
-      { label: 'Biological Blueprint', nextNodeKey: 'biology' },
-      { label: 'Natal Transits', nextNodeKey: 'astrology' },
+      { label: 'Navigating Stress', nextNodeKey: 'navigatingStress' },
+      { label: 'Building Momentum', nextNodeKey: 'buildingMomentum' },
     ],
   },
-  biology: {
+
+  // Branch A: Navigating Stress
+  navigatingStress: {
     emotion: 'calm',
     lines: [
-      'Calibrating circadian rhythm and cognitive recovery data.',
-      'Your dopamine baseline peaks early, but late-day screen fatigue compresses reflective depth.',
+      'I hear you. When things get loud or heavy inside, having the right presence makes all the difference.',
+      'What kind of support feels safest right now?',
     ],
     choices: [
-      { label: 'Prioritize 90m Sprints', nextNodeKey: 'deepWork' },
-      { label: 'Schedule Active Rest', nextNodeKey: 'activeRest' },
+      { label: 'A Quiet Listener', nextNodeKey: 'quietListener' },
+      { label: 'An Experienced Guide', nextNodeKey: 'experiencedGuide' },
     ],
   },
-  astrology: {
-    emotion: 'surprised',
+  quietListener: {
+    emotion: 'calm',
     lines: [
-      'Aligning celestial coordinates with your active quest log.',
-      'Saturn urges disciplined boundaries, while Mercury prompts deep synthesis of your field notes.',
+      'Let me understand what is weighing on you. Are you carrying burnout from pressure and overwork, or feeling isolated in your personal life?',
     ],
     choices: [
-      { label: 'Fortify Daily Cadence', nextNodeKey: 'dailyRoutine' },
-      { label: 'Creative Synthesis', nextNodeKey: 'creativeSynthesis' },
+      { label: 'Burnout and Pressure', nextNodeKey: 'peerBurnoutMatch' },
+      { label: 'Isolation and Quiet', nextNodeKey: 'peerCompassionMatch' },
     ],
   },
-  deepWork: {
+  experiencedGuide: {
+    emotion: 'calm',
+    lines: [
+      'Walking through the maze with someone who has traveled it already. What area needs the most clarity right now?',
+    ],
+    choices: [
+      { label: 'Shadow Work and Patterns', nextNodeKey: 'shadowMentorMatch' },
+      { label: 'Major Life Transition', nextNodeKey: 'transitionMentorMatch' },
+    ],
+  },
+
+  // Branch B: Building Momentum
+  buildingMomentum: {
     emotion: 'happy',
     lines: [
-      'Trajectory locked: Structure two unbroken 90-minute study blocks before noon, followed by cold hydration and natural daylight.',
-      'Consistency here compounds your mastery speed by 3x. Protocol logged.',
+      'Ooh, momentum is wonderful! Connecting with someone on the same frequency accelerates your growth so fast.',
+      'What is your main focus today?',
     ],
     choices: [
-      { label: 'Check Natal Transits', nextNodeKey: 'astrology' },
-      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+      { label: 'Daily Discipline', nextNodeKey: 'dailyDiscipline' },
+      { label: 'Deep Study and Ideas', nextNodeKey: 'deepStudy' },
     ],
   },
-  activeRest: {
-    emotion: 'calm',
-    lines: [
-      'High performers often mistake nervous exhaustion for drive. Take a 20-minute decompressed walk.',
-      'When you return, your neuroplasticity will be primed for the next Academy module.',
-    ],
-    choices: [
-      { label: 'Recheck Biology', nextNodeKey: 'biology' },
-      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
-    ],
-  },
-  dailyRoutine: {
+  dailyDiscipline: {
     emotion: 'neutral',
     lines: [
-      'Discipline is the container for genius. Remove low-leverage distractions and commit to your verification quest.',
-      'Your Level-3 status will remain rock solid as you maintain this cadence.',
+      'Discipline flourishes with mutual accountability. How do you prefer to keep pace?',
     ],
     choices: [
-      { label: 'Explore Creative Paths', nextNodeKey: 'creativeSynthesis' },
-      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+      { label: 'Daily Habit Check-in', nextNodeKey: 'streakPartnerMatch' },
+      { label: 'Structured Weekly Goals', nextNodeKey: 'accountabilityPartnerMatch' },
     ],
   },
-  creativeSynthesis: {
-    emotion: 'happy',
+  deepStudy: {
+    emotion: 'surprised',
     lines: [
-      'The stars favor non-linear connections today. Cross-pollinate ideas from your field notes into your custom list.',
-      'Breakthroughs happen when disparate branches of knowledge intersect.',
+      'Deep inquiry! Do you want someone to explore concepts and philosophy with, or a co-working sprint partner?',
     ],
     choices: [
-      { label: 'Prioritize 90m Sprints', nextNodeKey: 'deepWork' },
-      { label: 'Recalibrate Forecast', nextNodeKey: 'root' },
+      { label: 'Ideas and Philosophy', nextNodeKey: 'intellectualPeerMatch' },
+      { label: 'Silent Focus Sprints', nextNodeKey: 'focusSprintMatch' },
+    ],
+  },
+
+  // Outcomes
+  peerBurnoutMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Nervous System Recovery Peer Circle.',
+      'I will connect you with peers who practice gentle pacing and understand sensory overload without unsolicited advice.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  peerCompassionMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Empathetic Peer Companion.',
+      'An understanding fellow in the Academy who values authentic presence, mutual care, and zero judgment.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  shadowMentorMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Senior Shadow Work Guide.',
+      'A fellow student who completed the 12-week integration curriculum and can hold space for your blind spots.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  transitionMentorMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Pathway and Transition Mentor.',
+      'An experienced builder who navigated career pivots, boundary setting, and identity restructuring.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  streakPartnerMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Daily Cadence Partner.',
+      'Someone active every single day who shares quick field notes and keeps the streak flame burning bright.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  accountabilityPartnerMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: High-Integrity Accountability Partner.',
+      'A dedicated member committed to weekly check-ins, habit contracts, and honest retrospectives.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  intellectualPeerMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Philosophy and Systems Thinker.',
+      'A curious researcher who loves exploring mental wealth frameworks, archetypes, and deep questions.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
+    ],
+  },
+  focusSprintMatch: {
+    emotion: 'happy',
+    lines: [
+      'Match found: Deep Work Sprint Partner.',
+      'A focused builder who pairs for 90-minute quiet study blocks with zero distraction.',
+    ],
+    choices: [
+      { label: 'Say Hello in Chat', action: 'chat' },
+      { label: 'Start Over', action: 'restart' },
     ],
   },
 };
 
 export default function HomePage() {
+  const router = useRouter();
   const learnOnly = usePathname() === '/learn';
   const { ready, authenticated, getAccessToken, login } = usePrivy();
   const [personalCourse, setPersonalCourse] = useState<CourseData | null>(null);
@@ -322,7 +414,7 @@ export default function HomePage() {
   }, []);
   const [introOpen, setIntroOpen] = useState(false);
   const [askBlueOpen, setAskBlueOpen] = useState(false);
-  const [predictionNodeKey, setPredictionNodeKey] = useState('root');
+  const [connectNodeKey, setConnectNodeKey] = useState('root');
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
   );
@@ -331,17 +423,24 @@ export default function HomePage() {
   const [weeklyLines, setWeeklyLines] = useState<string[] | null>(null);
   const { play } = useSound();
 
-  const currentPredictionNode = LIFE_PREDICTION_NODES[predictionNodeKey] ?? LIFE_PREDICTION_NODES.root;
+  const currentConnectNode = CONNECT_NODES[connectNodeKey] ?? CONNECT_NODES.root;
 
-  const predictionChoices = useMemo(() => {
-    return currentPredictionNode.choices.map((c) => ({
+  const connectChoices = useMemo(() => {
+    return currentConnectNode.choices.map((c) => ({
       label: c.label,
       onSelect: () => {
         play('click');
-        setPredictionNodeKey(c.nextNodeKey);
+        if (c.action === 'chat') {
+          setAskBlueOpen(false);
+          router.push('/chat');
+        } else if (c.action === 'restart' || c.nextNodeKey === 'root') {
+          setConnectNodeKey('root');
+        } else if (c.nextNodeKey) {
+          setConnectNodeKey(c.nextNodeKey);
+        }
       },
     }));
-  }, [currentPredictionNode, play]);
+  }, [currentConnectNode, play, router]);
 
   // One Blue moment per day, by priority: first-run intro, then the season
   // week's intro/check-in (once per week, centered pop-up), then the daily
@@ -704,9 +803,10 @@ export default function HomePage() {
             className={styles.askBlueBtn}
             onClick={() => {
               play('click');
-              setPredictionNodeKey('root');
+              setConnectNodeKey('root');
               setAskBlueOpen(true);
             }}
+            aria-label="Connect With Someone…"
           >
             <span className={styles.askBlueContent}>
               <span className={styles.askBlueLeft}>
@@ -718,9 +818,9 @@ export default function HomePage() {
                   className={styles.askBlueGif}
                   unoptimized
                 />
-                <span className={styles.askBlueLabel}>AI Life Prediction</span>
+                <span className={styles.askBlueLabel}>Connect With Someone…</span>
               </span>
-              <span className={styles.warningAiBadge}>Warning, AI</span>
+              <span className={styles.warningAiBadge}>Peer Match</span>
             </span>
           </CtaButton>
         </div>
@@ -1041,11 +1141,11 @@ export default function HomePage() {
         <BlueDialogue
           open={askBlueOpen}
           placement="center"
-          title="AI Life Prediction"
-          subtitle="Biometric and archetypal forecasting"
-          lines={currentPredictionNode.lines}
-          emotion={currentPredictionNode.emotion}
-          choices={predictionChoices}
+          title="Connect With Someone…"
+          subtitle="Peer matching and mentor introductions"
+          lines={currentConnectNode.lines}
+          emotion={currentConnectNode.emotion}
+          choices={connectChoices}
           disableAutoClose
           onClose={() => setAskBlueOpen(false)}
         />
