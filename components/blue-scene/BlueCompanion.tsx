@@ -44,6 +44,7 @@ export default function BlueCompanion({
   const [status, setStatus] = useState<SessionStatus>('idle');
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMicError, setIsMicError] = useState(false);
   const [connectingLabel, setConnectingLabel] = useState<string | null>(null);
   const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(null);
 
@@ -94,6 +95,7 @@ export default function BlueCompanion({
 
       setStatus('connecting');
       setErrorMessage(null);
+      setIsMicError(false);
       setConnectingLabel(moodOverride ? moodOverride.label : null);
 
       const openingLine = moodOverride
@@ -146,7 +148,8 @@ export default function BlueCompanion({
           },
           onError: (err) => {
             console.error('Conversation error:', err);
-            setErrorMessage("Blue couldn't connect right now. Tap below to try again.");
+            setErrorMessage('Could not reach Blue right now.');
+            setIsMicError(false);
             setStatus('error');
             onModeChange('idle');
             companionVolumeRef.current = 0;
@@ -182,7 +185,8 @@ export default function BlueCompanion({
         startVolumeSampler(conversation as VoiceConversation);
       } catch (err: unknown) {
         console.error('Error starting conversation:', err);
-        let message = "Blue couldn't connect right now. Tap below to try again.";
+        let isMic = false;
+        let message = 'Could not reach Blue right now.';
         if (err instanceof Error) {
           const lower = err.message.toLowerCase();
           if (
@@ -191,7 +195,8 @@ export default function BlueCompanion({
             lower.includes('microphone') ||
             lower.includes('notallowed')
           ) {
-            message = 'Microphone access is needed for Blue to hear you. Check your browser settings and try again.';
+            isMic = true;
+            message = 'Microphone access needed.';
           } else if (
             err.message &&
             !lower.includes('failed to') &&
@@ -203,6 +208,7 @@ export default function BlueCompanion({
             message = err.message;
           }
         }
+        setIsMicError(isMic);
         setErrorMessage(message);
         setStatus('error');
         await cleanupSession();
@@ -245,33 +251,37 @@ export default function BlueCompanion({
     <>
       {status === 'idle' && (
         <div className={styles.companionOverlay}>
-          <span className={styles.radioTuneInKicker}>Blue Companion</span>
-          <p className={styles.radioTuneInText}>
-            Talk directly with Blue in real time using your voice.
-          </p>
-          <CtaButton onClick={() => void startConversation()}>Start conversation</CtaButton>
+          <div className={styles.companionCard}>
+            <span className={styles.companionKicker}>Companion</span>
+            <p className={styles.companionText}>Voice chat with Blue.</p>
+            <CtaButton onClick={() => void startConversation()}>Talk with Blue</CtaButton>
+          </div>
         </div>
       )}
 
       {status === 'connecting' && (
         <div className={styles.companionOverlay}>
-          <span className={styles.radioTuneInKicker}>Connecting</span>
-          <p className={styles.radioTuneInText}>
-            {connectingLabel
-              ? `Connecting with Blue to talk about ${connectingLabel.toLowerCase()}...`
-              : 'Establishing voice connection with Blue...'}
-          </p>
-          <div className={styles.companionConnectingDot} aria-hidden="true" />
+          <div className={styles.companionCard}>
+            <span className={styles.companionKicker}>Connecting</span>
+            <p className={styles.companionText}>
+              {connectingLabel
+                ? `Talking about ${connectingLabel.toLowerCase()}...`
+                : 'Connecting to Blue...'}
+            </p>
+            <div className={styles.companionConnectingDot} aria-hidden="true" />
+          </div>
         </div>
       )}
 
       {status === 'error' && (
         <div className={styles.companionOverlay}>
-          <span className={styles.radioTuneInKicker}>Just a moment</span>
-          <p className={styles.radioTuneInText}>
-            {errorMessage || "Blue couldn't connect right now. Tap below to try again."}
-          </p>
-          <CtaButton onClick={() => void startConversation()}>Try again</CtaButton>
+          <div className={styles.companionCard}>
+            <span className={styles.companionKicker}>{isMicError ? 'Microphone' : 'Connection'}</span>
+            <p className={styles.companionText}>
+              {errorMessage || 'Could not reach Blue right now.'}
+            </p>
+            <CtaButton onClick={() => void startConversation()}>Try again</CtaButton>
+          </div>
         </div>
       )}
 

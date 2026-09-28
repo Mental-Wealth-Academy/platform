@@ -83,8 +83,9 @@
   color: var(--color-text-dark);
 }
 
-.sceneSwitchButtonActive {
-  color: var(--color-on-action);
+.sceneSwitchButtonActive,
+.sceneSwitchButtonActive:hover {
+  color: #ffffff !important;
   background: var(--color-primary);
   box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 28%, transparent);
 }
@@ -407,30 +408,65 @@
   inset: 0;
   z-index: 3;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 32px;
-  text-align: center;
-  background: color-mix(in oklch, #1d2130 62%, transparent);
-  backdrop-filter: blur(3px);
+  padding: 20px;
+  background: color-mix(in oklch, #0f121d 60%, transparent);
+  backdrop-filter: blur(8px);
 }
 
-.companionErrorKicker {
-  color: var(--color-danger);
+.companionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 24px 22px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background: color-mix(in oklch, #141724 94%, transparent);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+  text-align: center;
+  animation: companionCardEnter 0.2s ease-out;
+}
+
+@keyframes companionCardEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.companionKicker {
+  color: #9abaff;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+.companionText {
+  margin: 0 0 6px;
+  color: #f3f4f8;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
 .companionConnectingDot {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
   border-radius: 50%;
   background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
   animation: companionConnectingPulse 1.2s ease-in-out infinite;
 }
 
