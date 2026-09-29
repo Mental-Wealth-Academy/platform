@@ -44,6 +44,15 @@ export async function ensureChatSchema() {
          ON chat_messages (user_id)`,
         {}
       );
+      await sqlQuery(
+        `DELETE FROM chat_messages
+         WHERE user_id LIKE 'dummy_%'
+           AND (message ILIKE '%trading%'
+             OR message ILIKE '%panic-sell%'
+             OR message ILIKE '%touching the charts%'
+             OR message ILIKE '%market stress%')`,
+        {}
+      );
 
       globalThis.__mwaChatSchemaEnsured = true;
     } finally {

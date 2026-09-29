@@ -11,6 +11,7 @@ export default function LivestreamFeed({
   onInitialMoodHandled,
   onMuteChange,
   onRegisterMute,
+  onRegisterRadioStart,
   onCompanionMuteChange,
   onRegisterCompanionMute,
 }: {
@@ -21,6 +22,7 @@ export default function LivestreamFeed({
   onInitialMoodHandled?: () => void;
   onMuteChange?: (muted: boolean) => void;
   onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
+  onRegisterRadioStart?: (startFn: () => void) => void;
   onCompanionMuteChange?: (muted: boolean) => void;
   onRegisterCompanionMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }) {
@@ -46,6 +48,7 @@ export default function LivestreamFeed({
           onInitialMoodHandled={onInitialMoodHandled}
           onMuteChange={onMuteChange}
           onRegisterMute={onRegisterMute}
+          onRegisterRadioStart={onRegisterRadioStart}
           onCompanionMuteChange={onCompanionMuteChange}
           onRegisterCompanionMute={onRegisterCompanionMute}
         />

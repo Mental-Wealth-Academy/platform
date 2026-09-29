@@ -44,6 +44,7 @@ export default function BlueRadio({
   onInitialMoodHandled,
   onMuteChange,
   onRegisterMute,
+  onRegisterRadioStart,
   onCompanionMuteChange,
   onRegisterCompanionMute,
 }: {
@@ -54,6 +55,7 @@ export default function BlueRadio({
   onInitialMoodHandled?: () => void;
   onMuteChange?: (muted: boolean) => void;
   onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
+  onRegisterRadioStart?: (startFn: () => void) => void;
   onCompanionMuteChange?: (muted: boolean) => void;
   onRegisterCompanionMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }) {
@@ -114,7 +116,10 @@ export default function BlueRadio({
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.45;
       const gainNode = context.createGain();
-      gainNode.gain.setValueAtTime(1, context.currentTime);
+      const currentGain = audio.muted ? 0 : 1;
+      gainNode.gain.cancelScheduledValues(0);
+      gainNode.gain.setValueAtTime(currentGain, context.currentTime);
+      gainNode.gain.value = currentGain;
 
       source.connect(analyser);
       analyser.connect(gainNode);
@@ -147,6 +152,16 @@ export default function BlueRadio({
     } catch {
       // Metadata not ready yet; onLoadedMetadata below re-seeks.
     }
+
+    if (gainNodeRef.current && audioContextRef.current) {
+      try {
+        gainNodeRef.current.gain.cancelScheduledValues(0);
+        const targetGain = wantMuted ? 0 : 1;
+        gainNodeRef.current.gain.setValueAtTime(targetGain, audioContextRef.current.currentTime);
+        gainNodeRef.current.gain.value = targetGain;
+      } catch {}
+    }
+
     await audio.play();
     void ensureAudioAnalyser();
     setMuted(wantMuted);
@@ -166,7 +181,9 @@ export default function BlueRadio({
       }
       if (gainNodeRef.current && audioContextRef.current) {
         try {
+          gainNodeRef.current.gain.cancelScheduledValues(0);
           gainNodeRef.current.gain.setValueAtTime(0, audioContextRef.current.currentTime);
+          gainNodeRef.current.gain.value = 0;
         } catch {
           // Ignore audio node error
         }
@@ -182,13 +199,19 @@ export default function BlueRadio({
     }
     if (gainNodeRef.current && audioContextRef.current) {
       try {
+        gainNodeRef.current.gain.cancelScheduledValues(0);
         gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
+        gainNodeRef.current.gain.value = 1;
       } catch {
         // Ignore audio node error
       }
     }
 
     const audio = audioRef.current;
+    if (audio && !audio.paused && !audio.muted) {
+      return;
+    }
+
     let cancelled = false;
     (async () => {
       try {
@@ -222,13 +245,14 @@ export default function BlueRadio({
   // Re-seek once the segment's metadata is in, so the first audible moment
   // matches the broadcast clock instead of the segment's opening line.
   const handleLoadedMetadata = useCallback(() => {
+    if (mode === 'companion') return;
     const audio = audioRef.current;
     if (!audio) return;
     const { index, offset } = livePosition();
     if (audio.src.endsWith(SEGMENTS[index].file)) {
       audio.currentTime = Math.min(offset, Math.max(0, SEGMENTS[index].seconds - 0.4));
     }
-  }, []);
+  }, [mode]);
 
   const handleEnded = useCallback(() => {
     if (mode === 'companion') return;
@@ -275,6 +299,15 @@ export default function BlueRadio({
     setMuted(nextMuted);
     onMuteChange?.(nextMuted);
 
+    if (gainNodeRef.current && audioContextRef.current) {
+      try {
+        gainNodeRef.current.gain.cancelScheduledValues(0);
+        const targetGain = nextMuted ? 0 : 1;
+        gainNodeRef.current.gain.setValueAtTime(targetGain, audioContextRef.current.currentTime);
+        gainNodeRef.current.gain.value = targetGain;
+      } catch {}
+    }
+
     if (!nextMuted) {
       if (audio.paused) {
         try {
@@ -298,6 +331,13 @@ export default function BlueRadio({
         await audioContextRef.current.resume();
       } catch {}
     }
+    if (gainNodeRef.current && audioContextRef.current) {
+      try {
+        gainNodeRef.current.gain.cancelScheduledValues(0);
+        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
+        gainNodeRef.current.gain.value = 1;
+      } catch {}
+    }
     try {
       await syncToLive(false);
     } catch {
@@ -309,15 +349,60 @@ export default function BlueRadio({
     }
   }, [syncToLive]);
 
+  const startRadio = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+      try {
+        await audioContextRef.current.resume();
+      } catch {}
+    }
+
+    if (gainNodeRef.current && audioContextRef.current) {
+      try {
+        gainNodeRef.current.gain.cancelScheduledValues(0);
+        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
+        gainNodeRef.current.gain.value = 1;
+      } catch {}
+    }
+
+    audio.muted = false;
+    setMuted(false);
+    onMuteChange?.(false);
+
+    try {
+      await syncToLive(false);
+    } catch {
+      try {
+        await syncToLive(true);
+      } catch {
+        setPlayback('blocked');
+      }
+    }
+  }, [onMuteChange, syncToLive]);
+
+  useEffect(() => {
+    onRegisterRadioStart?.(startRadio);
+  }, [onRegisterRadioStart, startRadio]);
+
   // Unlock audio on first user gesture across the document if initially blocked/muted by autoplay policy
   useEffect(() => {
+    if (mode === 'companion') return;
+
     const unlock = async () => {
-      if (mode === 'companion') return;
       const audio = audioRef.current;
       if (!audio) return;
       if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
         try {
           await audioContextRef.current.resume();
+        } catch {}
+      }
+      if (gainNodeRef.current && audioContextRef.current) {
+        try {
+          gainNodeRef.current.gain.cancelScheduledValues(0);
+          gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
+          gainNodeRef.current.gain.value = 1;
         } catch {}
       }
       if (audio.muted) {

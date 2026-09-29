@@ -165,7 +165,7 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
   {
     kind: 'user',
     personaIndex: 0,
-    text: 'morning everyone. starting today with ten minutes of breathwork before touching the charts.',
+    text: 'morning everyone. starting today with ten minutes of breathwork before opening my field notes.',
   },
   {
     kind: 'user',
@@ -186,11 +186,6 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
     kind: 'user',
     personaIndex: 1,
     text: 'just finished the somatic reset walkthrough. the progressive muscle relaxation section is so simple yet effective.',
-  },
-  {
-    kind: 'user',
-    personaIndex: 6,
-    text: 'third day of logging morning reflections. noticed my tendency to over-anticipate market stress drops when i write it down.',
   },
   {
     kind: 'system',
@@ -233,11 +228,6 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
     text: 'hit the 500 credit milestone from daily notes streak and survey completion.',
   },
   {
-    kind: 'user',
-    personaIndex: 9,
-    text: 'reminder to anyone trading today: do not trade from physiological dysregulation. take three slow exhales first.',
-  },
-  {
     kind: 'system',
     personaIndex: 10,
     text: 'Ren completed their field notes.',
@@ -245,7 +235,7 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
   {
     kind: 'user',
     personaIndex: 10,
-    text: 'evening debrief locked in. gratitude for another day of steady compounding.',
+    text: 'evening debrief locked in. gratitude for another day of steady progress.',
   },
   {
     kind: 'user',
@@ -261,11 +251,6 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
     kind: 'system',
     personaIndex: 7,
     text: 'Veritas completed Shadow & Mirror (+100 credits).',
-  },
-  {
-    kind: 'user',
-    personaIndex: 2,
-    text: 'the attachment style survey gave me a lot of clarity on why i used to panic-sell positions. awareness changes everything.',
   },
   {
     kind: 'system',

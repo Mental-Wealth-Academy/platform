@@ -13,6 +13,7 @@ export default function BlueScene() {
   const [initialMood, setInitialMood] = useState<InitialMoodData | null>(null);
   const [radioMuted, setRadioMuted] = useState(false);
   const toggleRadioMuteRef = useRef<(() => void) | null>(null);
+  const startRadioRef = useRef<(() => void) | null>(null);
 
   const [companionMuted, setCompanionMuted] = useState(false);
   const [companionConnected, setCompanionConnected] = useState(false);
@@ -23,12 +24,26 @@ export default function BlueScene() {
     setRadioMuted(muted);
   }, []);
 
+  const handleRegisterRadioStart = useCallback((startFn: () => void) => {
+    startRadioRef.current = startFn;
+  }, []);
+
   const handleMuteChange = useCallback((muted: boolean) => {
     setRadioMuted(muted);
   }, []);
 
   const handleToggleMute = useCallback(() => {
     toggleRadioMuteRef.current?.();
+  }, []);
+
+  const handleSwitchToRadio = useCallback(() => {
+    setMode('radio');
+    setRadioMuted(false);
+    startRadioRef.current?.();
+  }, []);
+
+  const handleSwitchToCompanion = useCallback(() => {
+    setMode('companion');
   }, []);
 
   const handleRegisterCompanionMute = useCallback((toggleFn: () => void, muted: boolean, isConnected: boolean) => {
@@ -96,7 +111,7 @@ export default function BlueScene() {
               className={`${styles.sceneSwitchButton} ${
                 mode === 'companion' ? styles.sceneSwitchButtonActive : ''
               }`}
-              onClick={() => setMode('companion')}
+              onClick={handleSwitchToCompanion}
             >
               Companion
             </button>
@@ -107,7 +122,7 @@ export default function BlueScene() {
               className={`${styles.sceneSwitchButton} ${
                 mode === 'radio' ? styles.sceneSwitchButtonActive : ''
               }`}
-              onClick={() => setMode('radio')}
+              onClick={handleSwitchToRadio}
             >
               Radio
             </button>
@@ -147,6 +162,7 @@ export default function BlueScene() {
         onInitialMoodHandled={handleInitialMoodHandled}
         onMuteChange={handleMuteChange}
         onRegisterMute={handleRegisterMute}
+        onRegisterRadioStart={handleRegisterRadioStart}
         onCompanionMuteChange={handleCompanionMuteChange}
         onRegisterCompanionMute={handleRegisterCompanionMute}
       />
