@@ -214,7 +214,7 @@ export default function SurveysPage() {
       <div className={styles.scene} aria-hidden="true" />
       <main className={styles.content}>
         <SurveyController
-          userName="You Toxic or Fun Type Shi?"
+          userName="Toxic or Fun Type?"
           selectedSurveyId={selectedSurveyId}
           onSurveyTypeChange={handleSurveyTypeChange}
           onStartSurvey={handleStartSurvey}

@@ -824,36 +824,60 @@ export default function HomePage() {
               </span>
             </span>
           </CtaButton>
-        </div>
-        <div className={styles.desktopLeaderboard}>
-          <HomeLeaderboard />
-        </div>
-        <div className={styles.dailyNotes}>
-          <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
+
           <button
             type="button"
-            className={styles.listsCard}
+            className={styles.guidanceCard}
             onClick={() => {
               play('click');
               setGuidanceModalOpen(true);
             }}
             aria-label="Professional Guidance"
           >
-            <div className={styles.listsCardBorder} />
-            <div className={styles.listsCardSurface} />
-            <div className={styles.listsCardButton}>
+            <div className={styles.guidanceBannerWrap} aria-hidden="true">
               <Image
-                className={styles.listsCardIcon}
-                src="/icons/professional-guidance.png"
+                src="/images/blue-cards/therapy-chat.jpg"
                 alt=""
-                width={36}
-                height={36}
+                fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                className={styles.guidanceBannerImg}
+                priority
               />
-              <div className={styles.listsCardText}>
-                <span className={styles.listsCardLabel}>Professional Guidance</span>
+              <div className={styles.guidanceBannerScrim} />
+            </div>
+            <div className={styles.guidanceCardContent}>
+              <div className={styles.guidanceBadgeRow}>
+                <span className={styles.guidanceBadge}>
+                  <Image
+                    src="/icons/professional-guidance.png"
+                    alt=""
+                    width={16}
+                    height={16}
+                    className={styles.guidanceBadgeIcon}
+                  />
+                  <span>Advisory</span>
+                </span>
+              </div>
+              <h3 className={styles.guidanceCardTitle}>Professional Guidance</h3>
+              <p className={styles.guidanceCardDesc}>
+                1-on-1 private advisory with licensed practitioners.
+              </p>
+              <div className={styles.guidanceCtaRow}>
+                <span className={styles.guidanceCtaPill}>
+                  <span>Book Consultation</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </span>
               </div>
             </div>
           </button>
+        </div>
+        <div className={styles.desktopLeaderboard}>
+          <HomeLeaderboard />
+        </div>
+        <div className={styles.dailyNotes}>
+          <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
         </div>
       </section>
       )}

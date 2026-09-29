@@ -478,22 +478,22 @@
   }
 }
 
-.listsCard {
+.guidanceCard {
   width: 100%;
-  background: transparent;
+  position: relative;
+  display: block;
+  margin-top: 14px;
+  background: var(--color-surface-base, #ffffff);
   border: 2px solid var(--color-primary-hover);
-  --card-radius: 22px;
-  --card-border-width: 2px;
+  --card-radius: 20px;
   border-radius: var(--card-radius);
-  overflow: visible;
+  overflow: hidden;
   box-shadow:
     0 4px 0 var(--color-primary),
     0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
-  transition: all 0.2s ease;
-  position: relative;
-  display: block;
-  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
+  text-decoration: none;
   padding: 0;
   appearance: none;
   font: inherit;
@@ -501,195 +501,184 @@
   text-align: left;
 }
 
-.listsCard:hover {
+.guidanceCard:hover {
+  transform: translateY(-2px);
   box-shadow:
     0 8px 0 var(--color-primary),
-    0 0px 12px rgba(0, 0, 0, 0.14),
-    0 12px 8px rgba(0, 0, 0, 0.30);
-  border-color: var(--color-primary-hover);
-  transform: translateY(-2px);
+    0 10px 16px rgba(0, 0, 0, 0.16);
+  border-color: var(--color-primary);
 }
 
-.listsCard:active {
+.guidanceCard:active {
   transform: translateY(2px);
   box-shadow:
     0 2px 0 var(--color-primary),
-    0 4px 6px color-mix(in srgb, var(--palette-night) 14%, transparent);
+    0 3px 6px color-mix(in srgb, var(--palette-night) 14%, transparent);
 }
 
-.listsCardBorder {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: none;
-  background: none;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.listsCardSurface {
-  position: absolute;
-  inset: var(--card-border-width);
-  border-radius: calc(var(--card-radius) - var(--card-border-width));
-  background:
-    linear-gradient(135deg, #1a1d33 0%, #2a1f3d 25%, #1d2b4a 50%, #2d1a2e 75%, #1a2a35 100%),
-    repeating-linear-gradient(
-      87deg,
-      transparent 0px,
-      color-mix(in oklch, var(--color-primary) 30%, transparent) 1px,
-      transparent 2px,
-      transparent 7px
-    ),
-    repeating-linear-gradient(
-      -3deg,
-      transparent 0px,
-      rgba(232, 85, 109, 0.25) 1px,
-      transparent 2px,
-      transparent 11px
-    ),
-    repeating-conic-gradient(
-      from 0deg at 50% 50%,
-      rgba(116, 196, 101, 0.15) 0deg 2deg,
-      transparent 2deg 8deg,
-      rgba(167, 139, 250, 0.12) 8deg 10deg,
-      transparent 10deg 20deg
-    ),
-    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(232, 85, 109, 0.5) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 75% 25%, color-mix(in oklch, var(--color-primary) 45%, transparent) 0%, transparent 70%),
-    radial-gradient(ellipse 45% 55% at 50% 75%, rgba(116, 196, 101, 0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 35% at 85% 70%, rgba(167, 139, 250, 0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 45% at 10% 80%, rgba(242, 160, 181, 0.35) 0%, transparent 70%);
-  z-index: 0;
-  pointer-events: none;
-  filter: contrast(1.3) saturate(1.2);
-  opacity: 0.85;
-}
-
-:global(:root:not([data-theme="dark"])) .listsCardSurface {
-  background:
-    linear-gradient(135deg, #ffffff 0%, #f7f9ff 38%, #eef3ff 100%),
-    repeating-linear-gradient(
-      87deg,
-      transparent 0px,
-      color-mix(in oklch, var(--color-primary) 8%, transparent) 1px,
-      transparent 2px,
-      transparent 10px
-    ),
-    repeating-linear-gradient(
-      -3deg,
-      transparent 0px,
-      rgba(232, 85, 109, 0.05) 1px,
-      transparent 2px,
-      transparent 14px
-    ),
-    radial-gradient(ellipse 58% 42% at 18% 28%, rgba(242, 160, 181, 0.16) 0%, transparent 68%),
-    radial-gradient(ellipse 48% 48% at 76% 24%, color-mix(in oklch, var(--color-primary) 14%, transparent) 0%, transparent 70%),
-    radial-gradient(ellipse 44% 52% at 52% 76%, rgba(116, 196, 101, 0.12) 0%, transparent 68%);
-  filter: saturate(1.02);
-  opacity: 1;
-}
-
-.listsCardButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 16px;
-  padding: 16px 20px;
-  background: none;
-  border: none;
-  text-align: left;
-  transition: background 0.15s ease;
-  position: relative;
-  z-index: 2;
-  border-radius: inherit;
-  box-sizing: border-box;
-}
-
-.listsCard:hover .listsCardButton {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-:global(:root:not([data-theme="dark"])) .listsCardButton {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.32) 100%);
-}
-
-:global(:root:not([data-theme="dark"])) .listsCard:hover .listsCardButton {
-  background: linear-gradient(180deg, color-mix(in oklch, var(--color-primary) 8%, transparent) 0%, color-mix(in oklch, var(--color-primary) 4%, transparent) 100%);
-}
-
-:global(:root:not([data-theme="dark"])) .listsCard:hover {
-  box-shadow:
-    0 8px 0 var(--color-primary),
-    0 0px 12px rgba(0, 0, 0, 0.14),
-    0 12px 8px rgba(0, 0, 0, 0.30);
-}
-
-.listsCardText {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-
-.listsCardIcon {
-  width: 36px;
-  height: 36px;
-  display: block;
-  flex-shrink: 0;
-  background: transparent;
-  object-fit: contain;
-}
-
-.listsCardLabel {
-  display: block;
-  font-family: var(--font-secondary);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--color-primary);
-}
-
-:global(:root:not([data-theme="dark"])) .listsCardLabel {
-  color: var(--palette-ink);
-}
-
-.listsCard:focus-visible {
+.guidanceCard:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
 }
 
+.guidanceBannerWrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.guidanceBannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  display: block;
+}
+
+.guidanceBannerScrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.88) 46%, rgba(255, 255, 255, 0.18) 78%, transparent 100%);
+}
+
+:global([data-theme="dark"]) .guidanceCard {
+  background: #0d1b2a;
+}
+
+:global([data-theme="dark"]) .guidanceBannerScrim {
+  background: linear-gradient(90deg, rgba(13, 27, 42, 0.96) 0%, rgba(13, 27, 42, 0.88) 46%, rgba(13, 27, 42, 0.22) 78%, transparent 100%);
+}
+
+.guidanceCardContent {
+  position: relative;
+  z-index: 2;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 154px;
+  box-sizing: border-box;
+}
+
+.guidanceBadgeRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.guidanceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, rgba(255, 255, 255, 0.9));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 32%, transparent);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+:global([data-theme="dark"]) .guidanceBadge {
+  background: color-mix(in srgb, var(--color-primary) 18%, rgba(13, 27, 42, 0.85));
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  color: var(--color-primary);
+}
+
+.guidanceBadgeIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+}
+
+.guidanceCardTitle {
+  font-family: var(--font-secondary);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--palette-ink, #0f172a);
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+}
+
+:global([data-theme="dark"]) .guidanceCardTitle {
+  color: #ffffff;
+}
+
+.guidanceCardDesc {
+  font-family: var(--font-primary);
+  font-size: 12.5px;
+  color: var(--color-text-muted, #475569);
+  margin: 0 0 12px 0;
+  max-width: 62%;
+  line-height: 1.4;
+}
+
+:global([data-theme="dark"]) .guidanceCardDesc {
+  color: rgba(240, 244, 248, 0.8);
+}
+
+.guidanceCtaRow {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+}
+
+.guidanceCtaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-action, #ffffff);
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.guidanceCard:hover .guidanceCtaPill {
+  transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
-  .listsCardButton {
-    gap: 12px;
-    padding: 13px 15px;
+  .guidanceCardContent {
+    padding: 16px;
+    min-height: 156px;
   }
 
-  .listsCardIcon {
-    width: 36px;
-    height: 36px;
-    flex: 0 0 36px;
+  .guidanceCardTitle {
+    font-size: 17px;
   }
 
-  .listsCardLabel {
-    font-size: 14px;
-    letter-spacing: 0.01em;
+  .guidanceCardDesc {
+    max-width: 60%;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .listsCardButton {
-    padding: 11px 12px;
-    gap: 10px;
+  .guidanceCardContent {
+    padding: 14px;
+    min-height: 150px;
   }
 
-  .listsCardIcon {
-    width: 36px;
-    height: 36px;
-    flex: 0 0 36px;
+  .guidanceCardDesc {
+    max-width: 58%;
+    font-size: 11.5px;
   }
 }
 

@@ -63,7 +63,7 @@ interface SurveyControllerProps {
 }
 
 export default function SurveyController({
-  userName = 'You Toxic or Fun Type Shi?',
+  userName = 'Toxic or Fun Type?',
   version = 'Earn Diamonds!',
   characterImageSrc = '/exxies.png',
   difficulty: initialDifficulty = 101,
