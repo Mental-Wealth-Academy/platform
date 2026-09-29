@@ -1145,7 +1145,7 @@ export default function DailyNotes({
                 Daily Field Notes
               </h3>
               <p className={styles.authPromptCopy}>
-                Fill up the page with everything that’s in your head. Complete today’s stream of consciousness to clear your mental cache and earn 100 credits.
+                Fill up the page with everything that’s in your head. Complete today’s stream of consciousness to clear your mind and earn 100 credits.
               </p>
 
               <div className={styles.authPromptActions}>
@@ -1160,7 +1160,7 @@ export default function DailyNotes({
                     beginWritingSession(dayToStart >= 0 ? dayToStart : 0);
                   }}
                 >
-                  Dump the cache
+                  Start writing
                 </button>
               </div>
             </div>
