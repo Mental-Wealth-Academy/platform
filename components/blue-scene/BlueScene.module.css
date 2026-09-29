@@ -60,7 +60,7 @@
   display: inline-flex;
   flex-shrink: 0;
   gap: 2px;
-  margin-left: auto;
+  margin: 0 auto;
   padding: 2px;
   border-radius: 999px;
   background: color-mix(in oklch, var(--color-text-dark) 7%, transparent);
@@ -94,46 +94,55 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  border: 1px solid color-mix(in oklch, var(--palette-ink) 20%, transparent);
-  border-radius: 999px;
-  color: var(--palette-ink);
-  background: color-mix(in oklch, var(--palette-ink) 6%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: 50%;
+  color: rgba(26, 29, 51, 0.72);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 10%, transparent);
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+  transition: all 0.15s ease;
 }
 
 .sceneMuteIconButton:hover {
-  background: color-mix(in oklch, var(--palette-ink) 12%, transparent);
-  transform: scale(1.05);
+  background: #ffffff;
+  color: #1a1d33;
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  transform: scale(1.08);
 }
 
-.sceneMuteIconButtonMuted {
-  color: var(--color-danger, #ef4444);
-  border-color: color-mix(in oklch, var(--color-danger, #ef4444) 35%, transparent);
-  background: color-mix(in oklch, var(--color-danger, #ef4444) 10%, transparent);
+.sceneMuteIconButtonActive {
+  background: #7b8cff !important;
+  border-color: #6b7cff !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(123, 140, 255, 0.35);
 }
 
-.sceneMuteIconButtonMuted:hover {
-  background: color-mix(in oklch, var(--color-danger, #ef4444) 16%, transparent);
+.sceneMuteIconButtonActive:hover {
+  background: #6b7cff !important;
+  border-color: #8b9cff !important;
+  color: #ffffff !important;
 }
 
 :global([data-theme="dark"]) .sceneMuteIconButton {
-  color: var(--color-text-light);
+  background: rgba(20, 24, 45, 0.92);
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 12%, var(--color-surface-2));
+  color: rgba(240, 243, 255, 0.72);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 :global([data-theme="dark"]) .sceneMuteIconButton:hover {
-  background: color-mix(in oklch, var(--color-primary) 20%, var(--color-surface-2));
+  background: #181c36;
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  color: #ffffff;
 }
 
-:global([data-theme="dark"]) .sceneMuteIconButtonMuted {
-  color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.35);
-  background: rgba(239, 68, 68, 0.14);
+:global([data-theme="dark"]) .sceneMuteIconButtonActive {
+  background: #7b8cff !important;
+  border-color: #6b7cff !important;
+  color: #ffffff !important;
 }
 
 .liveFeed {
@@ -316,6 +325,7 @@
   z-index: 2;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 9px 14px;
   background: color-mix(in oklch, var(--color-primary) 8%, var(--palette-canvas));

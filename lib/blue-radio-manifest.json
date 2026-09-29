@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T05:58:18.176Z",
-  "totalSeconds": 705.48,
+  "generatedAt": "2026-09-29T06:08:20.094Z",
+  "totalSeconds": 710.31,
   "segments": [
     {
       "id": "station-ident",
@@ -21,7 +21,7 @@
       "title": "Field notes",
       "file": "/audio/blue-radio/field-notes.mp3",
       "playbackGain": 0.56,
-      "seconds": 38.13
+      "seconds": 42.96
     },
     {
       "id": "podcast-mental-wealth",

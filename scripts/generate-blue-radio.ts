@@ -4,22 +4,11 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
-
-/**
- * Blue Radio — the 24/7 broadcast on the /dao Live tab.
- *
- * Generates one mp3 per segment into public/audio/blue-radio/ and emits
- * lib/blue-radio-manifest.json with per-segment durations. The client
- * (components/blue-scene/BlueRadio.tsx) plays the segments as one endless
- * wall-clock-synced loop, so the manifest durations are what keep every
- * listener on the same moment of the show.
- *
- * Run: npm run generate:blue-radio
- * Add --force to regenerate every file, or --force-segment=<id> for one chapter.
- * After editing segment text, always rerun so audio and manifest stay in sync.
- */
+import dotenv from 'dotenv';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+dotenv.config({ path: path.resolve(rootDir, '.env.local') });
+dotenv.config();
 const force = process.argv.includes('--force');
 const forceSegmentArg = process.argv.find((arg) => arg.startsWith('--force-segment='));
 const forcedSegmentId = forceSegmentArg?.slice('--force-segment='.length);
@@ -114,7 +103,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'field-notes',
     title: 'Field notes',
-    text: "Field notes are your digital journal, and I pay you to write in it! Every day, you open up the page and fill it with everything that is in your head until you hit seven hundred and fifty characters. No prompts. No grades. Just you and the blank page having a chat. Do it every day and your streak grows! I count every day on my fingers, and watching that streak build makes me so proud! Here is the secret about field notes. Dumping your thoughts onto a page clears your mental cache so your brain has room to breathe. Think of it as your private grimoire, or maybe spiritual chiropractoring! Either way, you earn credits straight from my stash!",
+    text: "Field notes are your daily practice for mental clarity! Every day, you open up the page and write whatever is rattling around in your head until you hit seven hundred and fifty characters. No prompts. No grades. No self-editing. Just you and the blank page having an honest conversation. When you dump all that mental backlog onto paper, you clear your mental cache and give your nervous system room to breathe. You start spotting patterns you never noticed, untangling stress, and building genuine focus. And watching your streak build every single day makes me so proud! It is a daily reset for your mind. Take five minutes and give your thoughts the space they deserve!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
