@@ -13,7 +13,98 @@ import { useSound } from '@/hooks/useSound';
 import { useOnchainBalances } from '@/hooks/useOnchainBalances';
 import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
+import ModalShell from '@/components/shared/ModalShell';
 import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
+
+interface Fortune {
+  quote: string;
+  focus: string;
+  luckyNumbers: string;
+}
+
+const FORTUNES: Fortune[] = [
+  {
+    quote: "A quiet mind makes room for answers you cannot force.",
+    focus: "One minute of unhurried breathing",
+    luckyNumbers: "3 · 7 · 21 · 42",
+  },
+  {
+    quote: "Tending your internal reserves today pays compound interest tomorrow.",
+    focus: "Notice one small feeling without fixing it",
+    luckyNumbers: "4 · 11 · 28 · 56",
+  },
+  {
+    quote: "The habit of pausing before reacting is the foundation of inner strength.",
+    focus: "Pause for three seconds before replying",
+    luckyNumbers: "2 · 9 · 18 · 72",
+  },
+  {
+    quote: "Rest is the soil where new strength takes root.",
+    focus: "Put your phone down five minutes earlier tonight",
+    luckyNumbers: "5 · 14 · 33 · 60",
+  },
+  {
+    quote: "One honest paragraph in your field notes untangles what hours of overthinking cannot.",
+    focus: "Write without editing the first sentence",
+    luckyNumbers: "1 · 8 · 27 · 64",
+  },
+  {
+    quote: "Your peace of mind is an account only you can fund. Keep today's deposit steady.",
+    focus: "A single glass of water in silence",
+    luckyNumbers: "6 · 13 · 39 · 81",
+  },
+  {
+    quote: "Solvency begins within: carrying quiet inside softens the outside noise.",
+    focus: "Protect one boundary with gentle firmness",
+    luckyNumbers: "7 · 19 · 41 · 88",
+  },
+  {
+    quote: "Clarity arrives when you meet your thoughts with gentle curiosity.",
+    focus: "Replace self-criticism with observation",
+    luckyNumbers: "9 · 15 · 30 · 75",
+  },
+  {
+    quote: "Every difficult feeling is information looking for a safe place to land.",
+    focus: "Give an uncomfortable thought room to pass",
+    luckyNumbers: "8 · 16 · 32 · 68",
+  },
+  {
+    quote: "Patience is emotional liquidity. It grants you the room to respond with care.",
+    focus: "Release the rush to conclude early",
+    luckyNumbers: "3 · 12 · 24 · 48",
+  },
+  {
+    quote: "Small, steady habits outlast intense sprints every single time.",
+    focus: "Do one ordinary thing with full attention",
+    luckyNumbers: "5 · 10 · 25 · 50",
+  },
+  {
+    quote: "Notice the quiet victories. Stepping back before a spiral is real progress.",
+    focus: "Acknowledge one hard moment you handled well",
+    luckyNumbers: "4 · 17 · 34 · 91",
+  },
+  {
+    quote: "The courage to stay honest with yourself builds genuine wealth.",
+    focus: "Admit one small truth you avoided this week",
+    luckyNumbers: "6 · 22 · 44 · 86",
+  },
+  {
+    quote: "Today's stillness is an investment in tomorrow's resilience.",
+    focus: "Step outside and look up at the sky",
+    luckyNumbers: "7 · 23 · 49 · 97",
+  },
+];
+
+function getDailyFortuneIndex(): number {
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  let hash = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    hash = (hash << 5) - hash + dateStr.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) % FORTUNES.length;
+}
 
 interface NavLink {
   label: string;
@@ -48,6 +139,21 @@ const TopNavigation: React.FC = () => {
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [swapModalOpen, setSwapModalOpen] = useState(false);
+  const [fortuneOpen, setFortuneOpen] = useState(false);
+  const [fortuneIndex, setFortuneIndex] = useState(() => getDailyFortuneIndex());
+
+  const handleOpenFortune = () => {
+    play('click');
+    setFortuneIndex(getDailyFortuneIndex());
+    setFortuneOpen(true);
+  };
+
+  const handleCrackAnother = () => {
+    play('celebration');
+    setFortuneIndex((prev) => (prev + 1) % FORTUNES.length);
+  };
+
+  const currentFortune = FORTUNES[fortuneIndex] ?? FORTUNES[0];
 
   // Balances fetched when dropdown is open and authenticated
   const {
@@ -396,6 +502,22 @@ const TopNavigation: React.FC = () => {
             priority
           />
         </Link>
+
+        <button
+          type="button"
+          className={styles.mobileFortuneBtn}
+          onClick={handleOpenFortune}
+          aria-label="Daily fortune cookie"
+        >
+          <Image
+            src="/icons/fortune-cookie.png"
+            alt="Fortune cookie"
+            width={26}
+            height={26}
+            className={styles.mobileFortuneIcon}
+            priority
+          />
+        </button>
 
         <div className={styles.searchWrapper}>
           <div className={styles.searchBar}>
@@ -813,6 +935,44 @@ const TopNavigation: React.FC = () => {
         open={swapModalOpen}
         onClose={() => setSwapModalOpen(false)}
       />
+      <ModalShell
+        isOpen={fortuneOpen}
+        onClose={() => setFortuneOpen(false)}
+        title="Daily Fortune"
+        maxWidth="sm"
+      >
+        <div className={styles.fortuneModalContent}>
+          <div className={styles.fortuneCookieImgWrap}>
+            <Image
+              src="/icons/fortune-cookie.png"
+              alt="Fortune cookie"
+              width={64}
+              height={64}
+              className={styles.fortuneCookieImg}
+            />
+          </div>
+          <span className={styles.fortuneKicker}>Daily mental wealth fortune</span>
+          <div className={styles.fortuneSlip}>
+            <p className={styles.fortuneQuote}>&ldquo;{currentFortune.quote}&rdquo;</p>
+            <div className={styles.fortuneDivider} />
+            <div className={styles.fortuneMeta}>
+              <span className={styles.fortuneFocusLabel}>Today's focus:</span>
+              <span className={styles.fortuneFocusText}>{currentFortune.focus}</span>
+            </div>
+            <div className={styles.fortuneNumbers}>
+              <span className={styles.fortuneNumbersLabel}>Lucky numbers:</span>
+              <span className={styles.fortuneNumbersValues}>{currentFortune.luckyNumbers}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            className={styles.fortuneCrackBtn}
+            onClick={handleCrackAnother}
+          >
+            Crack another cookie
+          </button>
+        </div>
+      </ModalShell>
     </header>
   );
 };
