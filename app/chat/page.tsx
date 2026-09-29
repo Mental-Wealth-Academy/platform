@@ -1,21 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import SquadsHub from '@/components/squads/SquadsHub';
 import ChatRoom from '@/components/chat-room/ChatRoom';
 import styles from './page.module.css';
 
-export default function ChatPage() {
-  const [activeSquad, setActiveSquad] = useState<string | null>(null);
+function ChatPageContent() {
+  const searchParams = useSearchParams();
+  const squadParam = searchParams.get('squad');
+
+  // Default to 'global' chat unless explicitly set to browse squads
+  const [activeSquad, setActiveSquad] = useState<string | null>(() => {
+    if (squadParam === 'browse' || squadParam === 'list') return null;
+    return squadParam || 'global';
+  });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const squadParam = params.get('squad');
-    if (squadParam) {
+    if (squadParam === 'browse' || squadParam === 'list') {
+      setActiveSquad(null);
+    } else if (squadParam) {
       setActiveSquad(squadParam);
+    } else {
+      setActiveSquad('global');
     }
-  }, []);
+  }, [squadParam]);
 
   const handleSelectSquad = (squadId: string) => {
     if (typeof window !== 'undefined') {
@@ -35,8 +44,8 @@ export default function ChatPage() {
     setActiveSquad(null);
     if (typeof window !== 'undefined' && window.history.replaceState) {
       const url = new URL(window.location.href);
-      url.searchParams.delete('squad');
-      window.history.replaceState({}, '', url.pathname);
+      url.searchParams.set('squad', 'browse');
+      window.history.replaceState({}, '', url.toString());
     }
   };
 
@@ -56,5 +65,13 @@ export default function ChatPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className={styles.pageLayout} />}>
+      <ChatPageContent />
+    </Suspense>
   );
 }

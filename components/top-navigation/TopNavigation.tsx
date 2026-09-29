@@ -938,7 +938,13 @@ const TopNavigation: React.FC = () => {
       <ModalShell
         isOpen={fortuneOpen}
         onClose={() => setFortuneOpen(false)}
-        title="Daily Fortune"
+        title={
+          <div className={styles.fortuneHeaderTitle}>
+            <span className={styles.fortuneKanji} lang="ja">運勢</span>
+            <span className={styles.fortuneTitleText}>Daily Fortune</span>
+          </div>
+        }
+        className={styles.fortuneModalDialog}
         maxWidth="sm"
       >
         <div className={styles.fortuneModalContent}>
@@ -946,17 +952,20 @@ const TopNavigation: React.FC = () => {
             <Image
               src="/icons/fortune-cookie.png"
               alt="Fortune cookie"
-              width={64}
-              height={64}
+              width={68}
+              height={68}
               className={styles.fortuneCookieImg}
             />
           </div>
-          <span className={styles.fortuneKicker}>Daily mental wealth fortune</span>
           <div className={styles.fortuneSlip}>
+            <div className={styles.fortuneSlipHeader}>
+              <span className={styles.fortuneSlipKanji} lang="ja">御神籤</span>
+              <span className={styles.fortuneSlipSub}>Fortune Slip</span>
+            </div>
             <p className={styles.fortuneQuote}>&ldquo;{currentFortune.quote}&rdquo;</p>
             <div className={styles.fortuneDivider} />
             <div className={styles.fortuneMeta}>
-              <span className={styles.fortuneFocusLabel}>Today's focus:</span>
+              <span className={styles.fortuneFocusLabel}>Today&apos;s focus:</span>
               <span className={styles.fortuneFocusText}>{currentFortune.focus}</span>
             </div>
             <div className={styles.fortuneNumbers}>
@@ -966,10 +975,10 @@ const TopNavigation: React.FC = () => {
           </div>
           <button
             type="button"
-            className={styles.fortuneCrackBtn}
+            className={styles.fortuneDrawBtn}
             onClick={handleCrackAnother}
           >
-            Crack another cookie
+            Draw another fortune
           </button>
         </div>
       </ModalShell>

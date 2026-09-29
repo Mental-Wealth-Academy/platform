@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/dao', icon: House },
   { id: 'gallery', label: 'Gallery', href: '/genetics', icon: Images },
-  { id: 'squads', label: 'Squads', href: '/chat', icon: ChatsCircle },
+  { id: 'squads', label: 'Squads', href: '/chat?squad=global', icon: ChatsCircle },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -57,7 +57,7 @@ export const MobileBottomNav: React.FC = () => {
     if (href === '/genetics') {
       return pathname === '/genetics' || pathname?.startsWith('/genetics/');
     }
-    if (href === '/chat') {
+    if (href.startsWith('/chat')) {
       return pathname === '/chat' || pathname?.startsWith('/chat/');
     }
     if (href === '/dao') {
