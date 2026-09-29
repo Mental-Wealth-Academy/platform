@@ -340,6 +340,11 @@ export default function DailyNotes({
     setActiveDayIndex(null);
     setTimerSeconds(900);
     setTimerText('');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
   };
 
   const requestClose = useCallback(() => {
@@ -403,6 +408,12 @@ export default function DailyNotes({
     setTimerSeconds(900);
     setTimerText('');
     setIsSubmitting(false);
+
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
 
     play('success');
 
@@ -708,7 +719,6 @@ export default function DailyNotes({
               onChange={(e) => setTimerText(e.target.value)}
               onClick={() => play('input-focus')}
               onKeyDown={() => play('click')}
-              autoFocus
               disabled={isPaused || isSubmitting}
             />
           </div>

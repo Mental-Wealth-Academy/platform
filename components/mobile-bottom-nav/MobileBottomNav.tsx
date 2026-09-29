@@ -84,7 +84,6 @@ export const MobileBottomNav: React.FC = () => {
           <Link
             key={item.id}
             href={item.href}
-            scroll={false}
             onClick={handleTabClick}
             className={`${styles.tab} ${isCenter ? styles.centerTab : ''} ${active ? styles.tabActive : ''}`}
             aria-label={item.label}

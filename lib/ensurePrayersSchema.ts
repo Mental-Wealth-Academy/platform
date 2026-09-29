@@ -25,21 +25,7 @@ export async function ensurePrayersSchema() {
     // table may already exist
   }
 
-  // Migrate old data from ethereal_progress or weeks (after rename)
-  for (const oldTable of ['ethereal_progress', 'weeks']) {
-    try {
-      await sqlQuery(`
-        INSERT INTO prayers (id, user_id, progress_data, created_at, updated_at)
-        SELECT id, user_id, progress_data, created_at, updated_at
-        FROM ${oldTable}
-        WHERE week_number = 99
-        ON CONFLICT (user_id) DO NOTHING
-      `);
-      await sqlQuery(`DELETE FROM ${oldTable} WHERE week_number = 99`);
-    } catch {
-      // table may not exist or migration already done
-    }
-  }
+
 
   try {
     await sqlQuery(`CREATE INDEX IF NOT EXISTS idx_prayers_user_id ON prayers(user_id)`);

@@ -26,8 +26,18 @@ export function RouteShell({ children, initialCollapsed = true }: RouteShellProp
 
     const resetScroll = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-      if (document.documentElement) document.documentElement.scrollTop = 0;
-      if (document.body) document.body.scrollTop = 0;
+      if (document.documentElement && document.documentElement.scrollTop !== 0) {
+        document.documentElement.scrollTop = 0;
+      }
+      if (document.body && document.body.scrollTop !== 0) {
+        document.body.scrollTop = 0;
+      }
+      const scrollables = document.querySelectorAll<HTMLElement>(
+        '[class*="content"], [class*="container"], [class*="wrapper"], [class*="page"], [class*="layout"], [class*="shell"]'
+      );
+      scrollables.forEach((el) => {
+        if (el.scrollTop > 0) el.scrollTop = 0;
+      });
     };
 
     resetScroll();

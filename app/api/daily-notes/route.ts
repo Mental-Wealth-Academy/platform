@@ -180,25 +180,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
 
-  await ensurePrayersSchema();
-
-  const existingRows = await sqlQuery<Array<{ progress_data: any }>>(
-    `SELECT progress_data FROM prayers
-     WHERE user_id = :userId
-     LIMIT 1`,
-    { userId: user.id }
-  );
-
   let body: { weekNumber?: number; entries?: unknown[] };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
-
-  const previousAllWeekPages = existingRows[0]
-    ? parseAllWeekPages(user.id, existingRows[0].progress_data)
-    : {};
 
   if (
     !Number.isInteger(body.weekNumber)
@@ -210,6 +197,32 @@ export async function POST(request: Request) {
   }
 
   const weekNumber = body.weekNumber as number;
+  const rewardDay = new Date().toISOString().slice(0, 10);
+
+  const [, existingRows, existingRewardDay] = await Promise.all([
+    ensurePrayersSchema(),
+    sqlQuery<Array<{ progress_data: any }>>(
+      `SELECT progress_data FROM prayers
+       WHERE user_id = :userId
+       LIMIT 1`,
+      { userId: user.id }
+    ),
+    sqlQuery<Array<{ id: string }>>(
+      `SELECT id FROM daily_note_completions
+       WHERE user_id = :userId AND reward_day = :rewardDay
+       LIMIT 1`,
+      { userId: user.id, rewardDay },
+    ),
+  ]);
+
+  if (existingRewardDay.length > 0) {
+    return NextResponse.json({ error: 'Today\'s field note is already saved.' }, { status: 409 });
+  }
+
+  const previousAllWeekPages = existingRows[0]
+    ? parseAllWeekPages(user.id, existingRows[0].progress_data)
+    : {};
+
   const storedWeekEntries = Array.isArray(previousAllWeekPages[String(weekNumber)])
     ? previousAllWeekPages[String(weekNumber)]
     : [];
@@ -239,17 +252,6 @@ export async function POST(request: Request) {
   const content = (candidate as Record<string, unknown>).content;
   if (typeof content !== 'string' || content.trim().length === 0 || content.length > 50_000) {
     return NextResponse.json({ error: 'Write something before saving this field note.' }, { status: 400 });
-  }
-
-  const rewardDay = new Date().toISOString().slice(0, 10);
-  const existingRewardDay = await sqlQuery<Array<{ id: string }>>(
-    `SELECT id FROM daily_note_completions
-     WHERE user_id = :userId AND reward_day = :rewardDay
-     LIMIT 1`,
-    { userId: user.id, rewardDay },
-  );
-  if (existingRewardDay.length > 0) {
-    return NextResponse.json({ error: 'Today\'s field note is already saved.' }, { status: 409 });
   }
 
   // The browser supplies private content and a display date. Reward authority
@@ -301,44 +303,41 @@ export async function POST(request: Request) {
   const nextCount = countMorningPageEntries(nextAllWeekPages);
 
   if (nextCount > previousCount) {
-    // Ledger the write(s) for the My Stats chart — count only, never content.
-    try {
-      await recordActivityEvent(user.id, 'field_note', nextCount - previousCount);
-    } catch (ledgerError: unknown) {
-      const message = ledgerError instanceof Error ? ledgerError.message : 'unknown activity ledger error';
-      console.error('Field note activity ledger error:', message);
-    }
-
-    try {
-      await recordBlueMorningPagesEvent({
-        userId: user.id,
-        allWeekPages: nextAllWeekPages,
-      });
-    } catch (memoryError: unknown) {
-      const message = memoryError instanceof Error ? memoryError.message : 'unknown blue field note memory error';
-      console.error('Blue field note memory error:', message);
-    }
-
-    // Stream agent field notes into the Room Log feed
-    if (user.accountType === 'agent') {
+    // Dispatch background tasks without blocking response latency
+    void (async () => {
       try {
-        await recordAgentActivity(user.id, `${user.username} wrote a field note.`);
-      } catch (activityError: unknown) {
-        console.error('Room Log activity error:', activityError);
+        await Promise.allSettled([
+          recordActivityEvent(user.id, 'field_note', nextCount - previousCount).catch((ledgerError: unknown) => {
+            const message = ledgerError instanceof Error ? ledgerError.message : 'unknown activity ledger error';
+            console.error('Field note activity ledger error:', message);
+          }),
+          recordBlueMorningPagesEvent({
+            userId: user.id,
+            allWeekPages: nextAllWeekPages,
+          }).catch((memoryError: unknown) => {
+            const message = memoryError instanceof Error ? memoryError.message : 'unknown blue field note memory error';
+            console.error('Blue field note memory error:', message);
+          }),
+          ...(user.accountType === 'agent'
+            ? [
+                recordAgentActivity(user.id, `${user.username} wrote a field note.`).catch((activityError: unknown) => {
+                  console.error('Room Log activity error:', activityError);
+                }),
+              ]
+            : []),
+          postSystemMessage(
+            user.id,
+            user.username,
+            user.avatarUrl,
+            `${user.username} completed their field notes.`,
+          ).catch((chatError: unknown) => {
+            console.error('Chat notification error:', chatError);
+          }),
+        ]);
+      } catch (bgError: unknown) {
+        console.error('Background field notes side effects error:', bgError);
       }
-    }
-
-    // Post global chat notification
-    try {
-      await postSystemMessage(
-        user.id,
-        user.username,
-        user.avatarUrl,
-        `${user.username} completed their field notes.`,
-      );
-    } catch (chatError: unknown) {
-      console.error('Chat notification error:', chatError);
-    }
+    })();
   }
 
   return NextResponse.json({ ok: true });
