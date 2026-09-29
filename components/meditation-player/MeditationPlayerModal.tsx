@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { ArrowLeft } from '@phosphor-icons/react';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './MeditationPlayerModal.module.css';
 
@@ -215,10 +216,16 @@ export default function MeditationPlayerModal({
       <div className={styles.contentShell}>
         {/* Minimal Top Bar */}
         <header className={styles.header}>
-          <div className={styles.badgeWrap} aria-hidden="true">
-            <span className={styles.pulseDot} />
-            <span className={styles.badgeLabel}>Meditation Space</span>
-          </div>
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={onClose}
+            aria-label="Back"
+            title="Back"
+          >
+            <ArrowLeft size={16} weight="bold" />
+            <span>Back</span>
+          </button>
 
           {/* Minimal Pill Track Selector */}
           <div className={styles.trackTabs} role="tablist" aria-label="Meditation tracks">

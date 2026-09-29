@@ -326,6 +326,7 @@
     aspect-ratio: auto;
     min-height: 72px;
     width: 100%;
+    max-width: 100%;
     border-radius: 12px;
     padding: 14px 16px;
     box-sizing: border-box;
@@ -364,8 +365,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    flex: 1;
+    flex: 1 1 0%;
     min-width: 0;
+    overflow: hidden;
   }
 
   .tabIcon {
@@ -386,6 +388,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-width: 0;
+    flex: 1 1 0%;
   }
 
   .ctaOuter {
@@ -403,7 +407,7 @@
 
   .ctaInner {
     width: auto;
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 999px;
     font-family: var(--font-secondary);
     font-size: 0.75rem;
@@ -422,6 +426,32 @@
     background: color-mix(in srgb, var(--palette-night) 50%, transparent);
     border-color: color-mix(in srgb, var(--color-surface-base) 15%, transparent);
     color: var(--color-text-light);
+  }
+}
+
+@media (max-width: 480px) {
+  .folder {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .tabHeaderRow {
+    gap: 10px;
+  }
+
+  .tabIcon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+  .tabTitle {
+    font-size: 0.875rem;
+  }
+
+  .ctaInner {
+    padding: 5px 10px;
+    font-size: 0.6875rem;
   }
 }
 
