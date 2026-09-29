@@ -1003,11 +1003,12 @@
   font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
-  color: color-mix(in oklch, var(--color-primary) 78%, #18181b);
+  color: color-mix(in srgb, var(--color-primary) 78%, var(--color-text-dark));
   letter-spacing: 0.01em;
   line-height: 1.35;
   text-align: center;
   max-width: 620px;
+  white-space: nowrap;
 }
 
 @keyframes sillyChatFade {
@@ -1381,6 +1382,9 @@
 
   .blueSillyChatText {
     font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .writeArea {

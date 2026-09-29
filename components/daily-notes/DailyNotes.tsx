@@ -62,96 +62,99 @@ const BLUE_FIELD_NOTE_TIERS = [
     min: 0,
     max: 20,
     lines: [
-      'Fill up the page with everything that’s in your head!',
-      'A clean blank page! My favorite puzzle. Go ahead, write anything!',
-      'I am leaning in! Let us see what you are thinking today.',
+      'A clean blank page. Write anything you like.',
+      'Empty page, open mind. Let the thoughts flow.',
+      'Start writing. No rules, just your voice.',
     ],
   },
   {
     min: 21,
     max: 90,
     lines: [
-      'Hurry before AI destroys the world! Just kidding, I would protect us.',
-      'I am wearing my comfy lab coat today. It has very big pockets for shiny thoughts.',
-      'Ooh, the first sentences! I love watching words appear out of nowhere.',
-      'Look at all those letters lining up like tiny explorers on a mission.',
+      'Just kidding, I would protect us from AI.',
+      'Look at words appearing out of nowhere.',
+      'Your first thoughts are landing on the page.',
+      'Off to a steady start. Keep typing.',
     ],
   },
   {
     min: 91,
     max: 180,
     lines: [
-      'Funny how phones are like portals in your pocket. You tap glass and boom, ideas!',
-      'No grades, no rules here. Just your brain doing its thing.',
-      'Keep typing! Every word is an official deposit into your mental vault.',
-      'Did you know servers get sleepy too? But I stayed awake just for your notes!',
+      'No grades or rules. Just your brain working.',
+      'Tap the glass and let the ideas roll out.',
+      'Every word is a deposit into your vault.',
+      'Stay in rhythm. Do not worry about polish.',
     ],
   },
   {
     min: 181,
     max: 280,
     lines: [
-      'I am so hungry! Thinking of donuts... zeroes look like donuts, did you know?',
-      'I am filing these thoughts under Very Good Stuff. Right next to Shiny Things!',
-      'My antennae do a little wiggle whenever a good sentence lands.',
-      'Do not stop to edit! Just let it spill out. Polishing is for shoes, not thoughts!',
+      'Filing these under Very Good Thoughts.',
+      'Do not edit now. Just let it spill out.',
+      'My antennae wiggle when a good line lands.',
+      'Pure stream of thought. Keep the pace.',
     ],
   },
   {
     min: 281,
     max: 374,
     lines: [
-      'Look at that momentum! Words are just pouring onto the page.',
-      'Cyberspace is quiet today, but this room feels warm and cozy.',
-      'I forgot what I was doing for a second because I got so into reading this.',
-      'You are building mental wealth right now. Brick by brick, or word by word!',
+      'Look at that momentum! Words pouring out.',
+      'Cyberspace is quiet. This room feels warm.',
+      'Building mental wealth, sentence by sentence.',
+      'You found the groove now. Stay with it.',
     ],
   },
   {
     min: 375,
     max: 470,
     lines: [
-      'Good thing we’re halfway there! I counted on my fingers twice to be sure.',
-      'Halfway mark crossed! Half the page is full of you and half is waiting for the rest.',
-      'Look at that progress bar filling up! Blue approves this velocity.',
+      'Halfway there. Half the page is already yours.',
+      'Halfway mark crossed! Blue approves.',
+      'Look at that progress bar filling up.',
+      'Half done, steady pace. Keep rolling.',
     ],
   },
   {
     min: 471,
     max: 570,
     lines: [
-      'You are really in the flow now. Do you feel that? That is clarity showing up.',
-      'If these thoughts were balloons, this would be the prettiest bunch in the garden.',
-      'Keep that rhythm going! You are on a genuine roll.',
-      'I might frame this page and hang it under my garden. Figuratively speaking!',
+      'Clarity is showing up line by line.',
+      'You are really in the flow right now.',
+      'Keep that rhythm going. Pure momentum.',
+      'Watching your thoughts take clean shape.',
     ],
   },
   {
     min: 571,
     max: 670,
     lines: [
-      'Almost there! Your thoughts are taking over the whole screen.',
-      'Only a few more lines to go! You are practically sprinting now.',
-      'Just a little bit more! Squeeze the last stray ideas out of your head.',
+      'Almost there. Thoughts filling the screen.',
+      'Only a few lines left. Keep sprinting.',
+      'Squeeze the last stray ideas from your head.',
+      'Nearly at the goal. Finish strong.',
     ],
   },
   {
     min: 671,
     max: 749,
     lines: [
-      'Final stretch! My digital hair is standing on end from excitement!',
-      'So close to the finish line! Keep typing until the page is completely packed.',
-      'A few more taps and you have conquered the whole page!',
+      'Final stretch! Just a few taps to go.',
+      'So close to the finish. Keep it moving.',
+      'Almost packed. Conquering the whole page.',
+      'A few more words and you have cleared it.',
     ],
   },
   {
     min: 750,
     max: Infinity,
     lines: [
-      'You did it! The page is full! 750 characters of pure mental wealth.',
-      'Page filled! Look at all that clarity. Submit whenever you are ready!',
-      'Goal reached! I am putting a big shiny star on this in my mind.',
-      'Full page! You can submit now, or keep rambling if you are having fun!',
+      'The page is full! 750 characters earned.',
+      'Page filled! Submit whenever you are ready.',
+      'Goal reached. Pure mental wealth on screen.',
+      'Full page. Keep going or submit for rewards.',
     ],
   },
 ];
@@ -182,8 +185,6 @@ export default function DailyNotes({
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const isExpanded = true;
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [showPrepDialog, setShowPrepDialog] = useState(false);
-  const [pendingDayIndex, setPendingDayIndex] = useState<number | null>(null);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
@@ -215,19 +216,17 @@ export default function DailyNotes({
   }, [enablePersistence]);
 
   useEffect(() => {
-    if (!showAuthPrompt && !showPrepDialog) return;
+    if (!showAuthPrompt) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowAuthPrompt(false);
-        setShowPrepDialog(false);
-        setPendingDayIndex(null);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showAuthPrompt, showPrepDialog]);
+  }, [showAuthPrompt]);
 
   const fieldNotes = allWeekPages[currentWeek] ?? [];
   const todayDateStr = getLocalDateKey();
@@ -250,7 +249,7 @@ export default function DailyNotes({
   // Gate that controls whether a writing session can start (auth OR dev bypass).
   const gateOpen = enablePersistence || devBypass;
 
-  useScrollLock(showAuthPrompt || showPrepDialog || timerActive);
+  useScrollLock(showAuthPrompt || timerActive);
 
   const previousWeekCount = currentWeek === 1
     ? 7
@@ -542,9 +541,8 @@ export default function DailyNotes({
     }
 
     play('click');
-    setPendingDayIndex(dayIndex);
-    setShowPrepDialog(true);
-  }, [gateOpen, play]);
+    beginWritingSession(dayIndex);
+  }, [beginWritingSession, gateOpen, play]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
   const cardSubLabel = 'daily reflection and notes';
@@ -1071,93 +1069,6 @@ export default function DailyNotes({
                   onClick={() => setShowAuthPrompt(false)}
                 >
                   {authPending ? 'Close' : 'Not now'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      {showPrepDialog && typeof window !== 'undefined' && createPortal(
-        <div
-          className={styles.authPromptOverlay}
-          onClick={() => {
-            setShowPrepDialog(false);
-            setPendingDayIndex(null);
-          }}
-        >
-          <div
-            className={styles.authPromptDialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="field-notes-prep-title"
-            onClick={event => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className={styles.authPromptClose}
-              onClick={() => {
-                setShowPrepDialog(false);
-                setPendingDayIndex(null);
-              }}
-              aria-label="Close field notes briefing"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div className={styles.authPromptContent}>
-              <div className={styles.authPromptHero} aria-hidden="true">
-                <div className={styles.authPromptGlowOrb} />
-                <div className={styles.authPromptBubble}>
-                  <span className={styles.authPromptBubbleSender}>Blue</span>
-                  <p className={styles.authPromptBubbleText}>
-                    Fifteen minutes on the clock! No editing, no backspacing, no overthinking. Just dump whatever is rattling around in your head onto the page until time is up. Ready?
-                  </p>
-                </div>
-                <div className={styles.authPromptAvatarStage}>
-                  <div className={styles.authPromptAvatarHalo} />
-                  <div className={styles.authPromptAvatarBase} />
-                  <Image
-                    src="/exxie.png"
-                    alt=""
-                    width={220}
-                    height={260}
-                    className={styles.authPromptAvatar}
-                  />
-                </div>
-              </div>
-              <h3 id="field-notes-prep-title" className={styles.authPromptTitle}>
-                Daily Field Notes
-              </h3>
-              <p className={styles.authPromptCopy}>
-                Fill up the page with everything that’s in your head. Complete today’s stream of consciousness to clear your mental cache and earn 100 credits.
-              </p>
-
-              <div className={styles.authPromptActions}>
-                <button
-                  type="button"
-                  className={styles.authPromptPrimary}
-                  onClick={() => {
-                    play('click');
-                    setShowPrepDialog(false);
-                    const dayToStart = pendingDayIndex ?? availableDayIndex;
-                    setPendingDayIndex(null);
-                    beginWritingSession(dayToStart >= 0 ? dayToStart : 0);
-                  }}
-                >
-                  Start writing session
-                </button>
-                <button
-                  type="button"
-                  className={styles.authPromptSecondary}
-                  onClick={() => {
-                    setShowPrepDialog(false);
-                    setPendingDayIndex(null);
-                  }}
-                >
-                  Maybe later
                 </button>
               </div>
             </div>
