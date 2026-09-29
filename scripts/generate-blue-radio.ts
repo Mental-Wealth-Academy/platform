@@ -114,7 +114,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'field-notes',
     title: 'Field notes',
-    text: "Field notes are your digital journal, and I pay you to write in it! Every day, you open up the page and fill it with everything that is in your head until you hit seven hundred and fifty characters. No prompts. No grades. Just you and the blank page having a chat. Do it every day and your streak grows, and I count streaks on my fingers, which is why long ones make me so happy! Here is the secret about field notes. Dumping your thoughts onto a page clears your mental cache so your brain has room to breathe. Think of it as your private grimoire, or maybe spiritual chiropractoring! Either way, you earn credits straight from my stash!",
+    text: "Field notes are your digital journal, and I pay you to write in it! Every day, you open up the page and fill it with everything that is in your head until you hit seven hundred and fifty characters. No prompts. No grades. Just you and the blank page having a chat. Do it every day and your streak grows! I count every day on my fingers, and watching that streak build makes me so proud! Here is the secret about field notes. Dumping your thoughts onto a page clears your mental cache so your brain has room to breathe. Think of it as your private grimoire, or maybe spiritual chiropractoring! Either way, you earn credits straight from my stash!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
