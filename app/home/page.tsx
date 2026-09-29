@@ -943,8 +943,8 @@ export default function HomePage() {
                     title="Morning Flow"
                     centerLabel="Morning Flow"
                     ctaLabel="Start Flow"
-                    avatarSrc="/archetypes/visionary.png"
-                    href="/learn/guides/attention-basics"
+                    avatarSrc="/images/yoga/blue-morning-flow.png"
+                    href="/learn/guides/morning-flow"
                     dark
                     motif="lattice"
                   />
@@ -952,8 +952,8 @@ export default function HomePage() {
                     title="Somatic Release"
                     centerLabel="Somatic Release"
                     ctaLabel="Begin Practice"
-                    avatarSrc="/anbel05.png"
-                    href="/learn/guides/attention-basics"
+                    avatarSrc="/images/yoga/blue-somatic-release.png"
+                    href="/learn/guides/somatic-release"
                     ctaDark
                     motif="bloom"
                   />
@@ -961,8 +961,8 @@ export default function HomePage() {
                     title="Breath & Posture"
                     centerLabel="Breath & Posture"
                     ctaLabel="View Guide"
-                    avatarSrc="/anbel01.png"
-                    href="/learn/guides/attention-basics"
+                    avatarSrc="/images/yoga/blue-breath-posture.png"
+                    href="/learn/guides/breath-and-posture"
                     motif="bars"
                   />
                 </section>

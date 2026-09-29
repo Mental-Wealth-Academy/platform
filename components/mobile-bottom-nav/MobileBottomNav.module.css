@@ -2,11 +2,14 @@
 
 .nav {
   display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   z-index: 1000;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
   min-height: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
   background: rgba(251, 248, 255, 0.92);
   backdrop-filter: blur(20px) saturate(160%);

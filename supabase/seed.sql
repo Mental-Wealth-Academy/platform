@@ -89,6 +89,36 @@ INSERT INTO guides (slug, topic_title, status, body) VALUES
     {"id":"vc-1","componentType":"rich_text","title":"Deciding what matters",
      "config":{"format":"markdown","content":"# Values Clarification\n\nValues turn reflection into direction. Once you can reframe thoughts and journal honestly, you can ask the bigger question: what am I actually optimizing for?\n\n## An exercise\n\nList five things you would defend even when they cost you. Rank them. Where does your calendar disagree with your ranking?\n\nThat gap is your work."}}
   ]'::jsonb
+),
+(
+  'morning-flow',
+  'Morning Flow',
+  'published',
+  '[
+    {"id":"mf-1","componentType":"rich_text","title":"Morning Flow","config":{"format":"markdown","content":"Morning movement wakes up your spine and signals to your body that it is safe to start the day. You do not need flexibility or special equipment. Moving gently right after waking unglues stiff muscles and brings fresh oxygen into your brain."}},
+    {"id":"mf-2","componentType":"rich_text","title":"The Practice","config":{"format":"markdown","content":"![Blue in Morning Flow](/images/yoga/blue-morning-flow.png)\n\nFollow this simple five-minute sequence:\n\n1. Stand tall with your feet shoulder-width apart. Feel the floor beneath you.\n2. Inhale slowly and raise both arms overhead. Interlace your fingers and reach gently toward the sky.\n3. Lengthen your spine. Keep your shoulders soft and away from your ears.\n4. Take three slow breaths here. Feel your ribcage expand on each inhale.\n5. Exhale and sweep your arms down to your sides. Roll your shoulders back twice."}},
+    {"id":"mf-3","componentType":"rich_text","title":"Daily Cue","config":{"format":"markdown","content":"Do this stretch next to your bed before looking at your phone. One steady minute of gentle movement sets your posture and focus for the entire morning."}}
+  ]'::jsonb
+),
+(
+  'somatic-release',
+  'Somatic Release',
+  'published',
+  '[
+    {"id":"sr-1","componentType":"rich_text","title":"Somatic Release","config":{"format":"markdown","content":"Stress is physical before it is mental. Your body tightens around tension in your jaw, shoulders, and hips. Somatic release uses quiet, low-effort floor positions to give your nervous system permission to drop out of high alert."}},
+    {"id":"sr-2","componentType":"rich_text","title":"The Practice","config":{"format":"markdown","content":"![Blue in Somatic Release](/images/yoga/blue-somatic-release.png)\n\nFollow these three grounding steps:\n\n1. Sit comfortably on the floor or a firm cushion with crossed legs. Keep your back tall and relaxed.\n2. Rest your hands gently on your knees with palms facing upward.\n3. Close your eyes. Drop your tongue from the roof of your mouth and unclench your jaw.\n4. Inhale through your nose for four counts. Feel your belly rise.\n5. Exhale slowly through your mouth for six counts. Imagine tension draining down into the ground."}},
+    {"id":"sr-3","componentType":"rich_text","title":"Daily Cue","config":{"format":"markdown","content":"Spend three minutes in this position whenever you feel overwhelmed, or before you go to sleep. Long exhales turn down adrenaline and help your muscles release."}}
+  ]'::jsonb
+),
+(
+  'breath-and-posture',
+  'Breath & Posture',
+  'published',
+  '[
+    {"id":"bp-1","componentType":"rich_text","title":"Breath & Posture","config":{"format":"markdown","content":"How you hold your body changes how you breathe, and how you breathe changes how you think. Slumping compresses your diaphragm and keeps your breath shallow. Stacking your bones upright lets your lungs fill with zero extra effort."}},
+    {"id":"bp-2","componentType":"rich_text","title":"The Practice","config":{"format":"markdown","content":"![Blue in Breath and Posture](/images/yoga/blue-breath-posture.png)\n\nUse this check to find your neutral alignment:\n\n1. Stand with your feet flat and balanced between toes and heels.\n2. Bring your hands together at the center of your chest in a light prayer position.\n3. Line up your ears over your shoulders, and your shoulders over your hips.\n4. Inhale deeply through your nose. Expand your ribs outward in all directions like a balloon.\n5. Exhale softly and feel your chest stay tall while your shoulder blades slide down your back."}},
+    {"id":"bp-3","componentType":"rich_text","title":"Daily Cue","config":{"format":"markdown","content":"Reset this posture whenever you stand up from your chair or before starting a focused task. A tall spine creates immediate breathing space for your lungs."}}
+  ]'::jsonb
 )
 ON CONFLICT (slug) DO NOTHING;
 
@@ -108,7 +138,13 @@ JOIN (VALUES
   ('mindful-breathing',         'Foundations'),
   ('building-a-daily-practice', 'Habits'),
   ('values-clarification',      'Reflection'),
-  ('values-clarification',      'Habits')
+  ('values-clarification',      'Habits'),
+  ('morning-flow',              'Movement'),
+  ('morning-flow',              'Foundations'),
+  ('somatic-release',           'Recovery'),
+  ('somatic-release',           'Foundations'),
+  ('breath-and-posture',        'Alignment'),
+  ('breath-and-posture',        'Foundations')
 ) AS s(slug, subject) ON s.slug = g.slug
 ON CONFLICT (guide_id, subject) DO NOTHING;
 

@@ -60,6 +60,23 @@
   max-width: 66ch;
 }
 
+.body.body img {
+  max-width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  display: block;
+  margin: 1.5em auto;
+  filter: drop-shadow(0 8px 24px rgba(81, 104, 255, 0.16));
+}
+
+@media (max-width: 640px) {
+  .body.body img {
+    max-height: 320px;
+    margin: 1.2em auto;
+  }
+}
+
 .body.body ul,
 .body.body ol {
   margin: 0.3em 0 0.9em;

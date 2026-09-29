@@ -1,13 +1,15 @@
 .supportTab {
-  position: fixed;
-  right: 0;
-  bottom: 25%;
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 25% !important;
   background-color: #ffffff;
   color: var(--color-primary, #5168ff);
   padding: 10px 5px;
   writing-mode: vertical-lr;
   text-orientation: mixed;
-  transform: rotate(180deg);
+  transform: rotate(180deg) translate3d(0, 0, 0);
+  -webkit-transform: rotate(180deg) translate3d(0, 0, 0);
+  will-change: transform;
   border: 2px solid var(--color-primary, #5168ff);
   border-left: none; /* Left side when rotated is right side of screen */
   border-radius: 0 6px 6px 0;
