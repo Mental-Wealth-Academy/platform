@@ -1755,6 +1755,10 @@
   border-color: color-mix(in srgb, #eab308 55%, transparent);
 }
 
+.mobileWeekNav {
+  display: none;
+}
+
 .weekNav {
   display: flex;
   align-items: center;

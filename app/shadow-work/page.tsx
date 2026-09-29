@@ -103,7 +103,6 @@ function CourseInlineReader({
         {backLabel}
       </button>
       <div className={styles.inlineReaderHeader}>
-        <span className={styles.inlineReaderCategory}>{reading.category}</span>
         <h2 className={styles.inlineReaderTitle}>{reading.title}</h2>
       </div>
       {loading ? (
@@ -494,6 +493,31 @@ export default function CoursePage() {
                   </div>
                 </div>
               </button>
+
+              <div className={styles.mobileWeekNav} aria-label="Week navigation">
+                <button
+                  type="button"
+                  className={styles.weekNavArrow}
+                  onClick={() => goToWeek('prev')}
+                  onMouseEnter={() => play('hover')}
+                  disabled={resolvedViewWeek <= 1}
+                  aria-label="Previous week"
+                >
+                  <CaretLeft size={13} weight="bold" />
+                  Prev
+                </button>
+                <button
+                  type="button"
+                  className={styles.weekNavArrow}
+                  onClick={() => goToWeek('next')}
+                  onMouseEnter={() => play('hover')}
+                  disabled={resolvedViewWeek >= 12}
+                  aria-label="Next week"
+                >
+                  Next
+                  <CaretRight size={13} weight="bold" />
+                </button>
+              </div>
 
               {!isDesktop && rightContent === 'reading' && (
                 <div className={styles.inlineReaderMobile}>

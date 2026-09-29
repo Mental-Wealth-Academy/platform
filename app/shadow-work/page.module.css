@@ -1838,6 +1838,10 @@
   border-color: color-mix(in srgb, #eab308 55%, transparent);
 }
 
+.mobileWeekNav {
+  display: none;
+}
+
 .weekNav {
   display: flex;
   align-items: center;
@@ -2235,6 +2239,25 @@
 
   .rightPanelSimple {
     padding: 0;
+  }
+
+  .weekNav {
+    display: none;
+  }
+
+  .mobileWeekNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0 14px;
+    width: 100%;
+  }
+
+  .mobileWeekNav .weekNavArrow {
+    padding: 8px 18px;
+    font-size: 13px;
+    min-width: 90px;
   }
 }
 

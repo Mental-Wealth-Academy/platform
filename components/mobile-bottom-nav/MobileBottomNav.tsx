@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   ChatsCircle,
+  ClipboardText,
   House,
   IconProps,
-  Images,
   MoonStars,
   User,
 } from '@phosphor-icons/react';
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/dao', icon: House },
-  { id: 'gallery', label: 'Gallery', href: '/genetics', icon: Images },
+  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
   { id: 'squads', label: 'Squads', href: '/chat?squad=global', icon: ChatsCircle },
 ] as const;
 
@@ -54,8 +54,8 @@ export const MobileBottomNav: React.FC = () => {
         pathname?.startsWith('/profile/')
       );
     }
-    if (href === '/genetics') {
-      return pathname === '/genetics' || pathname?.startsWith('/genetics/');
+    if (href === '/surveys') {
+      return pathname === '/surveys' || pathname?.startsWith('/surveys/');
     }
     if (href.startsWith('/chat')) {
       return pathname === '/chat' || pathname?.startsWith('/chat/');
