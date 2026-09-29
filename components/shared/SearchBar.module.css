@@ -1,0 +1,132 @@
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  width: 100%;
+  padding: 0 14px 0 18px;
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 11%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 8%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 8%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 8%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 2%, var(--palette-on-dark)) 0%, color-mix(in srgb, var(--color-primary) 6%, var(--palette-on-dark)) 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 25%, transparent);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  cursor: text;
+}
+
+.searchBar:hover {
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 14%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 10%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 10%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 10%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 1%, var(--palette-on-dark)) 0%, color-mix(in srgb, var(--color-primary) 8%, var(--palette-on-dark)) 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+}
+
+.searchBar:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 10%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 7%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 7%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 6%, transparent) 0.6px, transparent 0.9px),
+    linear-gradient(180deg, var(--palette-on-dark) 0%, color-mix(in srgb, var(--color-primary) 5%, var(--palette-on-dark)) 100%);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--color-text-dark);
+  text-transform: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+  text-transform: none;
+}
+
+.searchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  opacity: 0.75;
+}
+
+.searchBar:focus-within .searchIcon {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+:global([data-theme="dark"]) .searchBar {
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border-subtle));
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 16%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 6%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 6%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 12%, transparent) 0.6px, transparent 0.9px),
+    var(--color-surface-2);
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 30%, var(--palette-ink));
+}
+
+:global([data-theme="dark"]) .searchBar:hover {
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 19%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 8%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 8%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 15%, transparent) 0.6px, transparent 0.9px),
+    color-mix(in srgb, var(--palette-on-dark) 7%, var(--color-surface-2));
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+}
+
+:global([data-theme="dark"]) .searchBar:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+  background:
+    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-primary) 14%, transparent) 0%, transparent 26%),
+    radial-gradient(circle at 80% 12%, color-mix(in srgb, var(--color-secondary) 5%, transparent) 0%, transparent 24%),
+    radial-gradient(circle at 48% 78%, color-mix(in srgb, var(--color-tertiary) 5%, transparent) 0%, transparent 28%),
+    radial-gradient(circle, color-mix(in srgb, var(--color-primary) 10%, transparent) 0.6px, transparent 0.9px),
+    color-mix(in srgb, var(--palette-on-dark) 3%, var(--color-surface-2));
+  background-size: auto, auto, auto, 8px 8px, auto;
+  background-clip: padding-box;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+:global([data-theme="dark"]) .searchIcon {
+  color: var(--color-text-muted);
+}
+
+:global([data-theme="dark"]) .searchInput {
+  color: var(--color-text-light, var(--color-text-dark));
+}
+
+:global([data-theme="dark"]) .searchInput::placeholder {
+  color: var(--color-text-muted);
+}

@@ -4,7 +4,6 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import {
   Users,
-  MagnifyingGlass,
   LockKey,
   ShieldCheck,
   Plus,
@@ -13,6 +12,7 @@ import {
 } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import CtaButton from '@/components/shared/CtaButton';
+import SearchBar from '@/components/shared/SearchBar';
 import styles from './SquadsHub.module.css';
 
 export interface SquadItem {
@@ -162,33 +162,15 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
 
       {/* Search Bar */}
       <div className={styles.searchSection}>
-        <div className={styles.searchBar}>
-          <MagnifyingGlass size={18} weight="bold" className={styles.searchIcon} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              play('click');
-              setSearchQuery(e.target.value);
-            }}
-            placeholder="Search squads or members..."
-            className={styles.searchInput}
-            aria-label="Search squads"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              className={styles.clearSearchBtn}
-              onClick={() => {
-                play('click');
-                setSearchQuery('');
-              }}
-              aria-label="Clear search"
-            >
-              <X size={14} weight="bold" />
-            </button>
-          )}
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={(e) => {
+            play('click');
+            setSearchQuery(e.target.value);
+          }}
+          placeholder="Search squads or members..."
+          aria-label="Search squads"
+        />
       </div>
 
       {/* Create Squad Row */}
