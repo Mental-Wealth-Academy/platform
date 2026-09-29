@@ -26,28 +26,6 @@
   margin-bottom: 16px;
 }
 
-.topHeaderLeft {
-  display: flex;
-  align-items: center;
-}
-
-.avatarCircle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-.avatarImg {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-
 .topTitle {
   margin: 0;
   font-family: var(--font-primary);
@@ -82,11 +60,16 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--color-surface-2);
+  background: var(--palette-on-dark);
   border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
   padding: 10px 14px;
+  box-shadow: 0 1px 3px var(--color-border-subtle);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:global([data-theme="dark"]) .searchBar {
+  background: var(--color-surface-2);
 }
 
 .searchBar:focus-within {
@@ -135,17 +118,27 @@
   justify-content: space-between;
   width: 100%;
   padding: 12px 14px;
-  background: var(--color-surface-1);
+  background: var(--palette-on-dark);
   border: 1px solid var(--color-border-subtle);
   border-radius: 14px;
+  box-shadow: 0 1px 4px var(--color-border-subtle);
   cursor: pointer;
-  transition: background 0.18s ease, transform 0.1s ease, border-color 0.18s ease;
+  transition: background 0.18s ease, transform 0.1s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   text-align: left;
 }
 
 .createSquadRow:hover {
-  background: color-mix(in oklch, var(--color-primary) 4%, var(--color-surface-2));
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--palette-on-dark));
   border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  box-shadow: 0 3px 10px var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .createSquadRow {
+  background: var(--color-surface-2);
+}
+
+:global([data-theme="dark"]) .createSquadRow:hover {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-2));
 }
 
 .createSquadRow:active {
@@ -235,18 +228,28 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: var(--color-surface-2);
+  background: var(--palette-on-dark);
   border: 1px solid var(--color-border-subtle);
   border-radius: 14px;
+  box-shadow: 0 1px 4px var(--color-border-subtle);
   cursor: pointer;
   text-align: left;
-  transition: transform 0.12s ease, border-color 0.18s ease, background 0.18s ease;
+  transition: transform 0.12s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
   width: 100%;
 }
 
 .squadItem:hover {
   border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
-  background: color-mix(in oklch, var(--color-primary) 3%, var(--color-surface-2));
+  background: color-mix(in oklch, var(--color-primary) 4%, var(--palette-on-dark));
+  box-shadow: 0 3px 10px var(--color-border-subtle);
+}
+
+:global([data-theme="dark"]) .squadItem {
+  background: var(--color-surface-2);
+}
+
+:global([data-theme="dark"]) .squadItem:hover {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-2));
 }
 
 .squadItem:active {

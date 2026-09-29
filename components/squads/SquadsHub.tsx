@@ -36,13 +36,13 @@ const DEFAULT_SQUADS: SquadItem[] = [
     memberCount: 342,
     activityTime: 'Just now',
     isOpen: true,
-    avatarUrl: '/images/blue-guide-sprites/breathing-idle.gif',
+    avatarUrl: '/blue/blue-avatar.png',
     badge: 'Open Access',
     lastMessage: 'Welcome to the Academy commons. What are you studying today?',
   },
   {
-    id: 'shadow-work',
-    name: 'Shadow Work Cohort',
+    id: 'health-nutrition',
+    name: 'Health & Nutrition',
     description: 'Guided 12-week integration circle with dedicated mentors.',
     memberCount: 28,
     activityTime: '2h ago',
@@ -59,16 +59,6 @@ const DEFAULT_SQUADS: SquadItem[] = [
     isOpen: false,
     badge: 'Specialist Code',
     lastMessage: 'Sprint check-in complete. 14 members completed daily note.',
-  },
-  {
-    id: 'genetics-lab',
-    name: 'Genetics & Longevity Circle',
-    description: 'Advanced biological blueprint inquiries and biomarker discussions.',
-    memberCount: 19,
-    activityTime: '1d ago',
-    isOpen: false,
-    badge: 'Specialist Code',
-    lastMessage: 'Variant interpretation walkthrough updated.',
   },
 ];
 
@@ -170,18 +160,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
     <div className={styles.hubContainer}>
       {/* Top Bar */}
       <header className={styles.topHeader}>
-        <div className={styles.topHeaderLeft}>
-          <div className={styles.avatarCircle}>
-            <Image
-              src="/images/blue-guide-sprites/breathing-idle.gif"
-              alt="Avatar"
-              width={26}
-              height={26}
-              className={styles.avatarImg}
-              unoptimized
-            />
-          </div>
-        </div>
         <h1 className={styles.topTitle}>Squads</h1>
         <div className={styles.topHeaderRight}>
           <span className={styles.badgeCommon}>Commons</span>
@@ -227,7 +205,7 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
             </div>
             <div className={styles.createSquadInfo}>
               <span className={styles.createSquadTitle}>Create Squad</span>
-              <span className={styles.createSquadSubtitle}>Specialist authorization required</span>
+              <span className={styles.createSquadSubtitle}>Invite a buddy [+100 diamonds]</span>
             </div>
           </div>
           <CaretRight size={18} weight="bold" className={styles.createChevron} />
