@@ -21,10 +21,20 @@ export default function ChatPage() {
   }, []);
 
   const handleSelectSquad = (squadId: string) => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
     setActiveSquad(squadId);
   };
 
   const handleBackToSquads = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
     setActiveSquad(null);
     if (typeof window !== 'undefined' && window.history.replaceState) {
       const url = new URL(window.location.href);
@@ -35,11 +45,11 @@ export default function ChatPage() {
 
   return (
     <div
-      className={styles.pageLayout}
+      className={`${styles.pageLayout} ${activeSquad ? styles.pageLayoutChatRoom : ''}`}
       style={{ '--chat-scene': `url(${sceneUrl})` } as CSSProperties}
     >
       <div className={styles.scene} aria-hidden="true" />
-      <main className={styles.content}>
+      <main className={`${styles.content} ${activeSquad ? styles.contentChatRoom : ''}`}>
         {activeSquad ? (
           <ChatRoom
             fullPage

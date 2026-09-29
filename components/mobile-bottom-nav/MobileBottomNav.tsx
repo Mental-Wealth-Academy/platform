@@ -66,6 +66,14 @@ export const MobileBottomNav: React.FC = () => {
     return pathname === href || pathname?.startsWith(`${href}/`);
   };
 
+  const handleTabClick = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
+  };
+
   return (
     <nav className={styles.nav}>
       {NAV_ITEMS.map((item) => {
@@ -76,6 +84,8 @@ export const MobileBottomNav: React.FC = () => {
           <Link
             key={item.id}
             href={item.href}
+            scroll={false}
+            onClick={handleTabClick}
             className={`${styles.tab} ${isCenter ? styles.centerTab : ''} ${active ? styles.tabActive : ''}`}
             aria-label={item.label}
             aria-current={active ? 'page' : undefined}
