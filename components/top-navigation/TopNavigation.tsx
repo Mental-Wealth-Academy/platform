@@ -16,95 +16,7 @@ import HoverSlideText from '@/components/shared/HoverSlideText';
 import ModalShell from '@/components/shared/ModalShell';
 import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
 
-interface Fortune {
-  quote: string;
-  focus: string;
-  luckyNumbers: string;
-}
 
-const FORTUNES: Fortune[] = [
-  {
-    quote: "A quiet mind makes room for answers you cannot force.",
-    focus: "One minute of unhurried breathing",
-    luckyNumbers: "3 · 7 · 21 · 42",
-  },
-  {
-    quote: "Tending your internal reserves today pays compound interest tomorrow.",
-    focus: "Notice one small feeling without fixing it",
-    luckyNumbers: "4 · 11 · 28 · 56",
-  },
-  {
-    quote: "The habit of pausing before reacting is the foundation of inner strength.",
-    focus: "Pause for three seconds before replying",
-    luckyNumbers: "2 · 9 · 18 · 72",
-  },
-  {
-    quote: "Rest is the soil where new strength takes root.",
-    focus: "Put your phone down five minutes earlier tonight",
-    luckyNumbers: "5 · 14 · 33 · 60",
-  },
-  {
-    quote: "One honest paragraph in your field notes untangles what hours of overthinking cannot.",
-    focus: "Write without editing the first sentence",
-    luckyNumbers: "1 · 8 · 27 · 64",
-  },
-  {
-    quote: "Your peace of mind is an account only you can fund. Keep today's deposit steady.",
-    focus: "A single glass of water in silence",
-    luckyNumbers: "6 · 13 · 39 · 81",
-  },
-  {
-    quote: "Solvency begins within: carrying quiet inside softens the outside noise.",
-    focus: "Protect one boundary with gentle firmness",
-    luckyNumbers: "7 · 19 · 41 · 88",
-  },
-  {
-    quote: "Clarity arrives when you meet your thoughts with gentle curiosity.",
-    focus: "Replace self-criticism with observation",
-    luckyNumbers: "9 · 15 · 30 · 75",
-  },
-  {
-    quote: "Every difficult feeling is information looking for a safe place to land.",
-    focus: "Give an uncomfortable thought room to pass",
-    luckyNumbers: "8 · 16 · 32 · 68",
-  },
-  {
-    quote: "Patience is emotional liquidity. It grants you the room to respond with care.",
-    focus: "Release the rush to conclude early",
-    luckyNumbers: "3 · 12 · 24 · 48",
-  },
-  {
-    quote: "Small, steady habits outlast intense sprints every single time.",
-    focus: "Do one ordinary thing with full attention",
-    luckyNumbers: "5 · 10 · 25 · 50",
-  },
-  {
-    quote: "Notice the quiet victories. Stepping back before a spiral is real progress.",
-    focus: "Acknowledge one hard moment you handled well",
-    luckyNumbers: "4 · 17 · 34 · 91",
-  },
-  {
-    quote: "The courage to stay honest with yourself builds genuine wealth.",
-    focus: "Admit one small truth you avoided this week",
-    luckyNumbers: "6 · 22 · 44 · 86",
-  },
-  {
-    quote: "Today's stillness is an investment in tomorrow's resilience.",
-    focus: "Step outside and look up at the sky",
-    luckyNumbers: "7 · 23 · 49 · 97",
-  },
-];
-
-function getDailyFortuneIndex(): number {
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-  let hash = 0;
-  for (let i = 0; i < dateStr.length; i++) {
-    hash = (hash << 5) - hash + dateStr.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) % FORTUNES.length;
-}
 
 interface NavLink {
   label: string;
@@ -139,21 +51,45 @@ const TopNavigation: React.FC = () => {
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [swapModalOpen, setSwapModalOpen] = useState(false);
-  const [fortuneOpen, setFortuneOpen] = useState(false);
-  const [fortuneIndex, setFortuneIndex] = useState(() => getDailyFortuneIndex());
+  const [godJarOpen, setGodJarOpen] = useState(false);
+  const [jarNote, setJarNote] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReleased, setIsReleased] = useState(false);
 
-  const handleOpenFortune = () => {
+  const handleOpenGodJar = () => {
     play('click');
-    setFortuneIndex(getDailyFortuneIndex());
-    setFortuneOpen(true);
+    setIsReleased(false);
+    setGodJarOpen(true);
   };
 
-  const handleCrackAnother = () => {
-    play('celebration');
-    setFortuneIndex((prev) => (prev + 1) % FORTUNES.length);
+  const handleReleaseAnother = () => {
+    play('click');
+    setIsReleased(false);
+    setJarNote('');
   };
 
-  const currentFortune = FORTUNES[fortuneIndex] ?? FORTUNES[0];
+  const handleSendToGod = async () => {
+    const trimmed = jarNote.trim();
+    if (!trimmed || isSubmitting) return;
+
+    setIsSubmitting(true);
+    play('click');
+
+    try {
+      await fetch('/api/god-jar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: trimmed }),
+      });
+    } catch (err) {
+      console.error('[GodJar] submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setIsReleased(true);
+      setJarNote('');
+      play('celebration');
+    }
+  };
 
   // Balances fetched when dropdown is open and authenticated
   const {
@@ -505,16 +441,16 @@ const TopNavigation: React.FC = () => {
 
         <button
           type="button"
-          className={styles.mobileFortuneBtn}
-          onClick={handleOpenFortune}
-          aria-label="Daily fortune cookie"
+          className={styles.mobileGodJarBtn}
+          onClick={handleOpenGodJar}
+          aria-label="Give It to God Jar"
         >
           <Image
-            src="/icons/fortune-cookie.png"
-            alt="Fortune cookie"
+            src="/icons/god-jar.png"
+            alt="Give It to God"
             width={26}
-            height={26}
-            className={styles.mobileFortuneIcon}
+            height={41}
+            className={styles.mobileGodJarIcon}
             priority
           />
         </button>
@@ -936,50 +872,83 @@ const TopNavigation: React.FC = () => {
         onClose={() => setSwapModalOpen(false)}
       />
       <ModalShell
-        isOpen={fortuneOpen}
-        onClose={() => setFortuneOpen(false)}
+        isOpen={godJarOpen}
+        onClose={() => setGodJarOpen(false)}
         title={
-          <div className={styles.fortuneHeaderTitle}>
-            <span className={styles.fortuneKanji} lang="ja">運勢</span>
-            <span className={styles.fortuneTitleText}>Daily Fortune</span>
+          <div className={styles.godJarHeaderTitle}>
+            <span className={styles.godJarKanji} lang="ja">奉納</span>
+            <span className={styles.godJarTitleText}>Give It to God</span>
           </div>
         }
-        className={styles.fortuneModalDialog}
+        className={styles.godJarModalDialog}
         maxWidth="sm"
       >
-        <div className={styles.fortuneModalContent}>
-          <div className={styles.fortuneCookieImgWrap}>
+        <div className={styles.godJarModalContent}>
+          <div className={styles.godJarVisual}>
             <Image
-              src="/icons/fortune-cookie.png"
-              alt="Fortune cookie"
+              src="/icons/god-jar.png"
+              alt="Give It to God Jar"
               width={68}
-              height={68}
-              className={styles.fortuneCookieImg}
+              height={107}
+              className={styles.godJarImg}
+              priority
             />
           </div>
-          <div className={styles.fortuneSlip}>
-            <div className={styles.fortuneSlipHeader}>
-              <span className={styles.fortuneSlipKanji} lang="ja">御神籤</span>
-              <span className={styles.fortuneSlipSub}>Fortune Slip</span>
+
+          {isReleased ? (
+            <div className={styles.godJarReleasedWrap}>
+              <div className={styles.godJarReleasedKanji} lang="ja">安寧</div>
+              <h3 className={styles.godJarReleasedTitle}>Released into the Horizon</h3>
+              <p className={styles.godJarReleasedText}>
+                Your note has been received by the Ethereal Horizon. May your thoughts find quiet and your spirit find rest.
+              </p>
+              <div className={styles.godJarButtonRow}>
+                <button
+                  type="button"
+                  className={styles.godJarSecondaryBtn}
+                  onClick={handleReleaseAnother}
+                >
+                  Release another note
+                </button>
+                <button
+                  type="button"
+                  className={styles.godJarCta}
+                  onClick={() => setGodJarOpen(false)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
-            <p className={styles.fortuneQuote}>&ldquo;{currentFortune.quote}&rdquo;</p>
-            <div className={styles.fortuneDivider} />
-            <div className={styles.fortuneMeta}>
-              <span className={styles.fortuneFocusLabel}>Today&apos;s focus:</span>
-              <span className={styles.fortuneFocusText}>{currentFortune.focus}</span>
+          ) : (
+            <div className={styles.godJarFormWrap}>
+              <p className={styles.godJarPrompt}>
+                Surrender what is beyond your control. Place a worry, prayer, or intention into the jar. Once released, it is held anonymously in the quiet expanse of the Ethereal Horizon.
+              </p>
+              <div className={styles.godJarSlip}>
+                <textarea
+                  className={styles.godJarTextarea}
+                  placeholder="Write what you wish to surrender..."
+                  value={jarNote}
+                  onChange={(e) => setJarNote(e.target.value)}
+                  maxLength={1000}
+                  rows={4}
+                  aria-label="Your note or prayer"
+                />
+                <div className={styles.godJarSlipFooter}>
+                  <span className={styles.godJarAnonymousTag}>Anonymous · Encrypted</span>
+                  <span className={styles.godJarCharCount}>{jarNote.length}/1000</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={styles.godJarCta}
+                onClick={() => void handleSendToGod()}
+                disabled={!jarNote.trim() || isSubmitting}
+              >
+                {isSubmitting ? 'Releasing...' : 'Give it to God'}
+              </button>
             </div>
-            <div className={styles.fortuneNumbers}>
-              <span className={styles.fortuneNumbersLabel}>Lucky numbers:</span>
-              <span className={styles.fortuneNumbersValues}>{currentFortune.luckyNumbers}</span>
-            </div>
-          </div>
-          <button
-            type="button"
-            className={styles.fortuneDrawBtn}
-            onClick={handleCrackAnother}
-          >
-            Draw another fortune
-          </button>
+          )}
         </div>
       </ModalShell>
     </header>

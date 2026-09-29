@@ -1602,12 +1602,12 @@ button.dropdownTokenCard:active,
   }
 }
 
-.mobileFortuneBtn {
+.mobileGodJarBtn {
   display: none;
 }
 
 @media (max-width: 900px) {
-  .mobileFortuneBtn {
+  .mobileGodJarBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1615,271 +1615,345 @@ button.dropdownTokenCard:active,
     left: calc(75% - 18px);
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--color-surface-base) 85%, transparent);
-    border: 1.5px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     padding: 0;
     cursor: pointer;
     z-index: 10;
-    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+    transition: transform 0.15s ease, filter 0.15s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .mobileFortuneBtn:hover {
-    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-base));
-    transform: translate(-50%, -50%) scale(1.06);
+  .mobileGodJarBtn:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-primary) 65%, transparent));
   }
 
-  .mobileFortuneBtn:active {
+  .mobileGodJarBtn:active {
     transform: translate(-50%, -50%) scale(0.92);
   }
 
-  .mobileFortuneIcon {
-    width: 25px;
-    height: 25px;
+  .mobileGodJarIcon {
+    width: 26px;
+    height: 41px;
     object-fit: contain;
     display: block;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+    filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--palette-ink) 22%, transparent));
   }
 }
 
-:global([data-theme="dark"]) .mobileFortuneBtn {
-  background: color-mix(in srgb, var(--color-surface-2) 90%, transparent);
-  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
-}
+/* ── Give It to God Jar Popup (Ethereal Horizon) ── */
 
-/* ── Daily Fortune Popup ── */
-
-.fortuneModalDialog {
+.godJarModalDialog {
   border: 2px solid var(--color-primary-hover) !important;
   border-radius: 20px !important;
   box-shadow:
     0 4px 0 var(--color-primary),
-    0 16px 40px rgba(0, 0, 0, 0.22) !important;
+    0 16px 40px color-mix(in srgb, var(--palette-ink) 22%, transparent) !important;
 }
 
-:global([data-theme="dark"]) .fortuneModalDialog {
-  border-color: color-mix(in srgb, var(--color-primary) 55%, rgba(255, 255, 255, 0.15)) !important;
+:global([data-theme="dark"]) .godJarModalDialog {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, transparent) !important;
   box-shadow:
-    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, #000),
-    0 24px 60px rgba(0, 0, 0, 0.6) !important;
+    0 6px 0 color-mix(in srgb, var(--color-primary) 42%, var(--palette-ink)),
+    0 24px 60px color-mix(in srgb, var(--palette-ink) 60%, transparent) !important;
 }
 
-.fortuneHeaderTitle {
+.godJarHeaderTitle {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.fortuneKanji {
+.godJarKanji {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   color: var(--color-primary);
 }
 
-.fortuneTitleText {
+.godJarTitleText {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--color-text-dark);
 }
 
-:global([data-theme="dark"]) .fortuneTitleText {
+:global([data-theme="dark"]) .godJarTitleText {
   color: var(--color-text-light);
 }
 
-.fortuneModalContent {
+.godJarModalContent {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 6px 4px 14px;
+  padding: 4px 4px 14px;
 }
 
-.fortuneCookieImgWrap {
+.godJarVisual {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  animation: fortuneBob 3s ease-in-out infinite;
+  margin-bottom: 12px;
+  animation: godJarFloat 4s ease-in-out infinite;
 }
 
-@keyframes fortuneBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+@keyframes godJarFloat {
+  0%, 100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--color-primary) 30%, transparent));
+  }
+  50% {
+    transform: translateY(-5px);
+    filter: drop-shadow(0 14px 26px color-mix(in srgb, var(--color-primary) 52%, transparent));
+  }
 }
 
-.fortuneCookieImg {
-  width: 68px;
-  height: 68px;
+.godJarImg {
+  width: 64px;
+  height: 100px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.14));
+  display: block;
 }
 
-.fortuneSlip {
+.godJarFormWrap {
   width: 100%;
-  background: color-mix(in srgb, var(--color-surface-base) 96%, #ffffff);
-  border: 2px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.godJarPrompt {
+  margin: 0 0 14px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 450;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 380px;
+}
+
+.godJarSlip {
+  width: 100%;
+  background: color-mix(in srgb, var(--color-surface-base) 96%, var(--palette-white));
+  border: 2px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
   border-radius: 16px;
-  padding: 20px 18px 18px;
-  margin-bottom: 20px;
+  padding: 14px 14px 12px;
+  margin-bottom: 18px;
   box-shadow:
-    0 4px 0 color-mix(in oklch, var(--color-primary) 20%, transparent),
-    0 10px 28px rgba(16, 24, 58, 0.08);
+    0 4px 0 color-mix(in srgb, var(--color-primary) 20%, transparent),
+    0 10px 28px color-mix(in srgb, var(--palette-ink) 8%, transparent);
 }
 
-:global([data-theme="dark"]) .fortuneSlip {
-  background: color-mix(in srgb, var(--color-surface-2) 92%, #000000);
-  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+:global([data-theme="dark"]) .godJarSlip {
+  background: color-mix(in srgb, var(--color-surface-2) 92%, var(--palette-ink));
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
   box-shadow:
-    0 4px 0 color-mix(in oklch, var(--color-primary) 30%, #000),
-    0 12px 30px rgba(0, 0, 0, 0.45);
+    0 4px 0 color-mix(in srgb, var(--color-primary) 30%, var(--palette-ink)),
+    0 12px 30px color-mix(in srgb, var(--palette-ink) 45%, transparent);
 }
 
-.fortuneSlipHeader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.fortuneSlipKanji {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: 0.14em;
-}
-
-.fortuneSlipSub {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-text-muted);
-}
-
-.fortuneQuote {
-  margin: 0;
+.godJarTextarea {
+  width: 100%;
+  min-height: 100px;
+  max-height: 200px;
+  resize: vertical;
+  background: transparent;
+  border: 1px dashed color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: 10px;
+  padding: 12px;
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 450;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--color-text-dark);
-  letter-spacing: -0.01em;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  box-sizing: border-box;
 }
 
-:global([data-theme="dark"]) .fortuneQuote {
+:global([data-theme="dark"]) .godJarTextarea {
   color: var(--color-text-light);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
-.fortuneDivider {
-  width: 44px;
-  height: 1px;
-  background: color-mix(in oklch, var(--color-primary) 25%, transparent);
-  margin: 16px auto 14px;
+.godJarTextarea:focus {
+  border-style: solid;
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 4%, transparent);
 }
 
-.fortuneMeta {
+.godJarSlipFooter {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  margin-bottom: 8px;
-}
-
-.fortuneFocusLabel {
+  justify-content: space-between;
+  margin-top: 8px;
   font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-}
-
-.fortuneFocusText {
-  font-family: var(--font-body);
-  color: var(--color-text-muted);
-  font-weight: 450;
-  font-size: 0.82rem;
-}
-
-.fortuneNumbers {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.70rem;
   color: var(--color-text-muted);
 }
 
-.fortuneNumbersLabel {
-  text-transform: uppercase;
-  font-size: 0.66rem;
+.godJarAnonymousTag {
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.godJarCharCount {
   letter-spacing: 0.06em;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-.fortuneNumbersValues {
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: 0.12em;
-}
-
-.fortuneDrawBtn {
+.godJarCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 42px;
-  padding: 0 24px;
+  padding: 0 28px;
   border: 2px solid var(--color-primary);
   border-radius: 999px;
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--palette-white);
   font-family: var(--font-button);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: 0 4px 0 color-mix(in oklch, var(--color-primary) 50%, #000);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 45%, var(--palette-ink));
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.fortuneDrawBtn:hover {
+.godJarCta:hover:not(:disabled) {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 5px 0 color-mix(in oklch, var(--color-primary) 50%, #000);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--color-primary) 45%, var(--palette-ink));
 }
 
-.fortuneDrawBtn:active {
+.godJarCta:active:not(:disabled) {
   transform: translateY(2px);
-  box-shadow: 0 2px 0 color-mix(in oklch, var(--color-primary) 50%, #000);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-primary) 45%, var(--palette-ink));
 }
 
-:global([data-theme="dark"]) .fortuneDrawBtn {
+.godJarCta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 45%, var(--palette-ink));
+}
+
+:global([data-theme="dark"]) .godJarCta {
   background: var(--color-primary);
   border-color: var(--color-primary-hover);
-  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 42%, #000);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 42%, var(--palette-ink));
 }
 
-:global([data-theme="dark"]) .fortuneDrawBtn:hover {
+:global([data-theme="dark"]) .godJarCta:hover:not(:disabled) {
   background: var(--color-primary-hover);
-  box-shadow: 0 5px 0 color-mix(in srgb, var(--color-primary) 42%, #000);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--color-primary) 42%, var(--palette-ink));
 }
 
-:global([data-theme="dark"]) .fortuneDrawBtn:active {
+:global([data-theme="dark"]) .godJarCta:active:not(:disabled) {
   transform: translateY(2px);
-  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-primary) 42%, #000);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--color-primary) 42%, var(--palette-ink));
 }
+
+/* ── Released / Surrender State ── */
+
+.godJarReleasedWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px 10px;
+  animation: godJarFadeIn 0.35s ease;
+}
+
+@keyframes godJarFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.godJarReleasedKanji {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.16em;
+}
+
+.godJarReleasedTitle {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .godJarReleasedTitle {
+  color: var(--color-text-light);
+}
+
+.godJarReleasedText {
+  margin: 0 0 16px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 450;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+  max-width: 360px;
+}
+
+.godJarButtonRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.godJarSecondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 22px;
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-base) 90%, transparent);
+  color: var(--color-text-dark);
+  font-family: var(--font-button);
+  font-size: 0.82rem;
+  font-weight: 550;
+  cursor: pointer;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 20%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+:global([data-theme="dark"]) .godJarSecondaryBtn {
+  color: var(--color-text-light);
+  background: color-mix(in srgb, var(--color-surface-2) 90%, transparent);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--color-primary) 30%, var(--palette-ink));
+}
+
+.godJarSecondaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.godJarSecondaryBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
 
 
