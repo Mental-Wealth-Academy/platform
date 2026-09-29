@@ -105,9 +105,6 @@ export default function LandingInstallPwaButton() {
         className={styles.heroPwaButton}
         aria-label={isInstalled ? 'Open Mental Wealth Academy' : 'Install Mental Wealth Academy app'}
       >
-        <span className={styles.heroButtonIcon} aria-hidden="true">
-          <DeviceMobile size={18} weight="regular" />
-        </span>
         <span className={styles.heroButtonText}>
           {isInstalled ? 'Launch App' : 'Install App'}
         </span>

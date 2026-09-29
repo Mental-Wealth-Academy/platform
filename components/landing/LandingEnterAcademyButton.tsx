@@ -27,7 +27,7 @@ const BrainIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-export default function LandingEnterAcademyButton({ showIcon = true, dark = false }: { showIcon?: boolean; dark?: boolean }) {
+export default function LandingEnterAcademyButton({ showIcon = false, dark = false }: { showIcon?: boolean; dark?: boolean }) {
   const { play } = useSound();
   const router = useRouter();
 

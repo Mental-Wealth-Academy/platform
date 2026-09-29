@@ -17,28 +17,28 @@ export const MOOD_OPTIONS: MoodOption[] = [
   {
     id: 'worry',
     label: 'Worry',
-    imageSrc: '/images/mood-worry.png',
+    imageSrc: '/images/mood-worry.jpg',
     prompt: "I'm dealing with worry and anxious thoughts.",
     topic: 'anxiety',
   },
   {
     id: 'stress',
     label: 'Stress',
-    imageSrc: '/images/mood-stress.png',
+    imageSrc: '/images/mood-stress.jpg',
     prompt: "I'm feeling really stressed out.",
     topic: 'stress',
   },
   {
     id: 'heartbreak',
     label: 'Heartbreak',
-    imageSrc: '/images/mood-heartbreak.png',
+    imageSrc: '/images/mood-heartbreak.jpg',
     prompt: "I'm going through heartbreak and emotional pain.",
     topic: 'coping',
   },
   {
     id: 'notsure',
     label: 'Not Sure',
-    imageSrc: '/images/mood-notsure.png',
+    imageSrc: '/images/mood-notsure.jpg',
     prompt: "I'm feeling off, but I'm not sure what I'm feeling.",
     topic: 'emotional-vocabulary',
   },
@@ -63,7 +63,7 @@ export default function MoodSelector({ onClose }: { onClose?: () => void }) {
   }, [play]);
 
   return (
-    <section className={styles.container} aria-label="Mood selector">
+    <section className={styles.container} aria-label="How Are You Feeling?">
       <div className={styles.headscene}>
         <div className={styles.headingLeft}>
           <div className={styles.eyeIconWrap} aria-hidden="true">
@@ -85,15 +85,15 @@ export default function MoodSelector({ onClose }: { onClose?: () => void }) {
             </svg>
           </div>
           <span className={styles.titleJa} lang="ja">気分</span>
-          <h2 className={styles.title}>Mood Selector</h2>
+          <h2 className={styles.title}>How Are You Feeling?</h2>
         </div>
         {onClose && (
           <button
             type="button"
             className={styles.closeButton}
             onClick={onClose}
-            aria-label="Close Mood Selector"
-            title="Dismiss mood selector"
+            aria-label="Close"
+            title="Dismiss"
           >
             <svg
               width="14"

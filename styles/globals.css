@@ -930,3 +930,9 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary) var(--color-surface-2);
 }
+
+@media (max-width: 768px) {
+  elevenlabs-convai {
+    display: none !important;
+  }
+}

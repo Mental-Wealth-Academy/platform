@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 const SCRIPT_ID = 'elevenlabs-convai-embed';
@@ -19,19 +19,29 @@ declare global {
 
 /**
  * Floating voice-chat widget for Blue's ElevenLabs agent. Renders the
- * collapsed orb bottom-right; the call only starts on an explicit click,
- * so no audio ever plays unprompted. Mount after the page is idle — the
- * embed script streams the widget UI in from unpkg.
+ * collapsed orb bottom-right on desktop; disabled on mobile screens.
  */
 export function ElevenLabsAgentWidget() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
   useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth > 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
     if (document.getElementById(SCRIPT_ID)) return;
     const script = document.createElement('script');
     script.id = SCRIPT_ID;
     script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
     script.async = true;
     document.body.appendChild(script);
-  }, []);
+  }, [isDesktop]);
+
+  if (!isDesktop) return null;
 
   return <elevenlabs-convai agent-id={BLUE_AGENT_ID} />;
 }

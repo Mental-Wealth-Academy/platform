@@ -447,9 +447,10 @@ export default function BlueCompanion({
       {status === 'idle' && (
         <div className={styles.companionOverlay}>
           <div className={styles.companionCard}>
-            <span className={styles.companionKicker}>Companion</span>
-            <p className={styles.companionText}>Voice chat with Blue.</p>
-            <CtaButton onClick={() => void startConversation()}>Talk with Blue</CtaButton>
+            <p className={styles.companionText}>Experience Therapeutic Intelligence</p>
+            <CtaButton className={styles.companionCtaButton} onClick={() => void startConversation()}>
+              Connect Now
+            </CtaButton>
           </div>
         </div>
       )}
@@ -599,9 +600,9 @@ export default function BlueCompanion({
                 type="button"
                 className={styles.companionOpenChatBtn}
                 onClick={() => void handleOpenInChat(lastMessage?.text || '')}
-                aria-label="Open chat with Blue"
+                aria-label="Prefer typing? Open chat with Blue"
               >
-                Open Chat
+                Prefer Typing?
               </button>
             </div>
           </div>
@@ -614,9 +615,9 @@ export default function BlueCompanion({
             type="button"
             className={styles.companionOpenChatBtn}
             onClick={() => void handleOpenInChat(lastMessage?.text || '')}
-            aria-label="Open chat with Blue"
+            aria-label="Prefer typing? Open chat with Blue"
           >
-            Open Chat
+            Prefer Typing?
           </button>
         </div>
       )}

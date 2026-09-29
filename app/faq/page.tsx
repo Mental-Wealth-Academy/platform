@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     url: 'https://mentalwealthacademy.world/faq',
     images: [
       {
-        url: 'https://mentalwealthacademy.world/images/landing-starfield.jpg',
+        url: 'https://mentalwealthacademy.world/images/og-preview.png',
         alt: 'Mental Wealth Academy',
       },
     ],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
-    images: ['https://mentalwealthacademy.world/images/landing-starfield.jpg'],
+    images: ['https://mentalwealthacademy.world/images/og-preview.png'],
   },
 };
 

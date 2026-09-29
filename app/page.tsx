@@ -2,31 +2,33 @@ import type { Metadata } from 'next';
 import LandingPage from '@/components/landing/LandingPage';
 
 const description =
-  'Mental Wealth Academy is an open-sourced platform for empowering educators, with structured reflection, and contribution-based curricula builders across mental wellness, financial literacy, and related subjects.';
+  'Mental Wealth Academy is the best mental plan — unlocking personal development, structured reflection, and guided wellness companionship with Blue.';
 
 export const metadata: Metadata = {
-  title: 'Mental Wealth Academy | Evolving Online Education and Educators',
+  title: 'Mental Wealth Academy | The Best Mental Plan',
   description,
   alternates: {
     canonical: 'https://mentalwealthacademy.world/',
   },
   openGraph: {
-    title: 'Mental Wealth Academy | Evolving Online Education and Educators',
+    title: 'Mental Wealth Academy | The Best Mental Plan',
     description,
     type: 'website',
     url: 'https://mentalwealthacademy.world/',
     images: [
       {
-        url: 'https://mentalwealthacademy.world/images/landing-starfield.jpg',
-        alt: 'Mental Wealth Academy',
+        url: 'https://mentalwealthacademy.world/images/og-preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'Mental Wealth Academy | The Best Mental Plan',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Mental Wealth Academy | Evolving Online Education and Educators',
+    title: 'Mental Wealth Academy | The Best Mental Plan',
     description,
-    images: ['https://mentalwealthacademy.world/images/landing-starfield.jpg'],
+    images: ['https://mentalwealthacademy.world/images/og-preview.png'],
   },
 };
 

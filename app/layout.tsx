@@ -70,13 +70,13 @@ import { Analytics } from '@vercel/analytics/next';
 export const metadata: Metadata = {
   title: 'Mental Wealth Academy',
   description: 'Unlock your potential, reach your horizon.',
-  manifest: '/manifest.webmanifest?v=6',
+  manifest: '/manifest.webmanifest?v=7',
   icons: {
     icon: [
-      { url: '/favicon.ico?v=4', sizes: 'any' },
-      { url: '/icons/favicon.png?v=4', type: 'image/png' },
+      { url: '/favicon.ico?v=5', sizes: 'any' },
+      { url: '/icons/favicon.png?v=5', type: 'image/png' },
     ],
-    apple: '/icons/apple-touch-icon.png?v=4',
+    apple: '/icons/apple-touch-icon.png?v=5',
   },
   applicationName: 'Mental Wealth',
   appleWebApp: {
@@ -89,13 +89,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Mental Wealth Academy',
-    description: 'Unlock your potential, reach your horizon.',
+    description: 'The best mental plan — unlock your potential with daily reflection and guided growth.',
     images: [
       {
-        url: 'https://imgur.com',
+        url: 'https://mentalwealthacademy.world/images/og-preview.png',
         width: 1200,
         height: 630,
-        alt: 'Mental Wealth Academy — a 12-week personal development program with Blue',
+        alt: 'Mental Wealth Academy — The Best Mental Plan',
       },
     ],
     type: 'website',
@@ -103,8 +103,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Mental Wealth Academy',
-    description: 'Unlock your potential, reach your horizon.',
-    images: ['https://imgur.com'],
+    description: 'The best mental plan — unlock your potential with daily reflection and guided growth.',
+    images: ['https://mentalwealthacademy.world/images/og-preview.png'],
   },
 };
 

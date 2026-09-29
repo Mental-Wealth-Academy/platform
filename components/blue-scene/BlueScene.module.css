@@ -474,7 +474,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: color-mix(in oklch, #0f121d 60%, transparent);
+  background: color-mix(in oklch, #0b0e17 40%, transparent);
   backdrop-filter: blur(8px);
 }
 
@@ -482,14 +482,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   width: 100%;
   max-width: 320px;
-  padding: 24px 22px;
+  padding: 26px 22px 24px;
   border-radius: 20px;
-  border: 1px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
-  background: color-mix(in oklch, #141724 94%, transparent);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary-hover) 35%, #ffffff);
+  background: #ffffff;
+  box-shadow:
+    0 16px 40px rgba(15, 23, 42, 0.16),
+    0 4px 12px rgba(15, 23, 42, 0.08);
   text-align: center;
   animation: companionCardEnter 0.2s ease-out;
 }
@@ -506,7 +508,7 @@
 }
 
 .companionKicker {
-  color: #9abaff;
+  color: var(--color-primary);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
@@ -515,12 +517,34 @@
 }
 
 .companionText {
-  margin: 0 0 6px;
-  color: #f3f4f8;
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  font-weight: 500;
-  line-height: 1.45;
+  margin: 0 0 4px;
+  color: #1a1d33;
+  font-family: var(--font-secondary), var(--font-primary), sans-serif;
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.companionCtaButton {
+  box-shadow:
+    0 3.5px 0 color-mix(in oklch, var(--color-primary) 50%, #000000),
+    0 4px 14px color-mix(in oklch, var(--color-action) 30%, transparent) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.companionCtaButton:hover {
+  transform: translateY(-1px) !important;
+  box-shadow:
+    0 4.5px 0 color-mix(in oklch, var(--color-primary) 50%, #000000),
+    0 6px 18px color-mix(in oklch, var(--color-action) 40%, transparent) !important;
+}
+
+.companionCtaButton:active {
+  transform: translateY(2px) !important;
+  box-shadow:
+    0 1.5px 0 color-mix(in oklch, var(--color-primary) 50%, #000000),
+    0 2px 6px color-mix(in oklch, var(--color-action) 25%, transparent) !important;
 }
 
 .alwaysAllowLabel {
@@ -530,7 +554,7 @@
   margin: 4px 0 6px;
   font-family: var(--font-body);
   font-size: 0.82rem;
-  color: var(--palette-on-dark);
+  color: #334155;
   cursor: pointer;
   user-select: none;
 }
@@ -556,7 +580,7 @@
   font-family: var(--font-button);
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--color-text-muted);
+  color: #64748b;
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 8px;
@@ -564,7 +588,7 @@
 }
 
 .dismissErrorBtn:hover {
-  color: var(--palette-on-dark);
+  color: #1e293b;
 }
 
 .companionConnectingDot {

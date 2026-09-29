@@ -92,17 +92,6 @@ export default function BlueScene() {
             <button
               type="button"
               role="tab"
-              aria-selected={mode === 'radio'}
-              className={`${styles.sceneSwitchButton} ${
-                mode === 'radio' ? styles.sceneSwitchButtonActive : ''
-              }`}
-              onClick={() => setMode('radio')}
-            >
-              Radio
-            </button>
-            <button
-              type="button"
-              role="tab"
               aria-selected={mode === 'companion'}
               className={`${styles.sceneSwitchButton} ${
                 mode === 'companion' ? styles.sceneSwitchButtonActive : ''
@@ -110,6 +99,17 @@ export default function BlueScene() {
               onClick={() => setMode('companion')}
             >
               Companion
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'radio'}
+              className={`${styles.sceneSwitchButton} ${
+                mode === 'radio' ? styles.sceneSwitchButtonActive : ''
+              }`}
+              onClick={() => setMode('radio')}
+            >
+              Radio
             </button>
           </div>
           {mode === 'radio' && (
