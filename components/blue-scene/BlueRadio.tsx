@@ -38,7 +38,7 @@ function livePosition(): { index: number; offset: number } {
 
 export default function BlueRadio({
   gardenBackground,
-  mode = 'radio',
+  mode = 'companion',
   onModeChange,
   initialMood,
   onInitialMoodHandled,
@@ -349,33 +349,6 @@ export default function BlueRadio({
 
   const onAir = playback === 'live';
 
-  const renderModeSwitch = () => (
-    <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
-      <button
-        type="button"
-        role="tab"
-        aria-selected={mode === 'radio'}
-        className={`${styles.sceneSwitchButton} ${
-          mode === 'radio' ? styles.sceneSwitchButtonActive : ''
-        }`}
-        onClick={() => onModeChange?.('radio')}
-      >
-        Radio
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected={mode === 'companion'}
-        className={`${styles.sceneSwitchButton} ${
-          mode === 'companion' ? styles.sceneSwitchButtonActive : ''
-        }`}
-        onClick={() => onModeChange?.('companion')}
-      >
-        Companion
-      </button>
-    </div>
-  );
-
   return (
     <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
       <div className={styles.radioBlueWrap}>
@@ -395,7 +368,6 @@ export default function BlueRadio({
           onModeChange={setCompanionMode}
           initialMood={initialMood}
           onInitialMoodHandled={onInitialMoodHandled}
-          modeSwitch={renderModeSwitch()}
           onMuteChange={onCompanionMuteChange}
           onRegisterMute={onRegisterCompanionMute}
         />
@@ -410,10 +382,6 @@ export default function BlueRadio({
               <CtaButton onClick={tuneIn}>Tune in</CtaButton>
             </div>
           )}
-
-          <div className={styles.radioFooter}>
-            {renderModeSwitch()}
-          </div>
         </>
       )}
 

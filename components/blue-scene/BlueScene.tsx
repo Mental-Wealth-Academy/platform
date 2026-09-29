@@ -9,7 +9,7 @@ import styles from './BlueScene.module.css';
 const bgUrl = dailySceneBackgroundUrl();
 
 export default function BlueScene() {
-  const [mode, setMode] = useState<'radio' | 'companion'>('radio');
+  const [mode, setMode] = useState<'radio' | 'companion'>('companion');
   const [initialMood, setInitialMood] = useState<InitialMoodData | null>(null);
   const [radioMuted, setRadioMuted] = useState(false);
   const toggleRadioMuteRef = useRef<(() => void) | null>(null);
@@ -88,7 +88,31 @@ export default function BlueScene() {
           </span>
         </div>
         <div className={styles.sceneHeaderControls}>
-          {mode === 'radio' ? (
+          <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'radio'}
+              className={`${styles.sceneSwitchButton} ${
+                mode === 'radio' ? styles.sceneSwitchButtonActive : ''
+              }`}
+              onClick={() => setMode('radio')}
+            >
+              Radio
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'companion'}
+              className={`${styles.sceneSwitchButton} ${
+                mode === 'companion' ? styles.sceneSwitchButtonActive : ''
+              }`}
+              onClick={() => setMode('companion')}
+            >
+              Companion
+            </button>
+          </div>
+          {mode === 'radio' && (
             <button
               type="button"
               className={`${styles.sceneMuteIconButton} ${!radioMuted ? styles.sceneMuteIconButtonActive : ''}`}
@@ -108,39 +132,6 @@ export default function BlueScene() {
                   <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
                   <line x1="22" y1="9" x2="16" y2="15" />
                   <line x1="16" y1="9" x2="22" y2="15" />
-                </svg>
-              )}
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={`${styles.sceneMuteIconButton} ${!companionMuted && companionConnected ? styles.sceneMuteIconButtonActive : ''}`}
-              onClick={handleToggleCompanionMute}
-              disabled={!companionConnected}
-              aria-pressed={!companionMuted}
-              aria-label={companionMuted ? 'Unmute microphone' : 'Mute microphone'}
-              title={
-                !companionConnected
-                  ? 'Connect to use microphone'
-                  : companionMuted
-                    ? 'Microphone muted — tap to unmute'
-                    : 'Microphone active — tap to mute'
-              }
-            >
-              {!companionMuted ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
-                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
                 </svg>
               )}
             </button>

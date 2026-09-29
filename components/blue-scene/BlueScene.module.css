@@ -785,45 +785,77 @@
   gap: 8px;
 }
 
-.companionButton {
-  padding: 5px 12px;
-  border: 1px solid color-mix(in oklch, var(--palette-ink) 24%, transparent);
-  border-radius: 999px;
+.companionMuteIconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1.5px solid color-mix(in oklch, var(--palette-ink) 20%, transparent);
+  border-radius: 50%;
   color: var(--palette-ink);
-  background: color-mix(in oklch, var(--palette-ink) 6%, transparent);
-  font-family: var(--font-button);
-  font-size: 0.72rem;
-  font-weight: 700;
+  background: color-mix(in oklch, var(--palette-canvas) 85%, transparent);
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.companionButton:hover {
-  background: color-mix(in oklch, var(--palette-ink) 12%, transparent);
+.companionMuteIconButton:hover {
+  background: color-mix(in oklch, var(--palette-canvas) 95%, transparent);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: scale(1.05);
 }
 
-.companionButtonMuted {
+.companionMuteIconButtonMuted {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background: color-mix(in oklch, var(--color-danger) 10%, transparent);
+}
+
+.companionMuteIconButtonMuted:hover {
+  background: color-mix(in oklch, var(--color-danger) 18%, transparent);
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
 
-.companionEndButton {
-  padding: 5px 12px;
-  border: 1px solid color-mix(in oklch, var(--color-danger) 36%, transparent);
+.companionOpenChatBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 13px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 35%, transparent);
   border-radius: 999px;
-  color: var(--color-danger);
-  background: color-mix(in oklch, var(--color-danger) 8%, transparent);
+  color: #ffffff !important;
+  background: var(--color-primary);
   font-family: var(--font-button);
   font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 28%, transparent);
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.companionEndButton:hover {
-  background: var(--color-danger);
-  border-color: var(--color-danger);
-  color: var(--color-on-action, #ffffff);
+.companionOpenChatBtn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px color-mix(in oklch, var(--color-primary) 38%, transparent);
+}
+
+.companionOpenChatBtn:active {
+  transform: translateY(1px);
+}
+
+.companionIdleFooter {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
 }
 
 @media (prefers-reduced-motion: reduce) {

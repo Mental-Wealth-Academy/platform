@@ -509,6 +509,18 @@ const BlueChat: React.FC<BlueChatProps> = ({
         },
       ];
     }
+    try {
+      const saved = getStorageItem('mwa_blue_chat_history', 'local');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp),
+          }));
+        }
+      }
+    } catch {}
     return [
       {
         id: '1',
@@ -603,6 +615,18 @@ const BlueChat: React.FC<BlueChatProps> = ({
       console.error('Failed to hydrate companion handoff in BlueChat:', e);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (messages.length > 1 || (messages.length === 1 && messages[0].id !== '1')) {
+      try {
+        const serializable = messages.slice(-50).map((m) => ({
+          ...m,
+          timestamp: m.timestamp instanceof Date ? m.timestamp.getTime() : m.timestamp,
+        }));
+        setStorageItem('mwa_blue_chat_history', JSON.stringify(serializable), 'local');
+      } catch {}
+    }
+  }, [messages]);
 
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -849,6 +873,8 @@ const BlueChat: React.FC<BlueChatProps> = ({
         play('error');
         return;
       }
+      removeStorageItem('mwa_blue_chat_history', 'local');
+      removeStorageItem('mwa_blue_companion_history', 'local');
       setMessages([{
         id: `memory-reset-${Date.now()}`,
         text: 'Cleared. I do not remember our earlier conversations. Where would you like to start?',

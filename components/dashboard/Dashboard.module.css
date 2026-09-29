@@ -125,12 +125,14 @@
 
   .blueSceneWrap {
     flex: 1 1 auto;
-    height: clamp(260px, calc(var(--mobile-content-height, 100dvh) - 124px), 480px);
+    height: clamp(260px, calc(var(--mobile-content-height, 100dvh) - 176px), 460px);
     min-height: 260px;
   }
 
   .blueSceneWrapFull {
-    height: clamp(440px, calc(var(--mobile-content-height, 100dvh) - 12px), calc(100dvh - 84px));
+    flex: 1;
+    height: calc(var(--mobile-content-height, 100dvh) - 48px);
+    min-height: clamp(480px, calc(100dvh - 160px), 720px);
     max-height: none;
   }
 

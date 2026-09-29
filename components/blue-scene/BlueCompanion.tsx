@@ -25,13 +25,14 @@ export const MOOD_FIRST_MESSAGES: Record<string, string> = {
   notsure: "It's completely okay to feel off without knowing exactly why. Let's unpack it together. How are you feeling in your body right now?",
 };
 
+export const COMPANION_HISTORY_KEY = 'mwa_blue_companion_history';
+
 interface BlueCompanionProps {
   companionVolumeRef: MutableRefObject<number>;
   companionMode: 'idle' | 'listening' | 'speaking';
   onModeChange: (mode: 'idle' | 'listening' | 'speaking') => void;
   initialMood?: InitialMoodData | null;
   onInitialMoodHandled?: () => void;
-  modeSwitch?: React.ReactNode;
   onMuteChange?: (muted: boolean) => void;
   onRegisterMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }
@@ -49,7 +50,6 @@ export default function BlueCompanion({
   onModeChange,
   initialMood,
   onInitialMoodHandled,
-  modeSwitch,
   onMuteChange,
   onRegisterMute,
 }: BlueCompanionProps) {
@@ -65,11 +65,38 @@ export default function BlueCompanion({
   const [isMicError, setIsMicError] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [connectingLabel, setConnectingLabel] = useState<string | null>(null);
-  const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(null);
+  const [lastMessage, setLastMessage] = useState<ChatBubbleMessage | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const saved = getStorageItem(COMPANION_HISTORY_KEY, 'local');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const latest = parsed[parsed.length - 1];
+          if (latest?.text) {
+            return { role: latest.role === 'user' ? 'user' : 'agent', text: latest.text };
+          }
+        }
+      }
+    } catch {}
+    return null;
+  });
 
   const conversationRef = useRef<VoiceConversation | null>(null);
   const conversationHistoryRef = useRef<Array<{ role: 'user' | 'agent'; text: string; timestamp: number }>>([]);
   const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = getStorageItem(COMPANION_HISTORY_KEY, 'local');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          conversationHistoryRef.current = parsed.slice(-50);
+        }
+      }
+    } catch {}
+  }, []);
 
   const cleanupSession = useCallback(async () => {
     if (rafRef.current) {
@@ -147,11 +174,18 @@ export default function BlueCompanion({
 
       const openingLine = moodOverride
         ? MOOD_FIRST_MESSAGES[moodOverride.id] || moodOverride.prompt
-        : null;
+        : conversationHistoryRef.current.length > 0
+          ? "Welcome back. I'm right here with you. What's on your mind now?"
+          : null;
 
-      conversationHistoryRef.current = openingLine
-        ? [{ role: 'agent', text: openingLine, timestamp: Date.now() }]
-        : [];
+      if (openingLine) {
+        conversationHistoryRef.current.push({ role: 'agent', text: openingLine, timestamp: Date.now() });
+        setStorageItem(
+          COMPANION_HISTORY_KEY,
+          JSON.stringify(conversationHistoryRef.current.slice(-50)),
+          'local',
+        );
+      }
 
       try {
         const res = await fetch('/api/voice/conversation-url');
@@ -190,6 +224,15 @@ export default function BlueCompanion({
                 role: 'agent',
                 text: openingLine,
               });
+            }
+            if (conversationRef.current && conversationHistoryRef.current.length > 1) {
+              const pastTurns = conversationHistoryRef.current.slice(-6);
+              const summary = pastTurns
+                .map((t) => `${t.role === 'user' ? 'User' : 'Blue'}: "${t.text.replace(/\s+/g, ' ').slice(0, 100)}"`)
+                .join('; ');
+              try {
+                conversationRef.current.sendContextualUpdate(`Prior conversation earlier today: ${summary}`);
+              } catch {}
             }
           },
           onDisconnect: () => {
@@ -230,6 +273,14 @@ export default function BlueCompanion({
                 text: payload.message,
                 timestamp: Date.now(),
               });
+              if (conversationHistoryRef.current.length > 50) {
+                conversationHistoryRef.current = conversationHistoryRef.current.slice(-50);
+              }
+              setStorageItem(
+                COMPANION_HISTORY_KEY,
+                JSON.stringify(conversationHistoryRef.current),
+                'local',
+              );
               setLastMessage({
                 role,
                 text: payload.message,
@@ -343,7 +394,7 @@ export default function BlueCompanion({
   }, [cleanupSession]);
 
   const handleOpenInChat = useCallback(
-    async (agentText: string) => {
+    async (agentText: string = '') => {
       await cleanupSession();
       const history = [...conversationHistoryRef.current];
 
@@ -360,29 +411,33 @@ export default function BlueCompanion({
         );
       }
 
-      const lower = agentText.toLowerCase();
-      let promptQuery = '';
-      if (/\b(breathe|breathing|nervous system|somatic|grounding)\b/i.test(lower)) {
-        promptQuery = 'show me guides on nervous system regulation';
-      } else if (/\b(stress|burnout|overwhelm)\b/i.test(lower)) {
-        promptQuery = 'show me guides on stress relief';
-      } else if (/\b(anxiety|worry|panic)\b/i.test(lower)) {
-        promptQuery = 'show me guides on anxiety';
-      } else if (/\b(heartbreak|grief|sadness)\b/i.test(lower)) {
-        promptQuery = 'show me guides on heartbreak and healing';
-      } else if (/\b(shadow work|inner child)\b/i.test(lower)) {
-        promptQuery = 'show me guides on shadow work';
-      } else if (/\b(sleep|rest|insomnia)\b/i.test(lower)) {
-        promptQuery = 'show me guides on sleep';
-      } else if (/\b(prayer|bible|scripture|gratitude)\b/i.test(lower)) {
-        promptQuery = 'give me a prayer and scripture on peace';
-      } else if (/\b(guide|lesson|exercise|practice|technique|step|tool)\b/i.test(lower)) {
-        promptQuery = 'show me guides and tools for this';
-      } else {
-        promptQuery = `Let's keep chatting about this: "${agentText.slice(0, 140)}"`;
-      }
+      if (agentText) {
+        const lower = agentText.toLowerCase();
+        let promptQuery = '';
+        if (/\b(breathe|breathing|nervous system|somatic|grounding)\b/i.test(lower)) {
+          promptQuery = 'show me guides on nervous system regulation';
+        } else if (/\b(stress|burnout|overwhelm)\b/i.test(lower)) {
+          promptQuery = 'show me guides on stress relief';
+        } else if (/\b(anxiety|worry|panic)\b/i.test(lower)) {
+          promptQuery = 'show me guides on anxiety';
+        } else if (/\b(heartbreak|grief|sadness)\b/i.test(lower)) {
+          promptQuery = 'show me guides on heartbreak and healing';
+        } else if (/\b(shadow work|inner child)\b/i.test(lower)) {
+          promptQuery = 'show me guides on shadow work';
+        } else if (/\b(sleep|rest|insomnia)\b/i.test(lower)) {
+          promptQuery = 'show me guides on sleep';
+        } else if (/\b(prayer|bible|scripture|gratitude)\b/i.test(lower)) {
+          promptQuery = 'give me a prayer and scripture on peace';
+        } else if (/\b(guide|lesson|exercise|practice|technique|step|tool)\b/i.test(lower)) {
+          promptQuery = 'show me guides and tools for this';
+        } else {
+          promptQuery = `Let's keep chatting about this: "${agentText.slice(0, 140)}"`;
+        }
 
-      router.push(`/blue?prompt=${encodeURIComponent(promptQuery)}`);
+        router.push(`/blue?prompt=${encodeURIComponent(promptQuery)}`);
+      } else {
+        router.push('/blue');
+      }
     },
     [cleanupSession, router],
   );
@@ -478,26 +533,6 @@ export default function BlueCompanion({
                 {lastMessage.role === 'agent' ? 'Blue' : 'You'}
               </span>
               <p className={styles.companionSubtitleText}>{lastMessage.text}</p>
-              {lastMessage.role === 'agent' && (
-                <div className={styles.companionSubtitleActions}>
-                  {/\bfield\s*notes?\b/i.test(lastMessage.text) && (
-                    <button
-                      type="button"
-                      className={styles.companionFieldNoteAction}
-                      onClick={() => setFieldNotesOpen(true)}
-                    >
-                      Write Field Note
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className={styles.companionChatAction}
-                    onClick={() => void handleOpenInChat(lastMessage.text)}
-                  >
-                    View in Chat
-                  </button>
-                </div>
-              )}
             </div>
           )}
 
@@ -536,20 +571,53 @@ export default function BlueCompanion({
             <div className={styles.companionControls}>
               <button
                 type="button"
-                className={styles.companionEndButton}
-                onClick={endConversation}
-                aria-label="End conversation session"
+                className={`${styles.companionMuteIconButton} ${isMicMuted ? styles.companionMuteIconButtonMuted : ''}`}
+                onClick={toggleMic}
+                aria-pressed={isMicMuted}
+                aria-label={isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
+                title={isMicMuted ? 'Microphone muted — tap to unmute' : 'Microphone active — tap to mute'}
               >
-                End
+                {!isMicMuted ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={styles.companionOpenChatBtn}
+                onClick={() => void handleOpenInChat(lastMessage?.text || '')}
+                aria-label="Open chat with Blue"
+              >
+                Open Chat
               </button>
             </div>
           </div>
         </>
       )}
 
-      {status !== 'connected' && modeSwitch && (
-        <div className={styles.radioFooter}>
-          {modeSwitch}
+      {status !== 'connected' && (
+        <div className={styles.companionIdleFooter}>
+          <button
+            type="button"
+            className={styles.companionOpenChatBtn}
+            onClick={() => void handleOpenInChat(lastMessage?.text || '')}
+            aria-label="Open chat with Blue"
+          >
+            Open Chat
+          </button>
         </div>
       )}
 
