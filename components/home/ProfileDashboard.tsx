@@ -136,12 +136,24 @@ export default function ProfileDashboard() {
             {username ?? 'Your profile'}
           </button>
           {verifierLevel !== null ? (
-            <span className={`${styles.learnerBadge} ${styles.verifierBadge}`}>
+            <button
+              type="button"
+              className={`${styles.learnerBadge} ${styles.verifierBadge}`}
+              onClick={() => play('click')}
+              aria-label={`Verifier status: ${tierName(verifierLevel)}`}
+            >
               <SealCheck size={12} weight="fill" aria-hidden="true" />
               {tierName(verifierLevel)}
-            </span>
+            </button>
           ) : (
-            <span className={styles.learnerBadge}>Learner</span>
+            <button
+              type="button"
+              className={styles.learnerBadge}
+              onClick={() => play('click')}
+              aria-label="Learner status"
+            >
+              Learner
+            </button>
           )}
         </div>
         <div className={styles.streak} aria-label={`Current streak: ${streak} days`}>
@@ -158,10 +170,16 @@ export default function ProfileDashboard() {
       </div>
 
       {memoryNote && (
-        <span className={`${styles.learnerBadge} ${styles.memoryBadge}`} title={memoryNote}>
+        <button
+          type="button"
+          className={`${styles.learnerBadge} ${styles.memoryBadge}`}
+          title={memoryNote}
+          onClick={() => play('click')}
+          aria-label="Blue's notes"
+        >
           <NotePencil size={12} weight="fill" aria-hidden="true" />
           Blue&apos;s notes
-        </span>
+        </button>
       )}
 
       {typeof window !== 'undefined' && createPortal(

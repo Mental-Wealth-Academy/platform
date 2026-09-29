@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { Trash, ArrowRight, Check, X } from '@phosphor-icons/react';
+import { useSound } from '@/hooks/useSound';
 import styles from './QuestAuthorPanel.module.css';
 
 interface AuthoredQuest {
@@ -48,6 +49,7 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
   onCreated,
   onDelete,
 }) => {
+  const { play } = useSound();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [points, setPoints] = useState(50);
@@ -172,7 +174,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
             className={styles.input}
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              play('click');
+              setTitle(e.target.value);
+            }}
             placeholder="e.g. Share your first reflection"
             maxLength={80}
             required
@@ -185,7 +190,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
             className={styles.textarea}
             rows={3}
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              play('click');
+              setDescription(e.target.value);
+            }}
             placeholder="Explain what the user should do to complete this quest."
             maxLength={600}
             required
@@ -198,7 +206,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
             <select
               className={styles.input}
               value={questType}
-              onChange={(e) => setQuestType(e.target.value as 'no-proof' | 'proof-required')}
+              onChange={(e) => {
+                play('click');
+                setQuestType(e.target.value as 'no-proof' | 'proof-required');
+              }}
             >
               <option value="no-proof">Mission (no proof)</option>
               <option value="proof-required">Submit (proof required)</option>
@@ -213,7 +224,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
               min={1}
               max={1000}
               value={points}
-              onChange={(e) => setPoints(Number(e.target.value))}
+              onChange={(e) => {
+                play('click');
+                setPoints(Number(e.target.value));
+              }}
               required
             />
           </label>
@@ -228,7 +242,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
               min={1}
               max={50}
               value={targetCount}
-              onChange={(e) => setTargetCount(Number(e.target.value))}
+              onChange={(e) => {
+                play('click');
+                setTargetCount(Number(e.target.value));
+              }}
               required
             />
           </label>
@@ -239,7 +256,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
               className={styles.input}
               type="datetime-local"
               value={expiresAt}
-              onChange={(e) => setExpiresAt(e.target.value)}
+              onChange={(e) => {
+                play('click');
+                setExpiresAt(e.target.value);
+              }}
             />
           </label>
         </div>
@@ -252,7 +272,10 @@ const QuestAuthorPanel: React.FC<QuestAuthorPanelProps> = ({
             className={styles.input}
             type="text"
             value={assigneeWallet}
-            onChange={(e) => setAssigneeWallet(e.target.value)}
+            onChange={(e) => {
+              play('click');
+              setAssigneeWallet(e.target.value);
+            }}
             placeholder="0x…"
           />
         </label>

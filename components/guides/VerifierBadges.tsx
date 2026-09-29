@@ -113,7 +113,16 @@ export default function VerifierBadges() {
             <li
               key={c.subject}
               className={styles.chip}
+              onClick={() => play('click')}
               onMouseEnter={() => play('soft-hover')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  play('click');
+                }
+              }}
             >
               <span className={styles.ring} aria-hidden="true">
                 {roman(c.maxLevel)}

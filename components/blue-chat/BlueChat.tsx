@@ -1784,7 +1784,6 @@ const BlueChat: React.FC<BlueChatProps> = ({
     }
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -2139,7 +2138,10 @@ const BlueChat: React.FC<BlueChatProps> = ({
           className={styles.input}
           placeholder="Say something..."
           value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          onChange={(e) => {
+            play('click');
+            setInputText(e.target.value);
+          }}
           onKeyDown={handleKeyPress}
           disabled={isTyping}
         />

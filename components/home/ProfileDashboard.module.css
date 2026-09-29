@@ -101,6 +101,13 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #f6f8ed;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.12s ease;
+}
+
+.learnerBadge:active {
+  transform: scale(0.95);
 }
 
 /* Earned verifier standing: greenlit with the secondary accent. */

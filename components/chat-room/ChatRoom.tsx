@@ -676,6 +676,7 @@ export default function ChatRoom({ fullPage = false, onBack, title = 'Global Com
   const emojis = ['🧠', '🌍', '📚', '💎', '⚡️', '🌱', '🏆', '🤝', '🕹️', '🧩', '🔥', '🚀', '💡', '🎮', '🌌', '🔮'];
 
   const addEmoji = (emoji: string) => {
+    play('click');
     setInput((prev) => prev + emoji);
     setShowEmojiPicker(false);
     inputRef.current?.focus();
@@ -694,7 +695,6 @@ export default function ChatRoom({ fullPage = false, onBack, title = 'Global Com
   }, [showEmojiPicker]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    play('click');
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -902,7 +902,10 @@ export default function ChatRoom({ fullPage = false, onBack, title = 'Global Com
           type="text"
           placeholder={isAuth ? "Message..." : "Sign in to send messages..."}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            play('click');
+            setInput(e.target.value);
+          }}
           onClick={() => play('input-focus')}
           onKeyDown={handleKeyDown}
           onFocus={markRead}

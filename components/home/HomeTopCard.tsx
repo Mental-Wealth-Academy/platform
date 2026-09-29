@@ -41,11 +41,17 @@ const PROFILE_BADGES = [
 ];
 
 /** Illustrated badge strip matching the indie collectible visual strip */
-function StampBanner() {
+function StampBanner({ onPlaySound }: { onPlaySound: () => void }) {
   return (
-    <div className={styles.stampBanner} aria-hidden="true">
+    <div className={styles.stampBanner} role="group" aria-label="Profile badges">
       {PROFILE_BADGES.map((b) => (
-        <div key={b.id} className={styles.stamp}>
+        <button
+          key={b.id}
+          type="button"
+          className={styles.stamp}
+          onClick={() => onPlaySound()}
+          aria-label={b.alt}
+        >
           <Image
             src={b.src}
             alt={b.alt}
@@ -54,7 +60,7 @@ function StampBanner() {
             className={styles.stampSvg}
             unoptimized={b.src.endsWith('.gif')}
           />
-        </div>
+        </button>
       ))}
     </div>
   );
@@ -192,15 +198,25 @@ export default function HomeTopCard({}: HomeTopCardProps) {
                   {username ?? 'Your profile'}
                 </button>
                 {verifierLevel !== null ? (
-                  <span className={styles.pillBadge}>
+                  <button
+                    type="button"
+                    className={styles.pillBadge}
+                    onClick={() => play('click')}
+                    aria-label={`Verifier status: ${tierName(verifierLevel)}`}
+                  >
                     <SealCheck size={12} weight="fill" aria-hidden="true" />
                     {tierName(verifierLevel)}
-                  </span>
+                  </button>
                 ) : (
-                  <span className={styles.pillBadge}>
+                  <button
+                    type="button"
+                    className={styles.pillBadge}
+                    onClick={() => play('click')}
+                    aria-label="Level 3 learner status"
+                  >
                     <SealCheck size={12} weight="fill" aria-hidden="true" />
                     Level-3
-                  </span>
+                  </button>
                 )}
               </div>
             </div>
@@ -217,7 +233,7 @@ export default function HomeTopCard({}: HomeTopCardProps) {
           </div>
 
           {/* Retro badges strip at bottom */}
-          <StampBanner />
+          <StampBanner onPlaySound={() => play('click')} />
         </div>
       </div>
 

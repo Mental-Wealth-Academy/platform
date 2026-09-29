@@ -11,6 +11,7 @@ import { XConnectingModal } from '../x-connecting/XConnectingModal';
 import QuestIcon from '@/components/quest-icon/QuestIcon';
 import type { DrawerQuest } from '@/components/quest-drawer/QuestDrawer';
 import type { QuestType } from '@/lib/quest-definitions';
+import { useSound } from '@/hooks/useSound';
 import styles from './QuestDetailPanel.module.css';
 
 const KIND_META: Record<QuestType, { label: string; tone: string }> = {
@@ -47,6 +48,7 @@ interface QuestDetailPanelProps {
 
 export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanelProps) {
   const { getAccessToken } = usePrivy();
+  const { play } = useSound();
   const { address, isConnected } = useAccount();
   const [step1Completed, setStep1Completed] = useState(false);
   const [step2Completed, setStep2Completed] = useState(false);
@@ -587,7 +589,10 @@ export default function QuestDetailPanel({ quest, onDeselect }: QuestDetailPanel
                 <textarea
                   className={styles.proofInput}
                   value={proofText}
-                  onChange={(e) => setProofText(e.target.value)}
+                  onChange={(e) => {
+                    play('click');
+                    setProofText(e.target.value);
+                  }}
                   placeholder="Write your entry here — what you did, learned, or made. You can also attach a file below."
                   rows={4}
                   maxLength={4000}
