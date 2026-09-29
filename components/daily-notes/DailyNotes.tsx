@@ -1160,17 +1160,7 @@ export default function DailyNotes({
                     beginWritingSession(dayToStart >= 0 ? dayToStart : 0);
                   }}
                 >
-                  Start writing session
-                </button>
-                <button
-                  type="button"
-                  className={styles.authPromptSecondary}
-                  onClick={() => {
-                    setShowPrepDialog(false);
-                    setPendingDayIndex(null);
-                  }}
-                >
-                  Maybe later
+                  Dump the cache
                 </button>
               </div>
             </div>

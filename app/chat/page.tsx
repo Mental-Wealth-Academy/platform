@@ -1,12 +1,9 @@
 'use client';
 
-import React, { useEffect, useState, type CSSProperties } from 'react';
+import React, { useEffect, useState } from 'react';
 import SquadsHub from '@/components/squads/SquadsHub';
 import ChatRoom from '@/components/chat-room/ChatRoom';
-import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
-
-const sceneUrl = dailySceneBackgroundUrl();
 
 export default function ChatPage() {
   const [activeSquad, setActiveSquad] = useState<string | null>(null);
@@ -46,9 +43,7 @@ export default function ChatPage() {
   return (
     <div
       className={`${styles.pageLayout} ${activeSquad ? styles.pageLayoutChatRoom : ''}`}
-      style={{ '--chat-scene': `url(${sceneUrl})` } as CSSProperties}
     >
-      <div className={styles.scene} aria-hidden="true" />
       <main className={`${styles.content} ${activeSquad ? styles.contentChatRoom : ''}`}>
         {activeSquad ? (
           <ChatRoom
