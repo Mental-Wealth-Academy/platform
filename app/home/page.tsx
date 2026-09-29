@@ -884,7 +884,7 @@ export default function HomePage() {
                   />
                   <CourseFolderCard
                     title="Wellness Meditation Track"
-                    avatarSrc="/archetypes/empath.png"
+                    avatarSrc="/meditation/wellness-track.jpg"
                     centerLabel="Wellness Meditation"
                     ctaLabel="Start Meditation"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
@@ -910,7 +910,7 @@ export default function HomePage() {
                     title="20-Minute Reset"
                     centerLabel="20-Minute Reset"
                     ctaLabel="Play Meditation"
-                    avatarSrc="/archetypes/empath.png"
+                    avatarSrc="/meditation/wellness-track.jpg"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
                     dark
                     motif="waveform"
@@ -928,7 +928,7 @@ export default function HomePage() {
                     title="Serene Mind"
                     centerLabel="Serene Mind"
                     ctaLabel="Start Meditation"
-                    avatarSrc="/anbel02.png"
+                    avatarSrc="/meditation/serene-mind.jpg"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
                     motif="spiral"
                   />

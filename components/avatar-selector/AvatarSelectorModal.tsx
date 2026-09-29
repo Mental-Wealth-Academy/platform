@@ -37,6 +37,8 @@ interface PresetAvatar {
 }
 
 const PRESET_AVATARS: PresetAvatar[] = [
+  { id: 'wellness', name: 'Celestial Guide', url: '/meditation/wellness-track.jpg' },
+  { id: 'serene', name: 'Serene Mind', url: '/meditation/serene-mind.jpg' },
   { id: 'sage', name: 'Sage', url: '/archetypes/sage.png' },
   { id: 'empath', name: 'Empath', url: '/archetypes/empath.png' },
   { id: 'visionary', name: 'Visionary', url: '/archetypes/visionary.png' },

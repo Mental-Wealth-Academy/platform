@@ -35,6 +35,13 @@ const TRACKS: Record<MeditationTrackKey, TrackMeta> = {
   },
 };
 
+const BREATH_PHASES = [
+  { text: 'Inhale', cue: 'Fill your lungs slowly' },
+  { text: 'Hold', cue: 'Rest in the pause' },
+  { text: 'Exhale', cue: 'Release tension fully' },
+  { text: 'Rest', cue: 'Find your center' },
+];
+
 interface MeditationPlayerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -61,6 +68,7 @@ export default function MeditationPlayerModal({
   const [duration, setDuration] = useState(TRACKS[initialTrack].defaultDuration);
   const [volume, setVolume] = useState(0.85);
   const [isMuted, setIsMuted] = useState(false);
+  const [breathIndex, setBreathIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const activeTrack = TRACKS[activeTrackKey] || TRACKS['twenty-minute-reset'];
@@ -71,6 +79,15 @@ export default function MeditationPlayerModal({
       setActiveTrackKey(initialTrack);
     }
   }, [isOpen, initialTrack]);
+
+  // Breathing cycle animation interval (4s per phase: Inhale -> Hold -> Exhale -> Rest)
+  useEffect(() => {
+    if (!isOpen) return;
+    const interval = setInterval(() => {
+      setBreathIndex((prev) => (prev + 1) % BREATH_PHASES.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   // Audio loading & auto-play on open or track switch
   useEffect(() => {
@@ -180,80 +197,81 @@ export default function MeditationPlayerModal({
   if (!isOpen || typeof window === 'undefined') return null;
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const currentBreath = BREATH_PHASES[breathIndex];
 
   return createPortal(
-    <div className={styles.overlay} onClick={onClose} role="presentation">
-      <div
-        className={styles.dialog}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Meditation Player"
-      >
-        {/* Header */}
+    <div
+      className={styles.fullScreenStage}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Meditation Space"
+    >
+      {/* Deep Space Background Visuals */}
+      <div className={styles.spaceBackground} aria-hidden="true" />
+      <div className={styles.spaceScrim} aria-hidden="true" />
+      <div className={styles.celestialAuraDust} aria-hidden="true" />
+
+      {/* Content Container */}
+      <div className={styles.contentShell}>
+        {/* Minimal Top Bar */}
         <header className={styles.header}>
-          <div className={styles.headerInfo}>
-            <div className={styles.headerIcon} aria-hidden="true">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
-                <path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6" />
-              </svg>
-            </div>
-            <div>
-              <span className={styles.kicker}>Mental Wealth Academy</span>
-              <h2 className={styles.title}>Meditation Space</h2>
-            </div>
+          <div className={styles.badgeWrap} aria-hidden="true">
+            <span className={styles.pulseDot} />
+            <span className={styles.badgeLabel}>Meditation Space</span>
           </div>
+
+          {/* Minimal Pill Track Selector */}
+          <div className={styles.trackTabs} role="tablist" aria-label="Meditation tracks">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTrackKey === 'twenty-minute-reset'}
+              className={`${styles.trackTab} ${activeTrackKey === 'twenty-minute-reset' ? styles.trackTabActive : ''}`}
+              onClick={() => setActiveTrackKey('twenty-minute-reset')}
+            >
+              20-Min Reset
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTrackKey === 'meditation-ocean-432hz'}
+              className={`${styles.trackTab} ${activeTrackKey === 'meditation-ocean-432hz' ? styles.trackTabActive : ''}`}
+              onClick={() => setActiveTrackKey('meditation-ocean-432hz')}
+            >
+              Ocean 432Hz
+            </button>
+          </div>
+
           <button
             type="button"
             className={styles.closeButton}
             onClick={onClose}
             aria-label="Close meditation player"
+            title="Exit meditation"
           >
             ✕
           </button>
         </header>
 
-        {/* Track Selection Tabs */}
-        <div className={styles.trackTabs} role="tablist" aria-label="Meditation tracks">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTrackKey === 'twenty-minute-reset'}
-            className={`${styles.trackTab} ${activeTrackKey === 'twenty-minute-reset' ? styles.trackTabActive : ''}`}
-            onClick={() => setActiveTrackKey('twenty-minute-reset')}
-          >
-            20-Min Reset
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTrackKey === 'meditation-ocean-432hz'}
-            className={`${styles.trackTab} ${activeTrackKey === 'meditation-ocean-432hz' ? styles.trackTabActive : ''}`}
-            onClick={() => setActiveTrackKey('meditation-ocean-432hz')}
-          >
-            Ocean 432Hz
-          </button>
-        </div>
-
-        {/* Player Body */}
-        <div className={styles.body}>
-          {/* Breathing Aura */}
+        {/* Center Stage: Celestial Aura & Track Typography */}
+        <main className={styles.centerStage}>
           <div className={styles.auraWrapper} aria-hidden="true">
-            <div className={styles.auraRingOuter} />
-            <div className={styles.auraPulse}>
-              <span className={styles.breathLabel}>Breathe</span>
-              <span className={styles.breathCue}>Steady</span>
+            <div className={styles.celestialOrbitRing} />
+            <div className={styles.auraAmbientGlow} />
+            <div className={styles.auraCoreSphere}>
+              <span className={styles.breathLabel}>{currentBreath.text}</span>
+              <span className={styles.breathCue}>{currentBreath.cue}</span>
             </div>
           </div>
 
-          {/* Track Details */}
-          <div className={styles.trackInfo}>
-            <h3 className={styles.trackTitle}>{activeTrack.title}</h3>
+          <div className={styles.trackMeta}>
+            <h1 className={styles.trackTitle}>{activeTrack.title}</h1>
             <p className={styles.trackSubtitle}>{activeTrack.subtitle}</p>
           </div>
+        </main>
 
-          {/* Timeline & Scrubber */}
+        {/* Bottom Minimal Dock: Scrubber, Playback, Volume */}
+        <footer className={styles.controlsDock}>
           <div className={styles.timeline}>
             <div
               className={styles.sliderTrack}
@@ -275,7 +293,6 @@ export default function MeditationPlayerModal({
             </div>
           </div>
 
-          {/* Playback Controls */}
           <div className={styles.controlsRow}>
             <button
               type="button"
@@ -284,10 +301,10 @@ export default function MeditationPlayerModal({
               aria-label="Rewind 15 seconds"
               title="Rewind 15s"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M1 4v6h6" />
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
-                <text x="12" y="15" fontSize="8" fontWeight="bold" textAnchor="middle" fill="currentColor" stroke="none">15</text>
+                <text x="12" y="15" fontSize="7.5" fontWeight="bold" textAnchor="middle" fill="currentColor" stroke="none">15</text>
               </svg>
             </button>
 
@@ -298,12 +315,12 @@ export default function MeditationPlayerModal({
               aria-label={isPlaying ? 'Pause meditation' : 'Play meditation'}
             >
               {isPlaying ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <rect x="6" y="4" width="4" height="16" rx="1.5" />
                   <rect x="14" y="4" width="4" height="16" rx="1.5" />
                 </svg>
               ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}>
                   <path d="M5 3.87v16.26a1 1 0 0 0 1.52.85l13.14-8.13a1 1 0 0 0 0-1.7L6.52 3.02A1 1 0 0 0 5 3.87z" />
                 </svg>
               )}
@@ -316,15 +333,14 @@ export default function MeditationPlayerModal({
               aria-label="Skip ahead 15 seconds"
               title="Skip ahead 15s"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 4v6h-6" />
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-                <text x="12" y="15" fontSize="8" fontWeight="bold" textAnchor="middle" fill="currentColor" stroke="none">15</text>
+                <text x="12" y="15" fontSize="7.5" fontWeight="bold" textAnchor="middle" fill="currentColor" stroke="none">15</text>
               </svg>
             </button>
           </div>
 
-          {/* Volume Control */}
           <div className={styles.volumeRow}>
             <button
               type="button"
@@ -356,7 +372,7 @@ export default function MeditationPlayerModal({
               aria-label="Volume slider"
             />
           </div>
-        </div>
+        </footer>
 
         {/* Hidden Audio Element */}
         <audio
