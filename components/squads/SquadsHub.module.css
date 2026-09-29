@@ -214,8 +214,27 @@
   color: var(--color-text-muted);
 }
 
-.createChevron {
-  color: var(--color-text-muted);
+.rewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 25%, transparent);
+  border-radius: 12px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .rewardBadge {
+  color: var(--color-primary-hover, var(--color-primary));
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 /* Squads List Section */
@@ -238,12 +257,6 @@
   font-size: 16px;
   font-weight: 700;
   color: var(--color-text-dark);
-}
-
-.squadsCount {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--color-text-muted);
 }
 
 .squadsList {
@@ -359,8 +372,9 @@
 
 .squadItemAction {
   flex-shrink: 0;
-  align-self: flex-start;
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .squadItemTime {
@@ -368,6 +382,7 @@
   font-size: 11px;
   color: var(--color-text-muted);
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Modals */

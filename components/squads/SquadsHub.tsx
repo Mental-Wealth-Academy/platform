@@ -5,7 +5,6 @@ import Image from 'next/image';
 import {
   Users,
   MagnifyingGlass,
-  CaretRight,
   LockKey,
   ShieldCheck,
   Plus,
@@ -206,10 +205,13 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
             </div>
             <div className={styles.createSquadInfo}>
               <span className={styles.createSquadTitle}>Create Squad</span>
-              <span className={styles.createSquadSubtitle}>Invite a buddy [+100 diamonds]</span>
+              <span className={styles.createSquadSubtitle}>Invite a buddy</span>
             </div>
           </div>
-          <CaretRight size={18} weight="bold" className={styles.createChevron} />
+          <span className={styles.rewardBadge}>
+            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
+            +800
+          </span>
         </button>
       </div>
 
@@ -217,7 +219,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
       <section className={styles.squadsSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Squads</h2>
-          <span className={styles.squadsCount}>{filteredSquads.length} available</span>
         </div>
 
         <div className={styles.squadsList} role="list">
