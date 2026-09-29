@@ -135,7 +135,7 @@ export default function LandingInstallPwaButton() {
               <div className={styles.pwaAppCard}>
                 <div className={styles.pwaAppIconWrap}>
                   <Image
-                    src="/icons/mwa-mascot-logo.png"
+                    src="/icons/apple-touch-icon.png?v=9"
                     alt="Mental Wealth Academy emblem"
                     width={52}
                     height={52}
@@ -153,7 +153,7 @@ export default function LandingInstallPwaButton() {
             <div className={styles.pwaBody}>
               <h2 className={styles.pwaTitle}>Add to your home screen</h2>
               <p className={styles.pwaSubtitle}>
-                Install Mental Wealth Academy for instant offline-ready access, faster loading, and a full-screen experience.
+                Add the app to your home screen for quick and easy access.
               </p>
 
               <div className={styles.pwaSteps}>
@@ -163,7 +163,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>1</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Tap the <span className={styles.pwaHighlight}><Export size={16} weight="bold" /> Share</span> button in the Safari navigation bar at the bottom.
+                          Tap <span className={styles.pwaHighlight}><Export size={16} weight="bold" /> Share</span> at the bottom.
                         </p>
                       </div>
                     </div>
@@ -171,7 +171,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>2</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Scroll down in the action list and select <span className={styles.pwaHighlight}><PlusSquare size={16} weight="bold" /> Add to Home Screen</span>.
+                          Scroll down and tap <span className={styles.pwaHighlight}><PlusSquare size={16} weight="bold" /> Add to Home Screen</span>.
                         </p>
                       </div>
                     </div>
@@ -179,7 +179,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>3</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Tap <span className={styles.pwaHighlight}>Add</span> in the top-right corner to finish.
+                          Tap <span className={styles.pwaHighlight}>Add</span> in the top right.
                         </p>
                       </div>
                     </div>
@@ -190,7 +190,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>1</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Tap the browser menu <span className={styles.pwaHighlight}><DotsThreeVertical size={16} weight="bold" /></span> in the top right corner.
+                          Tap the menu <span className={styles.pwaHighlight}><DotsThreeVertical size={16} weight="bold" /></span> in the top right.
                         </p>
                       </div>
                     </div>
@@ -198,7 +198,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>2</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Select <span className={styles.pwaHighlight}><PlusSquare size={16} weight="bold" /> Install app</span> or <span className={styles.pwaHighlight}>Add to Home screen</span>.
+                          Tap <span className={styles.pwaHighlight}><PlusSquare size={16} weight="bold" /> Add to Home screen</span>.
                         </p>
                       </div>
                     </div>
@@ -206,7 +206,7 @@ export default function LandingInstallPwaButton() {
                       <span className={styles.pwaStepNumber}>3</span>
                       <div className={styles.pwaStepContent}>
                         <p className={styles.pwaStepText}>
-                          Confirm installation to place the app on your home screen.
+                          Tap <span className={styles.pwaHighlight}>Install</span> to finish.
                         </p>
                       </div>
                     </div>
