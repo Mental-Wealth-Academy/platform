@@ -11,6 +11,8 @@ export default function LivestreamFeed({
   onInitialMoodHandled,
   onMuteChange,
   onRegisterMute,
+  onCompanionMuteChange,
+  onRegisterCompanionMute,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
@@ -19,6 +21,8 @@ export default function LivestreamFeed({
   onInitialMoodHandled?: () => void;
   onMuteChange?: (muted: boolean) => void;
   onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
+  onCompanionMuteChange?: (muted: boolean) => void;
+  onRegisterCompanionMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }) {
   const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
   const hasBroadcast = Array.isArray(manifest.segments) && manifest.segments.length > 0;
@@ -42,6 +46,8 @@ export default function LivestreamFeed({
           onInitialMoodHandled={onInitialMoodHandled}
           onMuteChange={onMuteChange}
           onRegisterMute={onRegisterMute}
+          onCompanionMuteChange={onCompanionMuteChange}
+          onRegisterCompanionMute={onRegisterCompanionMute}
         />
       ) : (
         <div className={styles.offlineState}>

@@ -129,6 +129,11 @@
     min-height: 260px;
   }
 
+  .blueSceneWrapFull {
+    height: clamp(440px, calc(var(--mobile-content-height, 100dvh) - 12px), calc(100dvh - 84px));
+    max-height: none;
+  }
+
   .moodSelectorWrap {
     width: 100%;
     position: relative;
@@ -142,6 +147,41 @@
   .fieldNotesWrapper {
     display: none;
   }
+}
+
+.restoreMoodWrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 2px 0 8px;
+}
+
+.restoreMoodBtn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border: 1px dashed color-mix(in oklch, var(--color-primary) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.restoreMoodBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.restoreMoodBtn:active {
+  transform: translateY(1px);
 }
 
 .fieldNotesWrapper {

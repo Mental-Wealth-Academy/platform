@@ -44,6 +44,8 @@ export default function BlueRadio({
   onInitialMoodHandled,
   onMuteChange,
   onRegisterMute,
+  onCompanionMuteChange,
+  onRegisterCompanionMute,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
@@ -52,6 +54,8 @@ export default function BlueRadio({
   onInitialMoodHandled?: () => void;
   onMuteChange?: (muted: boolean) => void;
   onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
+  onCompanionMuteChange?: (muted: boolean) => void;
+  onRegisterCompanionMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -392,6 +396,8 @@ export default function BlueRadio({
           initialMood={initialMood}
           onInitialMoodHandled={onInitialMoodHandled}
           modeSwitch={renderModeSwitch()}
+          onMuteChange={onCompanionMuteChange}
+          onRegisterMute={onRegisterCompanionMute}
         />
       ) : (
         <>

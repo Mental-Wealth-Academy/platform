@@ -32,6 +32,8 @@ interface BlueCompanionProps {
   initialMood?: InitialMoodData | null;
   onInitialMoodHandled?: () => void;
   modeSwitch?: React.ReactNode;
+  onMuteChange?: (muted: boolean) => void;
+  onRegisterMute?: (toggleFn: () => void, muted: boolean, isConnected: boolean) => void;
 }
 
 type SessionStatus = 'idle' | 'connecting' | 'connected' | 'error';
@@ -48,6 +50,8 @@ export default function BlueCompanion({
   initialMood,
   onInitialMoodHandled,
   modeSwitch,
+  onMuteChange,
+  onRegisterMute,
 }: BlueCompanionProps) {
   const router = useRouter();
   const [status, setStatus] = useState<SessionStatus>('idle');
@@ -322,10 +326,15 @@ export default function BlueCompanion({
     try {
       conversationRef.current.setMicMuted(nextMuted);
       setIsMicMuted(nextMuted);
+      onMuteChange?.(nextMuted);
     } catch {
       // Ignored
     }
-  }, [isMicMuted]);
+  }, [isMicMuted, onMuteChange]);
+
+  useEffect(() => {
+    onRegisterMute?.(toggleMic, isMicMuted, status === 'connected');
+  }, [toggleMic, isMicMuted, status, onRegisterMute]);
 
   useEffect(() => {
     return () => {
@@ -527,25 +536,12 @@ export default function BlueCompanion({
             <div className={styles.companionControls}>
               <button
                 type="button"
-                className={`${styles.companionButton} ${
-                  isMicMuted ? styles.companionButtonMuted : ''
-                }`}
-                onClick={toggleMic}
-                aria-label={isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
-              >
-                {isMicMuted ? 'Unmute mic' : 'Mute mic'}
-              </button>
-
-              <button
-                type="button"
                 className={styles.companionEndButton}
                 onClick={endConversation}
                 aria-label="End conversation session"
               >
                 End
               </button>
-
-              {modeSwitch}
             </div>
           </div>
         </>

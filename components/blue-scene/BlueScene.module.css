@@ -113,6 +113,13 @@
   transform: scale(1.08);
 }
 
+.sceneMuteIconButton:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
 .sceneMuteIconButtonActive {
   background: #7b8cff !important;
   border-color: #6b7cff !important;

@@ -14,6 +14,10 @@ export default function BlueScene() {
   const [radioMuted, setRadioMuted] = useState(false);
   const toggleRadioMuteRef = useRef<(() => void) | null>(null);
 
+  const [companionMuted, setCompanionMuted] = useState(false);
+  const [companionConnected, setCompanionConnected] = useState(false);
+  const toggleCompanionMuteRef = useRef<(() => void) | null>(null);
+
   const handleRegisterMute = useCallback((toggleFn: () => void, muted: boolean) => {
     toggleRadioMuteRef.current = toggleFn;
     setRadioMuted(muted);
@@ -25,6 +29,20 @@ export default function BlueScene() {
 
   const handleToggleMute = useCallback(() => {
     toggleRadioMuteRef.current?.();
+  }, []);
+
+  const handleRegisterCompanionMute = useCallback((toggleFn: () => void, muted: boolean, isConnected: boolean) => {
+    toggleCompanionMuteRef.current = toggleFn;
+    setCompanionMuted(muted);
+    setCompanionConnected(isConnected);
+  }, []);
+
+  const handleCompanionMuteChange = useCallback((muted: boolean) => {
+    setCompanionMuted(muted);
+  }, []);
+
+  const handleToggleCompanionMute = useCallback(() => {
+    toggleCompanionMuteRef.current?.();
   }, []);
 
   useEffect(() => {
@@ -70,7 +88,7 @@ export default function BlueScene() {
           </span>
         </div>
         <div className={styles.sceneHeaderControls}>
-          {mode === 'radio' && (
+          {mode === 'radio' ? (
             <button
               type="button"
               className={`${styles.sceneMuteIconButton} ${!radioMuted ? styles.sceneMuteIconButtonActive : ''}`}
@@ -93,6 +111,39 @@ export default function BlueScene() {
                 </svg>
               )}
             </button>
+          ) : (
+            <button
+              type="button"
+              className={`${styles.sceneMuteIconButton} ${!companionMuted && companionConnected ? styles.sceneMuteIconButtonActive : ''}`}
+              onClick={handleToggleCompanionMute}
+              disabled={!companionConnected}
+              aria-pressed={!companionMuted}
+              aria-label={companionMuted ? 'Unmute microphone' : 'Mute microphone'}
+              title={
+                !companionConnected
+                  ? 'Connect to use microphone'
+                  : companionMuted
+                    ? 'Microphone muted — tap to unmute'
+                    : 'Microphone active — tap to mute'
+              }
+            >
+              {!companionMuted ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" y1="19" x2="12" y2="23" />
+                  <line x1="8" y1="23" x2="16" y2="23" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
+                  <line x1="12" y1="19" x2="12" y2="23" />
+                  <line x1="8" y1="23" x2="16" y2="23" />
+                </svg>
+              )}
+            </button>
           )}
         </div>
       </div>
@@ -105,6 +156,8 @@ export default function BlueScene() {
         onInitialMoodHandled={handleInitialMoodHandled}
         onMuteChange={handleMuteChange}
         onRegisterMute={handleRegisterMute}
+        onCompanionMuteChange={handleCompanionMuteChange}
+        onRegisterCompanionMute={handleRegisterCompanionMute}
       />
     </section>
   );

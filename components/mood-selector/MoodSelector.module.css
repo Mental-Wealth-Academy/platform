@@ -72,6 +72,33 @@
   white-space: nowrap;
 }
 
+.closeButton {
+  appearance: none;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  color: var(--color-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  color: var(--color-primary-hover);
+  transform: scale(1.05);
+}
+
+.closeButton:active {
+  transform: scale(0.95);
+}
+
 .body {
   padding: 8px 10px 10px;
 }
