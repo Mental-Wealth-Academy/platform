@@ -9,6 +9,7 @@ import {
   Plus,
   X,
   ChatsCircle,
+  Info,
 } from '@phosphor-icons/react';
 import { useSound } from '@/hooks/useSound';
 import CtaButton from '@/components/shared/CtaButton';
@@ -179,21 +180,36 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
           type="button"
           className={styles.createSquadRow}
           onClick={handleOpenCreateModal}
-          aria-label="Create Squad"
+          aria-label="Invite Your Squad"
         >
           <div className={styles.createSquadLeft}>
             <div className={styles.createIconWrap}>
               <Users size={20} weight="fill" className={styles.createIcon} />
             </div>
             <div className={styles.createSquadInfo}>
-              <span className={styles.createSquadTitle}>Create Squad</span>
-              <span className={styles.createSquadSubtitle}>Invite a buddy</span>
+              <span className={styles.createSquadTitle}>Invite Your Squad</span>
+              <span className={styles.createSquadSubtitle}>
+                Earn 800 diamonds for each person you invite.{' '}
+                <span
+                  className={styles.infoBubble}
+                  title="Earn 800 diamonds and 20 USDC for each person who joins with your squad code."
+                  aria-label="Reward information"
+                >
+                  <Info size={13} weight="bold" />
+                </span>
+              </span>
             </div>
           </div>
-          <span className={styles.rewardBadge}>
-            <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
-            +800
-          </span>
+          <div className={styles.rewardBadgeStack}>
+            <span className={styles.rewardBadge}>
+              <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
+              +800
+            </span>
+            <span className={`${styles.rewardBadge} ${styles.usdcBadge}`}>
+              <Image src="/icons/usdc-logo.svg" alt="" width={13} height={13} />
+              20 USDC
+            </span>
+          </div>
         </button>
       </div>
 
