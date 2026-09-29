@@ -1,7 +1,10 @@
 .globalPanel {
   padding: 0 18px 18px;
   background-color: var(--color-surface-3);
-  background-image: var(--bg-grid-dots-light);
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
   border: 2px solid var(--color-primary-hover);
   border-radius: 18px;
   box-shadow:
@@ -10,7 +13,6 @@
     0 6px 3px var(--color-border-subtle);
   overflow: hidden;
   isolation: isolate;
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -19,7 +21,10 @@
 
 :global([data-theme="dark"]) .globalPanel {
   background-color: var(--color-surface-1);
-  background-image: var(--bg-grid-dots-dark);
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
   border: 2px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-border-subtle));
   box-shadow:
     0 6px 0 color-mix(in srgb, var(--color-primary) 42%, var(--palette-ink)),
@@ -514,19 +519,27 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    background-image: none;
     background-color: var(--color-surface-1);
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px);
+    background-size: 28px 28px;
     height: 100%;
+    max-height: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px));
   }
 
   :global([data-theme="dark"]) .globalPanel {
     border: none;
     box-shadow: none;
-    background-image: none;
     background-color: var(--color-surface-1);
+    background-image:
+      linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px);
+    background-size: 28px 28px;
   }
 
   .panelHeader {
