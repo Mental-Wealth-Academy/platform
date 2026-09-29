@@ -50,8 +50,8 @@ export default function BlueCompanion({
   const router = useRouter();
   const [status, setStatus] = useState<SessionStatus>('idle');
   const [alwaysAllowMic, setAlwaysAllowMic] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return getStorageItem('mwa_mic_always_allow') !== '0';
+    if (typeof window === 'undefined') return false;
+    return getStorageItem('mwa_mic_always_allow') === 'true';
   });
   const autoStartedRef = useRef(false);
   const [isMicMuted, setIsMicMuted] = useState(false);
@@ -271,9 +271,40 @@ export default function BlueCompanion({
   useEffect(() => {
     if (autoStartedRef.current) return;
     autoStartedRef.current = true;
-    void startConversation(initialMood ?? null);
+
+    // Explicit interaction from MoodSelector: connect immediately
     if (initialMood) {
+      void startConversation(initialMood);
       onInitialMoodHandled?.();
+      return;
+    }
+
+    // Check user preference
+    const userPrefersAlwaysAllow = getStorageItem('mwa_mic_always_allow');
+    // If not opted in or explicitly disabled, do not auto-connect
+    if (userPrefersAlwaysAllow !== 'true') {
+      setStatus('idle');
+      return;
+    }
+
+    // Check browser permission status if supported
+    if (typeof navigator !== 'undefined' && navigator.permissions?.query) {
+      navigator.permissions
+        .query({ name: 'microphone' as PermissionName })
+        .then((permission) => {
+          // ONLY auto-connect if the browser has already granted permission,
+          // ensuring we NEVER trigger an unsolicited permission prompt.
+          if (permission.state === 'granted') {
+            void startConversation(null);
+          } else {
+            setStatus('idle');
+          }
+        })
+        .catch(() => {
+          setStatus('idle');
+        });
+    } else {
+      setStatus('idle');
     }
   }, [startConversation, initialMood, onInitialMoodHandled]);
 
@@ -351,8 +382,8 @@ export default function BlueCompanion({
         <div className={styles.companionOverlay}>
           <div className={styles.companionCard}>
             <span className={styles.companionKicker}>Companion</span>
-            <p className={styles.companionText}>Connecting to Blue...</p>
-            <div className={styles.companionConnectingDot} aria-hidden="true" />
+            <p className={styles.companionText}>Voice chat with Blue.</p>
+            <CtaButton onClick={() => void startConversation()}>Talk with Blue</CtaButton>
           </div>
         </div>
       )}
@@ -393,20 +424,37 @@ export default function BlueCompanion({
                 <span>Always allow microphone access</span>
               </label>
             )}
-            <CtaButton
-              onClick={async () => {
-                if (isMicError && typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
-                  try {
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
-                    setStorageItem('mwa_mic_always_allow', 'true');
-                    setAlwaysAllowMic(true);
-                  } catch {}
-                }
-                void startConversation();
-              }}
-            >
-              {isMicError ? 'Allow & Connect' : 'Try again'}
-            </CtaButton>
+            <div className={styles.companionErrorActions}>
+              <CtaButton
+                onClick={async () => {
+                  if (isMicError && typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+                    try {
+                      await navigator.mediaDevices.getUserMedia({ audio: true });
+                      setStorageItem('mwa_mic_always_allow', 'true');
+                      setAlwaysAllowMic(true);
+                    } catch {}
+                  }
+                  void startConversation();
+                }}
+              >
+                {isMicError ? 'Allow & Connect' : 'Try again'}
+              </CtaButton>
+              <button
+                type="button"
+                className={styles.dismissErrorBtn}
+                onClick={() => {
+                  if (isMicError) {
+                    setAlwaysAllowMic(false);
+                    setStorageItem('mwa_mic_always_allow', '0');
+                  }
+                  setStatus('idle');
+                  setIsMicError(false);
+                  setErrorMessage(null);
+                }}
+              >
+                Not now
+              </button>
+            </div>
           </div>
         </div>
       )}
