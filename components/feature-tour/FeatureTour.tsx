@@ -33,17 +33,9 @@ const COURSE_NUDGE_KEY = 'mwa-home-course-nudge-seen';
 // Armed when the user accepts the Phase B nudge — tells the course page's
 // CourseTour to pick the walkthrough back up the moment they land there.
 const COURSE_TOUR_PENDING_KEY = 'mwa-course-tour-pending';
-// Recurring daily-note nudge: shown once per calendar day, on the first /home
-// visit of the day, regardless of time of day (no "morning only" gate).
-const DAILY_SPOTLIGHT_PREFIX = 'mwa-daily-spotlight-shown';
-const dailySpotlightKey = () =>
-  `${DAILY_SPOTLIGHT_PREFIX}-${new Date().toISOString().split('T')[0]}`;
-
-const DAILY_NOTE_TARGET = 'daily-note';
 const BLUE_AVATAR_SRC = '/blue/blue-home.png';
 
-type Phase = 'idle' | 'intro' | 'course' | 'remind';
-type RemindMode = 'reminder' | 'done';
+type Phase = 'idle' | 'intro' | 'course';
 
 interface IntroStep {
   target: string;
@@ -62,11 +54,6 @@ const INTRO_STEPS: IntroStep[] = [
     title: 'Choose a learning path',
     body: 'Continue Blue\'s Quest, browse Academy courses, open your personal course, or build a new one.',
   },
-  {
-    target: DAILY_NOTE_TARGET,
-    title: 'Record a Daily Note',
-    body: 'Capture one observation, question, or pattern each day. Saving the note adds it to your field-note record.',
-  },
 ];
 
 export interface FeatureTourProps {
@@ -76,14 +63,13 @@ export interface FeatureTourProps {
 export default function FeatureTour({ suppressed = false }: FeatureTourProps = {}) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>('idle');
-  const [remindMode, setRemindMode] = useState<RemindMode>('reminder');
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const calloutRef = useRef<HTMLDivElement>(null);
 
   const introStep = INTRO_STEPS[stepIndex];
   const isLastIntro = stepIndex === INTRO_STEPS.length - 1;
-  const activeTarget = phase === 'intro' ? introStep.target : DAILY_NOTE_TARGET;
+  const activeTarget = phase === 'intro' ? introStep.target : '';
 
   // ── Phase A controls ──
   const finishIntro = useCallback(() => {
@@ -91,19 +77,6 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     removeStorageItem(PENDING_KEY);
     setRect(null);
     setPhase('idle');
-  }, []);
-
-  const startFirstNote = useCallback(() => {
-    setStorageItem(INTRO_SEEN_KEY, '1');
-    removeStorageItem(PENDING_KEY);
-    setRect(null);
-    setPhase('idle');
-    // Open the writing session by activating the card's button. A short delay
-    // lets the overlay tear down first so focus lands cleanly in the editor.
-    window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>(`[data-tour="${DAILY_NOTE_TARGET}"] button`);
-      btn?.click();
-    }, 80);
   }, []);
 
   const nextIntro = useCallback(() => {
@@ -129,23 +102,6 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     router.push('/shadow-work');
   }, [router]);
 
-  // ── Daily reminder controls ──
-  const dismissRemind = useCallback(() => {
-    setRect(null);
-    setPhase('idle');
-  }, []);
-
-  const writeTodayNote = useCallback(() => {
-    setRect(null);
-    setPhase('idle');
-    // Open the writing session by activating the card's button, after the
-    // overlay tears down so focus lands cleanly in the editor.
-    window.setTimeout(() => {
-      const btn = document.querySelector<HTMLElement>(`[data-tour="${DAILY_NOTE_TARGET}"] button`);
-      btn?.click();
-    }, 80);
-  }, []);
-
   // Tear down if suppressed becomes true while a phase is active
   useEffect(() => {
     if (suppressed && phase !== 'idle') {
@@ -162,12 +118,8 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     const introSeen = getStorageItem(INTRO_SEEN_KEY) === '1';
     const firstNoteDone = getStorageItem(FIRST_NOTE_KEY) === '1';
     const courseNudgeSeen = getStorageItem(COURSE_NUDGE_KEY) === '1';
-    const dailyKey = dailySpotlightKey();
-
     // Phase A — a brand-new onboarded user who hasn't seen the intro yet.
     if (introPending && !introSeen) {
-      // The intro already spotlights the note, so don't stack the daily nudge today.
-      setStorageItem(dailyKey, '1');
       let cancelled = false;
       let tries = 0;
       const poll = () => {
@@ -189,36 +141,8 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     // Phase B fallback — they saw the intro and already wrote their first note
     // (possibly elsewhere); nudge them toward the course now.
     if (introSeen && firstNoteDone && !courseNudgeSeen) {
-      setStorageItem(dailyKey, '1');
       setPhase('course');
       return;
-    }
-
-    // Daily reminder — once per calendar day, on the first /home visit. Waits
-    // for the Daily Note card to resolve its status, then spotlights it with a
-    // reminder (note still pending) or a brief confirmation (already done).
-    if (getStorageItem(dailyKey) !== '1') {
-      let cancelled = false;
-      let tries = 0;
-      const poll = () => {
-        if (cancelled) return;
-        const el = document.querySelector(
-          `[data-tour="${DAILY_NOTE_TARGET}"] [data-daily-note-status]`,
-        );
-        const stat = el?.getAttribute('data-daily-note-status');
-        if (stat === 'done' || stat === 'pending') {
-          setStorageItem(dailyKey, '1');
-          setRemindMode(stat === 'done' ? 'done' : 'reminder');
-          setPhase('remind');
-          return;
-        }
-        if (tries++ > 50) return; // ~20s, then give up quietly
-        window.setTimeout(poll, 400);
-      };
-      poll();
-      return () => {
-        cancelled = true;
-      };
     }
   }, [suppressed]);
 
@@ -247,9 +171,9 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     return () => window.removeEventListener('dailyNoteCompleted', onCompleted);
   }, []);
 
-  // Locate the spotlight target and scroll it into view (spotlight phases).
+  // Locate the spotlight target and scroll it into view (intro phase).
   useEffect(() => {
-    if (phase !== 'intro' && phase !== 'remind') return;
+    if (phase !== 'intro') return;
     let cancelled = false;
     const locate = () => {
       if (cancelled) return;
@@ -266,9 +190,9 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     };
   }, [activeTarget, phase]);
 
-  // Keep the spotlight aligned as the page scrolls or resizes (spotlight phases).
+  // Keep the spotlight aligned as the page scrolls or resizes (intro phase).
   useEffect(() => {
-    if (phase !== 'intro' && phase !== 'remind') return;
+    if (phase !== 'intro') return;
     const sync = () => {
       const el = document.querySelector<HTMLElement>(`[data-tour="${activeTarget}"]`);
       if (el) setRect(el.getBoundingClientRect());
@@ -287,25 +211,13 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') finishIntro();
       else if (e.key === 'ArrowRight' || e.key === 'Enter') {
-        if (isLastIntro) startFirstNote();
+        if (isLastIntro) finishIntro();
         else nextIntro();
       } else if (e.key === 'ArrowLeft') backIntro();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [phase, isLastIntro, finishIntro, startFirstNote, nextIntro, backIntro]);
-
-  // Keyboard controls for the daily reminder phase.
-  useEffect(() => {
-    if (phase !== 'remind') return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') dismissRemind();
-      else if ((e.key === 'Enter') && remindMode === 'reminder') writeTodayNote();
-      else if (e.key === 'Enter') dismissRemind();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [phase, remindMode, dismissRemind, writeTodayNote]);
+  }, [phase, isLastIntro, finishIntro, nextIntro, backIntro]);
 
   // Position the callout near the target, or centered when there is none.
   useEffect(() => {
@@ -453,8 +365,8 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
               </CtaButton>
             )}
             {isLastIntro ? (
-              <CtaButton size="sm" className={styles.next} onClick={startFirstNote}>
-                Start your first note
+              <CtaButton size="sm" className={styles.next} onClick={finishIntro}>
+                Got it
               </CtaButton>
             ) : (
               <CtaButton size="sm" className={styles.next} onClick={nextIntro}>
@@ -467,61 +379,12 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     </div>
   );
 
-  const remindNode = (
-    <div className={styles.root} role="dialog" aria-modal="true" aria-label="Daily Note reminder">
-      <div className={`${styles.scrim} ${rect ? '' : styles.scrimSolid}`} />
-
-      {renderSpotlight(rect)}
-
-      <div ref={calloutRef} className={styles.callout}>
-        {blueHeader()}
-        {remindMode === 'done' ? (
-          <>
-            <h3 className={styles.title}>Record sealed</h3>
-            <p className={styles.body}>
-              Today&rsquo;s signal is in the archive. Your streak holds. Return when the world gives you another anomaly.
-            </p>
-            <div className={styles.actions}>
-              <span className={styles.skipSlot} />
-              <span className={styles.navBtns}>
-                <CtaButton size="sm" className={styles.next} onClick={dismissRemind}>
-                  Got it
-                </CtaButton>
-              </span>
-            </div>
-          </>
-        ) : (
-          <>
-            <h3 className={styles.title}>The archive is listening</h3>
-            <p className={styles.body}>
-              Bring me one pattern, question, or anomaly from today. I will keep it beside the rest of your work.
-            </p>
-            <div className={styles.actions}>
-              <span className={styles.skipSlot}>
-                <button type="button" className={styles.skip} onClick={dismissRemind}>
-                  Later
-                </button>
-              </span>
-              <span className={styles.navBtns}>
-                <CtaButton size="sm" className={styles.next} onClick={writeTodayNote}>
-                  Get started
-                </CtaButton>
-              </span>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-
   const overlayNode =
     phase === 'course'
       ? courseNode
       : phase === 'intro'
         ? introNode
-        : phase === 'remind'
-          ? remindNode
-          : null;
+        : null;
 
   // Dev-only launcher so the guide can be triggered on localhost without going
   // through onboarding/auth. Compiled out of production builds.
@@ -542,7 +405,6 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
     removeStorageItem(FIRST_NOTE_KEY);
     removeStorageItem(COURSE_NUDGE_KEY);
     removeStorageItem(COURSE_TOUR_PENDING_KEY);
-    removeStorageItem(dailySpotlightKey());
     setRect(null);
     setPhase('idle');
   };
@@ -570,28 +432,6 @@ export default function FeatureTour({ suppressed = false }: FeatureTourProps = {
         }}
       >
         Course
-      </button>
-      <button
-        type="button"
-        className={styles.devBtn}
-        onClick={() => {
-          setRemindMode('reminder');
-          setRect(null);
-          setPhase('remind');
-        }}
-      >
-        Remind
-      </button>
-      <button
-        type="button"
-        className={styles.devBtn}
-        onClick={() => {
-          setRemindMode('done');
-          setRect(null);
-          setPhase('remind');
-        }}
-      >
-        Done note
       </button>
       <button type="button" className={styles.devBtn} onClick={armAndReload}>
         Arm + reload

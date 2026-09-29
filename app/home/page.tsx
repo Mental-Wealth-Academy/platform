@@ -815,7 +815,7 @@ export default function HomePage() {
         <div className={styles.desktopLeaderboard}>
           <HomeLeaderboard />
         </div>
-        <div className={styles.dailyNotes} data-tour="daily-note">
+        <div className={styles.dailyNotes}>
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
           <Link
             href="/lists"

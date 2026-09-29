@@ -185,6 +185,8 @@ export default function DailyNotes({
   const [activeDayIndex, setActiveDayIndex] = useState<number | null>(null);
   const isExpanded = true;
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showPrepDialog, setShowPrepDialog] = useState(false);
+  const [pendingDayIndex, setPendingDayIndex] = useState<number | null>(null);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
@@ -216,17 +218,19 @@ export default function DailyNotes({
   }, [enablePersistence]);
 
   useEffect(() => {
-    if (!showAuthPrompt) return;
+    if (!showAuthPrompt && !showPrepDialog) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowAuthPrompt(false);
+        setShowPrepDialog(false);
+        setPendingDayIndex(null);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showAuthPrompt]);
+  }, [showAuthPrompt, showPrepDialog]);
 
   const fieldNotes = allWeekPages[currentWeek] ?? [];
   const todayDateStr = getLocalDateKey();
@@ -249,7 +253,7 @@ export default function DailyNotes({
   // Gate that controls whether a writing session can start (auth OR dev bypass).
   const gateOpen = enablePersistence || devBypass;
 
-  useScrollLock(showAuthPrompt || timerActive);
+  useScrollLock(showAuthPrompt || showPrepDialog || timerActive);
 
   const previousWeekCount = currentWeek === 1
     ? 7
@@ -541,8 +545,9 @@ export default function DailyNotes({
     }
 
     play('click');
-    beginWritingSession(dayIndex);
-  }, [beginWritingSession, gateOpen, play]);
+    setPendingDayIndex(dayIndex);
+    setShowPrepDialog(true);
+  }, [gateOpen, play]);
 
   const canStart = dataReady && isWeekUnlocked && !weekComplete && !todayDone && availableDayIndex >= 0;
   const cardSubLabel = 'daily reflection and notes';
@@ -1069,6 +1074,93 @@ export default function DailyNotes({
                   onClick={() => setShowAuthPrompt(false)}
                 >
                   {authPending ? 'Close' : 'Not now'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {showPrepDialog && typeof window !== 'undefined' && createPortal(
+        <div
+          className={styles.authPromptOverlay}
+          onClick={() => {
+            setShowPrepDialog(false);
+            setPendingDayIndex(null);
+          }}
+        >
+          <div
+            className={styles.authPromptDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="field-notes-prep-title"
+            onClick={event => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.authPromptClose}
+              onClick={() => {
+                setShowPrepDialog(false);
+                setPendingDayIndex(null);
+              }}
+              aria-label="Close field notes briefing"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className={styles.authPromptContent}>
+              <div className={styles.authPromptHero} aria-hidden="true">
+                <div className={styles.authPromptGlowOrb} />
+                <div className={styles.authPromptBubble}>
+                  <span className={styles.authPromptBubbleSender}>Blue</span>
+                  <p className={styles.authPromptBubbleText}>
+                    Fifteen minutes on the clock! No editing, no backspacing, no overthinking. Just dump whatever is rattling around in your head onto the page until time is up. Ready?
+                  </p>
+                </div>
+                <div className={styles.authPromptAvatarStage}>
+                  <div className={styles.authPromptAvatarHalo} />
+                  <div className={styles.authPromptAvatarBase} />
+                  <Image
+                    src="/exxie.png"
+                    alt=""
+                    width={220}
+                    height={260}
+                    className={styles.authPromptAvatar}
+                  />
+                </div>
+              </div>
+              <h3 id="field-notes-prep-title" className={styles.authPromptTitle}>
+                Daily Field Notes
+              </h3>
+              <p className={styles.authPromptCopy}>
+                Fill up the page with everything that’s in your head. Complete today’s stream of consciousness to clear your mental cache and earn 100 credits.
+              </p>
+
+              <div className={styles.authPromptActions}>
+                <button
+                  type="button"
+                  className={styles.authPromptPrimary}
+                  onClick={() => {
+                    play('click');
+                    setShowPrepDialog(false);
+                    const dayToStart = pendingDayIndex ?? availableDayIndex;
+                    setPendingDayIndex(null);
+                    beginWritingSession(dayToStart >= 0 ? dayToStart : 0);
+                  }}
+                >
+                  Start writing session
+                </button>
+                <button
+                  type="button"
+                  className={styles.authPromptSecondary}
+                  onClick={() => {
+                    setShowPrepDialog(false);
+                    setPendingDayIndex(null);
+                  }}
+                >
+                  Maybe later
                 </button>
               </div>
             </div>
