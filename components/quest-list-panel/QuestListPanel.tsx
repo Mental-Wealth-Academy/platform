@@ -71,7 +71,8 @@ export default function QuestListPanel({
     <div className={styles.wrapper}>
       <div className={styles.panel}>
         <div className={styles.listHeader}>
-          <span className={styles.listHeaderTitle}>Quest Board</span>
+          <span className={styles.panelTitleJa} lang="ja">任務</span>
+          <span className={styles.panelTitle}>Quest Board</span>
         </div>
 
         {/* Full-width tabs filling the entire space */}

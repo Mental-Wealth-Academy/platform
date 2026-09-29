@@ -30,22 +30,41 @@
 .listHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 16px 20px;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 12px 20px 10px;
   background: color-mix(in oklch, var(--color-primary) 8%, var(--color-scene-card-bg));
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 2px solid var(--color-primary-hover);
+  flex-shrink: 0;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
 }
 
-.listHeaderTitle {
-  font-family: var(--type-font-heading);
-  font-size: clamp(16px, 2.2vh, 18px);
+:global([data-theme="dark"]) .listHeader {
+  background: var(--color-surface-2);
+  border-bottom-color: var(--color-primary);
+}
+
+.panelTitleJa {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.panelTitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-text-dark);
-  text-align: center;
+}
+
+:global([data-theme="dark"]) .panelTitle {
+  color: var(--color-text-light, var(--color-text-dark));
 }
 
 /* ── Bottom Navigation Row ── */

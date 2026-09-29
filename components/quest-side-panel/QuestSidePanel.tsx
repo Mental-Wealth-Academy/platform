@@ -47,7 +47,8 @@ export default function QuestSidePanel({ quest, onDeselect }: QuestSidePanelProp
   return (
     <div className={styles.panel}>
       <div className={styles.listHeader}>
-        <span className={styles.listHeaderTitle}>Quest Log</span>
+        <span className={styles.panelTitleJa} lang="ja">記録</span>
+        <span className={styles.panelTitle}>Quest Log</span>
       </div>
 
       <div className={styles.hint}>

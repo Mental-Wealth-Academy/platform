@@ -155,14 +155,9 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
 
   return (
     <div className={styles.globalPanel}>
-      {/* Mobile Top Bar */}
-      <header className={styles.topHeader}>
-        <h1 className={styles.topTitle}>Squads</h1>
-      </header>
-
-      {/* Scenehead matching /profile */}
+      {/* Scenehead matching other scene heads */}
       <div className={styles.panelHeader}>
-        <span className={styles.panelTitleJa}>部隊</span>
+        <span className={styles.panelTitleJa} lang="ja">部隊</span>
         <span className={styles.panelTitle}>Squads</span>
       </div>
 
