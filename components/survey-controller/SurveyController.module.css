@@ -127,6 +127,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 9px 12px;
   border-radius: 8px;
@@ -151,29 +152,12 @@
   background: color-mix(in srgb, var(--accent) 28%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
 }
-.surveyItemIndicator {
-  width: 4px;
-  height: 24px;
-  border-radius: 9999px;
-  background: var(--accent);
-  opacity: 0.4;
-  flex-shrink: 0;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-.surveyItem:hover .surveyItemIndicator {
-  opacity: 0.8;
-  transform: scaleY(1.1);
-}
-.surveyItemActive .surveyItemIndicator,
-.surveyItemActive:hover .surveyItemIndicator {
-  opacity: 1;
-  transform: scaleY(1.15);
-}
 .surveyItemContent {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  flex: 1;
 }
 .surveyItemLabel {
   font-family: var(--f-headline);
@@ -187,6 +171,27 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-fg-soft);
+}
+.surveyShardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-family: var(--font-mono, var(--f-mono));
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-tertiary);
+  background: color-mix(in srgb, var(--color-tertiary) 10%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--color-tertiary) 30%, transparent);
+  border-radius: 12px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+:global(:root:not([data-theme="dark"])) .surveyShardBadge {
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 20%, transparent);
 }
 
 /* ----- image / blue panel ----- */

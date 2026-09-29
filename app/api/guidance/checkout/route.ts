@@ -38,18 +38,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
   }
 
-  const name = typeof body.name === 'string' ? body.name.trim() : '';
-  const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-  const contact = typeof body.contact === 'string' ? body.contact.trim() : '';
-  const focusArea = typeof body.focusArea === 'string' ? body.focusArea.trim() : 'General Mental Wealth';
-  const notes = typeof body.notes === 'string' ? body.notes.trim().slice(0, 2000) : '';
-
-  if (!name || !email) {
-    return NextResponse.json({ error: 'Name and email are required.' }, { status: 400 });
-  }
-
   const user = await getCurrentUserFromRequestCookie().catch(() => null);
   const userId = user?.id ?? null;
+
+  const name = typeof body.name === 'string' && body.name.trim()
+    ? body.name.trim()
+    : (user?.username ? `@${user.username}` : (user?.walletAddress ? `${user.walletAddress.slice(0, 6)}...${user.walletAddress.slice(-4)}` : 'Academy Member'));
+  const email = typeof body.email === 'string' && body.email.trim()
+    ? body.email.trim().toLowerCase()
+    : 'in-app-message';
+  const contact = typeof body.contact === 'string' && body.contact.trim()
+    ? body.contact.trim()
+    : 'In-App Message';
+  const focusArea = typeof body.focusArea === 'string' && body.focusArea.trim()
+    ? body.focusArea.trim()
+    : 'General Mental Wealth';
+  const notes = typeof body.notes === 'string' ? body.notes.trim().slice(0, 500) : '';
 
   let consultationId: string | null = null;
 
@@ -76,7 +80,7 @@ export async function POST(request: NextRequest) {
 
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
-        customer_email: email,
+        customer_email: email !== 'in-app-message' ? email : undefined,
         line_items: [
           {
             quantity: 1,

@@ -3,9 +3,9 @@
 CREATE TABLE IF NOT EXISTS practitioner_consultations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  contact TEXT,
+  name TEXT DEFAULT 'Academy Member',
+  email TEXT DEFAULT 'in-app-message',
+  contact TEXT DEFAULT 'in-app-message',
   focus_area TEXT,
   notes TEXT,
   status TEXT NOT NULL DEFAULT 'pending',

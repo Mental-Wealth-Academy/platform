@@ -64,7 +64,7 @@ interface SurveyControllerProps {
 
 export default function SurveyController({
   userName = 'You Toxic or Fun Type Shi?',
-  version = 'V.e1-MWA36B',
+  version = 'Earn Diamonds!',
   characterImageSrc = '/exxies.png',
   difficulty: initialDifficulty = 101,
   showDifficulty = true,
@@ -103,7 +103,7 @@ export default function SurveyController({
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroText}>
-          <span className={styles.eyebrow}>Assessment engine</span>
+          <span className={styles.eyebrow}>Mental Wealth Academy</span>
           <h1 className={styles.heroTitle}>{userName}</h1>
         </div>
         <span className={styles.heroVersion}>
@@ -125,9 +125,8 @@ export default function SurveyController({
           />
         </div>
         <div className={styles.videoReview}>
-          <div className={styles.videoReviewEyebrow}>{selectedSurvey.label} · overview</div>
           <p className={styles.videoReviewText}>
-            {selectedSurvey.shortDesc}
+            Earn badges, diamonds, and find your type.
           </p>
         </div>
       </div>
@@ -146,11 +145,14 @@ export default function SurveyController({
               style={{ '--accent': OPTION_COLORS[i] } as React.CSSProperties}
               onClick={() => handleSelectSurvey(survey)}
             >
-              <span className={styles.surveyItemIndicator} aria-hidden="true" />
               <div className={styles.surveyItemContent}>
                 <span className={styles.surveyItemLabel}>{survey.label}</span>
                 <span className={styles.surveyItemSub}>{survey.sub}</span>
               </div>
+              <span className={styles.surveyShardBadge} aria-label="+500 diamonds reward">
+                <Image src="/icons/ui-diamond.svg" alt="" width={12} height={12} className={styles.shardIcon} />
+                +500 diamonds
+              </span>
             </button>
           ))}
         </div>
