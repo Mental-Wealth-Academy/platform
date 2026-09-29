@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-export default function ProfilePage() {
-  redirect('/home');
-}
+export { default } from '@/app/home/page';

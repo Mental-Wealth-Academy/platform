@@ -9,16 +9,16 @@ import {
   House,
   IconProps,
   MoonStars,
-  User,
+  Sparkle,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
 type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 
 const NAV_ITEMS = [
-  { id: 'profile', label: 'Profile', href: '/home', icon: User },
+  { id: 'companion', label: 'Companion', href: '/dao', icon: Sparkle },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
-  { id: 'home', label: 'Home', href: '/dao', icon: House },
+  { id: 'home', label: 'Home', href: '/profile', icon: House },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
   { id: 'squads', label: 'Squads', href: '/chat?squad=global', icon: ChatsCircle },
 ] as const;
@@ -46,7 +46,7 @@ export const MobileBottomNav: React.FC = () => {
   if (pathname === '/') return null;
 
   const isActive = (href: string) => {
-    if (href === '/home') {
+    if (href === '/profile' || href === '/home') {
       return (
         pathname === '/home' ||
         pathname === '/profile' ||
@@ -54,14 +54,14 @@ export const MobileBottomNav: React.FC = () => {
         pathname?.startsWith('/profile/')
       );
     }
+    if (href === '/dao') {
+      return pathname === '/dao' || pathname?.startsWith('/dao/');
+    }
     if (href === '/surveys') {
       return pathname === '/surveys' || pathname?.startsWith('/surveys/');
     }
     if (href.startsWith('/chat')) {
       return pathname === '/chat' || pathname?.startsWith('/chat/');
-    }
-    if (href === '/dao') {
-      return pathname === '/dao' || pathname?.startsWith('/dao/');
     }
     return pathname === href || pathname?.startsWith(`${href}/`);
   };
