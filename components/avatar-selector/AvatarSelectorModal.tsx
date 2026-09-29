@@ -30,9 +30,31 @@ interface AvatarSelectorModalProps {
   currentAvatarUrl?: string | null;
 }
 
-type CategoryKey = 'skin' | 'background' | 'hairstyle' | 'hairColor' | 'headset' | 'outfit' | 'accessory';
+interface PresetAvatar {
+  id: string;
+  name: string;
+  url: string;
+}
+
+const PRESET_AVATARS: PresetAvatar[] = [
+  { id: 'sage', name: 'Sage', url: '/archetypes/sage.png' },
+  { id: 'empath', name: 'Empath', url: '/archetypes/empath.png' },
+  { id: 'visionary', name: 'Visionary', url: '/archetypes/visionary.png' },
+  { id: 'anchor', name: 'Anchor', url: '/archetypes/anchor.png' },
+  { id: 'daemon', name: 'Blue Daemon', url: '/archetypes/blue_daemon.png' },
+  { id: 'strategist', name: 'Strategist', url: '/archetypes/strategist.png' },
+  { id: 'academic', name: 'Academic Angel', url: '/academic-angels.webp' },
+  { id: 'anbel01', name: 'Angel Alpha', url: '/anbel01.png' },
+  { id: 'anbel02', name: 'Angel Sol', url: '/anbel02.png' },
+  { id: 'anbel05', name: 'Angel Luna', url: '/anbel05.png' },
+  { id: 'anbel06', name: 'Angel Astra', url: '/anbel06.png' },
+  { id: 'anbel09', name: 'Angel Nova', url: '/anbel09.png' },
+];
+
+type CategoryKey = 'presets' | 'skin' | 'background' | 'hairstyle' | 'hairColor' | 'headset' | 'outfit' | 'accessory';
 
 const CATEGORIES: Array<{ key: CategoryKey; label: string }> = [
+  { key: 'presets', label: 'Presets' },
   { key: 'skin', label: 'Skin' },
   { key: 'background', label: 'Backdrop' },
   { key: 'hairstyle', label: 'Hair' },
@@ -71,7 +93,15 @@ export default function AvatarSelectorModal({
     };
   }, [currentAvatarUrl]);
 
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>('skin');
+  const [selectedPresetUrl, setSelectedPresetUrl] = useState<string | null>(() => {
+    if (currentAvatarUrl && !currentAvatarUrl.includes('seed=')) {
+      return currentAvatarUrl;
+    }
+    return null;
+  });
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>(() => {
+    return currentAvatarUrl && !currentAvatarUrl.includes('seed=') ? 'presets' : 'presets';
+  });
   const [backgroundIndex, setBackgroundIndex] = useState(initialParams.backgroundIndex);
   const [skinToneIndex, setSkinToneIndex] = useState(initialParams.skinToneIndex);
   const [hairstyleIndex, setHairstyleIndex] = useState(initialParams.hairstyleIndex);
@@ -119,6 +149,7 @@ export default function AvatarSelectorModal({
   }, [currentParams]);
 
   const handleRandomize = () => {
+    setSelectedPresetUrl(null);
     setBackgroundIndex(Math.floor(Math.random() * BACKGROUND_TRAITS.length));
     setSkinToneIndex(Math.floor(Math.random() * SKIN_TONE_TRAITS.length));
     setHairstyleIndex(Math.floor(Math.random() * HAIRSTYLE_TRAITS.length));
@@ -132,6 +163,40 @@ export default function AvatarSelectorModal({
   const handleSaveAvatar = async () => {
     setSaving(true);
     setError(null);
+
+    // If user picked a preset avatar, save it via /api/avatars/custom
+    if (selectedPresetUrl) {
+      try {
+        const token = await getAccessToken();
+        const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
+        const response = await fetch('/api/avatars/custom', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...authHeader,
+          },
+          body: JSON.stringify({ url: selectedPresetUrl }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to select avatar');
+        }
+
+        safeStorage.setItem('mwa:cached_avatar', selectedPresetUrl);
+        onAvatarSelected(selectedPresetUrl);
+        window.dispatchEvent(new Event('profileUpdated'));
+        onClose();
+      } catch (err: any) {
+        console.error('Failed to select preset avatar:', err);
+        setError(err?.message || 'Failed to select avatar');
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
 
     const customSeed = buildCustomAvatarSeed({
       backgroundIndex,
@@ -236,10 +301,17 @@ export default function AvatarSelectorModal({
         {/* Live Preview & Randomize */}
         <div className={styles.previewSection}>
           <div className={styles.previewAvatarRing}>
-            <div
-              className={styles.previewAvatarInner}
-              dangerouslySetInnerHTML={{ __html: previewSvg }}
-            />
+            <div className={styles.previewAvatarInner}>
+              {selectedPresetUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={selectedPresetUrl} alt="Selected avatar preset" className={styles.previewImage} />
+              ) : (
+                <div
+                  className={styles.previewSvgWrapper}
+                  dangerouslySetInnerHTML={{ __html: previewSvg }}
+                />
+              )}
+            </div>
           </div>
           <button
             type="button"
@@ -270,17 +342,45 @@ export default function AvatarSelectorModal({
 
         {/* Options Grid based on Active Category */}
         <div className={styles.optionsWrap}>
+          {activeCategory === 'presets' && (
+            <div className={styles.presetsGrid}>
+              {PRESET_AVATARS.map((preset) => {
+                const isSelected = selectedPresetUrl === preset.url;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    className={`${styles.presetOption} ${isSelected ? styles.optionSelected : ''}`}
+                    onClick={() => {
+                      setSelectedPresetUrl(preset.url);
+                      setError(null);
+                    }}
+                  >
+                    <div className={styles.presetThumbWrap}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={preset.url} alt={preset.name} className={styles.presetThumb} />
+                    </div>
+                    <span className={styles.presetLabel}>{preset.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           {activeCategory === 'skin' && (
             <div className={styles.colorGrid}>
               {SKIN_TONE_TRAITS.map((label, idx) => {
-                const isSelected = skinToneIndex === idx;
+                const isSelected = !selectedPresetUrl && skinToneIndex === idx;
                 const palette = SKIN_PALETTES[idx];
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setSkinToneIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setSkinToneIndex(idx);
+                    }}
                   >
                     <span
                       className={styles.swatch}
@@ -296,14 +396,17 @@ export default function AvatarSelectorModal({
           {activeCategory === 'background' && (
             <div className={styles.colorGrid}>
               {BACKGROUND_TRAITS.map((label, idx) => {
-                const isSelected = backgroundIndex === idx;
+                const isSelected = !selectedPresetUrl && backgroundIndex === idx;
                 const color = BACKGROUND_COLORS[idx];
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setBackgroundIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setBackgroundIndex(idx);
+                    }}
                   >
                     <span
                       className={styles.swatch}
@@ -319,13 +422,16 @@ export default function AvatarSelectorModal({
           {activeCategory === 'hairstyle' && (
             <div className={styles.textOptionsGrid}>
               {HAIRSTYLE_TRAITS.map((label, idx) => {
-                const isSelected = hairstyleIndex === idx;
+                const isSelected = !selectedPresetUrl && hairstyleIndex === idx;
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setHairstyleIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setHairstyleIndex(idx);
+                    }}
                   >
                     {label}
                   </button>
@@ -337,14 +443,17 @@ export default function AvatarSelectorModal({
           {activeCategory === 'hairColor' && (
             <div className={styles.colorGrid}>
               {HAIR_COLOR_TRAITS.map((label, idx) => {
-                const isSelected = hairColorIndex === idx;
+                const isSelected = !selectedPresetUrl && hairColorIndex === idx;
                 const palette = HAIR_PALETTES[idx];
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.colorOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setHairColorIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setHairColorIndex(idx);
+                    }}
                   >
                     <span
                       className={styles.swatch}
@@ -360,13 +469,16 @@ export default function AvatarSelectorModal({
           {activeCategory === 'headset' && (
             <div className={styles.textOptionsGrid}>
               {HEADSET_TRAITS.map((label, idx) => {
-                const isSelected = headsetIndex === idx;
+                const isSelected = !selectedPresetUrl && headsetIndex === idx;
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setHeadsetIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setHeadsetIndex(idx);
+                    }}
                   >
                     {label}
                   </button>
@@ -378,13 +490,16 @@ export default function AvatarSelectorModal({
           {activeCategory === 'outfit' && (
             <div className={styles.textOptionsGrid}>
               {OUTFIT_TRAITS.map((label, idx) => {
-                const isSelected = outfitIndex === idx;
+                const isSelected = !selectedPresetUrl && outfitIndex === idx;
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setOutfitIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setOutfitIndex(idx);
+                    }}
                   >
                     {label}
                   </button>
@@ -396,13 +511,16 @@ export default function AvatarSelectorModal({
           {activeCategory === 'accessory' && (
             <div className={styles.textOptionsGrid}>
               {ACCESSORY_TRAITS.map((label, idx) => {
-                const isSelected = accessoryIndex === idx;
+                const isSelected = !selectedPresetUrl && accessoryIndex === idx;
                 return (
                   <button
                     key={label}
                     type="button"
                     className={`${styles.textOption} ${isSelected ? styles.optionSelected : ''}`}
-                    onClick={() => setAccessoryIndex(idx)}
+                    onClick={() => {
+                      setSelectedPresetUrl(null);
+                      setAccessoryIndex(idx);
+                    }}
                   >
                     {label}
                   </button>

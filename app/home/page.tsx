@@ -11,8 +11,8 @@ import BlueDialogue, { type BlueEmotion } from '@/components/blue-dialogue/BlueD
 import { scriptForWeek, WEEKLY_SEEN_KEY } from '@/components/daily-read/weeklyScripts';
 import CourseFolderCard from '@/components/home/CourseFolderCard';
 import type { FolderMotif } from '@/components/home/folderMotifs';
-import EmptyCourseStudioFolder from '@/components/home/EmptyCourseStudioFolder';
 import FolderCardWrapper from '@/components/home/FolderCardWrapper';
+import MeditationPlayerModal, { type MeditationTrackKey } from '@/components/meditation-player/MeditationPlayerModal';
 import ProfileDashboard from '@/components/home/ProfileDashboard';
 import HomeTopCard from '@/components/home/HomeTopCard';
 import DailyNotes from '@/components/daily-notes/DailyNotes';
@@ -121,30 +121,7 @@ function dialogueIndexForDate(dateKey: string): number {
   return hash % DAILY_COURSES_DIALOGUES.length;
 }
 
-/**
- * Placeholder folders for the tabs that have no content behind them yet. They
- * carry no link, so they render as inert folders — each with its own dotted
- * motif so the row still reads as a shelf rather than a repeat.
- */
-interface PlaceholderFolder {
-  title: string;
-  centerLabel: string;
-  motif: FolderMotif;
-  dark?: boolean;
-  ctaDark?: boolean;
-}
 
-const PLACEHOLDER_LECTURES: PlaceholderFolder[] = [
-  { title: 'Recorded lectures', centerLabel: 'Recorded Lectures', motif: 'waveform', dark: true },
-  { title: 'Lecture theatre', centerLabel: 'Lecture Theatre', motif: 'beam', ctaDark: true },
-  { title: 'Guest seminars', centerLabel: 'Guest Seminars', motif: 'spiral', dark: true },
-];
-
-const PLACEHOLDER_WORKSHOPS: PlaceholderFolder[] = [
-  { title: 'Practice bench', centerLabel: 'Practice Bench', motif: 'lattice', dark: true },
-  { title: 'Peer circles', centerLabel: 'Peer Circles', motif: 'bloom', ctaDark: true },
-  { title: 'Build week', centerLabel: 'Build Week', motif: 'bars', dark: true },
-];
 
 const ASK_BLUE_DIALOGUES: CourseDialogue[] = [
   {
@@ -397,6 +374,13 @@ export default function HomePage() {
   const postSignupReady = profileComplete || devOnboarding;
   const [bookmarkedCount, setBookmarkedCount] = useState(0);
   const [activeInsightSlide, setActiveInsightSlide] = useState<0 | 1>(0);
+  const [meditationModalOpen, setMeditationModalOpen] = useState(false);
+  const [meditationTrackKey, setMeditationTrackKey] = useState<MeditationTrackKey>('twenty-minute-reset');
+
+  const handleOpenMeditation = useCallback((trackKey: MeditationTrackKey = 'twenty-minute-reset') => {
+    setMeditationTrackKey(trackKey);
+    setMeditationModalOpen(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -886,46 +870,101 @@ export default function HomePage() {
         <FolderCardWrapper
           tabs={[
             {
-              label: 'My Courses',
+              label: 'My Tools',
               content: (
-                <section className={styles.folderRow} aria-label="Course folders">
+                <section className={styles.folderRow} aria-label="Tool folders">
                   <CourseFolderCard
                     title="Blue's Quest"
                     href="/shadow-work"
-                    avatarSrc="/blue/blue-home.png"
+                    avatarSrc="/archetypes/sage.png"
                     centerLabel="Creativity"
                     ctaLabel="Continue Course"
                     dark
+                    motif="orbit"
                   />
                   <CourseFolderCard
-                    title="Your Course"
-                    href="/course/personal"
-                    avatarSrc="/academic-angels.webp"
-                    centerLabel={personalCourse?.focus ?? (bookmarkedCount > 0 ? 'Saved Guides' : 'Personal Guide')}
-                    ctaLabel={personalCourse ? 'Continue Course' : bookmarkedCount > 0 ? 'View Bookmarks' : 'Start Course'}
+                    title="Wellness Meditation Track"
+                    avatarSrc="/archetypes/empath.png"
+                    centerLabel="Wellness Meditation"
+                    ctaLabel="Start Meditation"
+                    onOpen={() => handleOpenMeditation('twenty-minute-reset')}
                     ctaDark
+                    motif="waveform"
                   />
-                  <EmptyCourseStudioFolder hasAngel={hasAngel} />
+                  <CourseFolderCard
+                    title="Somatic Reset"
+                    href="/learn/guides/attention-basics"
+                    avatarSrc="/archetypes/anchor.png"
+                    centerLabel="Somatic Reset"
+                    ctaLabel="Begin Practice"
+                    motif="lattice"
+                  />
                 </section>
               ),
             },
             {
-              label: 'Lectures',
+              label: 'Meditate',
               content: (
-                <section className={styles.folderRow} aria-label="Lecture folders">
-                  {PLACEHOLDER_LECTURES.map((folder) => (
-                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
-                  ))}
+                <section className={styles.folderRow} aria-label="Meditation folders">
+                  <CourseFolderCard
+                    title="20-Minute Reset"
+                    centerLabel="20-Minute Reset"
+                    ctaLabel="Play Meditation"
+                    avatarSrc="/archetypes/empath.png"
+                    onOpen={() => handleOpenMeditation('twenty-minute-reset')}
+                    dark
+                    motif="waveform"
+                  />
+                  <CourseFolderCard
+                    title="Ocean 432Hz Soundscape"
+                    centerLabel="Ocean 432Hz"
+                    ctaLabel="Play Soundscape"
+                    avatarSrc="/archetypes/blue_daemon.png"
+                    onOpen={() => handleOpenMeditation('meditation-ocean-432hz')}
+                    ctaDark
+                    motif="beam"
+                  />
+                  <CourseFolderCard
+                    title="Serene Mind"
+                    centerLabel="Serene Mind"
+                    ctaLabel="Start Meditation"
+                    avatarSrc="/anbel02.png"
+                    onOpen={() => handleOpenMeditation('twenty-minute-reset')}
+                    motif="spiral"
+                  />
                 </section>
               ),
             },
             {
-              label: 'Workshops',
+              label: 'Yoga',
               content: (
-                <section className={styles.folderRow} aria-label="Workshop folders">
-                  {PLACEHOLDER_WORKSHOPS.map((folder) => (
-                    <CourseFolderCard key={folder.centerLabel} {...folder} ctaLabel="Coming soon" />
-                  ))}
+                <section className={styles.folderRow} aria-label="Yoga flow folders">
+                  <CourseFolderCard
+                    title="Morning Flow"
+                    centerLabel="Morning Flow"
+                    ctaLabel="Start Flow"
+                    avatarSrc="/archetypes/visionary.png"
+                    href="/learn/guides/attention-basics"
+                    dark
+                    motif="lattice"
+                  />
+                  <CourseFolderCard
+                    title="Somatic Release"
+                    centerLabel="Somatic Release"
+                    ctaLabel="Begin Practice"
+                    avatarSrc="/anbel05.png"
+                    href="/learn/guides/attention-basics"
+                    ctaDark
+                    motif="bloom"
+                  />
+                  <CourseFolderCard
+                    title="Breath & Posture"
+                    centerLabel="Breath & Posture"
+                    ctaLabel="View Guide"
+                    avatarSrc="/anbel01.png"
+                    href="/learn/guides/attention-basics"
+                    motif="bars"
+                  />
                 </section>
               ),
             },
@@ -1205,6 +1244,12 @@ export default function HomePage() {
           defaultName={userName}
         />
       )}
+
+      <MeditationPlayerModal
+        isOpen={meditationModalOpen}
+        onClose={() => setMeditationModalOpen(false)}
+        initialTrack={meditationTrackKey}
+      />
 
     </div>
   );

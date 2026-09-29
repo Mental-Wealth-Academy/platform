@@ -1,0 +1,383 @@
+/* ── Meditation Player Modal ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 10, 18, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-surface-base, #11151c);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 28%, var(--color-border-subtle, #222938));
+  border-radius: 24px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    0 0 0 1px color-mix(in oklch, var(--color-primary) 15%, transparent),
+    0 0 40px color-mix(in oklch, var(--color-primary) 12%, transparent);
+  color: var(--color-text-dark, #f8fafc);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.96) translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-text-dark, #f8fafc);
+  letter-spacing: -0.01em;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted, #94a3b8);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--color-surface-base) 80%, white);
+  color: var(--color-text-dark, #f8fafc);
+}
+
+/* ── Track Selector Tabs ── */
+.trackTabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 22px 0;
+}
+
+.trackTab {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #94a3b8);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.trackTab:hover {
+  color: var(--color-text-dark, #f8fafc);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+}
+
+.trackTabActive {
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+/* ── Body Content ── */
+.body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Breathing Aura Visualization ── */
+.auraWrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+}
+
+.auraRingOuter {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed color-mix(in oklch, var(--color-primary) 35%, transparent);
+  animation: rotateAura 20s linear infinite;
+}
+
+@keyframes rotateAura {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.auraPulse {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in oklch, var(--color-primary) 35%, transparent) 0%, color-mix(in oklch, var(--color-primary) 8%, transparent) 70%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 28px color-mix(in oklch, var(--color-primary) 25%, transparent);
+  animation: breathCycle 16s ease-in-out infinite;
+}
+
+@keyframes breathCycle {
+  0% { transform: scale(0.92); opacity: 0.75; }
+  25% { transform: scale(1.12); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 1; }
+  75% { transform: scale(0.92); opacity: 0.75; }
+  100% { transform: scale(0.92); opacity: 0.75; }
+}
+
+.breathLabel {
+  font-family: var(--font-secondary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-dark, #f8fafc);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.breathCue {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--color-text-light, #f8fafc) 75%, transparent);
+  text-transform: uppercase;
+}
+
+/* ── Track Details ── */
+.trackInfo {
+  text-align: center;
+  width: 100%;
+}
+
+.trackTitle {
+  margin: 0 0 4px 0;
+  font-family: var(--font-secondary);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-dark, #f8fafc);
+}
+
+.trackSubtitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #94a3b8);
+}
+
+/* ── Progress & Timeline ── */
+.timeline {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sliderTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.sliderFill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
+.timeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #94a3b8);
+}
+
+/* ── Controls Row ── */
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.secondaryBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 6%, transparent);
+  color: var(--color-text-dark, #f8fafc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.playPauseBtn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px color-mix(in oklch, var(--color-primary) 40%, transparent);
+  transition: all 0.15s ease;
+}
+
+.playPauseBtn:hover {
+  background: var(--color-primary-hover, #465BE0);
+  border-color: var(--color-primary-hover, #465BE0);
+  transform: scale(1.06);
+  box-shadow: 0 6px 22px color-mix(in oklch, var(--color-primary) 50%, transparent);
+}
+
+/* ── Bottom Volume Bar ── */
+.volumeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 260px;
+  padding-top: 4px;
+}
+
+.volumeBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted, #94a3b8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.volumeBtn:hover {
+  color: var(--color-text-dark, #f8fafc);
+}
+
+.volumeSlider {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  appearance: none;
+  background: color-mix(in oklch, var(--color-primary) 20%, transparent);
+  outline: none;
+  cursor: pointer;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
+
+.volumeSlider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
