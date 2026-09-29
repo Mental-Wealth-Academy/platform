@@ -3,11 +3,11 @@
   box-sizing: border-box;
   margin-left: var(--sidebar-width, 265px);
   min-height: 100vh;
-  background-color: var(--color-background);
+  background: transparent;
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* The day's pixel-art scene backdrop — matching /profile (/home) */
+/* The day's pixel-art scene backdrop with grid texture — matching /profile (/home) */
 .scene {
   position: fixed;
   top: 0;
@@ -17,16 +17,26 @@
   z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 248, 255, 0.72) 0%, rgba(247, 248, 255, 0.58) 55%, rgba(247, 248, 255, 0.74) 100%),
     var(--chat-scene, none) center / cover no-repeat,
-    var(--color-scene-bg);
+    #f7f8ff;
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+:global([data-theme="dark"]) .scene {
+  background:
+    linear-gradient(color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(10, 12, 28, 0.86) 0%, rgba(10, 12, 28, 0.8) 55%, rgba(10, 12, 28, 0.88) 100%),
+    var(--chat-scene, none) center / cover no-repeat,
+    var(--color-surface-base);
   background-size: 28px 28px, 28px 28px, auto, cover, auto;
 }
 
 :global([data-theme="dark"]) .pageLayout {
-  background-color: var(--color-background);
+  background: transparent;
 }
 
 .content {
@@ -41,7 +51,6 @@
   min-height: 0;
   box-sizing: border-box;
 }
-
 
 /* ChatRoom variant — full-viewport pinned chat matching /blue */
 .pageLayoutChatRoom {
@@ -63,7 +72,13 @@
 }
 
 @media (max-width: 900px) {
-  .pageLayout,
+  .pageLayout {
+    margin-left: 0;
+    min-height: 100vh;
+    padding-top: calc(72px + var(--banner-height, 0px));
+    padding-bottom: 24px;
+  }
+
   .pageLayoutChatRoom {
     margin-left: 0;
     height: calc(100dvh - var(--banner-height, 0px));
@@ -71,7 +86,15 @@
     padding-bottom: 0;
   }
 
-  .content,
+  .scene {
+    left: 0;
+  }
+
+  .content {
+    padding: 16px;
+    max-width: 100%;
+  }
+
   .contentChatRoom {
     padding: 0;
     max-width: 100%;
@@ -79,7 +102,14 @@
 }
 
 @media (max-width: 768px) {
-  .pageLayout,
+  .pageLayout {
+    position: relative;
+    margin-left: 0;
+    min-height: 100vh;
+    padding-top: calc(72px + var(--banner-height, 0px));
+    padding-bottom: calc(90px + max(env(safe-area-inset-bottom, 0px), 20px));
+  }
+
   .pageLayoutChatRoom {
     position: fixed;
     top: calc(72px + var(--banner-height, 0px));
@@ -94,10 +124,15 @@
   }
 
   .scene {
-    display: none;
+    left: 0;
   }
 
-  .content,
+  .content {
+    padding: 12px 14px 24px;
+    max-width: 100%;
+    width: 100%;
+  }
+
   .contentChatRoom {
     padding: 0;
     max-width: 100%;

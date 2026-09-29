@@ -46,6 +46,7 @@ const DEFAULT_SQUADS: SquadItem[] = [
     memberCount: 28,
     activityTime: '2h ago',
     isOpen: false,
+    avatarUrl: '/images/squads/health-squad.jpg',
     lastMessage: 'Field note prompt posted for Week 3 integration.',
   },
   {
@@ -55,6 +56,7 @@ const DEFAULT_SQUADS: SquadItem[] = [
     memberCount: 45,
     activityTime: '5h ago',
     isOpen: false,
+    avatarUrl: '/images/squads/focus-squad.jpg',
     lastMessage: 'Sprint check-in complete. 14 members completed daily note.',
   },
 ];
@@ -192,7 +194,7 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
                 Earn 800 diamonds for each person you invite.{' '}
                 <span
                   className={styles.infoBubble}
-                  title="Earn 800 diamonds and 20 USDC for each person who joins with your squad code."
+                  title="Earn 800 diamonds for each person who joins with your squad code."
                   aria-label="Reward information"
                 >
                   <Info size={13} weight="bold" />
@@ -204,10 +206,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
             <span className={styles.rewardBadge}>
               <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
               +800
-            </span>
-            <span className={`${styles.rewardBadge} ${styles.usdcBadge}`}>
-              <Image src="/icons/usdc-logo.svg" alt="" width={13} height={13} />
-              20 USDC
             </span>
           </div>
         </button>
@@ -233,8 +231,8 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
                   <Image
                     src={squad.avatarUrl}
                     alt={squad.name}
-                    width={38}
-                    height={38}
+                    width={44}
+                    height={44}
                     className={styles.squadAvatarImg}
                     unoptimized
                   />
@@ -324,7 +322,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
                   }}
                   placeholder="Enter code from your specialist"
                   className={`${styles.formInput} ${styles.codeInput}`}
-                  autoFocus
                 />
               </div>
 
@@ -400,7 +397,6 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
                   }}
                   placeholder="Enter cohort access code"
                   className={`${styles.formInput} ${styles.codeInput}`}
-                  autoFocus
                 />
               </div>
 
