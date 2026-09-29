@@ -38,14 +38,20 @@ function livePosition(): { index: number; offset: number } {
 
 export default function BlueRadio({
   gardenBackground,
-  mode = 'companion',
+  mode = 'radio',
+  onModeChange,
   initialMood,
   onInitialMoodHandled,
+  onMuteChange,
+  onRegisterMute,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
+  onModeChange?: (mode: 'radio' | 'companion') => void;
   initialMood?: InitialMoodData | null;
   onInitialMoodHandled?: () => void;
+  onMuteChange?: (muted: boolean) => void;
+  onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -140,8 +146,9 @@ export default function BlueRadio({
     await audio.play();
     void ensureAudioAnalyser();
     setMuted(wantMuted);
+    onMuteChange?.(wantMuted);
     setPlayback('live');
-  }, [ensureAudioAnalyser]);
+  }, [ensureAudioAnalyser, onMuteChange]);
 
   // Tuning in on arrival, per the app-wide auto-narration default. Browsers
   // that refuse sound without a gesture get a muted broadcast plus a loud
@@ -262,6 +269,7 @@ export default function BlueRadio({
     const nextMuted = !audio.muted;
     audio.muted = nextMuted;
     setMuted(nextMuted);
+    onMuteChange?.(nextMuted);
 
     if (!nextMuted) {
       if (audio.paused) {
@@ -274,7 +282,11 @@ export default function BlueRadio({
       }
       void ensureAudioAnalyser();
     }
-  }, [ensureAudioAnalyser, syncToLive]);
+  }, [ensureAudioAnalyser, onMuteChange, syncToLive]);
+
+  useEffect(() => {
+    onRegisterMute?.(toggleMute, muted);
+  }, [onRegisterMute, toggleMute, muted]);
 
   const tuneIn = useCallback(async () => {
     if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
@@ -307,6 +319,7 @@ export default function BlueRadio({
       if (audio.muted) {
         audio.muted = false;
         setMuted(false);
+        onMuteChange?.(false);
       }
       if (audio.paused) {
         try {
@@ -328,9 +341,36 @@ export default function BlueRadio({
       window.removeEventListener('touchstart', unlock);
       window.removeEventListener('keydown', unlock);
     };
-  }, [ensureAudioAnalyser, mode, syncToLive]);
+  }, [ensureAudioAnalyser, mode, onMuteChange, syncToLive]);
 
   const onAir = playback === 'live';
+
+  const renderModeSwitch = () => (
+    <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={mode === 'radio'}
+        className={`${styles.sceneSwitchButton} ${
+          mode === 'radio' ? styles.sceneSwitchButtonActive : ''
+        }`}
+        onClick={() => onModeChange?.('radio')}
+      >
+        Radio
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={mode === 'companion'}
+        className={`${styles.sceneSwitchButton} ${
+          mode === 'companion' ? styles.sceneSwitchButtonActive : ''
+        }`}
+        onClick={() => onModeChange?.('companion')}
+      >
+        Companion
+      </button>
+    </div>
+  );
 
   return (
     <div className={styles.radioStage} style={{ backgroundImage: `url(${gardenBackground})` }}>
@@ -351,6 +391,7 @@ export default function BlueRadio({
           onModeChange={setCompanionMode}
           initialMood={initialMood}
           onInitialMoodHandled={onInitialMoodHandled}
+          modeSwitch={renderModeSwitch()}
         />
       ) : (
         <>
@@ -365,30 +406,7 @@ export default function BlueRadio({
           )}
 
           <div className={styles.radioFooter}>
-            <span className={styles.radioLiveChip}>
-              <span className={`${styles.radioLiveDot} ${onAir ? styles.radioLiveDotOn : ''}`} aria-hidden="true" />
-              Live
-            </span>
-            <div className={styles.radioNowPlaying}>
-              <span className={styles.radioShowName}>Blue Radio</span>
-            </div>
-            {onAir && (
-              <span className={styles.radioControls}>
-                {!muted && (
-                  <span className={styles.radioBars} aria-hidden="true">
-                    <span /><span /><span />
-                  </span>
-                )}
-                <button
-                  type="button"
-                  className={`${styles.radioMuteButton} ${muted ? styles.radioMuteButtonLoud : ''}`}
-                  onClick={toggleMute}
-                  aria-label={muted ? 'Unmute radio' : 'Mute radio'}
-                >
-                  {muted ? 'Unmute' : 'Mute'}
-                </button>
-              </span>
-            )}
+            {renderModeSwitch()}
           </div>
         </>
       )}

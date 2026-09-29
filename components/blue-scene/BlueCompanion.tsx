@@ -31,6 +31,7 @@ interface BlueCompanionProps {
   onModeChange: (mode: 'idle' | 'listening' | 'speaking') => void;
   initialMood?: InitialMoodData | null;
   onInitialMoodHandled?: () => void;
+  modeSwitch?: React.ReactNode;
 }
 
 type SessionStatus = 'idle' | 'connecting' | 'connected' | 'error';
@@ -46,6 +47,7 @@ export default function BlueCompanion({
   onModeChange,
   initialMood,
   onInitialMoodHandled,
+  modeSwitch,
 }: BlueCompanionProps) {
   const router = useRouter();
   const [status, setStatus] = useState<SessionStatus>('idle');
@@ -542,9 +544,17 @@ export default function BlueCompanion({
               >
                 End
               </button>
+
+              {modeSwitch}
             </div>
           </div>
         </>
+      )}
+
+      {status !== 'connected' && modeSwitch && (
+        <div className={styles.radioFooter}>
+          {modeSwitch}
+        </div>
       )}
 
       {fieldNotesOpen && typeof document !== 'undefined' && createPortal(

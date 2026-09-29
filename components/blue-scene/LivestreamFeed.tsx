@@ -5,14 +5,20 @@ import styles from './BlueScene.module.css';
 
 export default function LivestreamFeed({
   gardenBackground,
-  mode = 'companion',
+  mode = 'radio',
+  onModeChange,
   initialMood,
   onInitialMoodHandled,
+  onMuteChange,
+  onRegisterMute,
 }: {
   gardenBackground: string;
   mode?: 'radio' | 'companion';
+  onModeChange?: (mode: 'radio' | 'companion') => void;
   initialMood?: InitialMoodData | null;
   onInitialMoodHandled?: () => void;
+  onMuteChange?: (muted: boolean) => void;
+  onRegisterMute?: (toggleFn: () => void, muted: boolean) => void;
 }) {
   const streamUrl = process.env.NEXT_PUBLIC_LIVESTREAM_EMBED_URL?.trim();
   const hasBroadcast = Array.isArray(manifest.segments) && manifest.segments.length > 0;
@@ -31,8 +37,11 @@ export default function LivestreamFeed({
         <BlueRadio
           gardenBackground={gardenBackground}
           mode={mode}
+          onModeChange={onModeChange}
           initialMood={initialMood}
           onInitialMoodHandled={onInitialMoodHandled}
+          onMuteChange={onMuteChange}
+          onRegisterMute={onRegisterMute}
         />
       ) : (
         <div className={styles.offlineState}>
