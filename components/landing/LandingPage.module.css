@@ -1472,9 +1472,9 @@
   }
 
   .heroEarth {
-    width: min(145vw, 640px);
+    width: min(90vw, 480px);
     opacity: 1;
-    transform: translate(30%, 30%);
+    transform: translate(25%, 32%);
   }
 
   .heroTextBadge {
@@ -1630,8 +1630,8 @@
   }
 
   .heroEarth {
-    width: min(155vw, 600px);
-    transform: translate(30%, 30%);
+    width: clamp(240px, 68vw, 360px);
+    transform: translate(18%, 24%);
   }
 
   .heroSubtext {
@@ -1648,6 +1648,11 @@
 }
 
 @media (max-width: 600px) {
+  .heroEarth {
+    width: clamp(210px, 60vw, 290px);
+    transform: translate(16%, 22%);
+  }
+
   .heroActions {
     width: 100%;
     max-width: 280px;
