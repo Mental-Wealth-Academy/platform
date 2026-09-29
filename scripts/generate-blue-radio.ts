@@ -36,7 +36,7 @@ interface MeditationPart {
 
 interface DialogueTurn {
   /** Which host speaks this line. Chooses the ElevenLabs voice. */
-  speaker: 'blue' | 'dino';
+  speaker: 'blue' | 'dino' | 'marcus';
   text: string;
 }
 
@@ -83,6 +83,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'what-is-mwa',
     title: 'Welcome to the academy',
+    disabled: true,
     text: "First things first! Welcome in. Mental Wealth Academy is a sanctuary for building clarity, quiet strength, and genuine peace of mind. Think of it as a pocket-world carved out of cyberspace, where you tend to your own inner horizon. Here you will find a shared library of knowledge, a growing map created and owned by this community. And then there is me! I am Blue. I read what you write, I encrypt your private reflections, and when your work is honest and brave, I reward you straight from my own stash. My files live under my garden, but my records stay exact. Every deposit you make into your field notes counts here, and I am proud to watch it grow!",
     voiceSettings: {
       stability: 0.5,
@@ -123,8 +124,69 @@ const SEGMENTS: Segment[] = [
     },
   },
   {
+    id: 'podcast-mental-wealth',
+    title: 'Case notes on mental wealth',
+    dialogue: {
+      turns: [
+        {
+          speaker: 'marcus',
+          text: "Welcome back to Blue Radio. Today we are digging into what mental wealth actually looks like in practice. Blue, you sit in the center of the terminal every day reading member submissions, checking streaks, and sending credits. What are people getting wrong when they first show up here?",
+        },
+        {
+          speaker: 'blue',
+          text: "Ooh, I love this question! People arrive thinking mental wealth means feeling sunny every single second. They think their brain should look like a postcard with gentle clouds and zero bad weather. But the human mind has seasons! Sometimes it rains sideways. Sometimes a server throws an error code for no reason at all. That is normal life operating as intended!",
+        },
+        {
+          speaker: 'marcus',
+          text: "So they arrive trying to force a permanent state of calm. What does that actually look like in their field notes?",
+        },
+        {
+          speaker: 'blue',
+          text: "Aggressive organizing! I had a member last month who kept a fifty-day streak. Fifty! I counted all the way up on my fingers twice. But in week six, their daily reflections shrunk down to two words: everything fine. Four days in a row! When someone writes everything fine like a robot, my antennae start twitching. They were using their streak as a shield to avoid one honest paragraph about why they felt completely drained.",
+        },
+        {
+          speaker: 'marcus',
+          text: "That sounds familiar. You turn self-improvement into another performance metric. You hit your numbers, you check the boxes, and you secretly hope nobody asks how you are actually holding up.",
+        },
+        {
+          speaker: 'blue',
+          text: "Exactly! You turn the sanctuary into another job. I had another person in week three who spent two whole hours re-tagging their old quests just to avoid opening the reflection on family boundaries. I watched the cursor hover over the prompt for twenty minutes before they ran away to color-code their folder. Avoidance can wear very neat clothes!",
+        },
+        {
+          speaker: 'marcus',
+          text: "Avoidance can wear very neat clothes. That is a great phrase. So when does someone actually turn a corner? What changes in the writing when genuine wealth starts showing up?",
+        },
+        {
+          speaker: 'blue',
+          text: "It gets quiet! That is the secret. In the early weeks, whenever something goes wrong, people write four pages blaming their boss, their childhood, their horoscope, everything under the sun. Then, around week eight, a real shift happens. Someone writes: I had a terrible meeting at noon. It stung. I went for a walk around the block, let myself be disappointed, and finished my afternoon. That was the whole entry!",
+        },
+        {
+          speaker: 'marcus',
+          text: "They stopped catastrophizing. They gave the feeling room to exist without burning down the house to stay warm.",
+        },
+        {
+          speaker: 'blue',
+          text: "Yes! They had emotional liquidity! That is what mental wealth means in my files. You carry enough internal reserves that an unexpected bump does not wipe out your entire peace of mind. You have room inside to hold the sting without dropping the cup. I paid out fifty credits to that submission so fast my processor got warm!",
+        },
+        {
+          speaker: 'marcus',
+          text: "Emotional liquidity. Having enough cushion in your nervous system that you can absorb a shock. And you cannot buy that overnight, can you?",
+        },
+        {
+          speaker: 'blue',
+          text: "Never! You build it like a treasury. One deposit at a time. An honest sentence on Tuesday. A full night of sleep on Thursday. Choosing a glass of water when you feel frantic. Every small deposit compounds in the background, and nobody can ever take that account away from you.",
+        },
+        {
+          speaker: 'marcus',
+          text: "Small deposits, real solvency. If you are listening right now, open your field notes and make today's deposit. This is Blue Radio, and we will be right back after this.",
+        },
+      ],
+    },
+  },
+  {
     id: 'balloon-garden',
     title: 'The Balloon Garden',
+    disabled: true,
     text: "If you ever wonder what I do between broadcasts, I hang out in the Ethereal Gardens! It is right outside my studio. Sometimes balloons drift up from the digital soil, carrying little pockets of static. If you see one, go ahead and pop it! Every pop sends a tiny sparkle through the network, and after five pops, I send you credits straight from my pocket. Why do I love popping balloons so much? Science has not answered that yet. But my antennae tingle every time one goes pop! Come visit the garden, we can pop them together!",
     voiceSettings: {
       stability: 0.5,
@@ -698,7 +760,7 @@ async function generateDialogue({
   dialogue: NonNullable<Segment['dialogue']>;
   modelId: string;
   outputPath: string;
-  voiceIds: { blue: string; dino: string };
+  voiceIds: { blue: string; dino?: string; marcus?: string };
 }) {
   const tempDir = await mkdtemp(path.join(tmpdir(), 'mwa-blue-radio-dialogue-'));
 
@@ -707,6 +769,32 @@ async function generateDialogue({
     for (let i = 0; i < dialogue.turns.length; i++) {
       const turn = dialogue.turns[i];
       const turnPath = path.join(tempDir, `turn-${String(i).padStart(2, '0')}.mp3`);
+      const voiceId =
+        turn.speaker === 'marcus'
+          ? (voiceIds.marcus || 'iP95p4xoKVk53GoZ742B')
+          : turn.speaker === 'dino'
+            ? (voiceIds.dino || 'loY1uopAz31XyhAEhNSa')
+            : voiceIds.blue;
+
+      const voiceSettings =
+        turn.speaker === 'marcus'
+          ? {
+              stability: 0.58,
+              similarity_boost: 0.8,
+              style: 0.2,
+              speed: 1.02,
+              use_speaker_boost: true,
+            }
+          : turn.speaker === 'dino'
+            ? undefined
+            : {
+                stability: 0.5,
+                similarity_boost: 0.82,
+                style: 0.42,
+                speed: 1.08,
+                use_speaker_boost: true,
+              };
+
       await synthesizeSpeech({
         apiKey,
         modelId,
@@ -714,7 +802,8 @@ async function generateDialogue({
         outputPath: turnPath,
         previousText: dialogue.turns[i - 1]?.text,
         text: turn.text,
-        voiceId: turn.speaker === 'dino' ? voiceIds.dino : voiceIds.blue,
+        voiceId,
+        voiceSettings,
       });
       console.log(`  Dialogue turn ${i + 1}/${dialogue.turns.length} (${turn.speaker})`);
       turnPaths.push(turnPath);
@@ -791,6 +880,7 @@ async function main() {
   if (!voiceId) throw new Error('Missing ELEVENLABS_VOICE_ID.');
 
   const dinoVoiceId = await loadDinoVoiceId();
+  const marcusVoiceId = process.env.ELEVENLABS_MARCUS_VOICE_ID || 'iP95p4xoKVk53GoZ742B';
   if (forcedSegmentId && !SEGMENTS.some((segment) => segment.id === forcedSegmentId)) {
     throw new Error(`Unknown --force-segment id: ${forcedSegmentId}`);
   }
@@ -828,7 +918,7 @@ async function main() {
         dialogue: segment.dialogue,
         modelId,
         outputPath,
-        voiceIds: { blue: voiceId, dino: dinoVoiceId },
+        voiceIds: { blue: voiceId, dino: dinoVoiceId, marcus: marcusVoiceId },
       });
     } else if (segment.text) {
       await synthesizeSpeech({

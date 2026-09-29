@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-28T02:30:12.172Z",
-  "totalSeconds": 585.64,
+  "generatedAt": "2026-09-29T05:45:03.187Z",
+  "totalSeconds": 709.66,
   "segments": [
     {
       "id": "station-ident",
@@ -8,13 +8,6 @@
       "file": "/audio/blue-radio/station-ident.mp3",
       "playbackGain": 0.56,
       "seconds": 29.02
-    },
-    {
-      "id": "what-is-mwa",
-      "title": "Welcome to the academy",
-      "file": "/audio/blue-radio/what-is-mwa.mp3",
-      "playbackGain": 0.56,
-      "seconds": 40.91
     },
     {
       "id": "mental-wealth-idea",
@@ -31,11 +24,11 @@
       "seconds": 42.31
     },
     {
-      "id": "balloon-garden",
-      "title": "The Balloon Garden",
-      "file": "/audio/blue-radio/balloon-garden.mp3",
+      "id": "podcast-mental-wealth",
+      "title": "Case notes on mental wealth",
+      "file": "/audio/blue-radio/podcast-mental-wealth.mp3",
       "playbackGain": 0.56,
-      "seconds": 35.39
+      "seconds": 200.32
     },
     {
       "id": "station-break-blue",
