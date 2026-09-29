@@ -22,6 +22,7 @@ import KnowledgeCoverageCard from '@/components/home/KnowledgeCoverageCard';
 import GuideGallery, { GuideFilterSidebar, type GuideFilterState } from '@/components/home/GuideGallery';
 import FeatureTour from '@/components/feature-tour/FeatureTour';
 import CtaButton from '@/components/shared/CtaButton';
+import ProfessionalGuidanceModal from '@/components/guidance/ProfessionalGuidanceModal';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
@@ -382,6 +383,8 @@ export default function HomePage() {
   const [isVip, setIsVip] = useState(false);
   const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
+  const [guidanceModalOpen, setGuidanceModalOpen] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
   // True only once the account exists AND onboarding has been finished (a
   // placeholder user_* name means the profile step is still open). Every
@@ -595,9 +598,11 @@ export default function HomePage() {
       const data = await res.json();
       setNotebookEntriesUnlocked((data?.user?.shardCount ?? 0) >= 3_000);
       const name: string | null = data?.user?.username ?? null;
+      setUserName(name && !name.startsWith('user_') ? name : null);
       setProfileComplete(!!name && !name.startsWith('user_'));
     } catch {
       setNotebookEntriesUnlocked(false);
+      setUserName(null);
     }
   }, [authHeaders]);
 
@@ -825,26 +830,30 @@ export default function HomePage() {
         </div>
         <div className={styles.dailyNotes}>
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
-          <Link
-            href="/lists"
+          <button
+            type="button"
             className={styles.listsCard}
-            aria-label="Lists"
+            onClick={() => {
+              play('click');
+              setGuidanceModalOpen(true);
+            }}
+            aria-label="Professional Guidance"
           >
             <div className={styles.listsCardBorder} />
             <div className={styles.listsCardSurface} />
             <div className={styles.listsCardButton}>
               <Image
                 className={styles.listsCardIcon}
-                src="/icons/icon-lists.svg"
+                src="/icons/professional-guidance.png"
                 alt=""
                 width={36}
                 height={36}
               />
               <div className={styles.listsCardText}>
-                <span className={styles.listsCardLabel}>Lists</span>
+                <span className={styles.listsCardLabel}>Professional Guidance</span>
               </div>
             </div>
-          </Link>
+          </button>
         </div>
       </section>
       )}
@@ -1164,6 +1173,14 @@ export default function HomePage() {
           onClose={handleIntroClose}
         />
       ))}
+
+      {!learnOnly && (
+        <ProfessionalGuidanceModal
+          isOpen={guidanceModalOpen}
+          onClose={() => setGuidanceModalOpen(false)}
+          defaultName={userName}
+        />
+      )}
 
     </div>
   );

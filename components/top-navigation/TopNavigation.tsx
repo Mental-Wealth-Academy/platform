@@ -448,8 +448,8 @@ const TopNavigation: React.FC = () => {
           <Image
             src="/icons/god-jar.png"
             alt="Give It to God"
-            width={26}
-            height={41}
+            width={28}
+            height={28}
             className={styles.mobileGodJarIcon}
             priority
           />
@@ -889,7 +889,7 @@ const TopNavigation: React.FC = () => {
               src="/icons/god-jar.png"
               alt="Give It to God Jar"
               width={68}
-              height={107}
+              height={68}
               className={styles.godJarImg}
               priority
             />

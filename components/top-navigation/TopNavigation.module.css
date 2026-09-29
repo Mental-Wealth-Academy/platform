@@ -1635,8 +1635,8 @@ button.dropdownTokenCard:active,
   }
 
   .mobileGodJarIcon {
-    width: 26px;
-    height: 41px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--palette-ink) 22%, transparent));
@@ -1714,8 +1714,8 @@ button.dropdownTokenCard:active,
 }
 
 .godJarImg {
-  width: 64px;
-  height: 100px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   display: block;
 }
