@@ -284,6 +284,15 @@
   --color-shell-background: color-mix(in srgb, var(--color-canvas) 94%, transparent);
   --color-landing-black: var(--palette-night);
 
+  /* Mobile bottom nav center tab tokens */
+  --color-nav-center-gradient-start: #4459ff;
+  --color-nav-center-gradient-mid: #576dff;
+  --color-nav-center-gradient-end: #7b8cff;
+  --color-nav-center-gradient-light: #8ca1ff;
+  --color-nav-center-glow-light: rgba(107, 128, 255, 0.4);
+  --color-nav-center-glow-strong: rgba(107, 128, 255, 0.6);
+  --color-nav-center-ring: rgba(140, 161, 255, 0.3);
+
   /* Compatibility aliases. New work should use the semantic role names. */
   --color-primary: var(--color-action);
   --color-primary-hover: var(--color-action-hover);
