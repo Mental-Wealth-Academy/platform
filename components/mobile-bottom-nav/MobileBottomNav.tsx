@@ -8,8 +8,8 @@ import {
   House,
   IconProps,
   MoonStars,
+  TrendUp,
   User,
-  Users,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
@@ -19,8 +19,8 @@ const NAV_ITEMS = [
   { id: 'profile', label: 'Profile', href: '/home', icon: User },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/dao', icon: House },
-  { id: 'squads', label: 'Squads', href: '/chat', icon: Users },
-  { id: 'chat', label: 'Chat', href: '/blue', icon: ChatsCircle },
+  { id: 'trades', label: 'Trades', href: '/trades', icon: TrendUp },
+  { id: 'squads', label: 'Squads', href: '/chat', icon: ChatsCircle },
 ] as const;
 
 const NavIconMark: React.FC<{
@@ -54,8 +54,8 @@ export const MobileBottomNav: React.FC = () => {
         pathname?.startsWith('/profile/')
       );
     }
-    if (href === '/blue') {
-      return pathname === '/blue' || pathname?.startsWith('/blue/');
+    if (href === '/trades') {
+      return pathname === '/trades' || pathname?.startsWith('/trades/');
     }
     if (href === '/chat') {
       return pathname === '/chat' || pathname?.startsWith('/chat/');

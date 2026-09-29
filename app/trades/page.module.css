@@ -3511,3 +3511,10 @@
     box-shadow: none;
   }
 }
+
+@media (max-width: 768px) {
+  .content,
+  .lockedPageLayout {
+    padding-bottom: calc(84px + max(env(safe-area-inset-bottom, 0px), 20px));
+  }
+}

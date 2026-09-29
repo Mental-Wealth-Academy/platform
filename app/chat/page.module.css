@@ -42,22 +42,6 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 900px) {
-  .pageLayout {
-    margin-left: 0;
-    padding-top: 72px;
-    padding-bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-    min-height: 100dvh;
-  }
-
-  .scene {
-    left: 0;
-  }
-
-  .content {
-    padding: 12px 14px 24px;
-  }
-}
 
 /* ChatRoom variant — full-viewport pinned chat matching /blue */
 .pageLayoutChatRoom {
@@ -79,6 +63,7 @@
 }
 
 @media (max-width: 900px) {
+  .pageLayout,
   .pageLayoutChatRoom {
     margin-left: 0;
     height: calc(100dvh - var(--banner-height, 0px));
@@ -86,6 +71,7 @@
     padding-bottom: 0;
   }
 
+  .content,
   .contentChatRoom {
     padding: 0;
     max-width: 100%;
@@ -93,6 +79,7 @@
 }
 
 @media (max-width: 768px) {
+  .pageLayout,
   .pageLayoutChatRoom {
     position: fixed;
     top: calc(72px + var(--banner-height, 0px));
@@ -106,6 +93,11 @@
     z-index: 900;
   }
 
+  .scene {
+    display: none;
+  }
+
+  .content,
   .contentChatRoom {
     padding: 0;
     max-width: 100%;
