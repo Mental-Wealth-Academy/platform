@@ -1,45 +1,59 @@
 .pageLayout {
   position: relative;
   margin-left: var(--sidebar-width, 265px);
-  height: calc(100dvh - 72px - var(--banner-height, 0px));
-  min-height: 0;
-  display: flex;
-  overflow: hidden;
+  min-height: 100vh;
+  background-color: var(--color-background);
   transition: margin-left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* The day's pixel-art scene backdrop — matching /profile (/home) */
+.scene {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width, 265px);
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(180deg, var(--color-scene-scrim-top) 0%, var(--color-scene-scrim-mid) 55%, var(--color-scene-scrim-bot) 100%),
+    var(--chat-scene, none) center / cover no-repeat,
+    var(--color-scene-bg);
+  background-size: 28px 28px, 28px 28px, auto, cover, auto;
+}
+
+:global([data-theme="dark"]) .pageLayout {
+  background-color: var(--color-background);
+}
+
 .content {
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 24px 32px;
   display: flex;
   flex-direction: column;
-  padding: 14px;
-  overflow: hidden;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
   .pageLayout {
     margin-left: 0;
-    height: calc(100dvh - var(--banner-height, 0px));
     padding-top: 72px;
+    padding-bottom: 84px;
+    min-height: 100dvh;
+  }
+
+  .scene {
+    left: 0;
   }
 
   .content {
-    padding: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .pageLayout {
-    position: fixed;
-    top: calc(72px + var(--banner-height, 0px));
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
-    left: 0;
-    right: 0;
-    height: auto;
-    padding-top: 0;
-    margin-left: 0;
-    z-index: 900;
+    padding: 12px 14px 24px;
   }
 }

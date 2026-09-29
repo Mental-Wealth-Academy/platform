@@ -32,32 +32,29 @@ const DEFAULT_SQUADS: SquadItem[] = [
   {
     id: 'global',
     name: 'Global Community',
-    description: 'Live cohort discussion for all Academy members. Open access, no invitation needed.',
+    description: 'Welcome to the Academy commons. What are you studying today?',
     memberCount: 342,
     activityTime: 'Just now',
     isOpen: true,
     avatarUrl: '/blue/blue-avatar.png',
-    badge: 'Open Access',
     lastMessage: 'Welcome to the Academy commons. What are you studying today?',
   },
   {
     id: 'health-nutrition',
     name: 'Health & Nutrition',
-    description: 'Guided 12-week integration circle with dedicated mentors.',
+    description: 'Field note prompt posted for Week 3 integration.',
     memberCount: 28,
     activityTime: '2h ago',
     isOpen: false,
-    badge: 'Specialist Code',
     lastMessage: 'Field note prompt posted for Week 3 integration.',
   },
   {
     id: 'deep-work-sprints',
     name: 'Focus & Habit Sprint',
-    description: 'Daily accountability and 90-minute synchronized focus sprints.',
+    description: 'Sprint check-in complete. 14 members completed daily note.',
     memberCount: 45,
     activityTime: '5h ago',
     isOpen: false,
-    badge: 'Specialist Code',
     lastMessage: 'Sprint check-in complete. 14 members completed daily note.',
   },
 ];
@@ -157,14 +154,12 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
   };
 
   return (
-    <div className={styles.hubContainer}>
-      {/* Top Bar */}
-      <header className={styles.topHeader}>
-        <h1 className={styles.topTitle}>Squads</h1>
-        <div className={styles.topHeaderRight}>
-          <span className={styles.badgeCommon}>Commons</span>
-        </div>
-      </header>
+    <div className={styles.globalPanel}>
+      {/* Scenehead matching /profile */}
+      <div className={styles.panelHeader}>
+        <span className={styles.panelTitleJa}>部隊</span>
+        <span className={styles.panelTitle}>Squads</span>
+      </div>
 
       {/* Search Bar */}
       <div className={styles.searchSection}>
@@ -173,7 +168,10 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              play('click');
+              setSearchQuery(e.target.value);
+            }}
             placeholder="Search squads or members..."
             className={styles.searchInput}
             aria-label="Search squads"
@@ -182,7 +180,10 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
             <button
               type="button"
               className={styles.clearSearchBtn}
-              onClick={() => setSearchQuery('')}
+              onClick={() => {
+                play('click');
+                setSearchQuery('');
+              }}
               aria-label="Clear search"
             >
               <X size={14} weight="bold" />
@@ -248,26 +249,14 @@ export default function SquadsHub({ onSelectSquad }: SquadsHubProps) {
               <div className={styles.squadItemBody}>
                 <div className={styles.squadItemHeaderRow}>
                   <span className={styles.squadItemName}>{squad.name}</span>
-                  <span className={styles.squadItemTime}>{squad.activityTime}</span>
                 </div>
                 <p className={styles.squadItemLastMsg}>
                   {squad.lastMessage ?? squad.description}
                 </p>
-                <div className={styles.squadItemMeta}>
-                  {squad.isOpen ? (
-                    <span className={styles.badgeOpen}>{squad.badge}</span>
-                  ) : (
-                    <span className={styles.badgeLocked}>
-                      <LockKey size={11} weight="bold" />
-                      {squad.badge}
-                    </span>
-                  )}
-                  <span className={styles.squadMemberCount}>{squad.memberCount} members</span>
-                </div>
               </div>
 
               <div className={styles.squadItemAction}>
-                <CaretRight size={16} weight="bold" className={styles.squadChevron} />
+                <span className={styles.squadItemTime}>{squad.activityTime}</span>
               </div>
             </button>
           ))}
