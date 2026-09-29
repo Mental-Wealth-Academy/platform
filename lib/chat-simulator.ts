@@ -188,6 +188,11 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
     text: 'just finished the somatic reset walkthrough. the progressive muscle relaxation section is so simple yet effective.',
   },
   {
+    kind: 'user',
+    personaIndex: 8,
+    text: '@KaizenFlow that muscle relaxation part helped me so much when my shoulders were tense. glad it helped you too.',
+  },
+  {
     kind: 'system',
     personaIndex: 6,
     text: 'Astrid completed their field notes.',
@@ -225,7 +230,7 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
   {
     kind: 'user',
     personaIndex: 8,
-    text: 'hit the 500 credit milestone from daily notes streak and survey completion.',
+    text: 'just hit 500 credits from finishing my daily notes and surveys. honestly feels so good to stick with a routine for once. hope everyone is having a good day.',
   },
   {
     kind: 'system',
@@ -240,12 +245,17 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
   {
     kind: 'user',
     personaIndex: 11,
-    text: 'anyone tested the companion voice mode with Blue recently? she gave a really clean summary on nervous system down-regulation.',
+    text: 'hey everyone, has anyone tried talking to Blue on voice mode yet? she was super nice and gave me some really gentle tips to calm down when i was feeling stressed.',
   },
   {
     kind: 'user',
     personaIndex: 0,
     text: '@Taro yeah, companion mode is smooth. asked her about sleep routines and she handed off the right guide right into chat.',
+  },
+  {
+    kind: 'user',
+    personaIndex: 11,
+    text: '@Komorebi thanks, going to check that out tonight before bed.',
   },
   {
     kind: 'system',
@@ -270,7 +280,7 @@ export const DUMMY_CHAT_SCRIPTS: DummyChatEvent[] = [
   {
     kind: 'user',
     personaIndex: 3,
-    text: 'peace is not the absence of turbulence, it is the quiet strength within it.',
+    text: 'peace is the quiet strength we carry within the turbulence.',
   },
   {
     kind: 'system',
