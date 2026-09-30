@@ -38,7 +38,7 @@ function livePosition(): { index: number; offset: number } {
 
 export default function BlueRadio({
   gardenBackground,
-  mode = 'radio',
+  mode = 'companion',
   onModeChange,
   initialMood,
   onInitialMoodHandled,

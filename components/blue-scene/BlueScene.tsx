@@ -10,7 +10,7 @@ import styles from './BlueScene.module.css';
 const bgUrl = dailySceneBackgroundUrl();
 
 export default function BlueScene() {
-  const [mode, setMode] = useState<'radio' | 'companion'>('radio');
+  const [mode, setMode] = useState<'radio' | 'companion'>('companion');
   const [initialMood, setInitialMood] = useState<InitialMoodData | null>(null);
   const [radioMuted, setRadioMuted] = useState(false);
   const toggleRadioMuteRef = useRef<(() => void) | null>(null);
