@@ -447,9 +447,9 @@ export default function BlueCompanion({
       {status === 'idle' && (
         <div className={styles.companionOverlay}>
           <div className={styles.companionCard}>
-            <p className={styles.companionText}>Experience Therapeutic Intelligence</p>
+            <p className={styles.companionText}>Feeling Blue?</p>
             <CtaButton className={styles.companionCtaButton} onClick={() => void startConversation()}>
-              Connect Now
+              Talk Now
             </CtaButton>
           </div>
         </div>
