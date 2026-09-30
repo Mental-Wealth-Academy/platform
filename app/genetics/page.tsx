@@ -325,8 +325,8 @@ function GeneticsLab({
   /** Clicking a hanging is how you read it. Walking past one only selects it. */
   const handleSelect = useCallback((piece: Piece) => {
     setSelectedId(piece.id);
-    setPanel(piece.externalUrl ? 'artwork' : 'marker');
-  }, []);
+    setPanel(mode === 'collection' ? 'artwork' : (piece.externalUrl ? 'artwork' : 'marker'));
+  }, [mode]);
 
   const handleFocus = useCallback((piece: Piece) => {
     setSelectedId(piece.id);

@@ -45,10 +45,13 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
   const onFocusRef = useRef(onFocus);
   const targetRef = useRef(0);
   const [focusIndex, setFocusIndex] = useState(0);
+  const [mobileTitleVisible, setMobileTitleVisible] = useState(false);
+  const setMobileTitleVisibleRef = useRef(setMobileTitleVisible);
 
   piecesRef.current = pieces;
   onSelectRef.current = onSelect;
   onFocusRef.current = onFocus;
+  setMobileTitleVisibleRef.current = setMobileTitleVisible;
 
   // Selecting from the terminal below should walk the gallery to that piece.
   useEffect(() => {
@@ -803,7 +806,12 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
               if (inX && inY) {
                 targetRef.current = i * SLOT;
                 setFocusIndex(i);
-                onSelectRef.current(list[i]);
+                setMobileTitleVisibleRef.current(true);
+                const piece = list[i];
+                if (piece) onFocusRef.current?.(piece);
+                if (s.width > 768) {
+                  onSelectRef.current(list[i]);
+                }
                 return;
               }
             }
@@ -811,10 +819,13 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
             clampTarget();
             const idx = Math.round(targetRef.current / SLOT);
             setFocusIndex(idx);
+            setMobileTitleVisibleRef.current(false);
             const piece = piecesRef.current[idx];
             if (piece) onFocusRef.current?.(piece);
             return;
           }
+
+          setMobileTitleVisibleRef.current(false);
 
           const isMobile = s.width <= 768;
           const startIndex = dragStartPiece;
@@ -867,6 +878,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
         };
 
         s.mouseWheel = (e: object) => {
+          setMobileTitleVisibleRef.current(false);
           const ev = e as WheelEvent;
           if (s.mouseX < 0 || s.mouseX > s.width || s.mouseY < 0 || s.mouseY > s.height) return;
           targetRef.current += (Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY) * 1.4;
@@ -926,6 +938,7 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
   }, [pieces, onFocus]);
 
   const step = (dir: number) => {
+    setMobileTitleVisible(false);
     const next = Math.round(targetRef.current / SLOT) + dir;
     const clamped = Math.max(0, Math.min(pieces.length - 1, next));
     targetRef.current = clamped * SLOT;
@@ -943,12 +956,23 @@ export function OsirisGallery({ pieces, selectedId, onSelect, onFocus }: OsirisG
       <div className={styles.vignette} aria-hidden="true" />
 
       <div
-        className={styles.plaque}
+        className={`${styles.plaque} ${mobileTitleVisible ? styles.plaqueVisibleMobile : ''}`}
         onClick={() => focused && onSelectRef.current(focused)}
         role="button"
         tabIndex={0}
         aria-label={focused ? `View ${focused.label} details` : undefined}
       >
+        <button
+          type="button"
+          className={styles.plaqueClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMobileTitleVisible(false);
+          }}
+          aria-label="Close title"
+        >
+          ×
+        </button>
         <p className={styles.plaqueEyebrow}>Osiris Art Gallery of Genetic Research</p>
         {focused ? (
           <>

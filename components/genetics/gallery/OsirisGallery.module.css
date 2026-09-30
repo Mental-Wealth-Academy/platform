@@ -179,16 +179,61 @@
   white-space: nowrap;
 }
 
+.plaqueClose {
+  display: none;
+}
+
+@keyframes plaquePop {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   .plaque {
+    display: none;
     top: 10px;
     left: 10px;
     bottom: auto;
-    max-width: min(260px, calc(100% - 20px));
-    padding: 7px 11px;
+    max-width: min(290px, calc(100% - 20px));
+    padding: 8px 32px 8px 12px;
     border-radius: 6px;
     pointer-events: auto;
     cursor: pointer;
+    animation: plaquePop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .plaque.plaqueVisibleMobile {
+    display: block;
+  }
+
+  .plaqueClose {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(244, 243, 240, 0.16);
+    color: #f4f3f0;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .plaqueClose:hover,
+  .plaqueClose:active {
+    background: rgba(244, 243, 240, 0.28);
   }
 
   .plaqueEyebrow {
