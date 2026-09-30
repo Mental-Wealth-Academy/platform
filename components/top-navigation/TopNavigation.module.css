@@ -950,6 +950,11 @@ button.dropdownTokenCard:active,
   color: var(--color-primary);
 }
 
+.dropdownTopAction {
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
 .dropdownMeditationButton {
   display: flex;
   align-items: center;

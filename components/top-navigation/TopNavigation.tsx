@@ -599,6 +599,31 @@ const TopNavigation: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* 20-Minute Reset Quick Button at the top above credits */}
+                  <div className={styles.dropdownTopAction}>
+                    <button
+                      type="button"
+                      className={styles.dropdownMeditationButton}
+                      onClick={() => {
+                        play('click');
+                        setDropdownOpen(false);
+                        setMeditationModalOpen(true);
+                      }}
+                      aria-label="Start 20-minute reset"
+                    >
+                      <div className={styles.dropdownMeditationLeft}>
+                        <span className={styles.dropdownMeditationIconWrap} aria-hidden="true">
+                          <Play size={14} weight="fill" />
+                        </span>
+                        <div className={styles.dropdownMeditationMeta}>
+                          <span className={styles.dropdownMeditationTitle}>20-minute reset</span>
+                          <span className={styles.dropdownMeditationSub}>Guided meditation with Blue</span>
+                        </div>
+                      </div>
+                      <span className={styles.dropdownMeditationBadge}>20 min</span>
+                    </button>
+                  </div>
+
                   {/* Divider label: Balances */}
                   <div className={styles.dropdownDividerLabel}>
                     <span className={styles.dropdownDividerLine} />
@@ -702,38 +727,6 @@ const TopNavigation: React.FC = () => {
                         </Link>
                       );
                     })}
-                  </div>
-
-                  {/* Divider label: Meditation */}
-                  <div className={styles.dropdownDividerLabel}>
-                    <span className={styles.dropdownDividerLine} />
-                    <span className={styles.dropdownDividerText}>Meditation</span>
-                    <span className={styles.dropdownDividerLine} />
-                  </div>
-
-                  {/* 20-Minute Meditation Quick Button */}
-                  <div className={styles.dropdownSection}>
-                    <button
-                      type="button"
-                      className={styles.dropdownMeditationButton}
-                      onClick={() => {
-                        play('click');
-                        setDropdownOpen(false);
-                        setMeditationModalOpen(true);
-                      }}
-                      aria-label="Start 20-minute meditation"
-                    >
-                      <div className={styles.dropdownMeditationLeft}>
-                        <span className={styles.dropdownMeditationIconWrap} aria-hidden="true">
-                          <Play size={14} weight="fill" />
-                        </span>
-                        <div className={styles.dropdownMeditationMeta}>
-                          <span className={styles.dropdownMeditationTitle}>20-minute meditation</span>
-                          <span className={styles.dropdownMeditationSub}>Rise &amp; Reset with Blue</span>
-                        </div>
-                      </div>
-                      <span className={styles.dropdownMeditationBadge}>20 min</span>
-                    </button>
                   </div>
 
                   <div className={styles.dropdownDivider} />
