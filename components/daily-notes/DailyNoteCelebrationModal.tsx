@@ -166,7 +166,7 @@ export default function DailyNoteCelebrationModal({
               <div className={styles.mascotWrap}>
                 <div className={styles.mascotGlow} />
                 <Image
-                  src="/images/celebration/blue-celebration.jpg"
+                  src="/images/celebration/blue-celebration.png"
                   alt="Blue celebrating"
                   width={220}
                   height={220}
@@ -238,7 +238,7 @@ export default function DailyNoteCelebrationModal({
               <div className={styles.mascotWrap}>
                 <div className={`${styles.mascotGlow} ${styles.mascotGlowGold}`} />
                 <Image
-                  src="/images/celebration/blue-streak.jpg"
+                  src="/images/celebration/blue-streak.png"
                   alt="Blue streak milestone"
                   width={220}
                   height={220}
@@ -309,7 +309,7 @@ export default function DailyNoteCelebrationModal({
                     <span className={styles.shareCardTitle}>{"I'm acing my daily reflections!"}</span>
                   </div>
                   <Image
-                    src="/images/celebration/blue-celebration.jpg"
+                    src="/images/celebration/blue-celebration.png"
                     alt="Blue"
                     width={72}
                     height={72}

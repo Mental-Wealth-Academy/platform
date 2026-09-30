@@ -12,9 +12,22 @@
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   background: #04060d;
   color: #f8fafc;
   animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fullScreenStage::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 @keyframes fadeIn {
@@ -62,6 +75,9 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
   padding:
     max(20px, env(safe-area-inset-top))
     max(24px, env(safe-area-inset-right))
@@ -381,6 +397,7 @@
   position: relative;
   cursor: pointer;
   overflow: hidden;
+  touch-action: none;
   transition: height 0.15s ease;
 }
 

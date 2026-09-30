@@ -822,14 +822,8 @@ export default function HomePage() {
           </div>
         </section>
       )}
-      <div className={styles.globalPanel}>
-      <div className={styles.panelHeader}>
-        <span className={styles.panelTitleJa}>知識</span>
-        <span className={styles.panelTitle}>{learnOnly ? 'Learn anything' : 'Academy'}</span>
-      </div>
       {!learnOnly && (
-      <section className={styles.dashboardHeader}>
-        {!moodDismissed ? (
+        !moodDismissed ? (
           <div className={styles.mobileMoodSelectorWrap}>
             <MoodSelector onClose={handleDismissMood} />
           </div>
@@ -848,7 +842,15 @@ export default function HomePage() {
               <span>How are you feeling?</span>
             </button>
           </div>
-        )}
+        )
+      )}
+      <div className={styles.globalPanel}>
+      <div className={styles.panelHeader}>
+        <span className={styles.panelTitleJa}>知識</span>
+        <span className={styles.panelTitle}>{learnOnly ? 'Learn anything' : 'Academy'}</span>
+      </div>
+      {!learnOnly && (
+      <section className={styles.dashboardHeader}>
 
         <div data-tour="home-profile" className={styles.topCardWrapper}>
           <HomeTopCard />

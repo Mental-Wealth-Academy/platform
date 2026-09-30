@@ -147,19 +147,23 @@
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .bentoScroll {
-    padding: 16px 20px 32px;
+    padding: 16px 20px 24px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .bentoScroll {
-    padding: 12px 14px 16px;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
+    width: 100%;
+    height: 100%;
+    padding: 8px 10px 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .bentoScrollWithMorningNote {
-    padding-bottom: 16px;
+    padding-bottom: 8px;
   }
 }
 

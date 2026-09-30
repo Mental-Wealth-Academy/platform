@@ -126,15 +126,25 @@ export default function MeditationPlayerModal({
     }
   }, []);
 
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleSeekFromEvent = useCallback((clientX: number, target: HTMLDivElement) => {
     const audio = audioRef.current;
     if (!audio) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
+    const rect = target.getBoundingClientRect();
+    const clickX = clientX - rect.left;
     const pct = Math.max(0, Math.min(1, clickX / rect.width));
     const newTime = pct * duration;
     audio.currentTime = newTime;
     setCurrentTime(newTime);
+  }, [duration]);
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    handleSeekFromEvent(e.clientX, e.currentTarget);
+  };
+
+  const handleTouchSeek = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length > 0) {
+      handleSeekFromEvent(e.touches[0].clientX, e.currentTarget);
+    }
   };
 
   const handleSkip = (seconds: number) => {
@@ -144,6 +154,26 @@ export default function MeditationPlayerModal({
     audio.currentTime = target;
     setCurrentTime(target);
   };
+
+  // Prevent background touch scrolling on mobile while modal is active
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const preventTouch = (e: TouchEvent) => {
+      // Allow slider scrubber touch gestures
+      if ((e.target as HTMLElement)?.closest('[role="slider"]')) {
+        return;
+      }
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('touchmove', preventTouch, { passive: false });
+    return () => {
+      document.removeEventListener('touchmove', preventTouch);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -241,6 +271,8 @@ export default function MeditationPlayerModal({
             <div
               className={styles.sliderTrack}
               onClick={handleSeek}
+              onTouchStart={handleTouchSeek}
+              onTouchMove={handleTouchSeek}
               role="slider"
               aria-valuemin={0}
               aria-valuemax={duration}

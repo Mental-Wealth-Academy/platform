@@ -75,24 +75,6 @@ export default function MoodSelector({ onClose }: { onClose?: () => void }) {
     <section className={styles.container} aria-label="How Are You Feeling?">
       <div className={styles.headscene}>
         <div className={styles.headingLeft}>
-          <div className={styles.eyeIconWrap} aria-hidden="true">
-            <svg
-              className={styles.eyeSvg}
-              viewBox="0 0 32 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 10C5.5 3 11 0.5 16 0.5C21 0.5 26.5 3 31 10C26.5 17 21 19.5 16 19.5C11 19.5 5.5 17 1 10Z"
-                stroke="var(--color-primary, #4150c8)"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-              />
-              <circle cx="16" cy="10" r="5.5" fill="var(--color-primary, #4150c8)" />
-              <circle cx="16" cy="10" r="2.5" fill="#ffffff" />
-              <circle cx="17.2" cy="8.8" r="0.9" fill="var(--color-primary-hover, #6475ff)" />
-            </svg>
-          </div>
           <span className={styles.titleJa} lang="ja">気分</span>
           <h2 className={styles.title}>How Are You Feeling?</h2>
         </div>

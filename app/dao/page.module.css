@@ -54,14 +54,15 @@
   .pageLayout {
     position: fixed;
     top: calc(72px + var(--banner-height, 0px));
-    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    bottom: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
     left: 0;
     right: 0;
     height: auto;
     padding-top: 0;
     margin-left: 0;
     z-index: 1;
-    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px));
+    overflow: hidden;
+    --mobile-nav-clearance: calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
     /* What actually remains after the banner, the top nav and the bottom nav.
        Descendants size the hero against this — a bare 100dvh overshoots by the
        whole nav stack and leaves a dead band under the scene. */

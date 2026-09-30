@@ -65,24 +65,27 @@
 /* ── Mascot Artwork ── */
 .mascotWrap {
   position: relative;
-  width: 190px;
-  height: 190px;
-  margin-top: 8px;
+  width: 200px;
+  height: 200px;
+  margin-top: 4px;
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mascotGlow {
   position: absolute;
   inset: -12px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(56, 189, 248, 0) 70%);
-  filter: blur(14px);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(56, 189, 248, 0) 70%);
+  filter: blur(16px);
   pointer-events: none;
   animation: pulseGlow 3s ease-in-out infinite alternate;
 }
 
 .mascotGlowGold {
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.42) 0%, rgba(245, 158, 11, 0) 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0) 70%);
 }
 
 @keyframes pulseGlow {
@@ -101,11 +104,8 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 28px;
-  box-shadow:
-    0 16px 36px rgba(0, 0, 0, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.12);
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.5));
   animation: floatMascot 4s ease-in-out infinite alternate;
 }
 
@@ -194,10 +194,9 @@
   background: var(--header-bg);
   padding: 5px 4px;
   font-family: var(--font-secondary);
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   color: var(--header-text);
   text-align: center;
 }
@@ -477,15 +476,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: #e0f2fe;
   font-family: var(--font-secondary);
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: #0369a1;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
   width: fit-content;
 }
 
@@ -498,12 +496,11 @@
 }
 
 .shareCardMascot {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
-  object-fit: cover;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12));
 }
 
 .shareCardStatsList {
@@ -586,11 +583,10 @@
 
 .shareOptionsTitle {
   font-family: var(--font-secondary);
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: #94a3b8;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #cbd5e1;
 }
 
 .shareButtonsGrid {
