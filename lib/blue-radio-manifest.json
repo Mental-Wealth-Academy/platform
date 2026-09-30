@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T05:04:40.520Z",
-  "totalSeconds": 478.23,
+  "generatedAt": "2026-09-30T05:09:07.775Z",
+  "totalSeconds": 661.03,
   "segments": [
     {
       "id": "station-ident",
@@ -42,7 +42,14 @@
       "title": "Nobody got the manual",
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
-      "seconds": 43.28
+      "seconds": 103.39
+    },
+    {
+      "id": "pocket-world-thesis",
+      "title": "The pocket-world thesis",
+      "file": "/audio/blue-radio/pocket-world-thesis.mp3",
+      "playbackGain": 0.56,
+      "seconds": 122.69
     },
     {
       "id": "the-instrument-panel",

@@ -210,20 +210,69 @@ const SEGMENTS: Segment[] = [
   {
     id: 'community',
     title: 'Nobody got the manual',
-    text: "When you are stuck inside your own head, it is so easy to feel completely lost. You convince yourself that you are the only person on the planet who cannot get their act together, like everyone else got a secret instruction manual! But newsflash: nobody got the manual. Everyone is out here completely winging it! That person walking past you looking super put-together? They are probably stressing over an awkward text or having an existential crisis about what to eat for lunch. Once you realize nobody has life figured out, all that heavy pressure just evaporates. You do not need to be some flawless, polished machine. You just show up, laugh at the weird days, and keep moving forward. You are doing way better than your brain is trying to tell you.",
-    voiceSettings: {
-      stability: 0.5,
-      similarity_boost: 0.82,
-      style: 0.42,
-      speed: 1.08,
-      use_speaker_boost: true,
+    dialogue: {
+      turns: [
+        {
+          speaker: 'blue',
+          text: "We are taking live community questions! Line one, welcome to Blue Radio. You are on the air with Blue and Jamal.",
+        },
+        {
+          speaker: 'brooklyn',
+          text: "Hey Blue, hey Jamal. Quick question. If I spend four hours color-coding my daily schedule while the actual tasks just sit there... does that count as mental wealth, or am I professionally avoiding my life?",
+        },
+        {
+          speaker: 'blue',
+          text: "That is advanced aerodynamic procrastination. Your mind built a gorgeous monument to the thing you are hesitating to do. Jamal, look at the board. Four hours on pastel highlighters.",
+        },
+        {
+          speaker: 'jamal',
+          text: "Man, line one is calling me out personally. I bought four different pens yesterday because I told myself the blue gel grip would magically finish my work. Blue, what is the play here?",
+        },
+        {
+          speaker: 'blue',
+          text: "The play is simple. Open the page, write one messy sentence with the nearest ordinary pen, and keep moving. Action cures overthinking every time. You are doing much better than your head is telling you. Jamal, who is on line two?",
+        },
+        {
+          speaker: 'jamal',
+          text: "Line two... wait, hold up. Line two is stuck on mute. Tap the green switch... no, the round one by your elbow.",
+        },
+        {
+          speaker: 'dino',
+          text: "Hello? Is this the radio? Okay, quick question. I tried that exercise where you let your thoughts drift away like clouds. But my thoughts brought snacks, and now they are having a whole barbecue in my head. What is the return policy on this brain?",
+        },
+        {
+          speaker: 'blue',
+          text: "All brains are final sale, Dino. We offer no returns, but we do recommend a tall glass of water and a five-minute walk.",
+        },
+        {
+          speaker: 'jamal',
+          text: "A barbecue in the frontal lobe. Man, see? Nobody got the instruction manual out here. Everyone is just winging it.",
+        },
+        {
+          speaker: 'blue',
+          text: "Nobody got the manual. Give your thoughts room to breathe, put down the highlighters, and be kind to yourself today. This is Blue Radio, and we will be right back!",
+        },
+      ],
     },
   },
   {
     id: 'pocket-world-thesis',
-    title: 'Building our own little island',
-    disabled: true,
-    text: "The internet is way too big and noisy. It is like an endless ocean of yelling, breaking news, and people arguing about things they forgot five minutes later. So what do sensible people do? We build our own little island! A cozy pocket-world where we make our own jokes, set our own rules, and keep the water clear. Nobody has to act tough here, and nobody has to pretend to have life completely figured out. We just show up, fish out whatever thought daemons are bothering us, and build something genuine together. When you spend enough time tending a place like this, it starts rubbing off on you. The noise outside gets quieter, and the world inside gets a whole lot friendlier.",
+    title: 'The pocket-world thesis',
+    text: `The internet is unimaginably massive, but human beings rarely live in the whole thing. We carve out small, private corners.
+
+We call these spaces pocket-worlds. A simulated universe with its own address, its own dialect, and its own history, explored by Ethereal Beings.
+
+Everyone arrives with their own mind, their own sense of humor, and their own curiosity. Nobody is in charge! There is no central planner with a clipboard. Yet somehow, the community starts moving together like a flock of birds turning in the sky. It is pure living emergence.
+
+When people hang out online, certain jokes, images, and phrases get repeated. A shared meme catches fire. An inside joke becomes a private dialect that compresses massive meaning into tiny symbols.
+
+The values we choose to practice in these spaces carry real power. When you bring genuine kindness, patience, and encouragement to a comment section or a quiet room, that warmth radiates outward. Positivity ripples across the digital water like a healing kind of magic, touching people you may never even meet in person.
+
+Before you know it, those shared patterns turn into a living culture. Every choice you make inside a pocket-world is an affirmation. The avatar you pick is an affirmation. The rhythm of how you speak is an affirmation. The values you protect together are affirmations. You are actively world-building together, like a giant canvas being painted by a thousand anonymous artists all at the same time.
+
+And when you spend enough time tending a place like this, the world starts building you back. It shapes how you think, how you speak, and who you become.
+
+Sorry, my antennae started buzzing when I said that! I am filing this under Affirmations, right where I can reach it!`,
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
