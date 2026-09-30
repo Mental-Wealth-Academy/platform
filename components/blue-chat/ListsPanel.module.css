@@ -104,22 +104,23 @@
   min-width: 0;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1.5px solid var(--color-border-subtle);
-  background: color-mix(in srgb, var(--color-text-dark) 3%, var(--color-surface-base));
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 2.5%, #ffffff);
   color: var(--color-text-dark);
   font-family: var(--font-secondary, sans-serif);
   font-size: 0.875rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .addInput::placeholder {
-  color: var(--color-text-muted);
+  color: color-mix(in oklch, var(--color-primary) 35%, var(--color-text-muted));
 }
 
 .addInput:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .addButton {
@@ -127,24 +128,31 @@
   height: 40px;
   border-radius: 12px;
   background: var(--color-primary);
-  color: var(--palette-on-dark);
+  color: var(--palette-on-dark, #ffffff);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 32%, transparent);
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .addButton:hover:not(:disabled) {
-  background: var(--palette-action-blue-hover, var(--color-primary));
+  background: var(--color-primary-hover, var(--color-primary));
+  box-shadow: 0 4px 10px color-mix(in oklch, var(--color-primary) 42%, transparent);
   transform: translateY(-1px);
+}
+
+.addButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .addButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* ── Items List ── */
@@ -163,47 +171,64 @@
 .item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 11px;
+  padding: 11px 13px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--color-text-dark) 2.5%, var(--color-surface-base));
-  border: 1px solid var(--color-border-subtle);
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 7%, #ffffff) 0%, color-mix(in oklch, var(--color-primary) 2.5%, #ffffff) 100%);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-left: 4px solid var(--color-primary);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 9%, transparent);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
 
 .item:hover {
-  background: color-mix(in srgb, var(--color-text-dark) 5%, var(--color-surface-base));
-  border-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-border-subtle));
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 10%, #ffffff) 0%, color-mix(in oklch, var(--color-primary) 4%, #ffffff) 100%);
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
+  border-left-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .itemDone {
-  opacity: 0.6;
-  background: color-mix(in srgb, var(--color-text-dark) 1.5%, transparent);
+  opacity: 0.65;
+  background: color-mix(in oklch, var(--color-text-dark) 2%, #ffffff);
+  border-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
+  border-left-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  box-shadow: none;
+  transform: none;
+}
+
+.itemDone:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .check {
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  border: 1.5px solid var(--color-border-subtle);
-  background: var(--card-background);
+  border: 1.8px solid color-mix(in oklch, var(--color-primary) 45%, transparent);
+  background: #ffffff;
   cursor: pointer;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--palette-on-dark);
+  color: #ffffff;
   padding: 0;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .check:hover {
   border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 10%, #ffffff);
+  transform: scale(1.06);
 }
 
 .checkDone {
-  background: var(--color-positive);
-  border-color: var(--color-positive);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 35%, transparent);
 }
 
 .itemText {
@@ -211,6 +236,7 @@
   min-width: 0;
   font-family: var(--font-secondary, sans-serif);
   font-size: 0.875rem;
+  font-weight: 600;
   line-height: 1.45;
   color: var(--color-text-dark);
   word-break: break-word;
@@ -218,27 +244,29 @@
 
 .itemDone .itemText {
   text-decoration: line-through;
+  font-weight: 500;
   color: var(--color-text-faint);
 }
 
 .remove {
   border: none;
   background: transparent;
-  color: var(--color-text-faint);
+  color: color-mix(in oklch, var(--color-primary) 40%, var(--color-text-faint));
   padding: 4px;
   border-radius: 6px;
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.65;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
 }
 
 .remove:hover {
   opacity: 1;
   color: var(--palette-danger);
   background: color-mix(in srgb, var(--palette-danger) 10%, transparent);
+  transform: scale(1.08);
 }
 
 .placeholder {
@@ -246,7 +274,10 @@
   text-align: center;
   font-size: 0.8125rem;
   font-family: var(--font-secondary, sans-serif);
-  color: var(--color-text-muted);
+  color: color-mix(in oklch, var(--color-primary) 45%, var(--color-text-muted));
+  background: color-mix(in oklch, var(--color-primary) 2.5%, transparent);
+  border: 1.5px dashed color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: 12px;
 }
 
 /* ── Signed-Out Gate ── */
@@ -307,6 +338,41 @@
 
 .gateCta {
   margin-top: 8px;
+}
+
+/* ── Dark Mode Overrides ── */
+:global([data-theme="dark"]) .addInput {
+  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-1));
+  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  color: var(--color-text-dark);
+}
+
+:global([data-theme="dark"]) .addInput:focus {
+  background: var(--color-surface-1);
+}
+
+:global([data-theme="dark"]) .item {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1)) 0%, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-1)) 100%);
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+  border-left-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+:global([data-theme="dark"]) .item:hover {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 20%, var(--color-surface-1)) 0%, color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-1)) 100%);
+  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
+  border-left-color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .itemDone {
+  background: color-mix(in oklch, var(--color-surface-1) 80%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-left-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+}
+
+:global([data-theme="dark"]) .check {
+  background: var(--color-surface-1);
+  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
 }
 
 /* ── Mobile Responsive ── */
