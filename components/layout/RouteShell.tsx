@@ -64,7 +64,8 @@ export function RouteShell({ children, initialCollapsed = true }: RouteShellProp
   if (
     pathname === '/' ||
     pathname === '/faq' ||
-    pathname === '/products-and-services'
+    pathname === '/products-and-services' ||
+    pathname?.startsWith('/dev')
   ) {
     return <>{children}</>;
   }

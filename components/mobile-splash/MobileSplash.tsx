@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import styles from './MobileSplash.module.css';
 
 export default function MobileSplash() {
+  const pathname = usePathname();
   const [isHiding, setIsHiding] = useState(false);
   const [isRemoved, setIsRemoved] = useState(false);
 
@@ -16,6 +18,7 @@ export default function MobileSplash() {
     };
   }, []);
 
+  if (pathname?.startsWith('/dev')) return null;
   if (isRemoved) return null;
 
   return (
