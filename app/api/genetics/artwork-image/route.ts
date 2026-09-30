@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import fs from 'node:fs';
+import path from 'node:path';
 import { ART_COLLECTION } from '@/components/genetics/gallery/artCollection';
 
 export const runtime = 'nodejs';
 
 const MAX_IMAGE_BYTES = 18 * 1024 * 1024;
 
-function detectImageContentType(bytes: ArrayBuffer): string | null {
-  const b = new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 12));
+function detectImageContentType(bytes: ArrayBuffer | Uint8Array): string | null {
+  const b = new Uint8Array(bytes instanceof ArrayBuffer ? bytes : bytes.buffer, 0, Math.min(bytes.byteLength, 12));
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image/png';
   if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
   if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x38) return 'image/gif';
@@ -24,6 +26,25 @@ export async function GET(request: NextRequest) {
 
   if (!artwork || !Number.isInteger(index)) {
     return NextResponse.json({ error: 'Artwork not found' }, { status: 404 });
+  }
+
+  if (artwork.image.startsWith('/')) {
+    try {
+      const filePath = path.join(process.cwd(), 'public', artwork.image.replace(/^\//, ''));
+      if (!fs.existsSync(filePath)) {
+        return NextResponse.json({ error: 'Artwork file not found' }, { status: 404 });
+      }
+      const buffer = fs.readFileSync(filePath);
+      const contentType = detectImageContentType(buffer) || 'image/jpeg';
+      return new NextResponse(buffer, {
+        headers: {
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000',
+        },
+      });
+    } catch {
+      return NextResponse.json({ error: 'Artwork source unavailable' }, { status: 502 });
+    }
   }
 
   try {
