@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'node:fs';
-import path from 'node:path';
 import { ART_COLLECTION } from '@/components/genetics/gallery/artCollection';
 
 export const runtime = 'nodejs';
@@ -29,22 +27,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (artwork.image.startsWith('/')) {
-    try {
-      const filePath = path.join(process.cwd(), 'public', artwork.image.replace(/^\//, ''));
-      if (!fs.existsSync(filePath)) {
-        return NextResponse.json({ error: 'Artwork file not found' }, { status: 404 });
-      }
-      const buffer = fs.readFileSync(filePath);
-      const contentType = detectImageContentType(buffer) || 'image/jpeg';
-      return new NextResponse(buffer, {
-        headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000',
-        },
-      });
-    } catch {
-      return NextResponse.json({ error: 'Artwork source unavailable' }, { status: 502 });
-    }
+    return NextResponse.redirect(new URL(artwork.image, request.url));
   }
 
   try {

@@ -292,7 +292,7 @@ function GeneticsLab({
         id: `collection-${index + 1}`,
         label: artwork.title,
         caption: artwork.desc,
-        imageUrl: `/api/genetics/artwork-image?id=${index + 1}`,
+        imageUrl: artwork.image.startsWith('/') ? artwork.image : `/api/genetics/artwork-image?id=${index + 1}`,
         artist: artwork.artist,
         year: artwork.year,
         era: artwork.era,
