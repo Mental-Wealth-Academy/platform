@@ -23,6 +23,10 @@ const CyberpunkDataViz = dynamic(() => import('@/components/cyberpunk-data-viz/C
   ssr: false,
   loading: () => null,
 });
+const DailyNoteCelebrationModal = dynamic(() => import('@/components/daily-notes/DailyNoteCelebrationModal'), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface FieldNoteEntry {
   day: number;
@@ -189,6 +193,7 @@ export default function DailyNotes({
   const [pendingDayIndex, setPendingDayIndex] = useState<number | null>(null);
   const [showRewardAnimation, setShowRewardAnimation] = useState(false);
   const [rewardData, setRewardData] = useState<{ shards: number } | null>(null);
+  const [sessionElapsed, setSessionElapsed] = useState(320);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -430,6 +435,8 @@ export default function DailyNotes({
     }
 
     if (enablePersistence) {
+      const elapsed = Math.max(60, 900 - timerSeconds);
+      setSessionElapsed(elapsed);
       setRewardData({ shards: 100 });
       setShowRewardAnimation(true);
 
@@ -939,13 +946,14 @@ export default function DailyNotes({
         )}
 
         {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
-          <>
-            <ConfettiCelebration trigger={true} />
-            <DiamondReward
-              amount={rewardData.shards}
-              onComplete={() => setShowRewardAnimation(false)}
-            />
-          </>,
+          <DailyNoteCelebrationModal
+            open={showRewardAnimation}
+            onClose={() => setShowRewardAnimation(false)}
+            creditsEarned={rewardData.shards}
+            timeSpentSeconds={sessionElapsed}
+            streakDays={Math.max(1, (allWeekPages[currentWeek]?.length ?? 0))}
+            focusAccuracy={100}
+          />,
           document.body
         )}
       </div>
@@ -1172,13 +1180,14 @@ export default function DailyNotes({
       {timerActive && renderTimerSession(false)}
 
       {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
-        <>
-          <ConfettiCelebration trigger={true} />
-          <DiamondReward
-            amount={rewardData.shards}
-            onComplete={() => setShowRewardAnimation(false)}
-          />
-        </>,
+        <DailyNoteCelebrationModal
+          open={showRewardAnimation}
+          onClose={() => setShowRewardAnimation(false)}
+          creditsEarned={rewardData.shards}
+          timeSpentSeconds={sessionElapsed}
+          streakDays={Math.max(1, (allWeekPages[currentWeek]?.length ?? 0))}
+          focusAccuracy={100}
+        />,
         document.body
       )}
     </>

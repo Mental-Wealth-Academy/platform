@@ -2,7 +2,9 @@
 
 import React, { useCallback } from 'react';
 import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
 import { useSound } from '@/hooks/useSound';
+import { setStorageItem } from '@/lib/safe-storage';
 import styles from './MoodSelector.module.css';
 
 export interface MoodOption {
@@ -46,21 +48,28 @@ export const MOOD_OPTIONS: MoodOption[] = [
 
 export default function MoodSelector({ onClose }: { onClose?: () => void }) {
   const { play } = useSound();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSelectMood = useCallback((mood: MoodOption) => {
     play('click');
+    const detail = {
+      id: mood.id,
+      mood: mood.id,
+      label: mood.label,
+      prompt: mood.prompt,
+      topic: mood.topic,
+    };
     window.dispatchEvent(
       new CustomEvent('startBlueCompanion', {
-        detail: {
-          id: mood.id,
-          mood: mood.id,
-          label: mood.label,
-          prompt: mood.prompt,
-          topic: mood.topic,
-        },
+        detail,
       }),
     );
-  }, [play]);
+    if (pathname !== '/dao') {
+      setStorageItem('mwa_pending_mood', JSON.stringify(detail), 'session');
+      router.push('/dao');
+    }
+  }, [play, pathname, router]);
 
   return (
     <section className={styles.container} aria-label="How Are You Feeling?">

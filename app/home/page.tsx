@@ -23,13 +23,14 @@ import GuideGallery, { GuideFilterSidebar, type GuideFilterState } from '@/compo
 import FeatureTour from '@/components/feature-tour/FeatureTour';
 import CtaButton from '@/components/shared/CtaButton';
 import ProfessionalGuidanceModal from '@/components/guidance/ProfessionalGuidanceModal';
+import MoodSelector from '@/components/mood-selector/MoodSelector';
 
 import type { CourseData } from '@/lib/personal-course';
 import { onPersonalCourseUpdated, personalCourseUrl } from '@/lib/personal-course-sync';
 import type { CourseRecord } from '@/lib/course-content-db';
 import type { GuideRecord, FrontierGuide } from '@/lib/guides-db';
 import { useSound } from '@/hooks/useSound';
-import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/safe-storage';
 import { getBookmarkedSlugs, onBookmarksUpdated } from '@/lib/bookmarks';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
 import styles from './page.module.css';
@@ -398,6 +399,25 @@ export default function HomePage() {
   }, []);
   const [introOpen, setIntroOpen] = useState(false);
   const [askBlueOpen, setAskBlueOpen] = useState(false);
+  const [moodDismissed, setMoodDismissed] = useState(false);
+
+  useEffect(() => {
+    const dismissed = getStorageItem('mwa_profile_mood_dismissed', 'session');
+    if (dismissed === '1') {
+      setMoodDismissed(true);
+    }
+  }, []);
+
+  const handleDismissMood = useCallback(() => {
+    setMoodDismissed(true);
+    setStorageItem('mwa_profile_mood_dismissed', '1', 'session');
+  }, []);
+
+  const handleRestoreMood = useCallback(() => {
+    setMoodDismissed(false);
+    removeStorageItem('mwa_profile_mood_dismissed', 'session');
+  }, []);
+
   const [connectNodeKey, setConnectNodeKey] = useState('root');
   const [courseDialogue, setCourseDialogue] = useState<CourseDialogue>(
     FIRST_COURSES_DIALOGUE,
@@ -728,6 +748,35 @@ export default function HomePage() {
     };
   }, [personalCourse, recommendedGuide]);
 
+  const renderAskBlueBtn = () => (
+    <CtaButton
+      variant="ghost"
+      block
+      size="md"
+      className={styles.askBlueBtn}
+      onClick={() => {
+        play('click');
+        setConnectNodeKey('root');
+        setAskBlueOpen(true);
+      }}
+      aria-label="Blue Intelligence"
+    >
+      <span className={styles.askBlueContent}>
+        <span className={styles.askBlueLeft}>
+          <Image
+            src="/images/blue-guide-sprites/breathing-idle.gif"
+            alt="Blue daemon"
+            width={24}
+            height={24}
+            className={styles.askBlueGif}
+            unoptimized
+          />
+          <span className={styles.askBlueLabel}>Blue Intelligence</span>
+        </span>
+      </span>
+    </CtaButton>
+  );
+
   return (
     <div
       className={`${styles.layout} ${learnOnly ? styles.learnLayout : ''}`}
@@ -780,34 +829,32 @@ export default function HomePage() {
       </div>
       {!learnOnly && (
       <section className={styles.dashboardHeader}>
+        {!moodDismissed ? (
+          <div className={styles.mobileMoodSelectorWrap}>
+            <MoodSelector onClose={handleDismissMood} />
+          </div>
+        ) : (
+          <div className={styles.mobileMoodRestoreWrap}>
+            <button
+              type="button"
+              className={styles.restoreMoodBtn}
+              onClick={handleRestoreMood}
+              aria-label="How Are You Feeling?"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span>How are you feeling?</span>
+            </button>
+          </div>
+        )}
+
         <div data-tour="home-profile" className={styles.topCardWrapper}>
           <HomeTopCard />
-          <CtaButton
-            variant="ghost"
-            block
-            size="md"
-            className={styles.askBlueBtn}
-            onClick={() => {
-              play('click');
-              setConnectNodeKey('root');
-              setAskBlueOpen(true);
-            }}
-            aria-label="Blue Intelligence"
-          >
-            <span className={styles.askBlueContent}>
-              <span className={styles.askBlueLeft}>
-                <Image
-                  src="/images/blue-guide-sprites/breathing-idle.gif"
-                  alt="Blue daemon"
-                  width={24}
-                  height={24}
-                  className={styles.askBlueGif}
-                  unoptimized
-                />
-                <span className={styles.askBlueLabel}>Blue Intelligence</span>
-              </span>
-            </span>
-          </CtaButton>
+          <div className={styles.desktopAskBlueWrap}>
+            {renderAskBlueBtn()}
+          </div>
 
           <button
             type="button"
@@ -862,6 +909,9 @@ export default function HomePage() {
         </div>
         <div className={styles.dailyNotes}>
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
+        </div>
+        <div className={styles.mobileAskBlueWrap}>
+          {renderAskBlueBtn()}
         </div>
       </section>
       )}

@@ -236,6 +236,51 @@
   width: 100%;
 }
 
+.mobileMoodSelectorWrap {
+  display: none;
+}
+
+.mobileMoodRestoreWrap {
+  display: none;
+}
+
+.desktopAskBlueWrap {
+  display: block;
+  width: 100%;
+}
+
+.mobileAskBlueWrap {
+  display: none;
+}
+
+.restoreMoodBtn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface-1));
+  border: 1px dashed color-mix(in oklch, var(--color-primary) 35%, transparent);
+  border-radius: 999px;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.restoreMoodBtn:hover {
+  background: color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1));
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.restoreMoodBtn:active {
+  transform: translateY(1px);
+}
+
 .askBlueBtn {
   margin-top: 12px;
   width: 100%;
@@ -758,6 +803,32 @@
   .topCardWrapper {
     max-width: 100%;
     width: 100%;
+  }
+
+  .mobileMoodSelectorWrap {
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .mobileMoodRestoreWrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 2px 0 6px;
+  }
+
+  .desktopAskBlueWrap {
+    display: none;
+  }
+
+  .mobileAskBlueWrap {
+    display: block;
+    width: 100%;
+  }
+
+  .mobileAskBlueWrap .askBlueBtn {
+    margin-top: 0;
   }
 
   .desktopLeaderboard {

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { dailySceneBackgroundUrl } from '@/lib/scene-background';
+import { getStorageItem, removeStorageItem } from '@/lib/safe-storage';
 import { type InitialMoodData } from './BlueCompanion';
 import LivestreamFeed from './LivestreamFeed';
 import styles from './BlueScene.module.css';
@@ -61,6 +62,25 @@ export default function BlueScene() {
   }, []);
 
   useEffect(() => {
+    const pendingMoodRaw = getStorageItem('mwa_pending_mood', 'session');
+    if (pendingMoodRaw) {
+      try {
+        const parsed = JSON.parse(pendingMoodRaw);
+        if (parsed) {
+          setMode('companion');
+          setInitialMood({
+            id: parsed.id || parsed.mood || 'notsure',
+            label: parsed.label,
+            prompt: parsed.prompt,
+            topic: parsed.topic,
+          });
+        }
+      } catch {
+        // ignore parse error
+      }
+      removeStorageItem('mwa_pending_mood', 'session');
+    }
+
     const handleStartCompanion = (e: Event) => {
       const ce = e as CustomEvent<{
         id?: string;

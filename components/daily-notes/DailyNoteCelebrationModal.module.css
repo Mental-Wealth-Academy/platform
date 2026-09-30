@@ -1,0 +1,688 @@
+/* Daily Note Completion Celebratory Flow (Duolingo style) */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: #0b131b;
+  background-image:
+    radial-gradient(circle at 50% 15%, rgba(68, 140, 255, 0.18), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12), transparent 50%),
+    radial-gradient(circle at 20% 85%, rgba(16, 185, 129, 0.12), transparent 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  min-height: min(780px, calc(100dvh - 32px));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+/* ── Screen 1 & 2 Shared Body ── */
+.screenBody {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Mascot Artwork ── */
+.mascotWrap {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.mascotGlow {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(56, 189, 248, 0) 70%);
+  filter: blur(14px);
+  pointer-events: none;
+  animation: pulseGlow 3s ease-in-out infinite alternate;
+}
+
+.mascotGlowGold {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.42) 0%, rgba(245, 158, 11, 0) 70%);
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+.mascotImg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.5),
+    0 0 0 2px rgba(255, 255, 255, 0.12);
+  animation: floatMascot 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatMascot {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-6px);
+  }
+}
+
+/* ── Text Headers ── */
+.titleText {
+  font-family: var(--font-secondary);
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #ffc800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(255, 200, 0, 0.25);
+}
+
+.titleTextBlue {
+  color: #60a5fa;
+  text-shadow: 0 2px 8px rgba(96, 165, 250, 0.25);
+}
+
+.subtitleText {
+  font-family: var(--font-primary);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* ── Metric Cards Row (Screen 1) ── */
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.metricCard {
+  background: #111e2e;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 0 var(--card-bevel, #0a131e);
+  transition: transform 0.2s ease;
+}
+
+.metricCardGold {
+  --card-border: #f59e0b;
+  --card-bevel: #b45309;
+  --header-bg: #f59e0b;
+  --header-text: #78350f;
+  --accent-color: #fbbf24;
+  border: 2px solid var(--card-border);
+}
+
+.metricCardGreen {
+  --card-border: #10b981;
+  --card-bevel: #047857;
+  --header-bg: #10b981;
+  --header-text: #064e3b;
+  --accent-color: #34d399;
+  border: 2px solid var(--card-border);
+}
+
+.metricCardCyan {
+  --card-border: #38bdf8;
+  --card-bevel: #0284c7;
+  --header-bg: #38bdf8;
+  --header-text: #0c4a6e;
+  --accent-color: #38bdf8;
+  border: 2px solid var(--card-border);
+}
+
+.metricHeader {
+  background: var(--header-bg);
+  padding: 5px 4px;
+  font-family: var(--font-secondary);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--header-text);
+  text-align: center;
+}
+
+.metricContent {
+  padding: 12px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.metricIcon {
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.metricValue {
+  font-family: var(--font-secondary);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* ── Screen 2: Milestone Badge & Progress Bar ── */
+.milestoneCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.milestoneBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 28px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow:
+    0 6px 0 #cbd5e1,
+    0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.milestoneIconWrap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+  color: #ea580c;
+}
+
+.milestoneCount {
+  font-family: var(--font-secondary);
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.progressBarContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.progressLabel {
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  font-weight: 800;
+  color: #94a3b8;
+  min-width: 24px;
+  text-align: center;
+}
+
+.progressLabelActive {
+  color: #ffffff;
+}
+
+.progressTrack {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.progressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 72%;
+  background: linear-gradient(90deg, #10b981 0%, #84cc16 50%, #facc15 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(132, 204, 22, 0.6);
+  animation: progressGrow 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes progressGrow {
+  from {
+    width: 0%;
+  }
+}
+
+.progressSparkle {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffffff;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+  animation: sparkleRotate 2.5s linear infinite;
+}
+
+@keyframes sparkleRotate {
+  0% {
+    transform: translateY(-50%) rotate(0deg) scale(0.9);
+  }
+  50% {
+    transform: translateY(-50%) rotate(180deg) scale(1.15);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg) scale(0.9);
+  }
+}
+
+.kickerText {
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #94a3b8;
+  max-width: 320px;
+  margin: 0;
+}
+
+/* ── Bottom Action Row ── */
+.bottomActionRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.shareIconButton {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 16px;
+  color: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0f172a;
+  transition: transform 0.1s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shareIconButton:hover {
+  background: #334155;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #0f172a;
+}
+
+.shareIconButton:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #0f172a;
+}
+
+.mainCtaButton {
+  flex: 1;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #0284c7;
+  border: none;
+  box-shadow: 0 5px 0 #0369a1;
+  font-family: var(--font-secondary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mainCtaButton:hover {
+  background: #0ea5e9;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #0369a1;
+}
+
+.mainCtaButton:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #0369a1;
+}
+
+/* ── Screen 3: Share Drawer / Sheet ── */
+.shareDrawerBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 12, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.shareDrawerContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px 24px;
+  box-sizing: border-box;
+  animation: slideUpDrawer 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpDrawer {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ── Shareable Card Graphic ── */
+.shareCard {
+  width: 100%;
+  max-width: 360px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 22px 20px;
+  box-sizing: border-box;
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.shareCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shareCardTitleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shareCardPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #e0f2fe;
+  font-family: var(--font-secondary);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0369a1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: fit-content;
+}
+
+.shareCardTitle {
+  font-family: var(--font-secondary);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0f172a;
+}
+
+.shareCardMascot {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.shareCardStatsList {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shareStatRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.shareStatLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-family: var(--font-primary);
+  font-weight: 500;
+}
+
+.shareStatVal {
+  font-family: var(--font-secondary);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.shareCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.shareCardLogo {
+  font-family: var(--font-secondary);
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0284c7;
+}
+
+/* ── Share Actions Row ── */
+.shareOptionsSection {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shareOptionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shareCloseBtn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.shareCloseBtn:hover {
+  color: #ffffff;
+}
+
+.shareOptionsTitle {
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.shareButtonsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.shareItemBtn {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shareItemIconWrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease;
+}
+
+.shareItemBtn:hover .shareItemIconWrap {
+  transform: scale(1.08);
+}
+
+.shareItemLabel {
+  font-family: var(--font-primary);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.shareIconMessages {
+  background: #22c55e;
+  color: #ffffff;
+}
+
+.shareIconWhatsApp {
+  background: #25d366;
+  color: #ffffff;
+}
+
+.shareIconX {
+  background: #000000;
+  border: 1px solid #334155;
+  color: #ffffff;
+}
+
+.shareIconSave {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #38bdf8;
+}
+
+.shareIconMore {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #94a3b8;
+}
+
+.copyToast {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #10b981;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1100;
+}
+
+@keyframes popIn {
+  from {
+    transform: translate(-50%, -10px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+}
