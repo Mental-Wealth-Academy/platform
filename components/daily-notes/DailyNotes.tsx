@@ -8,7 +8,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useSound } from '@/hooks/useSound';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import styles from './DailyNotes.module.css';
-import { getStorageItem, setStorageItem } from '@/lib/safe-storage';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/safe-storage';
 import { getLocalDateKey } from '@/lib/date-key';
 
 const DiamondReward = dynamic(() => import('@/components/rewards/DiamondReward').then(mod => mod.DiamondReward), {
@@ -258,6 +258,25 @@ export default function DailyNotes({
   // Gate that controls whether a writing session can start (auth OR dev bypass).
   const gateOpen = enablePersistence || devBypass;
 
+  // Restore pending celebration if user was interrupted or refreshed before closing
+  useEffect(() => {
+    const pending = getStorageItem('mwa_pending_celebration', 'session');
+    if (pending) {
+      try {
+        const data = JSON.parse(pending);
+        if (data && data.date === todayDateStr) {
+          setRewardData({ shards: data.shards });
+          setSessionElapsed(data.elapsed || 120);
+          setShowRewardAnimation(true);
+        } else {
+          removeStorageItem('mwa_pending_celebration', 'session');
+        }
+      } catch {
+        removeStorageItem('mwa_pending_celebration', 'session');
+      }
+    }
+  }, [todayDateStr]);
+
   useScrollLock(showAuthPrompt || showPrepDialog || timerActive);
 
   const previousWeekCount = currentWeek === 1
@@ -438,6 +457,15 @@ export default function DailyNotes({
       const elapsed = Math.max(60, 900 - timerSeconds);
       setSessionElapsed(elapsed);
       setRewardData({ shards: 100 });
+      setStorageItem(
+        'mwa_pending_celebration',
+        JSON.stringify({
+          shards: 100,
+          elapsed,
+          date: todayDateStr,
+        }),
+        'session'
+      );
       setShowRewardAnimation(true);
 
       // First successful note ever: let the home first-run guide pick it up and
@@ -948,7 +976,10 @@ export default function DailyNotes({
         {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
           <DailyNoteCelebrationModal
             open={showRewardAnimation}
-            onClose={() => setShowRewardAnimation(false)}
+            onClose={() => {
+              setShowRewardAnimation(false);
+              removeStorageItem('mwa_pending_celebration', 'session');
+            }}
             diamondsEarned={rewardData.shards}
             creditsEarned={rewardData.shards}
             timeSpentSeconds={sessionElapsed}
@@ -1183,7 +1214,10 @@ export default function DailyNotes({
       {showRewardAnimation && rewardData && typeof window !== 'undefined' && createPortal(
         <DailyNoteCelebrationModal
           open={showRewardAnimation}
-          onClose={() => setShowRewardAnimation(false)}
+          onClose={() => {
+            setShowRewardAnimation(false);
+            removeStorageItem('mwa_pending_celebration', 'session');
+          }}
           diamondsEarned={rewardData.shards}
           creditsEarned={rewardData.shards}
           timeSpentSeconds={sessionElapsed}

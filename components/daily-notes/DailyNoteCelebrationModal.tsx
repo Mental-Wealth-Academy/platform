@@ -108,6 +108,264 @@ export default function DailyNoteCelebrationModal({
     onClose();
   };
 
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('Failed to load image: ' + src));
+    img.src = src;
+  });
+}
+
+function drawFlameShape(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - size);
+  ctx.bezierCurveTo(cx + size * 0.7, cy - size * 0.4, cx + size * 0.9, cy + size * 0.2, cx + size * 0.5, cy + size * 0.7);
+  ctx.bezierCurveTo(cx + size * 0.2, cy + size * 0.95, cx - size * 0.5, cy + size * 0.8, cx - size * 0.5, cy + size * 0.3);
+  ctx.bezierCurveTo(cx - size * 0.5, cy - size * 0.2, cx - size * 0.15, cy - size * 0.6, cx, cy - size);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawDiamondShape(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - size);
+  ctx.lineTo(cx + size * 0.8, cy);
+  ctx.lineTo(cx, cy + size);
+  ctx.lineTo(cx - size * 0.8, cy);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawCheckShape(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.arc(cx, cy, size, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - size * 0.4, cy);
+  ctx.lineTo(cx - size * 0.05, cy + size * 0.35);
+  ctx.lineTo(cx + size * 0.45, cy - size * 0.35);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawClockShape(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, color: string) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(cx, cy, size, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - size * 0.55);
+  ctx.lineTo(cx, cy);
+  ctx.lineTo(cx + size * 0.4, cy);
+  ctx.stroke();
+  ctx.restore();
+}
+
+async function generateStreakCardBlob({
+  streakDays,
+  diamonds,
+  focusAccuracy,
+  timeFormatted,
+}: {
+  streakDays: number;
+  diamonds: number;
+  focusAccuracy: number;
+  timeFormatted: string;
+}): Promise<Blob> {
+  const canvas = document.createElement('canvas');
+  canvas.width = 720;
+  canvas.height = 860;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Could not get canvas context');
+
+  // Background
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, 860);
+  bgGrad.addColorStop(0, '#f0f4ff');
+  bgGrad.addColorStop(1, '#e6edfc');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 720, 860);
+
+  // Main white card with shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(26, 29, 51, 0.12)';
+  ctx.shadowBlur = 28;
+  ctx.shadowOffsetY = 12;
+  drawRoundedRect(ctx, 40, 40, 640, 780, 36);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.restore();
+
+  // Card border
+  ctx.save();
+  drawRoundedRect(ctx, 40, 40, 640, 780, 36);
+  ctx.strokeStyle = 'rgba(81, 104, 255, 0.18)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.restore();
+
+  // Badge pill (top left)
+  const pillX = 76;
+  const pillY = 76;
+  const pillW = 184;
+  const pillH = 40;
+  drawRoundedRect(ctx, pillX, pillY, pillW, pillH, 20);
+  ctx.fillStyle = '#e0f2fe';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(2, 132, 199, 0.25)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Flame icon inside pill
+  drawFlameShape(ctx, pillX + 22, pillY + 20, 11, '#0284c7');
+
+  // Pill text
+  ctx.fillStyle = '#0369a1';
+  ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`Day ${streakDays} streak`, pillX + 42, pillY + 20);
+
+  // Title text (two lines)
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText("I'm acing my daily", 76, 162);
+  ctx.fillText("check-in!", 76, 200);
+
+  // Mascot graphic (top right)
+  try {
+    const mascotImg = await loadImage('/images/celebration/blue-celebration.png');
+    ctx.drawImage(mascotImg, 480, 64, 160, 160);
+  } catch {
+    // Graceful fallback if image load fails
+  }
+
+  // Stats Box
+  const boxX = 76;
+  const boxY = 246;
+  const boxW = 568;
+  const boxH = 270;
+  drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 24);
+  ctx.fillStyle = '#f8fafc';
+  ctx.fill();
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Row 1: Diamonds earned
+  const r1Y = boxY + 54;
+  drawDiamondShape(ctx, boxX + 32, r1Y, 11, '#5168ff');
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Diamonds earned', boxX + 54, r1Y);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`+${diamonds}`, boxX + boxW - 28, r1Y);
+
+  // Divider 1
+  ctx.beginPath();
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  ctx.moveTo(boxX + 28, boxY + 90);
+  ctx.lineTo(boxX + boxW - 28, boxY + 90);
+  ctx.stroke();
+
+  // Row 2: Focus accuracy
+  const r2Y = boxY + 135;
+  drawCheckShape(ctx, boxX + 32, r2Y, 11, '#10b981');
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Focus accuracy', boxX + 54, r2Y);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`${focusAccuracy}%`, boxX + boxW - 28, r2Y);
+
+  // Divider 2
+  ctx.beginPath();
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
+  ctx.moveTo(boxX + 28, boxY + 180);
+  ctx.lineTo(boxX + boxW - 28, boxY + 180);
+  ctx.stroke();
+
+  // Row 3: Time spent
+  const r3Y = boxY + 225;
+  drawClockShape(ctx, boxX + 32, r3Y, 11, '#38bdf8');
+  ctx.fillStyle = '#475569';
+  ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Time spent', boxX + 54, r3Y);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(timeFormatted, boxX + boxW - 28, r3Y);
+
+  // Logo / Footer
+  ctx.fillStyle = '#4338ca';
+  ctx.font = '900 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('Mental Wealth Academy', 360, 765);
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.fillText('mentalwealthacademy.world', 360, 792);
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error('Canvas export to blob failed'));
+    }, 'image/png');
+  });
+}
+
   const shareText = `I completed today's Field Note and earned ${diamonds} diamonds on Mental Wealth Academy! Streak: ${streakDays} days.`;
   const shareUrl = typeof window !== 'undefined' ? window.location.origin : 'https://mentalwealthacademy.world';
 
@@ -126,20 +384,103 @@ export default function DailyNoteCelebrationModal({
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
-  const handleSaveCard = () => {
+  const handleSaveCard = async () => {
     play('click');
-    // Save image: download the mascot celebration graphic with high resolution
-    const link = document.createElement('a');
-    link.href = '/images/celebration/blue-celebration.png';
-    link.download = `mental-wealth-streak-day-${streakDays}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast('Card image downloaded');
+    try {
+      const blob = await generateStreakCardBlob({
+        streakDays,
+        diamonds,
+        focusAccuracy,
+        timeFormatted: formatElapsed(timeSpentSeconds),
+      });
+
+      const fileName = `mental-wealth-streak-day-${streakDays}.png`;
+      let file: File | null = null;
+      try {
+        file = new File([blob], fileName, { type: 'image/png' });
+      } catch {}
+
+      // Priority 1: Mobile Web Share API with file (iOS Safari, Android Chrome)
+      // On iOS Safari, this opens the native sheet with "Save Image" option, saving
+      // directly to the Photos library without navigating away from the web app.
+      if (
+        file &&
+        typeof navigator !== 'undefined' &&
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] })
+      ) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Mental Wealth Academy',
+            text: shareText,
+          });
+          showToast('Card saved');
+          return;
+        } catch (err: any) {
+          if (err?.name === 'AbortError') {
+            // User closed native share sheet without saving; keep modal intact
+            return;
+          }
+        }
+      }
+
+      // Priority 2: Clipboard API (copy image to clipboard)
+      if (typeof navigator !== 'undefined' && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob }),
+          ]);
+          showToast('Card copied to clipboard');
+          return;
+        } catch {}
+      }
+
+      // Priority 3: Safe object URL download (desktop browsers)
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 500);
+      showToast('Card downloaded');
+    } catch (err) {
+      console.error('[CelebrationModal] Failed to save card:', err);
+      showToast('Could not save card');
+    }
   };
 
   const handleMoreShare = async () => {
     play('click');
+    try {
+      const blob = await generateStreakCardBlob({
+        streakDays,
+        diamonds,
+        focusAccuracy,
+        timeFormatted: formatElapsed(timeSpentSeconds),
+      });
+      const file = new File([blob], `mental-wealth-streak-day-${streakDays}.png`, { type: 'image/png' });
+      if (
+        typeof navigator !== 'undefined' &&
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          files: [file],
+          title: 'Mental Wealth Academy',
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      }
+    } catch {}
+
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
@@ -148,9 +489,11 @@ export default function DailyNoteCelebrationModal({
           url: shareUrl,
         });
         return;
-      } catch {}
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return;
+      }
     }
-    // Fallback: copy to clipboard
+
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
       await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
       showToast('Share link copied to clipboard');
@@ -415,6 +758,21 @@ export default function DailyNoteCelebrationModal({
                     <span className={styles.shareItemLabel}>More</span>
                   </button>
                 </div>
+
+                <button
+                  type="button"
+                  className={styles.shareClaimButton}
+                  onClick={() => {
+                    setShowShare(false);
+                    if (step === 'progress') {
+                      handleClaimDiamonds();
+                    } else {
+                      handleContinue();
+                    }
+                  }}
+                >
+                  {step === 'progress' ? 'Claim Diamonds' : 'Continue'}
+                </button>
               </div>
             </div>
           </div>
