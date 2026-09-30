@@ -4,19 +4,19 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
+  Cat,
   ChatsCircle,
   ClipboardText,
   House,
   IconProps,
   MoonStars,
-  Sparkle,
 } from '@phosphor-icons/react';
 import styles from './MobileBottomNav.module.css';
 
 type NavIcon = React.ForwardRefExoticComponent<IconProps & React.RefAttributes<SVGSVGElement>>;
 
 const NAV_ITEMS = [
-  { id: 'companion', label: 'Companion', href: '/dao', icon: Sparkle },
+  { id: 'blue', label: 'Blue', href: '/dao', icon: Cat },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/profile', icon: House },
   { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },

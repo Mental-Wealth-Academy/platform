@@ -690,7 +690,7 @@
 
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
+    padding: 12px 10px calc(70px + max(env(safe-area-inset-bottom, 0px), 12px));
   }
 
   .folderRow {
@@ -714,6 +714,37 @@
     grid-template-columns: 1fr;
     gap: 16px;
     margin-top: 0;
+  }
+
+  .insightsSlideHeader {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .insightsTabs {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .insightTabBtn {
+    flex: 1 1 0%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .globalPanel {
+    padding: 0 14px 14px;
+  }
+
+  .insightCard {
+    min-height: auto;
+    padding: 18px 16px 16px;
   }
 
   .dashboardHeader {
@@ -1157,12 +1188,91 @@
    completed prereqs that unlocked it as the visible reason. */
 .recommendInsightCard {
   --insight-color: var(--color-primary);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: var(--color-surface-base, #ffffff);
+  border: 2px solid var(--color-primary-hover);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 0 var(--color-primary),
+    0 2px 8px color-mix(in srgb, var(--palette-ink) 8%, transparent);
+  padding: 22px 24px;
+  min-height: auto;
+}
+
+:global([data-theme="dark"]) .recommendInsightCard {
+  background: #0d1b2a;
+}
+
+.recommendBannerWrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.recommendBannerImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  display: block;
+}
+
+.recommendBannerScrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.88) 46%,
+    rgba(255, 255, 255, 0.22) 78%,
+    transparent 100%
+  );
+}
+
+:global([data-theme="dark"]) .recommendBannerScrim {
+  background: linear-gradient(
+    90deg,
+    rgba(13, 27, 42, 0.96) 0%,
+    rgba(13, 27, 42, 0.88) 46%,
+    rgba(13, 27, 42, 0.22) 78%,
+    transparent 100%
+  );
+}
+
+@media (max-width: 768px) {
+  .recommendBannerScrim {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.85) 55%,
+      rgba(255, 255, 255, 0.68) 100%
+    );
+  }
+
+  :global([data-theme="dark"]) .recommendBannerScrim {
+    background: linear-gradient(
+      180deg,
+      rgba(13, 27, 42, 0.94) 0%,
+      rgba(13, 27, 42, 0.85) 55%,
+      rgba(13, 27, 42, 0.68) 100%
+    );
+  }
 }
 
 .recommendMain {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1170,6 +1280,44 @@
   margin-top: 4px;
   text-decoration: none;
   text-align: center;
+  width: 100%;
+}
+
+.recommendBadgeRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.recommendBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 10%, white);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  text-transform: uppercase;
+}
+
+:global([data-theme="dark"]) .recommendBadge {
+  background: color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  color: #93c5fd;
+}
+
+.recommendBadgeIcon {
+  color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .recommendBadgeIcon {
+  color: #93c5fd;
 }
 
 .recommendGuideTitle {
@@ -1190,24 +1338,19 @@
   font-size: 0.8125rem;
   line-height: 1.45;
   color: var(--color-text-muted);
-  max-width: 300px;
+  max-width: 380px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.recommendCta {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 6px 16px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in oklch, var(--insight-color) 40%, transparent);
-  color: var(--insight-color);
-  background: color-mix(in oklch, var(--insight-color) 8%, transparent);
-  transition: background var(--duration-fast) var(--ease-default);
+.recommendCtaRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .recommendCtaPill {
@@ -1223,8 +1366,10 @@
     0 3px 0 var(--palette-action-blue-hover, #3246BE),
     0 4px 14px color-mix(in oklch, var(--color-primary) 35%, transparent);
   transition: all 0.2s ease;
-  margin-top: 6px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .recommendMain:hover .recommendCtaPill {
@@ -1233,10 +1378,6 @@
   box-shadow:
     0 4px 0 var(--palette-action-blue-hover, #3246BE),
     0 6px 18px color-mix(in oklch, var(--color-primary) 45%, transparent);
-}
-
-.recommendMain:hover .recommendCta {
-  background: color-mix(in oklch, var(--insight-color) 14%, transparent);
 }
 
 .recommendReason {
@@ -2663,5 +2804,10 @@
 
   .desc {
     font-size: 14px;
+  }
+
+  .insightTabBtn {
+    padding: 7px 8px;
+    font-size: 0.75rem;
   }
 }

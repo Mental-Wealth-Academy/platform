@@ -17,7 +17,7 @@
   border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   align-items: stretch;
   justify-content: space-between;
-  padding: 0;
+  padding: 0 6px;
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
   box-shadow: 0 -4px 24px color-mix(in oklch, var(--color-primary) 6%, transparent);
   overflow: hidden;

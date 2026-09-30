@@ -1147,32 +1147,58 @@ export default function HomePage() {
               <article className={`${styles.insightCard} ${styles.recommendInsightCard}`}>
                 {recommendedGuide ? (
                   <>
+                    <div className={styles.recommendBannerWrap} aria-hidden="true">
+                      <Image
+                        src="/images/blue-cards/guide-recommendation.jpg"
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 600px"
+                        className={styles.recommendBannerImg}
+                        priority
+                      />
+                      <div className={styles.recommendBannerScrim} />
+                    </div>
                     <Link
                       href={`/learn/guides/${recommendedGuide.slug}`}
                       className={styles.recommendMain}
                       onMouseEnter={() => play('soft-hover')}
                       onClick={() => play('click')}
                     >
+                      <div className={styles.recommendBadgeRow}>
+                        <span className={styles.recommendBadge}>
+                          <Star size={13} weight="fill" className={styles.recommendBadgeIcon} />
+                          <span>Recommended Guide</span>
+                        </span>
+                      </div>
                       <span className={styles.recommendGuideTitle}>{recommendedGuide.topicTitle}</span>
                       {recommendedGuide.summary && (
                         <span className={styles.recommendSummary}>{recommendedGuide.summary}</span>
                       )}
-                      <span className={styles.recommendCtaPill}>
-                        {recommendedGuide.estimatedMinutes
-                          ? `Start this guide · ${recommendedGuide.estimatedMinutes} min`
-                          : 'Start this guide'}
-                      </span>
+                      <div className={styles.recommendCtaRow}>
+                        <span className={styles.recommendCtaPill}>
+                          <span>
+                            {recommendedGuide.estimatedMinutes
+                              ? `Start this guide · ${recommendedGuide.estimatedMinutes} min`
+                              : 'Start this guide'}
+                          </span>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </Link>
-                    <div className={styles.recommendReason}>
-                      <Image
-                        src="/blue/blue-home.png"
-                        alt="Blue"
-                        width={30}
-                        height={30}
-                        className={styles.recommendAvatar}
-                      />
-                      <p className={styles.recommendReasonText}>{recommendReason}</p>
-                    </div>
+                    {recommendReason && (
+                      <div className={styles.recommendReason}>
+                        <Image
+                          src="/blue/blue-home.png"
+                          alt="Blue"
+                          width={30}
+                          height={30}
+                          className={styles.recommendAvatar}
+                        />
+                        <p className={styles.recommendReasonText}>{recommendReason}</p>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <p className={styles.recommendEmpty}>
