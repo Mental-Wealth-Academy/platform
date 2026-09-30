@@ -174,40 +174,33 @@
   gap: 11px;
   padding: 11px 13px;
   border-radius: 12px;
-  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 7%, #ffffff) 0%, color-mix(in oklch, var(--color-primary) 2.5%, #ffffff) 100%);
-  border: 1.5px solid color-mix(in oklch, var(--color-primary) 22%, transparent);
-  border-left: 4px solid var(--color-primary);
-  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 9%, transparent);
-  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  background: color-mix(in srgb, var(--color-primary) 14%, #ffffff);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
 }
 
 .item:hover {
-  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 10%, #ffffff) 0%, color-mix(in oklch, var(--color-primary) 4%, #ffffff) 100%);
-  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
-  border-left-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 20%, #ffffff);
+  border-color: color-mix(in srgb, var(--color-primary) 48%, transparent);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px color-mix(in oklch, var(--color-primary) 18%, transparent);
 }
 
 .itemDone {
-  opacity: 0.65;
-  background: color-mix(in oklch, var(--color-text-dark) 2%, #ffffff);
-  border-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
-  border-left-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
-  box-shadow: none;
+  opacity: 0.6;
+  background: color-mix(in srgb, var(--color-primary) 5%, #ffffff);
+  border-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
   transform: none;
 }
 
 .itemDone:hover {
   transform: none;
-  box-shadow: none;
 }
 
 .check {
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  border: 1.8px solid color-mix(in oklch, var(--color-primary) 45%, transparent);
+  border: 2px solid var(--color-primary);
   background: #ffffff;
   cursor: pointer;
   flex-shrink: 0;
@@ -216,19 +209,17 @@
   justify-content: center;
   color: #ffffff;
   padding: 0;
-  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
 }
 
 .check:hover {
-  border-color: var(--color-primary);
-  background: color-mix(in oklch, var(--color-primary) 10%, #ffffff);
-  transform: scale(1.06);
+  background: color-mix(in srgb, var(--color-primary) 15%, #ffffff);
+  transform: scale(1.05);
 }
 
 .checkDone {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 2px 6px color-mix(in oklch, var(--color-primary) 35%, transparent);
 }
 
 .itemText {
@@ -342,8 +333,8 @@
 
 /* ── Dark Mode Overrides ── */
 :global([data-theme="dark"]) .addInput {
-  background: color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-1));
-  border-color: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 28%, transparent);
   color: var(--color-text-dark);
 }
 
@@ -352,27 +343,23 @@
 }
 
 :global([data-theme="dark"]) .item {
-  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 14%, var(--color-surface-1)) 0%, color-mix(in oklch, var(--color-primary) 6%, var(--color-surface-1)) 100%);
-  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
-  border-left-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 38%, transparent);
 }
 
 :global([data-theme="dark"]) .item:hover {
-  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 20%, var(--color-surface-1)) 0%, color-mix(in oklch, var(--color-primary) 9%, var(--color-surface-1)) 100%);
-  border-color: color-mix(in oklch, var(--color-primary) 50%, transparent);
-  border-left-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 26%, var(--color-surface-1));
+  border-color: color-mix(in srgb, var(--color-primary) 58%, transparent);
 }
 
 :global([data-theme="dark"]) .itemDone {
-  background: color-mix(in oklch, var(--color-surface-1) 80%, transparent);
-  border-color: color-mix(in oklch, var(--color-primary) 16%, transparent);
-  border-left-color: color-mix(in oklch, var(--color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 85%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 16%, transparent);
 }
 
 :global([data-theme="dark"]) .check {
   background: var(--color-surface-1);
-  border-color: color-mix(in oklch, var(--color-primary) 45%, transparent);
+  border-color: var(--color-primary);
 }
 
 /* ── Mobile Responsive ── */
