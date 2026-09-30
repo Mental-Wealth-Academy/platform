@@ -79,7 +79,7 @@ export default function UpcomingEvent() {
                     </span>
                   )}
                   <span className={styles.userName}>{user.username}</span>
-                  <span className={styles.userCredits}>{formatCredits(user.shards)} credits</span>
+                  <span className={styles.userCredits}>{formatCredits(user.shards)} diamonds</span>
                 </li>
               ))}
             </ol>

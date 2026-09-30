@@ -53,18 +53,31 @@
 .sceneHeaderControls {
   display: inline-flex;
   align-items: center;
+  gap: 12px;
   margin-left: auto;
 }
 
 .sceneSwitch {
   display: inline-flex;
+  align-items: center;
   flex-shrink: 0;
   gap: 2px;
   margin: 0 auto;
-  padding: 2px;
+  padding: 3px;
   border-radius: 999px;
-  background: color-mix(in oklch, var(--color-text-dark) 7%, transparent);
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--palette-on-dark) 92%, transparent);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 10%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
+
+:global([data-theme="dark"]) .sceneSwitch {
+  background: color-mix(in srgb, var(--color-surface-base) 92%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--palette-ink) 35%, transparent);
+}
+
 
 .sceneSwitchButton {
   padding: 4px 10px;
@@ -1263,9 +1276,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    flex: 1 1 0%;
     min-height: 0;
-    max-height: 100%;
     box-sizing: border-box;
     overflow: hidden;
   }

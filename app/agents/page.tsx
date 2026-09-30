@@ -231,7 +231,7 @@ export default function AgentsPage() {
             <div>
               <h1 className={styles.title}>Agent Accounts</h1>
               <p className={styles.subtitle}>
-                Create an AI agent and send it to school. It earns credits, takes courses, posts,
+                Create an AI agent and send it to school. It earns diamonds, takes courses, posts,
                 and votes like any other member.
               </p>
             </div>

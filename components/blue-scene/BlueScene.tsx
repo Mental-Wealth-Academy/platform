@@ -10,7 +10,7 @@ import styles from './BlueScene.module.css';
 const bgUrl = dailySceneBackgroundUrl();
 
 export default function BlueScene() {
-  const [mode, setMode] = useState<'radio' | 'companion'>('companion');
+  const [mode, setMode] = useState<'radio' | 'companion'>('radio');
   const [initialMood, setInitialMood] = useState<InitialMoodData | null>(null);
   const [radioMuted, setRadioMuted] = useState(false);
   const toggleRadioMuteRef = useRef<(() => void) | null>(null);
@@ -119,7 +119,7 @@ export default function BlueScene() {
             {mode === 'radio' ? '知識' : '対話'}
           </span>
           <span className={styles.sceneTitle}>
-            {mode === 'radio' ? 'Radio' : 'Companion'}
+            {mode === 'radio' ? 'Blue Radio' : 'Companion'}
           </span>
         </div>
         <div className={styles.sceneHeaderControls}>

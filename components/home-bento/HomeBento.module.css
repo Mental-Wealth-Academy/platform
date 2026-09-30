@@ -155,7 +155,7 @@
   .bentoScroll {
     width: 100%;
     height: 100%;
-    padding: 8px 10px 8px;
+    padding: 8px 10px 14px;
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
@@ -163,7 +163,7 @@
   }
 
   .bentoScrollWithMorningNote {
-    padding-bottom: 8px;
+    padding-bottom: 14px;
   }
 }
 

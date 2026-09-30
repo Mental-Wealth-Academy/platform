@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     const balance = (await fetchDiamondBalance(user.walletAddress)) ?? user.shardCount;
     if (balance < NOTEBOOK_ENTRIES_UNLOCK_CREDITS) {
       return NextResponse.json(
-        { error: 'Notebook Entries unlock at 3,000 credits.', code: 'NOTEBOOK_ENTRIES_LOCKED' },
+        { error: 'Notebook Entries unlock at 3,000 diamonds.', code: 'NOTEBOOK_ENTRIES_LOCKED' },
         { status: 403 },
       );
     }

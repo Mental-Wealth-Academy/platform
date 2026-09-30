@@ -36,10 +36,10 @@ export const LANDING_FAQ_ITEMS: LandingFaqItem[] = [
       'Blue is the Academy’s AI guide and champion for your mental wealth. She reads your field notes, remembers where you left off, reviews submitted work, and points you toward the next guide or mission worth your attention.',
   },
   {
-    id: 'credits',
-    question: 'How do credits and redemptions work?',
+    id: 'diamonds',
+    question: 'How do diamonds and redemptions work?',
     answer:
-      'Credits are earned through study and verified contributions. When a redemption campaign is open, eligible credits can be redeemed under that campaign’s published terms. Rates, minimum balances, availability, and identity requirements vary by campaign.',
+      'Diamonds are earned through study and verified contributions. When a redemption campaign is open, eligible diamonds can be redeemed under that campaign’s published terms. Rates, minimum balances, availability, and identity requirements vary by campaign.',
   },
   {
     id: 'cohort-facilitators',

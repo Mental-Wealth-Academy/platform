@@ -5,7 +5,7 @@ import { LandingSubpageShell } from '@/components/landing/LandingSubpageShell';
 
 const title = 'Frequently Asked Questions | Mental Wealth Academy';
 const description =
-  'Find answers about Mental Wealth Academy, community education, cohorts, membership, credits, and the 12-week course.';
+  'Find answers about Mental Wealth Academy, community education, cohorts, membership, diamonds, and the 12-week course.';
 
 export const metadata: Metadata = {
   title,

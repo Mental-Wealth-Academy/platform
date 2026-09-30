@@ -38,7 +38,7 @@ function livePosition(): { index: number; offset: number } {
 
 export default function BlueRadio({
   gardenBackground,
-  mode = 'companion',
+  mode = 'radio',
   onModeChange,
   initialMood,
   onInitialMoodHandled,
@@ -61,10 +61,6 @@ export default function BlueRadio({
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
   const companionVolumeRef = useRef<number>(0);
   const [companionMode, setCompanionMode] = useState<'idle' | 'listening' | 'speaking'>('idle');
   const [playback, setPlayback] = useState<Playback>('connecting');
@@ -89,49 +85,58 @@ export default function BlueRadio({
     return () => window.removeEventListener('blueChatToggle', handleBlueChatToggle);
   }, []);
 
-  const ensureAudioAnalyser = useCallback(async () => {
-    const audio = audioRef.current;
-    if (!audio || analyserRef.current || typeof window === 'undefined') return;
-
-    const AudioContextConstructor =
-      window.AudioContext ??
-      (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextConstructor) return;
-
-    const context = audioContextRef.current ?? new AudioContextConstructor();
-    audioContextRef.current = context;
-
-    if (context.state !== 'running') {
-      try {
-        await context.resume();
-      } catch {
-        return;
-      }
-    }
-    if (context.state !== 'running' || analyserRef.current) return;
-
+  // Update MediaSession metadata for native background playback, lock screen, and Dynamic Island controls
+  const updateMediaSession = useCallback((segment: RadioSegment) => {
+    if (typeof window === 'undefined' || !('mediaSession' in navigator)) return;
     try {
-      const source = context.createMediaElementSource(audio);
-      const analyser = context.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.45;
-      const gainNode = context.createGain();
-      const currentGain = audio.muted ? 0 : 1;
-      gainNode.gain.cancelScheduledValues(0);
-      gainNode.gain.setValueAtTime(currentGain, context.currentTime);
-      gainNode.gain.value = currentGain;
-
-      source.connect(analyser);
-      analyser.connect(gainNode);
-      gainNode.connect(context.destination);
-
-      audioSourceRef.current = source;
-      analyserRef.current = analyser;
-      gainNodeRef.current = gainNode;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: segment.title,
+        artist: 'Blue Radio',
+        album: 'Mental Wealth Academy',
+        artwork: [
+          { src: '/blue/blue-avatar.png', sizes: '512x512', type: 'image/png' },
+        ],
+      });
+      navigator.mediaSession.setActionHandler('play', () => {
+        const audio = audioRef.current;
+        if (audio) void audio.play().catch(() => {});
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        const audio = audioRef.current;
+        if (audio) audio.pause();
+      });
     } catch {
-      // Playback remains usable if this browser cannot expose a media source.
+      // mediaSession is a progressive enhancement
     }
   }, []);
+
+  // Drive avatar mouth visemes procedurally during radio playback while tab is active
+  useEffect(() => {
+    if (mode === 'companion') return;
+    let rafId: number;
+
+    const updateSpeechViseme = () => {
+      const audio = audioRef.current;
+      if (audio && !audio.paused && !audio.muted && audio.volume > 0) {
+        const t = performance.now() / 1000;
+        const phraseCycle = (Math.sin(t * 0.8) + 1) * 0.5;
+        const syllable = Math.sin(t * 18.0) * Math.cos(t * 7.5);
+        const phoneme = Math.abs(Math.sin(t * 26.0));
+        const raw = (syllable * 0.5 + 0.5) * phoneme * phraseCycle;
+        const level = raw > 0.15 ? Math.min(1, (raw - 0.15) * 1.5) : 0;
+        companionVolumeRef.current = level;
+      } else {
+        companionVolumeRef.current = 0;
+      }
+      rafId = requestAnimationFrame(updateSpeechViseme);
+    };
+
+    rafId = requestAnimationFrame(updateSpeechViseme);
+    return () => {
+      cancelAnimationFrame(rafId);
+      companionVolumeRef.current = 0;
+    };
+  }, [mode]);
 
   const syncToLive = useCallback(async (wantMuted: boolean) => {
     const audio = audioRef.current;
@@ -153,21 +158,13 @@ export default function BlueRadio({
       // Metadata not ready yet; onLoadedMetadata below re-seeks.
     }
 
-    if (gainNodeRef.current && audioContextRef.current) {
-      try {
-        gainNodeRef.current.gain.cancelScheduledValues(0);
-        const targetGain = wantMuted ? 0 : 1;
-        gainNodeRef.current.gain.setValueAtTime(targetGain, audioContextRef.current.currentTime);
-        gainNodeRef.current.gain.value = targetGain;
-      } catch {}
-    }
+    updateMediaSession(segment);
 
     await audio.play();
-    void ensureAudioAnalyser();
     setMuted(wantMuted);
     onMuteChange?.(wantMuted);
     setPlayback('live');
-  }, [ensureAudioAnalyser, onMuteChange]);
+  }, [onMuteChange, updateMediaSession]);
 
   // Tuning in on arrival, per the app-wide auto-narration default. Browsers
   // that refuse sound without a gesture get a muted broadcast plus a loud
@@ -179,32 +176,7 @@ export default function BlueRadio({
         audio.pause();
         audio.muted = true;
       }
-      if (gainNodeRef.current && audioContextRef.current) {
-        try {
-          gainNodeRef.current.gain.cancelScheduledValues(0);
-          gainNodeRef.current.gain.setValueAtTime(0, audioContextRef.current.currentTime);
-          gainNodeRef.current.gain.value = 0;
-        } catch {
-          // Ignore audio node error
-        }
-      }
-      if (audioContextRef.current && audioContextRef.current.state === 'running') {
-        void audioContextRef.current.suspend().catch(() => undefined);
-      }
       return;
-    }
-
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      void audioContextRef.current.resume().catch(() => undefined);
-    }
-    if (gainNodeRef.current && audioContextRef.current) {
-      try {
-        gainNodeRef.current.gain.cancelScheduledValues(0);
-        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
-        gainNodeRef.current.gain.value = 1;
-      } catch {
-        // Ignore audio node error
-      }
     }
 
     const audio = audioRef.current;
@@ -230,17 +202,6 @@ export default function BlueRadio({
       audio?.pause();
     };
   }, [mode, syncToLive]);
-
-  useEffect(() => {
-    return () => {
-      audioSourceRef.current?.disconnect();
-      analyserRef.current?.disconnect();
-      gainNodeRef.current?.disconnect();
-      if (audioContextRef.current) {
-        void audioContextRef.current.close().catch(() => undefined);
-      }
-    };
-  }, []);
 
   // Re-seek once the segment's metadata is in, so the first audible moment
   // matches the broadcast clock instead of the segment's opening line.
@@ -270,7 +231,7 @@ export default function BlueRadio({
     }, 4000);
   }, [mode, syncToLive]);
 
-  // Coming back to the tab rejoins the broadcast at its current moment.
+  // Coming back to the tab rejoins the broadcast at its current moment if paused
   useEffect(() => {
     const onVisible = () => {
       if (mode === 'companion') return;
@@ -288,25 +249,10 @@ export default function BlueRadio({
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      try {
-        await audioContextRef.current.resume();
-      } catch {}
-    }
-
     const nextMuted = !audio.muted;
     audio.muted = nextMuted;
     setMuted(nextMuted);
     onMuteChange?.(nextMuted);
-
-    if (gainNodeRef.current && audioContextRef.current) {
-      try {
-        gainNodeRef.current.gain.cancelScheduledValues(0);
-        const targetGain = nextMuted ? 0 : 1;
-        gainNodeRef.current.gain.setValueAtTime(targetGain, audioContextRef.current.currentTime);
-        gainNodeRef.current.gain.value = targetGain;
-      } catch {}
-    }
 
     if (!nextMuted) {
       if (audio.paused) {
@@ -317,27 +263,14 @@ export default function BlueRadio({
           await syncToLive(false).catch(() => {});
         }
       }
-      void ensureAudioAnalyser();
     }
-  }, [ensureAudioAnalyser, onMuteChange, syncToLive]);
+  }, [onMuteChange, syncToLive]);
 
   useEffect(() => {
     onRegisterMute?.(toggleMute, muted);
   }, [onRegisterMute, toggleMute, muted]);
 
   const tuneIn = useCallback(async () => {
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      try {
-        await audioContextRef.current.resume();
-      } catch {}
-    }
-    if (gainNodeRef.current && audioContextRef.current) {
-      try {
-        gainNodeRef.current.gain.cancelScheduledValues(0);
-        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
-        gainNodeRef.current.gain.value = 1;
-      } catch {}
-    }
     try {
       await syncToLive(false);
     } catch {
@@ -352,20 +285,6 @@ export default function BlueRadio({
   const startRadio = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      try {
-        await audioContextRef.current.resume();
-      } catch {}
-    }
-
-    if (gainNodeRef.current && audioContextRef.current) {
-      try {
-        gainNodeRef.current.gain.cancelScheduledValues(0);
-        gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
-        gainNodeRef.current.gain.value = 1;
-      } catch {}
-    }
 
     audio.muted = false;
     setMuted(false);
@@ -393,18 +312,6 @@ export default function BlueRadio({
     const unlock = async () => {
       const audio = audioRef.current;
       if (!audio) return;
-      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-        try {
-          await audioContextRef.current.resume();
-        } catch {}
-      }
-      if (gainNodeRef.current && audioContextRef.current) {
-        try {
-          gainNodeRef.current.gain.cancelScheduledValues(0);
-          gainNodeRef.current.gain.setValueAtTime(1, audioContextRef.current.currentTime);
-          gainNodeRef.current.gain.value = 1;
-        } catch {}
-      }
       if (audio.muted) {
         audio.muted = false;
         setMuted(false);
@@ -418,7 +325,6 @@ export default function BlueRadio({
           syncToLive(false).catch(() => {});
         }
       }
-      void ensureAudioAnalyser();
     };
 
     window.addEventListener('click', unlock, { once: true });
@@ -430,7 +336,7 @@ export default function BlueRadio({
       window.removeEventListener('touchstart', unlock);
       window.removeEventListener('keydown', unlock);
     };
-  }, [ensureAudioAnalyser, mode, onMuteChange, syncToLive]);
+  }, [mode, onMuteChange, syncToLive]);
 
   const onAir = playback === 'live';
 
@@ -439,9 +345,8 @@ export default function BlueRadio({
       <div className={styles.radioBlueWrap}>
         <BlueVrmStage
           active={mode === 'companion' ? companionMode === 'speaking' : onAir}
-          analyserRef={analyserRef}
           audioRef={audioRef}
-          companionVolumeRef={mode === 'companion' ? companionVolumeRef : undefined}
+          companionVolumeRef={companionVolumeRef}
           companionMode={mode === 'companion' ? companionMode : undefined}
         />
       </div>

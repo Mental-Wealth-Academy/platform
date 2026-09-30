@@ -158,10 +158,10 @@ export default function QuestListPanel({
                         </>
                       ) : (
                         <>
-                          <span className={styles.rewardChip} title={`${quest.points} credits`}>
+                          <span className={styles.rewardChip} title={`${quest.points} diamonds`}>
                             <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
                             {quest.points}
-                            <span className={styles.srOnly}> credits</span>
+                            <span className={styles.srOnly}> diamonds</span>
                           </span>
                           {usdcReward > 0 && (
                             <span className={`${styles.rewardChip} ${styles.rewardChipUsdc}`} title={`$${usdcReward} USDC bounty`}>

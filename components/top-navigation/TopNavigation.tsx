@@ -426,7 +426,7 @@ const TopNavigation: React.FC = () => {
         <Link
           href="/shop"
           className={styles.mobileJewel}
-          aria-label="Shop credits"
+          aria-label="Shop diamonds"
           onClick={() => play('navigation')}
         >
           <Image

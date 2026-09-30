@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-29T06:08:20.094Z",
-  "totalSeconds": 710.31,
+  "generatedAt": "2026-09-30T04:05:02.750Z",
+  "totalSeconds": 723.5,
   "segments": [
     {
       "id": "station-ident",
@@ -28,7 +28,7 @@
       "title": "Case notes on mental wealth",
       "file": "/audio/blue-radio/podcast-mental-wealth.mp3",
       "playbackGain": 0.56,
-      "seconds": 200.32
+      "seconds": 213.51
     },
     {
       "id": "station-break-blue",

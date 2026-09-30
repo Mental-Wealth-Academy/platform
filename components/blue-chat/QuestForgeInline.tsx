@@ -87,7 +87,7 @@ const QuestForgeInline: React.FC<QuestForgeInlineProps> = ({
       return;
     }
     if (rewardKind === 'credits' && (rewardAmount < FORGE_LIMITS.creditsMin || rewardAmount > FORGE_LIMITS.creditsMax)) {
-      setError(`Credit reward must be between ${FORGE_LIMITS.creditsMin} and ${FORGE_LIMITS.creditsMax}.`);
+      setError(`Diamond reward must be between ${FORGE_LIMITS.creditsMin} and ${FORGE_LIMITS.creditsMax}.`);
       return;
     }
     if (rewardKind === 'usdc' && (rewardAmount < FORGE_LIMITS.usdcMin || rewardAmount > FORGE_LIMITS.usdcMax)) {

@@ -12,7 +12,7 @@ Gamified mental-wealth education app on Base. Solo builder (James); prototype-to
 ## Token direction (2026-07)
 - Diamonds ($BLUE) v1 live on Base at 0x4A25Cea1f05C6725dC90849FBaafF00d67342B3f; DiamondsV2 + ReflectionVault are built in `contracts/src/` but not deployed — V2 supersedes v1 on deploy
 - Spending is a real burn to 0xdEaD, server-verified via the `diamond_burns` ledger
-- UI always says "credits" for the in-app currency; "shard" survives only in code internals. "onchain" is one word in copy
+- UI always says "diamonds" for the in-app currency; "shard" survives only in code internals. "onchain" is one word in copy
 
 ## Dormant — do not build on these without asking
 - DAO governance (BlueKillStreak) and the proposal/voting flows

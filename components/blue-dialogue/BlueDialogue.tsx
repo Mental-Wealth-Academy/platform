@@ -461,7 +461,7 @@ const BlueDialogue: React.FC<BlueDialogueProps> = ({
                     height={16}
                     className={styles.rewardIcon}
                   />
-                  <span>+{displayReward} credits</span>
+                  <span>+{displayReward} diamonds</span>
                 </div>
               )}
               <p className={styles.speechText} aria-live="polite">

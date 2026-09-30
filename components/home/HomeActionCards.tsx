@@ -100,13 +100,13 @@ export default function HomeActionCards({
           <div className={styles.cardBody}>
             <h3 className={styles.cardTitle}>Blue&apos;s Quest</h3>
             <p className={styles.cardDesc}>
-              Guided shadow work and core curriculum with Blue. Complete lessons, daily reflections, and earn credits.
+              Guided shadow work and core curriculum with Blue. Complete lessons, daily reflections, and earn diamonds.
             </p>
 
             <div className={styles.metaRow}>
               <span>12 sessions</span>
               <span className={styles.metaDot} aria-hidden="true" />
-              <span>Credit rewards</span>
+              <span>Diamond rewards</span>
             </div>
 
             <div className={styles.cardFooter}>

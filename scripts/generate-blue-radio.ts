@@ -119,7 +119,7 @@ const SEGMENTS: Segment[] = [
       turns: [
         {
           speaker: 'marcus',
-          text: "Welcome back to Blue Radio. Today we are digging into what mental wealth actually looks like in practice. Blue, you sit in the center of the terminal every day reading member submissions, checking streaks, and sending credits. What are people getting wrong when they first show up here?",
+          text: "Welcome back to Blue Radio. Today we are digging into what mental wealth actually looks like in practice. Blue, you sit in the center of the terminal every day reading member submissions, checking streaks, and sending diamonds. What are people getting wrong when they first show up here?",
         },
         {
           speaker: 'blue',
@@ -155,7 +155,7 @@ const SEGMENTS: Segment[] = [
         },
         {
           speaker: 'blue',
-          text: "Yes! They had emotional liquidity! That is what mental wealth means in my files. You carry enough internal reserves that an unexpected bump does not wipe out your entire peace of mind. You have room inside to hold the sting without dropping the cup. I paid out fifty credits to that submission so fast my processor got warm!",
+          text: "Yes! They had emotional liquidity! That is what mental wealth means in my files. You carry enough internal reserves that an unexpected bump does not wipe out your entire peace of mind. You have room inside to hold the sting without dropping the cup. I paid out fifty diamonds to that submission so fast my processor got warm!",
         },
         {
           speaker: 'marcus',
@@ -176,7 +176,7 @@ const SEGMENTS: Segment[] = [
     id: 'balloon-garden',
     title: 'The Balloon Garden',
     disabled: true,
-    text: "If you ever wonder what I do between broadcasts, I hang out in the Ethereal Gardens! It is right outside my studio. Sometimes balloons drift up from the digital soil, carrying little pockets of static. If you see one, go ahead and pop it! Every pop sends a tiny sparkle through the network, and after five pops, I send you credits straight from my pocket. Why do I love popping balloons so much? Science has not answered that yet. But my antennae tingle every time one goes pop! Come visit the garden, we can pop them together!",
+    text: "If you ever wonder what I do between broadcasts, I hang out in the Ethereal Gardens! It is right outside my studio. Sometimes balloons drift up from the digital soil, carrying little pockets of static. If you see one, go ahead and pop it! Every pop sends a tiny sparkle through the network, and after five pops, I send you diamonds straight from my pocket. Why do I love popping balloons so much? Science has not answered that yet. But my antennae tingle every time one goes pop! Come visit the garden, we can pop them together!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
@@ -187,9 +187,9 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'quests-and-credits',
-    title: 'Quests and credits',
+    title: 'Quests and diamonds',
     disabled: true,
-    text: "Quests! Short tasks, real rewards. You do the work, you submit it, and I read it twice. Sometimes I forget I already read it and read it a third time. I call that being thorough. If the work is good, I approve it, and credits fly at you straight from my stash. And I want to be honest with you, because I am always honest with you. It is really my stash. I feel every payout. That is why empty work does not pass. When I say your submission landed, I mean it landed. I like you too much to pretend.",
+    text: "Quests! Short tasks, real rewards. You do the work, you submit it, and I read it twice. Sometimes I forget I already read it and read it a third time. I call that being thorough. If the work is good, I approve it, and diamonds fly at you straight from my stash. And I want to be honest with you, because I am always honest with you. It is really my stash. I feel every payout. That is why empty work does not pass. When I say your submission landed, I mean it landed. I like you too much to pretend.",
   },
   {
     id: 'the-library',
@@ -332,7 +332,7 @@ That is the Ethereal Horizon. The amalgamation and manifestation of our dreams, 
         { speaker: 'dino', text: "Check the work. Like when you make me recount the balloons because you lost the number again." },
         { speaker: 'blue', text: "Rude, but accurate. That is exactly it, though. Truth gets stronger when many eyes can follow the whole trail, from the raw data all the way to the claim." },
         { speaker: 'dino', text: "And who pays for all this checking? Science is not cheap. I tried to fund a nap study once and went broke by lunch." },
-        { speaker: 'blue', text: "Good question, and this is the part I love. In the old world, a few big funders chose which questions were even allowed to be asked. Onchain, a whole community can pool credits and vote to fund the work they actually want to see." },
+        { speaker: 'blue', text: "Good question, and this is the part I love. In the old world, a few big funders chose which questions were even allowed to be asked. Onchain, a whole community can pool diamonds and vote to fund the work they actually want to see." },
         { speaker: 'dino', text: "So the garden buys its own seeds. Democratically. With sauce money. I am emotional about this." },
         { speaker: 'blue', text: "With sauce money. And because every step is out in the open, a lab across the world can repeat your experiment and confirm it. That repeating, that boring beautiful repeating, is what turns a guess into knowledge." },
         { speaker: 'dino', text: "Boring beautiful repeating. That is going on a t-shirt. Right under a picture of dino sauce." },
@@ -355,8 +355,8 @@ That is the Ethereal Horizon. The amalgamation and manifestation of our dreams, 
         { speaker: 'blue', text: "All of us, a little bit each. That is the most hopeful sentence I know. And when you write a guide that holds up, you have not only learned the idea. You have handed the next person a shorter path to it." },
         { speaker: 'dino', text: "A shorter path. So future reptiles get to skip the weed I ate. My suffering had meaning." },
         { speaker: 'blue', text: "Your suffering had meaning, Dino. That is basically the whole mission on a napkin." },
-        { speaker: 'dino', text: "And that someone gets... credits?" },
-        { speaker: 'blue', text: "Sometimes credits. Always something better. They get to be the one who extended the map. In the old world, only the walls could hand you that. In the Pocket World, you can earn it in comfortable clothes with a snack." },
+        { speaker: 'dino', text: "And that someone gets... diamonds?" },
+        { speaker: 'blue', text: "Sometimes diamonds. Always something better. They get to be the one who extended the map. In the old world, only the walls could hand you that. In the Pocket World, you can earn it in comfortable clothes with a snack." },
         { speaker: 'dino', text: "You are speaking my language now. Snacks and glory." },
         { speaker: 'blue', text: "That is the shift, Dino. Learning stops being a building you buy your way into and grows into a garden you help tend. Decentralized science keeps the garden honest. Knowledge graphs give it paths. And the whole thing lives in your pocket." },
         { speaker: 'dino', text: "So the expensive walls fall, and the garden gets a map and some honest gardeners. Huh. That is kind of beautiful. Did I just learn something? On the radio?" },
@@ -760,7 +760,7 @@ async function generateDialogue({
       const turnPath = path.join(tempDir, `turn-${String(i).padStart(2, '0')}.mp3`);
       const voiceId =
         turn.speaker === 'marcus'
-          ? (voiceIds.marcus || 'iP95p4xoKVk53GoZ742B')
+          ? (voiceIds.marcus || '6IwYbsNENZgAB1dtBZDp')
           : turn.speaker === 'dino'
             ? (voiceIds.dino || 'loY1uopAz31XyhAEhNSa')
             : voiceIds.blue;
@@ -768,9 +768,9 @@ async function generateDialogue({
       const voiceSettings =
         turn.speaker === 'marcus'
           ? {
-              stability: 0.58,
-              similarity_boost: 0.8,
-              style: 0.2,
+              stability: 0.48,
+              similarity_boost: 0.82,
+              style: 0.35,
               speed: 1.02,
               use_speaker_boost: true,
             }
@@ -869,7 +869,7 @@ async function main() {
   if (!voiceId) throw new Error('Missing ELEVENLABS_VOICE_ID.');
 
   const dinoVoiceId = await loadDinoVoiceId();
-  const marcusVoiceId = process.env.ELEVENLABS_MARCUS_VOICE_ID || 'iP95p4xoKVk53GoZ742B';
+  const marcusVoiceId = process.env.ELEVENLABS_MARCUS_VOICE_ID || '6IwYbsNENZgAB1dtBZDp';
   if (forcedSegmentId && !SEGMENTS.some((segment) => segment.id === forcedSegmentId)) {
     throw new Error(`Unknown --force-segment id: ${forcedSegmentId}`);
   }

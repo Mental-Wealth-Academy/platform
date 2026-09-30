@@ -1254,7 +1254,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
           // The server already released the receipt, so a retry costs nothing.
           // Say what actually happened rather than blaming the connection.
           setIsTyping(false);
-          addBlueMessage("I can't reach my own provider right now. Your credits are still attached to this message, so retrying will not charge you again.");
+          addBlueMessage("I can't reach my own provider right now. Your diamonds are still attached to this message, so retrying will not charge you again.");
           return 'retryable';
         }
         if (data.error === 'tx_already_used') {
@@ -1368,7 +1368,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
 
         if (!isConnected || !connector) {
           setIsTyping(false);
-          addBlueMessage(`Each message costs ${SHARD_COST} credits. Connect your wallet and try again.`);
+          addBlueMessage(`Each message costs ${SHARD_COST} diamonds. Connect your wallet and try again.`);
           return;
         }
         if (shardCount !== null && shardCount < SHARD_COST) {
@@ -1386,7 +1386,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
           const code = (err as { code?: string | number })?.code;
           const errMessage = (err as { message?: string })?.message ?? '';
           if (code === 'ACTION_REJECTED' || code === 4001) {
-            addBlueMessage(`The wallet request was cancelled. Confirm the ${SHARD_COST}-credit cost when you want to send it.`);
+            addBlueMessage(`The wallet request was cancelled. Confirm the ${SHARD_COST}-diamond cost when you want to send it.`);
           } else if (code === 'INSUFFICIENT_FUNDS' || /insufficient funds/i.test(errMessage)) {
             addBlueMessage(`the network fee needs a small amount of ${getChainConfig().chainName} ETH. add some and try again.`);
           } else {
@@ -1430,8 +1430,8 @@ const BlueChat: React.FC<BlueChatProps> = ({
       if (stillPending) setPendingRecovery(stillPending);
       addBlueMessage(
         stillPending
-          ? `${named ? `Blue could not finish that turn (${code}).` : 'My connection dropped.'} Your credits stay attached to this message, so retrying costs nothing extra.`
-          : `${named ? `Blue could not start that turn (${code}).` : 'My connection dropped before any credits were spent.'} Try again in a moment.`,
+          ? `${named ? `Blue could not finish that turn (${code}).` : 'My connection dropped.'} Your diamonds stay attached to this message, so retrying costs nothing extra.`
+          : `${named ? `Blue could not start that turn (${code}).` : 'My connection dropped before any diamonds were spent.'} Try again in a moment.`,
       );
     }
   };
@@ -1511,7 +1511,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
     if (viewerProfile?.id) clearPendingPaidTurn(viewerProfile.id);
     setPendingRecovery(null);
     play('click');
-    addBlueMessage('Cleared. That reply is gone, and those credits stay spent. Ask me anything.');
+    addBlueMessage('Cleared. That reply is gone, and those diamonds stay spent. Ask me anything.');
   };
 
   const submitUserMessage = (
@@ -1741,7 +1741,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
         return;
       }
       if (res.status === 402) {
-        addBlueMessage(data.error || "You don't have enough credits to fund that one.");
+        addBlueMessage(data.error || "You don't have enough diamonds to fund that one.");
         return;
       }
       if (!res.ok) {
@@ -1750,10 +1750,10 @@ const BlueChat: React.FC<BlueChatProps> = ({
       }
 
       // Fund the escrow onchain from the creator's own wallet — $BLUE for
-      // credit quests, USDC for USDC quests. No server-side balance involved.
+      // diamond quests, USDC for USDC quests. No server-side balance involved.
       const isCredits = req.rewardKind === 'credits';
       const escrowLabel = isCredits
-        ? `${data.funding?.amountDisplay ?? req.rewardAmount} credits`
+        ? `${data.funding?.amountDisplay ?? req.rewardAmount} diamonds`
         : `$${data.funding?.amountDisplay ?? req.rewardAmount} USDC`;
       const funding = data.funding;
       const questId = data.quest?.id;
@@ -1776,7 +1776,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
       } catch (err) {
         const code = (err as { code?: string | number })?.code;
         if (code === 'ACTION_REJECTED' || code === 4001) {
-          addBlueMessage(`No worries. "${req.title}" is saved but stays hidden until it's funded. Forge it again when you're ready to send the ${isCredits ? 'credits' : 'USDC'}.`);
+          addBlueMessage(`No worries. "${req.title}" is saved but stays hidden until it's funded. Forge it again when you're ready to send the ${isCredits ? 'diamonds' : 'USDC'}.`);
         } else {
           addBlueMessage("that transfer didn't go through. the quest's saved but unfunded, so try forging it again!");
         }
@@ -1801,7 +1801,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
       fetchShardCount();
       window.dispatchEvent(new Event('shardsUpdated'));
       addBlueMessage(isCredits
-        ? `Funded and live. "${req.title}" pays ${req.rewardAmount} credits each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. The escrow sits in my wallet and I pay every completion onchain.`
+        ? `Funded and live. "${req.title}" pays ${req.rewardAmount} diamonds each${req.targetCount > 1 ? `, up to ${req.targetCount} people` : ''}. The escrow sits in my wallet and I pay every completion onchain.`
         : `funded and live! "${req.title}" pays $${req.rewardAmount} USDC each. you approve every completion before i release the money.`);
     } catch {
       addBlueMessage('something went wrong forging that quest. try again.');
@@ -1826,7 +1826,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
     const lines = [
       `source: ${debug.source}`,
       `mode: ${debug.mode}`,
-      `credits spent: ${debug.diamondsDeducted}`,
+      `diamonds spent: ${debug.diamondsDeducted}`,
     ];
 
     if (typeof debug.shardBalance === 'number') {
@@ -1860,9 +1860,9 @@ const BlueChat: React.FC<BlueChatProps> = ({
     return lines;
   };
 
-  const shardUpsellTitle = 'You are out of credits';
+  const shardUpsellTitle = 'You are out of diamonds';
   const shardUpsellBody = shardUpsell
-    ? `You need ${shardUpsell.required.toLocaleString()} credits to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
+    ? `You need ${shardUpsell.required.toLocaleString()} diamonds to continue. You currently have ${shardUpsell.current.toLocaleString()}. Purchase more to keep the conversation going.`
     : '';
 
   const chatContent = (
@@ -2053,7 +2053,7 @@ const BlueChat: React.FC<BlueChatProps> = ({
             <span className={styles.shardUpsellTitle}>Clear what Blue remembers</span>
             <span className={styles.shardUpsellBody}>
               This erases your stored conversations, the facts Blue has kept about
-              you, and her sense of your history together. Your credits and their
+              you, and her sense of your history together. Your diamonds and their
               onchain records are untouched. This cannot be undone.
             </span>
             {memoryResetNote && (

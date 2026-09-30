@@ -115,31 +115,29 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    height: 100%;
+    flex: 1 1 0%;
     min-height: 0;
-    max-height: 100%;
     gap: 0;
     padding: 0;
     margin: 0;
-    overflow: hidden;
-    flex: 1;
+    overflow: visible;
   }
 
   .blueSceneWrap {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
     width: 100%;
-    height: 100%;
     min-height: 0;
-    max-height: 100%;
     box-sizing: border-box;
   }
 
   .blueSceneWrapFull {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
     width: 100%;
-    height: 100%;
     min-height: 0;
-    max-height: 100%;
     box-sizing: border-box;
   }
 

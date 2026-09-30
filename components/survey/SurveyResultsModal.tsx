@@ -230,7 +230,7 @@ export default function SurveyResultsModal({
 
           <div className={styles.milestoneBadge}>
             <Image src="/icons/ui-diamond.svg" alt="" width={14} height={14} />
-            <span>+100 credits awarded · Saved to Academy profile</span>
+            <span>+100 diamonds awarded · Saved to Academy profile</span>
           </div>
         </div>
 

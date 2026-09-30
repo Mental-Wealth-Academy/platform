@@ -51,7 +51,7 @@ const FIRST_COURSES_DIALOGUE: CourseDialogue = {
   lines: [
     'I keep the Academy learning records. This page is where courses and field notes meet.',
     'Continue a course or record an observation. I remember what you finish.',
-    'Completing lessons earns credits. Your progress stays with you.',
+    'Completing lessons earns diamonds. Your progress stays with you.',
   ],
 };
 
@@ -129,7 +129,7 @@ const ASK_BLUE_DIALOGUES: CourseDialogue[] = [
     emotion: 'happy',
     lines: [
       'Hey! What would you like to investigate today?',
-      'Ask me anything about your courses, guides, field notes, or credits.',
+      'Ask me anything about your courses, guides, field notes, or diamonds.',
     ],
   },
   {
@@ -794,7 +794,7 @@ export default function HomePage() {
             <span>{guideProgress?.completedGuides ?? 0} guides complete</span>
             <span className={styles.learnOverviewCredits}>
               <Image src="/icons/ui-diamond.svg" alt="" width={16} height={16} />
-              {guideProgress?.totalDiamondsEarned ?? 0} credits
+              {guideProgress?.totalDiamondsEarned ?? 0} diamonds
             </span>
             <CtaButton href="#learn-reviews" variant="secondary" size="sm" className={styles.learnReviewsButton}>
               See reviews

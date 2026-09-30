@@ -225,7 +225,7 @@ export default function HomeTopCard({}: HomeTopCardProps) {
           <div className={styles.statsRow}>
             <div className={styles.statItem}>
               <Image src="/icons/ui-diamond.svg" alt="" width={13} height={13} />
-              <span>{formatCredits(creditsEarned)} credits</span>
+              <span>{formatCredits(creditsEarned)} diamonds</span>
             </div>
             <div className={styles.statItem}>
               <span>{guidesDone ?? 0} guides completed</span>
