@@ -20,6 +20,7 @@ interface CourseFolderCardProps {
   ctaLabel?: string;
   ctaDark?: boolean;
   dark?: boolean;
+  color?: 'blue' | 'violet' | 'teal' | 'coral';
   /** Dotted line-art filling the folder body. */
   motif?: FolderMotif;
 }
@@ -33,6 +34,7 @@ export default function CourseFolderCard({
   ctaLabel = 'Start Course',
   ctaDark = false,
   dark,
+  color = 'blue',
   motif = 'orbit',
 }: CourseFolderCardProps) {
   const { play } = useSound();
@@ -82,7 +84,16 @@ export default function CourseFolderCard({
     </>
   );
 
-  const cls = `${styles.folder} ${dark ? styles.folderDark : ''}`;
+  const colorCls =
+    color === 'violet'
+      ? styles.folderViolet
+      : color === 'teal'
+      ? styles.folderTeal
+      : color === 'coral'
+      ? styles.folderCoral
+      : styles.folderBlue;
+
+  const cls = `${styles.folder} ${colorCls} ${dark ? styles.folderDark : ''}`;
 
   if (href) {
     return (

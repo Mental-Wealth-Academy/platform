@@ -38,6 +38,56 @@
   --folder-ink: rgba(246, 248, 237, 0.42);
 }
 
+.folderBlue {
+  --folder-blue: #5168ff;
+  --folder-stroke: #3d2ba8;
+}
+
+.folderViolet {
+  --folder-blue: #7c3aed;
+  --folder-stroke: #5b21b6;
+  --folder-ink: rgba(246, 248, 237, 0.55);
+}
+
+.folderViolet .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(124, 58, 237, 0) 0%,
+    rgba(139, 92, 246, 0.55) 55%,
+    rgba(167, 139, 250, 0.92) 100%
+  );
+}
+
+.folderTeal {
+  --folder-blue: #0d9488;
+  --folder-stroke: #0f766e;
+  --folder-ink: rgba(246, 248, 237, 0.55);
+}
+
+.folderTeal .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 148, 136, 0) 0%,
+    rgba(20, 184, 166, 0.55) 55%,
+    rgba(45, 212, 191, 0.92) 100%
+  );
+}
+
+.folderCoral {
+  --folder-blue: #e11d48;
+  --folder-stroke: #9f1239;
+  --folder-ink: rgba(246, 248, 237, 0.55);
+}
+
+.folderCoral .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(225, 29, 72, 0) 0%,
+    rgba(244, 63, 94, 0.55) 55%,
+    rgba(251, 113, 133, 0.92) 100%
+  );
+}
+
 /* Field Notes uses the dark folder variant, so its fade stays neutral too. */
 .folderDark .bottomFade {
   background: linear-gradient(
@@ -312,6 +362,51 @@
     rgba(45, 59, 148, 0) 0%,
     rgba(45, 59, 148, 0.6) 55%,
     rgba(45, 59, 148, 0.95) 100%
+  );
+}
+
+:global([data-theme="dark"]) .folderViolet {
+  --folder-blue: #6d28d9;
+  --folder-stroke: #4c1d95;
+  --folder-ink: #ffffff;
+}
+
+:global([data-theme="dark"]) .folderViolet .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(109, 40, 217, 0) 0%,
+    rgba(109, 40, 217, 0.6) 55%,
+    rgba(109, 40, 217, 0.95) 100%
+  );
+}
+
+:global([data-theme="dark"]) .folderTeal {
+  --folder-blue: #0f766e;
+  --folder-stroke: #115e59;
+  --folder-ink: #ffffff;
+}
+
+:global([data-theme="dark"]) .folderTeal .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 118, 110, 0) 0%,
+    rgba(15, 118, 110, 0.6) 55%,
+    rgba(15, 118, 110, 0.95) 100%
+  );
+}
+
+:global([data-theme="dark"]) .folderCoral {
+  --folder-blue: #be123c;
+  --folder-stroke: #881337;
+  --folder-ink: #ffffff;
+}
+
+:global([data-theme="dark"]) .folderCoral .bottomFade {
+  background: linear-gradient(
+    to bottom,
+    rgba(190, 18, 60, 0) 0%,
+    rgba(190, 18, 60, 0.6) 55%,
+    rgba(190, 18, 60, 0.95) 100%
   );
 }
 

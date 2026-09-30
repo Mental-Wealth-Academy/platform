@@ -323,6 +323,21 @@ export default function GuidePage({ params }: PageProps) {
                 {typeof data.level === 'number' && (
                   <span className={styles.levelChip}>Depth {data.level}</span>
                 )}
+                <CtaButton
+                  variant="primary"
+                  size="sm"
+                  className={styles.walkthroughCta}
+                  onMouseEnter={() => play('soft-hover')}
+                  onClick={() => {
+                    play('click');
+                    setShowWalkthrough(true);
+                  }}
+                >
+                  Ask Blue
+                  <span className={styles.walkthroughOrb} aria-hidden="true">
+                    <ThinkingOrb state="solving" size={20} theme="dark" />
+                  </span>
+                </CtaButton>
               </div>
 
               <GuideMaterials materials={materials} />
@@ -372,21 +387,6 @@ export default function GuidePage({ params }: PageProps) {
                 ) : (
                   <p className={styles.prereqNone}>None. This topic stands on its own.</p>
                 )}
-                <CtaButton
-                  variant="primary"
-                  size="sm"
-                  className={styles.walkthroughCta}
-                  onMouseEnter={() => play('soft-hover')}
-                  onClick={() => {
-                    play('click');
-                    setShowWalkthrough(true);
-                  }}
-                >
-                  Walkthrough
-                  <span className={styles.walkthroughOrb} aria-hidden="true">
-                    <ThinkingOrb state="solving" size={20} theme="dark" />
-                  </span>
-                </CtaButton>
               </div>
             </section>
 

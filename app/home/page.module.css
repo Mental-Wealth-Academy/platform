@@ -690,7 +690,7 @@
 
 @media (max-width: 768px) {
   .pageColumns {
-    padding: 12px 10px calc(70px + max(env(safe-area-inset-bottom, 0px), 12px));
+    padding: 12px 10px 14px;
   }
 
   .folderRow {
@@ -1192,6 +1192,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 12px;
   background: var(--color-surface-base, #ffffff);
   border: 2px solid var(--color-primary-hover);
@@ -1276,11 +1278,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  justify-content: center;
+  gap: 10px;
+  margin: auto 0;
   text-decoration: none;
   text-align: center;
   width: 100%;
+  flex: 1 1 auto;
 }
 
 .recommendBadgeRow {
@@ -2586,10 +2590,6 @@
 
 /* ── Mobile: Knowledge Base ── */
 @media (max-width: 768px) {
-  .pageColumns {
-    padding: 12px 10px calc(74px + max(env(safe-area-inset-bottom, 0px), 20px) + 8px);
-  }
-
   .learnLayout .globalPanel,
   .learnFiltersPanel {
     grid-column: 1 / -1;

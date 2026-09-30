@@ -879,7 +879,7 @@ export default function HomePage() {
                     avatarSrc="/archetypes/sage.png"
                     centerLabel="Creativity"
                     ctaLabel="Continue Course"
-                    dark
+                    color="violet"
                     motif="orbit"
                   />
                   <CourseFolderCard
@@ -888,7 +888,7 @@ export default function HomePage() {
                     centerLabel="Wellness Meditation"
                     ctaLabel="Start Meditation"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
-                    ctaDark
+                    color="blue"
                     motif="waveform"
                   />
                   <CourseFolderCard
@@ -897,6 +897,7 @@ export default function HomePage() {
                     avatarSrc="/archetypes/anchor.png"
                     centerLabel="Somatic Reset"
                     ctaLabel="Begin Practice"
+                    color="teal"
                     motif="lattice"
                   />
                 </section>
@@ -912,7 +913,7 @@ export default function HomePage() {
                     ctaLabel="Play Meditation"
                     avatarSrc="/meditation/wellness-track.jpg"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
-                    dark
+                    color="violet"
                     motif="waveform"
                   />
                   <CourseFolderCard
@@ -921,7 +922,7 @@ export default function HomePage() {
                     ctaLabel="Play Soundscape"
                     avatarSrc="/archetypes/blue_daemon.png"
                     onOpen={() => handleOpenMeditation('meditation-ocean-432hz')}
-                    ctaDark
+                    color="blue"
                     motif="beam"
                   />
                   <CourseFolderCard
@@ -930,6 +931,7 @@ export default function HomePage() {
                     ctaLabel="Start Meditation"
                     avatarSrc="/meditation/serene-mind.jpg"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
+                    color="teal"
                     motif="spiral"
                   />
                 </section>
@@ -945,7 +947,7 @@ export default function HomePage() {
                     ctaLabel="Start Flow"
                     avatarSrc="/images/yoga/blue-morning-flow.png"
                     href="/learn/guides/morning-flow"
-                    dark
+                    color="violet"
                     motif="lattice"
                   />
                   <CourseFolderCard
@@ -954,7 +956,7 @@ export default function HomePage() {
                     ctaLabel="Begin Practice"
                     avatarSrc="/images/yoga/blue-somatic-release.png"
                     href="/learn/guides/somatic-release"
-                    ctaDark
+                    color="blue"
                     motif="bloom"
                   />
                   <CourseFolderCard
@@ -963,6 +965,7 @@ export default function HomePage() {
                     ctaLabel="View Guide"
                     avatarSrc="/images/yoga/blue-breath-posture.png"
                     href="/learn/guides/breath-and-posture"
+                    color="teal"
                     motif="bars"
                   />
                 </section>
