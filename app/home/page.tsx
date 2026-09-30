@@ -399,23 +399,23 @@ export default function HomePage() {
   }, []);
   const [introOpen, setIntroOpen] = useState(false);
   const [askBlueOpen, setAskBlueOpen] = useState(false);
-  const [moodDismissed, setMoodDismissed] = useState(false);
+  const [moodDismissed, setMoodDismissed] = useState(true);
 
   useEffect(() => {
-    const dismissed = getStorageItem('mwa_profile_mood_dismissed', 'session');
-    if (dismissed === '1') {
-      setMoodDismissed(true);
+    const open = getStorageItem('mwa_profile_mood_open', 'session');
+    if (open === '1') {
+      setMoodDismissed(false);
     }
   }, []);
 
   const handleDismissMood = useCallback(() => {
     setMoodDismissed(true);
-    setStorageItem('mwa_profile_mood_dismissed', '1', 'session');
+    removeStorageItem('mwa_profile_mood_open', 'session');
   }, []);
 
   const handleRestoreMood = useCallback(() => {
     setMoodDismissed(false);
-    removeStorageItem('mwa_profile_mood_dismissed', 'session');
+    setStorageItem('mwa_profile_mood_open', '1', 'session');
   }, []);
 
   const [connectNodeKey, setConnectNodeKey] = useState('root');
@@ -912,9 +912,6 @@ export default function HomePage() {
         <div className={styles.dailyNotes}>
           <DailyNotes enablePersistence={authenticated && ready} compact compactLabel="Field Notes" />
         </div>
-        <div className={styles.mobileAskBlueWrap}>
-          {renderAskBlueBtn()}
-        </div>
       </section>
       )}
       {!learnOnly && (
@@ -1273,6 +1270,11 @@ export default function HomePage() {
             )}
           </div>
         </section>
+      )}
+      {!learnOnly && (
+        <div className={styles.mobileAskBlueWrap}>
+          {renderAskBlueBtn()}
+        </div>
       )}
       </div>
       {learnOnly && (

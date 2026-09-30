@@ -756,9 +756,7 @@
   }
 
   .dashboardInsights {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 0;
+    display: none !important;
   }
 
   .insightsSlideHeader {
@@ -828,6 +826,8 @@
   .mobileAskBlueWrap {
     display: block;
     width: 100%;
+    margin-top: 4px;
+    margin-bottom: 8px;
   }
 
   .mobileAskBlueWrap .askBlueBtn {
@@ -2642,12 +2642,6 @@
 
   .desc {
     font-size: 15px;
-  }
-
-  .dashboardInsights {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 0;
   }
 
   .insightCard {
