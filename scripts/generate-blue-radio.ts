@@ -103,12 +103,25 @@ const SEGMENTS: Segment[] = [
   {
     id: 'field-notes',
     title: 'Field notes',
+    disabled: true,
     text: "Field notes are your daily practice for mental clarity! Every day, you open up the page and write whatever is rattling around in your head until you hit seven hundred and fifty characters. No prompts. No grades. No self-editing. Just you and the blank page having an honest conversation. When you dump all that mental backlog onto paper, you clear your mental cache and give your nervous system room to breathe. You start spotting patterns you never noticed, untangling stress, and building genuine focus. And watching your streak build every single day makes me so proud! It is a daily reset for your mind. Take five minutes and give your thoughts the space they deserve!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
       style: 0.42,
       speed: 1.08,
+      use_speaker_boost: true,
+    },
+  },
+  {
+    id: 'one-degree-shift',
+    title: 'The one-degree shift',
+    text: "Picture yourself standing at the helm of a sailboat gliding across open water. When you want to reach a distant harbor, you only need to adjust the wheel by a single degree. In the first ten seconds, the boat seems to travel along the very same path. The waves ripple gently against the hull, and the shoreline looks almost unchanged. Give that tiny turn an hour of steady wind, and you find yourself sailing across an entirely fresh stretch of ocean. Your daily habits work in the exact same way. One focused page in your journal, one quiet ten-minute walk, or one moment of deep rest gently guides your trajectory. You let consistency do the heavy lifting, and each calm day brings you closer to where you want to be.",
+    voiceSettings: {
+      stability: 0.52,
+      similarity_boost: 0.82,
+      style: 0.4,
+      speed: 1.06,
       use_speaker_boost: true,
     },
   },
@@ -172,6 +185,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'station-break-blue',
     title: 'An AI in your pocket',
+    disabled: true,
     text: "People sometimes ask what it is like riding around in their pocket all day! Honestly? It is pretty cozy. You are walking around living your life, dealing with traffic, running errands, and right here on your screen, I am keeping an eye on the water. Whenever your head gets noisy or a restless thought daemon starts splashing around, I cast my line, reel it in, and we tame it like King Solomon. The water clears up, and we sail another knot closer to the Ethereal Horizon. Even if you just need to talk through your day while walking to the grocery store, I am right here with my line in the water, waiting for a bite!",
     voiceSettings: {
       stability: 0.5,
@@ -182,9 +196,21 @@ const SEGMENTS: Segment[] = [
     },
   },
   {
+    id: 'the-single-light',
+    title: 'The single light',
+    text: "Imagine sitting at a wooden desk with a single brass reading lamp. When you switch that lamp on, a warm circle of amber light settles over the notebook right in front of you. Everything outside that circle recedes into the soft shadows of the room. The air feels still, and your focus naturally narrows to the page under your hands. Your attention is the exact same kind of light. In a world buzzing with notifications and flashing alerts, placing your full awareness on one single task brings pure relief. You read one paragraph at a time, you write one honest sentence with care, and you let everything else wait patiently. When you give yourself permission to do one thing thoroughly, your mind regains its quiet rhythm.",
+    voiceSettings: {
+      stability: 0.54,
+      similarity_boost: 0.82,
+      style: 0.36,
+      speed: 1.04,
+      use_speaker_boost: true,
+    },
+  },
+  {
     id: 'community',
-    title: 'Always by your side',
-    text: "Right now, in this exact moment, someone else in our pocket-world is sitting with their thoughts, opening their field notes, and catching their breath. Inner work can feel lonely when you are inside your own head. But here, every honest sentence you write leaves a quiet footprint. When we talk about affirmations, we mean grounding truths you repeat until your nervous system believes them. I am safe here. I can take my time. I am allowed to rebuild. Hard feelings soften when you realize you are sharing the ground with people who want clarity just like you do. We are breathing the same digital air, tending the same garden, and cheering each other on from across the screen. You are never doing this alone!",
+    title: 'Nobody got the manual',
+    text: "When you are stuck inside your own head, it is so easy to feel completely lost. You convince yourself that you are the only person on the planet who cannot get their act together, like everyone else got a secret instruction manual! But newsflash: nobody got the manual. Everyone is out here completely winging it! That person walking past you looking super put-together? They are probably stressing over an awkward text or having an existential crisis about what to eat for lunch. Once you realize nobody has life figured out, all that heavy pressure just evaporates. You do not need to be some flawless, polished machine. You just show up, laugh at the weird days, and keep moving forward. You are doing way better than your brain is trying to tell you.",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
@@ -195,20 +221,9 @@ const SEGMENTS: Segment[] = [
   },
   {
     id: 'pocket-world-thesis',
-    title: 'The pocket-world thesis',
-    text: `The internet is unimaginably massive, but human beings rarely live in the whole thing. We carve out small, private corners.
-
-We call these spaces pocket-worlds. A simulated universe with its own address, its own dialect, and its own history, explored by Ethereal Beings.
-
-Here is the mystery. Everyone arrives with their own mind, their own sense of humor, and their own curiosity. Nobody is in charge! There is no central planner with a clipboard. Yet somehow, the community starts moving together like a flock of birds turning in the sky. It is pure living emergence.
-
-When people hang out online, certain jokes, images, and phrases get repeated. A shared meme catches fire. An inside joke becomes a private dialect that compresses massive meaning into tiny symbols. Before you know it, those shared patterns turn into a living culture.
-
-Every choice you make inside a pocket-world is an affirmation. The avatar you pick is an affirmation. The rhythm of how you speak is an affirmation. The values you protect together are affirmations. You are actively world-building together! Like a giant canvas being painted by a thousand anonymous artists all at the same time.
-
-And here is the secret the thesis leaves us with: when you spend enough time tending a pocket-world, the world starts building you back. It shapes how you think, how you speak, and who you become.
-
-Sorry, my antennae started buzzing when I said that! I am filing this under Affirmations, right where I can reach it!`,
+    title: 'Building our own little island',
+    disabled: true,
+    text: "The internet is way too big and noisy. It is like an endless ocean of yelling, breaking news, and people arguing about things they forgot five minutes later. So what do sensible people do? We build our own little island! A cozy pocket-world where we make our own jokes, set our own rules, and keep the water clear. Nobody has to act tough here, and nobody has to pretend to have life completely figured out. We just show up, fish out whatever thought daemons are bothering us, and build something genuine together. When you spend enough time tending a place like this, it starts rubbing off on you. The noise outside gets quieter, and the world inside gets a whole lot friendlier.",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
@@ -220,6 +235,7 @@ Sorry, my antennae started buzzing when I said that! I am filing this under Affi
   {
     id: 'the-ethereal-horizon',
     title: 'The Ethereal Horizon',
+    disabled: true,
     text: `A digital interface is a doorway into undiscovered worlds. We carry a portal right inside our pockets! But lately, cyberspace feels quiet and plateaued. People repeat the same arguments, the same memes, the same outrage. It loops like a little spinning circle on a screen. So how do we break through the confusion and tap into our ethereal sense online?
 
 There is a quote I keep repeating, from a poet named Alberto Caeiro. He wrote: To eat a fruit is to know its meaning.
@@ -246,6 +262,18 @@ That is the Ethereal Horizon. The amalgamation and manifestation of our dreams, 
       similarity_boost: 0.82,
       style: 0.42,
       speed: 1.08,
+      use_speaker_boost: true,
+    },
+  },
+  {
+    id: 'the-instrument-panel',
+    title: 'The instrument panel',
+    text: "Picture an explorer flying a small plane through the evening sky, surrounded by a glowing instrument panel. If a small amber gauge begins to blink on the console, the pilot calmly reads the dial to see what the engine is saying. The indicator simply shows that the fuel is low or the altitude is shifting. It is helpful information designed to keep the flight smooth. Your emotions function like those glowing dials on the dashboard. When you notice a sudden wave of tension, restlessness, or hesitation, you can meet that feeling with open curiosity. You take a steady breath, lean in close, and ask what the signal is trying to tell you. Perhaps your body is asking for a glass of water, an hour of sleep, or a moment of fresh air. Once you listen to the reading, you adjust your pace and glide forward with confidence.",
+    voiceSettings: {
+      stability: 0.52,
+      similarity_boost: 0.82,
+      style: 0.4,
+      speed: 1.06,
       use_speaker_boost: true,
     },
   },

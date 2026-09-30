@@ -94,7 +94,8 @@ export default function BlueRadio({
         artist: 'Blue Radio',
         album: 'Mental Wealth Academy',
         artwork: [
-          { src: '/blue/blue-avatar.png', sizes: '512x512', type: 'image/png' },
+          { src: '/images/blue-radio-cover.png', sizes: '1024x1024', type: 'image/png' },
+          { src: '/blue/blue-radio-cover.png', sizes: '512x512', type: 'image/png' },
         ],
       });
       navigator.mediaSession.setActionHandler('play', () => {

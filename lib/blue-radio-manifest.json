@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-30T04:42:46.657Z",
-  "totalSeconds": 704.07,
+  "generatedAt": "2026-09-30T05:04:40.520Z",
+  "totalSeconds": 478.23,
   "segments": [
     {
       "id": "station-ident",
@@ -17,11 +17,11 @@
       "seconds": 38.68
     },
     {
-      "id": "field-notes",
-      "title": "Field notes",
-      "file": "/audio/blue-radio/field-notes.mp3",
+      "id": "one-degree-shift",
+      "title": "The one-degree shift",
+      "file": "/audio/blue-radio/one-degree-shift.mp3",
       "playbackGain": 0.56,
-      "seconds": 42.96
+      "seconds": 46.39
     },
     {
       "id": "podcast-mental-wealth",
@@ -31,32 +31,25 @@
       "seconds": 194.08
     },
     {
-      "id": "station-break-blue",
-      "title": "An AI in your pocket",
-      "file": "/audio/blue-radio/station-break-blue.mp3",
+      "id": "the-single-light",
+      "title": "The single light",
+      "file": "/audio/blue-radio/the-single-light.mp3",
       "playbackGain": 0.56,
-      "seconds": 39.71
+      "seconds": 49.37
     },
     {
       "id": "community",
-      "title": "Always by your side",
+      "title": "Nobody got the manual",
       "file": "/audio/blue-radio/community.mp3",
       "playbackGain": 0.56,
       "seconds": 43.28
     },
     {
-      "id": "pocket-world-thesis",
-      "title": "The pocket-world thesis",
-      "file": "/audio/blue-radio/pocket-world-thesis.mp3",
+      "id": "the-instrument-panel",
+      "title": "The instrument panel",
+      "file": "/audio/blue-radio/the-instrument-panel.mp3",
       "playbackGain": 0.56,
-      "seconds": 95.57
-    },
-    {
-      "id": "the-ethereal-horizon",
-      "title": "The Ethereal Horizon",
-      "file": "/audio/blue-radio/the-ethereal-horizon.mp3",
-      "playbackGain": 0.56,
-      "seconds": 194.07
+      "seconds": 50.71
     },
     {
       "id": "signoff",
