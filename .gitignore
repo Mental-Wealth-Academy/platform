@@ -71,3 +71,5 @@ data/kalshi-snapshots.csv
 .tmp/
 _to_delete/
 *.pdf
+/public/audio/samples/
+

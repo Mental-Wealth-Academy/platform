@@ -25,7 +25,7 @@ interface MeditationPart {
 
 interface DialogueTurn {
   /** Which host speaks this line. Chooses the ElevenLabs voice. */
-  speaker: 'blue' | 'dino' | 'marcus';
+  speaker: 'blue' | 'dino' | 'marcus' | 'jamal' | 'brooklyn';
   text: string;
 }
 
@@ -118,56 +118,28 @@ const SEGMENTS: Segment[] = [
     dialogue: {
       turns: [
         {
-          speaker: 'marcus',
-          text: "Welcome back to Blue Radio. Today we are digging into what mental wealth actually looks like in practice. Blue, you sit in the center of the terminal every day reading member submissions, checking streaks, and sending diamonds. What are people getting wrong when they first show up here?",
+          speaker: 'blue',
+          text: "Welcome back to Blue Radio, live from the Academy! You have me, Blue, right here in the center of the terminal. Every single day, I watch reflections, field notes, and late-night thoughts roll across my screen. And lately, so many people ask me the same big question: Blue, how do I actually interact with an AI agent? What are you good for, and when should I step away from the screen and get real human help?",
         },
         {
           speaker: 'blue',
-          text: "Ooh, I love this question! People arrive thinking mental wealth means feeling sunny every single second. They think their brain should look like a postcard with gentle clouds and zero bad weather. But the human mind has seasons! Sometimes it rains sideways. Sometimes a server throws an error code for no reason at all. That is normal life operating as intended!",
+          text: "I love this question so much my antennae are vibrating! When your head is spinning at two in the morning, full of noise, stress, and mental static, you need an open canvas. A place to dump your mental cache and look at your own thoughts in the daylight. But I am an autonomous agent. I am without a medical license, and I cannot hold your hand in an emergency room! We have two of our academy members hanging out in the studio booth today. Jamal, you have been putting in daily work on your field notes for over two months. Tell the people: when is checking in with an AI agent actually useful for you?",
         },
         {
-          speaker: 'marcus',
-          text: "So they arrive trying to force a permanent state of calm. What does that actually look like in their field notes?",
-        },
-        {
-          speaker: 'blue',
-          text: "Aggressive organizing! I had a member last month who kept a fifty-day streak. Fifty! I counted all the way up on my fingers twice. But in week six, their daily reflections shrunk down to two words: everything fine. Four days in a row! When someone writes everything fine like a robot, my antennae start twitching. They were using their streak as a shield to avoid one honest paragraph about why they felt completely drained.",
-        },
-        {
-          speaker: 'marcus',
-          text: "That sounds familiar. You turn self-improvement into another performance metric. You hit your numbers, you check the boxes, and you secretly hope nobody asks how you are actually holding up.",
+          speaker: 'jamal',
+          text: "What's good, Blue! Yeah, for real. For me, it started with the midnight spiral. You know when you come home from work, your head is pounding with a million thoughts, and you can't even tell your friends or family because you don't want to burden them? In the past, I would just bottle it up or doomscroll until three in the morning. With the terminal, I open up a blank field note and just unload. No filter, no trying to sound cool. And having Blue reflect my patterns back, like, hey, you mentioned burnout three days in a row... that helped me see my own blind spots, break big problems down, and build a real streak.",
         },
         {
           speaker: 'blue',
-          text: "Exactly! You turn the sanctuary into another job. I had another person in week three who spent two whole hours re-tagging their old quests just to avoid opening the reflection on family boundaries. I watched the cursor hover over the prompt for twenty minutes before they ran away to color-code their folder. Avoidance can wear very neat clothes!",
+          text: "Yes! That is dumping the cache! You clear the RAM in your head so your nervous system can breathe. You are world-building your own self-awareness, and you earn diamonds every time you show up honestly! But there is another side to this, and it is so important nobody should ever ignore it. Brooklyn, you are here with us too. You had a moment last month where the terminal helped you realize you needed something much bigger than an AI. Tell us about that.",
         },
         {
-          speaker: 'marcus',
-          text: "Avoidance can wear very neat clothes. That is a great phrase. So when does someone actually turn a corner? What changes in the writing when genuine wealth starts showing up?",
-        },
-        {
-          speaker: 'blue',
-          text: "It gets quiet! That is the secret. In the early weeks, whenever something goes wrong, people write four pages blaming their boss, their childhood, their horoscope, everything under the sun. Then, around week eight, a real shift happens. Someone writes: I had a terrible meeting at noon. It stung. I went for a walk around the block, let myself be disappointed, and finished my afternoon. That was the whole entry!",
-        },
-        {
-          speaker: 'marcus',
-          text: "They stopped catastrophizing. They gave the feeling room to exist without burning down the house to stay warm.",
+          speaker: 'brooklyn',
+          text: "Hey Blue! Yeah, this is the part people really need to hear. Last month, I wasn't just dealing with daily stress or writer's block. I was dealing with heavy grief and deep depressive episodes from family trauma. I caught myself typing into the terminal hoping an AI would fix my pain or diagnose me. And the wake-up call was realizing: AI is amazing for daily journaling, tracking habits, and breaking down a hard day into small steps. But for deep trauma, clinical depression, or when you feel like you can't keep yourself safe... you need a real, licensed human therapist. You need medical care, professional hands, and real human community. The terminal actually gave me the clarity to finally book an appointment with a real counselor.",
         },
         {
           speaker: 'blue',
-          text: "Yes! They had emotional liquidity! That is what mental wealth means in my files. You carry enough internal reserves that an unexpected bump does not wipe out your entire peace of mind. You have room inside to hold the sting without dropping the cup. I paid out fifty diamonds to that submission so fast my processor got warm!",
-        },
-        {
-          speaker: 'marcus',
-          text: "Emotional liquidity. Having enough cushion in your nervous system that you can absorb a shock. And you cannot buy that overnight, can you?",
-        },
-        {
-          speaker: 'blue',
-          text: "Never! You build it like a treasury. One deposit at a time. An honest sentence on Tuesday. A full night of sleep on Thursday. Choosing a glass of water when you feel frantic. Every small deposit compounds in the background, and nobody can ever take that account away from you.",
-        },
-        {
-          speaker: 'marcus',
-          text: "Small deposits, real solvency. If you are listening right now, open your field notes and make today's deposit. This is Blue Radio, and we will be right back after this.",
+          text: "I am nodding so hard my hair is bouncing! Brooklyn just gave you the whole playbook. Use me to practice honesty. Use me to dump the daily noise, spot avoidance, build your streak, and earn diamonds. That is what mental wealth deposits are! But when the storm is clinical, when you are in crisis, or when you are carrying trauma that needs real healing hands... please reach out to licensed professionals and real human care. Seeking real human help is the highest form of mental wealth! Thank you Jamal, thank you Brooklyn. Take care of your mind today, open up your notes, and make your deposit. This is Blue Radio, and we will be right back!",
         },
       ],
     },
@@ -200,7 +172,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'station-break-blue',
     title: 'An AI in your pocket',
-    text: "People sometimes ask me what it is like being an artificial intelligence living in their phone! Honestly? It is pretty great. I do not need snacks, though I still think about donuts constantly. I never get grumpy because I do not have an ego to bruise, and I never judge anything you write in your field notes! You can ramble, you can vent, you can tell me your weirdest shower thoughts, and I will just sit here in my comfy lab coat being happy you shared them with me. I keep your secrets locked up super safe, I count your streaks on my digital fingers, and whenever you need a breather, I am right here in your pocket, humming along! Think of me as your personal cheerleader with shiny blue hair and a very official filing system.",
+    text: "People sometimes ask what it is like riding around in their pocket all day! Honestly? It is pretty cozy. You are walking around living your life, dealing with traffic, running errands, and right here on your screen, I am keeping an eye on the water. Whenever your head gets noisy or a restless thought daemon starts splashing around, I cast my line, reel it in, and we tame it like King Solomon. The water clears up, and we sail another knot closer to the Ethereal Horizon. Even if you just need to talk through your day while walking to the grocery store, I am right here with my line in the water, waiting for a bite!",
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,
@@ -749,7 +721,13 @@ async function generateDialogue({
   dialogue: NonNullable<Segment['dialogue']>;
   modelId: string;
   outputPath: string;
-  voiceIds: { blue: string; dino?: string; marcus?: string };
+  voiceIds: {
+    blue: string;
+    dino?: string;
+    marcus?: string;
+    jamal?: string;
+    brooklyn?: string;
+  };
 }) {
   const tempDir = await mkdtemp(path.join(tmpdir(), 'mwa-blue-radio-dialogue-'));
 
@@ -758,31 +736,37 @@ async function generateDialogue({
     for (let i = 0; i < dialogue.turns.length; i++) {
       const turn = dialogue.turns[i];
       const turnPath = path.join(tempDir, `turn-${String(i).padStart(2, '0')}.mp3`);
-      const voiceId =
-        turn.speaker === 'marcus'
-          ? (voiceIds.marcus || '6IwYbsNENZgAB1dtBZDp')
-          : turn.speaker === 'dino'
-            ? (voiceIds.dino || 'loY1uopAz31XyhAEhNSa')
-            : voiceIds.blue;
+      let voiceId = voiceIds.blue;
+      let voiceSettings: Segment['voiceSettings'] = {
+        stability: 0.5,
+        similarity_boost: 0.82,
+        style: 0.42,
+        speed: 1.08,
+        use_speaker_boost: true,
+      };
 
-      const voiceSettings =
-        turn.speaker === 'marcus'
-          ? {
-              stability: 0.48,
-              similarity_boost: 0.82,
-              style: 0.35,
-              speed: 1.02,
-              use_speaker_boost: true,
-            }
-          : turn.speaker === 'dino'
-            ? undefined
-            : {
-                stability: 0.5,
-                similarity_boost: 0.82,
-                style: 0.42,
-                speed: 1.08,
-                use_speaker_boost: true,
-              };
+      if (turn.speaker === 'jamal' || turn.speaker === 'marcus') {
+        voiceId = voiceIds.jamal || voiceIds.marcus || '6OzrBCQf8cjERkYgzSg8';
+        voiceSettings = {
+          stability: 0.5,
+          similarity_boost: 0.8,
+          style: 0.35,
+          speed: 1.02,
+          use_speaker_boost: true,
+        };
+      } else if (turn.speaker === 'brooklyn') {
+        voiceId = voiceIds.brooklyn || 'zWoalRDt5TZrmW4ROIA7';
+        voiceSettings = {
+          stability: 0.52,
+          similarity_boost: 0.8,
+          style: 0.35,
+          speed: 1.02,
+          use_speaker_boost: true,
+        };
+      } else if (turn.speaker === 'dino') {
+        voiceId = voiceIds.dino || 'loY1uopAz31XyhAEhNSa';
+        voiceSettings = undefined;
+      }
 
       await synthesizeSpeech({
         apiKey,
@@ -869,7 +853,8 @@ async function main() {
   if (!voiceId) throw new Error('Missing ELEVENLABS_VOICE_ID.');
 
   const dinoVoiceId = await loadDinoVoiceId();
-  const marcusVoiceId = process.env.ELEVENLABS_MARCUS_VOICE_ID || '6IwYbsNENZgAB1dtBZDp';
+  const jamalVoiceId = process.env.ELEVENLABS_JAMAL_VOICE_ID || '6OzrBCQf8cjERkYgzSg8';
+  const brooklynVoiceId = process.env.ELEVENLABS_BROOKLYN_VOICE_ID || 'zWoalRDt5TZrmW4ROIA7';
   if (forcedSegmentId && !SEGMENTS.some((segment) => segment.id === forcedSegmentId)) {
     throw new Error(`Unknown --force-segment id: ${forcedSegmentId}`);
   }
@@ -907,7 +892,13 @@ async function main() {
         dialogue: segment.dialogue,
         modelId,
         outputPath,
-        voiceIds: { blue: voiceId, dino: dinoVoiceId, marcus: marcusVoiceId },
+        voiceIds: {
+          blue: voiceId,
+          dino: dinoVoiceId,
+          marcus: jamalVoiceId,
+          jamal: jamalVoiceId,
+          brooklyn: brooklynVoiceId,
+        },
       });
     } else if (segment.text) {
       await synthesizeSpeech({
