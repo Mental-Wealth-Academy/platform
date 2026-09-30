@@ -599,8 +599,8 @@ const TopNavigation: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* 20-Minute Reset Quick Button at the top above credits */}
-                  <div className={styles.dropdownTopAction}>
+                  {/* Quick Actions at top above credits */}
+                  <div className={styles.dropdownTopActions}>
                     <button
                       type="button"
                       className={styles.dropdownMeditationButton}
@@ -609,19 +609,50 @@ const TopNavigation: React.FC = () => {
                         setDropdownOpen(false);
                         setMeditationModalOpen(true);
                       }}
-                      aria-label="Start 20-minute reset"
+                      aria-label="Start Morning Meditation"
                     >
                       <div className={styles.dropdownMeditationLeft}>
                         <span className={styles.dropdownMeditationIconWrap} aria-hidden="true">
                           <Play size={14} weight="fill" />
                         </span>
                         <div className={styles.dropdownMeditationMeta}>
-                          <span className={styles.dropdownMeditationTitle}>20-minute reset</span>
+                          <span className={styles.dropdownMeditationTitle}>Morning Meditation</span>
                           <span className={styles.dropdownMeditationSub}>Guided meditation with Blue</span>
                         </div>
                       </div>
                       <span className={styles.dropdownMeditationBadge}>20 min</span>
                     </button>
+
+                    <Link
+                      href="/lists"
+                      className={styles.dropdownTodoCard}
+                      onClick={() => {
+                        play('navigation');
+                        setDropdownOpen(false);
+                      }}
+                      aria-label="To-do lists"
+                    >
+                      <div className={styles.dropdownMeditationLeft}>
+                        <span className={styles.dropdownTodoIconWrap} aria-hidden="true">
+                          <Image
+                            src="/icons/icon-lists.svg"
+                            alt=""
+                            width={17}
+                            height={17}
+                            className={styles.dropdownTodoIcon}
+                          />
+                        </span>
+                        <div className={styles.dropdownMeditationMeta}>
+                          <span className={styles.dropdownMeditationTitle}>To-do lists</span>
+                          <span className={styles.dropdownMeditationSub}>Track daily goals and habits</span>
+                        </div>
+                      </div>
+                      <span className={styles.dropdownTodoArrow} aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 18l6-6-6-6" />
+                        </svg>
+                      </span>
+                    </Link>
                   </div>
 
                   {/* Divider label: Balances */}

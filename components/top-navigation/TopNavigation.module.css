@@ -950,7 +950,10 @@ button.dropdownTokenCard:active,
   color: var(--color-primary);
 }
 
-.dropdownTopAction {
+.dropdownTopActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   margin-top: 6px;
   margin-bottom: 2px;
 }
@@ -1034,6 +1037,67 @@ button.dropdownTokenCard:active,
   color: var(--color-primary);
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.dropdownTodoCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 46px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+.dropdownTodoCard:hover {
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 34%, transparent);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.dropdownTodoCard:active {
+  transform: translateY(0);
+}
+
+.dropdownTodoIconWrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+}
+
+.dropdownTodoIcon {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+}
+
+.dropdownTodoArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-soft);
+  flex-shrink: 0;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.dropdownTodoCard:hover .dropdownTodoArrow {
+  color: var(--color-primary);
+  transform: translateX(2px);
 }
 
 .dropdownSignOutButton {
@@ -1364,6 +1428,16 @@ button.dropdownTokenCard:active,
 :global([data-theme="dark"]) .dropdownMeditationButton:hover {
   background: color-mix(in oklch, var(--color-primary) 22%, transparent);
   border-color: color-mix(in oklch, var(--color-primary) 46%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownTodoCard {
+  background: color-mix(in oklch, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownTodoCard:hover {
+  background: color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 38%, transparent);
 }
 
 :global([data-theme="dark"]) .dropdownAuthLink {
