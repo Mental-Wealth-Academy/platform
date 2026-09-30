@@ -20,8 +20,8 @@ interface TrackMeta {
 const TRACKS: Record<MeditationTrackKey, TrackMeta> = {
   'twenty-minute-reset': {
     key: 'twenty-minute-reset',
-    label: 'Voice Reset',
-    title: '20-Minute Reset',
+    label: 'Rise & Reset',
+    title: 'Rise & Reset',
     subtitle: 'Voice-guided meditation with Blue',
     file: '/audio/blue-radio/twenty-minute-reset.mp3',
     defaultDuration: 1200,
@@ -35,13 +35,6 @@ const TRACKS: Record<MeditationTrackKey, TrackMeta> = {
     defaultDuration: 1200,
   },
 };
-
-const BREATH_PHASES = [
-  { text: 'Inhale', cue: 'Fill your lungs slowly' },
-  { text: 'Hold', cue: 'Rest in the pause' },
-  { text: 'Exhale', cue: 'Release tension fully' },
-  { text: 'Rest', cue: 'Find your center' },
-];
 
 interface MeditationPlayerModalProps {
   isOpen: boolean;
@@ -67,9 +60,6 @@ export default function MeditationPlayerModal({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(TRACKS[initialTrack].defaultDuration);
-  const [volume, setVolume] = useState(0.85);
-  const [isMuted, setIsMuted] = useState(false);
-  const [breathIndex, setBreathIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const activeTrack = TRACKS[activeTrackKey] || TRACKS['twenty-minute-reset'];
@@ -80,15 +70,6 @@ export default function MeditationPlayerModal({
       setActiveTrackKey(initialTrack);
     }
   }, [isOpen, initialTrack]);
-
-  // Breathing cycle animation interval (4s per phase: Inhale -> Hold -> Exhale -> Rest)
-  useEffect(() => {
-    if (!isOpen) return;
-    const interval = setInterval(() => {
-      setBreathIndex((prev) => (prev + 1) % BREATH_PHASES.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isOpen]);
 
   // Audio loading & auto-play on open or track switch
   useEffect(() => {
@@ -106,7 +87,7 @@ export default function MeditationPlayerModal({
     if (!audio) return;
 
     audio.src = activeTrack.file;
-    audio.volume = isMuted ? 0 : volume;
+    audio.volume = 1;
     setCurrentTime(0);
 
     const playPromise = audio.play();
@@ -115,7 +96,7 @@ export default function MeditationPlayerModal({
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     }
-  }, [isOpen, activeTrackKey, activeTrack.file, isMuted, volume]);
+  }, [isOpen, activeTrackKey, activeTrack.file]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
@@ -164,27 +145,6 @@ export default function MeditationPlayerModal({
     setCurrentTime(target);
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value);
-    setVolume(val);
-    if (val === 0) {
-      setIsMuted(true);
-    } else if (isMuted) {
-      setIsMuted(false);
-    }
-    if (audioRef.current) {
-      audioRef.current.volume = val;
-    }
-  };
-
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-    audio.volume = nextMuted ? 0 : volume;
-  };
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -198,7 +158,6 @@ export default function MeditationPlayerModal({
   if (!isOpen || typeof window === 'undefined') return null;
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const currentBreath = BREATH_PHASES[breathIndex];
 
   return createPortal(
     <div
@@ -236,7 +195,7 @@ export default function MeditationPlayerModal({
               className={`${styles.trackTab} ${activeTrackKey === 'twenty-minute-reset' ? styles.trackTabActive : ''}`}
               onClick={() => setActiveTrackKey('twenty-minute-reset')}
             >
-              20-Min Reset
+              Rise & Reset
             </button>
             <button
               type="button"
@@ -266,8 +225,7 @@ export default function MeditationPlayerModal({
             <div className={styles.celestialOrbitRing} />
             <div className={styles.auraAmbientGlow} />
             <div className={styles.auraCoreSphere}>
-              <span className={styles.breathLabel}>{currentBreath.text}</span>
-              <span className={styles.breathCue}>{currentBreath.cue}</span>
+              <span className={styles.breathLabel}>Breathe</span>
             </div>
           </div>
 
@@ -277,7 +235,7 @@ export default function MeditationPlayerModal({
           </div>
         </main>
 
-        {/* Bottom Minimal Dock: Scrubber, Playback, Volume */}
+        {/* Bottom Minimal Dock: Scrubber, Playback */}
         <footer className={styles.controlsDock}>
           <div className={styles.timeline}>
             <div
@@ -346,38 +304,6 @@ export default function MeditationPlayerModal({
                 <text x="12" y="15" fontSize="7.5" fontWeight="bold" textAnchor="middle" fill="currentColor" stroke="none">15</text>
               </svg>
             </button>
-          </div>
-
-          <div className={styles.volumeRow}>
-            <button
-              type="button"
-              className={styles.volumeBtn}
-              onClick={toggleMute}
-              aria-label={isMuted ? 'Unmute' : 'Mute'}
-            >
-              {!isMuted && volume > 0 ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M11 5L6 9H2v6h4l5 4z" fill="currentColor" stroke="none" />
-                  <line x1="23" y1="9" x2="17" y2="15" />
-                  <line x1="17" y1="9" x2="23" y2="15" />
-                </svg>
-              )}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.02"
-              value={isMuted ? 0 : volume}
-              onChange={handleVolumeChange}
-              className={styles.volumeSlider}
-              aria-label="Volume slider"
-            />
           </div>
         </footer>
 

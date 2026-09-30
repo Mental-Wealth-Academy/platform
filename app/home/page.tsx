@@ -908,8 +908,8 @@ export default function HomePage() {
               content: (
                 <section className={styles.folderRow} aria-label="Meditation folders">
                   <CourseFolderCard
-                    title="20-Minute Reset"
-                    centerLabel="20-Minute Reset"
+                    title="Rise & Reset"
+                    centerLabel="Rise & Reset"
                     ctaLabel="Play Meditation"
                     avatarSrc="/meditation/wellness-track.jpg"
                     onOpen={() => handleOpenMeditation('twenty-minute-reset')}
