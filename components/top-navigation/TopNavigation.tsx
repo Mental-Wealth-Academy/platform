@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
-import { MagnifyingGlass } from '@phosphor-icons/react';
-import { Phone } from '@phosphor-icons/react';
+import dynamic from 'next/dynamic';
+import { MagnifyingGlass, Phone, Play } from '@phosphor-icons/react';
 import styles from './TopNavigation.module.css';
 import { useSound } from '@/hooks/useSound';
 import { useOnchainBalances } from '@/hooks/useOnchainBalances';
@@ -15,6 +15,11 @@ import ColorThemePicker from '@/components/theme/ColorThemePicker';
 import HoverSlideText from '@/components/shared/HoverSlideText';
 import ModalShell from '@/components/shared/ModalShell';
 import TreasurySwapModal from '@/components/treasury-swap/TreasurySwapModal';
+
+const MeditationPlayerModal = dynamic(
+  () => import('@/components/meditation-player/MeditationPlayerModal'),
+  { ssr: false }
+);
 
 
 
@@ -51,6 +56,7 @@ const TopNavigation: React.FC = () => {
   const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [swapModalOpen, setSwapModalOpen] = useState(false);
+  const [meditationModalOpen, setMeditationModalOpen] = useState(false);
   const [godJarOpen, setGodJarOpen] = useState(false);
   const [jarNote, setJarNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,6 +111,12 @@ const TopNavigation: React.FC = () => {
     const handleOpenSwap = () => setSwapModalOpen(true);
     window.addEventListener('openTreasurySwapModal', handleOpenSwap);
     return () => window.removeEventListener('openTreasurySwapModal', handleOpenSwap);
+  }, []);
+
+  useEffect(() => {
+    const handleOpenMeditation = () => setMeditationModalOpen(true);
+    window.addEventListener('openMeditationModal', handleOpenMeditation);
+    return () => window.removeEventListener('openMeditationModal', handleOpenMeditation);
   }, []);
 
   const [userData, setUserData] = useState<{ username: string | null; avatarUrl: string | null }>({
@@ -692,74 +704,35 @@ const TopNavigation: React.FC = () => {
                     })}
                   </div>
 
-                  {/* Divider label: Account */}
+                  {/* Divider label: Meditation */}
                   <div className={styles.dropdownDividerLabel}>
                     <span className={styles.dropdownDividerLine} />
-                    <span className={styles.dropdownDividerText}>Account</span>
+                    <span className={styles.dropdownDividerText}>Meditation</span>
                     <span className={styles.dropdownDividerLine} />
                   </div>
 
-                  {/* Account Actions Section */}
+                  {/* 20-Minute Meditation Quick Button */}
                   <div className={styles.dropdownSection}>
-                    <Link
-                      href="/home"
-                      className={styles.dropdownActionItem}
-                      onClick={() => {
-                        play('navigation');
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                      </svg>
-                      <span>Profile</span>
-                    </Link>
-
                     <button
                       type="button"
-                      className={styles.dropdownActionItem}
+                      className={styles.dropdownMeditationButton}
                       onClick={() => {
                         play('click');
                         setDropdownOpen(false);
-                        window.dispatchEvent(new Event('openAvatarModal'));
+                        setMeditationModalOpen(true);
                       }}
+                      aria-label="Start 20-minute meditation"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                        <circle cx="8.5" cy="8.5" r="1.5" />
-                        <polyline points="21 15 16 10 5 21" />
-                      </svg>
-                      <span>Change avatar</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.dropdownActionItem}
-                      onClick={() => {
-                        play('click');
-                        setDropdownOpen(false);
-                        window.dispatchEvent(new Event('openUsernameModal'));
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                        <line x1="7" y1="7" x2="7.01" y2="7" />
-                      </svg>
-                      <span>Change username</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      className={styles.dropdownActionItem}
-                      onClick={() => {
-                        play('click');
-                        setDropdownOpen(false);
-                        window.dispatchEvent(new Event('callBlue'));
-                      }}
-                    >
-                      <Phone size={16} weight="fill" aria-hidden="true" />
-                      <span>Call Blue</span>
+                      <div className={styles.dropdownMeditationLeft}>
+                        <span className={styles.dropdownMeditationIconWrap} aria-hidden="true">
+                          <Play size={14} weight="fill" />
+                        </span>
+                        <div className={styles.dropdownMeditationMeta}>
+                          <span className={styles.dropdownMeditationTitle}>20-minute meditation</span>
+                          <span className={styles.dropdownMeditationSub}>Rise &amp; Reset with Blue</span>
+                        </div>
+                      </div>
+                      <span className={styles.dropdownMeditationBadge}>20 min</span>
                     </button>
                   </div>
 
@@ -870,6 +843,11 @@ const TopNavigation: React.FC = () => {
       <TreasurySwapModal
         open={swapModalOpen}
         onClose={() => setSwapModalOpen(false)}
+      />
+      <MeditationPlayerModal
+        isOpen={meditationModalOpen}
+        onClose={() => setMeditationModalOpen(false)}
+        initialTrack="twenty-minute-reset"
       />
       <ModalShell
         isOpen={godJarOpen}

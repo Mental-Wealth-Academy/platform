@@ -162,12 +162,37 @@ export const BLUE_KNOWLEDGE: BlueKnowledgeEntry[] = [
       'Motivation design follows Self-Determination Theory: competence, autonomy, and relatedness.',
   },
   {
+    id: 'company-website',
+    title: 'Mental Wealth Academy website and platform URL',
+    routes: ['*'],
+    keywords: ['website', 'url', 'domain', 'web address', 'link', 'site', 'where to go', 'mental wealth academy website'],
+    body:
+      'The official Mental Wealth Academy website and platform address is https://mentalwealth.academy. ' +
+      'Members access the app, courses, guides, and account dashboard directly at mentalwealth.academy.',
+  },
+  {
+    id: 'company-guidance',
+    title: 'Professional Guidance — 1-on-1 private advisory with licensed practitioners',
+    routes: ['*', '/home'],
+    keywords: [
+      'professional guidance', 'practitioner', 'counselor', 'therapist', 'therapy',
+      'consultation', '1-on-1', 'booking', 'stripe', 'session price', 'advisory',
+      'clinical consultation', '120', 'counseling', 'connect with a professional',
+    ],
+    body:
+      'Mental Wealth Academy offers "Professional Guidance": 1-on-1 private advisory consultations with licensed practitioners. ' +
+      'Each 50-minute clinical mental wealth consultation is $120, booked directly through the "Professional Guidance" card on the Home dashboard via Stripe checkout. ' +
+      'Blue is an AI companion and does not conduct clinical therapy, but if a member explicitly asks for professional help, therapy, or counseling, ' +
+      'Blue asks how they prefer to proceed: offering to guide them to the Professional Guidance card on their Home dashboard, or send the direct booking link straight to their email. ' +
+      'After booking, members receive a unique access code for a private Squad Room on the Academy chat page, where their MWA supervisor connects with them 1-on-1 for their personal consultation.',
+  },
+  {
     id: 'page-home',
     title: 'Home',
     routes: ['/home'],
-    keywords: ['home', 'guides', 'courses', 'dashboard', 'overview', 'progress', 'snapshot'],
+    keywords: ['home', 'guides', 'courses', 'dashboard', 'overview', 'progress', 'snapshot', 'guidance card', 'professional guidance'],
     body:
-      'The /home page is the main member dashboard. It brings together the guides knowledge graph, courses, progress, and field notes. ' +
+      'The /home page is the main member dashboard. It brings together the guides knowledge graph, courses, progress, field notes, and the Professional Guidance card for booking 1-on-1 practitioner consultations. ' +
       'Refer to it as "Home" or "the home dashboard".',
   },
   {

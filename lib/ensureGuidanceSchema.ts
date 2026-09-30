@@ -29,9 +29,10 @@ export async function ensureGuidanceSchema() {
           status TEXT NOT NULL DEFAULT 'pending',
           stripe_session_id TEXT,
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-        );
         ALTER TABLE practitioner_consultations ALTER COLUMN name DROP NOT NULL;
-        ALTER TABLE practitioner_consultations ALTER COLUMN email DROP NOT NULL;`,
+        ALTER TABLE practitioner_consultations ALTER COLUMN email DROP NOT NULL;
+        ALTER TABLE practitioner_consultations ADD COLUMN IF NOT EXISTS squad_room_code TEXT;
+        ALTER TABLE practitioner_consultations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();`,
         {}
       );
       globalThis.__mwaGuidanceSchemaEnsured = true;

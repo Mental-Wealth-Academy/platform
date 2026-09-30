@@ -4,6 +4,8 @@ import { getStripe } from '@/lib/stripe';
 import { sqlQuery } from '@/lib/db';
 import { ensureMembershipSchema } from '@/lib/ensureMembershipSchema';
 import { ensureShopFiatPurchasesSchema } from '@/lib/ensureShopFiatPurchasesSchema';
+import { ensureGuidanceSchema } from '@/lib/ensureGuidanceSchema';
+import { sendGuidanceConfirmedEmail, sendSupervisorConsultationAlertEmail } from '@/lib/email';
 import { deliverMembershipOrder } from '@/lib/membership-fulfillment';
 
 export const runtime = 'nodejs';
@@ -38,6 +40,64 @@ export async function POST(request: Request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
+
+    // 1-on-1 Professional Guidance consultation session
+    if (session.metadata?.consultationId) {
+      await ensureGuidanceSchema();
+      const consultationId = session.metadata.consultationId;
+      const name = session.metadata.name || 'Academy Member';
+      const email = session.customer_details?.email || session.metadata.email || (typeof session.customer_email === 'string' ? session.customer_email : '');
+      const focusArea = session.metadata.focusArea || 'General Mental Wealth';
+      const notes = session.metadata.notes || '';
+      const sessionId = session.id;
+
+      // Generate unique specialist Squad Room code recognized by SquadsHub (SPEC-XXXXXX)
+      const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const squadRoomCode = `SPEC-${randomSuffix}`;
+
+      try {
+        await sqlQuery(
+          `UPDATE practitioner_consultations
+              SET status = 'paid',
+                  squad_room_code = :squadRoomCode,
+                  stripe_session_id = :sessionId,
+                  updated_at = CURRENT_TIMESTAMP
+            WHERE id = :consultationId OR stripe_session_id = :sessionId`,
+          { consultationId, squadRoomCode, sessionId }
+        );
+      } catch (err) {
+        console.error('[guidance webhook] Failed to update practitioner consultation:', err);
+      }
+
+      // Send confirmation email to member with their private Squad Room code
+      if (email && email !== 'in-app-message') {
+        try {
+          await sendGuidanceConfirmedEmail(email, {
+            name,
+            focusArea,
+            squadRoomCode,
+            notes,
+          });
+        } catch (err) {
+          console.error('[guidance webhook] Failed to send member confirmation email:', err);
+        }
+      }
+
+      // Send alert email to supervisor/admin with the matching Squad Room code
+      try {
+        await sendSupervisorConsultationAlertEmail({
+          memberName: name,
+          memberEmail: email || 'in-app-message',
+          focusArea,
+          squadRoomCode,
+          notes,
+        });
+      } catch (err) {
+        console.error('[guidance webhook] Failed to send supervisor alert email:', err);
+      }
+
+      return NextResponse.json({ received: true });
+    }
 
     // Shop item checkout session
     if (session.metadata?.itemId && session.metadata?.userId) {

@@ -362,6 +362,18 @@ export default function HomePage() {
   const [hasAngel, setHasAngel] = useState(false);
   const [fieldNotesOpen, setFieldNotesOpen] = useState(false);
   const [guidanceModalOpen, setGuidanceModalOpen] = useState(false);
+  const [guidanceInitialSuccess, setGuidanceInitialSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('guidance') === 'open') {
+      setGuidanceModalOpen(true);
+    } else if (params.get('guidance') === 'success') {
+      setGuidanceInitialSuccess(true);
+      setGuidanceModalOpen(true);
+    }
+  }, []);
   const [userName, setUserName] = useState<string | null>(null);
   const [notebookEntriesUnlocked, setNotebookEntriesUnlocked] = useState(false);
   // True only once the account exists AND onboarding has been finished (a
@@ -1323,8 +1335,12 @@ export default function HomePage() {
       {!learnOnly && (
         <ProfessionalGuidanceModal
           isOpen={guidanceModalOpen}
-          onClose={() => setGuidanceModalOpen(false)}
+          onClose={() => {
+            setGuidanceModalOpen(false);
+            setGuidanceInitialSuccess(false);
+          }}
           defaultName={userName}
+          initialSuccess={guidanceInitialSuccess}
         />
       )}
 

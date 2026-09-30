@@ -950,6 +950,87 @@ button.dropdownTokenCard:active,
   color: var(--color-primary);
 }
 
+.dropdownMeditationButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in oklch, var(--color-primary) 24%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 12%, transparent), color-mix(in oklch, var(--color-primary) 4%, transparent));
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary) 8%, transparent);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dropdownMeditationButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 42%, transparent);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--color-primary) 16%, transparent);
+  transform: translateY(-1px);
+}
+
+.dropdownMeditationButton:active {
+  transform: translateY(0);
+}
+
+.dropdownMeditationLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dropdownMeditationIconWrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  color: var(--color-primary);
+}
+
+.dropdownMeditationMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dropdownMeditationTitle {
+  font-family: var(--font-secondary);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 1.2;
+}
+
+.dropdownMeditationSub {
+  font-size: 10.5px;
+  color: var(--color-text-soft);
+  line-height: 1.2;
+}
+
+.dropdownMeditationBadge {
+  font-family: var(--font-secondary);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .dropdownSignOutButton {
   display: flex;
   align-items: center;
@@ -1268,6 +1349,16 @@ button.dropdownTokenCard:active,
 :global([data-theme="dark"]) .dropdownActionItem:hover {
   background: color-mix(in oklch, var(--color-primary) 12%, transparent);
   color: var(--color-primary);
+}
+
+:global([data-theme="dark"]) .dropdownMeditationButton {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--color-primary) 18%, transparent), color-mix(in oklch, var(--color-primary) 6%, transparent));
+  border-color: color-mix(in oklch, var(--color-primary) 32%, transparent);
+}
+
+:global([data-theme="dark"]) .dropdownMeditationButton:hover {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  border-color: color-mix(in oklch, var(--color-primary) 46%, transparent);
 }
 
 :global([data-theme="dark"]) .dropdownAuthLink {

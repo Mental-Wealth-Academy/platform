@@ -11,6 +11,7 @@ interface ProfessionalGuidanceModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultName?: string | null;
+  initialSuccess?: boolean;
 }
 
 const FOCUS_CHIPS = [
@@ -24,13 +25,20 @@ export const ProfessionalGuidanceModal: React.FC<ProfessionalGuidanceModalProps>
   isOpen,
   onClose,
   defaultName,
+  initialSuccess = false,
 }) => {
   const { play } = useSound();
 
   const [selectedFocus, setSelectedFocus] = useState(FOCUS_CHIPS[0]);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isBooked, setIsBooked] = useState(false);
+  const [isBooked, setIsBooked] = useState(initialSuccess);
+
+  React.useEffect(() => {
+    if (initialSuccess) {
+      setIsBooked(true);
+    }
+  }, [initialSuccess]);
 
   const handleClose = () => {
     play('click');
@@ -98,11 +106,16 @@ export const ProfessionalGuidanceModal: React.FC<ProfessionalGuidanceModalProps>
             <div className={styles.confirmedKanji} lang="ja">予約完了</div>
             <h3 className={styles.confirmedTitle}>Session Reserved</h3>
             <p className={styles.confirmedText}>
-              Your Lead Practitioner will message you directly in the app to coordinate your private session time.
+              Your Lead Practitioner will connect with you 1-on-1. Check your email for your private Squad Room access code to meet your supervisor.
             </p>
-            <CtaButton block size="md" onClick={handleClose}>
-              Done
-            </CtaButton>
+            <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '12px' }}>
+              <CtaButton block size="md" variant="secondary" onClick={handleClose}>
+                Done
+              </CtaButton>
+              <CtaButton block size="md" onClick={() => { window.location.href = '/chat'; }}>
+                Go to Squads
+              </CtaButton>
+            </div>
           </div>
         ) : (
           <>
