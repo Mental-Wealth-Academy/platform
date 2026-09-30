@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   Cat,
   ChatsCircle,
-  ClipboardText,
+  DoorOpen,
   House,
   IconProps,
   MoonStars,
@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { id: 'blue', label: 'Blue', href: '/dao', icon: Cat },
   { id: 'lessons', label: 'Lessons', href: '/shadow-work', icon: MoonStars },
   { id: 'home', label: 'Home', href: '/profile', icon: House },
-  { id: 'surveys', label: 'Surveys', href: '/surveys', icon: ClipboardText },
+  { id: 'hallway', label: 'Hallway', href: '/genetics', icon: DoorOpen },
   { id: 'squads', label: 'Squads', href: '/chat?squad=global', icon: ChatsCircle },
 ] as const;
 
@@ -57,8 +57,8 @@ export const MobileBottomNav: React.FC = () => {
     if (href === '/dao') {
       return pathname === '/dao' || pathname?.startsWith('/dao/');
     }
-    if (href === '/surveys') {
-      return pathname === '/surveys' || pathname?.startsWith('/surveys/');
+    if (href === '/genetics') {
+      return pathname === '/genetics' || pathname?.startsWith('/genetics/');
     }
     if (href.startsWith('/chat')) {
       return pathname === '/chat' || pathname?.startsWith('/chat/');
