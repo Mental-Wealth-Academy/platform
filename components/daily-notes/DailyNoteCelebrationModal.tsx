@@ -315,7 +315,7 @@ export default function DailyNoteCelebrationModal({
                       <Flame size={12} weight="fill" />
                       Day {streakDays} streak
                     </span>
-                    <span className={styles.shareCardTitle}>{"I'm acing my daily reflections!"}</span>
+                    <span className={styles.shareCardTitle}>{"I'm acing my daily check-in!"}</span>
                   </div>
                   <Image
                     src="/images/celebration/blue-celebration.png"
