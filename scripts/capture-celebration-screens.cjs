@@ -26,8 +26,8 @@ async function capture() {
   await page.screenshot({ path: screen1Path });
   console.log('Captured Screen 1:', screen1Path);
 
-  // 2. Click "Claim credits" to advance to Screen 2 (Streak Milestone)
-  const claimBtn = page.locator('text=Claim credits').first();
+  // 2. Click "Claim Diamonds" to advance to Screen 2 (Streak Milestone)
+  const claimBtn = page.locator('text=/Claim Diamonds|Claim credits/i').first();
   await claimBtn.click({ force: true });
   await page.waitForTimeout(1000);
   const screen2Path = path.join(outDir, 'screen_2_streak_milestone.png');

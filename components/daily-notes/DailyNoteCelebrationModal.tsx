@@ -22,6 +22,7 @@ import styles from './DailyNoteCelebrationModal.module.css';
 export interface DailyNoteCelebrationProps {
   open: boolean;
   onClose: () => void;
+  diamondsEarned?: number;
   creditsEarned?: number;
   timeSpentSeconds?: number;
   streakDays?: number;
@@ -37,11 +38,13 @@ function formatElapsed(seconds: number): string {
 export default function DailyNoteCelebrationModal({
   open,
   onClose,
+  diamondsEarned,
   creditsEarned = 100,
   timeSpentSeconds = 320,
   streakDays = 10,
   focusAccuracy = 100,
 }: DailyNoteCelebrationProps) {
+  const diamonds = diamondsEarned ?? creditsEarned;
   const { play } = useSound();
   const [step, setStep] = useState<'progress' | 'milestone'>('progress');
   const [showShare, setShowShare] = useState(false);
@@ -94,7 +97,7 @@ export default function DailyNoteCelebrationModal({
 
   if (!open) return null;
 
-  const handleClaimCredits = () => {
+  const handleClaimDiamonds = () => {
     play('success');
     triggerConfetti();
     setStep('milestone');
@@ -105,7 +108,7 @@ export default function DailyNoteCelebrationModal({
     onClose();
   };
 
-  const shareText = `I completed today's Field Note and earned ${creditsEarned} credits on Mental Wealth Academy! Streak: ${streakDays} days.`;
+  const shareText = `I completed today's Field Note and earned ${diamonds} diamonds on Mental Wealth Academy! Streak: ${streakDays} days.`;
   const shareUrl = typeof window !== 'undefined' ? window.location.origin : 'https://mentalwealthacademy.world';
 
   const handleShareMessages = () => {
@@ -127,8 +130,8 @@ export default function DailyNoteCelebrationModal({
     play('click');
     // Save image: download the mascot celebration graphic with high resolution
     const link = document.createElement('a');
-    link.href = '/images/celebration/blue-celebration.jpg';
-    link.download = `mental-wealth-streak-day-${streakDays}.jpg`;
+    link.href = '/images/celebration/blue-celebration.png';
+    link.download = `mental-wealth-streak-day-${streakDays}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -179,12 +182,18 @@ export default function DailyNoteCelebrationModal({
               <p className={styles.subtitleText}>Your mental clarity is compounding</p>
 
               <div className={styles.metricsRow}>
-                {/* Metric 1: Total Credits */}
+                {/* Metric 1: Total Diamonds */}
                 <div className={`${styles.metricCard} ${styles.metricCardGold}`}>
-                  <div className={styles.metricHeader}>Total credits</div>
+                  <div className={styles.metricHeader}>Total diamonds</div>
                   <div className={styles.metricContent}>
-                    <Sparkle size={18} weight="fill" className={styles.metricIcon} />
-                    <span className={styles.metricValue}>+{creditsEarned}</span>
+                    <Image
+                      src="/icons/ui-diamond.svg"
+                      alt=""
+                      width={20}
+                      height={20}
+                      className={styles.metricDiamondIcon}
+                    />
+                    <span className={styles.metricValue}>+{diamonds}</span>
                   </div>
                 </div>
 
@@ -223,9 +232,9 @@ export default function DailyNoteCelebrationModal({
               <button
                 type="button"
                 className={styles.mainCtaButton}
-                onClick={handleClaimCredits}
+                onClick={handleClaimDiamonds}
               >
-                Claim credits
+                Claim Diamonds
               </button>
             </div>
           </>
@@ -320,10 +329,16 @@ export default function DailyNoteCelebrationModal({
                 <div className={styles.shareCardStatsList}>
                   <div className={styles.shareStatRow}>
                     <span className={styles.shareStatLeft}>
-                      <Sparkle size={16} weight="fill" style={{ color: '#f59e0b' }} />
-                      Credits earned
+                      <Image
+                        src="/icons/ui-diamond.svg"
+                        alt=""
+                        width={16}
+                        height={16}
+                        className={styles.shareDiamondIcon}
+                      />
+                      Diamonds earned
                     </span>
-                    <span className={styles.shareStatVal}>+{creditsEarned}</span>
+                    <span className={styles.shareStatVal}>+{diamonds}</span>
                   </div>
                   <div className={styles.shareStatRow}>
                     <span className={styles.shareStatLeft}>

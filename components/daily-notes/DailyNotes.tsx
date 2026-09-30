@@ -949,6 +949,7 @@ export default function DailyNotes({
           <DailyNoteCelebrationModal
             open={showRewardAnimation}
             onClose={() => setShowRewardAnimation(false)}
+            diamondsEarned={rewardData.shards}
             creditsEarned={rewardData.shards}
             timeSpentSeconds={sessionElapsed}
             streakDays={Math.max(1, (allWeekPages[currentWeek]?.length ?? 0))}
@@ -1183,6 +1184,7 @@ export default function DailyNotes({
         <DailyNoteCelebrationModal
           open={showRewardAnimation}
           onClose={() => setShowRewardAnimation(false)}
+          diamondsEarned={rewardData.shards}
           creditsEarned={rewardData.shards}
           timeSpentSeconds={sessionElapsed}
           streakDays={Math.max(1, (allWeekPages[currentWeek]?.length ?? 0))}

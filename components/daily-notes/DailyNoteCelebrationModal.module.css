@@ -1,14 +1,17 @@
-/* Daily Note Completion Celebratory Flow (Duolingo style) */
+/* Daily Note Completion Celebratory Flow (Duolingo style) - Light Design System */
 
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background-color: #0b131b;
+  background-color: #f7f8ff;
   background-image:
-    radial-gradient(circle at 50% 15%, rgba(68, 140, 255, 0.18), transparent 60%),
-    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12), transparent 50%),
-    radial-gradient(circle at 20% 85%, rgba(16, 185, 129, 0.12), transparent 50%);
+    linear-gradient(color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--color-primary) 7%, transparent) 1px, transparent 1px),
+    radial-gradient(circle at 50% 12%, rgba(81, 104, 255, 0.14), transparent 60%),
+    radial-gradient(circle at 85% 80%, rgba(245, 158, 11, 0.10), transparent 50%),
+    radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.10), transparent 50%);
+  background-size: 28px 28px, 28px 28px, auto, auto, auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,16 +79,16 @@
 
 .mascotGlow {
   position: absolute;
-  inset: -12px;
+  inset: -14px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(56, 189, 248, 0) 70%);
+  background: radial-gradient(circle, rgba(81, 104, 255, 0.20) 0%, rgba(81, 104, 255, 0) 70%);
   filter: blur(16px);
   pointer-events: none;
   animation: pulseGlow 3s ease-in-out infinite alternate;
 }
 
 .mascotGlowGold {
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0) 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0) 70%);
 }
 
 @keyframes pulseGlow {
@@ -105,7 +108,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 14px 28px rgba(26, 29, 51, 0.18));
   animation: floatMascot 4s ease-in-out infinite alternate;
 }
 
@@ -121,27 +124,22 @@
 /* ── Text Headers ── */
 .titleText {
   font-family: var(--font-secondary);
-  font-size: 2.1rem;
+  font-size: 2.15rem;
   font-weight: 800;
   line-height: 1.15;
-  color: #ffc800;
-  letter-spacing: -0.02em;
+  color: #0f172a;
+  letter-spacing: -0.025em;
   margin: 0;
-  text-shadow: 0 2px 8px rgba(255, 200, 0, 0.25);
-}
-
-.titleTextBlue {
-  color: #60a5fa;
-  text-shadow: 0 2px 8px rgba(96, 165, 250, 0.25);
 }
 
 .subtitleText {
   font-family: var(--font-primary);
   font-size: 1.05rem;
   line-height: 1.45;
-  color: #cbd5e1;
+  color: #64748b;
   margin: 0;
   max-width: 320px;
+  font-weight: 500;
 }
 
 /* ── Metric Cards Row (Screen 1) ── */
@@ -154,50 +152,64 @@
 }
 
 .metricCard {
-  background: #111e2e;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 0 var(--card-bevel, #0a131e);
-  transition: transform 0.2s ease;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  box-shadow:
+    0 10px 24px color-mix(in oklch, var(--color-primary) 10%, transparent),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .metricCardGold {
-  --card-border: #f59e0b;
-  --card-bevel: #b45309;
-  --header-bg: #f59e0b;
-  --header-text: #78350f;
-  --accent-color: #fbbf24;
-  border: 2px solid var(--card-border);
+  border-color: rgba(245, 158, 11, 0.28);
+  box-shadow:
+    0 10px 24px rgba(245, 158, 11, 0.14),
+    0 2px 6px rgba(245, 158, 11, 0.06),
+    inset 0 1px 0 #ffffff;
+}
+
+.metricCardGold .metricHeader {
+  background: #fef3c7;
+  color: #b45309;
 }
 
 .metricCardGreen {
-  --card-border: #10b981;
-  --card-bevel: #047857;
-  --header-bg: #10b981;
-  --header-text: #064e3b;
-  --accent-color: #34d399;
-  border: 2px solid var(--card-border);
+  border-color: rgba(16, 185, 129, 0.28);
+  box-shadow:
+    0 10px 24px rgba(16, 185, 129, 0.14),
+    0 2px 6px rgba(16, 185, 129, 0.06),
+    inset 0 1px 0 #ffffff;
+}
+
+.metricCardGreen .metricHeader {
+  background: #d1fae5;
+  color: #047857;
 }
 
 .metricCardCyan {
-  --card-border: #38bdf8;
-  --card-bevel: #0284c7;
-  --header-bg: #38bdf8;
-  --header-text: #0c4a6e;
-  --accent-color: #38bdf8;
-  border: 2px solid var(--card-border);
+  border-color: rgba(56, 189, 248, 0.32);
+  box-shadow:
+    0 10px 24px rgba(2, 132, 199, 0.14),
+    0 2px 6px rgba(2, 132, 199, 0.06),
+    inset 0 1px 0 #ffffff;
+}
+
+.metricCardCyan .metricHeader {
+  background: #e0f2fe;
+  color: #0369a1;
 }
 
 .metricHeader {
-  background: var(--header-bg);
-  padding: 5px 4px;
+  padding: 6px 4px;
   font-family: var(--font-secondary);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--header-text);
+  letter-spacing: 0.01em;
   text-align: center;
 }
 
@@ -207,40 +219,66 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  background: #ffffff;
+}
+
+.metricDiamondIcon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(81, 104, 255, 0.25));
 }
 
 .metricIcon {
-  color: var(--accent-color);
   flex-shrink: 0;
+}
+
+.metricCardGreen .metricIcon {
+  color: #10b981;
+}
+
+.metricCardCyan .metricIcon {
+  color: #0ea5e9;
 }
 
 .metricValue {
   font-family: var(--font-secondary);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 /* ── Screen 2: Milestone Badge & Progress Bar ── */
 .milestoneCard {
   width: 100%;
+  background: #ffffff;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  border-radius: 28px;
+  padding: 24px 20px;
+  box-sizing: border-box;
+  box-shadow:
+    0 16px 36px color-mix(in oklch, var(--color-primary) 12%, transparent),
+    0 4px 10px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .milestoneBadge {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 28px;
-  background: #ffffff;
-  border-radius: 24px;
+  padding: 10px 32px;
+  background: #fff7ed;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  border-radius: 999px;
   box-shadow:
-    0 6px 0 #cbd5e1,
-    0 12px 24px rgba(0, 0, 0, 0.35);
+    0 8px 24px rgba(249, 115, 22, 0.14),
+    inset 0 1px 0 #ffffff;
 }
 
 .milestoneIconWrap {
@@ -251,11 +289,12 @@
   border-radius: 14px;
   background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
   color: #ea580c;
+  filter: drop-shadow(0 2px 6px rgba(234, 88, 12, 0.35));
 }
 
 .milestoneCount {
   font-family: var(--font-secondary);
-  font-size: 2.75rem;
+  font-size: 3rem;
   font-weight: 900;
   line-height: 1;
   color: #0f172a;
@@ -274,23 +313,23 @@
   font-family: var(--font-secondary);
   font-size: 1rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: #64748b;
   min-width: 24px;
   text-align: center;
 }
 
 .progressLabelActive {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .progressTrack {
   position: relative;
   flex: 1;
   height: 20px;
-  background: #1e293b;
+  background: #e2e8f0;
   border-radius: 999px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .progressFill {
@@ -299,9 +338,9 @@
   left: 0;
   bottom: 0;
   width: 72%;
-  background: linear-gradient(90deg, #10b981 0%, #84cc16 50%, #facc15 100%);
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 100%);
   border-radius: 999px;
-  box-shadow: 0 0 12px rgba(132, 204, 22, 0.6);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
   animation: progressGrow 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -335,11 +374,13 @@
 
 .kickerText {
   font-family: var(--font-primary);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   line-height: 1.5;
-  color: #94a3b8;
+  color: #475569;
   max-width: 320px;
   margin: 0;
+  text-align: center;
+  font-weight: 500;
 }
 
 /* ── Bottom Action Row ── */
@@ -354,81 +395,91 @@
 .shareIconButton {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
-  background: #1e293b;
-  border: 2px solid #334155;
-  border-radius: 16px;
-  color: #38bdf8;
+  background: #ffffff;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 18%, transparent);
+  border-radius: 999px;
+  color: var(--color-primary);
   cursor: pointer;
-  box-shadow: 0 4px 0 #0f172a;
-  transition: transform 0.1s ease, background 0.15s ease;
+  box-shadow:
+    0 8px 24px color-mix(in oklch, var(--color-primary) 12%, transparent),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .shareIconButton:hover {
-  background: #334155;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 #0f172a;
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
+  box-shadow:
+    0 12px 28px color-mix(in oklch, var(--color-primary) 20%, transparent),
+    inset 0 1px 0 #ffffff;
 }
 
 .shareIconButton:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 #0f172a;
+  transform: translateY(1px);
 }
 
 .mainCtaButton {
   flex: 1;
-  height: 54px;
+  height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: #0284c7;
-  border: none;
-  box-shadow: 0 5px 0 #0369a1;
-  font-family: var(--font-secondary);
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #6b7fff 0%, var(--color-primary) 50%, #3d55f0 100%);
+  border: 1px solid color-mix(in srgb, #ffffff 30%, transparent);
   color: #ffffff;
+  font-family: var(--font-button);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.1s ease;
+  box-shadow:
+    0 14px 30px color-mix(in oklch, var(--color-primary) 28%, transparent),
+    0 4px 10px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .mainCtaButton:hover {
-  background: #0ea5e9;
-  transform: translateY(-2px);
-  box-shadow: 0 7px 0 #0369a1;
+  transform: translateY(-1px);
+  box-shadow:
+    0 18px 36px color-mix(in oklch, var(--color-primary) 36%, transparent),
+    0 6px 14px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .mainCtaButton:active {
-  transform: translateY(3px);
-  box-shadow: 0 2px 0 #0369a1;
+  transform: translateY(1px);
 }
 
 /* ── Screen 3: Share Drawer / Sheet ── */
 .shareDrawerBackdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(7, 12, 18, 0.85);
+  background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  z-index: 1000;
+  align-items: center;
+  z-index: 10010;
   animation: fadeIn 0.2s ease-out;
 }
 
 .shareDrawerContent {
   width: 100%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   padding: 12px 16px 24px;
   box-sizing: border-box;
   animation: slideUpDrawer 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -448,12 +499,14 @@
   width: 100%;
   max-width: 360px;
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: 28px;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
   padding: 22px 20px;
   box-sizing: border-box;
   box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 20px 48px rgba(26, 29, 51, 0.14),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -476,15 +529,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 999px;
   background: #e0f2fe;
+  border: 1px solid rgba(2, 132, 199, 0.2);
   font-family: var(--font-secondary);
   font-size: 0.72rem;
   font-weight: 700;
   color: #0369a1;
   letter-spacing: 0.01em;
   width: fit-content;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.08);
 }
 
 .shareCardTitle {
@@ -506,7 +561,7 @@
 .shareCardStatsList {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -529,6 +584,13 @@
   font-weight: 500;
 }
 
+.shareDiamondIcon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 3px rgba(81, 104, 255, 0.2));
+}
+
 .shareStatVal {
   font-family: var(--font-secondary);
   font-weight: 800;
@@ -548,13 +610,22 @@
   font-size: 0.9rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #0284c7;
+  color: var(--color-primary);
 }
 
 /* ── Share Actions Row ── */
 .shareOptionsSection {
   width: 100%;
   max-width: 360px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 16px 20px 20px;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in oklch, var(--color-primary) 14%, transparent);
+  box-shadow:
+    0 20px 48px rgba(26, 29, 51, 0.16),
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -567,26 +638,31 @@
 }
 
 .shareCloseBtn {
-  background: none;
+  background: #f1f5f9;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
-  padding: 4px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .shareCloseBtn:hover {
-  color: #ffffff;
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: scale(1.05);
 }
 
 .shareOptionsTitle {
   font-family: var(--font-secondary);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: #cbd5e1;
+  color: #0f172a;
 }
 
 .shareButtonsGrid {
@@ -613,7 +689,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .shareItemBtn:hover .shareItemIconWrap {
@@ -622,37 +698,41 @@
 
 .shareItemLabel {
   font-family: var(--font-primary);
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
 }
 
 .shareIconMessages {
   background: #22c55e;
   color: #ffffff;
+  box-shadow: 0 6px 14px rgba(34, 197, 94, 0.3);
 }
 
 .shareIconWhatsApp {
   background: #25d366;
   color: #ffffff;
+  box-shadow: 0 6px 14px rgba(37, 211, 102, 0.3);
 }
 
 .shareIconX {
-  background: #000000;
-  border: 1px solid #334155;
+  background: #0f172a;
   color: #ffffff;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
 }
 
 .shareIconSave {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #38bdf8;
+  background: #eef2ff;
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 20%, transparent);
+  box-shadow: 0 6px 14px color-mix(in oklch, var(--color-primary) 14%, transparent);
 }
 
 .shareIconMore {
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
 }
 
 .copyToast {
@@ -667,7 +747,7 @@
   font-family: var(--font-secondary);
   font-size: 0.85rem;
   font-weight: 700;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
   animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1100;
 }
