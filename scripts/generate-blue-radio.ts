@@ -210,6 +210,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'community',
     title: 'Nobody got the manual',
+    disabled: true,
     dialogue: {
       turns: [
         {
