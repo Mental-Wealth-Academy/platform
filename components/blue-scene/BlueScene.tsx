@@ -123,30 +123,6 @@ export default function BlueScene() {
           </span>
         </div>
         <div className={styles.sceneHeaderControls}>
-          <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'companion'}
-              className={`${styles.sceneSwitchButton} ${
-                mode === 'companion' ? styles.sceneSwitchButtonActive : ''
-              }`}
-              onClick={handleSwitchToCompanion}
-            >
-              Companion
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'radio'}
-              className={`${styles.sceneSwitchButton} ${
-                mode === 'radio' ? styles.sceneSwitchButtonActive : ''
-              }`}
-              onClick={handleSwitchToRadio}
-            >
-              Radio
-            </button>
-          </div>
           {mode === 'radio' && (
             <button
               type="button"
@@ -186,6 +162,31 @@ export default function BlueScene() {
         onCompanionMuteChange={handleCompanionMuteChange}
         onRegisterCompanionMute={handleRegisterCompanionMute}
       />
+
+      <div className={styles.sceneSwitch} role="tablist" aria-label="Mode selection">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'companion'}
+          className={`${styles.sceneSwitchButton} ${
+            mode === 'companion' ? styles.sceneSwitchButtonActive : ''
+          }`}
+          onClick={handleSwitchToCompanion}
+        >
+          Companion
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mode === 'radio'}
+          className={`${styles.sceneSwitchButton} ${
+            mode === 'radio' ? styles.sceneSwitchButtonActive : ''
+          }`}
+          onClick={handleSwitchToRadio}
+        >
+          Radio
+        </button>
+      </div>
     </section>
   );
 }

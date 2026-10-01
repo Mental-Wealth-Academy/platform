@@ -58,11 +58,15 @@
 }
 
 .sceneSwitch {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
   gap: 2px;
-  margin: 0 auto;
   padding: 3px;
   border-radius: 999px;
   border: 1.5px solid color-mix(in oklch, var(--color-primary) 18%, transparent);

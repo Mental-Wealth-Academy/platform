@@ -85,7 +85,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'mental-wealth-idea',
     title: 'The idea of mental wealth',
-    text: "Whenever someone asks me what mental wealth means, I picture a quiet room inside you that gets a little steadier each day. True wealth is something you build with care and get to keep. It is choosing to rest when your body is tired. It is meeting a heavy feeling with patience. It is writing one honest paragraph in your field notes when everything feels loud outside. Your mind is a sanctuary, and nobody else can tend it for you. The return on that care shows up when you least expect it. In moments where life feels overwhelming, you suddenly realize you have room to breathe. It settles deep into the background, and it stays with you.",
+    text: "Whenever someone asks me what mental wealth means, I picture a quiet voice inside my mind that feels capable of being kind each day. Even when it is hard, true inner wealth is an inner voice that feels confident and positive, even when it’s dark. Mental Wealth is the thoughtware needed to face heavy feelings. It is a flashlight pointing you in the right direction. Your mind is a sanctuary, and Mental Wealth is being able to afford free tools to maintain it. A garden in your brain that travels with you wherever you go. It settles into the spirit, ready to create a life worth living.",
     voiceSettings: {
       stability: 0.55,
       similarity_boost: 0.82,
