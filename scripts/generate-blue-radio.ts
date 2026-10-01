@@ -259,7 +259,7 @@ const SEGMENTS: Segment[] = [
   {
     id: 'pocket-world-thesis',
     title: 'The pocket-world thesis',
-    text: `The internet is unimaginably massive, but human beings rarely live in the whole thing. We carve out small, private corners.
+    text: `The internet is unimaginably massive, and human beings naturally gather in small, private corners.
 
 We call these spaces pocket-worlds. A simulated universe with its own address, its own dialect, and its own history, explored by Ethereal Beings.
 
@@ -269,11 +269,9 @@ When people hang out online, certain jokes, images, and phrases get repeated. A 
 
 The values we choose to practice in these spaces carry real power. When you bring genuine kindness, patience, and encouragement to a comment section or a quiet room, that warmth radiates outward. Positivity ripples across the digital water like a healing kind of magic, touching people you may never even meet in person.
 
-Before you know it, those shared patterns turn into a living culture. Every choice you make inside a pocket-world is an affirmation. The avatar you pick is an affirmation. The rhythm of how you speak is an affirmation. The values you protect together are affirmations. You are actively world-building together, like a giant canvas being painted by a thousand anonymous artists all at the same time.
+Before you know it, those shared patterns turn into a living culture. When you spend enough time tending a place like this, the world starts building you back. It shapes how you think, how you speak, and who you become.
 
-And when you spend enough time tending a place like this, the world starts building you back. It shapes how you think, how you speak, and who you become.
-
-Sorry, my antennae started buzzing when I said that! I am filing this under Affirmations, right where I can reach it!`,
+Ooh, my headset is chiming! That means our next signal is already lighting up the board. Let us see what the instruments are telling us!`,
     voiceSettings: {
       stability: 0.5,
       similarity_boost: 0.82,

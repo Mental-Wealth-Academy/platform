@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-01T05:19:54.770Z",
-  "totalSeconds": 557.64,
+  "generatedAt": "2026-10-01T05:21:49.870Z",
+  "totalSeconds": 523.7,
   "segments": [
     {
       "id": "station-ident",
@@ -42,7 +42,7 @@
       "title": "The pocket-world thesis",
       "file": "/audio/blue-radio/pocket-world-thesis.mp3",
       "playbackGain": 0.56,
-      "seconds": 122.69
+      "seconds": 88.75
     },
     {
       "id": "the-instrument-panel",
