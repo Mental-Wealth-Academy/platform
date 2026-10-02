@@ -40,7 +40,7 @@ const PAGE_LINKS: NavLink[] = [
   { label: 'Quests', href: '/quests', icon: '/icons/nav-quests-v3.svg' },
   { label: 'Trades', href: '/trades', icon: '/icons/nav-trades-v1.svg' },
   { label: 'Hallway', href: '/genetics', icon: '/icons/genetics.svg' },
-  { label: 'Surveys', href: '/surveys', icon: '/icons/nav-surveys-v5.svg?v=4' },
+  { label: 'Library', href: '/learn', icon: '/icons/daemon.svg?v=4' },
 ];
 
 const TopNavigation: React.FC = () => {

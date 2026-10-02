@@ -2658,6 +2658,10 @@
 
 /* ── Mobile: Knowledge Base ── */
 @media (max-width: 768px) {
+  .learnOverview {
+    display: none;
+  }
+
   .learnLayout .globalPanel,
   .learnFiltersPanel {
     grid-column: 1 / -1;
@@ -2727,7 +2731,7 @@
   }
 
   .learnLayout .globalPanel {
-    grid-row: 2;
+    grid-row: auto;
     padding: 12px 10px;
     border-radius: 14px;
   }
